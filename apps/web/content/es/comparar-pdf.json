@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Comparar PDF te enseña qué ha cambiado entre dos versiones de un documento: la cláusula que alguien retocó en un contrato, la cifra corregida de un presupuesto o el párrafo nuevo de un informe. Eliges el archivo A, el original, y el B, el nuevo, y la comparación se hace dentro de tu navegador, sin subir ninguno de los dos.",
+    "La vista de texto compara palabra a palabra y marca sobre las páginas lo añadido en verde, lo borrado en rojo y lo cambiado en naranja. Al lado tienes la lista de cambios: al pulsar uno, la vista salta a su sitio. Como la comparación va por palabras, un salto de línea distinto no cuenta como cambio, y con «Ignorar mayúsculas y espacios» tampoco cuentan las diferencias de mayúsculas ni de tildes.",
+    "Para cambios de diseño, como una imagen sustituida, un logotipo movido o una tabla con otro formato, están las vistas visuales. La superposición pinta las dos páginas a la vez: lo que solo está en A sale en rojo, lo que solo está en B en azul y lo que coincide, en oscuro. El deslizador pone B sobre A y te deja descubrir una u otra arrastrando una barra.",
+    "Cuando termines, puedes descargar un informe en PDF con todos los cambios, su página en cada versión y el texto anterior y el nuevo, listo para adjuntarlo a un correo."
+  ],
+  "steps": [
+    "Elige el archivo A (original) y el archivo B (nuevo).",
+    "Revisa los cambios en la vista de texto o pasa a superposición o deslizador para ver las diferencias visuales.",
+    "Descarga el informe PDF si necesitas compartir la lista de cambios."
+  ],
+  "faq": [
+    {
+      "q": "¿Funciona con documentos escaneados?",
+      "a": "La vista de texto necesita que el PDF tenga texto; en un escaneo no encontrará palabras. La superposición y el deslizador sí funcionan, porque comparan la imagen de las páginas."
+    },
+    {
+      "q": "¿Puedo comparar un Word con un PDF?",
+      "a": "Las dos entradas tienen que ser PDF. Convierte antes el Word con Word a PDF y compara los dos resultados."
+    }
+  ]
+}

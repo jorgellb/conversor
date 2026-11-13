@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Annotate PDF lets you review a document as you would with a pen and a highlighter: highlight, underline or strike out text, leave notes, write comments in a text box and point things out with arrows, rectangles, ellipses or freehand strokes. It opens in your browser and the file is never uploaded to a server.",
+    "The difference from writing on top is that the marks are saved as standard PDF annotations: highlights, notes or shapes that Adobe Acrobat and other readers recognise as comments, list in their comments panel and let you edit, reply to or delete. Each one carries its own appearance, so it looks the same in any reader, plus the author name you type, so whoever receives the document knows who made each remark.",
+    "If you would rather nobody could touch the marks, save them flattened: they are drawn onto the page as part of the content. Images you add are always placed that way, as a fixed stamp, so they show up in every program.",
+    "For teamwork you can export the comments to an XFDF file, the exchange format for annotations, and later import them onto another copy of the same PDF to carry on reviewing. While you annotate, you can undo with the button or with Ctrl+Z."
+  ],
+  "steps": [
+    "Open the PDF: it is shown in the editor, page by page.",
+    "Pick a tool (highlight, underline, strike out, note, text, arrow, rectangle, ellipse, freehand or image) and mark the page with it.",
+    "Type your name as the author, choose whether to save as annotations or flattened and press “Save PDF”."
+  ],
+  "faq": [
+    {
+      "q": "How is this different from Edit PDF?",
+      "a": "Edit PDF adds text, images and shapes as page content. Annotate PDF creates review comments that readers treat as comments and that can be replied to or removed."
+    },
+    {
+      "q": "Is the original text lost when I highlight it?",
+      "a": "No. The highlight is painted in multiply mode over the text, which stays readable and selectable."
+    },
+    {
+      "q": "Can I annotate several PDFs at once?",
+      "a": "No, one file at a time. Once you have saved it, open the next one."
+    }
+  ]
+}

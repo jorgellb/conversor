@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Marca de agua en PDF estampa un texto o una imagen en las páginas de tus documentos: «CONFIDENCIAL» en un informe interno, «BORRADOR» en una versión que aún no es la definitiva o el logotipo de tu empresa en un catálogo. El proceso es local, dentro de tu navegador, así que el documento no se sube a ningún servidor.",
+    "Para una marca de texto escribes la frase y eliges fuente, tamaño en puntos, color, opacidad y ángulo; por defecto sale en diagonal y semitransparente para que se lea el contenido de debajo. Para una marca de imagen, añade un PNG o un JPG junto al PDF en la zona de subida y ajusta su escala como porcentaje del ancho de la página. Un PNG con fondo transparente queda mucho mejor que una foto con fondo blanco.",
+    "La marca puede ir en cualquiera de las nueve posiciones de la página o repetirse en mosaico por toda la hoja, con la separación que quieras entre copias. En las opciones adicionales eliges las páginas, con rangos como «1-3, 5», «pares» o «impares», y si la marca va encima del contenido o debajo, como un fondo que no tapa el texto.",
+    "Una marca de agua normal se puede quitar con un editor de PDF. Si quieres ponerlo más difícil, activa el aplanado: cada página se convierte en una imagen a 150 ppp con la marca ya fundida. A cambio, el texto deja de poder seleccionarse y buscarse."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo poner la marca solo en algunas páginas?",
+      "a": "Sí. En «Páginas» escribe los números o rangos que quieras, por ejemplo «2-», para dejar fuera la portada."
+    },
+    {
+      "q": "¿Funciona con varios PDF a la vez?",
+      "a": "Sí. Todos reciben la misma marca y puedes descargar cada archivo o un ZIP con todos. Si usas una imagen, se toma la primera PNG o JPG que añadas."
+    },
+    {
+      "q": "¿La marca debajo del contenido se ve siempre?",
+      "a": "Se ve en las zonas en blanco de la página. Si el PDF es un escaneo, la propia imagen escaneada la tapa: en ese caso ponla encima con poca opacidad."
+    }
+  ]
+}

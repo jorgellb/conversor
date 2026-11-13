@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Redactar PDF elimina de verdad la información que no debe verse: nombres, DNI, cuentas bancarias, direcciones o cualquier fragmento de un documento que vas a compartir. No basta con poner un rectángulo negro encima, porque el texto de debajo se puede copiar o recuperar; aquí lo tapado desaparece del archivo. Todo ocurre en tu navegador, así que el documento con los datos sin tapar no sale de tu equipo.",
+    "Puedes dibujar las áreas a mano sobre cada página, buscar un texto y redactar de golpe todas sus apariciones, o activar los patrones automáticos de DNI, NIE, IBAN, correo electrónico y teléfono. Mientras trabajas, las áreas se ven semitransparentes y con borde rojo para que compruebes qué vas a tapar. Eliges el color del recuadro y, si quieres, un texto breve dentro, como «Redactado».",
+    "Al guardar, cada página con áreas se convierte en una imagen a 300 ppp con los recuadros ya pintados, de modo que no queda texto ni dibujo debajo; las demás páginas no cambian. Además se quitan los metadatos del documento y los textos buscados se tapan también en los títulos de los marcadores y en los comentarios. Antes de entregarte el archivo se vuelve a leer: si algún texto redactado sigue apareciendo o queda una zona sin cubrir, no se entrega y te avisamos."
+  ],
+  "steps": [
+    "Abre el PDF: se muestra página a página en el editor de redacción.",
+    "Marca las zonas a mano, busca un texto y redacta todas sus coincidencias o aplica los patrones de DNI, NIE, IBAN, correo y teléfono.",
+    "Revisa las áreas, elige el color y el texto del recuadro y guarda para descargar el PDF redactado."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué no puedo seleccionar el texto de algunas páginas?",
+      "a": "Son las páginas redactadas, que ahora son imágenes. Si necesitas que vuelvan a ser buscables, pásalas por OCR de PDF: lo tapado no se recupera, porque ya no está en el archivo."
+    },
+    {
+      "q": "¿Los patrones encuentran todos los datos?",
+      "a": "Buscan en el texto del PDF, así que no ven lo que está dentro de una imagen o de un escaneo sin OCR, ni formatos poco habituales. Revisa siempre el documento y añade a mano lo que falte."
+    },
+    {
+      "q": "¿Se conservan los enlaces?",
+      "a": "En las páginas redactadas se quitan los enlaces y las anotaciones. En el resto del documento se mantienen, igual que los marcadores."
+    }
+  ]
+}

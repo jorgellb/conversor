@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Resize PDF pages changes a PDF to A4, Letter or whatever size you need, so that every sheet comes out the same when printed or so it meets the format an online government portal or a print shop asks for. It happens inside your browser and the file never leaves your device.",
+    "You can choose from A0 to A6, Letter and Legal, or type a custom size in millimetres or inches. Automatic orientation follows each page: landscape pages stay landscape and portrait pages stay portrait. If you prefer, force all of them to portrait or landscape. With “Pages” you can change only part of the document, for example “1-4” or “even”; the rest keep their original size.",
+    "In the additional options you decide what happens to the content. “Scale to fit” enlarges or reduces it without distorting it until it fits the new sheet, and centres it; that is the right choice to move a document from Letter to A4 or from A3 to A4. “Centre without scaling” keeps the real size of the content and only changes the sheet around it: it is useful to add margin all round, but if the new sheet is smaller, whatever does not fit is cut off at the edges.",
+    "With several PDFs, each one is converted separately and you also get them together in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Are links and forms kept?",
+      "a": "No. To place the content on the new sheet each page is rebuilt, and links and fillable fields are lost. If the form is already filled in, flatten it first to keep what was typed."
+    },
+    {
+      "q": "Is the text turned into an image?",
+      "a": "No. The content is placed as it is on the new page, so the text stays sharp and selectable."
+    },
+    {
+      "q": "How is this different from Multiple pages per sheet?",
+      "a": "Here each page is still one page, just with a different size. Multiple pages per sheet groups two, four or more pages onto a single sheet."
+    }
+  ]
+}

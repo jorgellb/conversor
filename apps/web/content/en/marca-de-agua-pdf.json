@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Watermark PDF stamps text or an image onto the pages of your documents: “CONFIDENTIAL” on an internal report, “DRAFT” on a version that is not final yet, or your company logo on a catalogue. The work is done locally, inside your browser, so the document is never uploaded to a server.",
+    "For a text watermark you type the phrase and choose the font, size in points, colour, opacity and angle; by default it runs diagonally and semi-transparent so the content underneath stays readable. For an image watermark, add a PNG or JPG next to the PDF in the upload area and set its scale as a percentage of the page width. A PNG with a transparent background looks far better than a photo with a white background.",
+    "The watermark can sit in any of the nine positions on the page or be repeated as a tiled pattern across the sheet, with the spacing you want between copies. In the additional options you choose the pages, with ranges such as “1-3, 5”, “even” or “odd”, and whether the mark goes above the content or below it, like a background that does not cover the text.",
+    "A normal watermark can be removed with a PDF editor. To make that harder, turn on flattening: every page becomes a 150 dpi image with the watermark merged into it. The trade-off is that the text can no longer be selected or searched."
+  ],
+  "faq": [
+    {
+      "q": "Can I watermark only some pages?",
+      "a": "Yes. In “Pages” type the numbers or ranges you want, for example “2-” to leave out the cover."
+    },
+    {
+      "q": "Does it work with several PDFs at once?",
+      "a": "Yes. They all get the same watermark and you can download each file or a ZIP with all of them. If you use an image, the first PNG or JPG you add is the one applied."
+    },
+    {
+      "q": "Is a watermark below the content always visible?",
+      "a": "It shows in the blank areas of the page. If the PDF is a scan, the scanned image itself covers it: in that case put it above the content with low opacity."
+    }
+  ]
+}

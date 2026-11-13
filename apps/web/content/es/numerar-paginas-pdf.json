@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Numerar páginas de un PDF añade el número de cada página en el sitio que elijas: arriba, en medio o abajo, y a la izquierda, al centro o a la derecha. Es lo que hace falta antes de entregar un trabajo, imprimir un dosier o mandar un contrato que alguien va a revisar citando páginas. Todo se hace en tu navegador, sin subir el documento.",
+    "El texto sale de un patrón que puedes escribir a tu gusto: {NUM} es el número de la página y {CNT} el total, así que «{NUM} / {CNT}» da «3 / 12» y «Página {NUM} de {CNT}» da la forma larga. Los números pueden ir en cifras (1, 2, 3), en romanos en minúscula (i, ii, iii) o en letras (a, b, c). Eliges una fuente con o sin serifa o de ancho fijo y su tamaño en puntos; la fuente se incrusta en el PDF para que las tildes se vean en cualquier lector.",
+    "En las opciones adicionales decides en qué página empieza y termina la numeración, con qué número arranca y qué total muestra {CNT}, algo útil si la portada no cuenta o si el PDF es la segunda parte de un documento más largo. También ajustas el color, la opacidad, el ángulo y la distancia al borde en milímetros, y puedes activar la posición en espejo para que en las páginas pares el número pase al lado contrario, como en un libro impreso a doble cara.",
+    "Las páginas giradas se numeran tal y como se ven en pantalla. Si eliges varios PDF a la vez, cada uno se numera por separado y puedes descargarlos uno a uno o juntos en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo dejar la portada sin número?",
+      "a": "Sí. Pon 2 en «Primera página numerada» y la portada se queda limpia; si quieres que la siguiente página muestre un 1, deja «Primer número» en 1."
+    },
+    {
+      "q": "¿Se pueden cambiar los números después?",
+      "a": "Se dibujan como texto en la página, igual que el resto del contenido, así que no quedan como un campo editable. Si te equivocas, vuelve a numerar el archivo original con otras opciones."
+    },
+    {
+      "q": "¿Qué pasa si el PDF tiene contraseña?",
+      "a": "Te la pedimos para poder abrirlo. Se usa solo en tu navegador y el PDF numerado se descarga sin esa contraseña."
+    }
+  ]
+}

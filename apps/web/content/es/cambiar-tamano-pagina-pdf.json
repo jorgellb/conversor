@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Cambiar el tamaño de las páginas pasa un PDF a A4, a Carta o al tamaño que necesites, para que todas las hojas salgan iguales al imprimir o para cumplir el formato que te pide una sede electrónica o una imprenta. Ocurre dentro de tu navegador y el archivo no sale de tu equipo.",
+    "Puedes elegir entre los tamaños A0 a A6, Letter y Legal, o escribir un tamaño personalizado en milímetros o en pulgadas. La orientación automática respeta la de cada página: las apaisadas siguen apaisadas y las verticales, verticales. Si lo prefieres, fuerza todas a vertical o a horizontal. Con «Páginas» puedes cambiar solo una parte del documento, por ejemplo «1-4» o «pares»; el resto conserva su tamaño original.",
+    "En las opciones adicionales decides qué hacer con el contenido. «Escalar para encajar» lo agranda o lo reduce sin deformarlo hasta que cabe en la nueva hoja, y lo centra; es lo adecuado para pasar un documento de Carta a A4 o de A3 a A4. «Centrar sin escalar» mantiene el tamaño real del contenido y solo cambia la hoja que lo rodea: sirve para añadir margen alrededor, pero si la hoja nueva es más pequeña, lo que no quepa se corta por los bordes.",
+    "Con varios PDF, cada uno se convierte por separado y también los tienes juntos en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan los enlaces y los formularios?",
+      "a": "No. Para colocar el contenido en la hoja nueva, cada página se rehace y se pierden los enlaces y los campos rellenables. Si el formulario ya está rellenado, aplánalo antes para conservar lo escrito."
+    },
+    {
+      "q": "¿El texto se convierte en imagen?",
+      "a": "No. El contenido se coloca tal cual en la nueva página, así que el texto sigue siendo nítido y seleccionable."
+    },
+    {
+      "q": "¿Qué diferencia hay con Varias páginas por hoja?",
+      "a": "Aquí cada página sigue siendo una página, solo que con otro tamaño. Varias páginas por hoja agrupa dos, cuatro o más páginas en una misma hoja."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Compare PDF shows you what changed between two versions of a document: the clause someone tweaked in a contract, the corrected figure in a quote or the new paragraph in a report. You choose file A, the original, and file B, the new one, and the comparison runs inside your browser without uploading either of them.",
+    "The text view compares word by word and marks on the pages what was added in green, removed in red and changed in orange. Next to it you get the list of changes: click one and the view jumps to it. Because the comparison works on words, a different line break does not count as a change, and with “Ignore case and spaces” differences in capitals and accents do not count either.",
+    "For layout changes, such as a replaced image, a moved logo or a table with different formatting, there are the visual views. The overlay paints both pages at once: what is only in A shows in red, what is only in B in blue and what matches in dark. The slider places B over A and lets you reveal one or the other by dragging a bar.",
+    "When you are done, you can download a PDF report with every change, its page in each version and the old and new text, ready to attach to an email."
+  ],
+  "steps": [
+    "Choose file A (original) and file B (new).",
+    "Review the changes in the text view, or switch to overlay or slider to see the visual differences.",
+    "Download the PDF report if you need to share the list of changes."
+  ],
+  "faq": [
+    {
+      "q": "Does it work with scanned documents?",
+      "a": "The text view needs the PDF to contain text; in a scan it will not find any words. The overlay and the slider do work, because they compare the image of the pages."
+    },
+    {
+      "q": "Can I compare a Word file with a PDF?",
+      "a": "Both inputs must be PDFs. Convert the Word file first with Word to PDF and compare the two results."
+    }
+  ]
+}

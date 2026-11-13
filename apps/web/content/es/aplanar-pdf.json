@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Aplanar PDF convierte en contenido fijo lo que en un PDF todavía se puede cambiar: los campos de un formulario y las anotaciones, como notas, resaltados, sellos o dibujos. El resultado se ve exactamente igual, pero ya nadie puede modificar los valores escritos ni borrar o mover los comentarios con un lector corriente. Todo se procesa en tu navegador.",
+    "Es útil cuando entregas un formulario ya rellenado y no quieres que se altere por el camino, cuando un lector muestra los campos vacíos o de forma distinta a como los ves tú, o cuando vas a mandar a imprenta un documento con comentarios que deben salir impresos. También ayuda con programas que ignoran las anotaciones al abrir o al combinar PDF.",
+    "Solo hay una opción: qué aplanar. «Formularios» fija el contenido de los campos y elimina el formulario; «Anotaciones» pinta en la página cada comentario visible tal como se muestra y lo quita de la lista de anotaciones; «Ambos» hace las dos cosas. Los enlaces se conservan y siguen funcionando, las anotaciones ocultas no se pintan y las ventanas emergentes de las notas desaparecen, porque ya no tienen dónde abrirse.",
+    "Puedes aplanar varios archivos de una vez y descargarlos por separado o en un ZIP. Si un archivo no tiene anotaciones que aplanar, el resultado te lo indica."
+  ],
+  "faq": [
+    {
+      "q": "¿Aplanar protege el documento?",
+      "a": "Evita los cambios casuales, pero no es una protección: alguien con un editor de PDF podría modificar el contenido. Para limitar quién lo abre o lo edita, usa Proteger PDF con contraseña."
+    },
+    {
+      "q": "¿Se puede deshacer?",
+      "a": "No. Una vez aplanado, los campos y comentarios ya no existen como tales. Guarda el original si vas a necesitar editarlo."
+    },
+    {
+      "q": "¿El texto deja de poder seleccionarse?",
+      "a": "No. Las páginas no se convierten en imagen, así que el texto del documento sigue siendo seleccionable."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Buscar en PDF localiza un texto en muchos documentos a la vez: el número de un expediente entre cien facturas, el nombre de un cliente en una carpeta de contratos o una referencia en los apuntes de todo un curso. Añades los archivos, escribes lo que buscas y en unos segundos tienes la lista de apariciones, sin abrir los PDF uno por uno y sin subir nada: la búsqueda se hace en tu navegador.",
+    "Cada resultado muestra el archivo, la página y unas palabras de contexto antes y después; al abrirlo ves la página con la coincidencia resaltada. Por defecto la búsqueda no distingue mayúsculas ni tildes, así que «camion» encuentra «Camión». Si necesitas precisión, activa «Distinguir mayúsculas» o «Palabra completa», para que «IVA» no aparezca dentro de «nociva»; y para búsquedas avanzadas, como cualquier fecha o cualquier código con un formato fijo, usa una expresión regular.",
+    "La lista completa se puede exportar a CSV con una fila por coincidencia: archivo, página, texto encontrado y contexto. El archivo va en UTF-8 y separado por punto y coma, para abrirlo en una hoja de cálculo con las tildes bien.",
+    "La búsqueda trabaja sobre el texto de los PDF. Si alguno es un escaneo sin capa de texto, la herramienta te dice cuáles son y te propone pasarlos antes por OCR de PDF."
+  ],
+  "steps": [
+    "Añade todos los PDF en los que quieras buscar.",
+    "Escribe el texto y marca, si hace falta, distinguir mayúsculas, palabra completa o expresión regular.",
+    "Pulsa «Buscar», abre cada resultado para ver su página y exporta la lista a CSV."
+  ],
+  "faq": [
+    {
+      "q": "¿Hay un límite de archivos?",
+      "a": "No hay un número fijo: lo marca la memoria de tu equipo, porque se lee el texto de todos los PDF en el navegador."
+    },
+    {
+      "q": "¿Con expresión regular también se ignoran las tildes?",
+      "a": "No. La expresión regular se aplica tal cual sobre el texto, así que tendrás que incluir las variantes con y sin tilde si las necesitas."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Flatten PDF turns whatever can still be changed in a PDF into fixed content: form fields and annotations such as notes, highlights, stamps or drawings. The result looks exactly the same, but nobody can change the values typed in or delete or move the comments with an ordinary reader any more. Everything is processed in your browser.",
+    "It helps when you hand in a completed form and do not want it altered along the way, when a reader shows the fields empty or differently from how you see them, or when you send a document with comments to print and they must come out on paper. It also helps with programs that ignore annotations when they open or combine PDFs.",
+    "There is a single option: what to flatten. “Forms” fixes the content of the fields and removes the form; “Annotations” paints each visible comment onto the page as it is displayed and removes it from the list of annotations; “Both” does the two. Links are kept and still work, hidden annotations are not painted, and the pop-up windows of notes disappear because there is nothing left for them to open from.",
+    "You can flatten several files at once and download them separately or in a ZIP. If a file has no annotations to flatten, the result tells you so."
+  ],
+  "faq": [
+    {
+      "q": "Does flattening protect the document?",
+      "a": "It prevents casual changes, but it is not protection: someone with a PDF editor could still alter the content. To limit who opens or edits it, use Password protect PDF."
+    },
+    {
+      "q": "Can it be undone?",
+      "a": "No. Once flattened, the fields and comments no longer exist as such. Keep the original if you will need to edit it."
+    },
+    {
+      "q": "Can the text still be selected?",
+      "a": "Yes. Pages are not turned into images, so the document text can still be selected."
+    }
+  ]
+}

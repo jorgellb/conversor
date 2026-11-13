@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Recortar PDF quita los márgenes que sobran de las páginas: el borde blanco de un artículo que quieres leer más grande en el móvil, las marcas de un escaneo o la zona que no te interesa de un plano. Funciona en tu navegador, sin subir el archivo, y puede tratar varios PDF de una vez.",
+    "Hay dos formas de hacerlo. A mano, indicas cuántos milímetros quitar por la izquierda, por arriba, por la derecha y por abajo, o activas el modo visual y dibujas sobre la vista previa un rectángulo con lo que quieres conservar, y los márgenes se rellenan solos. En automático, la herramienta mira cada página, localiza dónde hay contenido y quita el blanco que lo rodea, dejando un margen de seguridad de 2 mm que puedes cambiar; las páginas en blanco se dejan como están.",
+    "En las opciones adicionales puedes poner márgenes distintos para las páginas pares, pensado para libros escaneados en los que el lomo cae a un lado o a otro, y limitar el recorte a ciertas páginas con rangos como «1-10» o «impares». También eliges qué caja del PDF cambiar: la CropBox, que es lo que muestran los lectores, o la TrimBox, el corte final que usan las imprentas.",
+    "Ten en cuenta que recortar cambia lo que se ve, pero no borra lo que queda fuera: el contenido sigue dentro del archivo. Si lo que quieres es eliminar información sensible, usa Redactar PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿El recorte automático sirve para un escaneo?",
+      "a": "Sí, siempre que el fondo sea claro. Una sombra gris o una mancha en el borde cuentan como contenido, así que en esos casos funciona mejor el modo visual."
+    },
+    {
+      "q": "¿Pierdo calidad al recortar?",
+      "a": "No. Las páginas no se convierten en imagen: solo cambia la zona visible, y el texto sigue siendo seleccionable."
+    },
+    {
+      "q": "¿Puedo deshacer el recorte más tarde?",
+      "a": "Como el contenido sigue dentro del archivo, un editor de PDF avanzado puede restaurar la caja original. Aun así, guarda una copia del PDF de partida."
+    }
+  ]
+}

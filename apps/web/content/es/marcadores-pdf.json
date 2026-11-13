@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Editar marcadores de un PDF te deja construir el índice lateral que aparece en los lectores, ese árbol de títulos que lleva a cada capítulo con un clic. Es lo que distingue un manual, una tesis o un expediente largo cómodo de recorrer de uno en el que hay que pasar páginas a ciegas. La edición es local: el PDF se abre en tu navegador y no se sube.",
+    "Al abrir el archivo ves sus marcadores actuales, si los tiene, junto a la vista de las páginas. Puedes añadir marcadores nuevos o dentro de otro, subirlos y bajarlos, sangrarlos para convertirlos en un subapartado o quitarles la sangría, renombrarlos y borrar uno o todos. Así ordenas un índice desordenado, corriges títulos mal escritos o creas uno desde cero en un documento que no tenía.",
+    "Cada marcador apunta a una página y, si quieres, a una posición vertical exacta: haz clic en la vista de la página y el marcador llevará justo a ese punto, por ejemplo al título de una sección que empieza a media hoja. También puedes fijar el zoom con el que se abre o dejarlo vacío para no cambiar el que tenga el lector. Para destacar los apartados importantes, cada marcador admite negrita, cursiva y color, y puedes decidir si se muestra abierto, con sus hijos a la vista, o cerrado."
+  ],
+  "steps": [
+    "Abre el PDF: aparecen sus marcadores, si los tiene, y la vista de las páginas.",
+    "Añade, mueve, sangra o borra marcadores y elige su página, su posición con un clic en la página y su zoom.",
+    "Pulsa «Guardar el PDF» para descargar el documento con el índice nuevo."
+  ],
+  "faq": [
+    {
+      "q": "¿Cambia algo más del documento?",
+      "a": "No. Solo se sustituye el árbol de marcadores; las páginas, los enlaces y los formularios se quedan como estaban."
+    },
+    {
+      "q": "¿Puedo crear marcadores en un PDF que no tiene ninguno?",
+      "a": "Sí. Si el archivo no trae marcadores, empieza con «Añadir» y ve colocándolos en la página que corresponda."
+    },
+    {
+      "q": "¿Los marcadores sirven para dividir el PDF?",
+      "a": "Sí: Dividir PDF puede cortar el documento por sus marcadores de primer nivel, así que un buen índice te sirve después para separarlo por capítulos."
+    }
+  ]
+}

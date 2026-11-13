@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Edit PDF bookmarks lets you build the side index that readers display, the tree of titles that takes you to each chapter with one click. It is what separates a manual, a thesis or a long case file that is easy to navigate from one where you have to flick through pages blindly. Editing is local: the PDF opens in your browser and is not uploaded.",
+    "When you open the file you see its current bookmarks, if it has any, next to the page view. You can add new bookmarks or add them inside another one, move them up and down, indent them to make a sub-section or outdent them, rename them and delete one or all of them. That way you can tidy up a messy index, fix badly written titles or create one from scratch in a document that never had one.",
+    "Each bookmark points to a page and, if you want, to an exact vertical position: click on the page view and the bookmark will take you to that very spot, for example to the heading of a section that starts halfway down the sheet. You can also set the zoom it opens with, or leave it empty so the reader keeps its own. To make important sections stand out, every bookmark supports bold, italic and colour, and you can decide whether it is shown open, with its children visible, or closed."
+  ],
+  "steps": [
+    "Open the PDF: its bookmarks, if any, appear next to the page view.",
+    "Add, move, indent or delete bookmarks, and choose their page, their position with a click on the page and their zoom.",
+    "Press “Save the PDF” to download the document with the new index."
+  ],
+  "faq": [
+    {
+      "q": "Does anything else in the document change?",
+      "a": "No. Only the bookmark tree is replaced; pages, links and forms stay as they were."
+    },
+    {
+      "q": "Can I create bookmarks in a PDF that has none?",
+      "a": "Yes. If the file has no bookmarks, start with “Add” and place each one on the page it belongs to."
+    },
+    {
+      "q": "Can bookmarks be used to split the PDF?",
+      "a": "Yes: Split PDF can cut the document at its top-level bookmarks, so a good index also lets you separate it into chapters later."
+    }
+  ]
+}

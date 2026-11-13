@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Add page numbers to PDF places the number of each page wherever you choose: at the top, middle or bottom, and on the left, centre or right. It is what you need before handing in a paper, printing a dossier or sending a contract that someone will review by quoting page numbers. Everything happens in your browser, without uploading the document.",
+    "The text comes from a pattern you can write as you like: {NUM} is the page number and {CNT} the total, so “{NUM} / {CNT}” gives “3 / 12” and “Page {NUM} of {CNT}” gives the long form. Numbers can be digits (1, 2, 3), lower-case Roman numerals (i, ii, iii) or letters (a, b, c). You pick a sans, serif or monospaced font and its size in points; the font is embedded in the PDF so accented letters display in any reader.",
+    "In the additional options you decide on which page numbering starts and ends, which number it starts from and which total {CNT} shows, which helps when the cover should not count or the PDF is the second part of a longer document. You can also set the colour, opacity, angle and distance from the edge in millimetres, and turn on the mirrored position so the number moves to the opposite side on even pages, as in a book printed on both sides.",
+    "Rotated pages are numbered as they appear on screen. If you choose several PDFs at once, each one is numbered separately and you can download them one by one or together in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Can I leave the cover without a number?",
+      "a": "Yes. Set “First numbered page” to 2 and the cover stays clean; if you want the next page to show a 1, leave “First number” at 1."
+    },
+    {
+      "q": "Can the numbers be changed afterwards?",
+      "a": "They are drawn as text on the page, like the rest of the content, so they are not an editable field. If you make a mistake, number the original file again with different options."
+    },
+    {
+      "q": "What if the PDF has a password?",
+      "a": "We ask for it so the file can be opened. It is only used in your browser, and the numbered PDF is downloaded without that password."
+    }
+  ]
+}

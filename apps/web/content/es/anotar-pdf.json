@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Anotar PDF sirve para revisar un documento como lo harías con un bolígrafo y un rotulador fluorescente: resaltar, subrayar o tachar texto, dejar notas, escribir comentarios en un cuadro de texto y señalar con flechas, rectángulos, elipses o trazos a mano alzada. Se abre en tu navegador y el archivo no se sube a ningún servidor.",
+    "La diferencia con escribir encima es que las marcas se guardan como anotaciones estándar del formato PDF: resaltados, notas o figuras que Adobe Acrobat y otros lectores reconocen como comentarios, muestran en su panel de comentarios y dejan editar, contestar o borrar. Cada una lleva una apariencia propia, así que se ve igual en cualquier lector, y el nombre de autor que escribas, para que quien reciba el documento sepa quién ha hecho cada observación.",
+    "Si prefieres que nadie pueda tocar las marcas, guárdalas aplanadas: quedan dibujadas en la página como parte del contenido. Las imágenes que añadas se colocan siempre así, como un sello fijo, para que se vean en todos los programas.",
+    "Para trabajar en equipo puedes exportar los comentarios a un archivo XFDF, el formato de intercambio de anotaciones, y después importarlos sobre otra copia del mismo PDF para seguir revisando. Mientras anotas, puedes deshacer con el botón o con Ctrl+Z."
+  ],
+  "steps": [
+    "Abre el PDF: se muestra en el editor, página a página.",
+    "Elige una herramienta (resaltar, subrayar, tachar, nota, texto, flecha, rectángulo, elipse, dibujo libre o imagen) y márcala sobre la página.",
+    "Escribe tu nombre como autor, elige si guardar como anotaciones o aplanadas y pulsa «Guardar PDF»."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diferencia hay con Editar PDF?",
+      "a": "Editar PDF añade texto, imágenes y formas como contenido de la página. Anotar PDF crea comentarios de revisión que los lectores tratan como tales y que se pueden responder o quitar."
+    },
+    {
+      "q": "¿Se pierde el texto original al resaltar?",
+      "a": "No. El resaltado se pinta en modo multiplicar sobre el texto, que sigue legible y seleccionable."
+    },
+    {
+      "q": "¿Puedo anotar varios PDF a la vez?",
+      "a": "No, se anota un archivo cada vez. Cuando lo guardes, abre el siguiente."
+    }
+  ]
+}

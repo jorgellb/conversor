@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Crop PDF removes the margins you do not need from the pages: the white border of an article you want to read larger on your phone, the marks left by a scan or the part of a plan you are not interested in. It works in your browser, without uploading the file, and can handle several PDFs at once.",
+    "There are two ways to do it. By hand, you state how many millimetres to remove on the left, top, right and bottom, or you turn on visual mode and draw a rectangle on the preview around what you want to keep, and the margins are filled in for you. In automatic mode, the tool looks at each page, finds where the content is and removes the white space around it, leaving a 2 mm safety margin you can change; blank pages are left as they are.",
+    "In the additional options you can set different margins for even pages, meant for scanned books where the spine falls on one side or the other, and limit the crop to certain pages with ranges such as “1-10” or “odd”. You also choose which PDF box to change: the CropBox, which is what readers display, or the TrimBox, the final cut used by print shops.",
+    "Bear in mind that cropping changes what is shown but does not delete what falls outside: that content is still inside the file. If you need to remove sensitive information, use Redact PDF instead."
+  ],
+  "faq": [
+    {
+      "q": "Does automatic cropping work on a scan?",
+      "a": "Yes, as long as the background is light. A grey shadow or a smudge on the edge counts as content, so visual mode works better in those cases."
+    },
+    {
+      "q": "Do I lose quality when cropping?",
+      "a": "No. Pages are not turned into images: only the visible area changes, and the text can still be selected."
+    },
+    {
+      "q": "Can the crop be undone later?",
+      "a": "Because the content is still in the file, an advanced PDF editor can restore the original box. Even so, keep a copy of the PDF you started from."
+    }
+  ]
+}

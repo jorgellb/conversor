@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Search PDF finds a piece of text in many documents at once: a case number among a hundred invoices, a client's name in a folder of contracts or a reference in a whole term's lecture notes. You add the files, type what you are looking for and within seconds you have the list of matches, without opening the PDFs one by one and without uploading anything: the search runs in your browser.",
+    "Each result shows the file, the page and a few words of context before and after; open it to see the page with the match highlighted. By default the search ignores case and accents, so “cafe” finds “Café”. If you need precision, turn on “Match case” or “Whole word”, so that “tax” does not turn up inside “syntax”; and for advanced searches, such as any date or any code with a fixed format, use a regular expression.",
+    "The full list can be exported to CSV with one row per match: file, page, text found and context. The file is UTF-8 and semicolon-separated, so accented characters come through correctly when you open it in a spreadsheet.",
+    "The search works on the text in the PDFs. If any of them is a scan without a text layer, the tool tells you which ones and suggests running them through OCR PDF first."
+  ],
+  "steps": [
+    "Add every PDF you want to search.",
+    "Type the text and, if needed, tick match case, whole word or regular expression.",
+    "Press “Search”, open each result to see its page and export the list to CSV."
+  ],
+  "faq": [
+    {
+      "q": "Is there a limit on the number of files?",
+      "a": "There is no fixed number: your device's memory sets the limit, because the text of every PDF is read in the browser."
+    },
+    {
+      "q": "Are accents ignored with a regular expression too?",
+      "a": "No. The regular expression is applied to the text as it is, so you will need to include the accented and unaccented variants if you need both."
+    }
+  ]
+}
