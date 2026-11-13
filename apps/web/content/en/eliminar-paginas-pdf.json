@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Delete PDF pages removes the sheets you do not need: the blank page the scanner left behind, the adverts at the end of a report or the appendices you would rather not send. The rest of the document is copied as it is into a new PDF, with no recompression, so text stays selectable and images keep their quality.",
+    "Type the pages to remove with the same range syntax used across the site: single numbers and spans separated by commas, such as “2, 5-7”, an open span such as “10-” to delete from page ten to the end, or the words “even” and “odd”. Numbers refer to the position of the page in the file, starting at 1, not to the number printed on it.",
+    "Processing is local: the file never leaves your device and the result is ready in a moment. If you choose several PDFs, the same pages are removed from all of them and you can download them together in a ZIP, which is handy for stripping the same cover from a series of reports."
+  ],
+  "faq": [
+    {
+      "q": "Can I delete every page?",
+      "a": "No: a PDF needs at least one page, so the tool warns you when the range covers all of them and does not create the file."
+    },
+    {
+      "q": "What if I type a page that does not exist?",
+      "a": "Numbers past the end of the document are ignored. If the range does not include any real page, you get a warning."
+    },
+    {
+      "q": "Are bookmarks kept?",
+      "a": "No. The remaining pages keep their content and annotations, but the original bookmark outline does not carry over to the new PDF. You can rebuild it with Edit PDF bookmarks."
+    },
+    {
+      "q": "What if I only want to keep a few pages?",
+      "a": "Then Extract PDF pages is easier: you list the pages you want to keep instead of the ones you want gone."
+    }
+  ]
+}

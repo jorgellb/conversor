@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Varias páginas por hoja coloca 2, 3, 4, 6, 8, 9, 12 o 16 páginas de un PDF en cada hoja. Es la forma de imprimir unas diapositivas para tomar apuntes, repasar un documento largo gastando menos papel o preparar una hoja de consulta con varias páginas a la vista.",
+    "La herramienta elige la cuadrícula y, con la orientación automática, si la hoja va en vertical o apaisada, para que las páginas salgan lo más grandes posible: con 2 páginas verticales en un A4, por ejemplo, gira la hoja y pone una página a cada lado. Puedes elegir el tamaño de hoja, de A0 a A6, Letter o Legal, y si las páginas se colocan por filas o por columnas.",
+    "En «Opciones adicionales» hay un margen alrededor de cada página, en porcentaje de su celda, la dirección de derecha a izquierda para documentos en árabe, hebreo o manga, y bordes alrededor de cada página con el color y el grosor que quieras.",
+    "Las páginas se incrustan como contenido vectorial, sin rasterizar, así que el texto sigue nítido aunque lo imprimas pequeño. El proceso es local: el PDF no sale de tu navegador. Puedes elegir varios archivos y descargarlos juntos en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan los enlaces y los formularios?",
+      "a": "No: cada página se coloca en la hoja como un dibujo, así que los enlaces dejan de funcionar y los campos de formulario y las anotaciones no aparecen. Si necesitas que se vean, pasa antes el PDF por Aplanar PDF."
+    },
+    {
+      "q": "¿Y si las páginas tienen tamaños distintos?",
+      "a": "La cuadrícula se calcula con la primera página, y cada página se escala para caber en su celda, sin deformarse y centrada."
+    },
+    {
+      "q": "¿Qué diferencia hay con Crear folleto PDF?",
+      "a": "Aquí las páginas van en orden de lectura, fila a fila o columna a columna. El folleto las reordena para que, al doblar las hojas, formen un cuadernillo."
+    }
+  ]
+}

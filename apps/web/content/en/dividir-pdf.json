@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Split PDF breaks one document into several smaller files. Use it to share out a case file that was scanned in one go, send each chapter on its own or cut down a PDF that is too heavy for a web form. It runs in your browser without uploading the file, and pages are copied as they are: nothing is recompressed, so quality stays the same.",
+    "There are seven ways to cut. “Every N pages” makes equal parts; “Even and odd” gives two PDFs, one with the odd pages and one with the even ones; “In two halves” cuts the document down the middle. With “Custom” you type the pages after which to cut, such as “3, 7, 12”, and you get parts 1-3, 4-7, 8-12 and 13 to the end.",
+    "The other modes look at the content. “By top-level bookmarks” starts a new file at each chapter in the PDF's outline. “By maximum size” keeps adding pages to a part as long as it stays under the megabytes you set. “By blank pages” uses empty pages as separators and drops them.",
+    "Under “More options” you choose the name pattern for each part: {nombre} is the original file name, {n} the part number, and {desde} and {hasta} its first and last page. When there are several parts you can download them one by one or all together in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "What counts as a blank page?",
+      "a": "A page whose content draws nothing at all: no text, no images, no lines. A scanned blank sheet is an image, so it is not detected as empty; use the custom mode for those."
+    },
+    {
+      "q": "What if a single page is bigger than the maximum size?",
+      "a": "That page goes into a file of its own even though it is over the limit, and the result tells you. To make it lighter, run it through Compress PDF first."
+    },
+    {
+      "q": "Can I split several PDFs at once?",
+      "a": "Yes. Every file is split with the same options and all the parts can be downloaded together in a ZIP."
+    },
+    {
+      "q": "What if the PDF has no bookmarks?",
+      "a": "The bookmark mode tells you the document has no top-level bookmarks and produces nothing. Add them with Edit PDF bookmarks or pick another mode."
+    }
+  ]
+}

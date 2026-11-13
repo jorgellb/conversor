@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Crear folleto PDF reordena y coloca las páginas de un documento para que, al imprimirlo a doble cara y doblar las hojas por la mitad, tengas un cuadernillo que se lee en orden: el programa de una boda, el boletín de una asociación, un fanzine o un manual de instrucciones. Cada hoja lleva dos páginas, una a cada lado del pliegue.",
+    "Elige el papel: A4 para un folleto A5, A3 para un folleto A4 o Carta para un folleto media carta. Las páginas se escalan para caber en su mitad de la hoja. Si el número de páginas no es múltiplo de 4, se añaden páginas en blanco; con «La última página sigue siendo la contraportada», marcada por defecto, los blancos se ponen delante de la última página para que la contraportada quede detrás.",
+    "La encuadernación a la derecha sirve para publicaciones que se leen de derecha a izquierda. En «Opciones adicionales» puedes dejar un medianil en el pliegue, en milímetros, para que el lomo no se coma el texto, y repartir un documento grueso en varios cuadernillos indicando cuántas hojas lleva cada uno; después se cosen o se pegan juntos.",
+    "La salida puede ser un único PDF para imprimir a doble cara volteando por el borde corto, o dos PDF para la doble cara manual: los anversos y los reversos, estos ya en orden inverso. Al terminar ves una vista previa de las hojas y puedes hojear el folleto. Todo ocurre en tu navegador, sin subir el archivo."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo lo imprimo?",
+      "a": "Con el PDF para doble cara, elige en el diálogo de impresión la doble cara volteando por el borde corto y «Tamaño real». Después dobla el montón por la mitad y grápalo por el pliegue."
+    },
+    {
+      "q": "Mi impresora no imprime a doble cara",
+      "a": "Elige la salida «Doble cara manual». Imprime primero los anversos, da la vuelta al montón sin girarlo, vuelve a ponerlo en la bandeja e imprime los reversos."
+    },
+    {
+      "q": "¿Cuántas hojas pongo en cada cuadernillo?",
+      "a": "Depende del grosor del papel: un cuadernillo con demasiadas hojas se dobla mal y las páginas centrales sobresalen. Con el valor 0 todo va en un solo cuadernillo."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Make a PDF booklet rearranges and places the pages of a document so that, once printed double-sided and folded in half, you get a booklet that reads in order: a wedding programme, a club newsletter, a zine or an instruction manual. Each sheet holds two pages, one on each side of the fold.",
+    "Pick the paper: A4 for an A5 booklet, A3 for an A4 booklet or Letter for a half-letter booklet. Pages are scaled to fit their half of the sheet. If the page count is not a multiple of 4, blank pages are added; with “The last page stays the back cover”, ticked by default, the blanks go before the last page so the back cover stays at the back.",
+    "Right binding is for publications read from right to left. Under “More options” you can leave a gutter at the fold, in millimetres, so the spine does not swallow the text, and split a thick document into several signatures by setting how many sheets each one holds; they are then sewn or glued together.",
+    "The output can be a single PDF to print double-sided flipping on the short edge, or two PDFs for manual duplex: the fronts and the backs, the latter already in reverse order. When it is done you see a preview of the sheets and can flip through the booklet. Everything happens in your browser, with no upload."
+  ],
+  "faq": [
+    {
+      "q": "How do I print it?",
+      "a": "With the duplex PDF, choose double-sided flipping on the short edge and “Actual size” in the print dialog. Then fold the stack in half and staple it along the fold."
+    },
+    {
+      "q": "My printer cannot print double-sided",
+      "a": "Choose the “Manual duplex” output. Print the fronts first, flip the stack without rotating it, put it back in the tray and print the backs."
+    },
+    {
+      "q": "How many sheets should each signature have?",
+      "a": "It depends on the paper thickness: a signature with too many sheets folds badly and the middle pages stick out. With the value 0 everything goes into a single signature."
+    }
+  ]
+}

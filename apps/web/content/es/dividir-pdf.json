@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Dividir PDF separa un documento en varios archivos más pequeños. Sirve para repartir un expediente que se escaneó de una sola vez, enviar cada capítulo por separado o trocear un PDF que pesa demasiado para un formulario web. Se hace en tu navegador, sin subir el archivo, y las páginas se copian tal cual: no se recomprime nada y la calidad no cambia.",
+    "Hay siete formas de cortar. «Cada N páginas» hace partes iguales; «Pares e impares» saca dos PDF, uno con las páginas impares y otro con las pares; «En dos mitades» parte el documento por el centro. En «Personalizado» escribes después de qué páginas quieres cortar, por ejemplo «3, 7, 12», y obtienes las partes 1-3, 4-7, 8-12 y de la 13 al final.",
+    "Los otros modos miran el contenido. «Por marcadores de primer nivel» empieza un archivo en cada capítulo del índice del PDF. «Por tamaño máximo» va sumando páginas a cada parte mientras no supere los megas que indiques. «Por páginas en blanco» usa las páginas vacías como separadores y las descarta.",
+    "En «Opciones adicionales» eliges el patrón del nombre de cada parte: {nombre} es el nombre del archivo original, {n} el número de la parte y {desde} y {hasta} su primera y su última página. Cuando salen varias partes, puedes descargarlas una a una o todas juntas en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué cuenta como página en blanco?",
+      "a": "Una página cuyo contenido no dibuja nada: ni texto, ni imágenes, ni trazos. Una hoja en blanco escaneada es una imagen, así que no se detecta como vacía; en ese caso usa el modo personalizado."
+    },
+    {
+      "q": "¿Y si una sola página pesa más que el tamaño máximo?",
+      "a": "Esa página va en su propio archivo aunque supere el límite, y el resultado te avisa. Si necesitas que pese menos, pásala antes por Comprimir PDF."
+    },
+    {
+      "q": "¿Puedo dividir varios PDF a la vez?",
+      "a": "Sí. Cada archivo se divide con las mismas opciones y todas las partes se pueden descargar juntas en un ZIP."
+    },
+    {
+      "q": "¿Y si el PDF no tiene marcadores?",
+      "a": "El modo por marcadores avisa de que el documento no tiene marcadores de primer nivel y no genera nada. Puedes añadirlos con Editar marcadores de un PDF o elegir otro modo."
+    }
+  ]
+}

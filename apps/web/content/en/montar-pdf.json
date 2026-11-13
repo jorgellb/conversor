@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Assemble PDF is a workbench for building documents out of other documents. Every PDF or image you add shows up as a column with its pages, and you move pages from one column to another until you have the documents you need: separating several clients' invoices that arrived in one scan, putting an application together with a photo of an ID card or rebuilding a case file from pages of several files.",
+    "Drag a page to move it within its column or into another one; if you would rather not drag, the “Move to…” menu sends it to the end of the document you pick. Each page has buttons to rotate it 90°, duplicate it or delete it. “New document” adds an empty column to fill, and each column's name, which you can edit, becomes the PDF's name.",
+    "It takes PDFs and photos in JPG, PNG, WEBP, GIF and BMP. JPG and PNG are embedded without recompression; the others are turned into PNG, losslessly. Each image becomes a page of its own size, counting 96 pixels per inch.",
+    "When you press “Save the documents”, every column with pages becomes a PDF; if there is more than one, you can also download them all in a ZIP. Everything happens in your browser: neither the documents nor the images leave your device."
+  ],
+  "faq": [
+    {
+      "q": "How is it different from Merge PDF?",
+      "a": "Merge PDF joins whole files into one. Assemble PDF works page by page and can produce several documents at once, each with the pages you choose."
+    },
+    {
+      "q": "Is quality lost?",
+      "a": "No. PDF pages are copied as they are, and rotating only changes their orientation without redrawing them."
+    },
+    {
+      "q": "Can I use a password-protected PDF?",
+      "a": "The board does not open protected files. Remove the password first with Unlock PDF and then add the file."
+    }
+  ]
+}

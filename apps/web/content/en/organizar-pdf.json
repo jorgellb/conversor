@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Organize PDF pages changes the order of the pages in a document: it puts the appendix before the contents, moves the sheet that was scanned last to the front or turns the whole document back to front. Pages are copied as they are into a new PDF, without recompression, and everything happens in your browser with no upload.",
+    "In “Page order” you type the page numbers separated by commas in the order you want, for example “3, 1, 2, 4”. Only the pages you type are included, so you can leave some out while you are at it, and the same page can appear twice if you need to repeat it. Leave it empty to keep the original order.",
+    "“Reverse order” flips the whole document so that the last page becomes the first. It is applied at the end, after every other setting.",
+    "Under “More options” you will find “Interleave fronts and backs”, made for sheet-fed scanners that read only one side: you scan all the fronts first, turn the stack over and scan the backs, which come out in reverse order. With both passes one after the other in a single PDF, the tool puts each back right after its front. If each pass is in its own file, join them first with Merge PDF."
+  ],
+  "faq": [
+    {
+      "q": "Can I reorder several PDFs at once?",
+      "a": "Yes, but they all get the same order. To mix pages from several documents, use Assemble PDF."
+    },
+    {
+      "q": "What if I type a page that does not exist?",
+      "a": "The tool tells you which page is outside the document and does not create the file, so you never lose pages without noticing."
+    },
+    {
+      "q": "How do I know each page's number?",
+      "a": "Count its position in the file, starting at 1, not the printed number. You can open the PDF in the PDF reader, look at the thumbnails and note down the order you want."
+    }
+  ]
+}

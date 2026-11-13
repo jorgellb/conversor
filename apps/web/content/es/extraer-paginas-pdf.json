@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extraer páginas de un PDF copia las páginas que eliges a un documento nuevo y deja el original como estaba. Es lo que necesitas para enviar solo la hoja firmada de un contrato, sacar un capítulo de un manual o separar una factura de un extracto con muchas. Las páginas se copian sin recomprimir, con su texto seleccionable y su calidad original.",
+    "Indica las páginas con números y tramos separados por comas, como «1-5, 8, 11-13», un tramo abierto como «20-», o las palabras «pares» e «impares». El PDF nuevo respeta el orden en que las escribes: con «9, 1-3», la página 9 pasa a ser la primera. Si una página aparece dos veces en la lista, se copia una sola vez.",
+    "En la salida eliges entre un único PDF con todas las páginas extraídas, que se llama como el original terminado en «-extracto», o un PDF por página, numerado con la posición de cada una. En el segundo caso descargas los archivos sueltos o todos juntos en un ZIP.",
+    "Todo se hace en tu navegador, sin subir nada a ningún servidor. Si eliges varios PDF, de cada uno se extraen las mismas páginas."
+  ],
+  "faq": [
+    {
+      "q": "¿En qué se diferencia de Dividir PDF?",
+      "a": "Extraer saca solo las páginas que pides y descarta el resto. Dividir reparte el documento entero en partes: por número de páginas, por marcadores, por tamaño o por páginas en blanco."
+    },
+    {
+      "q": "¿Los números son los que se ven impresos en la página?",
+      "a": "No: cuenta la posición dentro del archivo, empezando por 1. Si el documento tiene una portada sin numerar, la página «1» impresa puede ser la segunda del archivo."
+    },
+    {
+      "q": "¿Se llevan las anotaciones?",
+      "a": "Sí, las anotaciones de cada página viajan con ella. Los marcadores del documento original, en cambio, no se copian al PDF nuevo."
+    }
+  ]
+}

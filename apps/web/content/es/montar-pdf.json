@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Montar PDF es una mesa de trabajo para componer documentos a partir de otros. Cada PDF o imagen que añades aparece como una columna con sus páginas, y puedes pasar páginas de una columna a otra hasta tener los documentos que necesitas: separar las facturas de varios clientes que llegaron en un solo escaneo, juntar una solicitud con la foto del DNI o rehacer un expediente con páginas de varios archivos.",
+    "Arrastra una página para moverla dentro de su columna o llevarla a otra; si prefieres no arrastrar, el menú «Mover a…» la manda al final del documento que elijas. Cada página tiene botones para girarla 90°, duplicarla o borrarla. Con «Documento nuevo» creas una columna vacía para ir llenándola, y el nombre de cada columna, que puedes cambiar, será el del PDF.",
+    "Acepta PDF y fotos en JPG, PNG, WEBP, GIF y BMP. Las JPG y PNG se incrustan sin recomprimir; las demás se pasan a PNG, sin pérdida. Cada imagen entra como una página de su mismo tamaño, contando 96 píxeles por pulgada.",
+    "Al pulsar «Guardar los documentos», cada columna con páginas se convierte en un PDF; si hay más de una, también puedes descargarlas todas en un ZIP. Todo ocurre en tu navegador: ni los documentos ni las imágenes salen de tu dispositivo."
+  ],
+  "faq": [
+    {
+      "q": "¿En qué se diferencia de Unir PDF?",
+      "a": "Unir PDF junta archivos enteros en uno solo. Montar PDF trabaja página a página y puede sacar varios documentos a la vez, cada uno con las páginas que tú elijas."
+    },
+    {
+      "q": "¿Se pierde calidad?",
+      "a": "No. Las páginas de los PDF se copian tal cual y el giro solo cambia su orientación, sin volver a dibujarlas."
+    },
+    {
+      "q": "¿Puedo usar un PDF con contraseña?",
+      "a": "El tablero no abre archivos protegidos. Quítale antes la contraseña con Desbloquear PDF y añádelo después."
+    }
+  ]
+}

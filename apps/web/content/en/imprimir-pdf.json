@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Print PDF gets a document ready for the printer and prints it from the page itself. It builds a print PDF in your browser with the settings you choose, shows you a preview of every sheet and sends it to your system's print dialog. The file is never uploaded, and one PDF is prepared at a time.",
+    "You can print every page, a range such as “1-4, 9”, only the odd pages or only the even ones, and in reverse order if your printer stacks sheets face up. Paper can be A4, Letter, A3 or A5: “Fit to paper” scales each page so it fits whole, and “Actual size” keeps its own size, centred on the sheet. You can also put 2, 4, 6, 9 or 16 pages on each sheet, with optional thin borders, and turn everything grey.",
+    "If your printer cannot print double-sided, choose manual duplex. The tool separates fronts from backs and an assistant guides you: print the fronts, flip the stack without rotating it, put it back in the tray and print the backs. If the backs come out in the wrong order, tick “The backs come out reversed”; your options are remembered for next time.",
+    "Filled-in forms and annotations are printed by default; untick that box and they are removed from the print PDF."
+  ],
+  "faq": [
+    {
+      "q": "Why should I choose “Actual size” in the dialog?",
+      "a": "The print PDF is already fitted to the paper. If the dialog scales it again, sizes change and extra margins can appear."
+    },
+    {
+      "q": "What if my browser will not print from the page?",
+      "a": "Safari and most mobile browsers cannot print a PDF from a web page. Download the print PDF and open it in your viewer to print it."
+    },
+    {
+      "q": "The PDF will not let me print. What can I do?",
+      "a": "Some PDFs have printing restricted by their author and can only be printed with the owner password. Lift the restriction with Unlock PDF and try again."
+    },
+    {
+      "q": "Does grayscale change the file?",
+      "a": "To come out grey, every sheet of the print PDF is turned into an image at 150 dpi, so its text is no longer selectable. Your original document does not change."
+    }
+  ]
+}

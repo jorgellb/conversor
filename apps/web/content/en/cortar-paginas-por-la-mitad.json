@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Split pages in half cuts every page of a PDF in two. It is the fix for a book you scanned open, with two pages in every image, or for a document laid out two pages to a sheet that you want to read one page at a time on a phone or an e-reader.",
+    "The cut does not rasterise anything: each page is duplicated and the visible area of each copy is set to one half. That is why text stays selectable, vector graphics stay sharp and the result is ready in your browser in a moment, with no upload.",
+    "By default the cut is automatic, along the long side: a landscape page is split into left and right, and a portrait one into top and bottom. You can also force a vertical or a horizontal cut. For vertical cuts you also choose the order of the halves: left to right, or right to left for books read the other way round, such as manga or texts in Arabic or Hebrew.",
+    "“More options” has two settings for scanned books. “Do not cut the first or the last page” keeps the front and back covers whole. “Undo the imposition of a scanned booklet” puts back into reading order the pages of a stapled magazine or booklet that you took apart and scanned sheet by sheet; in that case the covers are cut too, because they share a sheet with other pages."
+  ],
+  "faq": [
+    {
+      "q": "Does the other half disappear from the file?",
+      "a": "No. Cutting only changes the part that is shown; whatever falls outside is still inside the PDF. If you really need to remove information, use Redact PDF."
+    },
+    {
+      "q": "How do I scan a booklet to undo the imposition?",
+      "a": "Remove the staples and scan the sheets starting with the outer one, the one with the cover, each one front and back. The number of halves must be a multiple of 4; if it is not, the tool warns you."
+    },
+    {
+      "q": "Does it work with several files?",
+      "a": "Yes. Each PDF is cut with the same settings and you can download them all together in a ZIP."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extract PDF pages copies the pages you choose into a new document and leaves the original untouched. It is what you need to send only the signed page of a contract, pull a chapter out of a manual or separate one invoice from a statement full of them. Pages are copied without recompression, with selectable text and their original quality.",
+    "List the pages with numbers and spans separated by commas, such as “1-5, 8, 11-13”, an open span such as “20-”, or the words “even” and “odd”. The new PDF follows the order you type: with “9, 1-3”, page 9 becomes the first one. If a page appears twice in the list, it is copied only once.",
+    "For the output you choose between a single PDF with every extracted page, named like the original with “-extracto” at the end, or one PDF per page, numbered with each page's position. In the second case you download the files one by one or all together in a ZIP.",
+    "It all happens in your browser, with nothing uploaded to any server. If you choose several PDFs, the same pages are extracted from each one."
+  ],
+  "faq": [
+    {
+      "q": "How is this different from Split PDF?",
+      "a": "Extract takes only the pages you ask for and leaves out the rest. Split shares the whole document out into parts: by page count, bookmarks, size or blank pages."
+    },
+    {
+      "q": "Are the numbers the ones printed on the page?",
+      "a": "No: it counts the position in the file, starting at 1. If the document has an unnumbered cover, printed page “1” may be the second page of the file."
+    },
+    {
+      "q": "Do annotations come along?",
+      "a": "Yes, each page's annotations travel with it. The original document's bookmarks, however, are not copied to the new PDF."
+    }
+  ]
+}

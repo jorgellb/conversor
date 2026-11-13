@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Multiple pages per sheet places 2, 3, 4, 6, 8, 9, 12 or 16 pages of a PDF on every sheet. It is the way to print slides for taking notes, review a long document using less paper or make a reference sheet with several pages in view.",
+    "The tool picks the grid and, with automatic orientation, whether the sheet is portrait or landscape, so that pages come out as large as possible: with 2 portrait pages on A4, for example, it turns the sheet sideways and puts one page on each side. You can choose the sheet size, from A0 to A6, Letter or Legal, and whether pages are laid out by rows or by columns.",
+    "“More options” adds a margin around each page, as a percentage of its cell, right-to-left direction for documents in Arabic, Hebrew or manga, and borders around each page in the colour and width you want.",
+    "Pages are embedded as vector content, never rasterised, so text stays sharp even when printed small. Processing is local: the PDF never leaves your browser. You can choose several files and download them together in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Are links and forms kept?",
+      "a": "No: each page is placed on the sheet as a drawing, so links stop working and form fields and annotations do not show. If you need them visible, run the PDF through Flatten PDF first."
+    },
+    {
+      "q": "What if pages have different sizes?",
+      "a": "The grid is worked out from the first page, and every page is scaled to fit its cell, centred and without distortion."
+    },
+    {
+      "q": "How is it different from Make a PDF booklet?",
+      "a": "Here pages stay in reading order, row by row or column by column. The booklet reorders them so that, once the sheets are folded, they form a booklet."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Eliminar páginas de un PDF quita las hojas que sobran: la página en blanco que dejó el escáner, la publicidad del final de un informe o los anexos que no quieres enviar. El resto del documento se copia tal cual a un PDF nuevo, sin recomprimir, así que el texto sigue siendo seleccionable y las imágenes no pierden calidad.",
+    "Escribe las páginas que quieres quitar con la sintaxis de rangos de toda la web: números sueltos y tramos separados por comas, como «2, 5-7», un tramo abierto como «10-» para borrar desde la décima hasta el final, o las palabras «pares» e «impares». Los números se refieren a la posición de la página en el archivo, empezando por 1, y no al número impreso en ella.",
+    "El proceso es local: el archivo no sale de tu dispositivo y el resultado está listo en un momento. Si eliges varios PDF, a todos se les quitan las mismas páginas y puedes descargarlos juntos en un ZIP, algo práctico para quitar la misma portada a una serie de informes."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo borrar todas las páginas?",
+      "a": "No: un PDF necesita al menos una página, así que la herramienta avisa si el rango las incluye todas y no genera el archivo."
+    },
+    {
+      "q": "¿Qué pasa si escribo una página que no existe?",
+      "a": "Los números que pasan del final del documento se ignoran. Si el rango no incluye ninguna página real, se muestra un aviso."
+    },
+    {
+      "q": "¿Se mantienen los marcadores?",
+      "a": "No. Las páginas que quedan conservan su contenido y sus anotaciones, pero el índice de marcadores del original no pasa al PDF nuevo. Puedes rehacerlo con Editar marcadores de un PDF."
+    },
+    {
+      "q": "¿Y si solo quiero quedarme con unas pocas páginas?",
+      "a": "Entonces es más cómodo Extraer páginas de un PDF: indicas las que quieres conservar en lugar de las que sobran."
+    }
+  ]
+}

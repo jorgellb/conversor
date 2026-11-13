@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Ordenar páginas de un PDF cambia el orden de las páginas de un documento: pone el anexo antes del índice, coloca al principio la hoja que se escaneó la última o da la vuelta al documento entero. Las páginas se copian tal cual a un PDF nuevo, sin recomprimir, y todo ocurre en tu navegador, sin subir el archivo.",
+    "En «Orden de las páginas» escribes los números de página separados por comas en el orden que quieres, por ejemplo «3, 1, 2, 4». Solo se incluyen las páginas que escribas, así que puedes aprovechar para dejar fuera alguna, y una misma página puede aparecer dos veces si necesitas repetirla. Si lo dejas vacío, se mantiene el orden original.",
+    "«Invertir el orden» da la vuelta al documento completo: la última página pasa a ser la primera. Se aplica al final, después del resto de ajustes.",
+    "En «Opciones adicionales» está «Intercalar anversos y reversos», pensado para escáneres con alimentador que solo leen una cara: escaneas primero todos los anversos, das la vuelta al montón y escaneas los reversos, que salen en orden inverso. Con las dos pasadas seguidas en un mismo PDF, la herramienta pone cada reverso detrás de su anverso. Si cada pasada está en un archivo, júntalas antes con Unir PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo ordenar varios PDF a la vez?",
+      "a": "Sí, pero a todos se les aplica el mismo orden. Si quieres mezclar páginas de varios documentos, usa Montar PDF."
+    },
+    {
+      "q": "¿Qué pasa si escribo una página que no existe?",
+      "a": "La herramienta te dice qué página está fuera del documento y no genera el archivo, para que no pierdas páginas sin darte cuenta."
+    },
+    {
+      "q": "¿Cómo sé qué número tiene cada página?",
+      "a": "Cuenta su posición en el archivo, empezando por 1, no el número impreso. Puedes abrir el PDF en el Lector de PDF, mirar las miniaturas y apuntar el orden que quieres."
+    }
+  ]
+}

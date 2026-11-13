@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Imprimir PDF prepara un documento para la impresora y lo imprime desde la propia página. Genera en tu navegador un PDF de impresión con los ajustes que elijas, te enseña una vista previa de cada hoja y lo envía al diálogo de impresión del sistema. El archivo no se sube a ningún servidor y se prepara un PDF cada vez.",
+    "Puedes imprimir todas las páginas, un rango como «1-4, 9», solo las impares o solo las pares, y en orden inverso si tu impresora apila las hojas boca arriba. El papel puede ser A4, Letter, A3 o A5: «Ajustar al papel» escala cada página para que quepa entera y «Tamaño real» la deja a su medida, centrada en la hoja. También puedes poner 2, 4, 6, 9 o 16 páginas por hoja, con bordes finos opcionales, y pasar todo a escala de grises.",
+    "Si tu impresora no imprime a doble cara, elige la doble cara manual. La herramienta separa los anversos de los reversos y un asistente te guía: imprimes los anversos, das la vuelta al montón sin girarlo, lo vuelves a poner en la bandeja e imprimes los reversos. Si los reversos salen en orden contrario, marca «Los reversos salen invertidos»; tus opciones se recuerdan para la próxima vez.",
+    "Los formularios rellenados y las anotaciones se imprimen por defecto; si desmarcas esa casilla, se quitan del PDF de impresión."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué tengo que elegir «Tamaño real» en el diálogo?",
+      "a": "El PDF de impresión ya está ajustado al papel. Si el diálogo vuelve a escalarlo, las medidas cambian y pueden aparecer márgenes de más."
+    },
+    {
+      "q": "¿Y si mi navegador no imprime desde la página?",
+      "a": "Safari y la mayoría de los navegadores de móvil no imprimen un PDF desde la web. Descarga el PDF de impresión y ábrelo con tu visor para imprimirlo."
+    },
+    {
+      "q": "El PDF no me deja imprimir, ¿qué hago?",
+      "a": "Algunos PDF tienen la impresión restringida por su autor y solo se imprimen con la contraseña de propietario. Quita la restricción con Desbloquear PDF y vuelve a intentarlo."
+    },
+    {
+      "q": "¿La escala de grises cambia el archivo?",
+      "a": "Para que salga en gris, cada hoja del PDF de impresión se convierte en una imagen a 150 ppp, así que en él el texto deja de ser seleccionable. Tu documento original no cambia."
+    }
+  ]
+}

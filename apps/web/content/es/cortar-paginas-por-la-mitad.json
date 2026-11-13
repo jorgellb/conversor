@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Cortar páginas por la mitad separa en dos cada página de un PDF. Es la solución para el libro que escaneaste abierto, con dos páginas en cada imagen, o para un documento maquetado con dos páginas por hoja que quieres leer de una en una en el móvil o en un lector electrónico.",
+    "El corte no rasteriza nada: cada página se duplica y a cada copia se le ajusta el área visible a una mitad. Por eso el texto sigue siendo seleccionable, los gráficos vectoriales mantienen su nitidez y el resultado se genera en tu navegador en un momento, sin subir el archivo.",
+    "Por defecto el corte es automático, por el lado largo: una página apaisada se parte en izquierda y derecha, y una vertical, en arriba y abajo. También puedes forzar el corte vertical u horizontal. En los cortes verticales eliges además el orden de las mitades: de izquierda a derecha, o de derecha a izquierda para libros que se leen al revés, como el manga o los textos en árabe o hebreo.",
+    "En «Opciones adicionales» hay dos ajustes para libros escaneados. «No cortar la primera ni la última página» deja enteras la portada y la contraportada. «Deshacer la imposición de un folleto escaneado» devuelve al orden de lectura las páginas de una revista o un folleto grapado que has desmontado y escaneado hoja a hoja; en ese caso las portadas también se cortan, porque comparten pliego con otras páginas."
+  ],
+  "faq": [
+    {
+      "q": "¿El contenido de la otra mitad desaparece del archivo?",
+      "a": "No. Cortar solo cambia la parte que se ve; lo que queda fuera sigue dentro del PDF. Si tienes que eliminar información de verdad, usa Redactar PDF."
+    },
+    {
+      "q": "¿Cómo escaneo un folleto para deshacer la imposición?",
+      "a": "Quita las grapas y escanea las hojas empezando por la exterior, la de la portada, cada una por delante y por detrás. El número de mitades tiene que ser múltiplo de 4; si no lo es, la herramienta avisa."
+    },
+    {
+      "q": "¿Sirve para varios archivos?",
+      "a": "Sí. Cada PDF se corta con los mismos ajustes y puedes descargarlos todos juntos en un ZIP."
+    }
+  ]
+}
