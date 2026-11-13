@@ -1,0 +1,28 @@
+{
+  "complete": false,
+  "reviewed": false,
+  "intro": [
+    "Escáner PDF convierte la cámara del móvil o del portátil en un escáner de documentos. Mientras encuadras, detecta los bordes del papel y los marca en verde; al capturar, corrige la perspectiva para que la página quede recta aunque la hayas fotografiado de lado.",
+    "El filtro Documento deja la página en blanco y negro limpio y quita las sombras, ideal para facturas, contratos y apuntes. Gris y Color realzado conservan más detalle para fotos y gráficos, y Original guarda la imagen tal cual.",
+    "Todo ocurre en tu dispositivo: las fotos no se suben a ningún sitio. Solo si marcas el OCR al terminar se envía el PDF a nuestro servidor para que el texto se pueda buscar y copiar, y se borra después."
+  ],
+  "steps": [
+    "Pulsa «Abrir la cámara» y da permiso al navegador, o añade fotos desde la galería.",
+    "Encuadra el documento hasta que el borde se marque en verde y pulsa «Capturar página»; repite con cada hoja.",
+    "Gira, ordena, repite o quita páginas, elige el filtro y el tamaño, y pulsa «Crear PDF» para descargarlo."
+  ],
+  "faq": [
+    {
+      "q": "¿Se suben mis fotos?",
+      "a": "No. La detección de bordes, la corrección de perspectiva, los filtros y el PDF se hacen en tu navegador. Solo el OCR opcional envía el PDF ya montado al servidor."
+    },
+    {
+      "q": "¿Puedo instalarlo como una aplicación?",
+      "a": "Sí. Desde el menú del navegador elige «Instalar aplicación» o «Añadir a la pantalla de inicio»; el escáner tiene un acceso directo propio y funciona sin conexión después de la primera visita."
+    },
+    {
+      "q": "¿Qué hago si no detecta el borde?",
+      "a": "Pon el papel sobre un fondo que contraste, con buena luz. Si aun así no lo encuentra, la página se añade con la foto entera y puedes repetirla."
+    }
+  ]
+}

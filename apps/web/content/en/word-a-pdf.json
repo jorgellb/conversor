@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Word to PDF converts DOC and DOCX documents to PDF while keeping their layout: fonts, tables, headers, images and page breaks. It is the safest way to send a CV, a letter or a report and be sure the recipient sees it exactly as you prepared it, whether or not they have a word processor installed.",
+    "The conversion runs on our server with LibreOffice, with no internet access during the process. You can choose a standard PDF, PDF/A for long-term archiving or PDF/UA with accessibility tags, limit the result to a page range and decide whether bookmarks and form fields are exported.",
+    "Under more options you can set the JPEG quality of images and their maximum resolution, useful when the document contains many photos and you want a lighter PDF. If the file is password protected, type the password: it is only used to open the document during the conversion and is not stored.",
+    "You can convert several documents at once; you get each PDF separately plus a ZIP with all of them. Files are deleted automatically after one hour if you do not have an account."
+  ],
+  "faq": [
+    {
+      "q": "Are the document's fonts kept?",
+      "a": "The document's fonts are used when they are embedded or available on the server; otherwise they are replaced with metric-compatible ones so the text takes up the same space."
+    },
+    {
+      "q": "What is PDF/A?",
+      "a": "A PDF flavour designed to preserve documents for years, required by many public bodies for official submissions."
+    },
+    {
+      "q": "Can I convert Excel and PowerPoint too?",
+      "a": "Yes, with Excel to PDF and PowerPoint to PDF, or with Convert to PDF, which accepts any Office format."
+    }
+  ]
+}

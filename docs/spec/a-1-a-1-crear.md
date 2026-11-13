@@ -1,0 +1,129 @@
+### A.1 Crear
+
+- **crear-pdf** (F1): accesos a unir, convertir a PDF, imágenes a PDF, web a PDF, solicitud de empleo, escáner, collage, tarjeta, factura, formulario y escribir-pdf.
+- **imagenes-a-pdf, jpg-a-pdf, png-a-pdf, webp-a-pdf, gif-a-pdf, bmp-a-pdf y tiff-a-pdf** (navegador; TIFF en servidor):
+  - Tamaño de página:
+    - A0–A6 [A4], Letter, Legal;
+    - «Según la imagen» (DPI [150], 1–10000), en el que la página toma el tamaño de la imagen;
+    - Personalizado (ancho × alto [210 × 297], mm o pulgadas).
+  - Orientación: [Automática] | Vertical | Horizontal.
+  - Margen: [Sin margen] | 5 | 10 | 15 | 20 | 25 mm | Personalizado.
+  - Unir en un solo PDF [sí]. Marcadores con el nombre de cada imagen [no].
+  - Orden por arrastre; se respeta la orientación EXIF.
+  - **Extra:**
+    - Ajuste: [Encajar] | Rellenar recortando | Tamaño real.
+    - Los JPEG se incrustan sin recomprimir (`embedJpg` de pdf-lib; img2pdf en servidor).
+- **web-a-pdf** (F1, Chromium de `gotenbergweb` por `egressweb`):
+  - URL de una página web o de un documento convertible (DOCX, XLSX, PPTX, ODT, imagen o PDF), que se descarga con los límites del plan y se convierte con su herramienta, como hace PDF24.
+  - **Extra:**
+    - Papel [A4] y Orientación [Vertical].
+    - Márgenes [10 mm].
+    - Imprimir fondos [sí].
+    - Una sola página larga [no].
+    - Tipo de medio [print] | screen.
+    - Espera antes de capturar [1 s] (0–10).
+    - Esquema de color [claro] | oscuro.
+  - Usa los campos de la ruta Chromium de Gotenberg de la versión fijada: `paperWidth`, `paperHeight`, `landscape`, `marginTop` y el resto de márgenes, `printBackground`, `singlePage`, `emulatedMediaType`, `waitDelay` y `emulatedMediaFeatures` (`prefers-color-scheme`).
+- **escribir-pdf** (F6, navegador):
+  - **Editor:** títulos, fuentes, tamaños, colores, negrita, cursiva, subrayado, listas y listas de tareas, tablas, imágenes, enlaces, notas al pie, fórmulas (KaTeX), columnas, índice automático, saltos de página, caracteres especiales y emojis, buscar y reemplazar.
+  - **Página:**
+    - Papel [A4] y márgenes [25 mm].
+    - Encabezado y pie con números de página.
+    - Marca de agua.
+    - Papel con membrete, con un PDF de fondo aplicado como en superponer-pdf.
+    - Borde de página.
+  - **Plantillas propias:** carta, presupuesto, CV, acta, informe, certificado, folleto y solicitud.
+  - **Vista previa por páginas:** el editor muestra saltos de página aproximados y el botón «Vista previa exacta» genera el PDF en servidor y lo muestra. No uses la extensión Pages de TipTap, que es de pago.
+  - **El PDF exportado lleva:**
+    - índice con los números de página reales, calculados en dos pasadas: se genera el PDF, se leen las páginas de cada título en el esquema que crea Gotenberg (`generateDocumentOutline`) y se vuelve a generar con los números;
+    - campos rellenables insertados desde el editor (texto, casilla y fecha), creados con pdf-lib tras la conversión;
+    - propiedades del documento (título, autor, asunto y palabras clave).
+  - **Abrir:**
+    - DOCX con mammoth;
+    - ODT, convertido a HTML con LibreOffice en `workeroffice`;
+    - Markdown;
+    - PDF, convertido a HTML con Docling.
+  - **Exportar:**
+    - PDF: HTML enviado a Gotenberg, con marcadores desde los títulos (`generateDocumentOutline`) y PDF etiquetado (`generateTaggedPdf`).
+    - DOCX con `docx`.
+    - Markdown.
+    - ODT con pandoc en servidor.
+  - **Combinación de correspondencia:**
+    - desde CSV o XLSX, con campos `{Columna}`;
+    - salida [un PDF por fila, en ZIP] | un PDF con todas.
+  - **Firma dibujada y QR:** se insertan como imagen.
+  - **Borradores y versiones:** en IndexedDB del navegador. Nada se guarda en servidor, coherente con la política de retención. La sincronización en la cuenta se anota como mejora en `docs/TOOLS.md`.
+  - **Dictado y lectura en voz alta:** Web Speech API del navegador cuando exista; no gasta peticiones de IA.
+- **escaner-pdf** (F2):
+  - Captura con cámara, detección automática de bordes y corrección de perspectiva (OpenCV.js).
+  - Filtro: [Documento] (blanco y negro adaptativo) | Gris | Color realzado | Original.
+  - Girar, reordenar, repetir y añadir páginas.
+  - Tamaño de página: [Automático] | A4 | Letter.
+  - **Extra:** OCR en servidor al terminar [no].
+- **crear-collage** (F5, navegador):
+  - **Plantillas:** cuadrícula y mosaico de 1 a 30 fotos, corazón, círculo, estrella, instantáneas, colocación libre y filas que conservan proporciones.
+  - **Edición:** encuadre arrastrando, intercambio de celdas, separación y esquinas redondeadas arrastrables.
+  - **Fotos:** desde archivo o directamente con la cámara del dispositivo.
+  - **Adornos:**
+    - textos con fuentes OFL incluidas;
+    - stickers, formas y marcos propios;
+    - sombras y fondo (color, degradado o imagen).
+  - **Tamaño real con marcas de corte:**
+    - foto de carné 35 × 45 mm (UE y visados) y 32 mm de alto por 26 mm de ancho (DNI y pasaporte españoles; el RD 1553/2005 que fijaba esa medida para el DNI fue derogado por el RD 255/2025); comprueba las medidas oficiales vigentes antes de publicarlas;
+    - documento de identidad ID-1 (85,6 × 54 mm), anverso y reverso;
+    - tarjetas y copias de foto;
+    - una sola foto puede rellenar todas las celdas.
+  - **Documentación fotográfica:** pie numerado con la fecha de captura (EXIF), encabezado por página y números de página.
+  - **Salida:**
+    - Papel [A4], Orientación y Resolución de exportación [300 ppp].
+    - Formato [PDF] (fotos sin recomprimir) | JPG | PNG | Imprimir.
+- **crear-tarjeta** (F6, navegador):
+  - **Formato:** postal o díptica, con plantillas propias por ocasión.
+  - **Contenido:**
+    - fotos con filtros y máscaras;
+    - texto con curva, sombra y contorno;
+    - stickers, marcos, patrones y QR.
+  - **Salida:**
+    - [Imprimir en casa]: varias por A4 o Letter, con marcas de corte y reversos alineados para doble cara; la díptica sale doblada.
+    - Imprenta: cada cara a tamaño final, sangrado [3 mm], BleedBox y TrimBox, marcas de corte e imágenes a 300 ppp como mínimo.
+    - Imagen para enviar.
+  - **Destinatarios:** desde CSV o XLSX, con campos `{Nombre}` y la dirección al reverso.
+  - **Fotos:** desde archivo o con la cámara del dispositivo.
+- **solicitud-de-empleo-pdf** (F2, servidor):
+  - Entradas:
+    - Carta de presentación (opcional);
+    - CV (obligatorio);
+    - Adjuntos (varios; Office, imágenes o PDF), en el orden elegido.
+  - Marcador por documento [sí].
+  - **Extra:**
+    - Índice inicial [no].
+    - Comprimir si supera [10 MB] [sí].
+- **generar-codigo-qr** (F5, navegador):
+  - **Tipos:**
+    - URL;
+    - WiFi: SSID, contraseña, cifrado [WPA/WPA2] | WEP | ninguno, red oculta [no];
+    - texto;
+    - vCard: nombre, apellidos, nombre visible, email, empresa, cargo, web y teléfono con tipo [trabajo] | móvil | personal | otro;
+    - transferencia SEPA (EPC): beneficiario, IBAN validado, BIC, importe y concepto;
+    - PayPal: correo o identificador de PayPal.Me, importe y moneda.
+    - **Extra:** email, teléfono, SMS y evento de calendario.
+  - **Logotipo:**
+    - quitar fondo [no];
+    - tamaño relativo [0,4] (0,1–1);
+    - margen [0] px (0–100).
+    - Con logotipo se fuerza la corrección H.
+  - **Estilo:**
+    - fondo [#FFFFFF], módulos [#000000], ojos exteriores [#000000] y ojos interiores [#000000], cada uno con degradado opcional (lineal o radial, con ángulo de 0° a 315° en pasos de 45°);
+    - forma de módulos y de ojos;
+    - borde con grosor [5], espaciado [20] y color [#000000];
+    - forma general [cuadrado] | círculo.
+  - **Técnico:**
+    - Versión [auto] (1–40);
+    - Modo [Byte] | Numérico | Alfanumérico | Kanji;
+    - Corrección [Q] | L | M | H.
+  - **Salida:**
+    - Tamaño [500] px (100–10000).
+    - Formato PNG | SVG | **Extra:** PDF vectorial.
+    - Copiar al portapapeles.
+    - Importar y exportar la configuración en JSON.
+  - Tras generar, se lee con zxing-cpp; si no se lee, se avisa (contraste o logotipo excesivo).

@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Comprimir PDF reduce el peso de un documento para que puedas enviarlo por correo, subirlo a una sede electrónica con límite de tamaño o guardarlo ocupando menos. La mayor parte del peso de un PDF suele estar en las fotos y en los escaneos, así que la herramienta vuelve a guardar esas imágenes con la resolución y la calidad que elijas y deja el texto tal cual: sigue siendo seleccionable y se puede buscar.",
+    "El nivel equilibrado baja las imágenes a 144 ppp con una calidad del 75 %, suficiente para leer en pantalla e imprimir en casa. El nivel fuerte llega a 96 ppp y 60 %, pensado para adjuntos muy grandes. Sin pérdida no toca las imágenes: elimina objetos duplicados, miniaturas y recursos que nadie usa. Con Personalizado decides tú la resolución máxima y la calidad JPEG.",
+    "En las opciones adicionales puedes quitar metadatos, adjuntos, anotaciones, marcadores o la estructura de accesibilidad, pasar las imágenes a gris o aplanar los formularios. Algunas de esas casillas tienen consecuencias: quitar las etiquetas rompe la accesibilidad y quitar los output intents hace que el archivo deje de ser PDF/A, y la herramienta te lo advierte en el resultado.",
+    "Si el archivo ya estaba optimizado y la versión comprimida pesaría lo mismo o más, te devolvemos el original y te lo indicamos. Así nunca descargas un PDF más grande que el que subiste."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierdo calidad al comprimir?",
+      "a": "Solo en las imágenes, y en la medida que elijas. El texto y los gráficos vectoriales se conservan sin cambios. Si necesitas la máxima fidelidad, usa el nivel sin pérdida."
+    },
+    {
+      "q": "¿Puedo comprimir varios PDF a la vez?",
+      "a": "Sí. Recibes cada archivo comprimido por separado y, además, un ZIP con todos."
+    },
+    {
+      "q": "¿Qué pasa si el PDF tiene contraseña?",
+      "a": "Escríbela en las opciones adicionales. Solo se usa para abrir el archivo durante la tarea y no se guarda en ningún sitio."
+    },
+    {
+      "q": "¿Dónde se procesa?",
+      "a": "En nuestro servidor de la Unión Europea. El archivo viaja cifrado y se borra automáticamente a la hora si no tienes cuenta, o a las 24 horas si la tienes."
+    }
+  ]
+}

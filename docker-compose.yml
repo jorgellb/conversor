@@ -1,0 +1,517 @@
+# Desarrollo local (3.3): `docker compose up` con `.env.example` y los dobles de 0.1 (Mailpit, pagos falsos,
+# claves de prueba de Turnstile). Producción: docker-compose.coolify.yml.
+name: conversor
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "5" }
+
+x-python: &python
+  build: { context: ., dockerfile: workers/Dockerfile, target: api }
+  image: conversor/api:dev
+  logging: *logging
+  env_file: .env.example
+  volumes:
+    - filestore:/srv/files
+    - backups:/srv/backups
+
+x-worker: &worker
+  logging: *logging
+  restart: unless-stopped
+  read_only: true
+  tmpfs: ["/tmp:size=64m"]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  pids_limit: 256
+  oom_score_adj: 500
+  networks: [internal]
+  volumes:
+    - filestore:/srv/files
+  depends_on:
+    migrate: { condition: service_completed_successfully }
+    valkey: { condition: service_healthy }
+  healthcheck:
+    test: ["CMD-SHELL", "celery -A core.celeryapp inspect ping -d \"$${WORKER_NAME}@$${HOSTNAME}\" --timeout 10 >/dev/null"]
+    interval: 60s
+    timeout: 20s
+    retries: 3
+    start_period: 60s
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg16-bookworm
+    logging: *logging
+    environment:
+      POSTGRES_USER: conversor
+      POSTGRES_PASSWORD: conversor
+      POSTGRES_DB: conversor
+    volumes: [pgdata:/var/lib/postgresql/data]
+    networks: [internal]
+    ports: ["127.0.0.1:5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U conversor -d conversor"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  valkey:
+    image: valkey/valkey:9.0.7-alpine
+    logging: *logging
+    command: ["valkey-server", "--save", "", "--appendonly", "no", "--maxmemory", "400mb", "--maxmemory-policy", "noeviction"]
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mailpit:
+    image: axllent/mailpit:v1.33.0
+    logging: *logging
+    networks: [internal, edge]
+    ports: ["127.0.0.1:8025:8025"]
+
+  prepare:
+    <<: *python
+    user: "0:0"
+    restart: "no"
+    command: ["sh", "-c", "mkdir -p /srv/files/uploads /srv/files/jobs /srv/files/shares /srv/backups/postgres && chown -R 10001:10001 /srv/files /srv/backups"]
+    networks: [internal]
+
+  migrateauth:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    image: conversor/web:dev
+    logging: *logging
+    restart: "no"
+    command: ["node", "migrate/migrate-auth.mjs"]
+    environment:
+      AUTH_DATABASE_URL: postgresql://conversor:conversor@postgres:5432/conversor
+      AUTH_SECRET: desarrollo-solo-local-cambiar-0123456789abcdef
+      BETTER_AUTH_URL: http://localhost:3000
+    networks: [internal]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  migrate:
+    <<: *python
+    restart: "no"
+    command: ["alembic", "-c", "apps/api/alembic.ini", "upgrade", "head"]
+    environment:
+      SERVICE_ROLE: migrate
+      WORKER_DB_PASSWORD: worker-desarrollo
+    networks: [internal]
+    depends_on:
+      prepare: { condition: service_completed_successfully }
+      migrateauth: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+
+  web:
+    build: { context: ., dockerfile: apps/web/Dockerfile }
+    image: conversor/web:dev
+    logging: *logging
+    restart: unless-stopped
+    environment:
+      APP_ENV: development
+      APP_NAME: Producto Demo
+      AUTH_DATABASE_URL: postgresql://conversor:conversor@postgres:5432/conversor
+      AUTH_SECRET: desarrollo-solo-local-cambiar-0123456789abcdef
+      BETTER_AUTH_URL: http://localhost:3000
+      PUBLIC_WEB_URL: http://localhost:3000
+      PUBLIC_API_URL: http://localhost:8000
+      PUBLIC_UPLOAD_URL: http://localhost:8080/files/
+      PUBLIC_FILES_URL: http://localhost:8090
+      TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+      SMTP_URL: smtp://mailpit:1025
+      MAIL_FROM: no-responder@ejemplo.test
+      ADMIN_EMAILS: admin@ejemplo.test
+    ports: ["127.0.0.1:3000:3000"]
+    networks: [internal, edge]
+    depends_on:
+      migrateauth: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  api:
+    <<: *python
+    restart: unless-stopped
+    environment:
+      SERVICE_ROLE: api
+    ports: ["127.0.0.1:8000:8000"]
+    networks: [internal, edge]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz',timeout=4).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  apiint:
+    <<: *python
+    restart: unless-stopped
+    command: ["uvicorn", "app.internal.app:app", "--host", "0.0.0.0", "--port", "8001", "--no-server-header"]
+    environment:
+      SERVICE_ROLE: apiint
+    networks: [internal, edge]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8001/healthz',timeout=4).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  beat:
+    <<: *python
+    restart: unless-stopped
+    command: ["celery", "-A", "core.celeryapp", "beat", "--pidfile", "/tmp/beat.pid", "-s", "/tmp/celerybeat-schedule"]
+    environment:
+      SERVICE_ROLE: beat
+    networks: [internal, edge]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD-SHELL", "kill -0 $$(cat /tmp/beat.pid)"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+
+  upload:
+    image: tusproject/tusd:v2.10.1
+    logging: *logging
+    restart: unless-stopped
+    user: "10001:10001"
+    command:
+      - -host=0.0.0.0
+      - -port=8080
+      - -base-path=/files/
+      - -upload-dir=/srv/files/uploads
+      - -behind-proxy
+      - -disable-download
+      - -max-size=1073741824
+      - -hooks-http=http://apiint:8001/tusd-hooks
+      - -hooks-http-forward-headers=Authorization,Accept-Language,CF-Connecting-IP,X-Forwarded-For
+      - -hooks-enabled-events=pre-create,pre-finish,post-terminate
+      - -cors-allow-origin=^http://localhost:3000$
+      - -cors-allow-headers=Authorization,Accept-Language
+    ports: ["127.0.0.1:8080:8080"]
+    volumes: [filestore:/srv/files]
+    networks: [internal]
+    depends_on:
+      apiint: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/metrics"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  files:
+    image: caddy:2.11.7-alpine
+    logging: *logging
+    restart: unless-stopped
+    user: "10001:10001"
+    environment:
+      PUBLIC_WEB_URL: http://localhost:3000
+      XDG_DATA_HOME: /tmp/caddy-data
+      XDG_CONFIG_HOME: /tmp/caddy-config
+    volumes:
+      - filestore:/srv/files:ro
+      - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    ports: ["127.0.0.1:8090:8090"]
+    networks: [internal]
+    depends_on:
+      apiint: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8090/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  gotenberg:
+    image: gotenberg/gotenberg:8.39.0
+    logging: *logging
+    restart: unless-stopped
+    command:
+      - gotenberg
+      - --api-timeout=300s
+      - --log-format=json
+      - --libreoffice-restart-after=10
+      - --chromium-restart-after=10
+      - --chromium-deny-public-ips=true
+      - --chromium-deny-private-ips=true
+      - --libreoffice-deny-public-ips=true
+      - --libreoffice-deny-private-ips=true
+      - --api-download-from-deny-public-ips=true
+      - --api-download-from-deny-private-ips=true
+      - --webhook-deny-public-ips=true
+      - --webhook-deny-private-ips=true
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # web-a-pdf (12.2): Chromium que solo sale por egressweb y nunca recibe archivos de usuarios.
+  gotenbergweb:
+    image: gotenberg/gotenberg:8.39.0
+    logging: *logging
+    restart: unless-stopped
+    command:
+      - gotenberg
+      - --api-timeout=180s
+      - --log-format=json
+      - --chromium-restart-after=10
+      - --chromium-proxy-server=http://egressweb:4750
+      - --libreoffice-disable-routes=true
+      - --api-download-from-deny-public-ips=true
+      - --api-download-from-deny-private-ips=true
+      - --webhook-deny-public-ips=true
+      - --webhook-deny-private-ips=true
+    networks: [webrender]
+    depends_on: [egressweb]
+
+  # Smokescreen (12.2): cualquier host público; niega IP privadas, de enlace local, CGNAT y de las redes de Docker.
+  egressweb:
+    image: ghcr.io/stripe/smokescreen:v0.1.0
+    logging: *logging
+    restart: unless-stopped
+    command:
+      - --listen-ip=0.0.0.0
+      - --listen-port=4750
+      - --egress-acl-file=/etc/smokescreen/acl.yaml
+      - --deny-range=10.0.0.0/8
+      - --deny-range=172.16.0.0/12
+      - --deny-range=192.168.0.0/16
+      - --deny-range=100.64.0.0/10
+      - --deny-range=169.254.0.0/16
+      - --deny-range=fc00::/7
+      - --deny-range=fe80::/10
+    volumes:
+      - ./infra/smokescreen/acl-web.yaml:/etc/smokescreen/acl.yaml:ro
+    read_only: true
+    cap_drop: [ALL]
+    networks: [webrender, edge]
+
+  # IA (6 y 12.2): la única con OPENROUTER_API_KEY; sale solo hacia OpenRouter por egressai. Sin clave y en
+  # desarrollo usa el proveedor falso determinista (6.6).
+  egressai:
+    image: ghcr.io/stripe/smokescreen:v0.1.0
+    logging: *logging
+    restart: unless-stopped
+    command:
+      - --listen-ip=0.0.0.0
+      - --listen-port=4750
+      - --egress-acl-file=/etc/smokescreen/acl.yaml
+      - --deny-range=10.0.0.0/8
+      - --deny-range=172.16.0.0/12
+      - --deny-range=192.168.0.0/16
+      - --deny-range=100.64.0.0/10
+      - --deny-range=169.254.0.0/16
+      - --deny-range=fc00::/7
+      - --deny-range=fe80::/10
+    volumes:
+      - ./infra/smokescreen/acl-ai.yaml:/etc/smokescreen/acl.yaml:ro
+    read_only: true
+    cap_drop: [ALL]
+    networks: [airelay, edge]
+
+  workerai:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-ai }
+    image: conversor/worker-ai:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "ai", "-n", "ai@%h", "-c", "4", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-ai
+      WORKER_NAME: ai
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      EGRESS_AI_URL: http://egressai:4750
+      GOTENBERG_URL: http://gotenberg:3000
+      THREADS: "1"
+    networks: [internal, airelay]
+    mem_limit: 1g
+    memswap_limit: 1g
+    cpus: 4
+
+  # chat-pdf (6.4): embeddings locales en su propia cola. El modelo ocupa unos 0,7 GB por proceso, así que va en un
+  # worker aparte y no en los 4 procesos de workerai. Sin clave ni salida a internet.
+  workeraiembed:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-ai }
+    image: conversor/worker-ai:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "ai.embed", "-n", "ai-embed@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-ai
+      WORKER_NAME: ai-embed
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      THREADS: "1"
+    mem_limit: 1280m
+    memswap_limit: 1280m
+    cpus: 1
+
+  workerpdf:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-pdf }
+    image: conversor/worker-pdf:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "pdf", "-n", "pdf@%h", "-c", "3", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-pdf
+      WORKER_NAME: pdf
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      JOB_SECRETS_KEY: desarrollo-secretos-de-trabajos
+      THREADS: "1"
+    mem_limit: 3g
+    memswap_limit: 3g
+    cpus: 3
+
+  workerocr:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-ocr }
+    image: conversor/worker-ocr:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "ocr", "-n", "ocr@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-ocr
+      WORKER_NAME: ocr
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      THREADS: "2"
+      OMP_THREAD_LIMIT: "2"
+    mem_limit: 3g
+    memswap_limit: 3g
+    cpus: 2
+
+  workeroffice:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-office }
+    image: conversor/worker-office:dev
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-office
+      WORKER_NAME: office-light
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      JOB_SECRETS_KEY: desarrollo-secretos-de-trabajos
+      GOTENBERG_URL: http://gotenberg:3000
+      GOTENBERG_WEB_URL: http://gotenbergweb:3000
+      EGRESS_WEB_URL: http://egressweb:4750
+      THREADS: "1"
+    networks: [internal, webrender]
+    mem_limit: 1536m
+    memswap_limit: 1536m
+    cpus: 1
+
+  workerofficeheavy:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-office }
+    image: conversor/worker-office:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "office.heavy", "-n", "office-heavy@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-office
+      WORKER_NAME: office-heavy
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      JOB_SECRETS_KEY: desarrollo-secretos-de-trabajos
+      GOTENBERG_URL: http://gotenberg:3000
+      THREADS: "1"
+    mem_limit: 2g
+    memswap_limit: 2g
+    cpus: 1
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      valkey: { condition: service_healthy }
+
+  workermedia:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-media }
+    image: conversor/worker-media:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "media", "-n", "media@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-media
+      WORKER_NAME: media
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      GOTENBERG_URL: http://gotenberg:3000
+      THREADS: "1"
+      # quitar-fondo (6.4): el modelo tiene que estar en la imagen (argumento de construcción REMBG_MODEL).
+      REMBG_MODEL: u2net
+    mem_limit: 1536m
+    memswap_limit: 1536m
+    cpus: 1
+
+  workerconvert:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-convert }
+    image: conversor/worker-convert:dev
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-convert
+      WORKER_NAME: convert
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      THREADS: "2"
+    mem_limit: 5g
+    memswap_limit: 5g
+    cpus: 2
+
+  workerav:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-av }
+    image: conversor/worker-av:dev
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-av
+      WORKER_NAME: av-light
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      THREADS: "2"
+    mem_limit: 3g
+    memswap_limit: 3g
+    cpus: 2
+
+  # Cola pesada de av (5.4): transcripciones con faster-whisper, en un proceso aparte para no frenar las conversiones.
+  workeravheavy:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-av }
+    image: conversor/worker-av:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "av.heavy", "-n", "av-heavy@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-av
+      WORKER_NAME: av-heavy
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      THREADS: "2"
+      # Transcripción (6.4): el modelo ya está en la imagen (argumento de construcción WHISPER_MODELS).
+      WHISPER_MODEL: small
+      WHISPER_DEVICE: cpu
+      WHISPER_COMPUTE_TYPE: int8
+    mem_limit: 3g
+    memswap_limit: 3g
+    cpus: 2
+
+networks:
+  internal:
+    internal: true
+  edge: {}
+  webrender:
+    internal: true
+  airelay:
+    internal: true
+
+volumes:
+  pgdata: {}
+  filestore: {}
+  backups: {}

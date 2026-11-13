@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a Word recupera un documento editable a partir de un PDF para que puedas corregir párrafos, actualizar cifras o reutilizar el contenido sin volver a teclearlo. El resultado es un archivo DOCX que se abre en Word, LibreOffice y Google Docs.",
+    "Hay tres modos. Editable reconstruye títulos, párrafos, listas y tablas como texto normal, que es lo más cómodo para modificar. Editable con imágenes hace lo mismo y además conserva las figuras del original. Fiel al diseño prioriza que cada página se parezca al PDF, colocando los elementos en su posición; se ve más parecido, pero cuesta más editarlo.",
+    "Si el PDF procede de un escáner y no contiene texto, se puede aplicar reconocimiento óptico de caracteres antes de convertir, de modo que el Word resultante tenga texto real y no solo imágenes. También puedes limitar la conversión a un rango de páginas cuando solo necesitas una parte del documento.",
+    "La conversión se hace en nuestro servidor, que procesa el archivo sin salir a internet y lo borra al vencer el plazo de tu plan."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué modo elijo?",
+      "a": "Para editar el texto con comodidad, Editable. Si necesitas que se parezca al original lo máximo posible, Fiel al diseño."
+    },
+    {
+      "q": "¿Funciona con documentos escaneados?",
+      "a": "Sí: con la opción de OCR automático, el texto de las páginas escaneadas se reconoce antes de crear el Word."
+    },
+    {
+      "q": "¿Se conservan las tablas?",
+      "a": "En los modos editables, las tablas se reconstruyen como tablas de Word; las muy complejas pueden necesitar algún retoque."
+    },
+    {
+      "q": "¿Y las imágenes y los gráficos?",
+      "a": "El modo Editable se centra en el texto y su estructura; si también necesitas las figuras del original, elige Editable con imágenes o Fiel al diseño."
+    }
+  ]
+}

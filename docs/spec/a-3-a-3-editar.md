@@ -1,0 +1,87 @@
+### A.3 Editar
+
+- **editar-pdf** (F1, EmbedPDF):
+  - Empezar con página en blanco, de tamaño elegible.
+  - Texto: fuente, tamaño, color, negrita, cursiva y alineación.
+  - Imágenes, formas (rectángulo, elipse, línea, flecha y polígono), dibujo libre, firma y nota.
+  - Tapar con rectángulo de color.
+  - Páginas: insertar en blanco, borrar, girar y reordenar.
+  - Rellenar formularios.
+  - No se reescriben párrafos; se ofrece pdf-a-word.
+- **anotar-pdf** (F1):
+  - Herramientas: resaltar, subrayar, tachar, nota adhesiva, cuadro de texto, flecha, formas, imagen y mano alzada con presión del lápiz (Pointer Events).
+  - Color, grosor y opacidad.
+  - Lista de comentarios.
+  - Guardar como [anotaciones estándar, editables en otros lectores] | aplanadas.
+  - **Extra:** exportar e importar comentarios en XFDF.
+- **rellenar-pdf** (F1):
+  - Campos AcroForm.
+  - Texto libre sobre PDF no rellenables.
+  - Marcas ✓ y ✗, fecha e imagen de firma.
+  - Guardar [editable] | aplanado.
+  - Los formularios XFA se avisan como no compatibles.
+- **hacer-pdf-rellenable** (F4):
+  - Partir de un PDF o de una página en blanco.
+  - **Tipos de campo:**
+    - texto de una línea o multilínea;
+    - casilla;
+    - grupo de botones de opción;
+    - desplegable (editable o no);
+    - lista (selección múltiple);
+    - botón (restablecer formulario o abrir URL);
+    - firma.
+  - **Propiedades:** nombre, valor por defecto, obligatorio, solo lectura, longitud máxima, alineación, fuente y tamaño [auto], borde y fondo.
+  - Mover, duplicar, alinear y borrar campos, incluidos los existentes.
+  - **Extra:** detección automática de campos en líneas y casillas vacías, con revisión del usuario.
+  - Los campos de firma se crean con pyHanko y son compatibles con firmar-pdf.
+- **marca-de-agua-pdf** (F1):
+  - Tipo: [Texto] | **Extra:** Imagen (PNG, JPG o SVG, escala [50 %]).
+  - Texto [CONFIDENCIAL].
+  - Fuente Sans | Serif | Mono y Tamaño [40] pt (1–500).
+  - Color [#E67610] y Opacidad [0,4].
+  - Ángulo [−45°].
+  - Posición: rejilla de 9 [centro] | Mosaico (rellenar página).
+  - Espacio X e Y [5 / 5] mm: margen respecto al borde, o separación en mosaico.
+  - Páginas [todas] | rango.
+  - **Extra:**
+    - Capa [encima] | debajo del contenido.
+    - Aplanar las páginas para dificultar que se quite [no].
+- **numerar-paginas-pdf** (F1):
+  - Patrón [`{NUM} / {CNT}`]. Variables: `{NUM}`, `{CNT}` y **Extra:** `{FECHA}` y `{ARCHIVO}`.
+  - Posición: rejilla de 9 [abajo centro].
+  - Fuente Sans | Serif | Mono y Tamaño [8] pt (1–100).
+  - Color [#000000] y Opacidad [1].
+  - Ángulo [0°].
+  - Margen X e Y [5 / 5] mm.
+  - Primera página numerada [1] y Primer número [1].
+  - Última página numerada [la última].
+  - Total mostrado en `{CNT}` [el real] | valor fijo.
+  - **Extra:**
+    - Posición en espejo para pares e impares (exterior, para libros) [no].
+    - Estilo [1, 2, 3] | i, ii, iii | a, b, c.
+- **superponer-pdf** (F2):
+  - Archivo de superposición: PDF o cualquier formato convertible, como un membrete en Word.
+  - Documentos de destino (varios).
+  - Posición: [Fondo] | Primer plano.
+  - Repetir la última página de la superposición [sí].
+  - **Extra:**
+    - Aplicar a [todas] | primera | rango.
+    - Escalar al tamaño de cada página [sí].
+- **recortar-pdf** (F1):
+  - Izquierda, Superior, Derecha e Inferior [0] mm (paso 0,1).
+  - Caja: [CropBox] | TrimBox.
+  - Modo visual (rectángulo sobre la vista previa) [no].
+  - Páginas [todas] | rango.
+  - **Extra:**
+    - Recorte automático de márgenes blancos: render con PDFium y margen de seguridad [2 mm].
+    - Márgenes distintos para pares e impares.
+- **cambiar-tamano-pagina-pdf** (F1):
+  - Tamaño: A0–A6 [A4], Letter, Legal o Personalizado (mm o pulgadas).
+  - Orientación: [Automática] | Vertical | Horizontal.
+  - Páginas: [Todas] | Intervalo.
+  - **Extra:** Contenido [escalar para encajar] | centrar sin escalar.
+- **metadatos-pdf** (F2):
+  - Ver y editar: Título, Autor, Asunto, Palabras clave, Fecha de creación y Fecha de modificación (con segundos), más **Extra:** Creador y Productor.
+  - Se sincroniza con XMP.
+  - Acción «Quitar todo» (eliminar-metadatos-pdf), que muestra antes lo que se va a borrar.
+  - Lotes.

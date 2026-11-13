@@ -1,0 +1,17 @@
+**/node_modules
+**/.next
+**/__pycache__
+**/*.pyc
+.venv
+.git
+.github
+docs
+tests
+*.zip
+.env
+.env.*
+!.env.example
+# WebAssembly y OpenCV.js: los genera scripts/copy-wasm.mjs en la etapa de compilación
+apps/web/public/codecs
+apps/web/public/opencv
+apps/web/public/pdfium

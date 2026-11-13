@@ -1,0 +1,94 @@
+### A.4 Organizar
+
+- **unir-pdf** (F1; en servidor si hay Office o imágenes TIFF):
+  - Orden por arrastre. **Extra:** ordenar por nombre.
+  - Elegir páginas de cada archivo [no].
+  - Marcadores por archivo [no].
+  - Páginas en blanco: [ninguna] | tras cada archivo | solo tras los de número impar de páginas (para imprimir a doble cara).
+  - Portada con el nombre antes de cada archivo [no].
+  - Índice inicial con enlaces [no].
+  - Nombre de archivo impreso en sus páginas [no]:
+    - posición (6) [arriba centro];
+    - tamaño [10] pt (4–72).
+- **montar-pdf** (F2, navegador):
+  - Varios PDF e imágenes en columnas.
+  - Arrastrar páginas entre documentos.
+  - Crear un documento nuevo; girar, borrar y duplicar páginas.
+  - Guardar cada documento por separado o todos en ZIP.
+- **dividir-pdf** (F1):
+  - Modo:
+    - [Cada N páginas] (N [1]);
+    - Pares e impares (dos PDF);
+    - En dos mitades;
+    - Personalizado: tijeras entre miniaturas o «dividir después de» (3, 7, 12).
+  - **Extra:**
+    - Por marcadores de primer nivel.
+    - Por tamaño máximo en MB.
+    - Por páginas en blanco (separadores de escaneo).
+    - Patrón de nombre de salida.
+- **organizar-pdf** (F1):
+  - Arrastrar miniaturas.
+  - Invertir el orden.
+  - **Extra:** intercalar anversos y reversos de un escaneo a doble cara hecho en dos pasadas.
+- **eliminar-paginas-pdf** (F1): clic por página, rango, pares o impares.
+- **extraer-paginas-pdf** (F1):
+  - Clic, rango (1-5, 8, 11-13), pares o impares.
+  - Salida: [un PDF] | **Extra:** un PDF por página.
+- **girar-pdf** (F1):
+  - Todas o por página: 90° horario | antihorario | 180°.
+  - **Extra:** autoorientar con la detección de orientación de Tesseract, en servidor.
+- **varias-paginas-por-hoja** (F1):
+  - Páginas por hoja: [2] | 3 | 4 | 6 | 8 | 9 | 12 | 16.
+  - Orden: [horizontal] | vertical.
+  - Hoja: A0–A6 [A4], Letter, Legal.
+  - Orientación [automática].
+  - Márgenes [0] % (0–50).
+  - Dirección: [izquierda a derecha] | derecha a izquierda.
+  - Bordes [no], con Color [#000000] y Ancho [0,5] pt.
+- **imprimir-pdf** (F2, navegador):
+  - Vista previa por hoja.
+  - Páginas: [todas] | rango | impares | pares. Orden inverso [no].
+  - Papel: [A4] | Letter | A3 | A5.
+  - Escala: [ajustar al papel] | tamaño real.
+  - Páginas por hoja: [1] | 2 | 4 | 6 | 9 | 16, con orden y bordes finos [no].
+  - Escala de grises [no].
+  - Doble cara manual: asistente para imprimir anversos, dar la vuelta al montón e imprimir reversos, con la opción «los reversos salen invertidos» recordada en el navegador.
+  - Formularios y anotaciones impresos [sí].
+  - Si el PDF restringe la impresión, solo se imprime con la contraseña de propietario.
+  - Implementación: genera un PDF de impresión con pdf-lib y lo imprime desde un iframe. Recuerda elegir «Tamaño real» en el diálogo. Si el navegador no imprime un PDF desde un iframe (Safari y la mayoría de móviles), ofrece descargar el PDF de impresión.
+- **folleto-pdf** (F1, navegador):
+  - Papel: [A4, folleto A5] | A3, folleto A4 | Letter, folleto media carta.
+  - Encuadernación: [izquierda] | derecha.
+  - Medianil en el pliegue [0] mm.
+  - Hojas por cuadernillo: [todas en uno] | N (varios cuadernillos para documentos gruesos).
+  - Páginas en blanco automáticas hasta un múltiplo de 4, con «La última página sigue siendo la contraportada» [sí].
+  - Vista previa de hojas y hojeado del folleto.
+  - Salida: imprimir (doble cara por el borde corto, o manual) | guardar PDF.
+- **cortar-paginas-por-la-mitad** (F2, navegador):
+  - Corte: [automático, por el lado largo] | vertical | horizontal.
+  - Orden de las mitades: [izquierda a derecha] | derecha a izquierda.
+  - **Extra:**
+    - No cortar la primera ni la última página [no] (portadas de libros escaneados).
+    - Deshacer la imposición de un folleto escaneado [no].
+  - Implementación: duplica la página y ajusta MediaBox y CropBox, sin rasterizar.
+- **marcadores-pdf** (F2):
+  - Árbol de marcadores.
+  - Añadir desde la página y posición actuales; renombrar; borrar uno o todos; sangrar y desangrar; arrastrar.
+  - Destino: página, posición vertical y zoom.
+  - Estilo: negrita, cursiva y color. Abierto o cerrado.
+  - **Extra:** generar marcadores desde los títulos (Docling).
+- **extraer-imagenes-pdf** (F2):
+  - Formato: [original] (JPEG tal cual; el resto a PNG) | PNG | JPG.
+  - **Extra:**
+    - Ignorar imágenes de menos de [32 px].
+    - Eliminar duplicadas [sí].
+  - Descarga en ZIP.
+- **copiar-de-pdf** (F2, híbrida):
+  - **Reconocimiento:** al pasar el ratón resalta bloques (párrafo, título, lista, tabla, imagen o índice). Un clic copia el bloque; también hay selección libre.
+  - **Copiar como:**
+    - [con formato], en HTML para Word y correo;
+    - tabla para Excel (TSV y HTML);
+    - texto;
+    - Markdown, HTML, CSV o JSON.
+  - **Documento entero:** imagen como PNG; todo como Markdown; todas las tablas a un XLSX, con una hoja por tabla.
+  - **Escaneos:** OCR (más de 100 idiomas) y enderezado en servidor, bajo demanda.

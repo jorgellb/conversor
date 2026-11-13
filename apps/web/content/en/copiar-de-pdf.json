@@ -1,0 +1,24 @@
+{
+  "complete": false,
+  "reviewed": false,
+  "intro": [
+    "Copy from PDF lets you take exactly the part you need from a PDF into Word, Excel or an email, with its formatting. You can select text freely as in any viewer, without uploading anything, or ask for the document blocks to be recognised.",
+    "Once the blocks are recognised, every heading, paragraph, list, table, image or table of contents is highlighted when you hover and copied with one click. Tables paste into cells in Excel and as a table in Word; you can also copy them as CSV, Markdown, HTML or JSON.",
+    "If the PDF is a scan, its text is first recognised with OCR and the page is straightened. You can also copy the whole document as Markdown or download all its tables to an Excel file with one sheet per table."
+  ],
+  "steps": [
+    "Choose the PDF: it opens in your browser and you can already select text.",
+    "Press “Recognise the blocks” to highlight paragraphs, lists and tables.",
+    "Choose how to copy (formatted, table for Excel, Markdown…) and click the block you want."
+  ],
+  "faq": [
+    {
+      "q": "Is my PDF uploaded?",
+      "a": "Only if you ask to recognise the blocks. Viewing the PDF and selecting text happen in your browser."
+    },
+    {
+      "q": "Why does the table paste well into Excel?",
+      "a": "When you copy a table it is stored both as HTML and as tab-separated text, so each program picks the format it understands."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Rellenar formulario PDF sirve para completar solicitudes, inscripciones y documentos oficiales sin imprimirlos. Al abrir el archivo, la herramienta localiza los campos rellenables y los muestra en un panel junto a cada página: cuadros de texto, casillas, botones de opción y listas desplegables, con sus valores actuales.",
+    "Escribe tus datos con tildes y eñes sin miedo: el texto de los campos se dibuja con una fuente que incluye esos caracteres. Si el documento no tiene campos, puedes escribir encima igualmente y colocar marcas de verificación o de cruz, la fecha de hoy y una imagen de tu firma, dibujada con el ratón o el dedo, escrita con tu nombre o subida desde una foto.",
+    "Al guardar eliges entre dejar el formulario editable, para que otra persona pueda revisarlo o completarlo después, o aplanado, que convierte los campos en contenido fijo y evita cambios posteriores. El proceso es local: los datos personales que escribes no viajan a ningún servidor.",
+    "Algunos formularios antiguos usan la tecnología XFA, que la mayoría de lectores ya no admite. En ese caso te avisamos, rellenamos su versión AcroForm cuando existe y retiramos la capa XFA para que el resultado se vea igual en todas partes."
+  ],
+  "faq": [
+    {
+      "q": "¿Mis datos se envían a algún sitio?",
+      "a": "No. El formulario se rellena dentro de tu navegador y solo descargas el resultado."
+    },
+    {
+      "q": "¿Qué diferencia hay entre editable y aplanado?",
+      "a": "Editable conserva los campos para poder cambiarlos más tarde; aplanado los convierte en texto fijo, como si el documento se hubiera impreso."
+    },
+    {
+      "q": "El formulario no tiene campos, ¿qué hago?",
+      "a": "Usa las herramientas de texto, marcas, fecha y firma para escribir directamente sobre la página donde corresponda."
+    }
+  ]
+}

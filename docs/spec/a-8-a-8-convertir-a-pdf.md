@@ -1,0 +1,30 @@
+### A.8 Convertir a PDF
+
+- **Office** (Word, Excel, PowerPoint, sus formatos antiguos, OpenDocument incluido ODG, RTF, Publisher y CSV), con las opciones de la ruta LibreOffice de Gotenberg:
+  - Formato: [PDF] | PDF/A-2b | PDF/UA.
+  - Páginas [todas] | rango.
+  - Marcadores desde los títulos [sí].
+  - Exportar campos de formulario [sí].
+  - Calidad de imágenes [90] % y resolución máxima [300] ppp.
+  - Contraseña del documento de entrada.
+  - Excel: cada hoja en una sola página [no].
+  - PowerPoint: diapositivas ocultas [no] y páginas de notas [no].
+  - Word: comentarios en el margen [no].
+- **TXT:**
+  - Detección automática de la codificación (charset-normalizer).
+  - Fuente [monoespaciada] | proporcional.
+  - Papel [A4] y Márgenes [20 mm].
+- **Markdown:**
+  - GitHub Flavored: tablas, listas de tareas y código con resaltado.
+  - Tema [claro] | sobrio.
+  - Papel [A4].
+  - markdown-it y Chromium.
+- **EPUB, MOBI, AZW3 y FB2** (Calibre `ebook-convert`):
+  - Papel [A5] | A4 | Letter.
+  - Márgenes [15 mm].
+  - Tamaño de letra base [12] pt.
+  - Índice al principio [sí].
+- **SVG:** sale vectorial y con el tamaño del SVG [sí] | encajado en A4.
+- **TIFF multipágina:** cada página del TIFF es una página del PDF; la compresión G4 o JPEG se conserva sin recomprimir (img2pdf).
+- **HEIC:** solo con `HEVC_DECODE_ENABLED`. Si está apagado, la página explica cómo exportar a JPEG desde iPhone y Mac.
+- **UDF:** solo con su flag (7.23).

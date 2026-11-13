@@ -1,0 +1,60 @@
+# Límites por plan (sección 9.3). Una migración los siembra en la tabla `plans`;
+# después se editan desde la base de datos. No hay variables de entorno que los dupliquen.
+plans:
+  anon:
+    name: Anónimo
+    light_tasks_day: 20
+    heavy_tasks_day: 2
+    files_per_task: 5
+    max_file_mb: 50
+    max_task_mb: 100
+    pdf_pages: 100
+    audio_minutes: 10
+    video: false
+    video_minutes: 0
+    mesh_triangles: 1000000
+    ai_requests_day: 0
+    ai_requests_task: 0
+    ai_pages_task: 0
+    tts_chars_task: 0
+    retention_hours: 1
+    share_days: 0
+    priority: 9
+  free:
+    name: Gratis registrado
+    light_tasks_day: 50
+    heavy_tasks_day: 10
+    files_per_task: 20
+    max_file_mb: 100
+    max_task_mb: 300
+    pdf_pages: 300
+    audio_minutes: 30
+    video: false
+    video_minutes: 0
+    mesh_triangles: 2000000
+    ai_requests_day: 3
+    ai_requests_task: 5
+    ai_pages_task: 30
+    tts_chars_task: 20000
+    retention_hours: 24
+    share_days: 0
+    priority: 5
+  pro:
+    name: Pro
+    light_tasks_day: 1000
+    heavy_tasks_day: 200
+    files_per_task: 100
+    max_file_mb: 1024
+    max_task_mb: 2048
+    pdf_pages: 2000
+    audio_minutes: 240
+    video: true
+    video_minutes: 60
+    mesh_triangles: 10000000
+    ai_requests_day: 30
+    ai_requests_task: 20
+    ai_pages_task: 150
+    tts_chars_task: 300000
+    retention_hours: 24
+    share_days: 7
+    priority: 0

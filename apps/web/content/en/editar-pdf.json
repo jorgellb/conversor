@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Edit PDF lets you complete a document without installing anything: write on top, add an image or your signature, point something out with an arrow or cover a detail before sending it. Everything happens in your browser, so the file is never uploaded to a server.",
+    "Text supports a sans, serif or monospaced font, size, colour, bold, italic and alignment, and it is embedded with the Noto fonts so accents and the euro sign display correctly in any reader. For drawing you have rectangle, ellipse, line, arrow, polygon and freehand strokes with colour, width, fill and opacity. Notes are saved as standard annotations that other readers can show and edit.",
+    "From the page column you can move each page up or down, rotate or delete it and insert blank pages of the size you choose. You can also start from an empty page to build a simple document from scratch. If the PDF has form fields, they appear in a side panel so you can fill them in without leaving the editor.",
+    "What it does not do is rewrite the paragraphs that are already in the PDF: to change the original text, convert it first with PDF to Word. Also bear in mind that covering an area with a rectangle hides it from view but does not remove what lies underneath."
+  ],
+  "faq": [
+    {
+      "q": "Can I change the text that is already in the PDF?",
+      "a": "Not directly: the editor adds elements on top. To change paragraphs, convert the document to Word, edit it and turn it back into a PDF."
+    },
+    {
+      "q": "Is the signature I add an electronic signature?",
+      "a": "It is an image of your signature placed on the page, handy for everyday documents. It does not replace an electronic signature backed by a certificate."
+    },
+    {
+      "q": "Can I undo a change?",
+      "a": "Yes, with the undo button or Ctrl+Z. Until you save, the original file is untouched."
+    }
+  ]
+}

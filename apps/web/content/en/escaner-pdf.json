@@ -1,0 +1,28 @@
+{
+  "complete": false,
+  "reviewed": false,
+  "intro": [
+    "PDF scanner turns your phone or laptop camera into a document scanner. While you frame the page it finds the paper edges and outlines them in green; when you capture, it corrects the perspective so the page comes out straight even if you shot it at an angle.",
+    "The Document filter gives a clean black and white page without shadows, ideal for invoices, contracts and notes. Grey and Enhanced colour keep more detail for photos and charts, and Original keeps the image as it is.",
+    "Everything happens on your device: photos are never uploaded. Only if you tick OCR at the end is the PDF sent to our server so its text can be searched and copied, and it is deleted afterwards."
+  ],
+  "steps": [
+    "Press “Open the camera” and allow it in the browser, or add photos from your gallery.",
+    "Frame the document until its edge turns green and press “Capture page”; repeat for each sheet.",
+    "Rotate, reorder, redo or remove pages, choose the filter and size, and press “Create PDF” to download it."
+  ],
+  "faq": [
+    {
+      "q": "Are my photos uploaded?",
+      "a": "No. Edge detection, perspective correction, filters and the PDF are all done in your browser. Only the optional OCR sends the finished PDF to the server."
+    },
+    {
+      "q": "Can I install it as an app?",
+      "a": "Yes. From the browser menu choose “Install app” or “Add to home screen”; the scanner has its own shortcut and works offline after the first visit."
+    },
+    {
+      "q": "What if it does not find the edge?",
+      "a": "Put the paper on a contrasting background with good light. If it still cannot find it, the page is added with the whole photo and you can redo it."
+    }
+  ]
+}

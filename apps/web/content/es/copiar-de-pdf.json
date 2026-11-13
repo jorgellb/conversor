@@ -1,0 +1,24 @@
+{
+  "complete": false,
+  "reviewed": false,
+  "intro": [
+    "Copiar de PDF te deja llevar a Word, Excel o un correo justo el trozo que necesitas de un PDF, con su formato. Puedes seleccionar el texto libremente como en cualquier visor, sin subir nada, o pedir que se reconozcan los bloques del documento.",
+    "Al reconocer los bloques, cada título, párrafo, lista, tabla, imagen o índice se resalta al pasar el ratón y se copia con un clic. Las tablas se pegan en celdas en Excel y como tabla en Word; también puedes copiarlas como CSV, Markdown, HTML o JSON.",
+    "Si el PDF es un escaneo, primero se reconoce el texto con OCR y se endereza la página. También puedes copiar todo el documento como Markdown o descargar todas sus tablas en un Excel con una hoja por tabla."
+  ],
+  "steps": [
+    "Elige el PDF: se abre en tu navegador y ya puedes seleccionar texto.",
+    "Pulsa «Reconocer los bloques» para que se resalten los párrafos, listas y tablas.",
+    "Elige cómo copiar (con formato, tabla para Excel, Markdown…) y haz clic en el bloque que quieras."
+  ],
+  "faq": [
+    {
+      "q": "¿Se sube mi PDF?",
+      "a": "Solo si pides reconocer los bloques. Ver el PDF y seleccionar texto ocurre en tu navegador."
+    },
+    {
+      "q": "¿Por qué la tabla se pega bien en Excel?",
+      "a": "Al copiar una tabla se guarda a la vez como HTML y como texto separado por tabuladores, así cada programa elige el formato que entiende."
+    }
+  ]
+}

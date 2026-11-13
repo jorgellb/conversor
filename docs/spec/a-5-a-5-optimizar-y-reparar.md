@@ -1,0 +1,61 @@
+### A.5 Optimizar y reparar
+
+- **comprimir-pdf** (F1):
+  - **Extra:** Nivel [Equilibrado] (144 ppp, 75 %) | Fuerte (96 ppp, 60 %) | Sin pérdida | Personalizado.
+  - Resolución máxima de imágenes [144] ppp (10–300).
+  - Calidad JPEG [75] % (1–100).
+  - Opciones adicionales:
+    - Eliminar miniaturas [sí].
+    - Deduplicar flujos [sí].
+    - Rasterizar gráficos vectoriales muy pesados [sí] (umbral por número de operadores por página).
+    - Reducir fuentes incrustadas [sí]: quita fuentes duplicadas y no usadas; solo crea subconjuntos de fuentes TrueType o CFF simples cuyos glifos usados se puedan calcular con exactitud, y no toca las demás.
+    - Compresión de imagen moderna (JPEG 2000 con OpenJPEG; JBIG2 sin pérdida para blanco y negro) [no].
+    - Imágenes a gris [no].
+    - Flate máximo y flujos de objetos [no].
+    - Aplanar formularios [no].
+    - Quitar output intents [no] (avisa de que rompe PDF/A).
+    - Quitar adjuntos [no].
+    - Quitar anotaciones [no].
+    - Quitar marcadores [no].
+    - Quitar metadatos [no].
+    - Quitar estructura y etiquetas [no] (avisa de que rompe la accesibilidad).
+  - Si el resultado no es menor, se devuelve el original y se dice.
+- **pdf-escala-de-grises** (F2):
+  - Método: [vectorial] (reescribe los operadores de color; el texto y los vectores siguen siendo vectores; las páginas que no se pueden convertir con seguridad se rasterizan en gris y se avisa) | **Extra:** rasterizar todo.
+  - Imágenes, degradados y anotaciones a gris.
+  - Conserva enlaces, marcadores y formularios.
+- **pdf-modo-oscuro** (F2):
+  - Modo: [Oscuro conservando tonos] (invierte la luminosidad y mantiene el tono; las fotos no cambian) | Negativo (todo invertido).
+  - Fondo: Negro | [Gris oscuro].
+  - No tocar las páginas que ya son oscuras [sí]. Se detectan por la luminancia media de la miniatura.
+  - El texto sigue siendo texto, buscable y copiable.
+  - Lotes en ZIP.
+- **optimizar-pdf-web** (F2):
+  - Linealizar con qpdf.
+  - **Extra:** comprimir antes [no].
+- **ocr-pdf** (F2):
+  - Idiomas: multiselección hasta `OCR_MAX_LANGUAGES`.
+    - Por defecto, el del navegador.
+    - Lista completa de Tesseract (unos 125) con `tessdata_fast`, incluidos los CJK verticales y Fraktur; `tessdata_best` para los nueve idiomas de la sección 2.
+  - Salida: [PDF con capa de texto] | PDF/A-2b (`--output-type pdfa-2 --pdfa-backend internal`; si no se puede sin Ghostscript, error claro y opción de rasterizar) | **Extra:** TXT.
+  - Enderezar [sí] (`--deskew`).
+  - Autorrotar páginas [no] (`--rotate-pages`).
+  - Quitar fondo [no]: con `--remove-background` si la versión fijada lo admite; si no, preprocesado propio con OpenCV.
+  - Limpiar páginas [no] (`--clean`, con unpaper).
+  - Texto existente: [omitir las páginas con texto] (`--skip-text`, o `--mode skip` en la v17) | Forzar OCR (`--force-ocr`, o `--mode force`).
+  - Unir todos los archivos en uno [no].
+  - Título, Autor, Asunto y Palabras clave de la salida.
+  - Progreso por página.
+- **reparar-pdf** (F2):
+  - Sin opciones.
+  - Orden de intentos: reconstrucción con qpdf y pikepdf; si falla, guardar de nuevo con pypdfium2; como último recurso, rasterizar las páginas legibles.
+  - Informe de lo recuperado.
+- **rasterizar-pdf** (F2):
+  - Resolución [144] ppp (10–300; hasta 600 en Pro).
+  - Calidad [75] %.
+  - Color: [sin cambios] | gris | **Extra:** blanco y negro de 1 bit.
+- **aplanar-pdf** (F1): Aplanar [formularios] | anotaciones | ambos.
+- **pdf-a-pdfa** (F2):
+  - Nivel: [PDF/A-2b] | 1b | 2u | 3b; 2a y 3a solo si el PDF está etiquetado.
+  - Se valida con veraPDF y se adjunta el informe.
+  - Conversión con OCRmyPDF (`--pdfa-backend internal`, sin OCR en las páginas que ya tienen texto). Si el archivo no se puede convertir sin Ghostscript (por ejemplo, por fuentes sin incrustar), la tarea falla con el informe y ofrece rasterizar las páginas con capa de texto OCR.

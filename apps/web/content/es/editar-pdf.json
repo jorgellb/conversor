@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Editar PDF te deja completar un documento sin instalar nada: escribir encima, añadir una imagen o tu firma, señalar algo con una flecha o tapar un dato antes de enviarlo. Todo ocurre en tu navegador, así que el archivo no se sube a ningún servidor.",
+    "El texto admite fuente con o sin serifa o de ancho fijo, tamaño, color, negrita, cursiva y alineación, y se incrusta con las fuentes Noto para que las tildes, la eñe y el símbolo del euro salgan bien en cualquier lector. Para dibujar tienes rectángulo, elipse, línea, flecha, polígono y trazo libre, con color, grosor, relleno y opacidad. Las notas se guardan como anotaciones estándar que otros lectores muestran y dejan editar.",
+    "Desde la columna de páginas puedes subir, bajar, girar o borrar cada página e insertar páginas en blanco del tamaño que elijas. También puedes empezar con una página vacía si quieres crear un documento sencillo desde cero. Si el PDF tiene campos de formulario, aparecen en un panel para rellenarlos sin salir del editor.",
+    "Lo que no hace es reescribir los párrafos que ya trae el PDF: para cambiar el texto original, conviértelo antes con PDF a Word. Ten en cuenta también que tapar con un rectángulo oculta la zona a la vista pero no borra lo que hay debajo."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo cambiar el texto que ya tiene el PDF?",
+      "a": "No directamente: el editor añade elementos encima. Para modificar párrafos, pasa el documento a Word, edítalo y vuelve a convertirlo a PDF."
+    },
+    {
+      "q": "¿La firma que añado es una firma electrónica?",
+      "a": "Es una imagen de tu firma colocada en la página, útil para documentos del día a día. No sustituye a una firma electrónica con certificado."
+    },
+    {
+      "q": "¿Puedo deshacer un cambio?",
+      "a": "Sí, con el botón de deshacer o con Ctrl+Z. Mientras no guardes, el original no se modifica."
+    }
+  ]
+}

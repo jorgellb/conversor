@@ -1,0 +1,85 @@
+# Cierre operativo de F1 (1.3 y 13.3)
+
+Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PROGRESS.md`.
+
+## Antes del primer despliegue
+
+- [ ] Fijar `FFMPEG_BUILD` en `workers/Dockerfile` a un autobuild de BtbN con fecha y comprobar su SHA-256 (D-13).
+- [ ] Revisar la ficha de licencia de los modelos que descarga `docling-tools` en `worker-convert`.
+- [ ] Confirmar que `ghcr.io/stripe/smokescreen:v0.1.0` está publicada y fijar su digest (`@sha256:…`) en `scripts/gen_coolify_compose.py` y `docker-compose.yml` (D-30).
+- [ ] Contenido propio de cada página revisado por muestreo y marcado con `reviewed: true` en `apps/web/content/` (7.22).
+- [ ] Textos de las páginas índice revisados (título, descripción e introducción de conversor-pdf, crear-pdf y
+      convertir-archivo, en `apps/web/messages/`): se indexan y están en el sitemap sin pasar por `reviewed` (D-117 y D-118).
+- [ ] Datos del titular en los textos legales (`apps/web/src/components/legal.ts`) revisados por un profesional.
+- [ ] Precios de Pro en Stripe (modo test) y `STRIPE_PRICE_PRO_MONTHLY` y `STRIPE_PRICE_PRO_YEARLY`.
+- [ ] IA (F3): cuenta de OpenRouter según `OPERATIONS.md` (decidir la compra única de 10 créditos, 0.1; privacidad sin
+      entrenar ni publicar), `OPENROUTER_API_KEY` solo en `workerai`, y comprobar en el panel (IA) que hay modelos tras el
+      descubrimiento y que la reconciliación muestra `free_model_daily_requests`. Cierre técnico de F3: una tarea real de
+      resumir-pdf registrada en `ai_requests` con el modelo usado.
+- [ ] Revisión de la IA por un especialista en protección de datos (aviso, política de privacidad y EIPD de `LEGAL.md`)
+      antes de anunciar las herramientas de IA.
+- [ ] SMTP con SPF, DKIM y DMARC en el dominio de `MAIL_FROM`.
+- [ ] Repositorio remoto de restic y su contraseña (`BACKUP_RESTIC_REPOSITORY`, `BACKUP_RESTIC_PASSWORD`).
+- [ ] Si se activan Google Drive o Dropbox (`GDRIVE_ENABLED`, `DROPBOX_ENABLED`): cliente OAuth web con el dominio como
+      origen de JavaScript, clave de API limitada a Google Picker API y Drive API activada (`GOOGLE_PICKER_CLIENT_ID`,
+      `GOOGLE_PICKER_API_KEY`); app de Dropbox con el dominio en «Chooser/Saver domains» (`DROPBOX_APP_KEY`). El WAF no
+      debe bloquear a los servidores de Dropbox cuando descargan de `files.` (D-36).
+- [ ] Confirmar que existe la versión de libheif fijada en `workers/Dockerfile` (`LIBHEIF_VERSION`, 1.19.8), que la
+      etapa `libheif-build` compila y que `ldd /usr/local/bin/heif-dec` en `worker-media` no muestra x265 (D-49).
+- [ ] `HEVC_DECODE_ENABLED` sigue apagado hasta la revisión legal anotada en `docs/LEGAL.md` (también apaga heic-a-jpg y
+      heic-a-png).
+- [ ] **Propietario:** confirmar el modelo de quitar-fondo. Por defecto u2net (pesos del repositorio U-2-Net, con LICENSE
+      Apache-2.0). isnet-general-use solo tras revisar su licencia (el repositorio DIS no tiene archivo de licencia y su
+      conjunto de datos tiene condiciones propias, D-96); para cambiarlo, construir `worker-media` con
+      `--build-arg REMBG_MODEL=isnet-general-use --build-arg REMBG_MODEL_SHA256=60920e99c45464f2ba57bee2ad08c919a52bbf852739e96947fbb4358c0d964a`
+      y poner `REMBG_MODEL=isnet-general-use` en `workermedia`. Nunca bria-rmbg.
+- [ ] La imagen `worker-ocr` instala veraPDF 1.30.3 con `infra/verapdf/auto-install.xml` (nombres de los paquetes de
+      IzPack incluidos) y `verapdf --version` responde; el paso de la CI que lo instala pasa y
+      `test_real_verapdf_accepts_the_pdfa_we_produce` no se omite (D-63).
+
+## Tras el despliegue
+
+- [ ] Todos los healthchecks en verde en Coolify.
+- [ ] La vista *Deployable Compose* conserva `runtime`, `read_only`, `cap_drop`, límites, `memswap_limit` y la red `internal`.
+- [ ] Desde cada worker y desde `gotenberg`, `python -c "import urllib.request; urllib.request.urlopen('https://example.com', timeout=5)"` (o `curl`) falla.
+- [ ] Desde `workeroffice`, la misma petición con `HTTPS_PROXY=http://egressweb:4750` sale, y hacia `http://10.0.0.1/` o `http://169.254.169.254/` la niega `egressweb`.
+- [ ] `web-a-pdf` con una página pública y con un enlace a un PDF devuelve el PDF; con `http://127.0.0.1/` la API responde `INVALID_OPTIONS`.
+- [ ] `gotenbergweb` no responde desde `api` ni desde los workers que no son `workeroffice` (solo está en `webrender`).
+- [ ] `GET https://api.{{DOMINIO}}/readyz` responde 200 con `secrets: ok` en `api` y `apiint`.
+- [ ] Una descarga con el token cambiado devuelve 403 y `files.` envía las cabeceras de 4.4.
+- [ ] Un anónimo puede comprimir un PDF y la tercera tarea pesada del día devuelve `QUOTA_EXCEEDED`.
+- [ ] Pago de prueba con Stripe (modo test) y webhook recibido una sola vez.
+- [ ] «Enviar por correo» con una cuenta gratuita (solo a sí misma) y otra Pro (3 destinatarios): llega el enlace, descarga
+      durante 24 horas y después responde 403; el correo pasa SPF, DKIM y DMARC.
+- [ ] Con Google Drive y Dropbox activados: abrir un PDF desde cada uno y guardar un resultado en cada uno.
+- [ ] Copia ejecutada por la tarea de Coolify, subida con restic, y restauración probada en una base vacía.
+- [ ] `CF-Connecting-IP` falsificado contra la IP del origen: ignorado (los puertos 80/443 solo aceptan Cloudflare).
+- [ ] Lighthouse móvil ≥ 90 en rendimiento y accesibilidad en la portada y en `comprimir-pdf` (1.3).
+- [ ] Prueba de carga k6 (`tests/load/k6.js`) y valores de concurrencia anotados en `OPERATIONS.md`.
+- [ ] escaner-pdf en un Android con Chrome y en un iPhone con Safari: permiso de cámara, borde detectado en vivo,
+      varias páginas, filtro Documento con sombras reales, PDF descargado, instalación como aplicación y uso sin conexión
+      tras la primera visita; con OCR al terminar, el PDF con texto.
+- [ ] crear-collage en un Android con Chrome y en un iPhone con Safari: fotos desde la galería y con la cámara (permiso,
+      cambio de cámara), encuadrar arrastrando con el dedo, intercambiar celdas, textos y stickers con los tiradores, y
+      el PDF, el JPG y la impresión; en escritorio, un collage de 30 fotos grandes en varias páginas (memoria y tiempo).
+- [ ] crear-collage a tamaño real: imprimir al 100 % la hoja de carné (35 × 45 y 26 × 32 mm) y el ID-1 por las dos caras
+      en las impresoras de prueba y medirlos con regla; recortar por las marcas de corte. Confirmar antes de anunciarlo
+      que las medidas oficiales siguen vigentes (D-107).
+- [ ] Transcripción en el VPS: construir worker-av (baja el modelo small, 483 MB; medium solo si se quiere la precisión
+      alta, con `--build-arg WHISPER_MODELS="small medium"`), transcribir una entrevista de 10 minutos en español y otra
+      en inglés, medir el tiempo (en la máquina de trabajo, 0,72 veces la duración con 2 hilos; ajustar `time_limit` si el
+      VPS es más lento) y que el propietario revise la calidad en español antes de anunciarla.
+- [ ] copiar-de-pdf con la pila completa en Chrome, Firefox y Safari: reconocer bloques de un informe, copiar una tabla y
+      pegarla en Excel y en Word, copiar una imagen, y un escaneo que pasa por el OCR antes del análisis.
+- [ ] Lote D2 de F2 con la pila completa: un PDF con tablas a Excel, ODS, CSV y JSON; un informe a PowerPoint en los tres
+      modos; un escaneo a Word con OCR; un PDF largo a EPUB fluido y fijo; y convertir-desde-pdf con varios formatos.
+      `workerconvert` sin reinicios por memoria (Docling y LibreOffice en el mismo contenedor de 5 GB).
+- [ ] Lote D1 de F2 con la pila completa: pdf-a-pdfa de un PDF con fuentes sin incrustar (informe y aviso; con
+      «rasterizar», PDF/A-2b que veraPDF acepta), validar-pdfa de un PDF/A real, pdf-a-tiff G4 de 200 páginas y
+      pdf-a-txt de un escaneo (cuenta una tarea de OCR); `workerocr` sin reinicios por memoria con veraPDF.
+- [ ] Lote C de F5 con la pila completa: raw-a-jpg de un CR2, un NEF y un ARW reales (LibRaw), psd-a-png de un PSD de
+      Photoshop con capas y efectos, png-a-svg de un logotipo y quitar-fondo de una foto de producto y de un retrato con
+      «Refinar los bordes»; `workermedia` (1,5 GB) sin reinicios por memoria y sin intentos de descarga del modelo.
+- [ ] Lote C de F2 con la pila completa: un EPUB a PDF (índice al principio), un CBR en RAR, un DjVu, un EML con
+      adjuntos, un MSG de Outlook real, un DXF de un programa de CAD y un .pages; `workermedia` y `workerofficeheavy`
+      sin reinicios por memoria (`docker stats`).

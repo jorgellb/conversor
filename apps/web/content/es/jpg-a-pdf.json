@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JPG a PDF reúne tus fotos en un documento PDF listo para enviar o imprimir: tickets, facturas fotografiadas con el móvil, apuntes o un álbum. Las imágenes JPEG se incrustan tal cual, sin volver a comprimirlas, así que no pierden calidad ni ganan peso innecesario.",
+    "Elige el tamaño de página entre A0 y A6, Carta y Legal, uno personalizado en milímetros o pulgadas, o que cada página tenga el tamaño de su imagen. La orientación puede ser vertical, horizontal o automática según cada foto, y el margen va de cero a 25 mm o al valor que indiques. El ajuste decide si la imagen encaja entera, rellena la página recortando lo que sobra o se coloca a su tamaño real.",
+    "Puedes unir todas las fotos en un único PDF, con un marcador por imagen para saltar entre ellas, o crear un PDF por foto y descargarlos juntos en un ZIP. Se respeta la orientación con la que el móvil guardó cada foto, de modo que no salen tumbadas.",
+    "La conversión ocurre en tu navegador. Solo las imágenes TIFF o los lotes muy grandes pasan por el servidor, que las borra después."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierden calidad las fotos?",
+      "a": "No. Los JPEG se copian dentro del PDF sin recomprimir, con la misma calidad que el original."
+    },
+    {
+      "q": "¿Puedo cambiar el orden?",
+      "a": "Sí: ordena las imágenes en la lista antes de convertir y el PDF seguirá ese orden."
+    },
+    {
+      "q": "¿Y si mis fotos son PNG o WEBP?",
+      "a": "Usa Imágenes a PDF, que admite también PNG, WEBP, GIF, BMP y TIFF."
+    }
+  ]
+}

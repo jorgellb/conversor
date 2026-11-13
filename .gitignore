@@ -1,0 +1,19 @@
+# Dependencias y compilaciones
+node_modules/
+.next/
+apps/web/public/pdfium/
+apps/web/public/codecs/
+apps/web/public/opencv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+test-results/
+playwright-report/
+*.tsbuildinfo
+# Entorno y secretos: nunca en el repositorio (18)
+.env
+.env.*
+!.env.example
+# Artefactos
+*.zip

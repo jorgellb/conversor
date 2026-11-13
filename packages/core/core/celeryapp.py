@@ -1,0 +1,54 @@
+"""Aplicación Celery con Valkey como broker (5.3)."""
+from __future__ import annotations
+
+from celery import Celery
+from celery.schedules import crontab
+
+from core.registry import load_registry
+from core.settings import get_settings
+
+
+def _max_time_limit() -> int:
+    tools = load_registry().server_tools()
+    return max([t.time_limit for t in tools] + [3600])
+
+
+def make_celery() -> Celery:
+    settings = get_settings()
+    app = Celery("conversor", broker=settings.VALKEY_URL, include=["tools.tasks", "core.maintenance", "core.ai.tasks", "tools.ai.chat"])
+    app.conf.update(
+        task_serializer="json",
+        accept_content=["json"],
+        task_acks_late=True,
+        worker_prefetch_multiplier=1,
+        task_reject_on_worker_lost=False,
+        task_ignore_result=True,
+        task_store_errors_even_if_ignored=False,
+        broker_connection_retry_on_startup=True,
+        worker_hijack_root_logger=False,
+        worker_send_task_events=False,
+        timezone="UTC",
+        broker_transport_options={
+            # Mayor que el time_limit más largo + 10 minutos: si no, Valkey reentrega trabajos largos.
+            "visibility_timeout": _max_time_limit() + 600,
+            "priority_steps": list(range(10)),
+            "sep": ":",
+            "queue_order_strategy": "priority",
+        },
+        task_default_queue="pdf",
+        # Las tareas de IA necesitan la clave y la salida a OpenRouter: solo las ejecuta `workerai` (12.1 y 12.2).
+        task_routes={"core.ai.tasks.*": {"queue": "ai"}, "tools.ai.chat.answer": {"queue": "ai"},
+                     "tools.ai.chat.retrieve": {"queue": "ai.embed"}},
+        beat_schedule={
+            "cleanup-expired": {"task": "core.maintenance.cleanup_expired", "schedule": 300.0},
+            "requeue-stale": {"task": "core.maintenance.requeue_stale", "schedule": 60.0},
+            "disk-alert": {"task": "core.maintenance.disk_alert", "schedule": 300.0},
+            "find-orphans": {"task": "core.maintenance.find_orphans", "schedule": crontab(hour=4, minute=17)},
+            "ai-models": {"task": "core.ai.tasks.refresh_models", "schedule": max(1, settings.LLM_MODELS_REFRESH_HOURS) * 3600.0},
+            "ai-reconcile": {"task": "core.ai.tasks.reconcile", "schedule": 600.0},
+        },
+    )
+    return app
+
+
+celery_app = make_celery()

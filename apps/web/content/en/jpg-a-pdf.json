@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JPG to PDF gathers your photos into a PDF document ready to send or print: receipts, invoices photographed with your phone, notes or an album. JPEG images are embedded as they are, without recompressing them, so they neither lose quality nor gain unnecessary weight.",
+    "Choose a page size from A0 to A6, Letter and Legal, a custom size in millimetres or inches, or let each page take the size of its image. Orientation can be portrait, landscape or automatic for each photo, and the margin ranges from zero to 25 mm or any value you set. The fit option decides whether the image fits entirely, fills the page by cropping the excess or is placed at its actual size.",
+    "You can merge all the photos into a single PDF, with one bookmark per image to jump between them, or create one PDF per photo and download them together in a ZIP. The orientation your phone saved for each photo is respected, so pictures do not come out sideways.",
+    "The conversion happens in your browser. Only TIFF images or very large batches go through the server, which deletes them afterwards."
+  ],
+  "faq": [
+    {
+      "q": "Do my photos lose quality?",
+      "a": "No. JPEGs are copied into the PDF without recompression, with the same quality as the original."
+    },
+    {
+      "q": "Can I change the order?",
+      "a": "Yes: arrange the images in the list before converting and the PDF will follow that order."
+    },
+    {
+      "q": "What if my photos are PNG or WEBP?",
+      "a": "Use Images to PDF, which also accepts PNG, WEBP, GIF, BMP and TIFF."
+    }
+  ]
+}

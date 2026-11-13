@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Compress PDF makes a document lighter so you can email it, upload it to a portal with a size limit or simply store it using less space. Most of the weight of a PDF usually comes from photos and scans, so the tool saves those images again at the resolution and quality you pick while leaving the text untouched: it stays selectable and searchable.",
+    "The balanced level brings images down to 144 dpi at 75% quality, which is plenty for reading on screen and printing at home. The strong level goes to 96 dpi and 60%, meant for very large attachments. Lossless leaves images alone and removes duplicated objects, thumbnails and unused resources. Custom lets you set the maximum resolution and JPEG quality yourself.",
+    "Under more options you can strip metadata, attachments, annotations, bookmarks or the accessibility structure, turn images grey or flatten forms. Some of those boxes have side effects: removing tags breaks accessibility and removing output intents means the file is no longer PDF/A, and the result tells you when that happens.",
+    "If the file was already optimised and the compressed copy would be the same size or larger, you get the original back with a note. That way you never download a PDF bigger than the one you uploaded."
+  ],
+  "faq": [
+    {
+      "q": "Will I lose quality?",
+      "a": "Only in images, and only as much as you choose. Text and vector graphics are kept as they are. For maximum fidelity, use the lossless level."
+    },
+    {
+      "q": "Can I compress several PDFs at once?",
+      "a": "Yes. You get each compressed file separately plus a ZIP with all of them."
+    },
+    {
+      "q": "What if the PDF has a password?",
+      "a": "Type it under more options. It is only used to open the file during the task and is never stored."
+    },
+    {
+      "q": "Where is it processed?",
+      "a": "On our server in the European Union. The file travels encrypted and is deleted automatically after one hour without an account, or after 24 hours with one."
+    }
+  ]
+}

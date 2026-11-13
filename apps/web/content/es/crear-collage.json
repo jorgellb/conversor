@@ -1,0 +1,33 @@
+{
+  "complete": false,
+  "reviewed": false,
+  "intro": [
+    "Crear collage junta tus fotos en una página lista para imprimir o compartir. Eliges una plantilla (cuadrícula, mosaico, filas que respetan la forma de cada foto, corazón, círculo, estrella, instantáneas o colocación libre) y las fotos se colocan solas; después puedes encuadrar cada una, cambiarlas de celda y ajustar la separación y las esquinas.",
+    "Puedes añadir textos con letras Noto incluidas, stickers y formas dibujados para esta web, marcos, sombras y un fondo de color, en degradado o con una de tus fotos. Si una página se queda corta, añade otra: el PDF sale con todas.",
+    "Todo ocurre en tu navegador. En el PDF las fotos JPEG y PNG van tal cual, sin recomprimir, así que no pierden calidad; en JPG o PNG se exporta a 150, 300 o 600 ppp.",
+    "Con la plantilla Tamaño real imprimes fotos de carné (35 × 45 mm para visados y la UE; 26 × 32 mm para el DNI y el pasaporte), las dos caras de un documento de identidad o copias de foto a su medida exacta, con marcas de corte. La documentación fotográfica pone cada foto entera con un pie numerado, la fecha en que se hizo y tu comentario, con encabezado y números de página: útil para informes de obra, siniestros o inventarios."
+  ],
+  "steps": [
+    "Pulsa «Añadir fotos» o «Hacer una foto» para usar la cámara; elige la plantilla y el número de huecos.",
+    "Pulsa una celda y arrastra la foto para encuadrarla, arrastra una celda sobre otra para intercambiarlas y añade textos, stickers o formas.",
+    "Elige el papel, la orientación y el formato, y pulsa «Crear collage» para descargarlo o «Imprimir»."
+  ],
+  "faq": [
+    {
+      "q": "¿Se suben mis fotos?",
+      "a": "No. El editor y la exportación funcionan en tu dispositivo: las fotos no salen de él en ningún momento."
+    },
+    {
+      "q": "¿Pierden calidad las fotos en el PDF?",
+      "a": "No: las fotos JPEG y PNG se incrustan con sus bytes originales y solo se recorta lo que no se ve en cada celda. Las WEBP, GIF, BMP o AVIF se pasan a PNG, sin pérdida."
+    },
+    {
+      "q": "¿Puedo usar la cámara del móvil?",
+      "a": "Sí. «Hacer una foto» abre la cámara del dispositivo (la trasera, si la hay) después de pedirte permiso; cada foto se añade al collage al momento."
+    },
+    {
+      "q": "¿Puedo imprimir fotos de carné?",
+      "a": "Sí. Elige Tamaño real y la medida (35 × 45 mm o 26 × 32 mm, la del DNI y el pasaporte según el BOE), añade una foto y se llena la hoja con todas las copias. Imprime al 100 % o «Tamaño real» y recorta por las marcas. Comprueba antes la medida que pide tu trámite."
+    }
+  ]
+}

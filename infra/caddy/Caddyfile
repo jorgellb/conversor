@@ -1,0 +1,80 @@
+# files.{{DOMINIO}} (4.4): descargas firmadas desde disco. Caddy pregunta a apiint (forward_auth) antes de servir
+# y nunca lista directorios. /d/<job>/<archivo> → jobs/<job>/out/<archivo>; /s/<id>/<archivo> → shares/<id>/<archivo>.
+{
+	admin off
+	auto_https off
+	persist_config off
+	servers {
+		trusted_proxies static private_ranges
+	}
+	log {
+		output stdout
+		format json
+	}
+}
+
+(cabeceras_descarga) {
+	header {
+		Content-Disposition attachment
+		Cache-Control "private, no-store"
+		X-Content-Type-Options nosniff
+		Content-Security-Policy "default-src 'none'; sandbox"
+		Cross-Origin-Resource-Policy same-site
+		Referrer-Policy no-referrer
+		Access-Control-Allow-Origin "{$PUBLIC_WEB_URL}"
+		Access-Control-Expose-Headers "Content-Length, Content-Range, Content-Disposition"
+		Vary Origin
+		-Server
+	}
+}
+
+:8090 {
+	handle /healthz {
+		respond "ok" 200
+	}
+
+	# CORS solo para la web, para que el visor y «Seguir con otra herramienta» puedan leer resultados.
+	@preflight {
+		method OPTIONS
+		header Origin "{$PUBLIC_WEB_URL}"
+	}
+	handle @preflight {
+		header Access-Control-Allow-Origin "{$PUBLIC_WEB_URL}"
+		header Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+		header Access-Control-Allow-Headers "Range"
+		header Access-Control-Max-Age "600"
+		header Vary Origin
+		respond 204
+	}
+
+	@descarga path_regexp dl ^/d/([0-9a-f-]{36})/([A-Za-z0-9._-]{1,130})$
+	handle @descarga {
+		route {
+			# apiint lee la URL original de X-Forwarded-Uri y valida el token sin leer el archivo.
+			forward_auth apiint:8001 {
+				uri /files/authorize
+			}
+			import cabeceras_descarga
+			rewrite * /jobs/{re.dl.1}/out/{re.dl.2}
+			root * /srv/files
+			file_server
+		}
+	}
+
+	@compartido path_regexp sh ^/s/([0-9a-f-]{36})/([A-Za-z0-9._-]{1,130})$
+	handle @compartido {
+		route {
+			forward_auth apiint:8001 {
+				uri /files/authorize
+			}
+			import cabeceras_descarga
+			rewrite * /shares/{re.sh.1}/{re.sh.2}
+			root * /srv/files
+			file_server
+		}
+	}
+
+	handle {
+		respond 404
+	}
+}

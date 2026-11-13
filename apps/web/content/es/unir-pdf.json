@@ -1,0 +1,23 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Unir PDF junta varios documentos en uno solo en el orden que decidas. Es la forma rápida de reunir las páginas de un expediente, las facturas de un trimestre o los capítulos de un trabajo antes de enviarlos. Todo ocurre en tu navegador: los archivos no se suben a ningún servidor, así que el proceso es inmediato incluso con documentos confidenciales.",
+    "Puedes arrastrar los archivos para ordenarlos o pedir que se ordenen por nombre, con orden natural para que «doc2» vaya antes que «doc10». Junto a cada archivo hay una casilla para indicar qué páginas quieres incluir, con la misma sintaxis que en el resto de herramientas: «1-3, 5, 8-», «pares» o «impares».",
+    "Las opciones adicionales sirven para preparar el resultado para imprimir o para leer: un marcador por archivo para saltar entre documentos, una portada con el nombre antes de cada uno, un índice inicial con enlaces y el nombre del archivo impreso en sus páginas. Si vas a imprimir a doble cara, elige añadir una página en blanco tras los documentos con un número impar de páginas y cada documento empezará en el anverso de una hoja."
+  ],
+  "faq": [
+    {
+      "q": "¿Hay un límite de archivos?",
+      "a": "En el navegador el límite lo pone la memoria de tu equipo. Con documentos muy grandes, prueba a unirlos en dos tandas."
+    },
+    {
+      "q": "¿Se conservan los enlaces y los formularios?",
+      "a": "Se conservan las páginas tal como están, con sus anotaciones. Los marcadores originales de cada documento no se copian; si los necesitas, activa los marcadores por archivo."
+    },
+    {
+      "q": "¿Y si un PDF tiene contraseña?",
+      "a": "Primero quítala con Desbloquear PDF, escribiendo la contraseña de apertura, y después únelo con los demás."
+    }
+  ]
+}

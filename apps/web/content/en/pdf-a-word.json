@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to Word recovers an editable document from a PDF so you can fix paragraphs, update figures or reuse the content without retyping it. The result is a DOCX file that opens in Word, LibreOffice and Google Docs.",
+    "There are three modes. Editable rebuilds headings, paragraphs, lists and tables as regular text, which is the easiest to change. Editable with images does the same and also keeps the figures from the original. Faithful layout prioritises making each page look like the PDF by placing elements in position; it looks closer, but it is harder to edit.",
+    "If the PDF comes from a scanner and contains no text, optical character recognition can be applied before converting, so the resulting Word file has real text rather than just pictures. You can also limit the conversion to a page range when you only need part of the document.",
+    "The conversion runs on our server, which processes the file without internet access and deletes it when your plan's time limit expires."
+  ],
+  "faq": [
+    {
+      "q": "Which mode should I choose?",
+      "a": "To edit the text comfortably, Editable. If you need the result to look as close to the original as possible, Faithful layout."
+    },
+    {
+      "q": "Does it work with scanned documents?",
+      "a": "Yes: with automatic OCR, the text on scanned pages is recognised before the Word file is created."
+    },
+    {
+      "q": "Are tables preserved?",
+      "a": "In the editable modes, tables are rebuilt as Word tables; very complex ones may need a little tidying."
+    },
+    {
+      "q": "What about images and charts?",
+      "a": "Editable mode focuses on the text and its structure; if you also need the figures from the original, choose Editable with images or Faithful layout."
+    }
+  ]
+}

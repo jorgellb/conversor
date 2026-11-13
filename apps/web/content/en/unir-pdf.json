@@ -1,0 +1,23 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Merge PDF combines several documents into a single file in the order you decide. It is the quick way to gather the pages of a case file, a quarter's invoices or the chapters of a report before sending them. Everything happens in your browser: files are never uploaded, so it is instant even with confidential documents. You can also paste files straight from the clipboard.",
+    "Drag files to reorder them or sort them by name, using natural order so that “doc2” comes before “doc10”. Next to each file there is a box to choose which pages to include, with the same syntax as the other tools: “1-3, 5, 8-”, “even” or “odd”.",
+    "More options prepare the result for printing or reading: one bookmark per file to jump between documents, a cover page with the name before each one, a linked table of contents at the start and the file name printed on its pages. If you print double-sided, add a blank page after documents with an odd page count so that every document starts on the front of a sheet."
+  ],
+  "faq": [
+    {
+      "q": "Is there a file limit?",
+      "a": "In the browser the limit is your device's memory. With very large documents, try merging them in two batches."
+    },
+    {
+      "q": "Are links and forms kept?",
+      "a": "Pages are kept as they are, with their annotations. Each document's original bookmarks are not copied; turn on one bookmark per file if you need them."
+    },
+    {
+      "q": "What if a PDF has a password?",
+      "a": "Remove it first with Unlock PDF using the open password, then merge it with the rest."
+    }
+  ]
+}

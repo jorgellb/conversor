@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Fill PDF form helps you complete applications, registrations and official paperwork without printing them. When you open the file, the tool finds the fillable fields and lists them in a panel next to each page: text boxes, checkboxes, radio buttons and drop-down lists, with their current values.",
+    "Type your details with accents and special characters without worry: field text is drawn with a font that includes them. If the document has no fields, you can still write on top and place ticks or crosses, today's date and an image of your signature, drawn with the mouse or a finger, typed from your name or uploaded from a photo.",
+    "When saving you choose between keeping the form editable, so someone else can review or finish it later, or flattened, which turns the fields into fixed content and prevents later changes. Processing is local: the personal details you type never travel to any server.",
+    "Some older forms use XFA technology, which most readers no longer support. In that case we warn you, fill in its AcroForm version when there is one and remove the XFA layer so the result looks the same everywhere."
+  ],
+  "faq": [
+    {
+      "q": "Is my data sent anywhere?",
+      "a": "No. The form is filled in inside your browser and you only download the result."
+    },
+    {
+      "q": "What is the difference between editable and flattened?",
+      "a": "Editable keeps the fields so they can be changed later; flattened turns them into fixed text, as if the document had been printed."
+    },
+    {
+      "q": "The form has no fields. What can I do?",
+      "a": "Use the text, tick, date and signature tools to write directly on the page where each answer goes."
+    }
+  ]
+}

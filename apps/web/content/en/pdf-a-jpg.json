@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to JPG turns each page of a PDF into an image, ready to post on a website or social network, drop into a presentation or send through a messaging app. The conversion runs in your browser with PDFium, the same rendering engine used by Chromium browsers, so the document never leaves your device.",
+    "Set the resolution between 72 and 600 dots per inch; the default of 144 suits screens, while higher values give sharp images for printing. JPEG quality goes from 1 to 100%, and you can get the images in colour or greyscale.",
+    "Pick the pages you want with ranges such as “1-3, 5” or the odd and even shortcuts. Each image is named after the PDF followed by the page number, and when there is more than one they download together in a ZIP. You can also ask for a single tall image with every page stacked.",
+    "To protect your device, each page has a pixel limit: if the requested resolution exceeds it, the image is scaled down just enough to avoid running out of memory."
+  ],
+  "faq": [
+    {
+      "q": "Which resolution should I choose?",
+      "a": "144 dpi for viewing on screen; 300 dpi or more if you are going to print the image."
+    },
+    {
+      "q": "Can I export only some pages?",
+      "a": "Yes, type the range under “Pages”, for example 2-4 or 1, 3."
+    },
+    {
+      "q": "Would you rather have PNG?",
+      "a": "Use PDF to PNG, which saves pages losslessly and supports black and white."
+    },
+    {
+      "q": "Can I convert several PDFs at once?",
+      "a": "Yes. Add as many files as you need: inside the ZIP there will be one folder per document with its numbered pages."
+    }
+  ]
+}

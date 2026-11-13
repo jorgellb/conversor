@@ -1,0 +1,154 @@
+# Cierre técnico (1.3 y 18): pruebas, registro al día, licencias, Compose válido y compilación de la web.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.7-pg16-bookworm
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: conversor
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 20
+      valkey:
+        image: valkey/valkey:9.0.7-alpine
+        ports: ["6379:6379"]
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@127.0.0.1:5432/conversor
+      TEST_VALKEY_URL: redis://127.0.0.1:6379/0
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+      - name: Motores del sistema para las pruebas de efecto
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa ffmpeg libreoffice-writer-nogui fonts-dejavu postgresql-client restic \
+            djvulibre-bin libarchive13 calibre libheif-examples libheif-plugin-libde265 libheif-plugin-x265
+      # x265 solo en la CI, para crear la muestra HEIC de la prueba; nunca en las imágenes (D-49).
+      - name: Herramientas del lote D (tiffcp, pdftocairo, perfil CMYK) y veraPDF fijado por SHA-256
+        run: |
+          sudo apt-get install -y --no-install-recommends libtiff-tools poppler-utils colord-data
+          curl -fsSL -o /tmp/verapdf.zip https://software.verapdf.org/rel/1.30/verapdf-greenfield-1.30.3-installer.zip
+          echo "b512bf24945503a33fc10738ecffc1f2dccaaf8593a448e94ee9ac86a9559a59  /tmp/verapdf.zip" | sha256sum -c -
+          unzip -q /tmp/verapdf.zip -d /tmp/verapdf
+          sudo java -jar /tmp/verapdf/verapdf-greenfield-1.30.3/verapdf-izpack-installer-1.30.3.jar infra/verapdf/auto-install.xml
+          sudo ln -s /opt/verapdf/verapdf /usr/local/bin/verapdf
+          verapdf --version
+      - name: Modelo u2net de rembg para quitar-fondo, fijado por SHA-256 (F5, lote C)
+        run: |
+          mkdir -p "$RUNNER_TEMP/rembg/models/u2net"
+          curl -fsSL -o "$RUNNER_TEMP/rembg/models/u2net/u2net.onnx" https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx
+          echo "8d10d2f3bb75ae3b6d527c77944fc5e7dcd94b29809d47a739a7a728a912b491  $RUNNER_TEMP/rembg/models/u2net/u2net.onnx" | sha256sum -c -
+          echo "REMBG_HOME=$RUNNER_TEMP/rembg" >> "$GITHUB_ENV"
+      - name: Modelo tiny de faster-whisper para la transcripción, fijado por SHA-256 (F5, lote E)
+        run: |
+          sh infra/whisper/fetch-models.sh "$RUNNER_TEMP/whisper" tiny
+          echo "WHISPER_HOME=$RUNNER_TEMP/whisper" >> "$GITHUB_ENV"
+      - name: Modelo de embeddings de chat-pdf, fijado por SHA-256 (F3, lote A2)
+        run: |
+          sh infra/embeddings/fetch-model.sh "$RUNNER_TEMP/embeddings"
+          echo "EMBEDDINGS_HOME=$RUNNER_TEMP/embeddings" >> "$GITHUB_ENV"
+      - name: Dependencias
+        run: |
+          uv venv .venv
+          # El extra av va sin PyAV (D-111): infra/uv-overrides.txt lo quita.
+          uv pip install --python .venv -r pyproject.toml --extra pdf --extra ocr --extra dev --extra office --extra media --extra av --extra ai \
+            --override infra/uv-overrides.txt
+      - name: Registro al día y Compose de Coolify válido
+        run: |
+          .venv/bin/python scripts/export_registry.py --check
+          .venv/bin/python scripts/gen_coolify_compose.py --check
+          .venv/bin/python scripts/gen_coolify_compose.py --validate
+          docker compose -f docker-compose.yml config --quiet
+      - name: Pruebas
+        run: .venv/bin/pytest -q
+      - name: Licencias de Python
+        run: .venv/bin/python scripts/check_licenses.py python
+
+  docling:
+    # Lote D2 de F2 con Docling, LibreOffice y Tesseract reales; los modelos se guardan en la caché de la CI.
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: docling-modelos-2.145.0
+      - name: Motores
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libreoffice-writer-nogui libreoffice-calc-nogui libreoffice-impress-nogui \
+            tesseract-ocr tesseract-ocr-spa poppler-utils fonts-dejavu
+      - name: Dependencias
+        run: |
+          uv venv .venv
+          uv pip install --python .venv --index-url https://download.pytorch.org/whl/cpu torch torchvision
+          uv pip install --python .venv -r pyproject.toml --extra pdf --extra ocr --extra dev --extra convert
+      - name: Pruebas con Docling
+        run: .venv/bin/pytest -q tests/test_desde_pdf_docling.py -p no:cacheprovider
+
+  web:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22.23.4"
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Pruebas de las herramientas de navegador y de la web
+        run: npm test
+      - name: Tipos (TypeScript 7)
+        run: npm run typecheck
+      - name: Compilación
+        run: npm run build
+      - name: Licencias de npm
+        run: |
+          python3 -m pip install --quiet pyyaml
+          python3 scripts/check_licenses.py npm
+      - name: Playwright (herramientas de navegador, sin red para el archivo)
+        run: |
+          npx playwright install --with-deps chromium
+          (cd apps/web && PORT=3100 PUBLIC_WEB_URL=http://127.0.0.1:3100 BETTER_AUTH_URL=http://127.0.0.1:3100 \
+            AUTH_SECRET=ci-solo-pruebas-0123456789abcdef npx next start -p 3100 &) 
+          for i in $(seq 60); do curl -sf http://127.0.0.1:3100/api/health && break; sleep 2; done
+          npx playwright test -c tests/e2e/playwright.config.ts --project=navegador
+
+  e2e-compose:
+    # Sistema completo con Docker Compose: subida por tus, trabajos de servidor, descargas y pago falso.
+    if: github.event_name == 'push' || contains(github.event.pull_request.labels.*.name, 'e2e')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22.23.4"
+          cache: npm
+      - name: Arranque de humo con healthchecks
+        run: docker compose up -d --build --wait --wait-timeout 900
+      - run: npm ci --no-audit --no-fund
+      - name: Playwright de extremo a extremo
+        run: |
+          npx playwright install --with-deps chromium
+          npx playwright test -c tests/e2e/playwright.config.ts --project=servidor
+      - name: Logs si falla
+        if: failure()
+        run: docker compose logs --no-color --tail 300

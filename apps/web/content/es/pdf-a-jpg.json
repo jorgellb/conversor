@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a JPG convierte cada página de un PDF en una imagen, para publicarla en una web o red social, insertarla en una presentación o enviarla por mensajería. La conversión se hace en tu navegador con PDFium, el mismo motor de renderizado de los navegadores Chromium, así que el documento no sale de tu dispositivo.",
+    "Ajusta la resolución entre 72 y 600 puntos por pulgada; el valor por defecto, 144, sirve para pantallas, y los valores altos dan imágenes nítidas para imprimir. La calidad JPEG va del 1 al 100 %, y puedes obtener las imágenes en color o en escala de grises.",
+    "Indica qué páginas quieres con rangos como «1-3, 5» o con los atajos pares e impares. Cada imagen se llama como el PDF seguido del número de página, y si hay más de una se descargan juntas en un ZIP. También puedes pedir una sola imagen larga con todas las páginas apiladas.",
+    "Para proteger tu equipo, cada página tiene un límite de píxeles: si la resolución pedida lo supera, la imagen se reduce lo justo para no agotar la memoria."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué resolución elijo?",
+      "a": "144 ppp para verlo en pantalla; 300 ppp o más si vas a imprimir la imagen."
+    },
+    {
+      "q": "¿Puedo sacar solo algunas páginas?",
+      "a": "Sí, escribe el rango en «Páginas», por ejemplo 2-4 o 1, 3."
+    },
+    {
+      "q": "¿Prefieres PNG?",
+      "a": "Usa PDF a PNG, que guarda las páginas sin pérdida y admite blanco y negro."
+    },
+    {
+      "q": "¿Puedo convertir varios PDF a la vez?",
+      "a": "Sí. Añade todos los archivos que necesites: dentro del ZIP habrá una carpeta por documento con sus páginas numeradas."
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+"""Configuración por variables de entorno (sección 14 del plan)."""
+from __future__ import annotations
+
+from functools import lru_cache
+from pathlib import Path
+
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=None, extra="ignore", case_sensitive=True)
+
+    APP_ENV: str = "production"
+    APP_NAME: str = "Producto Demo"
+    SERVICE_ROLE: str = "api"
+    PUBLIC_WEB_URL: str = "https://ejemplo.test"
+    PUBLIC_API_URL: str = "https://api.ejemplo.test"
+    PUBLIC_UPLOAD_URL: str = "https://upload.ejemplo.test/files/"
+    PUBLIC_FILES_URL: str = "https://files.ejemplo.test"
+    DEFAULT_LOCALE: str = "es"
+    DISPLAY_TZ: str = "Europe/Madrid"
+
+    DATABASE_URL: str = "postgresql+psycopg://conversor:conversor@postgres:5432/conversor"
+    DATABASE_URL_WORKER: str = ""
+    VALKEY_URL: str = "redis://valkey:6379/0"
+
+    AUTH_JWKS_URL: str = "http://web:3000/api/auth/jwks"
+    BETTER_AUTH_URL: str = "https://ejemplo.test"
+    FILE_TOKEN_SECRET: str = ""
+    ANON_TOKEN_SECRET: str = ""
+    JOB_SECRETS_KEY: str = ""
+
+    FILESTORE_PATH: Path = Path("/srv/files")
+    DISK_MAX_USAGE_PERCENT: float = 85.0
+    DISK_MIN_FREE_GB: float = 20.0
+    DISK_RESERVE_FACTOR: float = 3.0
+    CLIENT_MAX_MB: int = 100
+    FILE_TTL_ANON_MINUTES: int = 60
+    FILE_TTL_USER_HOURS: int = 24
+    SHARE_MAX_DAYS: int = 7
+    UPLOAD_MAX_BYTES: int = 1073741824
+    UPLOAD_CHUNK_BYTES: int = 52428800
+    DOWNLOAD_TOKEN_MINUTES: int = 15
+
+    BACKUP_PATH: Path = Path("/srv/backups")
+    BACKUP_RETENTION_DAYS: int = 14
+    BACKUP_RESTIC_REPOSITORY: str = ""
+    BACKUP_RESTIC_PASSWORD: str = ""
+
+    ADMIN_EMAILS: str = "admin@ejemplo.test"
+    SMTP_URL: str = ""
+    MAIL_SHARE_DAILY_LIMIT: int = 10
+    MAIL_FROM: str = "no-responder@ejemplo.test"
+
+    TURNSTILE_SITE_KEY: str = ""
+    TURNSTILE_SECRET_KEY: str = ""
+    TRUST_CF_CONNECTING_IP: bool = False
+    CLOUDFLARE_IP_RANGES: str = ""
+    RATE_LIMIT_PER_MINUTE: int = 60
+    ANON_TOKENS_PER_IP_DAY: int = 10
+
+    PAYMENT_PROVIDER: str = "fake"
+    STRIPE_SECRET_KEY: str = ""
+    STRIPE_WEBHOOK_SECRET: str = ""
+    STRIPE_PRICE_PRO_MONTHLY: str = ""
+    STRIPE_PRICE_PRO_YEARLY: str = ""
+
+    IMAGE_MAX_PIXELS: int = 100_000_000
+    RENDER_MAX_PIXELS: int = 50_000_000
+    # Perfil de salida para CMYK (A.9): FOGRA39 del paquete colord-data, con licencia CC0 (D-60).
+    CMYK_ICC_PROFILE: str = "/usr/share/color/icc/colord/FOGRA39L_coated.icc"
+    THREADS: int = 1
+    GOTENBERG_URL: str = "http://gotenberg:3000"
+    GOTENBERG_WEB_URL: str = "http://gotenbergweb:3000"
+    EGRESS_WEB_URL: str = "http://egressweb:4750"
+    OCR_MAX_LANGUAGES: int = 3
+    # quitar-fondo (6.4): modelo de rembg ya descargado en la imagen; nunca bria-rmbg (licencia de pago, D-96).
+    REMBG_MODEL: str = "u2net"
+    REMBG_HOME: Path = Path("/opt/rembg")
+    # Transcripción (6.4): faster-whisper en CPU con el modelo ya dentro de la imagen worker-av (nunca se descarga al
+    # ejecutar). small en int8 por defecto; medium es opcional (precisión alta).
+    WHISPER_MODEL: str = "small"
+    WHISPER_DEVICE: str = "cpu"
+    WHISPER_COMPUTE_TYPE: str = "int8"
+    WHISPER_HOME: Path = Path("/opt/models/whisper")
+    # IA (6 y 14): OpenRouter solo con modelos gratuitos. La clave solo está en workerai (12.1), que sale por egressai.
+    OPENROUTER_API_KEY: str = ""
+    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+    LLM_PREFERRED_MODELS: str = ""
+    LLM_FALLBACK_ROUTER: str = "openrouter/free"
+    LLM_MODELS_REFRESH_HOURS: int = 6
+    AI_DAILY_BUDGET: int = 950
+    AI_PRO_RESERVE: int = 400
+    AI_RPM_LIMIT: int = 18
+    AI_BUDGET_RESET_TZ: str = "UTC"
+    AI_REQUIRE_CONSENT: bool = True
+    AI_CHAT_RPM_SHARE: float = 0.5
+    AI_TASK_MAX_REQUESTS: int = 20
+    # Segundos que una petición espera hueco en el límite por minuto antes de rendirse (RATE_LIMITED transitorio).
+    AI_RPM_WAIT_SECONDS: int = 90
+    EGRESS_AI_URL: str = "http://egressai:4750"
+    EMBEDDINGS_MODEL: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    # chat-pdf (6.4): el ONNX del modelo, ya dentro de la imagen worker-ai (infra/embeddings/fetch-model.sh).
+    EMBEDDINGS_HOME: Path = Path("/opt/models/embeddings")
+    QUEUE_DEFAULT_MAX_WAIT_SECONDS: int = 300
+    PLANS_FILE: Path = Path(__file__).resolve().parents[3] / "config" / "plans.yaml"
+    LOG_LEVEL: str = "INFO"
+
+    queue_max_wait: dict[str, int] = Field(default_factory=dict)
+
+    @property
+    def is_dev(self) -> bool:
+        return self.APP_ENV == "development"
+
+    @property
+    def ai_consent_required(self) -> bool:
+        """6.6: el consentimiento no se puede desactivar en producción."""
+        return self.AI_REQUIRE_CONSENT or self.APP_ENV == "production"
+
+    @property
+    def ai_fake(self) -> bool:
+        """6.6: proveedor falso determinista cuando no hay clave y el entorno es de desarrollo."""
+        return not self.OPENROUTER_API_KEY and self.APP_ENV in ("development", "test")
+
+    @property
+    def preferred_models(self) -> list[str]:
+        return [m.strip() for m in self.LLM_PREFERRED_MODELS.split(",") if m.strip()]
+
+    @property
+    def admin_emails(self) -> list[str]:
+        return [e.strip() for e in self.ADMIN_EMAILS.split(",") if e.strip()]
+
+    def queue_wait_limit(self, group: str) -> int:
+        import os
+
+        value = os.environ.get(f"QUEUE_MAX_WAIT_SECONDS_{group.upper()}")
+        if value:
+            return int(value)
+        return 120 if group == "pdf" else self.QUEUE_DEFAULT_MAX_WAIT_SECONDS
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()

@@ -1,0 +1,38 @@
+## 11. Licencias
+
+- **Política en un fichero:** `scripts/license_policy.yaml` contiene las listas de esta sección y es lo que aplica la CI.
+- **Frontend** (se distribuye al navegador): MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, MPL-2.0, Zlib, Unlicense, CC0-1.0, BlueOak-1.0.0, CC-BY-4.0 (solo datos, como caniuse-lite) y OFL-1.1 (solo fuentes). En licencias dobles se elige la permisiva (por ejemplo, node-forge con BSD-3-Clause).
+- **Backend:** lo anterior más PSF-2.0, Python-2.0, HPND y MIT-CMU (Pillow), LGPL-2.1, LGPL-3.0, EPL-2.0, EUPL-1.2 (solo datos) y LicenseRef-TOST-1.0 (usd-core).
+- **GPL**, solo como programa externo en servidor, invocado por línea de órdenes y nunca importado: la CI falla si un paquete de Python o de npm instalado es GPL o AGPL. Los programas GPL permitidos son los de la sección 2.
+- **Prohibido enlazar o empaquetar AGPL:** Ghostscript, MuPDF, PyMuPDF, pdf2docx, BabelDOC, EbookLib, Documenso, DocuSeal, PrusaSlicer, OrcaSlicer, Bambu Studio, CuraEngine, UVtools, libbgcode, MinIO, Garage, xmlsig y similares.
+- **Trampas conocidas:**
+  - `ezdxf[draw]` instala PyMuPDF: instala `ezdxf` sin ese extra y usa su backend SVG;
+  - el paquete `ocrmypdf` de las distribuciones depende de Ghostscript: instala OCRmyPDF con pip;
+  - extract-msg es GPL: para MSG usa olefile y compressed-rtf;
+  - `misaki[en]` y `phonemizer-fork` son GPL: espeak-ng solo como programa externo;
+  - los wheels de pillow-heif incluyen x265 (GPLv2);
+  - el modelo por defecto de rembg (`bria-rmbg`) exige un acuerdo de pago para uso comercial.
+- **Impresión 3D:** permitidos lib3mf (BSD-2-Clause), trimesh, assimp, manifold3d, usd-core (TOST-1.0) y OpenCascade (LGPL con excepción).
+- **Paridad con PDF24** (comprueba cada licencia al añadirla):
+  - Frontend: qr-code-styling, Konva, TipTap (solo paquetes MIT del registro público de npm; Pages y la conversión a DOCX de TipTap son de pago y no se usan), `docx`, mammoth, KaTeX, PKI.js, xadesjs, mermaid, `@resvg/resvg-wasm`, glTF Transform y SheetJS Community Edition (Apache-2.0, instalada desde cdn.sheetjs.com con versión fijada, porque la del registro de npm, 0.18.5, tiene vulnerabilidades sin corregir; Renovate no la vigila, así que revísala a mano en cada fase).
+  - Backend: img2pdf (LGPL), drafthorse (Apache-2.0), factur-x (BSD), signxml (Apache-2.0), olefile (BSD) y unoserver (MIT).
+  - Como programas externos: KoSIT Validator (Java, Apache-2.0), unpaper (GPL, lo invoca OCRmyPDF), pngquant (GPL), jbig2enc (Apache-2.0), tiffcp de libtiff, draw.io desktop (GPL-3.0) y espeak-ng (GPL-3.0).
+  - Las reglas Schematron de EN 16931 (EUPL-1.2), XRechnung y Peppol se usan como datos en servidor y se registran en `docs/LICENSES.md` con la licencia que publique cada una.
+- **FFmpeg:**
+  - preferir compilación LGPL;
+  - una compilación GPL (con x264) solo como programa externo en servidor;
+  - nunca `libfdk_aac`;
+  - nunca ffmpeg.wasm en el frontend: `@ffmpeg/core` es GPL-2.0-or-later.
+- **Códecs:**
+  - riesgo bajo: MP3, Opus, Vorbis y FLAC;
+  - AAC (codificador nativo de FFmpeg), VP9 y AV1: sus autores los publican libres de regalías o con licencias de patentes propias, pero hay pools que reclaman licencias; anota la revisión en `docs/LEGAL.md`;
+  - codificación H.264 tras `VIDEO_H264_ENCODING_ENABLED`, apagado hasta la revisión legal;
+  - decodificación HEVC (vídeo H.265 y HEIC) tras `HEVC_DECODE_ENABLED`, apagado hasta la revisión legal;
+  - documenta en `docs/LEGAL.md` que el uso comercial de H.264 y HEVC puede requerir licencia de patentes, también como servicio en la nube.
+- **Modelos y recursos:** comprueba y registra la licencia de los modelos de Whisper, Kokoro, embeddings, rembg y Docling (código MIT; modelos con Apache-2.0 o CDLA-Permissive-2.0 según la ficha de cada uno; no uses modelos sin ficha de licencia) y del banco de sonidos de FluidSynth.
+- **CI:**
+  - `scripts/check_licenses.py` (pip-licenses y license-checker de npm) aplica `scripts/license_policy.yaml` y falla ante una licencia fuera de lista, una licencia desconocida o un paquete GPL o AGPL;
+  - `scripts/check_images.sh` falla si alguna imagen contiene `gs`, `mutool` o PyMuPDF;
+  - SBOM CycloneDX en cada compilación.
+
+---

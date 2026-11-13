@@ -1,0 +1,43 @@
+### A.9 Convertir desde PDF
+
+- **convertir-desde-pdf y las páginas pdf-a-***: un mismo `options_schema` condicionado por el formato.
+  - Formatos: TXT, RTF, HTML, DOCX, PPTX, XLSX, ODT, ODP, ODS, PNG, JPG, WEBP, TIFF, SVG, PDF/A, EPUB, Markdown, CSV y JSON.
+  - Páginas [todas] | rango, en todos los formatos.
+- **Imagen (JPG, PNG, WEBP y TIFF):**
+  - Color:
+    - [RGB, 24 bits];
+    - CMYK, 32 bits (JPG y TIFF, con perfil ICC mediante LittleCMS);
+    - gris, 8 bits;
+    - blanco y negro, 1 bit (PNG y TIFF).
+  - Compresión TIFF en blanco y negro: [G4] | G3 1D | G3 1D con EOL | G3 2D | LZW | PackBits, con tiffcp.
+  - Resolución [144] ppp (72–600).
+  - Calidad [85] % (JPG y WEBP).
+  - TIFF multipágina [sí].
+  - Salida: [una imagen por página] | una sola imagen con todas las páginas.
+  - ZIP.
+- **Office y texto (DOCX, ODT, RTF, PPTX, ODP, XLSX, ODS y TXT):**
+  - Modo:
+    - [Editable]: texto, tablas e imágenes reconstruidos con Docling;
+    - Editable con gráficos vectoriales como imágenes;
+    - Fiel al diseño: cajas posicionadas, con la importación de PDF de LibreOffice en `workeroffice`. Se avisa de que se edita peor.
+  - OCR automático si no hay texto [sí] (cuenta como tarea de OCR).
+  - XLSX: [una hoja por tabla] | todas las tablas en una hoja.
+  - PPTX: una diapositiva por página.
+  - Aviso común: con escaneos, conviene pasar antes ocr-pdf.
+- **HTML y EPUB:**
+  - Diseño:
+    - [Automático];
+    - Fijo: SVG por página con pdftocairo y capa de texto;
+    - Fluido: Docling a HTML y, para EPUB, pandoc.
+- **Markdown:**
+  - Imágenes: [incluidas, en ZIP] | sin imágenes.
+  - Quitar encabezados y pies repetidos [sí].
+  - Tablas GFM.
+- **PDF/A:** ver pdf-a-pdfa.
+- **pdf-a-imagenes** (F1):
+  - Formato: [JPG] | PNG | WEBP.
+  - Color: [color] | gris.
+  - Resolución [144] ppp (72–600).
+  - Calidad [85] %.
+  - Organización: [una carpeta por archivo] | todas las imágenes en una carpeta.
+  - Páginas [todas] | rango.

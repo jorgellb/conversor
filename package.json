@@ -1,0 +1,23 @@
+{
+  "name": "conversor",
+  "private": true,
+  "packageManager": "npm@10.9.3",
+  "workspaces": [
+    "packages/registry",
+    "packages/client-tools",
+    "apps/web"
+  ],
+  "scripts": {
+    "build": "npm run build -w @conversor/web",
+    "test": "npm run test -w @conversor/client-tools && npm run test -w @conversor/web",
+    "typecheck": "npm run typecheck -w @conversor/client-tools && npm run typecheck -w @conversor/web",
+    "e2e": "playwright test -c tests/e2e/playwright.config.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@cantoo/pdf-lib": "2.11.1"
+  }
+}

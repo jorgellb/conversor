@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Word a PDF convierte documentos DOC y DOCX en PDF manteniendo el formato: tipos de letra, tablas, encabezados, imágenes y saltos de página. Es la manera más segura de enviar un currículum, una carta o un informe y asegurarte de que el destinatario lo verá exactamente como lo preparaste, tenga o no instalado un procesador de textos.",
+    "La conversión se hace en nuestro servidor con LibreOffice, sin acceso a internet durante el proceso. Puedes elegir PDF normal, PDF/A para archivar documentos a largo plazo o PDF/UA con etiquetas de accesibilidad, limitar el resultado a un rango de páginas y decidir si se exportan los marcadores y los campos de formulario.",
+    "En las opciones adicionales ajustas la calidad JPEG de las imágenes y su resolución máxima, algo útil cuando el documento lleva muchas fotografías y quieres un PDF más ligero. Si el archivo está protegido con contraseña, escríbela: se usa solo para abrirlo durante la conversión y no se guarda.",
+    "Puedes convertir varios documentos a la vez; recibirás cada PDF por separado y un ZIP con todos. Los archivos se borran automáticamente al cabo de una hora si no tienes cuenta."
+  ],
+  "faq": [
+    {
+      "q": "¿Se mantienen las fuentes del documento?",
+      "a": "Se usan las del documento si están incrustadas o disponibles en el servidor; si no, se sustituyen por otras con métricas equivalentes para que el texto ocupe lo mismo."
+    },
+    {
+      "q": "¿Qué es PDF/A?",
+      "a": "Una variante de PDF pensada para conservar documentos durante años, que exigen muchas administraciones para presentar escritos."
+    },
+    {
+      "q": "¿Puedo convertir también Excel y PowerPoint?",
+      "a": "Sí, con Excel a PDF y PowerPoint a PDF, o con Convertir a PDF, que acepta cualquier formato de Office."
+    }
+  ]
+}

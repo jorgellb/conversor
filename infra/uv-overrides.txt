@@ -1,0 +1,3 @@
+# Nunca PyAV (D-111): sus ruedas traen libx264 y libx265 (GPL) dentro de libavcodec. faster-whisper solo lo usa para
+# decodificar, y aquí decodifica el FFmpeg LGPL de la imagen en un proceso aparte. Un marcador imposible lo quita.
+av; sys_platform == "never"

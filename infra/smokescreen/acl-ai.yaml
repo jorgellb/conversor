@@ -1,0 +1,9 @@
+# egressai (12.2): salida de workerai solo hacia OpenRouter (F3).
+---
+version: v1
+services: []
+default:
+  project: conversor
+  action: enforce
+  allowed_domains:
+    - openrouter.ai

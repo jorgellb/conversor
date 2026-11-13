@@ -1,0 +1,54 @@
+### A.6 Seguridad
+
+- **proteger-pdf** (F2):
+  - Contraseña de apertura, con medidor de robustez y botón «Generar».
+  - Contraseña de propietario. Si queda vacía y hay restricciones, se genera una aleatoria y se muestra una sola vez.
+  - Permisos, todos [permitidos]:
+    - modificar;
+    - comentar;
+    - imprimir;
+    - imprimir en alta calidad;
+    - ensamblar;
+    - rellenar formularios;
+    - copiar;
+    - copiar por accesibilidad.
+  - Cifrado [AES-256] | **Extra:** AES-128 para lectores antiguos.
+  - Aviso: el respeto de los permisos depende del lector.
+- **desbloquear-pdf** (F2): contraseña actual; quita cifrado y restricciones solo si la contraseña es correcta.
+- **firmar-pdf** (F4):
+  - Modo: [Insertar firma] | Firmar digitalmente.
+  - **Origen de la firma:**
+    - dibujar (ratón, táctil o lápiz; color y grosor);
+    - escribir (fuentes caligráficas OFL);
+    - subir imagen (quitar fondo);
+    - cámara.
+  - **Elementos:** iniciales y fecha. Colocar, redimensionar y repetir en varias páginas.
+  - **Firma digital:**
+    - [visible], con imagen, nombre, fecha, motivo y lugar | invisible;
+    - certificado [sello de la plataforma], en servidor por PKCS#11 | certificado propio o de la empresa (.p12 o .pfx) con firma interrumpida: el servidor prepara el PDF y el resumen, el navegador firma con WebCrypto tras abrir el archivo con PKI.js, y la clave no sale del navegador;
+    - nivel PAdES [B-T] | B-LT | B-LTA;
+    - certificación (DocMDP): [no] | sin cambios | permitir formularios | permitir formularios y anotaciones;
+    - sello de tiempo [sí].
+- **redactar-pdf** (F1):
+  - Rectángulos dibujados, listados en la barra lateral para revisarlos o quitarlos.
+  - Buscar y «Redactar todas las coincidencias».
+  - **Extra:** patrones de DNI/NIE, IBAN, email y teléfono.
+  - Color del recuadro [negro] y texto en el recuadro [ninguno].
+  - Método:
+    - [Rasterizar las páginas afectadas] a 300 ppp, como hace PDF24: elimina con seguridad texto, imágenes y vectores bajo el área; el resto de la página pierde la selección de texto y se ofrece pasar ocr-pdf;
+    - Eliminar solo el contenido bajo el área, con EmbedPDF y PDFium, que conserva el texto del resto de la página. Solo se ofrece cuando pasa las pruebas de redacción de 16.4 con texto, imágenes y vectores.
+  - Siempre quita también los metadatos.
+  - Tras guardar, se comprueba el resultado: el texto redactado no aparece, no queda texto dentro de las áreas y los píxeles de las imágenes bajo las áreas están sustituidos. Si algo falla, la tarea falla.
+- **eliminar-metadatos-pdf** (F2):
+  - Sin opciones obligatorias.
+  - Quita el diccionario Info, XMP, fechas, productor y software.
+  - Muestra antes lo que se va a borrar.
+  - Lotes.
+- **generar-contrasena** (F1, navegador):
+  - Longitud [16] (8–64).
+  - Mayúsculas [sí], Minúsculas [sí], Números [sí] y Símbolos [no].
+  - **Extra:**
+    - Excluir caracteres ambiguos (0/O, l/1/I) [no].
+    - Cantidad [1] (1–20).
+  - Copiar.
+  - Nada sale del navegador.

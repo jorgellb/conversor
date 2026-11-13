@@ -1,0 +1,33 @@
+{
+  "complete": false,
+  "reviewed": false,
+  "intro": [
+    "Collage maker puts your photos together on one page, ready to print or share. Pick a template (grid, mosaic, rows that keep each photo's shape, heart, circle, star, snapshots or free layout) and the photos arrange themselves; then you can frame each one, swap them between cells and adjust the spacing and the corners.",
+    "You can add text in the bundled Noto fonts, stickers and shapes drawn for this site, frames, shadows and a background in a colour, a gradient or one of your photos. If one page is not enough, add another: the PDF includes them all.",
+    "Everything happens in your browser. In the PDF, JPEG and PNG photos go in as they are, without recompressing, so they keep their quality; JPG or PNG output is exported at 150, 300 or 600 dpi.",
+    "With the Real size template you print ID photos (35 × 45 mm for visas and the EU; 26 × 32 mm for the Spanish ID card and passport), both sides of an identity card or photo prints at their exact size, with crop marks. Photo documentation shows each photo whole with a numbered caption, the date it was taken and your comment, plus a header and page numbers: useful for site reports, insurance claims or inventories."
+  ],
+  "steps": [
+    "Click «Add photos», or «Take a photo» to use the camera; pick the template and the number of slots.",
+    "Click a cell and drag the photo to frame it, drag a cell onto another to swap them, and add text, stickers or shapes.",
+    "Choose the paper, orientation and format, then click «Create collage» to download it or «Print»."
+  ],
+  "faq": [
+    {
+      "q": "Are my photos uploaded?",
+      "a": "No. The editor and the export run on your device: the photos never leave it."
+    },
+    {
+      "q": "Do the photos lose quality in the PDF?",
+      "a": "No: JPEG and PNG photos are embedded with their original bytes and only what each cell does not show is clipped. WEBP, GIF, BMP or AVIF photos are turned into PNG, losslessly."
+    },
+    {
+      "q": "Can I use my phone's camera?",
+      "a": "Yes. «Take a photo» opens the device camera (the rear one, if there is one) after asking for permission; each photo is added to the collage right away."
+    },
+    {
+      "q": "Can I print ID photos?",
+      "a": "Yes. Choose Real size and the size (35 × 45 mm, or 26 × 32 mm for the Spanish ID card and passport), add one photo and the sheet fills with copies. Print at 100 % or «Actual size» and cut along the marks. Check the size your application asks for first."
+    }
+  ]
+}

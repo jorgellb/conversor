@@ -1,0 +1,10 @@
+# egressweb (12.2): gotenbergweb, workeroffice y workersign salen a cualquier host público.
+# Las IP privadas, de enlace local, de metadatos y de las redes de Docker se niegan con --deny-range al arrancar:
+#   --deny-range=10.0.0.0/8 --deny-range=172.16.0.0/12 --deny-range=192.168.0.0/16 --deny-range=100.64.0.0/10
+#   --deny-range=169.254.0.0/16 --deny-range=fc00::/7 --deny-range=fe80::/10
+---
+version: v1
+services: []
+default:
+  project: conversor
+  action: open

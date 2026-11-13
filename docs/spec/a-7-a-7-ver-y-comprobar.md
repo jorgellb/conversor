@@ -1,0 +1,49 @@
+### A.7 Ver y comprobar
+
+- **lector-pdf** (F1): visor EmbedPDF. Si el archivo no es PDF, se convierte en servidor y se muestra.
+- **comparar-pdf** (F2, en el navegador; en servidor solo con archivos de más de `CLIENT_MAX_MB`):
+  - Archivos A y B.
+  - Vista:
+    - [texto]: añadido, borrado y cambiado, marcado en ambos, con una lista de cambios navegable;
+    - superposición (A en rojo, B en azul);
+    - deslizador.
+  - **Extra:**
+    - Ignorar mayúsculas y espacios [no].
+    - Informe PDF descargable.
+- **buscar-en-pdf** (F2, navegador):
+  - Texto a buscar.
+  - Distinguir mayúsculas [no], Palabra completa [no] y Expresión regular [no].
+  - Muchos archivos a la vez.
+  - Resultados con archivo, página y contexto; un clic abre la página resaltada.
+  - Exportar a CSV.
+  - Los archivos sin texto se señalan, con enlace a ocr-pdf.
+- **validar-pdfa** (F2):
+  - Perfil: [Automático, el que declara el archivo] | PDF/A-1a, 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4, 4e, 4f | PDF/UA-1, PDF/UA-2.
+  - Resultado: cumple o no cumple.
+  - Por regla: cláusula ISO, explicación propia en lenguaje sencillo, número de incumplimientos y páginas.
+  - «Convertir a PDF/A» y volver a comprobar.
+  - Informe descargable.
+- **verificar-firmas-pdf** (F4):
+  - **Por cada firma:**
+    - firmante y emisor;
+    - fecha, indicando si procede de una TSA de confianza;
+    - integridad;
+    - cambios posteriores y si estaban permitidos (DocMDP/FieldMDP, con el análisis de diferencias de pyHanko);
+    - nivel (simple, avanzada o cualificada) y si tiene validación a largo plazo.
+  - **Confianza:** lista de confianza de la UE, con prestador y país para firmas y sellos cualificados.
+  - **Revocación OCSP/CRL:** [bajo petición], por `egressweb`.
+  - Informe imprimible o en PDF.
+- **preferencias-visor-pdf** (F2):
+  - Quitar todas [no].
+  - Diseño de página (`/PageLayout`): SinglePage, OneColumn, TwoColumnLeft, TwoColumnRight, TwoPageLeft, TwoPageRight.
+  - Modo de página (`/PageMode`): FullScreen, UseAttachments, UseNone, UseOC, UseOutlines, UseThumbs.
+  - Página inicial y zoom inicial (`/OpenAction`): Fit, FitH, FitV o personalizado (%).
+  - `/ViewerPreferences`:
+    - CenterWindow, FitWindow y DisplayDocTitle;
+    - HideMenubar, HideToolbar y HideWindowUI;
+    - NonFullScreenPageMode;
+    - Duplex;
+    - PrintArea, PrintClip, ViewArea y ViewClip (MediaBox, CropBox, BleedBox, TrimBox o ArtBox);
+    - PrintScaling;
+    - Direction.
+  - Todas las opciones empiezan en [No cambiar].

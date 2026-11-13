@@ -1,0 +1,148 @@
+# CHANGELOG — super-prompt-conversor-coolify
+
+## v2 — 31/10/2026
+
+Revisión externa del documento (detalle en `REVISION.md`). 79 cambios, de P-01 a P-79, que corrigen 56 hallazgos: 2 bloqueantes, 17 altos, 30 medios y 7 bajos.
+
+Las líneas citadas son las del documento original (1.840 líneas).
+
+### Cambios, en el orden del documento
+
+- **P-01** (H-01): §0: qué hacer si los valores siguen sin sustituir. Sustituye la línea 9.
+- **P-02** (H-01): Nueva §0.1: entradas del propietario. Sustituye la línea 37.
+- **P-03** (H-01, H-44, H-45, H-56): §1: dos cierres por fase, documento troceado, calidad y muestras. Sustituye las líneas 43–68.
+- **P-04** (H-03, H-04, H-08, H-10, H-20, H-24, H-25, H-39): §2: stack con motores y trampas de licencia resueltos. Sustituye las líneas 74–97.
+- **P-05** (H-07, H-15): §3.1: tamaño por fases y cortafuegos que Docker no se salta. Sustituye las líneas 105–111.
+- **P-06** (H-08, H-26): §3.2: servicios nuevos (dos Gotenberg, dos proxies, migraciones de Better Auth, Mailpit). Sustituye las líneas 115–129.
+- **P-07** (H-36): §3.3: imágenes siempre privadas y coste de la CI. Sustituye las líneas 133–140.
+- **P-08** (H-13, H-31): §4.2: pre-finish bloqueante y rechazo de tamaño diferido. Sustituye las líneas 164–183.
+- **P-09** (H-32, H-37): §4.4: cabeceras de aislamiento, CORS y compartir revocable. Sustituye las líneas 193–201.
+- **P-10** (H-30): §4.5: reserva de disco y guarda de colas. Sustituye las líneas 205–211.
+- **P-11** (H-16): §4.6: copias cada 6 horas, fuera del servidor y con todo lo necesario para restaurar. Sustituye las líneas 215–220.
+- **P-12** (H-17, H-31, H-32): §5.1: herramientas híbridas acotadas y autenticación solo por cabecera. Sustituye las líneas 232–238.
+- **P-13** (H-17, H-18, H-19, H-28, H-46): §5.2: clase de coste, separación especificación e implementación, precedencia de flags. Sustituye las líneas 242–258.
+- **P-14** (H-14, H-35): §5.3: visibilidad de Valkey, intentos, latidos y secretos cifrados. Sustituye las líneas 262–269.
+- **P-15** (H-15, H-30): §5.4: concurrencia por tamaño de VPS, hilos y memoria. Sustituye las líneas 271–287.
+- **P-16** (H-05, H-06): §6.1: condiciones de OpenRouter verificadas el 31/10/2026. Sustituye las líneas 295–303.
+- **P-17** (H-05, H-06): §6.2: descubrimiento con tokens de salida y enrutado sin recogida de datos. Sustituye las líneas 307–318.
+- **P-18** (H-06): §6.3: presupuesto reconciliado, tope por tarea y bloques según la salida del modelo. Sustituye las líneas 322–351.
+- **P-19** (H-04, H-25): §6.4: embeddings admitidos, voz sin GPL en proceso y modelo de quitar fondo. Sustituye las líneas 355–359.
+- **P-20** (H-34): §6.5: caché de IA por propietario. Sustituye la línea 368.
+- **P-21** (H-05, H-47): §6.6: aviso fiel a la política real y enrutado sin recogida de datos. Sustituye las líneas 373–379.
+- **P-22** (H-12, H-52): §7.1: slug rellenar-pdf y redacción por rasterizado por defecto. Sustituye las líneas 391–395.
+- **P-23** (H-22): §7.2: HEIC y vídeo HEVC detrás del mismo flag. Sustituye las líneas 399–405.
+- **P-24** (H-04, H-08, H-38): §7.3: convertir-a-pdf, Gotenberg sin red, documentos enlazados y motores sin trampas de licencia. Sustituye las líneas 409–416.
+- **P-25** (H-20, H-21): §7.4: expectativas de Docling y LibreOffice para formatos no PDF. Sustituye las líneas 420–423.
+- **P-26** (H-38, H-39, H-41): §7.5: OCRmyPDF sin Ghostscript, escala de grises segura, eliminar-metadatos y comparar en el navegador. Sustituye las líneas 427–439.
+- **P-27** (H-06, H-15): §7.6: grupos de imagen-a-texto y pdf-a-audio. Sustituye las líneas 443–450.
+- **P-28** (H-22): §7.9: remultiplexar antes de recodificar y flags de códecs. Sustituye las líneas 476–477.
+- **P-29** (H-04, H-22, H-39): §7.11: SVG en el navegador, flag HEVC y modelo de rembg. Sustituye las líneas 486–491.
+- **P-30** (H-02): §7.12: pandoc siempre con --sandbox. Sustituye la línea 495.
+- **P-31** (H-20): §7.12: pptx-a-imagenes por Gotenberg. Sustituye la línea 499.
+- **P-32** (H-10): §7.14: motores de verificación de firmas. Sustituye las líneas 511–516.
+- **P-33** (H-02, H-04, H-08, H-39): §7.17: draw.io GPL externo, mermaid en el navegador, LaTeX aislado y captura por gotenbergweb. Sustituye las líneas 531–536.
+- **P-34** (H-04): §7.19: dwg-a-pdf sin PyMuPDF. Sustituye la línea 561.
+- **P-35** (H-39, H-53): §7.20: comprimir-glb y render-modelo-3d en el navegador. Sustituye la línea 570.
+- **P-36** (H-18): §7.22: reglas de indexación del catálogo. Sustituye las líneas 591–594.
+- **P-37** (H-10, H-11, H-43): §7.23 Facturas: flag común, firma en el navegador, escenarios de KoSIT y aviso legal actualizado. Sustituye las líneas 612–635.
+- **P-38** (H-08, H-10): §7.23 verificar-firmas-pdf: listas de confianza con pyHanko y salida por egressweb. Sustituye las líneas 666–667.
+- **P-39** (H-18, H-52): §7.23 pub-a-pdf con canonical. Sustituye la línea 674.
+- **P-40** (H-18, H-33, H-51, H-54): §8.2: correo sin abuso, Drive y Dropbox reales, contenido propio medible y datos estructurados vigentes. Sustituye las líneas 743–753.
+- **P-41** (H-29, H-31, H-47): §9.1: chat sin salida directa de la API, estado de subidas, webhook idempotente y exportación. Sustituye las líneas 769–783.
+- **P-42** (H-06, H-19, H-23, H-31): §9.3: cuotas por clase de coste, archivos por tarea y límites de IA alcanzables. Sustituye las líneas 795–806.
+- **P-43** (H-09, H-26, H-34): §9.4: tablas que faltaban, propiedad de las migraciones y cachés por propietario. Sustituye las líneas 810–833.
+- **P-44** (H-09): §10: custodia del sello, límites y certificado del usuario solo en el navegador. Sustituye las líneas 839–844.
+- **P-45** (H-03, H-04, H-22): §11: lista de licencias aplicable, trampas conocidas y códecs coherentes. Sustituye las líneas 850–872.
+- **P-46** (H-02, H-15): §12.1: secretos mínimos por contenedor y motores con entorno vacío. Sustituye las líneas 880–881.
+- **P-47** (H-08): §12.2: mapa de redes y salidas, dos proxies y dos Gotenberg. Sustituye las líneas 885–891.
+- **P-48** (H-02): §12.3: bombas de píxeles, SVG, ZIP de Office y entradas que leen archivos. Sustituye las líneas 895–914.
+- **P-49** (H-07, H-31, H-32, H-35): §12.4: IP real solo desde Cloudflare, cabeceras de la web y webhooks. Sustituye las líneas 918–922.
+- **P-50** (H-47): §12.5: bases jurídicas, plazos, subencargados completos y EIPD. Sustituye las líneas 926–929.
+- **P-51** (H-07, H-30): §13.1: cortafuegos del proveedor, certificado de origen y panel cerrado. Sustituye las líneas 937–946.
+- **P-52** (H-16, H-26, H-49, H-50): §13.2: variables mágicas vigentes, migraciones de un solo uso y tareas programadas. Sustituye las líneas 950–968.
+- **P-53** (H-01, H-48): §13.3: paso a producción de los pagos y lista del cierre operativo. Sustituye la línea 983.
+- **P-54** (H-06, H-08, H-09, H-14, H-22, H-23, H-25, H-27, H-30, H-31, H-35): §14: variables que faltaban, renombradas y eliminadas. Sustituye las líneas 989–1064.
+- **P-55** (H-28, H-46, H-56): §15: estructura con registro exportado, planes, políticas y especificación troceada. Sustituye las líneas 1070–1090.
+- **P-56** (H-01, H-02, H-05, H-12, H-13, H-14, H-16, H-34, H-41): §16: pruebas automatizables de los riesgos nuevos. Sustituye las líneas 1096–1174.
+- **P-57** (H-01, H-18, H-19, H-45): §17: lista de lanzamiento y orden de ejecución de las fases. Sustituye las líneas 1180–1190.
+- **P-58** (H-01, H-02, H-05, H-08, H-16): §18: criterios de aceptación verificables. Sustituye las líneas 1196–1207.
+- **P-59** (H-08, H-38): A.1 web-a-pdf: documentos enlazados y campos reales de Gotenberg. Sustituye las líneas 1251–1261.
+- **P-60** (H-20, H-42): A.1 escribir-pdf: vista previa exacta e índice con números reales sin extensiones de pago. Sustituye las líneas 1271–1284.
+- **P-61** (H-52): A.1 crear-collage: medidas de la foto del DNI con la norma vigente. Sustituye la línea 1306.
+- **P-62** (H-52): A.1 generar-codigo-qr: PayPal con correo o identificador. Sustituye la línea 1342.
+- **P-63** (H-52): A.1 generar-codigo-qr: rango del margen y valores por defecto del estilo. Sustituye las líneas 1347–1353.
+- **P-64** (H-10, H-11): A.2 crear-factura-electronica: UBL, perfiles que no son EN 16931 y firma en el navegador. Sustituye las líneas 1378–1386.
+- **P-65** (H-43): A.2 validar-factura-electronica: escenarios de 7.23. Sustituye la línea 1400.
+- **P-66** (H-55): A.4 imprimir-pdf: alternativa cuando el navegador no imprime desde un iframe. Sustituye la línea 1553.
+- **P-67** (H-40): A.5 comprimir-pdf: reducción de fuentes segura. Sustituye la línea 1601.
+- **P-68** (H-40): A.5 comprimir-pdf: cuatro opciones de borrado separadas, como en PDF24. Sustituye la línea 1607.
+- **P-69** (H-41): A.5 pdf-escala-de-grises: alternativa por página. Sustituye la línea 1611.
+- **P-70** (H-24): A.5 ocr-pdf: idiomas instalados, PDF/A sin Ghostscript y opciones de la v17. Sustituye las líneas 1626–1632.
+- **P-71** (H-24): A.5 pdf-a-pdfa: conversión sin Ghostscript y salida si no es posible. Sustituye las líneas 1645–1647.
+- **P-72** (H-09, H-10): A.6 firmar-pdf: el certificado de la empresa también por firma interrumpida. Sustituye la línea 1676.
+- **P-73** (H-12): A.6 redactar-pdf: rasterizar por defecto y verificación completa. Sustituye las líneas 1685–1689.
+- **P-74** (H-39): A.7 comparar-pdf: dónde se procesa. Sustituye la línea 1707.
+- **P-75** (H-20): A.9: modo fiel al diseño en workeroffice. Sustituye la línea 1806.
+- **P-76** (H-39): A.10: SVG en el navegador. Sustituye la línea 1831.
+- **P-77** (H-08): A.7 verificar-firmas-pdf: revocación por egressweb. Sustituye la línea 1737.
+- **P-78** (H-22): A.8 HEIC: flag común de HEVC. Sustituye la línea 1782.
+- **P-79** (H-22): A.10 heic: flag común de HEVC. Sustituye la línea 1838.
+
+### Índice por hallazgo
+
+- **H-01** (Bloqueante; Ejecutabilidad; §1.3, §14, §16.1, §17, §18): P-01, P-02, P-03, P-53, P-56, P-57, P-58.
+- **H-02** (Bloqueante; Seguridad; §7.12, §7.17, §12.1, §12.3, §12.4): P-30, P-33, P-46, P-48, P-56, P-58.
+- **H-03** (Alta; Licencias, ejecutabilidad; §11): P-04, P-45.
+- **H-04** (Alta; Licencias; §2, §6.4, §7.3, §7.11, §7.16, §7.19, §14): P-04, P-19, P-24, P-29, P-33, P-34, P-45.
+- **H-05** (Alta; IA, RGPD; §6.1, §6.6): P-16, P-17, P-21, P-56, P-58.
+- **H-06** (Alta; IA, producto; §6.3, §9.3): P-16, P-17, P-18, P-27, P-42, P-54.
+- **H-07** (Alta; Seguridad, infraestructura; §3.1, §13.1): P-05, P-49, P-51.
+- **H-08** (Alta; Seguridad, redes; §4.6, §7.3, §7.17, §7.23, §12.2): P-04, P-06, P-24, P-33, P-38, P-47, P-54, P-58, P-59, P-77.
+- **H-09** (Alta; Seguridad, legal (firma); §10, A.6): P-43, P-44, P-54, P-72.
+- **H-10** (Alta; Seguridad, licencias (facturas); §7.14, §7.23, A.2): P-04, P-32, P-37, P-38, P-64, P-72.
+- **H-11** (Alta; Legal (facturación); §7.23): P-37, P-64.
+- **H-12** (Alta; Seguridad, paridad; §7.1, A.6, §16.6): P-22, P-56, P-73.
+- **H-13** (Alta; Fiabilidad, abuso; §4.2): P-08, P-56.
+- **H-14** (Alta; Fiabilidad; §5.3): P-14, P-54, P-56.
+- **H-15** (Alta; Viabilidad; §3.1, §5.4, §12.1): P-05, P-15, P-27, P-46.
+- **H-16** (Alta; Operación; §4.6, §13.2): P-11, P-52, P-56, P-58.
+- **H-17** (Alta; Ejecutabilidad, alcance; §5.1): P-12, P-13.
+- **H-18** (Alta; Producto, SEO, alcance; §0, §7, §8.2, §17): P-13, P-36, P-39, P-40, P-57.
+- **H-19** (Alta; Producto; §9.3): P-13, P-42, P-57.
+- **H-20** (Media; Ejecutabilidad; §7.4, A.1, A.9): P-04, P-25, P-31, P-60, P-75.
+- **H-21** (Media; Producto, calidad; §7.4, A.9): P-25.
+- **H-22** (Media; Legal, códecs; §7.2, §7.9, §7.11, §11, §14): P-23, P-28, P-29, P-45, P-54, P-78, P-79.
+- **H-23** (Media; Coherencia; §9.3, §14): P-42, P-54.
+- **H-24** (Media; Coherencia, hechos; §2, §7.5, A.5): P-04, P-70, P-71.
+- **H-25** (Media; Hechos; §6.4, §14): P-04, P-19, P-54.
+- **H-26** (Media; Ejecutabilidad; §3.2, §9.4, §13.2): P-06, P-43, P-52.
+- **H-27** (Media; Ejecutabilidad; §14): P-54.
+- **H-28** (Media; Ejecutabilidad; §5.2, §14): P-13, P-55.
+- **H-29** (Media; Arquitectura; §9.1, §12.2): P-41.
+- **H-30** (Media; Capacidad; §4.5, §5.3): P-10, P-15, P-51, P-54.
+- **H-31** (Media; Abuso; §5.1, §9.3, §12.4): P-08, P-12, P-41, P-42, P-49, P-54.
+- **H-32** (Media; Seguridad web; §4.4, §9.1, §12.4): P-09, P-12, P-49.
+- **H-33** (Media; Abuso; §8.2): P-40.
+- **H-34** (Media; Privacidad; §6.5, §9.4): P-20, P-43, P-56.
+- **H-35** (Media; Seguridad; §5.3, §12.3): P-14, P-49, P-54.
+- **H-36** (Media; Operación, coste; §3.3): P-07.
+- **H-37** (Media; Legal, CDN; §0 (decisión 7), §4.4): P-09.
+- **H-38** (Media; Paridad; §7.3, §7.5, A.1): P-24, P-26, P-59.
+- **H-39** (Media; Paridad (privacidad), coste; §7.5, §7.11, §7.17, §7.20): P-04, P-26, P-29, P-33, P-35, P-74, P-76.
+- **H-40** (Media; Calidad, paridad; A.5): P-67, P-68.
+- **H-41** (Media; Implementación; §7.5, A.5, §16.6): P-26, P-56, P-69.
+- **H-42** (Media; Ejecutabilidad; A.1): P-60.
+- **H-43** (Media; Hechos (facturación); §7.23, A.2): P-37, P-65.
+- **H-44** (Media; Ejecutabilidad; §1.8): P-03.
+- **H-45** (Media; Ejecutabilidad; §1.7, §17): P-03, P-57.
+- **H-46** (Media; Arquitectura; §5.2): P-13, P-55.
+- **H-47** (Media; RGPD; §6.6, §9.1, §12.5): P-21, P-41, P-50.
+- **H-48** (Media; Negocio; §0 (decisión 6), §13.3, §14): P-53.
+- **H-56** (Media; Organización; Todo el documento): P-03, P-55.
+- **H-49** (Baja; Despliegue; §13.2): P-52.
+- **H-50** (Baja; Hechos (Coolify); §13.2): P-52.
+- **H-51** (Baja; SEO; §8.2): P-40.
+- **H-52** (Baja; Paridad, coherencia; §7.1, §7.23, A.1): P-22, P-39, P-61, P-62, P-63.
+- **H-53** (Baja; 3D; §7.20): P-35.
+- **H-54** (Baja; Integraciones; §8.2): P-40.
+- **H-55** (Baja; UX; A.4): P-66.
