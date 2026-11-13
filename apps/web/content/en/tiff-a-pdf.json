@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TIFF to PDF converts TIFF images, including multi-page ones, into a PDF document. TIFF is the usual format of office scanners, faxes and many document archives, and turning it into PDF lets anyone open, print or attach it without a special viewer.",
+    "The conversion runs on our server with img2pdf, which copies the image data into the PDF without recompressing it whenever the format allows: black-and-white TIFFs with CCITT G4 compression and those containing JPEG are kept as they are, without losing sharpness or gaining weight, and the rest are stored losslessly. Each page of a multi-page TIFF becomes a page of the PDF.",
+    "Choose a page size from A0 to A6, Letter or Legal, custom measurements in millimetres or inches or the size of each image at its DPI; automatic, portrait or landscape orientation, and a margin from zero to 25 mm or whatever you specify. The fit option lets you fit the image entirely, fill the page or keep the actual size, shrinking it only if it does not fit.",
+    "With several files you can merge them into one PDF, with a bookmark on the first page of each TIFF, or create one PDF per file and download them in a ZIP. Without an account you can send up to 5 files of 50 MB per task; with a free account, 20 files of 100 MB, and with Pro, up to 100. Files are deleted after one hour without an account and after 24 hours with one."
+  ],
+  "faq": [
+    {
+      "q": "Is quality lost in the conversion?",
+      "a": "No. TIFFs with G4 or JPEG compression are copied without recompression, and the rest are stored with lossless compression."
+    },
+    {
+      "q": "What happens with a TIFF that has many pages?",
+      "a": "Each page of the TIFF takes one page of the PDF, in the same order."
+    },
+    {
+      "q": "Can I search text in the resulting PDF?",
+      "a": "The PDF contains images, not text. Run it through OCR PDF afterwards to be able to search and copy its content."
+    }
+  ]
+}

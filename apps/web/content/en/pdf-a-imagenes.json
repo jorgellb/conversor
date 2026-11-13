@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to images turns the pages of one or more PDFs into JPG, PNG or WEBP images and, when there is more than one, delivers them in a tidy ZIP. It is designed for batches: add all your documents at once and get one folder per PDF, with every page numbered, or all the images together in the same folder.",
+    "Choose the format for the job: JPG for photos and lightweight documents, PNG for lossless text and graphics and WEBP for publishing on the web at a small size. Quality, from 1 to 100 %, applies to JPG and WEBP. Resolution ranges from 72 to 600 DPI, with 144 by default, and each page has a pixel limit to avoid running out of memory.",
+    "Besides colour, you can export the pages in greyscale or, with PNG, in pure black and white. For professional printing, CMYK mode with JPG is processed on the server and applies an ICC colour profile. In “Pages” you type a range, such as “1-4, 9”, which applies to each document, and in the additional options you can ask for a single long image per PDF with its pages stacked.",
+    "The conversion runs in your browser with PDFium. Only CMYK mode and batches above the browser's maximum size go through the server, which uses the same engine and deletes the files when your plan's retention period ends; there, each PDF can have up to 100 pages without an account, 300 with a free account and 2000 with Pro."
+  ],
+  "faq": [
+    {
+      "q": "Which format suits me?",
+      "a": "JPG for sharing, PNG if there is small print or graphics and WEBP for a website. If you only need one, PDF to JPG, PDF to PNG and PDF to WEBP have it already selected."
+    },
+    {
+      "q": "Is the page order kept?",
+      "a": "Yes. Each image carries the name of the PDF and its page number, so they sort themselves."
+    },
+    {
+      "q": "What if a PDF has a password?",
+      "a": "You are asked for it before converting, only so the file can be opened."
+    },
+    {
+      "q": "How do I convert images to PDF?",
+      "a": "Images to PDF goes the other way: it puts JPG, PNG, WEBP, GIF, BMP and TIFF into one document."
+    }
+  ]
+}

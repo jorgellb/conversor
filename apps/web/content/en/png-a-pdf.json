@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG to PDF places your PNG images on the pages of a PDF: screenshots, diagrams, exported charts or documents saved as pictures. It is the simple way to send several screenshots as one tidy file or to hand in work in the format many platforms ask for.",
+    "PNG images go into the PDF losslessly, so text in screenshots and fine lines look as sharp as in the original, and transparent areas show the white background of the page. The conversion happens in your browser; only batches above the maximum size for the browser go through the server, which deletes the files when your plan's retention period ends.",
+    "You can choose paper from A0 to A6, Letter or Legal, your own measurements in millimetres or inches, or let each page take the size of its image at the DPI you set, ideal for screenshots you do not want rescaled. Automatic orientation turns the page when the image is wider than it is tall, and the margin ranges from zero to 25 mm or any value you prefer.",
+    "The fit option decides whether the image fits entirely, fills the page by cropping the excess or is placed at its actual size. Drag the images to reorder them and choose between a single PDF, with a bookmark named after each file if you want, or one PDF per image downloaded in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Will my screenshots look pixelated?",
+      "a": "They are neither recompressed nor downscaled: the PDF keeps the same pixels as the PNG."
+    },
+    {
+      "q": "Is transparency kept?",
+      "a": "Yes. Transparent areas of the PNG stay transparent and show the white of the page."
+    },
+    {
+      "q": "How do I get the images back out?",
+      "a": "PDF to PNG turns each page of a PDF into a PNG image."
+    }
+  ]
+}

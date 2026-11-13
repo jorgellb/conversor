@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG a PDF coloca tus imágenes PNG en las páginas de un PDF: capturas de pantalla, esquemas, gráficos exportados o documentos guardados como imagen. Es la forma sencilla de enviar varias capturas como un único archivo ordenado o de entregar un trabajo en el formato que piden muchas plataformas.",
+    "Los PNG entran en el PDF sin pérdida, así que el texto de las capturas y las líneas finas se ven tan nítidos como en el original, y las zonas transparentes dejan ver el fondo blanco de la página. La conversión se hace en tu navegador; solo los lotes que superan el tamaño máximo para el navegador pasan por el servidor, que borra los archivos cuando vence el plazo de tu plan.",
+    "Puedes elegir papel de A0 a A6, Carta o Legal, medidas propias en milímetros o pulgadas, o que cada página tenga el tamaño de su imagen según los ppp que indiques, ideal para capturas que no quieres reescalar. La orientación automática gira la página cuando la imagen es apaisada, y el margen va de cero a 25 mm o al valor que prefieras.",
+    "El ajuste decide si la imagen encaja entera, rellena la página recortando lo que sobra o se coloca a tamaño real. Ordena las imágenes arrastrándolas y elige entre un solo PDF, con un marcador con el nombre de cada archivo si quieres, o un PDF por imagen descargado en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Las capturas se ven pixeladas?",
+      "a": "No se recomprimen ni se reducen: el PDF guarda los mismos píxeles que el PNG."
+    },
+    {
+      "q": "¿Se mantiene la transparencia?",
+      "a": "Sí. Las zonas transparentes del PNG siguen siéndolo y dejan ver el blanco de la página."
+    },
+    {
+      "q": "¿Cómo vuelvo a sacar las imágenes?",
+      "a": "Con PDF a PNG conviertes cada página de un PDF en una imagen PNG."
+    }
+  ]
+}

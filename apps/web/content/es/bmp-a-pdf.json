@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "BMP a PDF convierte mapas de bits de Windows en un PDF fácil de compartir. Los BMP suelen salir de programas antiguos, escáneres o capturas de pantalla y ocupan mucho porque apenas comprimen; dentro del PDF se guardan con compresión sin pérdida, de modo que el documento suele pesar bastante menos que los archivos originales.",
+    "No hace falta subir nada: el navegador lee cada BMP, lo pasa a PNG sin perder un solo píxel y monta el PDF en tu dispositivo. Por eso puedes usarlo también con documentos que prefieres que no salgan de tu equipo.",
+    "Configura la página a tu gusto: tamaños de A0 a A6, Carta o Legal, unas medidas personalizadas en milímetros o pulgadas, o una página por imagen con su tamaño exacto según los ppp que indiques. Elige la orientación (automática, vertical u horizontal) y un margen entre cero y 25 mm, o escribe el tuyo.",
+    "Si el BMP no tiene las proporciones del papel, el ajuste resuelve cómo encaja: entero con bandas en blanco, rellenando la página y recortando los bordes, o a tamaño real. Las imágenes van en el orden de la lista, que puedes cambiar arrastrando, y se unen en un PDF, con marcadores opcionales con sus nombres, o se guardan como PDF separados dentro de un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se pierde calidad?",
+      "a": "No. La compresión que se aplica es sin pérdida, como la de PNG: el PDF contiene los mismos píxeles que el BMP."
+    },
+    {
+      "q": "¿Puedo convertir muchos BMP a la vez?",
+      "a": "Sí. Añade todos los que necesites; se procesan uno tras otro en tu navegador."
+    },
+    {
+      "q": "¿Y si prefiero una imagen más ligera en vez de un PDF?",
+      "a": "Usa BMP a JPG, que convierte tus mapas de bits en fotos JPG."
+    }
+  ]
+}

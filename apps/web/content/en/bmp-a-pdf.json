@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "BMP to PDF converts Windows bitmaps into a PDF that is easy to share. BMP files usually come from older programs, scanners or screenshots and take up a lot of space because they barely compress; inside the PDF they are stored with lossless compression, so the document is usually much lighter than the original files.",
+    "There is no need to upload anything: your browser reads each BMP, converts it to PNG without losing a single pixel and builds the PDF on your device. That makes it suitable for documents you would rather keep on your own computer.",
+    "Set up the page as you like: sizes from A0 to A6, Letter or Legal, custom measurements in millimetres or inches, or one page per image with its exact size at the DPI you specify. Choose the orientation (automatic, portrait or landscape) and a margin between zero and 25 mm, or type your own.",
+    "If the BMP does not have the proportions of the paper, the fit option decides how it is placed: whole with blank bands, filling the page and cropping the edges, or at its actual size. Images follow the order of the list, which you can change by dragging, and are merged into one PDF, with optional bookmarks carrying their names, or saved as separate PDFs inside a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Is any quality lost?",
+      "a": "No. The compression applied is lossless, like PNG's: the PDF contains the same pixels as the BMP."
+    },
+    {
+      "q": "Can I convert many BMP files at once?",
+      "a": "Yes. Add as many as you need; they are processed one after another in your browser."
+    },
+    {
+      "q": "What if I would rather have a lighter image than a PDF?",
+      "a": "Use BMP to JPG, which turns your bitmaps into JPG photos."
+    }
+  ]
+}

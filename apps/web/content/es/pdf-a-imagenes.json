@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a imágenes convierte las páginas de uno o varios PDF en imágenes JPG, PNG o WEBP y, si hay más de una, te las entrega en un ZIP ordenado. Está pensado para lotes: añade todos los documentos de una vez y obtén una carpeta por PDF, con cada página numerada, o todas las imágenes juntas en la misma carpeta.",
+    "Elige el formato según el uso: JPG para fotos y documentos ligeros, PNG para texto y gráficos sin pérdida y WEBP para publicar en la web con poco peso. La calidad, del 1 al 100 %, se aplica a JPG y WEBP. La resolución va de 72 a 600 ppp, con 144 por defecto, y cada página tiene un límite de píxeles para no agotar la memoria.",
+    "Además de en color, puedes sacar las páginas en escala de grises o, con PNG, en blanco y negro puro. Para imprenta, el modo CMYK con JPG se procesa en el servidor y aplica un perfil de color ICC. En «Páginas» escribes un rango, como «1-4, 9», que se aplica a cada documento, y en las opciones adicionales puedes pedir una sola imagen larga por PDF con sus páginas apiladas.",
+    "La conversión se hace en tu navegador con PDFium. Solo el modo CMYK y los lotes que superan el tamaño máximo del navegador pasan por el servidor, que usa el mismo motor y borra los archivos al vencer el plazo de tu plan; allí cada PDF puede tener hasta 100 páginas sin cuenta, 300 con la cuenta gratuita y 2000 con Pro."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué formato me conviene?",
+      "a": "JPG para compartir, PNG si hay letra pequeña o gráficos y WEBP para una web. Si solo necesitas uno, PDF a JPG, PDF a PNG y PDF a WEBP lo traen ya elegido."
+    },
+    {
+      "q": "¿Se mantiene el orden de las páginas?",
+      "a": "Sí. Cada imagen lleva el nombre del PDF y su número de página, así que se ordenan solas."
+    },
+    {
+      "q": "¿Y si un PDF tiene contraseña?",
+      "a": "Se te pide antes de convertirlo, solo para poder abrirlo."
+    },
+    {
+      "q": "¿Cómo convierto imágenes a PDF?",
+      "a": "Imágenes a PDF hace el camino inverso: junta JPG, PNG, WEBP, GIF, BMP y TIFF en un documento."
+    }
+  ]
+}

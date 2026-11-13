@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to PNG turns each page of a PDF into a PNG image, a lossless format that keeps text, thin lines and graphics crisp. It is the best choice for inserting pages into a presentation, publishing diagrams or plans, or making screenshots of a document without the compression artefacts of JPG.",
+    "The conversion runs in your browser with PDFium; only batches above the browser's maximum size go to the server, which uses the same engine. Choose a resolution between 72 and 600 DPI: 144, the default, works well for screens, and 300 or more gives images suitable for printing. Each page has a pixel limit and, if the requested resolution exceeds it, the image is reduced just enough to avoid running out of memory.",
+    "You can get the pages in colour, in greyscale or in pure black and white, useful for text documents you are going to print. Specify pages with ranges such as “1-3, 7” or with the even and odd shortcuts, or ask in the additional options for a single long image with all pages one below the other.",
+    "Each image is named after the PDF followed by the page number. If you convert several PDFs at once, the ZIP will contain one folder per document or, if you prefer, all the images together. When a PDF is protected, you are asked for the password before converting it."
+  ],
+  "faq": [
+    {
+      "q": "PNG or JPG?",
+      "a": "PNG for text, graphics and screenshots that must look perfect; JPG takes less space with photos. For JPG use PDF to JPG."
+    },
+    {
+      "q": "Why are my PNG files so big?",
+      "a": "PNG loses no information, and at high resolution files grow. Lower the DPI or choose greyscale to make them smaller."
+    },
+    {
+      "q": "Can I convert just one page?",
+      "a": "Yes. Type its number in “Pages” and you will download a single image, without a ZIP."
+    }
+  ]
+}

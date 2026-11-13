@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TIFF a PDF convierte imágenes TIFF, también las de varias páginas, en un documento PDF. Es el formato habitual de los escáneres de oficina, los faxes y muchos archivos de documentación, y pasarlo a PDF permite que cualquiera lo abra, lo imprima o lo adjunte sin un visor especial.",
+    "La conversión se hace en nuestro servidor con img2pdf, que copia los datos de imagen al PDF sin recomprimirlos cuando el formato lo permite: los TIFF en blanco y negro con compresión CCITT G4 y los que llevan JPEG se conservan tal cual, sin perder nitidez ni ganar peso, y el resto se guarda sin pérdida. Cada página de un TIFF multipágina pasa a ser una página del PDF.",
+    "Elige el tamaño de página entre A0 y A6, Carta o Legal, unas medidas personalizadas en milímetros o pulgadas o el tamaño de cada imagen según sus ppp; la orientación automática, vertical u horizontal, y un margen de cero a 25 mm o el que indiques. El ajuste permite encajar la imagen entera, rellenar la página o mantener el tamaño real, reduciéndola solo si no cabe.",
+    "Con varios archivos puedes unirlos en un solo PDF, con un marcador en la primera página de cada TIFF, o crear un PDF por archivo y descargarlos en un ZIP. Sin cuenta puedes enviar hasta 5 archivos de 50 MB por tarea; con la cuenta gratuita, 20 archivos de 100 MB, y con Pro, hasta 100. Los archivos se borran al cabo de una hora sin cuenta y de 24 horas con cuenta."
+  ],
+  "faq": [
+    {
+      "q": "¿Se pierde calidad al convertir?",
+      "a": "No. Los TIFF con compresión G4 o JPEG se copian sin recomprimir, y el resto se guarda con compresión sin pérdida."
+    },
+    {
+      "q": "¿Qué pasa con un TIFF de muchas páginas?",
+      "a": "Cada página del TIFF ocupa una página del PDF, en el mismo orden."
+    },
+    {
+      "q": "¿Puedo buscar texto en el PDF resultante?",
+      "a": "El PDF contiene imágenes, no texto. Pásalo después por OCR de PDF para poder buscar y copiar su contenido."
+    }
+  ]
+}

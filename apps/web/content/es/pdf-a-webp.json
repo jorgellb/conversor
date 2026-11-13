@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a WEBP convierte cada página de un PDF en una imagen WEBP, el formato que usan las webs para cargar rápido. A igual calidad visual suele ocupar menos que JPG, así que es una buena elección para mostrar páginas de un catálogo, una carta o un folleto en una web o una tienda online.",
+    "Las páginas se dibujan en tu navegador con PDFium y no salen de tu dispositivo; los lotes demasiado grandes para el navegador se procesan en el servidor con el mismo motor. Ajusta la calidad entre el 1 y el 100 % (85 por defecto) para equilibrar nitidez y peso, y la resolución entre 72 y 600 ppp: 144 basta para pantallas y los valores altos permiten ampliar sin perder detalle.",
+    "Elige color o escala de grises y qué páginas quieres, todas o con rangos como «2-5, 8». En las opciones adicionales puedes pedir una única imagen larga con todas las páginas apiladas, práctica para mostrar un documento completo con desplazamiento vertical.",
+    "Las imágenes llevan el nombre del PDF y el número de página; cuando hay más de una se descargan juntas en un ZIP, con una carpeta por documento si conviertes varios PDF. Si un archivo tiene contraseña, se te pedirá para abrirlo, y cada página tiene un límite de píxeles para no agotar la memoria del equipo."
+  ],
+  "faq": [
+    {
+      "q": "¿Se puede abrir WEBP en cualquier sitio?",
+      "a": "Los navegadores actuales lo muestran sin problema; algunos programas antiguos de edición u ofimática pueden no admitirlo, y en ese caso conviene PDF a JPG."
+    },
+    {
+      "q": "¿Qué calidad elijo?",
+      "a": "El 85 % por defecto equilibra nitidez y peso; súbela si el documento tiene letra pequeña o bájala si necesitas archivos más ligeros."
+    },
+    {
+      "q": "¿Y para convertir WEBP a PDF?",
+      "a": "Usa WEBP a PDF, que reúne imágenes WEBP en un documento."
+    }
+  ]
+}

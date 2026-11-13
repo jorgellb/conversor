@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GIF to PDF gathers GIF images into a PDF document: logos, simple charts, old diagrams or illustrations you want to print or attach to an email as one file. The result looks the same on any device and in any PDF reader.",
+    "The conversion runs entirely in your browser, without uploading anything. Each GIF is turned into lossless PNG before going into the PDF, so its colours stay exactly as they were and transparent areas show the white of the page. For an animated GIF the first frame is used, because a PDF does not play animations.",
+    "You can use standard paper sizes from A0 to A6, Letter and Legal, or your own measurements in millimetres or inches. With “Fit to image”, the page takes the size of the GIF at the DPI you choose, which is practical for small graphics you do not want stretched across a whole sheet. Orientation can be automatic, portrait or landscape, and the margin can be 5 to 25 mm, none or a custom value.",
+    "Images are placed in the order of the list, which you change by dragging them. The fit option decides whether each one fits entirely, fills the page by cropping or stays at its actual size, shrunk only if it does not fit. You can put everything in a single PDF, with one bookmark per image, or create one PDF per file and download them in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Is the animation kept?",
+      "a": "No. The PDF shows a still image: the first frame of each GIF."
+    },
+    {
+      "q": "Why does my icon come out huge on the page?",
+      "a": "With a paper size such as A4 and the “Fit” option, the image is enlarged to fill the usable area. Choose “Fit to image” or “Actual size” to keep it small."
+    },
+    {
+      "q": "What if my images are in several formats?",
+      "a": "Images to PDF accepts JPG, PNG, WEBP, GIF, BMP and TIFF in the same document."
+    }
+  ]
+}

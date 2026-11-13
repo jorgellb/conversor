@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GIF a PDF reúne imágenes GIF en un documento PDF: logotipos, gráficos sencillos, diagramas antiguos o ilustraciones que quieras imprimir o adjuntar a un correo como un solo archivo. El resultado se ve igual en cualquier dispositivo y lector de PDF.",
+    "La conversión se hace entera en tu navegador, sin subir nada. Cada GIF se transforma en PNG sin pérdida antes de entrar en el PDF, así que sus colores se mantienen tal cual y las zonas transparentes dejan ver el blanco de la página. De un GIF animado se toma el primer fotograma, porque un PDF no reproduce animaciones.",
+    "Puedes usar papeles estándar de A0 a A6, Carta y Legal, o medidas propias en milímetros o pulgadas. Con «Según la imagen», la página toma el tamaño del GIF a la resolución en ppp que elijas, algo práctico para gráficos pequeños que no quieres ver estirados a toda la hoja. Hay orientación automática, vertical u horizontal, y un margen de 5 a 25 mm, ninguno o uno personalizado.",
+    "Las imágenes se colocan en el orden de la lista, que cambias arrastrándolas. El ajuste decide si cada una encaja entera, rellena la página recortando o se queda a tamaño real, reducida solo si no cabe. Puedes juntar todo en un único PDF, con un marcador por imagen, o crear un PDF por archivo y bajarlos en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conserva la animación?",
+      "a": "No. El PDF muestra una imagen fija: el primer fotograma de cada GIF."
+    },
+    {
+      "q": "¿Por qué mi icono sale enorme en la página?",
+      "a": "Con un papel como A4 y el ajuste «Encajar», la imagen se amplía hasta llenar el área útil. Elige «Según la imagen» o «Tamaño real» para mantenerla pequeña."
+    },
+    {
+      "q": "¿Y si tengo imágenes de varios formatos?",
+      "a": "Imágenes a PDF admite JPG, PNG, WEBP, GIF, BMP y TIFF en el mismo documento."
+    }
+  ]
+}

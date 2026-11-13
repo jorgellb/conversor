@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Imágenes a PDF junta fotos e imágenes de distintos formatos en un único documento: JPG, PNG, WEBP, GIF, BMP y TIFF, mezclados en el mismo PDF y en el orden que quieras. Sirve para entregar un trabajo fotografiado por páginas, reunir los justificantes de un trámite o crear un álbum que se abra en cualquier dispositivo.",
+    "Cada formato se trata con cuidado: los JPEG se incrustan tal cual, sin recomprimir; los PNG entran sin pérdida, y los WEBP, GIF y BMP se pasan antes a PNG, también sin pérdida. Las fotos del móvil respetan la orientación con que se guardaron, así que no salen tumbadas.",
+    "La página puede tener un tamaño de A0 a A6, Carta o Legal, unas medidas personalizadas en milímetros o pulgadas o el de cada imagen según sus ppp. Elige orientación automática, vertical u horizontal, un margen de cero a 25 mm o personalizado, y el ajuste: encajar entera, rellenar recortando o tamaño real. Puedes unir todo en un PDF con un marcador por imagen o crear un PDF por imagen dentro de un ZIP.",
+    "Las imágenes se procesan en tu navegador. Los TIFF y los lotes demasiado grandes para el navegador se convierten en el servidor con img2pdf, que tampoco recomprime los JPEG, y un TIFF de varias páginas aporta todas sus páginas. Los archivos subidos se borran al vencer el plazo de tu plan: una hora sin cuenta y 24 horas con cuenta."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo cambio el orden de las páginas?",
+      "a": "Arrastra las imágenes en la lista antes de convertir; el PDF sigue ese orden."
+    },
+    {
+      "q": "¿Pierden calidad mis fotos?",
+      "a": "No. Los JPEG se copian sin recomprimir y el resto se guarda sin pérdida. Si el PDF pesa demasiado, pásalo después por Comprimir PDF."
+    },
+    {
+      "q": "¿Puedo hacer el camino inverso?",
+      "a": "Sí: PDF a imágenes convierte las páginas de uno o varios PDF en JPG, PNG o WEBP."
+    }
+  ]
+}

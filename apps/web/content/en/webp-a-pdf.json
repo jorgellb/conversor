@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WEBP to PDF turns WEBP images, the format many websites use and the one you often get when saving a picture from your browser, into a PDF document that opens on any device and prints without surprises. It is handy for gathering screenshots, illustrations or product photos into a single file you can send or archive.",
+    "Everything happens in your browser: the images are not uploaded to any server. Since PDF cannot hold WEBP data inside, each image is first converted to lossless PNG and then placed on the page, so colours, detail and transparency are preserved.",
+    "Choose the page size (A0 to A6, Letter, Legal or a custom size in millimetres or inches) or let each page match its image at the DPI you set. Orientation can be automatic, portrait or landscape, and the margin ranges from zero to 25 mm or any value you type. In the additional options you decide whether the image fits entirely, fills the page by cropping the excess or is placed at its actual size.",
+    "Drag the images to reorder them before converting. By default they are merged into a single PDF, with a bookmark named after each image if you turn it on; you can also get one PDF per image and download them all together in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Why is the PDF bigger than my WEBP files?",
+      "a": "WEBP compresses heavily, and converting it to lossless PNG makes it grow. If you need a lighter file, run the result through Compress PDF afterwards."
+    },
+    {
+      "q": "Can I mix WEBP with other formats?",
+      "a": "This tool only accepts WEBP. To combine it with JPG, PNG, GIF, BMP or TIFF in the same document, use Images to PDF."
+    },
+    {
+      "q": "What about going from PDF to WEBP?",
+      "a": "PDF to WEBP turns each page of a PDF into a WEBP image."
+    }
+  ]
+}
