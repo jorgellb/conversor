@@ -17,7 +17,13 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "packages/core"), str(ROOT / "packages/tools"), str(ROOT / "apps/api"), str(ROOT / "scripts/fixtures")]
 
-PG_BIN = Path("/usr/lib/postgresql/16/bin")
+def _pg_bin() -> Path:
+    # PostgreSQL 16 en producción y en la CI; en local vale la versión que traiga la distribución (Debian 13: 17).
+    found = sorted(Path("/usr/lib/postgresql").glob("*/bin/initdb"), key=lambda p: int(p.parts[-3]))
+    return found[0].parent if found else Path("/usr/lib/postgresql/16/bin")
+
+
+PG_BIN = _pg_bin()
 
 
 def _free_port() -> int:

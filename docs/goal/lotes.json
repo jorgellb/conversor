@@ -1,0 +1,2761 @@
+[
+ {
+  "id": "G0-A",
+  "phase": "Transversal (antes de F3-C)",
+  "title": "Infraestructura de proceso: contrato 16.6 genérico, flags, generador de TOOLS.md, Playwright y fijado de versiones",
+  "tools": [],
+  "cross_cutting": [
+   "tests/test_contrato_opciones.py: prueba de contrato 16.6 para todas las herramientas del registro (options_schema publicado en GET /v1/tools igual al modelo, valores por defecto válidos, cada ge/le/pattern/Literal fuera de rango da INVALID_OPTIONS en POST /v1/jobs) y una tabla declarativa tests/anexo_a_minimos.py (slug -> opciones mínimas del Anexo A, a-*.md) comprobada contra el esquema",
+   "ToolSpec.default_enabled (apagado por defecto por herramienta, necesario para udf-a-pdf según 7.23 y para las herramientas sin muestra válida según 01-1 regla 8), leído en packages/core/core/flags.py y apps/web/src/lib/flags.ts",
+   "Paridad de flags: THEMATIC de flags.ts igual a THEMATIC_TOOLS de flags.py (INVOICING_ES_ENABLED: crear-factura, crear-factura-electronica, pdf-a-factura-electronica), con una prueba en apps/web/test que lee los dos",
+   "scripts/gen_docs.py: cabecera actualizada, columna de fase y estado, motivo de desactivación (campo en ToolSpec o config/tools-notes.yaml, 01-1 regla 7), lista de fuera de alcance de 7.24 y tabla de paridad con PDF24 (config/pdf24.yaml, 17)",
+   "tests/e2e/playwright.config.ts: testMatch del proyecto navegador con f4|f6|f7",
+   "EXCLUDED_WORDS de packages/core/core/ai/__init__.py: añadir 'firmas' (verificar-firmas-pdf, solicitar-firmas) además de la categoría sign (6.6, 16.3)",
+   "Fijar FFMPEG_BUILD por fecha y SHA-256 en workers/Dockerfile (01-1 regla 2, D-13) y quitar los ^ de diff-match-patch en packages/client-tools/package.json",
+   "scripts/gen_coolify_compose.py: mem_limit sobreescribible con ${MEM_<GRUPO>} (perfil 8 vCPU por defecto, 16 vCPU documentado; 5.4)",
+   "docs/PLAN.md: tablas por lotes de F3 (resto), F4, F6, vídeo de F5 y F7 según docs/GOAL.md; docs/DECISIONS.md: decisiones globales desde D-134"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G1-A",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "packages/core/core/registry.py",
+   "packages/core/core/flags.py",
+   "apps/web/src/lib/flags.ts",
+   "scripts/gen_docs.py",
+   "docs/TOOLS.md",
+   "tests/e2e/playwright.config.ts",
+   "workers/Dockerfile",
+   "scripts/gen_coolify_compose.py",
+   "docker-compose.coolify.yml",
+   "packages/client-tools/package.json",
+   "package-lock.json",
+   "docs/PLAN.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Sí: la prueba de contrato contra el modelo y TestClient de FastAPI sin base de datos, Vitest de apps/web, tsc, gen_docs y gen_coolify_compose --check. La parte de POST /v1/jobs con PostgreSQL y Valkey reales (marca integration) solo en la CI salvo que el propietario instale postgresql y redis-server. Hay que comprobar --validate (docker compose config) en la CI porque no hay Docker",
+  "size": "M"
+ },
+ {
+  "id": "G0-B",
+  "phase": "Transversal (antes de F4)",
+  "title": "Calidad del cierre técnico: Lighthouse CI, regresión visual y cobertura de 16.1",
+  "tools": [],
+  "cross_cutting": [
+   "Lighthouse CI (@lhci/cli con versión fijada) en el job web de .github/workflows/ci.yml: perfil móvil, mediana de 3, 90 o más en rendimiento y accesibilidad para la portada y una página por fase (01-1 regla 3, 8.3)",
+   "Regresión visual de 16.1: capturas de la plantilla de herramienta en móvil y escritorio (Playwright toHaveScreenshot con umbral) y PNG con pypdfium2 de folleto-pdf, varias-paginas-por-hoja, numerar-paginas-pdf y marca-de-agua-pdf con umbral de píxeles",
+   "Revisar y completar los Playwright de 16.1: unir, comprimir, word-a-pdf, pdf-a-word, ogg-a-mp3, chat-pdf con LLM falso y el pago con FakePaymentProvider (stl-a-3mf llega en F7-A)",
+   "Revisar tests/load/k6.js frente a 16.1 (50 comprimir-pdf, 10 ogg-a-mp3 y pico de 300 ligeros) para que el propietario lo ejecute en el VPS"
+  ],
+  "depends_on": [
+   "G0-A"
+  ],
+  "parallel_safe_with": [
+   "G1-A",
+   "F3-C",
+   "F3-D",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   ".github/workflows/ci.yml",
+   "tests/e2e/playwright.config.ts",
+   "package.json",
+   "package-lock.json",
+   "docs/PROGRESS.md",
+   "docs/OPERATIONS.md"
+  ],
+  "verification_possible_here": "Parcial: Playwright y lhci con Google Chrome de /opt/google (PW_CHROMIUM_PATH) contra next start en 3100; las capturas de referencia se generan aquí y se confirman en la CI (las fuentes del sistema pueden variar). La prueba de carga k6 solo en el VPS (propietario)",
+  "size": "M"
+ },
+ {
+  "id": "G1-A",
+  "phase": "Transversal (huecos de F1, F2 y F5)",
+  "title": "Huecos documentados de fases cerradas",
+  "tools": [
+   "redactar-pdf",
+   "lector-pdf",
+   "comprimir-imagen",
+   "convertir-imagen",
+   "png-a-jpg",
+   "jpg-a-png",
+   "redimensionar-imagen"
+  ],
+  "cross_cutting": [
+   "redactar-pdf: método «eliminar bajo el área» de A.6 (a-6-a-6-seguridad.md) solo si pasa las comprobaciones de redacción de 16.4; si no, sigue fuera y se anota (D-25)",
+   "lector-pdf: enlaces pulsables (D-23, A.7)",
+   "MozJPEG y oxipng de jSquash para JPG y PNG en lugar del codificador del lienzo (D-04, D-79), servidos desde /codecs/ con resumen (D-80)",
+   "Notas de resultado en inglés de los lotes anteriores (D-42, D-54) con ctx.locale y NOTES es/en"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "apps/web/scripts/wasm-assets.mjs",
+   "packages/client-tools/package.json",
+   "package-lock.json",
+   "docs/LICENSES.md",
+   "docs/DECISIONS.md",
+   "docs/PROGRESS.md"
+  ],
+  "verification_possible_here": "Sí: Vitest con PDFium y códecs de nodo, Playwright en Chromium local y pytest de las notas (sin motores externos)",
+  "size": "M"
+ },
+ {
+  "id": "G2-C01",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: organizar PDF en el navegador",
+  "tools": [
+   "dividir-pdf",
+   "girar-pdf",
+   "eliminar-paginas-pdf",
+   "extraer-paginas-pdf",
+   "organizar-pdf",
+   "montar-pdf",
+   "cortar-paginas-por-la-mitad",
+   "imprimir-pdf",
+   "folleto-pdf",
+   "varias-paginas-por-hoja"
+  ],
+  "cross_cutting": [
+   "apps/web/content/{es,en}/<slug_es>.json con complete:true y reviewed:false (D-15), al menos 250 palabras, desde el registro, 7 y el Anexo A sin inventar cifras (8.2.5); ningún párrafo repetido en más de 3 páginas"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "G1-A",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web (content.test.ts) y gen_docs",
+  "size": "S"
+ },
+ {
+  "id": "G2-C02",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: editar y comprobar PDF en el navegador",
+  "tools": [
+   "numerar-paginas-pdf",
+   "marca-de-agua-pdf",
+   "recortar-pdf",
+   "cambiar-tamano-pagina-pdf",
+   "aplanar-pdf",
+   "anotar-pdf",
+   "redactar-pdf",
+   "marcadores-pdf",
+   "comparar-pdf",
+   "buscar-en-pdf"
+  ],
+  "cross_cutting": [
+   "Mismo formato y reglas que G2-C01 (8.2.5, D-15, D-31)"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C03",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: imágenes a PDF, PDF a imagen y lector",
+  "tools": [
+   "webp-a-pdf",
+   "gif-a-pdf",
+   "bmp-a-pdf",
+   "png-a-pdf",
+   "imagenes-a-pdf",
+   "tiff-a-pdf",
+   "lector-pdf",
+   "pdf-a-png",
+   "pdf-a-webp",
+   "pdf-a-imagenes"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C04",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: seguridad, optimización y PDF/A",
+  "tools": [
+   "proteger-pdf",
+   "desbloquear-pdf",
+   "reparar-pdf",
+   "optimizar-pdf-web",
+   "pdf-escala-de-grises",
+   "pdf-modo-oscuro",
+   "rasterizar-pdf",
+   "ocr-pdf",
+   "pdf-a-pdfa",
+   "validar-pdfa"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C05",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: metadatos, capas y desde PDF sin Docling",
+  "tools": [
+   "extraer-imagenes-pdf",
+   "metadatos-pdf",
+   "eliminar-metadatos-pdf",
+   "preferencias-visor-pdf",
+   "superponer-pdf",
+   "solicitud-de-empleo-pdf",
+   "generar-contrasena",
+   "pdf-a-tiff",
+   "pdf-a-svg",
+   "pdf-a-txt"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C06",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: desde PDF con Docling",
+  "tools": [
+   "pdf-a-odt",
+   "pdf-a-rtf",
+   "pdf-a-excel",
+   "pdf-a-ods",
+   "pdf-a-ppt",
+   "pdf-a-odp",
+   "pdf-a-markdown",
+   "pdf-a-html",
+   "pdf-a-epub",
+   "pdf-a-csv"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01; explicar el modo «Fiel al diseño» (7.4, A.9)"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C07",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: convertir-desde-pdf y otros a PDF (cómic, DjVu, correo, CAD 2D, HEIC)",
+  "tools": [
+   "pdf-a-json",
+   "convertir-desde-pdf",
+   "heic-a-pdf",
+   "cbz-a-pdf",
+   "cbr-a-pdf",
+   "djvu-a-pdf",
+   "eml-a-pdf",
+   "msg-a-pdf",
+   "dxf-a-pdf"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01; heic-a-pdf explica el flag HEVC (7.2)"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C08",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: Office y texto a PDF",
+  "tools": [
+   "convertir-a-pdf",
+   "excel-a-pdf",
+   "ppt-a-pdf",
+   "odt-a-pdf",
+   "ods-a-pdf",
+   "odp-a-pdf",
+   "odg-a-pdf",
+   "rtf-a-pdf",
+   "txt-a-pdf",
+   "csv-a-pdf"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C09",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: web, Markdown, SVG y formatos de Apple y Microsoft a PDF",
+  "tools": [
+   "html-a-pdf",
+   "markdown-a-pdf",
+   "svg-a-pdf",
+   "web-a-pdf",
+   "pages-a-pdf",
+   "keynote-a-pdf",
+   "numbers-a-pdf",
+   "visio-a-pdf",
+   "publisher-a-pdf"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01; aviso de importación parcial (7.3)"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C10",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: IA de F3 ya hecha y transcripción",
+  "tools": [
+   "resumir-pdf",
+   "chat-pdf",
+   "generador-de-preguntas",
+   "pdf-a-fichas",
+   "pdf-a-presentacion",
+   "traducir-pdf",
+   "transcribir-audio",
+   "video-a-subtitulos"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01; peticiones por tarea de 6.3 y límites de 9.3 sin cifras inventadas; aviso de 6.6"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C11",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: audio a MP3",
+  "tools": [
+   "ogg-a-mp3",
+   "opus-a-mp3",
+   "m4a-a-mp3",
+   "mp4-a-mp3",
+   "aac-a-mp3",
+   "flac-a-mp3",
+   "wav-a-mp3",
+   "wma-a-mp3",
+   "amr-a-mp3",
+   "aiff-a-mp3"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01; cuidado con la regla de párrafos repetidos (diez páginas muy parecidas)"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C12",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: edición de audio y libros a PDF",
+  "tools": [
+   "ogg-a-wav",
+   "mp3-a-wav",
+   "cortar-audio",
+   "unir-audios",
+   "normalizar-volumen",
+   "cambiar-velocidad-audio",
+   "epub-a-pdf",
+   "mobi-a-pdf",
+   "azw3-a-pdf",
+   "fb2-a-pdf"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C13",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: conversiones de imagen en el navegador",
+  "tools": [
+   "png-a-jpg",
+   "webp-a-jpg",
+   "jpg-a-png",
+   "webp-a-png",
+   "gif-a-png",
+   "jpg-a-webp",
+   "png-a-webp",
+   "avif-a-jpg",
+   "jpg-a-avif",
+   "bmp-a-jpg"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01; cuidado con la regla de párrafos repetidos"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C14",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: utilidades de imagen en el navegador",
+  "tools": [
+   "tiff-a-jpg",
+   "png-a-ico",
+   "convertir-imagen",
+   "svg-a-png",
+   "svg-a-jpg",
+   "comprimir-imagen",
+   "redimensionar-imagen",
+   "crear-favicon",
+   "quitar-metadatos-foto",
+   "imagen-a-base64"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "G2-C15",
+  "phase": "Transversal (contenido 8.2)",
+  "title": "Contenido propio es/en: QR e imágenes en el servidor",
+  "tools": [
+   "leer-codigo-qr",
+   "generar-codigo-qr",
+   "heic-a-jpg",
+   "heic-a-png",
+   "raw-a-jpg",
+   "psd-a-png",
+   "png-a-svg",
+   "jpg-a-svg",
+   "quitar-fondo"
+  ],
+  "cross_cutting": [
+   "Mismo formato que G2-C01"
+  ],
+  "depends_on": [],
+  "parallel_safe_with": [
+   "G0-A",
+   "G0-B",
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14"
+  ],
+  "shared_files_touched": [
+   "docs/TOOLS.md (regenerado)"
+  ],
+  "verification_possible_here": "Sí: Vitest de apps/web",
+  "size": "S"
+ },
+ {
+  "id": "F3-C",
+  "phase": "F3",
+  "title": "Imagen y datos: OCR local, tablas e IA estructurada",
+  "tools": [
+   "imagen-a-texto",
+   "imagen-a-excel",
+   "ticket-a-excel"
+  ],
+  "cross_cutting": [
+   "imagen-a-texto: Tesseract en la cola ocr, 0 peticiones (6.3), categoría ai con cost_class heavy y sin consentimiento; TXT, DOCX o PDF con capa de texto; lotes con ZIP (A.0)",
+   "imagen-a-excel: OCR y Docling en convert y, solo si no se reconoce la tabla, handoff a ai con 1 petición reservada y devuelta si no se usa (7.6; 6.3 no fija su coste: decisión)",
+   "ticket-a-excel: OCR en ocr y handoff a ai, 1 petición por ticket (6.3), JSON con esquema (6.5), comprobación de que las líneas suman el total",
+   "openpyxl en el extra ai de pyproject.toml; esquemas nuevos en el proveedor falso (D-126, D-133)",
+   "Opciones sin Anexo A: decisiones desde D-134 en adelante (01-1 regla 5)",
+   "Contenido 8.2 es/en de las tres; Playwright ia-f3.spec.ts ampliado; pruebas 16.3 (consentimiento, AI_UNAVAILABLE, caché) y 16.4 (PNG gigante)"
+  ],
+  "depends_on": [
+   "G0-A"
+  ],
+  "parallel_safe_with": [
+   "F3-D",
+   "G0-B",
+   "G1-A",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/ai/specs.py",
+   "packages/tools/tools/ocr/specs.py",
+   "packages/core/core/ai/provider.py",
+   "pyproject.toml",
+   "packages/registry/registry.json",
+   "docs/TOOLS.md",
+   "docs/DECISIONS.md",
+   "docs/PLAN.md",
+   "docs/PROGRESS.md",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Parcial: la lógica (esquemas, clean, suma del ticket, salida XLSX/CSV) con make_ctx y el proveedor falso; Docling está en .venv. Tesseract no está instalado aquí (skip, CI) y las pruebas de extremo a extremo con API necesitan PostgreSQL y Valkey (CI)",
+  "size": "L"
+ },
+ {
+  "id": "F3-D",
+  "phase": "F3",
+  "title": "Voz local: pdf-a-audio con Kokoro y espeak-ng",
+  "tools": [
+   "pdf-a-audio"
+  ],
+  "cross_cutting": [
+   "Lote de una sola herramienta porque D-119 lo fija así y el motor (inferencia ONNX de Kokoro y fonemas de espeak-ng) es la unidad de trabajo",
+   "Pipeline propio: espeak-ng --ipa como proceso externo con run_engine, mapeo de IPA al vocabulario de Kokoro y onnxruntime; nunca los paquetes kokoro, kokoro-onnx, misaki ni phonemizer-fork (11, 6.4, forbidden_packages)",
+   "Etapa kokoro-model en workers/Dockerfile con revisión fijada y SHA-256; espeak-ng en worker-av; cola av.heavy; TTS_ENGINE, TTS_VOICE_ES y TTS_VOICE_EN en settings, .env.example y Compose (14)",
+   "La voz española queda apagada mientras TTS_VOICE_ES esté vacío, hasta la escucha del propietario (6.4); riesgo de mantenimiento de Kokoro en DECISIONS (6.4)",
+   "Límite tts_chars_task del plan comprobado antes de encolar (9.3); MP3 con el FFmpeg LGPL; ffprobe en las pruebas (16.5)",
+   "Genera también la voz sintética que piden las muestras de F3-E (D-114)"
+  ],
+  "depends_on": [
+   "G0-A"
+  ],
+  "parallel_safe_with": [
+   "F3-C",
+   "G0-B",
+   "G1-A",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/av/specs.py",
+   "workers/Dockerfile",
+   "docker-compose.yml",
+   "scripts/gen_coolify_compose.py",
+   "docker-compose.coolify.yml",
+   "packages/core/core/settings.py",
+   "packages/core/core/envguard.py",
+   ".env.example",
+   ".github/workflows/ci.yml",
+   "pyproject.toml",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md",
+   "docs/DECISIONS.md",
+   "docs/DEPLOY-CHECKLIST.md"
+  ],
+  "verification_possible_here": "Parcial: onnxruntime se instala en .venv y el modelo se puede descargar con su SHA-256 para la prueba local; espeak-ng y FFmpeg no están instalados aquí (skip, CI, o binarios fijados en una caché local fuera del repositorio). La imagen worker-av solo en la CI",
+  "size": "XL"
+ },
+ {
+  "id": "F3-E",
+  "phase": "F3 (herramientas de F5 en el catálogo, 7.10)",
+  "title": "IA de audio: subtítulos traducidos y resumen de reuniones",
+  "tools": [
+   "traducir-subtitulos",
+   "resumir-reunion"
+  ],
+  "cross_cutting": [
+   "Encadenar av.heavy (transcribe.py, faster-whisper) y ai con handoff; reservas de IA devueltas si falla a mitad de cadena (D-121, D-124)",
+   "traducir-subtitulos: un elemento JSON por cue para conservar los tiempos, TranslationProvider (D-132), pysubs2 (MIT) adelantado de F6 para SRT, VTT y ASS",
+   "resumir-reunion: map-reduce por bloques de transcripción (6.3), secciones de decisiones y tareas, DOCX, TXT o Markdown; límite de minutos de audio del plan (9.3)",
+   "Muestras: voz sintética de F3-D y jfk.ogg (D-114); proveedor falso con los esquemas nuevos"
+  ],
+  "depends_on": [
+   "F3-D"
+  ],
+  "parallel_safe_with": [
+   "F3-C",
+   "G0-B",
+   "G1-A",
+   "G2-C01",
+   "G2-C02",
+   "G2-C03",
+   "G2-C04",
+   "G2-C05",
+   "G2-C06",
+   "G2-C07",
+   "G2-C08",
+   "G2-C09",
+   "G2-C10",
+   "G2-C11",
+   "G2-C12",
+   "G2-C13",
+   "G2-C14",
+   "G2-C15"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/ai/specs.py",
+   "packages/core/core/ai/provider.py",
+   "pyproject.toml",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: lectura y escritura de subtítulos con pysubs2 y la lógica de alineación con el proveedor falso; faster-whisper está en .venv pero FFmpeg no está instalado (skip, CI); el camino con API necesita PostgreSQL y Valkey (CI)",
+  "size": "M"
+ },
+ {
+  "id": "F3-Z",
+  "phase": "F3 (cierre)",
+  "title": "Cierre técnico de F3",
+  "tools": [],
+  "cross_cutting": [
+   "Todas las pruebas de 16.3 en verde con las 12 herramientas de F3 más las dos de 7.10; prueba de contrato y Playwright de todas",
+   "Contenido 8.2 de las 12 de F3 (las de F3-C, D y E en sus lotes; las seis anteriores en G2-C10)",
+   "Revisión externa exigente de 01-1 regla 9 (seguridad, licencias, accesibilidad, rendimiento, disco y presupuesto de IA) y corrección",
+   "Cierre técnico de 1.3 (CI en verde, compose config, Lighthouse); uso real de peticiones registrado pendiente de la clave del propietario (17) en PROGRESS y DEPLOY-CHECKLIST",
+   "Regla del 10 % de desactivadas (01-1 regla 7)"
+  ],
+  "depends_on": [
+   "F3-C",
+   "F3-D",
+   "F3-E",
+   "G2-C10",
+   "G0-B"
+  ],
+  "parallel_safe_with": [
+   "G1-A"
+  ],
+  "shared_files_touched": [
+   "docs/PROGRESS.md",
+   "docs/PLAN.md",
+   "docs/DEPLOY-CHECKLIST.md",
+   "docs/TOOLS.md"
+  ],
+  "verification_possible_here": "Parcial: Vitest, tsc, next build, Playwright navegador y pytest sin integración; la integración, las imágenes y Lighthouse oficial en la CI; OpenRouter real, propietario",
+  "size": "S"
+ },
+ {
+  "id": "F4-A",
+  "phase": "F4",
+  "title": "Motor de firma: workersign, sello PAdES y verificación con la lista de confianza de la UE",
+  "tools": [
+   "verificar-firmas-pdf",
+   "firmar-pdf"
+  ],
+  "cross_cutting": [
+   "firmar-pdf aquí solo en su parte de servidor (sello de la plataforma PAdES B-T, B-LT y B-LTA, DocMDP, firma visible o invisible); la parte del navegador va en F4-B",
+   "Grupo sign: etapa worker-sign en workers/Dockerfile con pyHanko[pkcs11,image-support,opentype] y SoftHSM2; servicio workersign (1 proceso, 1 GB, 5.4) con volumen softhsm, redes internal y webrender (egressweb para TSA, OCSP, CRL y LOTL, 12.2); SIGN_PKCS11_*, SIGN_CERT_PATH, TSA_URL, SEAL_ENABLED y SEAL_DAILY_LIMIT solo ahí (12.1, envguard)",
+   "Verificación en la cola sign.verify con un servicio de la misma imagen sin volumen softhsm ni PIN, para que un PDF hostil no conviva con la clave del sello (decisión; mitiga el riesgo de 10)",
+   "Beat: refresco de la LOTL cada EUTL_REFRESH_HOURS con comprobación contra el ancla del DOUE y caché; degradación a «no comprobado» si falla (7.23, 14)",
+   "Migración 0006: signature_requests, signers, audit_events y seal_signatures (9.4) con permisos del rol de workers",
+   "Dobles de 0.1: CA, TSA y OCSP de pruebas (certomancer, MIT) en docker-compose.yml y en las pruebas; script del certificado autofirmado de desarrollo y de inicialización del token (10)",
+   "Pruebas: firma válida con pyHanko (16.1), cambio no permitido tras certificación detectado (16.6), secretos solo en workersign (16.4)"
+  ],
+  "depends_on": [
+   "F3-Z"
+  ],
+  "parallel_safe_with": [
+   "F4-D",
+   "F4-F"
+  ],
+  "shared_files_touched": [
+   "workers/Dockerfile",
+   "docker-compose.yml",
+   "scripts/gen_coolify_compose.py",
+   "docker-compose.coolify.yml",
+   "pyproject.toml",
+   "packages/core/core/envguard.py",
+   "packages/core/core/queueguard.py",
+   "packages/core/core/settings.py",
+   "packages/core/core/celeryapp.py",
+   "packages/core/core/registry.py",
+   "apps/api/alembic/versions",
+   "infra/smokescreen/acl-web.yaml",
+   ".env.example",
+   ".github/workflows/ci.yml",
+   ".github/workflows/images.yml",
+   "packages/registry/registry.json",
+   "docs/SECURITY.md",
+   "docs/ARCHITECTURE.md",
+   "docs/LICENSES.md",
+   "docs/LEGAL.md",
+   "docs/DECISIONS.md",
+   "docs/DEPLOY-CHECKLIST.md"
+  ],
+  "verification_possible_here": "Parcial: pyHanko, certomancer y python-pkcs11 se instalan en .venv; SoftHSM2 no está instalado (las pruebas PKCS#11 en la CI, las de firma con clave en archivo aquí). La LOTL real y la TSA real necesitan red de producción; la migración necesita PostgreSQL (CI)",
+  "size": "XL"
+ },
+ {
+  "id": "F4-B",
+  "phase": "F4",
+  "title": "Firma en el navegador y diseñador de formularios",
+  "tools": [
+   "firmar-pdf",
+   "hacer-pdf-rellenable",
+   "crear-formulario-pdf"
+  ],
+  "cross_cutting": [
+   "firmar-pdf (navegador, A.6): dibujar con Pointer Events, escribir con fuentes caligráficas OFL servidas en local, subir imagen (con quitar fondo), cámara (Permissions-Policy camera=(self), D-105), iniciales y fecha, colocar y repetir; firma interrumpida con certificado propio .p12/.pfx abierto con PKI.js (la clave no sale del navegador, 10); node-forge solo si hace falta para PKCS#12 heredado (BSD-3 en licencia doble, 11)",
+   "hacer-pdf-rellenable (A.3): todos los tipos de campo y propiedades, mover, duplicar, alinear y borrar; detección automática de líneas y casillas con PDFium y revisión; campos de firma vacíos con pyHanko en el grupo pdf (sin clave, decisión)",
+   "crear-formulario-pdf: página de entrada con contenido propio que abre el mismo diseñador en página en blanco (no alias, 7.23)",
+   "CSP y Permissions-Policy en apps/web/src/proxy.ts y csp.ts; namespaces de mensajes es/en con las mismas claves"
+  ],
+  "depends_on": [
+   "F4-A"
+  ],
+  "parallel_safe_with": [
+   "F4-C",
+   "F4-D",
+   "F4-F"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/client/specs.py",
+   "packages/client-tools/src/index.ts",
+   "packages/client-tools/package.json",
+   "package-lock.json",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "apps/web/src/app/[locale]/[slug]/page.tsx",
+   "apps/web/src/lib/csp.ts",
+   "apps/web/src/proxy.ts",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Sí en su mayor parte: Vitest con pdf-lib y PDFium, Playwright con cámara simulada y comprobación de que no sale el archivo; la validación pyHanko del PDF firmado con certificado de prueba en pytest local",
+  "size": "XL"
+ },
+ {
+  "id": "F4-C",
+  "phase": "F4",
+  "title": "Flujos con cuenta: compartir y solicitar firmas",
+  "tools": [
+   "compartir-pdf",
+   "solicitar-firmas"
+  ],
+  "cross_cutting": [
+   "compartir-pdf: POST /v1/shares, revocar y listar; caducidad 1 a min(SHARE_MAX_DAYS, plans.share_days) (9.3: solo Pro); token solo como hash (12.6), autorización en apiint, borrado al caducar por beat; lista en /cuenta",
+   "solicitar-firmas (7.7): /v1/signature-requests y /v1/sign/{token} (9.1), firmantes en orden o en paralelo, campos por firmante, invitación por correo con plantillas es/en y «Informar de abuso», código de verificación con intentos limitados y Turnstile, sello final PAdES B-LT, certificado de auditoría desde audit_events, recordatorios y cancelación",
+   "Almacenamiento propio de solicitudes fuera de la retención de 24 h (/srv/files/requests/<id>, desviación de 4.1 anotada) con caducidad y borrado por beat",
+   "Página del firmante sin indexar; Playwright de extremo a extremo con Mailpit (cierre de F4, 17) en el proyecto servidor"
+  ],
+  "depends_on": [
+   "F4-A"
+  ],
+  "parallel_safe_with": [
+   "F4-B",
+   "F4-D",
+   "F4-F"
+  ],
+  "shared_files_touched": [
+   "apps/api/app/routers",
+   "apps/api/app/internal/app.py",
+   "packages/core/core/celeryapp.py",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "packages/core/core/errors.py",
+   "docs/ERRORS.md",
+   "packages/registry/registry.json",
+   "docs/ARCHITECTURE.md",
+   "docs/SECURITY.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: lógica y plantillas con pytest unitario y Playwright con API simulada; la API con PostgreSQL y Valkey, el correo real por Mailpit y el E2E completo solo en la CI",
+  "size": "XL"
+ },
+ {
+  "id": "F4-D",
+  "phase": "F4 (con cuatro herramientas adelantadas de F6)",
+  "title": "Facturas: validar y visualizar (nace workerutils con KoSIT)",
+  "tools": [
+   "validar-factura-electronica",
+   "factura-electronica-a-pdf",
+   "facturae-a-pdf",
+   "ubl-a-pdf",
+   "cii-a-pdf"
+  ],
+  "cross_cutting": [
+   "Nuevo grupo utils: etapa worker-utils (JRE headless, KoSIT jar fijado por SHA-256 en modo daemon, escenarios XRechnung y Peppol BIS, escenarios propios EN 16931 y Factur-X/ZUGFeRD con el Schematron oficial, XSD de Facturae 3.2.x, UBL 2.1 y CII D16B sin red); servicio workerutils con colas utils.light y utils.heavy (como office y av, decisión), red internal sin salida (5.4, 12.2)",
+   "validar-factura-electronica (A.2): detección por CustomizationID, explicación propia de las reglas frecuentes es/en, campo resaltado sobre la representación, lote o ZIP con resumen CSV; Facturae con XSD y firma con signxml (nunca xmlsig, AGPL)",
+   "factura-electronica-a-pdf (A.2) con facturae-a-pdf, ubl-a-pdf y cii-a-pdf como páginas propias del mismo módulo (7.14): plantilla HTML, Chromium de gotenberg, PDF/A-3 con el XML original incrustado sin cambiar un byte (pikepdf o factur-x, sin Ghostscript) y comprobación con veraPDF; se adelantan porque 17 pide visualizar en F4 (decisión)",
+   "Fuera de INVOICING_ES_ENABLED (7.23); XML siempre con defusedxml o lxml sin entidades (12.3, 16.4)",
+   "Licencias de Schematron, XSD, KoSIT y configuraciones en LICENSES.md (11, 7.23); alternativa a KoSIT 1.6 en DECISIONS",
+   "Muestras generadas por script y suites públicas de KoSIT con su origen en tests/fixtures/SOURCES.md (01-1 regla 8)"
+  ],
+  "depends_on": [
+   "F3-Z"
+  ],
+  "parallel_safe_with": [
+   "F4-A",
+   "F4-B",
+   "F4-C",
+   "F4-F"
+  ],
+  "shared_files_touched": [
+   "workers/Dockerfile",
+   "docker-compose.yml",
+   "scripts/gen_coolify_compose.py",
+   "docker-compose.coolify.yml",
+   "pyproject.toml",
+   "packages/core/core/registry.py",
+   "packages/core/core/envguard.py",
+   "packages/core/core/queueguard.py",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "scripts/fixtures/filetype_cases.py",
+   "tests/fixtures/filetype-cases.json",
+   ".github/workflows/ci.yml",
+   ".github/workflows/images.yml",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/LICENSES.md",
+   "docs/ARCHITECTURE.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: XSD, signxml, factur-x y la plantilla con pytest local; KoSIT necesita Java (no instalado: JRE fijado en caché local o CI); Gotenberg simulado con respx; veraPDF real solo en la CI",
+  "size": "XL"
+ },
+ {
+  "id": "F4-E",
+  "phase": "F4",
+  "title": "Generadores de facturas (detrás de INVOICING_ES_ENABLED)",
+  "tools": [
+   "crear-factura",
+   "crear-factura-electronica",
+   "pdf-a-factura-electronica"
+  ],
+  "cross_cutting": [
+   "crear-factura (A.2, navegador): plantillas, IVA, recargo, IRPF, validación de NIF/CIF/NIE e IBAN, redondeos EN 16931, emisor y clientes recordados en el navegador, PDF con pdf-lib",
+   "crear-factura-electronica (A.2): formulario EN 16931 con validación en vivo; Factur-X/ZUGFeRD por perfil, XRechnung CII o UBL, Peppol BIS 3.0, UBL 2.1 y Facturae 3.2.2 con XAdES-EPES en el navegador (xadesjs y PKI.js, la clave no sale); drafthorse y factur-x en utils; validación KoSIT antes de entregar (16.6)",
+   "pdf-a-factura-electronica (A.2): reutiliza el XML si existe; si no, texto, reglas y una petición de LLM con consentimiento; revisión obligatoria en formulario en dos trabajos; PDF/A-3 conservando páginas",
+   "Los tres apagados por INVOICING_ES_ENABLED y su flag propio; aviso legal Veri*factu y RD 238/2026 en LEGAL.md y en la página (7.23)"
+  ],
+  "depends_on": [
+   "F4-D",
+   "F4-B"
+  ],
+  "parallel_safe_with": [
+   "F4-C",
+   "F4-F"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/client/specs.py",
+   "packages/client-tools/src/index.ts",
+   "packages/client-tools/package.json",
+   "package-lock.json",
+   "pyproject.toml",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "apps/web/src/app/[locale]/[slug]/page.tsx",
+   "packages/core/core/ai/provider.py",
+   "packages/registry/registry.json",
+   "docs/LEGAL.md",
+   "docs/LICENSES.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: Vitest de totales y firma XAdES con certificado de prueba, pytest de drafthorse y factur-x; KoSIT por perfil solo con Java (CI); el camino de IA con el proveedor falso",
+  "size": "XL"
+ },
+ {
+  "id": "F4-F",
+  "phase": "F4",
+  "title": "PDF/UA: Word a PDF accesible",
+  "tools": [
+   "word-a-pdf-accesible"
+  ],
+  "cross_cutting": [
+   "Lote pequeño de una herramienta porque su cadena (office con pdfua y luego ocr con veraPDF) no comparte motor con el resto de F4",
+   "Formato fijado a PDF/UA (A.8) e informe de veraPDF en lenguaje sencillo reutilizando el explicador de validar-pdfa (D-63 a D-66)"
+  ],
+  "depends_on": [
+   "F3-Z"
+  ],
+  "parallel_safe_with": [
+   "F4-A",
+   "F4-B",
+   "F4-C",
+   "F4-D",
+   "F4-E"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/office/specs.py",
+   "packages/registry/registry.json",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: la cadena con Gotenberg simulado y un informe de veraPDF de ejemplo; veraPDF real y Gotenberg real solo en la CI",
+  "size": "S"
+ },
+ {
+  "id": "F4-Z",
+  "phase": "F4 (cierre)",
+  "title": "Cierre técnico de F4",
+  "tools": [],
+  "cross_cutting": [
+   "Firma validada con pyHanko y flujo de solicitud probado de extremo a extremo (17)",
+   "Prueba de que ninguna herramienta de categoría sign crea cliente de IA (16.3, 6.6)",
+   "Presupuesto de memoria con workersign, la verificación y workerutils (5.4): anotar en DEPLOY-CHECKLIST que el catálogo completo necesita el perfil de 64 GB",
+   "Revisión externa (01-1 regla 9), regla del 10 %, Lighthouse, PROGRESS y cierre operativo pendiente"
+  ],
+  "depends_on": [
+   "F4-A",
+   "F4-B",
+   "F4-C",
+   "F4-D",
+   "F4-E",
+   "F4-F"
+  ],
+  "parallel_safe_with": [],
+  "shared_files_touched": [
+   "docs/PROGRESS.md",
+   "docs/PLAN.md",
+   "docs/DEPLOY-CHECKLIST.md",
+   "docs/TOOLS.md"
+  ],
+  "verification_possible_here": "Parcial, igual que F3-Z",
+  "size": "S"
+ },
+ {
+  "id": "F6-A",
+  "phase": "F6",
+  "title": "Documentos con pandoc --sandbox",
+  "tools": [
+   "docx-a-odt",
+   "odt-a-docx",
+   "docx-a-markdown",
+   "markdown-a-docx",
+   "docx-a-html",
+   "html-a-docx"
+  ],
+  "cross_cutting": [
+   "Binario estático oficial de pandoc con versión fijada y SHA-256 en worker-utils (D-70: el de Debian no trae los datos que piden DOCX y ODT con --sandbox); nunca pypandoc_binary",
+   "16.4: Markdown con ![](/proc/self/environ) y HTML con file:///etc/hostname; salida HTML servida desde files con CSP sandbox",
+   "Aviso de pérdida de maquetación en la página; lotes con ZIP (A.0); imágenes extraídas en ZIP para Markdown"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "workers/Dockerfile",
+   ".github/workflows/ci.yml",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/LICENSES.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: pandoc no está instalado (binario estático fijado en caché local o CI); docx_with_libreoffice genera las muestras con el LibreOffice de esta máquina",
+  "size": "M"
+ },
+ {
+  "id": "F6-B1",
+  "phase": "F6",
+  "title": "Hojas de cálculo y codificación de CSV",
+  "tools": [
+   "xlsx-a-csv",
+   "csv-a-xlsx",
+   "ods-a-xlsx",
+   "xlsx-a-ods",
+   "excel-a-json",
+   "arreglar-codificacion-csv"
+  ],
+  "cross_cutting": [
+   "openpyxl read_only y data_only, zipguard antes de abrir (12.3, 16.4 XLSX con relación alta)",
+   "ods-a-xlsx y xlsx-a-ods con LibreOffice (unoserver) en office porque openpyxl no lee ni escribe ODS (decisión que desvía 7.12)",
+   "csv-a-xlsx neutraliza la inyección de fórmulas; arreglar-codificacion-csv recupera tildes, eñes y mojibake (16.5) con charset-normalizer y una heurística propia",
+   "excel-a-json: XLS antiguo pasado a XLSX con LibreOffice o rechazado (decisión)"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "packages/tools/tools/office/specs.py",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Sí: openpyxl y charset-normalizer en .venv y LibreOffice instalado aquí",
+  "size": "M"
+ },
+ {
+  "id": "F6-B2",
+  "phase": "F6",
+  "title": "Formatos de datos: CSV, JSON, XML y YAML",
+  "tools": [
+   "csv-a-json",
+   "json-a-csv",
+   "json-a-xml",
+   "xml-a-json",
+   "yaml-a-json",
+   "json-a-yaml"
+  ],
+  "cross_cutting": [
+   "defusedxml siempre (XXE y billion laughs, 16.4), PyYAML safe_load con límite de alias, límites de profundidad y tamaño de JSON",
+   "Detección por bytes de JSON, XML y YAML en filetype.py y filetype.ts con casos compartidos (D-115)"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts"
+  ],
+  "verification_possible_here": "Sí: todo con la biblioteca estándar y paquetes de .venv",
+  "size": "S"
+ },
+ {
+  "id": "F6-C",
+  "phase": "F6",
+  "title": "Libros electrónicos y presentaciones a imagen y vídeo",
+  "tools": [
+   "epub-a-mobi",
+   "epub-a-azw3",
+   "mobi-a-epub",
+   "azw3-a-epub",
+   "pptx-a-imagenes",
+   "pptx-a-video"
+  ],
+  "cross_cutting": [
+   "Calibre en office, donde ya está (D-53; desvía el grupo utils de 7.12), reutilizando la revisión de referencias locales de libros.py (16.4 EPUB con file:///etc/hostname); DRM rechazado (7.24); nunca EbookLib",
+   "pptx-a-imagenes: Gotenberg a PDF y rasterizado con pypdfium2 (opciones como pdf-a-imagenes, A.9)",
+   "pptx-a-video: render en office y handoff a av.heavy; solo Pro (plans.video, 9.3); WebM VP9 por defecto y MP4 en AV1 salvo VIDEO_H264_ENCODING_ENABLED (7.9, 11); ffprobe en las pruebas (16.5)"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/office/specs.py",
+   "packages/tools/tools/av/specs.py",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/LEGAL.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: Calibre y FFmpeg no están instalados (skip, CI); Gotenberg simulado; el rasterizado con pypdfium2 sí",
+  "size": "M"
+ },
+ {
+  "id": "F6-D",
+  "phase": "F6",
+  "title": "Traducir Office y manuscrito a texto con IA",
+  "tools": [
+   "traducir-word",
+   "traducir-excel",
+   "traducir-powerpoint",
+   "manuscrito-a-texto"
+  ],
+  "cross_cutting": [
+   "Reparto del texto traducido entre los runs para conservar el formato (python-docx, openpyxl solo celdas de texto, python-pptx con aviso de desbordamiento); deduplicar cadenas; 1 petición por bloque (6.3) avisado antes de encolar",
+   "manuscrito-a-texto: 1 petición por página hasta 10, solo modelos con imagen (Needs.images); se desactiva sola sin candidatos y la página lo dice en vivo (7.12)",
+   "Pruebas 16.3 con el proveedor falso; contenido 8.2"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/ai/specs.py",
+   "packages/core/core/ai/provider.py",
+   "packages/core/core/ai/translate.py",
+   "packages/registry/registry.json",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: la lógica de reparto con make_ctx y el proveedor falso; el extremo a extremo con API en la CI",
+  "size": "L"
+ },
+ {
+  "id": "F6-E",
+  "phase": "F6",
+  "title": "Comprimidos y subtítulos",
+  "tools": [
+   "rar-a-zip",
+   "7z-a-zip",
+   "tar-a-zip",
+   "extraer-archivo-online",
+   "srt-a-vtt",
+   "vtt-a-srt",
+   "ass-a-srt"
+  ],
+  "cross_cutting": [
+   "Solo libarchive (BSD) para leer; nunca unrar, unrar-free ni p7zip en la imagen (licencia de unRAR fuera de 11); py7zr (LGPL) solo si se decide abrir 7z con AES",
+   "Comprobaciones de D-59: sin .., sin enlaces, 10.000 entradas, 2 GB y 100:1 (12.3, 16.4 ZIP con ../)",
+   "extraer-archivo-online: vista de árbol y descarga por entrada con CSP sandbox y «Seguir con otra herramienta»",
+   "pysubs2 (ya añadido en F3-E) para subtítulos; detección por bytes de 7z, tar, gz, bz2, xz, srt, vtt y ass (D-115)"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "apps/web/src/app/[locale]/[slug]/page.tsx",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts"
+  ],
+  "verification_possible_here": "Parcial: libarchive-c necesita libarchive del sistema (comprobar; si no, CI); 7z del sistema y rar de RarLab solo para generar muestras (01-1 regla 8); pysubs2 en .venv",
+  "size": "M"
+ },
+ {
+  "id": "F6-F",
+  "phase": "F6",
+  "title": "Fuentes con fontTools",
+  "tools": [
+   "ttf-a-woff2",
+   "otf-a-woff2",
+   "woff2-a-ttf",
+   "woff-a-ttf",
+   "ttf-a-otf",
+   "otf-a-ttf"
+  ],
+  "cross_cutting": [
+   "fonttools[woff] (brotli y zopfli) sin [all]; cu2qu y qu2cu para TTF y OTF de verdad, CFF2 variable instanciada o rechazada; aviso de hinting perdido",
+   "Casilla obligatoria de declaración de derechos (7.13) y aviso de fsType",
+   "Muestras OFL copiadas a tests/fixtures con su origen en SOURCES.md"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "pyproject.toml",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Sí: fontTools ya está en .venv",
+  "size": "M"
+ },
+ {
+  "id": "F6-G",
+  "phase": "F6",
+  "title": "Documentos firmados y verificar-firma",
+  "tools": [
+   "csig-a-pdf",
+   "p7m-a-pdf",
+   "xsig-a-pdf",
+   "verificar-firma"
+  ],
+  "cross_cutting": [
+   "Extracción con asn1crypto, cryptography y defusedxml (7.14) en utils; documento idéntico byte a byte (16.5); firmas separadas con error claro que remite a verificar-firma con dos archivos",
+   "verificar-firma en la cola sign.verify de F4-A (no en utils, desviación anotada) para reutilizar LOTL, OCSP y CRL por egressweb; XAdES con signxml más pyhanko-certvalidator para la cadena; detecta el documento alterado (16.5)",
+   "Categoría sign para las cuatro (exclusión de IA, 6.6)"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "packages/tools/tools/sign/specs.py",
+   "pyproject.toml",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "packages/registry/registry.json",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Sí en lo criptográfico (muestras firmadas con certomancer y signxml en .venv); la revocación real por egressweb solo con la pila completa",
+  "size": "L"
+ },
+ {
+  "id": "F6-H1",
+  "phase": "F6",
+  "title": "GPS y mapas con GDAL/OGR",
+  "tools": [
+   "gpx-a-kml",
+   "kml-a-gpx",
+   "kmz-a-gpx",
+   "gpx-a-geojson",
+   "geojson-a-kml",
+   "shp-a-geojson",
+   "shp-a-kml",
+   "csv-a-kml"
+  ],
+  "cross_cutting": [
+   "ogr2ogr como programa externo con run_engine (el libgdal de Debian enlaza poppler, GPL: nunca importar osgeo en el worker); sin gpsbabel",
+   "GPX ↔ KML conserva el número de puntos (16.5); KMZ y SHP en ZIP con zipguard; defusedxml antes de GDAL; reproyección a WGS84 con PROJ",
+   "Detección por bytes de GPX, KML, KMZ, GeoJSON y SHP"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "workers/Dockerfile",
+   "pyproject.toml",
+   ".github/workflows/ci.yml",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Parcial: gpxpy en .venv; ogr2ogr no está instalado (skip, CI)",
+  "size": "M"
+ },
+ {
+  "id": "F6-H2",
+  "phase": "F6",
+  "title": "GPS sin GDAL: TCX y FIT",
+  "tools": [
+   "tcx-a-gpx",
+   "fit-a-gpx",
+   "fit-a-csv"
+  ],
+  "cross_cutting": [
+   "Parser TCX propio con defusedxml (GDAL no lee TCX; anotar en DECISIONS)",
+   "fitparse (MIT) o fitdecode (MIT) si fitparse falla en Python 3.12; nunca el SDK de Garmin",
+   "Muestra FIT con licencia apta en SOURCES.md o generada por script"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "pyproject.toml",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md",
+   "tests/fixtures/SOURCES.md"
+  ],
+  "verification_possible_here": "Sí: todo en Python de .venv",
+  "size": "S"
+ },
+ {
+  "id": "F6-I",
+  "phase": "F6",
+  "title": "Contactos y calendario",
+  "tools": [
+   "vcf-a-csv",
+   "csv-a-vcf",
+   "vcf-a-excel",
+   "ics-a-csv",
+   "csv-a-ics",
+   "ics-a-excel"
+  ],
+  "cross_cutting": [
+   "vobject (Apache-2.0) con plantillas exactas de Google y Outlook; icalendar (BSD) con expansión de repeticiones limitada",
+   "VCF → CSV → VCF conserva los contactos (16.5); vCard 2.1, 3.0 y 4.0",
+   "Categoría data, sin IA nunca (EXCLUDED_WORDS vcf, ics, contacto, calendario; 6.6)"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "pyproject.toml",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Sí: todo en Python de .venv",
+  "size": "M"
+ },
+ {
+  "id": "F6-J",
+  "phase": "F6",
+  "title": "Correo: MBOX y PST",
+  "tools": [
+   "mbox-a-eml",
+   "mbox-a-pdf",
+   "pst-a-mbox",
+   "pst-a-pdf"
+  ],
+  "cross_cutting": [
+   "mailbox de la biblioteca estándar; readpst (GPL) solo como programa externo; el flujo de eml-a-pdf (tools.media.correo) reutilizado en utils",
+   "Cola utils.heavy, progreso por mensaje, guarda de disco (4.4), límites de mensajes y tamaño",
+   "Muestra PST real con licencia en SOURCES.md (no hay escritor libre); sin ella la herramienta queda desactivada con su motivo (01-1 regla 8)"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "workers/Dockerfile",
+   ".github/workflows/ci.yml",
+   "packages/registry/registry.json",
+   "tests/fixtures/SOURCES.md",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Parcial: MBOX sí; readpst no está instalado (CI); Gotenberg simulado",
+  "size": "M"
+ },
+ {
+  "id": "F6-K",
+  "phase": "F6",
+  "title": "Diagramas draw.io y LaTeX en servidor",
+  "tools": [
+   "drawio-a-pdf",
+   "drawio-a-png",
+   "latex-a-pdf"
+  ],
+  "cross_cutting": [
+   "draw.io desktop fijado con xvfb-run, sin red, HOME en el trabajo y --no-sandbox documentado en SECURITY.md; comprobar la licencia real del .deb (la spec dice GPL-3.0) y registrarla",
+   "Tectonic con bundle precargado, --only-cached y --untrusted, más análisis previo de \\input, \\include, \\openin e \\includegraphics con rutas absolutas o .. (16.4 \\input{/etc/hostname})",
+   "Cola utils.heavy con tiempo máximo y prlimit (12.1)"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "workers/Dockerfile",
+   ".github/workflows/ci.yml",
+   "packages/core/core/settings.py",
+   ".env.example",
+   "docker-compose.yml",
+   "scripts/gen_coolify_compose.py",
+   "packages/registry/registry.json",
+   "docs/SECURITY.md",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Parcial: ni draw.io ni Tectonic están instalados (binario de Tectonic fijado en caché local posible; draw.io solo en la CI)",
+  "size": "L"
+ },
+ {
+  "id": "F6-L",
+  "phase": "F6",
+  "title": "Música: MIDI y MusicXML",
+  "tools": [
+   "midi-a-mp3",
+   "midi-a-wav",
+   "musicxml-a-pdf",
+   "midi-a-pdf"
+  ],
+  "cross_cutting": [
+   "FluidSynth (LGPL) con apt --no-install-recommends para no traer un banco GPL; banco con licencia comercial verificada (FluidR3_GM o MuseScore_General, MIT) en SOUNDFONT_PATH; FFmpeg LGPL para MP3",
+   "MuseScore (GPL) sin interfaz como programa externo; .mxl con zipguard y defusedxml",
+   "ffprobe: duración ±50 ms y códec (16.5); muestras MIDI generadas con mido"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-M",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/utils/specs.py",
+   "workers/Dockerfile",
+   ".github/workflows/ci.yml",
+   "packages/core/core/settings.py",
+   ".env.example",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Parcial: generación de muestras con mido sí; FluidSynth, FFmpeg y MuseScore no están instalados (CI)",
+  "size": "M"
+ },
+ {
+  "id": "F6-M",
+  "phase": "F6",
+  "title": "Chromium: captura-web y udf-a-pdf",
+  "tools": [
+   "captura-web",
+   "udf-a-pdf"
+  ],
+  "cross_cutting": [
+   "captura-web en office (única con webrender junto a workersign, 12.2; desviación del grupo utils de 7.17) con check_web_url y la ruta screenshot de gotenbergweb por egressweb; pruebas SSRF de 16.4",
+   "udf-a-pdf: investigar el formato (ZIP con content.xml), parser propio con defusedxml a HTML y Chromium de gotenberg; default_enabled=False (7.23); sin muestra con licencia, queda desactivada con su motivo en TOOLS.md"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-N",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/office/specs.py",
+   "packages/tools/tools/utils/specs.py",
+   "packages/registry/registry.json",
+   "docs/TOOLS.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Parcial: Gotenberg simulado con respx y SSRF con check_web_url; la captura real con la pila completa",
+  "size": "M"
+ },
+ {
+  "id": "F6-N",
+  "phase": "F6",
+  "title": "Navegador: Mermaid y crear-tarjeta",
+  "tools": [
+   "mermaid-a-png",
+   "mermaid-a-svg",
+   "crear-tarjeta"
+  ],
+  "cross_cutting": [
+   "mermaid (MIT) con securityLevel strict en un iframe sandbox porque necesita DOM (desviación del Web Worker de 8.3), htmlLabels false y resvg para PNG; nunca @mermaid-js/layout-elk (elkjs EPL-2.0 no está en la lista de frontend)",
+   "crear-tarjeta (A.1): motor de crear-collage, imprimir en casa con n-up y reversos, imprenta con sangrado, TrimBox, BleedBox y marcas, destinatarios desde CSV o XLSX (SheetJS CE desde cdn.sheetjs.com con versión fijada), cámara (D-105)",
+   "Playwright: el archivo no sale del dispositivo y sin violaciones de CSP"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-O1"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/client/specs.py",
+   "packages/client-tools/src/index.ts",
+   "packages/client-tools/package.json",
+   "apps/web/package.json",
+   "package-lock.json",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "apps/web/src/app/[locale]/[slug]/page.tsx",
+   "apps/web/src/lib/csp.ts",
+   "apps/web/src/proxy.ts",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Sí: Vitest, tsc, next build y Playwright con Chrome local",
+  "size": "L"
+ },
+ {
+  "id": "F6-O1",
+  "phase": "F6",
+  "title": "escribir-pdf (1): editor TipTap y exportación",
+  "tools": [
+   "escribir-pdf"
+  ],
+  "cross_cutting": [
+   "Editor con paquetes MIT de TipTap del npm público (nunca Pages ni la exportación DOCX de pago; lo que sea Pro se hace propio), KaTeX, columnas, notas al pie, índice automático, buscar y reemplazar",
+   "Página (papel, márgenes, encabezado y pie con números, marca de agua, membrete con PDF de fondo, borde) y plantillas de A.1",
+   "PDF por Gotenberg con generateDocumentOutline y generateTaggedPdf en dos pasadas para el índice con números reales, campos con pdf-lib, propiedades; DOCX con docx; Markdown; vista previa exacta en servidor; borradores en IndexedDB",
+   "Lighthouse 90 en la página pese al editor: cargar el editor y KaTeX bajo demanda"
+  ],
+  "depends_on": [
+   "F4-Z"
+  ],
+  "parallel_safe_with": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/client/specs.py",
+   "packages/tools/tools/office/specs.py",
+   "apps/web/package.json",
+   "package-lock.json",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "apps/web/src/app/[locale]/[slug]/page.tsx",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Sí en el navegador (Vitest, Playwright); la vista previa y el PDF de Gotenberg simulados aquí y reales en la CI",
+  "size": "XL"
+ },
+ {
+  "id": "F6-O2",
+  "phase": "F6",
+  "title": "escribir-pdf (2): abrir, ODT, combinación de correspondencia y extras",
+  "tools": [
+   "escribir-pdf"
+  ],
+  "cross_cutting": [
+   "Abrir DOCX con mammoth, ODT con LibreOffice en office, Markdown y PDF con Docling en convert",
+   "Exportar ODT con pandoc --sandbox en utils (F6-A)",
+   "Combinación de correspondencia CSV/XLSX con {Columna}: un PDF por fila en ZIP o uno con todas",
+   "Firma dibujada y QR como imagen, dictado y lectura con Web Speech API; contenido 8.2"
+  ],
+  "depends_on": [
+   "F6-O1",
+   "F6-A"
+  ],
+  "parallel_safe_with": [
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/client/specs.py",
+   "apps/web/package.json",
+   "package-lock.json",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Parcial: mammoth y la combinación en Vitest; LibreOffice local para ODT de entrada; pandoc y Docling según su disponibilidad (Docling en .venv)",
+  "size": "L"
+ },
+ {
+  "id": "F6-Z",
+  "phase": "F6 (cierre)",
+  "title": "Cierre técnico de F6 y paridad con PDF24",
+  "tools": [],
+  "cross_cutting": [
+   "Pruebas de 16.5 de F6 en verde (firmas byte a byte, verificar-firma detecta alteración, GPX ↔ KML, VCF ida y vuelta, codificación CSV)",
+   "docs/TOOLS.md con la tabla de paridad de cada herramienta web de PDF24 (17) y lo de 7.24 como posible con licencia o revisión",
+   "Regla del 10 % (máximo 8 de 83 desactivadas: candidatas udf-a-pdf, manuscrito-a-texto sin modelo con imagen, pst-* sin muestra)",
+   "Revisión externa, Lighthouse, PROGRESS y cierre operativo pendiente"
+  ],
+  "depends_on": [
+   "F6-A",
+   "F6-B1",
+   "F6-B2",
+   "F6-C",
+   "F6-D",
+   "F6-E",
+   "F6-F",
+   "F6-G",
+   "F6-H1",
+   "F6-H2",
+   "F6-I",
+   "F6-J",
+   "F6-K",
+   "F6-L",
+   "F6-M",
+   "F6-N",
+   "F6-O2"
+  ],
+  "parallel_safe_with": [],
+  "shared_files_touched": [
+   "docs/TOOLS.md",
+   "scripts/gen_docs.py",
+   "config/pdf24.yaml",
+   "docs/PROGRESS.md",
+   "docs/PLAN.md",
+   "docs/DEPLOY-CHECKLIST.md"
+  ],
+  "verification_possible_here": "Parcial, igual que F3-Z",
+  "size": "M"
+ },
+ {
+  "id": "F5-V1",
+  "phase": "F5 (vídeo)",
+  "title": "Vídeo: conversiones y remultiplexado (solo Pro)",
+  "tools": [
+   "mp4-a-webm",
+   "webm-a-mp4",
+   "mov-a-mp4",
+   "mkv-a-mp4",
+   "avi-a-mp4",
+   "video-a-gif",
+   "gif-a-mp4"
+  ],
+  "cross_cutting": [
+   "Cola av.heavy; solo Pro hasta 1 h y 1 GB (plans.video y video_minutes, 9.3) comprobado antes de encolar",
+   "Remultiplexado con -c copy cuando los códecs caben (7.9); H.264 solo con VIDEO_H264_ENCODING_ENABLED, si no AV1; HEVC solo con HEVC_DECODE_ENABLED salvo remultiplexar",
+   "Comprobar que la compilación LGPL fijada de FFmpeg trae libvpx, libaom o SVT-AV1 y libopus; revisión de AAC, VP9 y AV1 en LEGAL.md (11)",
+   "16.5: MOV con H.264 y AAC a MP4 sin recodificar (mismo códec y fotogramas) y duración ±50 ms con ffprobe; 16.4 lista HLS maliciosa"
+  ],
+  "depends_on": [
+   "F6-Z"
+  ],
+  "parallel_safe_with": [],
+  "shared_files_touched": [
+   "packages/tools/tools/av/specs.py",
+   "workers/Dockerfile",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "scripts/fixtures/generate.py",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/LEGAL.md",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "No para el motor: FFmpeg no está instalado (binario LGPL fijado en caché local o CI); sí la lógica de elección de remultiplexado con ffprobe simulado y la comprobación del plan",
+  "size": "L"
+ },
+ {
+  "id": "F5-V2",
+  "phase": "F5 (vídeo)",
+  "title": "Vídeo: comprimir, recortar, rotar y quitar audio",
+  "tools": [
+   "comprimir-video",
+   "recortar-video",
+   "rotar-video",
+   "quitar-audio-video"
+  ],
+  "cross_cutting": [
+   "Sin recodificar cuando el corte y la operación lo permiten (7.9): recortar por tiempo en fotogramas clave con -c copy y recodificado solo si se pide precisión; rotar por metadato cuando se puede",
+   "convertir-archivo ofrece las rutas de vídeo desde el registro (D-116)"
+  ],
+  "depends_on": [
+   "F5-V1"
+  ],
+  "parallel_safe_with": [],
+  "shared_files_touched": [
+   "packages/tools/tools/av/specs.py",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/DECISIONS.md"
+  ],
+  "verification_possible_here": "Igual que F5-V1",
+  "size": "M"
+ },
+ {
+  "id": "F5-Z",
+  "phase": "F5 (cierre del vídeo)",
+  "title": "Cierre técnico de F5",
+  "tools": [],
+  "cross_cutting": [
+   "Pruebas de audio y vídeo en verde y prueba de carga de ogg-a-mp3 (17; k6 en el VPS, propietario)",
+   "Revisión externa, Lighthouse de las páginas de vídeo, PROGRESS y cierre operativo pendiente"
+  ],
+  "depends_on": [
+   "F5-V2"
+  ],
+  "parallel_safe_with": [],
+  "shared_files_touched": [
+   "docs/PROGRESS.md",
+   "docs/PLAN.md",
+   "docs/OPERATIONS.md",
+   "docs/DEPLOY-CHECKLIST.md"
+  ],
+  "verification_possible_here": "Parcial; k6 solo en el VPS",
+  "size": "S"
+ },
+ {
+  "id": "F7-A",
+  "phase": "F7",
+  "title": "Mallas núcleo (nace workermesh): STL, OBJ, 3MF y PLY",
+  "tools": [
+   "stl-a-obj",
+   "obj-a-stl",
+   "stl-a-3mf",
+   "3mf-a-stl",
+   "obj-a-3mf",
+   "3mf-a-obj",
+   "stl-a-ply",
+   "ply-a-stl",
+   "stl-ascii-a-binario"
+  ],
+  "cross_cutting": [
+   "Grupo mesh: etapa worker-mesh (trimesh, lib3mf, manifold3d, fast-simplification), servicio workermesh (5.4: 1 proceso, 4 GB), envguard, queueguard, imágenes de la CI",
+   "Opciones de 7.18: unidades de origen y destino, escala, fusionar o separar, conservar colores y materiales con aviso",
+   "Límite de triángulos por plan (9.3) antes de procesar; detección por bytes de los formatos 3D",
+   "16.5: STL → 3MF → STL conserva volumen (<0,1 %) y triángulos; lib3mf valida cada 3MF; Playwright stl-a-3mf (16.1)",
+   "Generador de muestras 3D en scripts/fixtures (trimesh)"
+  ],
+  "depends_on": [
+   "F5-Z"
+  ],
+  "parallel_safe_with": [
+   "F7-D",
+   "F7-H"
+  ],
+  "shared_files_touched": [
+   "workers/Dockerfile",
+   "docker-compose.yml",
+   "scripts/gen_coolify_compose.py",
+   "docker-compose.coolify.yml",
+   "pyproject.toml",
+   "packages/core/core/registry.py",
+   "packages/core/core/envguard.py",
+   "packages/core/core/queueguard.py",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   ".github/workflows/ci.yml",
+   ".github/workflows/images.yml",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/LICENSES.md",
+   "docs/ARCHITECTURE.md"
+  ],
+  "verification_possible_here": "Sí: trimesh, lib3mf, manifold3d en .venv (ruedas); la imagen y el servicio solo en la CI",
+  "size": "L"
+ },
+ {
+  "id": "F7-B",
+  "phase": "F7",
+  "title": "Mallas: AMF, glTF/GLB y formatos de assimp",
+  "tools": [
+   "amf-a-stl",
+   "stl-a-amf",
+   "amf-a-3mf",
+   "glb-a-stl",
+   "stl-a-glb",
+   "gltf-a-stl",
+   "fbx-a-stl",
+   "fbx-a-obj",
+   "dae-a-stl",
+   "3ds-a-stl"
+  ],
+  "cross_cutting": [
+   "AMF con lector y escritor propios según ISO/ASTM 52915, XML con defusedxml y comprimido con zipguard (7.18)",
+   "assimp como programa externo (BSD) con run_engine para FBX, DAE y 3DS (decisión: aísla los fallos del analizador)",
+   "glTF con recursos externos sin acceso fuera del trabajo"
+  ],
+  "depends_on": [
+   "F7-A"
+  ],
+  "parallel_safe_with": [
+   "F7-D",
+   "F7-E",
+   "F7-F",
+   "F7-G",
+   "F7-H",
+   "F7-I"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/mesh/specs.py",
+   "workers/Dockerfile",
+   ".github/workflows/ci.yml",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "packages/registry/registry.json",
+   "apps/web/src/lib/conversions.ts",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Parcial: AMF y GLB con trimesh sí; assimp no está instalado (CI)",
+  "size": "L"
+ },
+ {
+  "id": "F7-C",
+  "phase": "F7",
+  "title": "Mallas: VRML, X3D, USDZ y convertir-modelo-3d",
+  "tools": [
+   "wrl-a-stl",
+   "stl-a-wrl",
+   "x3d-a-stl",
+   "stl-a-x3d",
+   "stl-a-usdz",
+   "obj-a-usdz",
+   "convertir-modelo-3d"
+  ],
+  "cross_cutting": [
+   "usd-core (LicenseRef-TOST-1.0, 11) para USDZ; assimp para VRML y X3D",
+   "convertir-modelo-3d (7.22): detección por bytes, solo las salidas posibles desde el registro, combinaciones sin página propia con noindex (mismo mecanismo que convertir-archivo, D-115 a D-118)"
+  ],
+  "depends_on": [
+   "F7-A",
+   "F7-B"
+  ],
+  "parallel_safe_with": [
+   "F7-D",
+   "F7-E",
+   "F7-F",
+   "F7-G",
+   "F7-H",
+   "F7-I"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/mesh/specs.py",
+   "pyproject.toml",
+   "apps/web/src/lib/conversions.ts",
+   "apps/web/src/lib/site.ts",
+   "apps/web/src/app/sitemap.ts",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Parcial: usd-core en .venv; assimp en la CI; Playwright del conversor universal aquí",
+  "size": "L"
+ },
+ {
+  "id": "F7-D",
+  "phase": "F7",
+  "title": "CAD con OpenCascade (nace workercad)",
+  "tools": [
+   "step-a-stl",
+   "stp-a-stl",
+   "step-a-3mf",
+   "step-a-obj",
+   "step-a-glb",
+   "iges-a-stl",
+   "igs-a-step",
+   "brep-a-stl",
+   "stl-a-step",
+   "obj-a-step"
+  ],
+  "cross_cutting": [
+   "Grupo cad: etapa worker-cad con cadquery-ocp (OCP, LGPL con excepción), servicio workercad (5.4: 1 proceso, 4 GB), envguard, queueguard",
+   "Calidad de teselado elegible; STEP → STL sale estanco (16.5); stl-a-step y obj-a-step avisan de que no recuperan superficies paramétricas (7.19)"
+  ],
+  "depends_on": [
+   "F5-Z"
+  ],
+  "parallel_safe_with": [
+   "F7-A",
+   "F7-B",
+   "F7-C",
+   "F7-F",
+   "F7-G",
+   "F7-H",
+   "F7-I"
+  ],
+  "shared_files_touched": [
+   "workers/Dockerfile",
+   "docker-compose.yml",
+   "scripts/gen_coolify_compose.py",
+   "docker-compose.coolify.yml",
+   "pyproject.toml",
+   "packages/core/core/registry.py",
+   "packages/core/core/envguard.py",
+   "packages/core/core/queueguard.py",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   ".github/workflows/ci.yml",
+   ".github/workflows/images.yml",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md",
+   "docs/ARCHITECTURE.md"
+  ],
+  "verification_possible_here": "Parcial: la rueda de OCP es grande pero instalable en .venv; con 7 GB de RAM, sin ejecutarla a la vez que Docling o faster-whisper",
+  "size": "L"
+ },
+ {
+  "id": "F7-E",
+  "phase": "F7",
+  "title": "CAD con programas externos GPL: OpenSCAD y LibreDWG",
+  "tools": [
+   "scad-a-stl",
+   "scad-a-3mf",
+   "dwg-a-dxf",
+   "dwg-a-pdf"
+  ],
+  "cross_cutting": [
+   "OpenSCAD en sandbox sin acceso fuera del trabajo, OPENSCAD_TIMEOUT_SECONDS (14), análisis previo de import/include/use con rutas absolutas o ..; 16.4 y 16.5 import fuera del directorio falla",
+   "LibreDWG como programa externo y la ruta de dxf-a-pdf (7.3) con aviso de calidad irregular"
+  ],
+  "depends_on": [
+   "F7-D"
+  ],
+  "parallel_safe_with": [
+   "F7-A",
+   "F7-B",
+   "F7-C",
+   "F7-F",
+   "F7-G",
+   "F7-H",
+   "F7-I"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/cad/specs.py",
+   "workers/Dockerfile",
+   ".github/workflows/ci.yml",
+   "packages/core/core/settings.py",
+   ".env.example",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md",
+   "docs/SECURITY.md"
+  ],
+  "verification_possible_here": "No para los motores (OpenSCAD y LibreDWG no instalados: CI); sí el análisis previo de rutas",
+  "size": "M"
+ },
+ {
+  "id": "F7-F",
+  "phase": "F7",
+  "title": "Herramientas de malla en servidor",
+  "tools": [
+   "reparar-stl",
+   "reducir-poligonos",
+   "escalar-modelo-3d",
+   "cambiar-unidades-stl",
+   "cortar-modelo-3d",
+   "separar-piezas",
+   "unir-modelos",
+   "analizar-stl"
+  ],
+  "cross_cutting": [
+   "manifold3d y trimesh; fast-simplification para la decimación; reparar-stl deja estanca una malla con huecos (16.5)",
+   "analizar-stl: estanqueidad, dimensiones, volumen, superficie y filamento por material y relleno, marcado como estimación (7.20)"
+  ],
+  "depends_on": [
+   "F7-A"
+  ],
+  "parallel_safe_with": [
+   "F7-B",
+   "F7-C",
+   "F7-D",
+   "F7-E",
+   "F7-G",
+   "F7-H",
+   "F7-I"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/mesh/specs.py",
+   "pyproject.toml",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Sí: ruedas de Python en .venv",
+  "size": "M"
+ },
+ {
+  "id": "F7-G",
+  "phase": "F7",
+  "title": "Generadores 3D",
+  "tools": [
+   "svg-a-stl",
+   "dxf-a-stl",
+   "imagen-a-stl",
+   "logo-a-stl",
+   "texto-a-stl",
+   "litofania",
+   "mapa-de-alturas-a-stl"
+  ],
+  "cross_cutting": [
+   "shapely, trimesh y manifold3d; vtracer (ya en media) para vectorizar; fontTools para texto; altura de extrusión elegible; litofanía plana, curva o cilíndrica (7.20)",
+   "SVG con defusedxml y sin recursos externos; DXF con ezdxf sin el extra draw (11)"
+  ],
+  "depends_on": [
+   "F7-A"
+  ],
+  "parallel_safe_with": [
+   "F7-B",
+   "F7-C",
+   "F7-D",
+   "F7-E",
+   "F7-F",
+   "F7-H",
+   "F7-I"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/mesh/specs.py",
+   "pyproject.toml",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Sí: todo en Python de .venv",
+  "size": "M"
+ },
+ {
+  "id": "F7-H",
+  "phase": "F7",
+  "title": "3D en el navegador: visores, Draco y miniaturas",
+  "tools": [
+   "visor-3d",
+   "visor-gcode",
+   "comprimir-glb",
+   "render-modelo-3d"
+  ],
+  "cross_cutting": [
+   "three.js (MIT), glTF Transform (MIT) y draco3d (Apache-2.0) cargados bajo demanda en el worker o la página (8.3)",
+   "Playwright: el archivo no sale del dispositivo y sin violaciones de CSP (WebGL y WASM en csp.ts)"
+  ],
+  "depends_on": [
+   "F5-Z"
+  ],
+  "parallel_safe_with": [
+   "F7-A",
+   "F7-B",
+   "F7-C",
+   "F7-D",
+   "F7-E",
+   "F7-F",
+   "F7-G",
+   "F7-I"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/client/specs.py",
+   "packages/client-tools/src/index.ts",
+   "packages/client-tools/package.json",
+   "apps/web/package.json",
+   "package-lock.json",
+   "apps/web/scripts/wasm-assets.mjs",
+   "apps/web/src/lib/csp.ts",
+   "apps/web/messages/es.json",
+   "apps/web/messages/en.json",
+   "apps/web/src/app/[locale]/[slug]/page.tsx",
+   "packages/registry/registry.json",
+   "docs/LICENSES.md"
+  ],
+  "verification_possible_here": "Sí: Vitest y Playwright con Chrome local (WebGL por software)",
+  "size": "L"
+ },
+ {
+  "id": "F7-I",
+  "phase": "F7",
+  "title": "G-code y bgcode con implementación propia",
+  "tools": [
+   "gcode-a-bgcode",
+   "bgcode-a-gcode",
+   "analizar-gcode",
+   "gcode-a-imagen",
+   "extraer-miniatura-gcode",
+   "extraer-gcode-3mf"
+  ],
+  "cross_cutting": [
+   "Implementación propia desde la especificación publicada por Prusa: bloques, CRC, DEFLATE, Heatshrink y MeatPack; nunca código de libbgcode (AGPL, 7.21, 11)",
+   "bgcode → gcode → bgcode reproduce archivos reales de PrusaSlicer (16.5): muestras generadas con PrusaSlicer en un script (01-1 regla 8, nunca en la imagen) o descargadas con licencia en SOURCES.md",
+   "extraer-gcode-3mf de .gcode.3mf de Bambu Lab con zipguard"
+  ],
+  "depends_on": [
+   "F7-A"
+  ],
+  "parallel_safe_with": [
+   "F7-B",
+   "F7-C",
+   "F7-D",
+   "F7-E",
+   "F7-F",
+   "F7-G",
+   "F7-H"
+  ],
+  "shared_files_touched": [
+   "packages/tools/tools/mesh/specs.py",
+   "packages/core/core/filetype.py",
+   "packages/client-tools/src/filetype.ts",
+   "tests/fixtures/filetype-cases.json",
+   "tests/fixtures/SOURCES.md",
+   "packages/registry/registry.json"
+  ],
+  "verification_possible_here": "Sí la lógica en Python puro; las muestras reales de PrusaSlicer necesitan que la CI o el propietario las generen (PrusaSlicer no está aquí)",
+  "size": "L"
+ },
+ {
+  "id": "F7-Z",
+  "phase": "F7 (cierre) y cierre del proyecto",
+  "title": "Cierre técnico de F7 y criterios de aceptación del proyecto (18)",
+  "tools": [],
+  "cross_cutting": [
+   "Pruebas 3D de 16.5 en verde; regla del 10 %; revisión externa; Lighthouse",
+   "Repaso de los criterios de 18 uno por uno, con la prueba o el documento que lo demuestra, y de que docs/ está completo (PLAN, PROGRESS, DECISIONS, ARCHITECTURE, TOOLS, LICENSES, LEGAL, SECURITY, DEPLOY, DEPLOY-CHECKLIST, OPERATIONS, ERRORS y spec)",
+   "Restauración desde la copia remota una vez por fase (16.7) en la CI",
+   "PROGRESS final con los cierres operativos pendientes del propietario"
+  ],
+  "depends_on": [
+   "F7-A",
+   "F7-B",
+   "F7-C",
+   "F7-D",
+   "F7-E",
+   "F7-F",
+   "F7-G",
+   "F7-H",
+   "F7-I"
+  ],
+  "parallel_safe_with": [],
+  "shared_files_touched": [
+   "docs/PROGRESS.md",
+   "docs/PLAN.md",
+   "docs/TOOLS.md",
+   "docs/DEPLOY-CHECKLIST.md"
+  ],
+  "verification_possible_here": "Parcial, igual que F3-Z",
+  "size": "M"
+ }
+]

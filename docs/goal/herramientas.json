@@ -1,0 +1,4274 @@
+[
+ {
+  "slug_es": "docx-a-odt",
+  "slug_en": "docx-to-odt",
+  "phase": "F6",
+  "spec_section": "7.12 (07-7-catalogo-completo-de-herramientas.md); sin entrada en Anexo A (a-*.md no la cita); seguridad 12-12-seguridad.md 12.3; prueba 16-16-pruebas.md 16.4",
+  "engine": "pandoc (GPL, programa externo) siempre con --sandbox",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "pandoc (binario estático oficial con archivos de datos incrustados)"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "pandoc GPL-2.0+: solo subproceso en servidor (02 tabla GPL externos; 11). No uses pypandoc_binary (wheel que empaqueta un binario GPL y la CI de 11 lo puede marcar como GPL). Las imágenes son privadas (03).",
+  "options_summary": "Anexo A no define opciones; el catálogo solo fija --sandbox. Lotes según A.0 (a-0-a-0-convenciones-comunes.md): un archivo por entrada más un ZIP.",
+  "fixtures_needed": [
+   "DOCX real (ya existe el generador docx_with_libreoffice en scripts/fixtures/generate.py)",
+   "Markdown con ![](/proc/self/environ) (16.4)"
+  ],
+  "flags": "TOOL_DOCX_A_ODT_ENABLED (14, flag por herramienta)",
+  "notes": "D-70 (docs/DECISIONS.md): el pandoc de Debian no lleva los archivos de datos y con --sandbox no puede escribir EPUB; el ODT y el DOCX necesitan reference.odt/reference.docx de esos datos, así que hay que instalar el binario estático publicado por pandoc (versión fijada, 1.2) y comprobarlo con una prueba. pandoc pasa por su AST y pierde maquetación (encabezados, columnas, cuadros de texto); avísalo en la página."
+ },
+ {
+  "slug_es": "odt-a-docx",
+  "slug_en": "odt-to-docx",
+  "phase": "F6",
+  "spec_section": "7.12; sin Anexo A",
+  "engine": "pandoc --sandbox",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "pandoc"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "pandoc GPL, externo.",
+  "options_summary": "Ninguna en Anexo A; lotes según A.0.",
+  "fixtures_needed": [
+   "ODT (1.8 de 01-1-como-trabajar.md; generable con LibreOffice)"
+  ],
+  "flags": "TOOL_ODT_A_DOCX_ENABLED",
+  "notes": "Comparte el módulo de pandoc con las otras cinco conversiones de la misma línea."
+ },
+ {
+  "slug_es": "docx-a-markdown",
+  "slug_en": "docx-to-markdown",
+  "phase": "F6",
+  "spec_section": "7.12; sin Anexo A",
+  "engine": "pandoc --sandbox",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "pandoc"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "pandoc GPL, externo.",
+  "options_summary": "Ninguna en Anexo A. Decisión propuesta (1.5): variante GFM y las imágenes extraídas en un ZIP (--extract-media dentro del directorio del trabajo).",
+  "fixtures_needed": [
+   "DOCX con imágenes y tablas"
+  ],
+  "flags": "TOOL_DOCX_A_MARKDOWN_ENABLED",
+  "notes": "Si hay imágenes, la salida es un ZIP con el .md y la carpeta de medios."
+ },
+ {
+  "slug_es": "markdown-a-docx",
+  "slug_en": "markdown-to-docx",
+  "phase": "F6",
+  "spec_section": "7.12; prueba 16.4 (16-16-pruebas.md: Markdown con ![](/proc/self/environ))",
+  "engine": "pandoc --sandbox",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "pandoc"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "pandoc GPL, externo.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "Markdown con imagen remota y con ruta local maliciosa"
+  ],
+  "flags": "TOOL_MARKDOWN_A_DOCX_ENABLED",
+  "notes": "Esta es la herramienta de la prueba de 16.4 que intenta leer /proc/self/environ: --sandbox más el entorno vacío de 12.1."
+ },
+ {
+  "slug_es": "docx-a-html",
+  "slug_en": "docx-to-html",
+  "phase": "F6",
+  "spec_section": "7.12; sin Anexo A",
+  "engine": "pandoc --sandbox",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "pandoc"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "pandoc GPL, externo.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: HTML autónomo (--embed-resources) o ZIP con imágenes.",
+  "fixtures_needed": [
+   "DOCX"
+  ],
+  "flags": "TOOL_DOCX_A_HTML_ENABLED",
+  "notes": "El HTML de salida se sirve como descarga desde files, con CSP sandbox (16.4), nunca renderizado en el dominio."
+ },
+ {
+  "slug_es": "html-a-docx",
+  "slug_en": "html-to-docx",
+  "phase": "F6",
+  "spec_section": "7.12; 12.3",
+  "engine": "pandoc --sandbox",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "pandoc"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "pandoc GPL, externo.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "HTML con <img src=file:///etc/hostname> y con URL http"
+  ],
+  "flags": "TOOL_HTML_A_DOCX_ENABLED",
+  "notes": "Las imágenes remotas no se descargan (worker sin red y --sandbox); avisa de las que faltan."
+ },
+ {
+  "slug_es": "xlsx-a-csv",
+  "slug_en": "xlsx-to-csv",
+  "phase": "F6",
+  "spec_section": "7.12; sin Anexo A; bombas XLSX en 12.3 y 16.4",
+  "engine": "openpyxl (read_only) y csv de la librería estándar",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "openpyxl MIT, ya fijado en pyproject.toml.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: hoja [todas, una CSV por hoja en ZIP] | una; separador [,] | ; | tab; codificación [UTF-8] | UTF-8 con BOM (para Excel).",
+  "fixtures_needed": [
+   "XLSX con varias hojas, fórmulas y fechas",
+   "XLSX con relación de compresión alta (16.4)"
+  ],
+  "flags": "TOOL_XLSX_A_CSV_ENABLED",
+  "notes": "Usa core/zipguard.py antes de abrir (límite de Office de 500 MB descomprimidos, 12.3). Valores en caché de las fórmulas (data_only=True)."
+ },
+ {
+  "slug_es": "csv-a-xlsx",
+  "slug_en": "csv-to-xlsx",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "openpyxl y csv; detección de codificación con charset-normalizer (como chromium_a_pdf.py)",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "MIT.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: separador [automático]; primera fila como cabecera [sí]; detección de tipos [sí].",
+  "fixtures_needed": [
+   "CSV en Windows-1252 con ; como separador"
+  ],
+  "flags": "TOOL_CSV_A_XLSX_ENABLED",
+  "notes": "Neutraliza la inyección de fórmulas: las celdas que empiezan por =, +, - o @ se guardan como texto."
+ },
+ {
+  "slug_es": "ods-a-xlsx",
+  "slug_en": "ods-to-xlsx",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "El catálogo dice openpyxl y librería estándar, pero openpyxl no lee ni escribe ODS",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "odfpy (Apache-2.0/GPL/LGPL a elegir) o la ruta de LibreOffice ya existente"
+  ],
+  "license_constraints": "Si se usa odfpy, elige Apache-2.0 y regístralo (1.6). LibreOffice (MPL) ya está en workeroffice/gotenberg.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "ODS con varias hojas (generable con LibreOffice)"
+  ],
+  "flags": "TOOL_ODS_A_XLSX_ENABLED",
+  "notes": "Hueco de la especificación: decide en docs/DECISIONS.md (1.5). Lo más simple y fiel es LibreOffice/unoserver en workeroffice; la otra opción es odfpy en utils."
+ },
+ {
+  "slug_es": "xlsx-a-ods",
+  "slug_en": "xlsx-to-ods",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "Igual que ods-a-xlsx (openpyxl no escribe ODS)",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "odfpy o LibreOffice"
+  ],
+  "license_constraints": "Igual que ods-a-xlsx.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "XLSX"
+  ],
+  "flags": "TOOL_XLSX_A_ODS_ENABLED",
+  "notes": "Hay que tomar la misma decisión que en ods-a-xlsx."
+ },
+ {
+  "slug_es": "csv-a-json",
+  "slug_en": "csv-to-json",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "csv y json de la librería estándar, con charset-normalizer",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Ninguna.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: array de objetos [sí] | array de arrays; inferir números [no]; indentación [2].",
+  "fixtures_needed": [
+   "CSV UTF-8 y Windows-1252"
+  ],
+  "flags": "TOOL_CSV_A_JSON_ENABLED",
+  "notes": "Podría ejecutarse en el navegador, pero el catálogo la asigna al grupo utils (servidor)."
+ },
+ {
+  "slug_es": "json-a-csv",
+  "slug_en": "json-to-csv",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "json y csv de la librería estándar",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Ninguna.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: aplanar objetos anidados con a.b [sí]; separador [,].",
+  "fixtures_needed": [
+   "JSON anidado"
+  ],
+  "flags": "TOOL_JSON_A_CSV_ENABLED",
+  "notes": "Limita la profundidad y el tamaño (bombas)."
+ },
+ {
+  "slug_es": "json-a-xml",
+  "slug_en": "json-to-xml",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "json y xml.etree de la librería estándar",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Ninguna.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: nombre del elemento raíz [root]; atributos con prefijo @.",
+  "fixtures_needed": [
+   "JSON con claves que no son nombres XML válidos"
+  ],
+  "flags": "TOOL_JSON_A_XML_ENABLED",
+  "notes": "Las claves que no son NCName válidos se sanean."
+ },
+ {
+  "slug_es": "xml-a-json",
+  "slug_en": "xml-to-json",
+  "phase": "F6",
+  "spec_section": "7.12; prueba 16.4 (XML con entidad externa: se rechaza)",
+  "engine": "defusedxml (7.14/02) y json",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "defusedxml PSF, ya fijado.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "XML con entidad externa (XXE) y billion laughs"
+  ],
+  "flags": "TOOL_XML_A_JSON_ENABLED",
+  "notes": "Nunca uses xml.etree sin defusedxml."
+ },
+ {
+  "slug_es": "yaml-a-json",
+  "slug_en": "yaml-to-json",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "PyYAML safe_load (ya fijado en pyproject.toml; no es librería estándar) y json",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "PyYAML MIT.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: varios documentos de un YAML como array.",
+  "fixtures_needed": [
+   "YAML con alias anidados (billion laughs)"
+  ],
+  "flags": "TOOL_YAML_A_JSON_ENABLED",
+  "notes": "Solo safe_load; limita la expansión de alias (los anclajes de PyYAML permiten bombas)."
+ },
+ {
+  "slug_es": "json-a-yaml",
+  "slug_en": "json-to-yaml",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "json y PyYAML safe_dump",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "MIT.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "JSON con Unicode"
+  ],
+  "flags": "TOOL_JSON_A_YAML_ENABLED",
+  "notes": "allow_unicode=True y sort_keys=False."
+ },
+ {
+  "slug_es": "excel-a-json",
+  "slug_en": "excel-to-json",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "openpyxl",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "openpyxl solo lee XLSX/XLSM; el XLS antiguo necesita otra vía (LibreOffice) o rechazarlo.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: hoja [todas, como objeto por nombre]; primera fila como claves [sí]; fechas en ISO 8601.",
+  "fixtures_needed": [
+   "XLSX con fechas, números y celdas combinadas"
+  ],
+  "flags": "TOOL_EXCEL_A_JSON_ENABLED",
+  "notes": "«Excel» admite .xls: decide en DECISIONS si pasa a XLSX con LibreOffice o se rechaza."
+ },
+ {
+  "slug_es": "arreglar-codificacion-csv",
+  "slug_en": "fix-csv-encoding",
+  "phase": "F6",
+  "spec_section": "7.12; prueba 16.5 Datos (16-16-pruebas.md: recupera tildes y eñes)",
+  "engine": "charset-normalizer",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "charset-normalizer MIT, ya fijado.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: codificación de origen [automática] | elegir; salida [UTF-8] | UTF-8 con BOM; reparar mojibake (doble codificación «Ã±») [sí].",
+  "fixtures_needed": [
+   "CSV en Windows-1252 con tildes y eñes",
+   "CSV con mojibake UTF-8 leído como Latin-1"
+  ],
+  "flags": "TOOL_ARREGLAR_CODIFICACION_CSV_ENABLED",
+  "notes": "Reutiliza la función de detección de packages/tools/tools/office/chromium_a_pdf.py (BOM, UTF-8 estricto y después charset-normalizer). El mojibake doble no es tarea de charset-normalizer: trátalo con una heurística propia (o ftfy, MIT, si se añade y registra)."
+ },
+ {
+  "slug_es": "epub-a-mobi",
+  "slug_en": "epub-to-mobi",
+  "phase": "F6",
+  "spec_section": "7.12; 12.3 (Calibre sin archivos locales); 16.4 (EPUB con file:///etc/hostname)",
+  "engine": "Calibre ebook-convert (GPL, externo)",
+  "runs_on": "server",
+  "worker_group": "utils (el catálogo) / office en la práctica (Calibre está instalado en workeroffice, D-53)",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "calibre (ebook-convert)"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Calibre GPL-3: solo subproceso. EbookLib es AGPL y está prohibido (11).",
+  "options_summary": "Ninguna en Anexo A (A.8 solo cubre EPUB/MOBI/AZW3 a PDF).",
+  "fixtures_needed": [
+   "EPUB (1.8)",
+   "EPUB con <img src=file:///etc/hostname>"
+  ],
+  "flags": "TOOL_EPUB_A_MOBI_ENABLED",
+  "notes": "Reutiliza packages/tools/tools/office/libros.py (la revisión previa de referencias locales y el entorno de Calibre). MOBI es un formato antiguo: avisa de que Kindle prefiere AZW3 o EPUB."
+ },
+ {
+  "slug_es": "epub-a-azw3",
+  "slug_en": "epub-to-azw3",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "Calibre ebook-convert",
+  "runs_on": "server",
+  "worker_group": "utils/office (igual que epub-a-mobi)",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "calibre"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Calibre GPL, externo.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "EPUB"
+  ],
+  "flags": "TOOL_EPUB_A_AZW3_ENABLED",
+  "notes": "Mismo módulo que epub-a-mobi."
+ },
+ {
+  "slug_es": "mobi-a-epub",
+  "slug_en": "mobi-to-epub",
+  "phase": "F6",
+  "spec_section": "7.12; 7.24 (quitar DRM queda fuera de alcance)",
+  "engine": "Calibre ebook-convert",
+  "runs_on": "server",
+  "worker_group": "utils/office",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "calibre"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Calibre GPL, externo.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "MOBI (1.8; generable con Calibre desde un EPUB)"
+  ],
+  "flags": "TOOL_MOBI_A_EPUB_ENABLED",
+  "notes": "Detecta el DRM y rechaza el libro con un error claro (7.24)."
+ },
+ {
+  "slug_es": "azw3-a-epub",
+  "slug_en": "azw3-to-epub",
+  "phase": "F6",
+  "spec_section": "7.12; 7.24",
+  "engine": "Calibre ebook-convert",
+  "runs_on": "server",
+  "worker_group": "utils/office",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "calibre"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Calibre GPL, externo.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "AZW3 (generable con Calibre)"
+  ],
+  "flags": "TOOL_AZW3_A_EPUB_ENABLED",
+  "notes": "Se rechaza si lleva DRM. filetype ya confunde MOBI y AZW3 y manda la extensión (D-115)."
+ },
+ {
+  "slug_es": "pptx-a-imagenes",
+  "slug_en": "pptx-to-images",
+  "phase": "F6",
+  "spec_section": "7.12",
+  "engine": "Gotenberg (ruta LibreOffice) a PDF y pypdfium2 para rasterizar",
+  "runs_on": "server",
+  "worker_group": "utils (cliente de Gotenberg; posible office)",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "pypdfium2 Apache/BSD; LibreOffice MPL dentro de gotenberg.",
+  "options_summary": "Ninguna en Anexo A. Propuesta tomada de pdf-a-imagenes (A.9): formato [PNG] | JPG | WEBP, resolución [150 ppp]; diapositivas ocultas [no] como en A.8.",
+  "fixtures_needed": [
+   "PPTX (1.8)"
+  ],
+  "flags": "TOOL_PPTX_A_IMAGENES_ENABLED",
+  "notes": "Reutiliza tools/office/gotenberg.py y el rasterizador de pdf-a-imagenes. Salida en ZIP."
+ },
+ {
+  "slug_es": "pptx-a-video",
+  "slug_en": "pptx-to-video",
+  "phase": "F6",
+  "spec_section": "7.12; códecs y FFmpeg en 11-11-licencias.md; F5 vídeo «solo Pro» en 17",
+  "engine": "Diapositivas renderizadas (Gotenberg y pypdfium2) y FFmpeg",
+  "runs_on": "server",
+  "worker_group": "av (FFmpeg) o utils con FFmpeg; trabajo en dos fases",
+  "complexity": "L",
+  "already_exists": false,
+  "system_binaries": [
+   "ffmpeg (compilación LGPL de BtbN ya en workers/Dockerfile)"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "FFmpeg LGPL (11). La codificación H.264 está detrás de VIDEO_H264_ENCODING_ENABLED, apagado: la salida por defecto debe ser VP9/WebM o AV1 (riesgo de patentes que se anota en LEGAL.md). Nunca libfdk_aac ni ffmpeg.wasm.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: segundos por diapositiva [5]; resolución [1080p] | 720p; formato [WebM VP9] | MP4 H.264 (solo con el flag).",
+  "fixtures_needed": [
+   "PPTX con varias diapositivas"
+  ],
+  "flags": "TOOL_PPTX_A_VIDEO_ENABLED; VIDEO_H264_ENCODING_ENABLED para MP4; probablemente solo Pro, como el vídeo de F5 (17)",
+  "notes": "El orden de 17 pone el vídeo de F5 después de F6: el pipeline de vídeo (colas av.heavy, límites de Pro) quizá no exista todavía. Un trabajo no puede pasar de un worker a otro (D-67): o el worker av llama a Gotenberg o se usa un trabajo encadenado."
+ },
+ {
+  "slug_es": "traducir-word",
+  "slug_en": "translate-word",
+  "phase": "F6",
+  "spec_section": "7.12; 6-6-ia-con-modelos-gratuitos-de-openrouter.md (coste: 1 petición por bloque)",
+  "engine": "python-docx y LLM (OpenRouter, core/ai/translate.py)",
+  "runs_on": "server",
+  "worker_group": "ai",
+  "complexity": "L",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "python-docx MIT.",
+  "options_summary": "Ninguna en Anexo A. Propuesta tomada de traducir-pdf (F3, ya en el registro): idioma de origen [automático] e idioma de destino; consentimiento obligatorio (6).",
+  "fixtures_needed": [
+   "DOCX con formato mixto en un párrafo, tablas, encabezados y pies, notas al pie y cuadros de texto"
+  ],
+  "flags": "TOOL_TRADUCIR_WORD_ENABLED; etiqueta beta (6.3)",
+  "notes": "core/ai/translate.py ya prevé traducir-word, traducir-excel y traducir-powerpoint en F6. Conservar el formato exige traducir por párrafo y repartir el texto entre los runs; pruebas de 16.3 (sin modelos, AI_UNAVAILABLE; sin consentimiento, 400; caché)."
+ },
+ {
+  "slug_es": "traducir-excel",
+  "slug_en": "translate-excel",
+  "phase": "F6",
+  "spec_section": "7.12; 6 (1 petición por bloque)",
+  "engine": "openpyxl y LLM",
+  "runs_on": "server",
+  "worker_group": "ai",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "openpyxl MIT.",
+  "options_summary": "Ninguna en Anexo A; igual que traducir-pdf: idiomas y consentimiento.",
+  "fixtures_needed": [
+   "XLSX con texto, fórmulas, comentarios y nombres de hoja"
+  ],
+  "flags": "TOOL_TRADUCIR_EXCEL_ENABLED",
+  "notes": "Traduce solo las celdas de texto, no las fórmulas; deduplica las cadenas repetidas para ahorrar peticiones. Si hace falta más de AI_TASK_MAX_REQUESTS, la API lo dice antes de encolar."
+ },
+ {
+  "slug_es": "traducir-powerpoint",
+  "slug_en": "translate-powerpoint",
+  "phase": "F6",
+  "spec_section": "7.12; 6",
+  "engine": "python-pptx y LLM",
+  "runs_on": "server",
+  "worker_group": "ai",
+  "complexity": "L",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "python-pptx MIT.",
+  "options_summary": "Ninguna en Anexo A; idiomas y consentimiento.",
+  "fixtures_needed": [
+   "PPTX con cuadros de texto, tablas, notas y SmartArt"
+  ],
+  "flags": "TOOL_TRADUCIR_POWERPOINT_ENABLED",
+  "notes": "Un texto traducido más largo desborda los cuadros: avisa o reduce la fuente con autofit."
+ },
+ {
+  "slug_es": "manuscrito-a-texto",
+  "slug_en": "handwriting-to-text",
+  "phase": "F6",
+  "spec_section": "7.12; 6 (1 petición por página, máximo 10)",
+  "engine": "Modelo gratuito de OpenRouter con entrada de imagen; sin ninguno disponible, la herramienta se desactiva sola y lo indica",
+  "runs_on": "server",
+  "worker_group": "ai",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Ninguna de código; los modelos se registran según 11 (modelos y recursos).",
+  "options_summary": "Ninguna en Anexo A. Propuesta: salida [TXT] | DOCX; idioma [automático]; páginas (máximo 10).",
+  "fixtures_needed": [
+   "Foto o escaneo de texto manuscrito (generado o con licencia; 1.8)"
+  ],
+  "flags": "TOOL_MANUSCRITO_A_TEXTO_ENABLED; se desactiva sola cuando el catálogo no tiene supports_images",
+  "notes": "core/ai/catalog.py ya guarda supports_images y Needs.images. La página tiene que mostrar «no disponible» en vivo con /v1/ai/budget y el catálogo."
+ },
+ {
+  "slug_es": "rar-a-zip",
+  "slug_en": "rar-to-zip",
+  "phase": "F6",
+  "spec_section": "7.13 (07-7-catalogo-completo-de-herramientas.md); 12.3 (límites de comprimidos); 16.4 (ZIP con ../)",
+  "engine": "libarchive (libarchive-c) para leer; zipfile de la librería estándar para escribir",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [
+   "libarchive13 (ya en workers/Dockerfile para cbr-a-pdf)"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "TRAMPA: no uses unrar ni unrar-free/rarfile+unrar. La licencia de unRAR no es libre y prohíbe usar su código para recrear el compresor RAR; no está en ninguna lista de 11. El lector RAR propio de libarchive (BSD-2) es suficiente. libarchive-c es CC0.",
+  "options_summary": "Ninguna en Anexo A. Lotes según A.0.",
+  "fixtures_needed": [
+   "RAR4 y RAR5 (1.8; generables con el binario rar de RarLab, que se puede usar para crear muestras según 1.8)",
+   "RAR cifrado",
+   "RAR multivolumen",
+   "bomba RAR"
+  ],
+  "flags": "TOOL_RAR_A_ZIP_ENABLED",
+  "notes": "Reutiliza el lector y las comprobaciones de D-59 (packages/tools/tools/media/imagenes.py): sin .., sin enlaces simbólicos, 10.000 entradas, 2 GB y relación 100:1. libarchive no descifra RAR ni RAR5 cifrados y su soporte de multivolumen y de algunos filtros es parcial: error claro. Mantén libarchive actualizado (historial de CVE en el lector RAR)."
+ },
+ {
+  "slug_es": "7z-a-zip",
+  "slug_en": "7z-to-zip",
+  "phase": "F6",
+  "spec_section": "7.13; 12.3",
+  "engine": "libarchive",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "libarchive13"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "TRAMPA: no instales p7zip ni 7-Zip (7z): son LGPL, pero llevan código de unRAR con su restricción. py7zr (LGPL-2.1, permitido en backend) es la alternativa si hace falta AES. La especificación pide libarchive.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "7Z con LZMA2 y BCJ (1.8)",
+   "7Z cifrado con AES"
+  ],
+  "flags": "TOOL_7Z_A_ZIP_ENABLED",
+  "notes": "libarchive no descifra 7z con AES ni algunos filtros (BCJ2 parcial en versiones antiguas): error claro o decisión de usar py7zr para el cifrado. Los 7z sólidos se leen secuencialmente."
+ },
+ {
+  "slug_es": "tar-a-zip",
+  "slug_en": "tar-to-zip",
+  "phase": "F6",
+  "spec_section": "7.13; 12.3",
+  "engine": "libarchive",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [
+   "libarchive13"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "BSD.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "tar, tar.gz, tar.bz2 y tar.xz; tar con enlaces simbólicos y rutas absolutas"
+  ],
+  "flags": "TOOL_TAR_A_ZIP_ENABLED",
+  "notes": "Rechaza los enlaces simbólicos y duros, los dispositivos y las rutas absolutas (12.3)."
+ },
+ {
+  "slug_es": "extraer-archivo-online",
+  "slug_en": "extract-archive-online",
+  "phase": "F6",
+  "spec_section": "7.13 (zip, rar, 7z, tar.gz); 12.3",
+  "engine": "libarchive",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [
+   "libarchive13"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Igual que rar-a-zip (sin unrar).",
+  "options_summary": "Ninguna en Anexo A. Propuesta: listar el contenido y descargar una entrada o todas (ZIP); contraseña del ZIP cifrado.",
+  "fixtures_needed": [
+   "ZIP, RAR, 7Z y tar.gz",
+   "ZIP con ../ (16.4)"
+  ],
+  "flags": "TOOL_EXTRAER_ARCHIVO_ONLINE_ENABLED",
+  "notes": "La interfaz necesita una vista de árbol con descarga por archivo, y cada entrada se sirve desde files con CSP sandbox. Su función natural es «Seguir con otra herramienta» por entrada."
+ },
+ {
+  "slug_es": "srt-a-vtt",
+  "slug_en": "srt-to-vtt",
+  "phase": "F6",
+  "spec_section": "7.13",
+  "engine": "pysubs2",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "pysubs2 (MIT)"
+  ],
+  "license_constraints": "MIT; regístralo en LICENSES.md (1.6).",
+  "options_summary": "Ninguna en Anexo A. Propuesta: codificación de entrada [automática con charset-normalizer]; desplazamiento de tiempo [0 ms].",
+  "fixtures_needed": [
+   "SRT (1.8) en Windows-1252"
+  ],
+  "flags": "TOOL_SRT_A_VTT_ENABLED",
+  "notes": "Parecido a lo que ya hace F5 video-a-subtitulos; comparte normalización."
+ },
+ {
+  "slug_es": "vtt-a-srt",
+  "slug_en": "vtt-to-srt",
+  "phase": "F6",
+  "spec_section": "7.13",
+  "engine": "pysubs2",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "pysubs2"
+  ],
+  "license_constraints": "MIT.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   "VTT con estilos y cues con id"
+  ],
+  "flags": "TOOL_VTT_A_SRT_ENABLED",
+  "notes": "Las etiquetas de VTT que SRT no admite se quitan, con aviso."
+ },
+ {
+  "slug_es": "ass-a-srt",
+  "slug_en": "ass-to-srt",
+  "phase": "F6",
+  "spec_section": "7.13",
+  "engine": "pysubs2",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "pysubs2"
+  ],
+  "license_constraints": "MIT.",
+  "options_summary": "Ninguna en Anexo A. Propuesta: conservar cursiva y negrita [sí]; quitar los dibujos (\\p) [sí].",
+  "fixtures_needed": [
+   "ASS (1.8) con estilos, posiciones y karaoke"
+  ],
+  "flags": "TOOL_ASS_A_SRT_ENABLED",
+  "notes": "Avisa de que se pierden posiciones y estilos."
+ },
+ {
+  "slug_es": "ttf-a-woff2",
+  "slug_en": "ttf-to-woff2",
+  "phase": "F6",
+  "spec_section": "7.13 («El usuario declara tener derecho a convertir la fuente»)",
+  "engine": "fontTools (fontTools.ttLib con flavor woff2)",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "fonttools (MIT)",
+   "brotli (MIT; requisito del extra fonttools[woff])"
+  ],
+  "license_constraints": "fontTools MIT. Revisa los extras: fonttools[woff] trae brotli (MIT) y zopfli (Apache-2.0); no instales fonttools[all], que añade extras sin revisar. No uses FontForge (GPL, no está en la lista de GPL externos de 02). Las licencias de las fuentes son del usuario: casilla de declaración obligatoria.",
+  "options_summary": "Ninguna en Anexo A. Casilla obligatoria «Declaro que tengo derecho a convertir esta fuente» (7.13).",
+  "fixtures_needed": [
+   "TTF (1.8): ya hay DejaVu, Liberation y Noto en la imagen (OFL), pero las muestras se copian a tests/fixtures con su origen"
+  ],
+  "flags": "TOOL_TTF_A_WOFF2_ENABLED",
+  "notes": "Muestra los bits fsType de la tabla OS/2 (restricciones de incrustación) como aviso."
+ },
+ {
+  "slug_es": "otf-a-woff2",
+  "slug_en": "otf-to-woff2",
+  "phase": "F6",
+  "spec_section": "7.13",
+  "engine": "fontTools",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "fonttools",
+   "brotli"
+  ],
+  "license_constraints": "Igual que ttf-a-woff2.",
+  "options_summary": "Casilla de declaración de derechos.",
+  "fixtures_needed": [
+   "OTF con CFF (1.8)"
+  ],
+  "flags": "TOOL_OTF_A_WOFF2_ENABLED",
+  "notes": "El mismo módulo."
+ },
+ {
+  "slug_es": "woff2-a-ttf",
+  "slug_en": "woff2-to-ttf",
+  "phase": "F6",
+  "spec_section": "7.13",
+  "engine": "fontTools (descomprimir WOFF2 y, si los contornos son CFF, cu2qu)",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "fonttools",
+   "brotli"
+  ],
+  "license_constraints": "Igual que ttf-a-woff2.",
+  "options_summary": "Casilla de declaración de derechos.",
+  "fixtures_needed": [
+   "WOFF2 con glyf y WOFF2 con CFF (generables desde los TTF y OTF)"
+  ],
+  "flags": "TOOL_WOFF2_A_TTF_ENABLED",
+  "notes": "Trampa: un WOFF2 con contornos CFF descomprimido es un OTF, no un TTF. Para entregar un .ttf de verdad hay que pasar de cúbicas a cuadráticas (la ruta de otf-a-ttf)."
+ },
+ {
+  "slug_es": "woff-a-ttf",
+  "slug_en": "woff-to-ttf",
+  "phase": "F6",
+  "spec_section": "7.13",
+  "engine": "fontTools (WOFF 1 con zlib)",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "fonttools"
+  ],
+  "license_constraints": "MIT.",
+  "options_summary": "Casilla de declaración de derechos.",
+  "fixtures_needed": [
+   "WOFF (generable con fontTools)"
+  ],
+  "flags": "TOOL_WOFF_A_TTF_ENABLED",
+  "notes": "La misma trampa CFF que en woff2-a-ttf."
+ },
+ {
+  "slug_es": "ttf-a-otf",
+  "slug_en": "ttf-to-otf",
+  "phase": "F6",
+  "spec_section": "7.13",
+  "engine": "fontTools (qu2cu o T2CharStringPen y fontBuilder para construir la tabla CFF)",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "fonttools"
+  ],
+  "license_constraints": "MIT.",
+  "options_summary": "Casilla de declaración de derechos.",
+  "fixtures_needed": [
+   "TTF con hinting y kerning GPOS"
+  ],
+  "flags": "TOOL_TTF_A_OTF_ENABLED",
+  "notes": "Se pierde el hinting TrueType (avísalo). Comprueba el resultado con un render de glifos (HarfBuzz no está en el stack; usa el pen de fontTools o Pillow)."
+ },
+ {
+  "slug_es": "otf-a-ttf",
+  "slug_en": "otf-to-ttf",
+  "phase": "F6",
+  "spec_section": "7.13",
+  "engine": "fontTools.cu2qu (cúbicas CFF a cuadráticas glyf)",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "fonttools"
+  ],
+  "license_constraints": "MIT.",
+  "options_summary": "Casilla de declaración de derechos. Propuesta: tolerancia de aproximación [1 unidad].",
+  "fixtures_needed": [
+   "OTF CFF y CFF2 (variable)"
+  ],
+  "flags": "TOOL_OTF_A_TTF_ENABLED",
+  "notes": "Las fuentes variables CFF2 necesitan un tratamiento aparte (instanciar o rechazar)."
+ },
+ {
+  "slug_es": "csig-a-pdf",
+  "slug_en": "csig-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.14 (07-7-catalogo-completo-de-herramientas.md); prueba 16.5 Firmas (coincide byte a byte con el original)",
+  "engine": "asn1crypto (CMS SignedData), cryptography y defusedxml",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "asn1crypto (MIT)"
+  ],
+  "license_constraints": "asn1crypto MIT; cryptography Apache-2.0/BSD (ya fijado); defusedxml PSF.",
+  "options_summary": "Ninguna en Anexo A. El catálogo dice que, si el contenido no es PDF, se entrega tal cual y se ofrece convertirlo («Seguir con otra herramienta» hacia convertir-archivo).",
+  "fixtures_needed": [
+   ".csig CAdES adjunto (1.8; generable con cryptography/pyHanko o AutoFirma)",
+   ".csig CAdES separado (sin contenido)"
+  ],
+  "flags": "TOOL_CSIG_A_PDF_ENABLED",
+  "notes": ".csig es la extensión CAdES de AutoFirma y VALIDe. Una firma separada no lleva el documento: error claro que remita a verificar-firma con los dos archivos. Detecta el tipo del contenido extraído con core/filetype.py."
+ },
+ {
+  "slug_es": "p7m-a-pdf",
+  "slug_en": "p7m-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.14; 16.5",
+  "engine": "asn1crypto y cryptography",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "S",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "asn1crypto"
+  ],
+  "license_constraints": "MIT.",
+  "options_summary": "Ninguna en Anexo A; contenido que no es PDF, entregado tal cual.",
+  "fixtures_needed": [
+   ".p7m en DER y en PEM/base64, y .p7m anidado (doble firma, típico de Italia)"
+  ],
+  "flags": "TOOL_P7M_A_PDF_ENABLED",
+  "notes": "Los .p7m anidados (file.pdf.p7m.p7m) se desenvuelven en bucle con un límite de profundidad."
+ },
+ {
+  "slug_es": "xsig-a-pdf",
+  "slug_en": "xsig-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.14; 16.4 (XML con entidad externa)",
+  "engine": "defusedxml (XAdES envolvente: ds:Object en base64) y cryptography",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "defusedxml PSF. TRAMPA: xmlsig es AGPL y está prohibido (11); para XAdES usa signxml.",
+  "options_summary": "Ninguna en Anexo A.",
+  "fixtures_needed": [
+   ".xsig XAdES envolvente, envuelto (enveloped) y separado (generable con signxml)"
+  ],
+  "flags": "TOOL_XSIG_A_PDF_ENABLED",
+  "notes": "Si es enveloped, el «documento original» es el propio XML sin la firma; si es separado, no hay contenido."
+ },
+ {
+  "slug_es": "verificar-firma",
+  "slug_en": "verify-signature",
+  "phase": "F6",
+  "spec_section": "7.14 (CAdES y PAdES con pyHanko, XAdES con signxml; .csig, .xsig, .p7m y PDF); comparte motor con verificar-firmas-pdf de F4 (7.23 y a-7-a-7-ver-y-comprobar.md); 16.5 (detecta un documento alterado); 14 (EUTL_LOTL_URL, EUTL_REFRESH_HOURS)",
+  "engine": "pyHanko y pyhanko-certvalidator (validación AdES y listas de confianza de la UE) y signxml para XAdES",
+  "runs_on": "server",
+  "worker_group": "utils (el catálogo); la parte PDF reutiliza el código de verificar-firmas-pdf. No en workersign, que solo monta el token del sello (10)",
+  "complexity": "XL",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "pyhanko (MIT)",
+   "pyhanko-certvalidator (MIT)",
+   "signxml (Apache-2.0)",
+   "asn1crypto"
+  ],
+  "license_constraints": "pyHanko MIT y signxml Apache-2.0 (11, paridad con PDF24). xmlsig AGPL prohibido. Revisa los extras de pyHanko (por ejemplo [image-support] o [opentype]) antes de instalarlos.",
+  "options_summary": "Ninguna en Anexo A para esta herramienta; las de verificar-firmas-pdf están en A.7 (a-7-a-7-ver-y-comprobar.md). Propuesta: segundo archivo con los datos para firmas separadas; comprobar la revocación (OCSP/CRL) [a petición].",
+  "fixtures_needed": [
+   ".csig, .p7m, .xsig y PDF firmados (1.8)",
+   "la misma firma con el documento alterado (16.5)",
+   "certificado caducado o revocado y cadena de prueba propia"
+  ],
+  "flags": "TOOL_VERIFICAR_FIRMA_ENABLED",
+  "notes": "Depende de que F4 deje hecha la infraestructura de verificar-firmas-pdf (LOTL descargada por egressweb y cacheada, firma de la LOTL comprobada contra el ancla del DOUE, OCSP y CRL a través del proxy, porque los workers no tienen salida: 16.4). signxml solo comprueba la firma criptográfica y la cadena contra una CA dada: la validación XAdES (cadena con la EUTL, política XAdES-EPES de Facturae, sellos de tiempo) hay que montarla con pyhanko-certvalidator. Muestra firmante, fecha, validez de la cadena y si el documento cambió (7.14)."
+ },
+ {
+  "slug_es": "facturae-a-pdf",
+  "slug_en": "facturae-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.14; ampliada por factura-electronica-a-pdf (7.23 y a-2-a-2-facturas.md)",
+  "engine": "Validación con el XSD oficial (lxml XMLSchema sin red), plantilla HTML y Chromium de gotenberg",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "L",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "lxml (ya fijado, BSD)",
+   "plantilla de factura (Jinja2, BSD, si no está ya)"
+  ],
+  "license_constraints": "Los XSD de Facturae 3.2, 3.2.1 y 3.2.2 (facturae.gob.es) y el xmldsig-core-schema de W3C se usan como datos: registra su origen y licencia en LICENSES.md (11, como el Schematron).",
+  "options_summary": "No tiene entrada propia en Anexo A; hereda las de factura-electronica-a-pdf (A.2): salida [PDF/A-3 con el XML incrustado] | PDF simple; idioma [el de la factura]; lote.",
+  "fixtures_needed": [
+   "Facturae 3.2.1 y 3.2.2, con firma XAdES-EPES y sin ella (1.8)"
+  ],
+  "flags": "TOOL_FACTURAE_A_PDF_ENABLED. No va detrás de INVOICING_ES_ENABLED, porque no genera facturas (7.23)",
+  "notes": "Los XSD importan otros esquemas: resuélvelos con un resolver local que no acceda a la red (lxml no_network). XXE: parsea con defusedxml o con un XMLParser de lxml con resolve_entities=False. Valida la firma con signxml, como en validar-factura-electronica (F4)."
+ },
+ {
+  "slug_es": "ubl-a-pdf",
+  "slug_en": "ubl-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.14; A.2",
+  "engine": "XSD oficial de UBL 2.1 (OASIS), plantilla HTML y Chromium de gotenberg",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "L",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Los XSD de UBL 2.1 de OASIS se usan como datos y se registran en LICENSES.md.",
+  "options_summary": "Las de factura-electronica-a-pdf (A.2).",
+  "fixtures_needed": [
+   "UBL 2.1 EN 16931, XRechnung UBL y Peppol BIS 3.0, Invoice y CreditNote (1.8)"
+  ],
+  "flags": "TOOL_UBL_A_PDF_ENABLED; no va detrás de INVOICING_ES_ENABLED",
+  "notes": "UBL es la sintaxis de la solución pública española (A.2). Hay que mostrar los anexos incrustados (EmbeddedDocumentBinaryObject)."
+ },
+ {
+  "slug_es": "cii-a-pdf",
+  "slug_en": "cii-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.14; A.2",
+  "engine": "XSD de CII D16B (UN/CEFACT; los XSD por perfil vienen con factur-x), plantilla HTML y Chromium de gotenberg",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "L",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "factur-x (BSD), si F4 no lo ha añadido ya"
+  ],
+  "license_constraints": "factur-x BSD y drafthorse Apache-2.0 (11).",
+  "options_summary": "Las de factura-electronica-a-pdf (A.2).",
+  "fixtures_needed": [
+   "XRechnung CII y XML Factur-X/ZUGFeRD de cada perfil (1.8)"
+  ],
+  "flags": "TOOL_CII_A_PDF_ENABLED; no va detrás de INVOICING_ES_ENABLED",
+  "notes": "Un PDF Factur-X de entrada no es CII puro: su XML se extrae y se reutiliza."
+ },
+ {
+  "slug_es": "factura-electronica-a-pdf",
+  "slug_en": "e-invoice-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.23 Facturas (amplía cii-a-pdf, ubl-a-pdf y facturae-a-pdf de 7.14); a-2-a-2-facturas.md (A.2)",
+  "engine": "Las tres rutas de 7.14 más la salida PDF/A-3 con el XML original incrustado sin cambiar un byte (Gotenberg con PDF/A-3b y embeds, o pikepdf/factur-x para incrustarlo con AFRelationship y XMP)",
+  "runs_on": "server",
+  "worker_group": "utils",
+  "complexity": "L",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [
+   "factur-x (BSD)"
+  ],
+  "license_constraints": "Sin Ghostscript para el PDF/A (11 y la CI, check_images.sh). pikepdf MPL-2.0, ya en el stack.",
+  "options_summary": "A.2: entrada CII, UBL o Facturae, en lote; salida [PDF/A-3 con el XML original incrustado byte a byte] | PDF simple; idioma de la representación [el de la factura].",
+  "fixtures_needed": [
+   "Facturae, UBL, XRechnung (CII y UBL), Peppol BIS y Factur-X (1.8)"
+  ],
+  "flags": "TOOL_FACTURA_ELECTRONICA_A_PDF_ENABLED. 7.23 dice que no va detrás de INVOICING_ES_ENABLED y puede activarse antes. core/flags.py ya la deja fuera de THEMATIC_TOOLS",
+  "notes": "Prueba: el XML extraído del PDF/A-3 es idéntico byte a byte al de entrada, y el PDF pasa validar-pdfa (veraPDF, F2). La representación en varios idiomas exige etiquetas traducidas al menos en es y en, y también en de y fr para XRechnung y Factur-X. Detecta la sintaxis como validar-factura-electronica (CustomizationID). Comparte detector y plantillas con las tres de 7.14: impleméntalas como un solo módulo."
+ },
+ {
+  "slug_es": "escribir-pdf",
+  "slug_en": "write-pdf",
+  "phase": "F6",
+  "spec_section": "7.23 Crear; a-1-a-1-crear.md (A.1); crear-pdf (A.1) ya la enlaza; 11 (TipTap solo MIT; Pages y la conversión a DOCX de pago no se usan)",
+  "engine": "TipTap (MIT) en el navegador; PDF con Gotenberg y Chromium (generateDocumentOutline, generateTaggedPdf), DOCX con docx (MIT), Markdown, ODT con pandoc en servidor; abrir DOCX con mammoth, ODT con LibreOffice en workeroffice y PDF con Docling",
+  "runs_on": "hybrid",
+  "worker_group": "office (Gotenberg) para el PDF; utils (pandoc) para ODT; office para abrir ODT; convert (Docling) para abrir PDF",
+  "complexity": "XL",
+  "already_exists": false,
+  "system_binaries": [
+   "pandoc (ODT)"
+  ],
+  "new_dependencies": [
+   "@tiptap/* (solo paquetes MIT)",
+   "docx (MIT)",
+   "mammoth (BSD-2-Clause)",
+   "katex (MIT)",
+   "SheetJS CE (Apache-2.0, desde cdn.sheetjs.com con versión fijada) para la combinación de correspondencia desde XLSX"
+  ],
+  "license_constraints": "Las extensiones Pages y DOCX de TipTap son de pago y no se usan (11 y A.1). SheetJS: no uses la 0.18.5 de npm (vulnerable). Frontend solo con licencias permisivas (11).",
+  "options_summary": "A.1: editor completo (títulos, fuentes, tablas, imágenes, notas al pie, KaTeX, columnas, índice, saltos, buscar y reemplazar); página: papel [A4], márgenes [25 mm], encabezado y pie con números, marca de agua, membrete con PDF de fondo (como superponer-pdf), borde; plantillas (carta, presupuesto, CV, acta, informe, certificado, folleto, solicitud); vista previa exacta en servidor; el PDF lleva índice con los números reales (dos pasadas), campos rellenables con pdf-lib y propiedades; exportar PDF, DOCX, Markdown y ODT; combinación de correspondencia CSV/XLSX con {Columna} y salida [un PDF por fila en ZIP] | un PDF; firma dibujada y QR como imagen; borradores en IndexedDB; dictado y lectura con Web Speech API.",
+  "fixtures_needed": [
+   "DOCX, ODT, Markdown y PDF para abrir",
+   "CSV y XLSX para la combinación"
+  ],
+  "flags": "TOOL_ESCRIBIR_PDF_ENABLED",
+  "notes": "En 7.23 está en «Crear», pero es la herramienta de documentos de F6 (ODT y DOCX) y depende de pandoc en utils. CreatePdfPage.tsx ya la anuncia como fase posterior. Es el elemento más grande de esta parte: pártelo en lotes (editor, exportación, índice de dos pasadas, combinación y abrir)."
+ },
+ {
+  "slug_es": "udf-a-pdf",
+  "slug_en": "udf-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.23 Convertir (documentos de UYAP, Turquía; flag apagado; investigar antes); a-8-a-8-convertir-a-pdf.md («UDF: solo con su flag»)",
+  "engine": "Sin fijar: investiga el formato. UDF de UYAP es un ZIP con content.xml (texto en CDATA más elementos de estilo con desplazamientos), que se puede pasar a HTML con un parser propio sobre defusedxml y a PDF con Chromium de gotenberg",
+  "runs_on": "server",
+  "worker_group": "utils u office",
+  "complexity": "M",
+  "already_exists": false,
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Parser propio; no hay librería de referencia con licencia clara.",
+  "options_summary": "A.8 solo dice que va detrás de su flag; aplícale las opciones comunes de A.8 (papel y márgenes) si procede.",
+  "fixtures_needed": [
+   "UDF real de UYAP Doküman Editörü (difícil de conseguir con licencia; 1.8: sin muestra válida, queda desactivada y se anota en docs/TOOLS.md)"
+  ],
+  "flags": "TOOL_UDF_A_PDF_ENABLED apagado por defecto (7.23). Ojo: core/flags.py activa por defecto toda herramienta que esté en el registro («sin fila, activa desde su fase»), así que hace falta un mecanismo de apagado por defecto por herramienta",
+  "notes": "Si no es viable, documéntalo en docs/TOOLS.md (7.23)."
+ },
+ {
+  "slug_es": "imagen-a-texto",
+  "slug_en": "image-to-text (propuesto; la spec no fija slug_en)",
+  "phase": "F3 (lote C, D-119)",
+  "spec_section": "7.6 (07-7-catalogo-completo-de-herramientas.md); coste 0 peticiones en 6.3 (06-6-ia-con-modelos-gratuitos-de-openrouter.md); OCR local 6.4. Sin entrada en Anexo A",
+  "engine": "Tesseract local (grupo ocr), sin LLM",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "ocr",
+  "flags": "Ninguno temático; TOOL_IMAGEN_A_TEXTO_ENABLED. No es IA externa: sin consentimiento ni presupuesto (6.3 la marca como 0 peticiones). Categoría ai u ocr; cost_class heavy (OCR, 9.3)",
+  "options_summary": "Sin Anexo A: hay que decidirlas y anotarlas en DECISIONS.md. Propuesta: idioma(s) OCR [auto/spa+eng] con los mismos idiomas de ocr-pdf (A.5), enderezar [sí], salida [TXT] | DOCX | hOCR/PDF con capa de texto, lotes con ZIP (A.0), copiar al portapapeles",
+  "system_binaries": [
+   "tesseract (ya en worker-ocr, tessdata_best spa/cat/eus/glg/eng/fra/deu/ita/por)"
+  ],
+  "new_dependencies": [
+   "ninguna para TXT (subproceso tesseract); python-docx ya existe en otros extras si se ofrece DOCX"
+  ],
+  "license_constraints": "Tesseract Apache-2.0. Pillow ya permitido",
+  "fixtures_needed": [
+   "foto de documento (JPG) con tildes y eñes generada en scripts/fixtures",
+   "captura PNG",
+   "imagen girada/inclinada",
+   "TIFF multipágina",
+   "imagen sin texto (resultado vacío con aviso)"
+  ],
+  "notes": "Reutiliza el OCR de workerocr (ocr_pdf.py). Imágenes HEIC solo con HEVC_DECODE_ENABLED. Pruebas: texto esperado (16.1), bombas PNG gigantes (16.4)."
+ },
+ {
+  "slug_es": "imagen-a-excel",
+  "slug_en": "image-to-excel (propuesto)",
+  "phase": "F3 (lote C)",
+  "spec_section": "7.6 (07-7); 6.4 (Docling solo en workerconvert, OCR en workerocr); 6.5 (JSON con esquema, 1 reparación). Sin Anexo A",
+  "engine": "OCR (Tesseract) + Docling (estructura de tabla, en workerconvert) y, si hace falta, LLM con salida estructurada (workerai)",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "convert (Docling) -> ai (solo si la tabla no se reconoce); OCR por Tesseract dentro de Docling como en D2",
+  "flags": "Si usa LLM: ai=true, consentimiento 6.6, presupuesto 6.3 (estimar 0 o 1 petición; reservar 1 y devolver si no se usa), cuenta obligatoria (D-123)",
+  "options_summary": "Sin Anexo A. Propuesta: salida [XLSX] | ODS | CSV, una hoja por tabla, números de verdad (como pdf-a-excel, D-67), idioma OCR, «usar IA si no se reconoce la tabla» [sí, con aviso de consentimiento]",
+  "system_binaries": [
+   "tesseract"
+  ],
+  "new_dependencies": [
+   "openpyxl en el extra ai si el LLM genera el XLSX en workerai (hoy solo está en convert)"
+  ],
+  "license_constraints": "Docling MIT y modelos Apache-2.0/CDLA-Permissive-2.0 (11); openpyxl MIT",
+  "fixtures_needed": [
+   "foto de tabla impresa",
+   "captura de pantalla de una hoja de cálculo",
+   "tabla manuscrita/torcida que fuerce el camino LLM (con proveedor falso)",
+   "imagen sin tabla"
+  ],
+  "notes": "Encadenar colas como resumir-pdf (OCR en `ocr` y luego `ai`): convert -> ai. El camino LLM debe probarse con el proveedor falso y el transporte simulado (16.3). Ofrece pdf-a-excel para PDFs."
+ },
+ {
+  "slug_es": "ticket-a-excel",
+  "slug_en": "receipt-to-excel (propuesto)",
+  "phase": "F3 (lote C)",
+  "spec_section": "7.6 (07-7); 6.3: 1 petición (06-6); 6.5 JSON con response_format o parseo tolerante. Sin Anexo A",
+  "engine": "LLM con salida estructurada (JSON Schema) sobre el texto OCR de Tesseract; modelo con imagen de entrada opcional si el catálogo lo tiene (Needs.images)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "ocr (Tesseract) -> ai",
+  "flags": "ai=true: consentimiento 6.6, cuenta obligatoria (anónimos 0 peticiones, 9.3), AI_UNAVAILABLE si no hay modelo válido",
+  "options_summary": "Sin Anexo A. Propuesta: lote de tickets (una fila por ticket o una por línea), columnas: comercio, NIF, fecha, hora, conceptos, base, IVA por tipo (21/10/4/0), total, forma de pago, moneda; salida [XLSX] | CSV; idioma del ticket [auto]",
+  "system_binaries": [
+   "tesseract"
+  ],
+  "new_dependencies": [
+   "openpyxl en el extra ai"
+  ],
+  "license_constraints": "openpyxl MIT",
+  "fixtures_needed": [
+   "tickets sintéticos generados con Pillow (térmico, estrecho, con IVA desglosado)",
+   "foto de ticket arrugado/inclinado",
+   "ticket en inglés",
+   "imagen que no es un ticket (error claro)"
+  ],
+  "notes": "Validar el JSON con esquema (totales numéricos, fecha ISO); comprobar suma de líneas = total y avisar si no cuadra. Caché por propietario (6.5). 1 petición por ticket: en lotes, estimar N peticiones contra AI_TASK_MAX_REQUESTS y límites del plan."
+ },
+ {
+  "slug_es": "pdf-a-audio",
+  "slug_en": "pdf-to-audio (propuesto)",
+  "phase": "F3 (lote D)",
+  "spec_section": "7.6 (07-7); 6.4 Voz (06-6); 5.4 Kokoro en av (05-5); 9.3 caracteres por tarea 20.000/300.000 (09-9, plans.tts_chars_task ya existe); 11 trampas misaki/phonemizer (11-11); 14 TTS_ENGINE, TTS_VOICE_ES/EN. Sin Anexo A",
+  "engine": "Kokoro-82M (pesos Apache-2.0) con ONNX Runtime; fonemas con espeak-ng como proceso externo (GPL); MP3 con FFmpeg LGPL",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "av (cola av.heavy); texto con pypdfium2 y OCR previo en `ocr` si es escaneado",
+  "flags": "Sin IA externa (0 peticiones). Anónimos sin acceso (tts_chars_task=0). El español solo se activa tras la escucha del propietario (6.4): flag/variable propia o voz es desactivada por defecto; anotarlo en DEPLOY-CHECKLIST",
+  "options_summary": "Sin Anexo A. Propuesta: páginas [todas] | rango (A.0), idioma [auto] | es | en, voz [TTS_VOICE_ES/EN] entre las de Kokoro, velocidad [1,0] (0,5–2,0), MP3 [128 kbps] | 192, pausa entre párrafos, saltar cabeceras/pies y números de página [sí]",
+  "system_binaries": [
+   "espeak-ng (GPL-3.0, solo subproceso con prlimit y entorno vacío, 12.1)",
+   "ffmpeg LGPL (ya en worker-av)"
+  ],
+  "new_dependencies": [
+   "onnxruntime (ya fijado 1.31.0)",
+   "pesos Kokoro-82M v1.0 en ONNX + voces .bin/.npy, descargados al construir con SHA-256 (3: nunca en ejecución)",
+   "NO el paquete `kokoro` (depende de misaki[en], prohibido) ni `kokoro-onnx` (depende de phonemizer-fork y espeakng-loader)"
+  ],
+  "license_constraints": "misaki y phonemizer-fork están en forbidden_packages de scripts/license_policy.yaml: hay que escribir el pipeline propio (tokenizar fonemas IPA de `espeak-ng --ipa -q -v es|en-us` al vocabulario de Kokoro y ejecutar el ONNX). espeak-ng GPL solo como programa externo. Registrar licencia de pesos y voces (11, Modelos)",
+  "fixtures_needed": [
+   "PDF de texto en español y en inglés (generados)",
+   "PDF escaneado (pasa por OCR)",
+   "PDF que supera tts_chars_task (error antes de encolar)",
+   "comprobar con ffprobe códec MP3 y duración > 0 (16.5)"
+  ],
+  "notes": "Kokoro sin versiones desde abril de 2025: fijar revisión y anotar riesgo en DECISIONS.md (6.4). Troceo por frases. Esta herramienta también da a D-114 una voz sintética para probar transcribir-audio y resumir-reunion. Memoria de av (3 GB) compartida con faster-whisper."
+ },
+ {
+  "slug_es": "traducir-subtitulos",
+  "slug_en": "translate-subtitles (propuesto)",
+  "phase": "F5 en el catálogo (7.10), ejecutada en F3 lote E (D-119, PLAN.md)",
+  "spec_section": "7.10 (07-7); 6.3: 1 petición por bloque de transcripción (06-6). Sin Anexo A",
+  "engine": "Transcripción local faster-whisper (si la entrada es audio/vídeo) + LLM vía TranslationProvider/LLMTranslator (core/ai/translate.py, D-132)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "av.heavy (transcripción, si hace falta) -> ai (traducción)",
+  "flags": "ai=true: consentimiento, cuenta, presupuesto; video solo lee pista de audio (D-113)",
+  "options_summary": "Sin Anexo A. Propuesta: idioma destino (los 12 de traducir-pdf), idioma origen [auto], entrada SRT | VTT | ASS o audio/vídeo, salida [mismo formato] | SRT | VTT, bilingüe (original + traducción) [no], ancho de línea [42] (30–60, como video-a-subtitulos), términos que no se traducen",
+  "system_binaries": [
+   "ffmpeg LGPL (si entra audio/vídeo)"
+  ],
+  "new_dependencies": [
+   "pysubs2 (MIT; está en el stack de 2 para F6, se adelanta) para leer/escribir SRT/VTT/ASS"
+  ],
+  "license_constraints": "pysubs2 MIT; nada de PyAV (D-111)",
+  "fixtures_needed": [
+   "SRT y VTT generados con tildes y etiquetas de estilo",
+   "ASS con estilos",
+   "jfk.ogg / voz sintética de pdf-a-audio para el camino audio->subtítulos"
+  ],
+  "notes": "Un elemento JSON por cue (minItems/maxItems) para mantener la alineación con los tiempos; volver a partir líneas al ancho elegido sin tocar los tiempos. Encadenar av->ai."
+ },
+ {
+  "slug_es": "resumir-reunion",
+  "slug_en": "summarize-meeting (propuesto)",
+  "phase": "F5 en el catálogo (7.10), ejecutada en F3 lote E (D-119)",
+  "spec_section": "7.10 (07-7); 6.3: 1 petición por bloque de transcripción + final (06-6). Sin Anexo A",
+  "engine": "faster-whisper local (av) + LLM (ai) con salida estructurada",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "av.heavy -> ai",
+  "flags": "ai=true: consentimiento, cuenta, presupuesto, límite de minutos de audio del plan (9.3)",
+  "options_summary": "Sin Anexo A. Propuesta: idioma [auto], longitud [media], secciones: resumen, decisiones, tareas (responsable y fecha si se mencionan), temas, preguntas abiertas; incluir transcripción [no]; salida [DOCX] | TXT | Markdown",
+  "system_binaries": [
+   "ffmpeg LGPL"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Sin nuevas",
+  "fixtures_needed": [
+   "grabación de reunión de 2-3 voces sintetizada con Kokoro/espeak-ng (D-114 pedía voz)",
+   "audio largo que obliga a varios bloques (map-reduce) con proveedor falso",
+   "vídeo MP4 con pista de audio"
+  ],
+  "notes": "Reutilizar transcribe() de tools/av/transcribe.py y el troceo por contexto de resumir-pdf (D-120 a D-126). Sin identificación de hablantes (D-113)."
+ },
+ {
+  "slug_es": "firmar-pdf",
+  "slug_en": "sign-pdf (propuesto)",
+  "phase": "F4",
+  "spec_section": "7.7 (07-7); A.6 firmar-pdf (a-6-a-6-seguridad.md); 10 Firma (10-10-firma.md); 12.4 Permissions-Policy cámara (12-12); 16.1 firma válida con pyHanko (16-16)",
+  "engine": "Navegador: EmbedPDF/pdf-lib para insertar firma dibujada, escrita o imagen; servidor: pyHanko con sello de la plataforma por PKCS#11 (SoftHSM2) y PAdES B-T/B-LT/B-LTA con TSA; certificado propio con firma interrumpida (PKI.js/WebCrypto en el navegador, la clave no sale)",
+  "runs_on": "hybrid",
+  "complexity": "XL",
+  "already_exists": false,
+  "worker_group": "sign (workersign)",
+  "flags": "SEAL_ENABLED (apaga el sello al instante), SEAL_DAILY_LIMIT=500; categoría sign: nunca IA (6.6, D-123)",
+  "options_summary": "Modo [Insertar firma] | Firmar digitalmente. Origen: dibujar (color, grosor), escribir (fuentes caligráficas OFL), subir imagen (quitar fondo), cámara. Elementos: iniciales y fecha; colocar, redimensionar, repetir en varias páginas. Digital: [visible] (imagen, nombre, fecha, motivo, lugar) | invisible; certificado [sello de la plataforma] | propio .p12/.pfx con firma interrumpida; nivel PAdES [B-T] | B-LT | B-LTA; certificación DocMDP [no] | sin cambios | formularios | formularios y anotaciones; sello de tiempo [sí]",
+  "system_binaries": [
+   "softhsm2 (BSD-2) y softhsm2-util/p11tool en workersign",
+   "script para generar certificado autofirmado de desarrollo (10)"
+  ],
+  "new_dependencies": [
+   "pyhanko (MIT) con extras pkcs11 (python-pkcs11, MIT), image-support (Pillow) y opentype (fonttools, uharfbuzz Apache-2.0)",
+   "pyhanko-certvalidator (MIT)",
+   "frontend: pkijs (BSD-3) y asn1js; node-forge (BSD-3 en licencia doble, 11) si hace falta abrir .p12 con cifrado heredado RC2/3DES",
+   "fuentes caligráficas OFL (p. ej. Dancing Script, Great Vibes) servidas localmente",
+   "dev/test: certomancer (MIT) para CA, TSA y OCSP de pruebas"
+  ],
+  "license_constraints": "Comprobar extras transitivos de pyhanko (aiohttp/requests, tzlocal, qrcode) contra 11; registrar en LICENSES.md. Nunca guardar certificados con clave privada en el servidor (10)",
+  "fixtures_needed": [
+   "PDF sin firmar, PDF con campo de firma vacío (de hacer-pdf-rellenable)",
+   "PDF ya firmado (para firma incremental)",
+   "PDF/A (comprobar que no se pierde o avisar, A.0)",
+   "PDF cifrado",
+   "certificado .p12 de prueba RSA y ECDSA generado por script (y uno con cifrado heredado)",
+   "CA, TSA y OCSP de certomancer"
+  ],
+  "notes": "Cierre técnico de F4: firma validada con pyHanko (17). La UI no promete avanzada/cualificada y muestra el nivel que detecta verificar-firmas-pdf sobre el resultado (10). Cada sello en seal_signatures con sha256. Permissions-Policy camera=(self) ya prevista para firmar-pdf (D-105)."
+ },
+ {
+  "slug_es": "compartir-pdf",
+  "slug_en": "share-pdf (propuesto)",
+  "phase": "F4",
+  "spec_section": "7.7 (07-7); 4.1 shares/<share_id>/ y 4.4 ruta /s/<share_id>/<archivo> (04-4); 9.1 POST /v1/shares (09-9); 9.3 retención 'compartir hasta 7 días' Pro (09-9); 12.6 token solo como hash (12-12); 14 SHARE_MAX_DAYS=7",
+  "engine": "API propia (sin worker): copia en /srv/files/shares, token firmado guardado como hash, autorización en apiint /files/authorize",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "ninguno (api + apiint + beat)",
+  "flags": "Plan: plans.share_days (anon 0, free 0, pro 7) ya existe en registry.json; acotado por SHARE_MAX_DAYS",
+  "options_summary": "Sin Anexo A. Caducidad elegible hasta min(SHARE_MAX_DAYS, share_days del plan) (gratis: hasta la retención de 24 h); copiar enlace; revocar; contador de descargas; lista de enlaces en /cuenta",
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Ninguna",
+  "fixtures_needed": [
+   "resultado de un trabajo",
+   "token caducado/manipulado -> 403 (16.2)",
+   "enlace revocado -> 403"
+  ],
+  "notes": "Ya existe la base: tabla `shares` (0001_inicial), modelo Share, SHARE_RE y comprobación de hash en apps/api/app/internal/app.py, y el envío por correo de 24 h en apps/api/app/routers/share.py (SHARE_HOURS=24). Falta: POST /v1/shares, revocación, caducidad elegible, página de herramienta y UI de resultado/cuenta, limpieza por beat al caducar."
+ },
+ {
+  "slug_es": "solicitar-firmas",
+  "slug_en": "request-signatures (propuesto)",
+  "phase": "F4",
+  "spec_section": "7.7 (07-7: campos de firma, invitación por correo, código de verificación, sello final PAdES B-LT, certificado de auditoría); 9.1 /v1/signature-requests y /v1/sign/{token}; 9.4 tablas signature_requests, signers, audit_events, seal_signatures (09-9); 10 (10-10); 17 cierre: flujo probado de extremo a extremo",
+  "engine": "Flujo propio con pyHanko (prohibidos Documenso y DocuSeal, AGPL, 11): campos de firma pyHanko, firma visual del firmante, sello final PAdES B-LT de la plataforma y certificado de auditoría desde audit_events",
+  "runs_on": "hybrid",
+  "complexity": "XL",
+  "already_exists": false,
+  "worker_group": "sign (sellado); api para correo y estados; web para la página del firmante",
+  "flags": "SEAL_ENABLED, SEAL_DAILY_LIMIT; solo usuarios registrados (decisión); categoría sign sin IA",
+  "options_summary": "Sin Anexo A propio. De 7.7: firmantes (nombre, correo, orden sign_order secuencial o en paralelo), campos de firma por firmante (iniciales, fecha, texto), mensaje de invitación, caducidad, código de verificación por correo, sello final B-LT, certificado de auditoría; recordatorios y cancelación (decisión)",
+  "system_binaries": [
+   "softhsm2"
+  ],
+  "new_dependencies": [
+   "pyhanko (igual que firmar-pdf)",
+   "nodemailer ya existe en web; la API ya envía correo (share.py)"
+  ],
+  "license_constraints": "Nada AGPL (Documenso, DocuSeal)",
+  "fixtures_needed": [
+   "PDF de contrato de 2-3 páginas",
+   "Mailpit en docker-compose.yml para el E2E",
+   "certomancer TSA/OCSP para B-LT en pruebas"
+  ],
+  "notes": "Necesita almacenamiento que sobreviva a la retención de 24 h (no está en 4.1: añadir p. ej. /srv/files/requests/<id> y anotarlo). code_hash y token_hash solo como hash, intentos limitados, Turnstile. Certificado de auditoría con eventos (creado, enviado, abierto, código verificado, firmado, ip_hash, user_agent, sha256 antes y después). Playwright E2E con Mailpit: crear -> correo -> código -> firmar -> sello -> verificar con pyHanko."
+ },
+ {
+  "slug_es": "verificar-firmas-pdf",
+  "slug_en": "verify-pdf-signatures (propuesto)",
+  "phase": "F4 (adelanto de verificar-firma de F6, 7.14)",
+  "spec_section": "7.23 Ver y comprobar y 7.14 (07-7); A.7 verificar-firmas-pdf (a-7-a-7-ver-y-comprobar.md); 16.6 detecta un cambio no permitido tras una firma de certificación (16-16); 14 EUTL_LOTL_URL, EUTL_REFRESH_HOURS; 12.2 workersign sale por egressweb",
+  "engine": "pyHanko (validación AdES, análisis de diferencias DocMDP/FieldMDP) con pyhanko-certvalidator; LOTL y listas nacionales descargadas por egressweb, cacheadas y comprobadas contra el ancla publicada en el Diario Oficial de la UE; OCSP/CRL bajo petición",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "sign",
+  "flags": "Categoría sign: nunca IA (6.6)",
+  "options_summary": "Por firma: firmante y emisor; fecha (si viene de una TSA de confianza); integridad; cambios posteriores y si estaban permitidos (DocMDP/FieldMDP); nivel simple/avanzada/cualificada y LTV. Confianza: lista de la UE con prestador y país. Revocación OCSP/CRL [bajo petición] por egressweb. Informe imprimible o PDF",
+  "system_binaries": [],
+  "new_dependencies": [
+   "pyhanko (soporte de listas de confianza de la UE en pyhanko.sign.validation.qualified, comprobar versión fijada)"
+  ],
+  "license_constraints": "MIT",
+  "fixtures_needed": [
+   "PDF firmado digitalmente válido (1.8 lo exige)",
+   "PDF certificado (DocMDP sin cambios) y luego modificado (debe detectarse)",
+   "PDF con firma y anotación añadida permitida",
+   "PDF con firma de certificado caducado/revocado (certomancer)",
+   "PDF con varias firmas y B-LTA"
+  ],
+  "notes": "Ejecutar la verificación de PDF no confiables en el proceso que monta el token del sello es un riesgo: valorar una cola/servicio de verificación sin el volumen softhsm ni SIGN_PKCS11_PIN (misma imagen). La beat refresca la LOTL cada EUTL_REFRESH_HOURS."
+ },
+ {
+  "slug_es": "hacer-pdf-rellenable",
+  "slug_en": "make-pdf-fillable (propuesto)",
+  "phase": "F4",
+  "spec_section": "7.23 Editar (07-7); A.3 hacer-pdf-rellenable (a-3-a-3-editar.md); A.1 crear-pdf enlaza 'formulario' (a-1-a-1-crear.md)",
+  "engine": "Diseñador de campos con pdf-lib (@cantoo/pdf-lib) en el navegador; campos de firma con pyHanko en servidor",
+  "runs_on": "hybrid",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "pdf o sign para los campos de firma (pyHanko sin clave; decisión a anotar)",
+  "flags": "Ninguno",
+  "options_summary": "Partir de PDF o página en blanco. Tipos: texto una línea/multilínea, casilla, grupo de opción, desplegable (editable o no), lista multiselección, botón (restablecer o abrir URL), firma. Propiedades: nombre, valor por defecto, obligatorio, solo lectura, longitud máxima, alineación, fuente y tamaño [auto], borde y fondo. Mover, duplicar, alinear y borrar campos (también existentes). Extra: detección automática de campos en líneas y casillas vacías con revisión",
+  "system_binaries": [],
+  "new_dependencies": [
+   "pyhanko en el extra del grupo elegido"
+  ],
+  "license_constraints": "pdf-lib MIT",
+  "fixtures_needed": [
+   "PDF con formulario AcroForm",
+   "PDF plano con líneas y casillas para la detección",
+   "formulario XFA (aviso)"
+  ],
+  "notes": "Los campos de firma deben ser compatibles con firmar-pdf y solicitar-firmas (A.3). Detección automática con PDFium (trazos y rectángulos) en el navegador."
+ },
+ {
+  "slug_es": "crear-formulario-pdf",
+  "slug_en": "create-pdf-form (propuesto)",
+  "phase": "F4",
+  "spec_section": "7.23 Editar: 'hacer-pdf-rellenable, con crear-formulario-pdf como página de entrada' (07-7); A.1 crear-pdf (a-1)",
+  "engine": "Misma herramienta que hacer-pdf-rellenable (página de entrada que empieza en página en blanco)",
+  "runs_on": "hybrid",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "igual que hacer-pdf-rellenable",
+  "flags": "Ninguno",
+  "options_summary": "Las de A.3 hacer-pdf-rellenable, empezando por 'página en blanco'",
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Ninguna",
+  "fixtures_needed": [],
+  "notes": "Decidir si es alias con canonical (como pub-a-pdf, 7.22) o página de entrada con contenido propio (8.2); la spec dice 'página de entrada', no alias."
+ },
+ {
+  "slug_es": "word-a-pdf-accesible",
+  "slug_en": "accessible-word-to-pdf (propuesto)",
+  "phase": "F4 (PDF/UA, fila F4 de 17)",
+  "spec_section": "7.5 (07-7); A.8 Office 'Formato: PDF | PDF/A-2b | PDF/UA' (a-8-a-8-convertir-a-pdf.md); A.7 validar-pdfa perfiles PDF/UA-1/2 (a-7)",
+  "engine": "Gotenberg (LibreOffice) con `pdfua` y validación con veraPDF (perfil PDF/UA-1)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "office -> ocr (veraPDF solo está en la imagen worker-ocr)",
+  "flags": "Ninguno",
+  "options_summary": "Las de A.8 Office con Formato fijado a PDF/UA, más el informe de veraPDF en lenguaje sencillo (mismo explicador que validar-pdfa)",
+  "system_binaries": [
+   "veraPDF 1.30.3 (ya en worker-ocr)"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "veraPDF MPL-2.0/GPL-3.0 como proceso externo (ya registrado)",
+  "fixtures_needed": [
+   "DOCX con títulos, imágenes con texto alternativo, tablas e idioma",
+   "DOCX sin texto alternativo (debe informar)"
+  ],
+  "notes": "El formato `pdfua` ya existe en word-a-pdf (packages/tools/tools/office/specs.py y office_a_pdf.py); falta la herramienta con validación encadenada y el informe. veraPDF real solo en la CI (PROGRESS.md)."
+ },
+ {
+  "slug_es": "validar-factura-electronica",
+  "slug_en": "validate-e-invoice (propuesto)",
+  "phase": "F4 (puede activarse antes; no genera facturas)",
+  "spec_section": "7.23 Facturas (07-7); A.2 validar-factura-electronica (a-2-a-2-facturas.md); 5.4 KoSIT como servicio HTTP en workerutils (05-5); 14 KOSIT_VALIDATOR_PATH, KOSIT_SCENARIOS_PATH; 12.3 XML con defusedxml",
+  "engine": "KoSIT Validator (Java, Apache-2.0, en modo daemon) con validator-configuration-xrechnung y validator-configuration-bis; escenarios propios para EN 16931 sin CIUS (Schematron CEN/Comisión, EUPL-1.2) y Factur-X/ZUGFeRD; Facturae: XSD y verificación de firma con signxml",
+  "runs_on": "server",
+  "complexity": "XL",
+  "already_exists": false,
+  "worker_group": "utils (workerutils, nuevo)",
+  "flags": "No está detrás de INVOICING_ES_ENABLED (7.23)",
+  "options_summary": "Detecta sintaxis y especificación por CustomizationID o contexto. Reglas EN 16931, XRechnung, Peppol BIS, Factur-X/ZUGFeRD y Facturae (XSD y firma). Por regla: identificador, gravedad, explicación propia y qué hacer; campo resaltado sobre la representación. Ver, imprimir o guardar como PDF; abrir anexos. Lote o ZIP con resumen (número, emisor, fecha, total, resultado) en CSV. El archivo se borra al terminar",
+  "system_binaries": [
+   "JRE (OpenJDK headless) en workerutils",
+   "KoSIT validator jar fijado por SHA-256"
+  ],
+  "new_dependencies": [
+   "signxml (Apache-2.0)",
+   "lxml (ya en convert)",
+   "factur-x (BSD) para extraer el XML de un PDF Factur-X"
+  ],
+  "license_constraints": "Registrar en LICENSES.md cada Schematron/configuración con su licencia (EUPL-1.2 solo datos; XRechnung y Peppol según publiquen). KoSIT 1.6 solo mantenimiento: anotar alternativa en DECISIONS.md (7.23)",
+  "fixtures_needed": [
+   "Facturae 3.2.2 válida y firmada (XAdES-EPES) y otra con firma rota",
+   "UBL 2.1 EN 16931",
+   "XRechnung CII y UBL (testsuite de KoSIT)",
+   "Peppol BIS Billing 3.0",
+   "Factur-X/ZUGFeRD PDF (perfiles EN16931 y BASIC WL)",
+   "facturas con errores conocidos (BR-xx)",
+   "XML con entidad externa (rechazado, 16.4)",
+   "ZIP con rutas ../"
+  ],
+  "notes": "La representación con el campo resaltado necesita las plantillas HTML de factura-electronica-a-pdf: conviene adelantarlas. Explicaciones propias de las reglas frecuentes en es y en."
+ },
+ {
+  "slug_es": "factura-electronica-a-pdf",
+  "slug_en": "e-invoice-to-pdf (propuesto)",
+  "phase": "F6 en el catálogo (7.23 y A.2); la fila F4 de 17 pide 'validar y visualizar primero', y validar-factura-electronica necesita la representación: candidata a adelantarse a F4",
+  "spec_section": "7.23 Facturas (07-7); A.2 factura-electronica-a-pdf (a-2); amplía cii-a-pdf, ubl-a-pdf, facturae-a-pdf (7.14, F6)",
+  "engine": "Validación con el XSD oficial, plantilla HTML y Chromium de gotenberg; PDF/A-3 con el XML original incrustado sin modificar un byte",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "utils (+ gotenberg)",
+  "flags": "No genera facturas: no va detrás de INVOICING_ES_ENABLED",
+  "options_summary": "Entrada CII, UBL o Facturae, en lote. Salida [PDF/A-3 con el XML original incrustado byte a byte] | PDF simple. Idioma de la representación [el de la factura]",
+  "system_binaries": [
+   "veraPDF para comprobar PDF/A-3 (en worker-ocr)"
+  ],
+  "new_dependencies": [
+   "factur-x (BSD) o pikepdf para incrustar el adjunto con AFRelationship"
+  ],
+  "license_constraints": "Ninguna nueva",
+  "fixtures_needed": [
+   "CII, UBL y Facturae de las fixtures de validar-factura-electronica"
+  ],
+  "notes": "Decidir en DECISIONS.md si se adelanta a F4 (17 dice 'visualizar') o solo se construye la plantilla compartida. Comprobar que el XML incrustado coincide byte a byte."
+ },
+ {
+  "slug_es": "crear-factura",
+  "slug_en": "create-invoice (propuesto)",
+  "phase": "F4",
+  "spec_section": "7.23 Facturas (07-7); A.2 crear-factura (a-2); A.1 crear-pdf enlaza 'factura'",
+  "engine": "Diseñador visual en el navegador con plantillas propias; PDF con pdf-lib",
+  "runs_on": "browser",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "client",
+  "flags": "INVOICING_ES_ENABLED (apagado por defecto) + TOOL_CREAR_FACTURA_ENABLED; aviso legal Veri*factu (RD 1007/2023, RDL 15/2025) y factura electrónica B2B (RD 238/2026) en LEGAL.md; la página avisa de que no sustituye a un software de facturación",
+  "options_summary": "Plantilla con logotipo; emisor y cliente con NIF/CIF; número, fecha y vencimiento; conceptos (descripción, cantidad, unidad, precio, descuento, IVA [21] | 10 | 4 | 0 %); recargo de equivalencia [no]; retención IRPF [no] | 7 | 15 | personalizada; moneda [EUR], idioma, notas, forma de pago e IBAN; totales automáticos y vista previa en vivo; emisor y clientes recordados en el navegador; salida PDF; botón «Convertir en factura electrónica»",
+  "system_binaries": [],
+  "new_dependencies": [
+   "ninguna obligatoria (pdf-lib, fontkit y Noto ya existen)"
+  ],
+  "license_constraints": "Solo frontend permisivo (11)",
+  "fixtures_needed": [
+   "cálculo de totales con recargo e IRPF (Vitest)",
+   "PDF generado con texto esperado"
+  ],
+  "notes": "Validación de NIF/CIF/NIE e IBAN en cliente. Redondeos según EN 16931 para que la conversión a factura electrónica cuadre."
+ },
+ {
+  "slug_es": "crear-factura-electronica",
+  "slug_en": "create-e-invoice (propuesto)",
+  "phase": "F4",
+  "spec_section": "7.23 Facturas (07-7); A.2 crear-factura-electronica (a-2); 16.6: el XML generado pasa KoSIT en cada perfil (16-16)",
+  "engine": "Servidor: drafthorse (CII), factur-x (incrustar en PDF/A-3) o campos Factur-X de Gotenberg (facturxXml) si el PDF sale de HTML; UBL 2.1/Peppol BIS/XRechnung UBL con plantillas lxml; Facturae 3.2.2. Navegador: firma XAdES-EPES con xadesjs y certificado .p12/.pfx abierto con PKI.js",
+  "runs_on": "hybrid",
+  "complexity": "XL",
+  "already_exists": false,
+  "worker_group": "utils",
+  "flags": "INVOICING_ES_ENABLED + su flag propio (7.23)",
+  "options_summary": "Formulario EN 16931 con validación en vivo. Formato: [Factur-X/ZUGFeRD] perfil MINIMUM | BASIC WL | BASIC | [EN 16931] | EXTENDED | XRECHNUNG (aviso en MINIMUM y BASIC WL); XRechnung CII | UBL; Peppol BIS Billing 3.0; UBL 2.1 (solución pública española); Facturae 3.2.2 con XAdES-EPES opcional en el navegador. Importar desde PDF (flujo de pdf-a-factura-electronica). Valida con KoSIT antes de entregar",
+  "system_binaries": [
+   "KoSIT (workerutils)"
+  ],
+  "new_dependencies": [
+   "drafthorse (Apache-2.0)",
+   "factur-x (BSD)",
+   "xadesjs (MIT) y pkijs (BSD-3) en el navegador"
+  ],
+  "license_constraints": "Nunca xmlsig (AGPL, 11). La clave privada nunca sale del navegador",
+  "fixtures_needed": [
+   "certificado .p12 de prueba para XAdES-EPES",
+   "un XML por perfil validado por KoSIT (16.6)"
+  ],
+  "notes": "Política de firma de Facturae (identificador y hash de la política v3.1). Reutiliza el motor de validar-factura-electronica."
+ },
+ {
+  "slug_es": "pdf-a-factura-electronica",
+  "slug_en": "pdf-to-e-invoice (propuesto)",
+  "phase": "F4",
+  "spec_section": "7.5 y 7.23 Facturas (07-7); A.2 pdf-a-factura-electronica (a-2); 6.6 consentimiento",
+  "engine": "Si el PDF trae XML lo reutiliza; si no: texto con PDFium, reglas y una sola petición LLM con esquema JSON (con consentimiento); formulario de revisión obligatorio; conversión a PDF/A-3 conservando páginas e incrustación del XML CII",
+  "runs_on": "server",
+  "complexity": "XL",
+  "already_exists": false,
+  "worker_group": "utils (+ ai para la extracción, + ocr para PDF/A-3 y escaneos)",
+  "flags": "INVOICING_ES_ENABLED + flag propio; ai=true en la fase de extracción (cuenta, consentimiento, 1 petición)",
+  "options_summary": "Perfil Factur-X [EN 16931]. Pasos: (1) extracción (XML existente o texto+reglas+1 LLM), (2) formulario de revisión obligatorio con todos los campos editables, (3) PDF/A-3 + XML incrustado",
+  "system_binaries": [
+   "OCRmyPDF/veraPDF (worker-ocr) para PDF/A-3"
+  ],
+  "new_dependencies": [
+   "factur-x (BSD)",
+   "drafthorse (Apache-2.0)"
+  ],
+  "license_constraints": "Sin Ghostscript (7.5)",
+  "fixtures_needed": [
+   "factura PDF de texto",
+   "factura escaneada",
+   "PDF Factur-X que ya trae XML",
+   "PDF que no es factura"
+  ],
+  "notes": "Flujo en dos trabajos (extraer -> revisar en la web -> generar): nada se genera sin confirmación. Las categorías invoice pueden usar IA; las de sign no."
+ },
+ {
+  "slug_es": "gpx-a-kml",
+  "slug_en": "gpx-to-kml",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7-catalogo-completo-de-herramientas.md); Anexo A: sin entrada (ningún a-*.md cita GPX/KML); A.0 para lotes",
+  "engine": "GDAL/OGR (driver GPX lectura, KML/LIBKML escritura) y gpxpy",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "gdal-bin (ogr2ogr) o libgdal"
+  ],
+  "new_dependencies": [
+   "gpxpy (Apache-2.0)",
+   "GDAL/OGR (MIT) vía ogr2ogr o pyogrio"
+  ],
+  "license_constraints": "GDAL es MIT, pero el libgdal de Debian enlaza poppler (GPL) y otras libs: importar osgeo en el proceso del worker sería enlazar GPL (11-11: GPL solo como programa externo). Usa ogr2ogr como subproceso o ruedas de pyogrio con GDAL mínimo sin poppler. No instales gpsbabel (GPL, driver GPSBabel de GDAL).",
+  "flags": "TOOL_GPX_A_KML_ENABLED (genérico, 14-14); activa desde F6",
+  "options_summary": "Anexo A sin opciones; propuesta a registrar en DECISIONS: incluir waypoints/rutas/tracks [todos], color y grosor de línea [defecto], altitud [absoluta] | pegada al suelo; lote = un KML por entrada + ZIP (A.0)",
+  "fixtures_needed": [
+   "GPX con tracks, rutas y waypoints (generado con gpxpy en scripts/fixtures/)"
+  ],
+  "notes": "16.5: GPX ↔ KML conserva el número de puntos. XML siempre con defusedxml (12-12 12.3). Comparte módulo GPS con el resto de 7.15."
+ },
+ {
+  "slug_es": "kml-a-gpx",
+  "slug_en": "kml-to-gpx",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7); Anexo A: sin entrada",
+  "engine": "GDAL/OGR (KML/LIBKML lectura, GPX escritura) y gpxpy",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "gdal-bin"
+  ],
+  "new_dependencies": [
+   "gpxpy",
+   "GDAL/OGR"
+  ],
+  "license_constraints": "Igual que gpx-a-kml: GDAL fuera de proceso o sin poppler; sin gpsbabel.",
+  "flags": "TOOL_KML_A_GPX_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: LineString → [track] | ruta, Placemarks de punto → waypoints [sí], aplanar carpetas [sí]",
+  "fixtures_needed": [
+   "KML con carpetas, LineString y Placemarks (01-1 lista KML)"
+  ],
+  "notes": "16.5 GPX ↔ KML puntos conservados (ida y vuelta). defusedxml antes de pasar a GDAL; se pierden estilos (avisarlo en resultado, A.0)."
+ },
+ {
+  "slug_es": "kmz-a-gpx",
+  "slug_en": "kmz-to-gpx",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7); Anexo A: sin entrada; 12-12 12.3 (KMZ en la lista de ZIP)",
+  "engine": "GDAL/OGR (LIBKML) y gpxpy; KMZ abierto con core.zipguard",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "gdal-bin"
+  ],
+  "new_dependencies": [
+   "gpxpy",
+   "GDAL/OGR"
+  ],
+  "license_constraints": "Igual que gpx-a-kml.",
+  "flags": "TOOL_KMZ_A_GPX_ENABLED",
+  "options_summary": "Sin Anexo A; mismas opciones que kml-a-gpx",
+  "fixtures_needed": [
+   "KMZ (doc.kml + iconos) — 01-1 lista KMZ"
+  ],
+  "notes": "Comprobar el ZIP con check_zip (rutas .., symlinks, 10.000 entradas, 2 GB, 100:1) antes de extraer doc.kml; reutiliza la ruta de kml-a-gpx."
+ },
+ {
+  "slug_es": "gpx-a-geojson",
+  "slug_en": "gpx-to-geojson",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7); Anexo A: sin entrada",
+  "engine": "GDAL/OGR (GeoJSON) y gpxpy",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "gdal-bin"
+  ],
+  "new_dependencies": [
+   "gpxpy",
+   "GDAL/OGR"
+  ],
+  "license_constraints": "Igual que gpx-a-kml.",
+  "flags": "TOOL_GPX_A_GEOJSON_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: capas [tracks, rutas y waypoints en una FeatureCollection] | una por tipo; incluir tiempo y altitud en properties [sí]; RFC 7946 (WGS84)",
+  "fixtures_needed": [
+   "GPX (el mismo de gpx-a-kml)"
+  ],
+  "notes": "Validar conservación de puntos como en 16.5."
+ },
+ {
+  "slug_es": "geojson-a-kml",
+  "slug_en": "geojson-to-kml",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7); Anexo A: sin entrada",
+  "engine": "GDAL/OGR (GeoJSON → KML/LIBKML)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "gdal-bin"
+  ],
+  "new_dependencies": [
+   "GDAL/OGR"
+  ],
+  "license_constraints": "Igual que gpx-a-kml.",
+  "flags": "TOOL_GEOJSON_A_KML_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: campo de nombre [auto: name/nombre/title], campo de descripción, reproyección a EPSG:4326 si trae crs",
+  "fixtures_needed": [
+   "GeoJSON con puntos, líneas y polígonos (no está en 01-1; generarlo en scripts/fixtures/)"
+  ],
+  "notes": "Límite de tamaño/nº de features por plan; JSON con límite de profundidad."
+ },
+ {
+  "slug_es": "tcx-a-gpx",
+  "slug_en": "tcx-to-gpx",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7); Anexo A: sin entrada",
+  "engine": "gpxpy con parser TCX propio sobre defusedxml (GDAL no tiene driver TCX)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "gpxpy",
+   "defusedxml"
+  ],
+  "license_constraints": "No usar gpsbabel (GPL) para TCX.",
+  "flags": "TOOL_TCX_A_GPX_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: incluir FC/cadencia como extensión Garmin TrackPointExtension [sí], una pista por Lap [no]",
+  "fixtures_needed": [
+   "TCX de Garmin (no está en 01-1; generarlo por script)"
+  ],
+  "notes": "La línea del catálogo dice GDAL/OGR y gpxpy para todo el bloque; documentar en DECISIONS que TCX se parsea a mano porque OGR no lo lee."
+ },
+ {
+  "slug_es": "shp-a-geojson",
+  "slug_en": "shp-to-geojson",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7); Anexo A: sin entrada",
+  "engine": "GDAL/OGR (ESRI Shapefile → GeoJSON, reproyección con PROJ a EPSG:4326)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "gdal-bin",
+   "proj-data"
+  ],
+  "new_dependencies": [
+   "GDAL/OGR",
+   "PROJ (MIT)"
+  ],
+  "license_constraints": "Igual que gpx-a-kml.",
+  "flags": "TOOL_SHP_A_GEOJSON_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: SRC de origen [del .prj] | EPSG manual; codificación DBF [del .cpg / auto]; salida siempre WGS84",
+  "fixtures_needed": [
+   "SHP con .shp/.shx/.dbf/.prj/.cpg en ZIP (01-1 lista SHP)"
+  ],
+  "notes": "Entrada multiarchivo: aceptar ZIP (zipguard) o varios archivos del mismo nombre base; detección de tipo por bytes (16.2) para .shp/.dbf; error claro si falta .shx o .dbf."
+ },
+ {
+  "slug_es": "shp-a-kml",
+  "slug_en": "shp-to-kml",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7); Anexo A: sin entrada",
+  "engine": "GDAL/OGR (Shapefile → KML/LIBKML) con PROJ",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "gdal-bin",
+   "proj-data"
+  ],
+  "new_dependencies": [
+   "GDAL/OGR"
+  ],
+  "license_constraints": "Igual que gpx-a-kml.",
+  "flags": "TOOL_SHP_A_KML_ENABLED",
+  "options_summary": "Sin Anexo A; mismas que shp-a-geojson + campo de nombre del Placemark",
+  "fixtures_needed": [
+   "SHP en ZIP"
+  ],
+  "notes": "Comparte lectura y validación con shp-a-geojson."
+ },
+ {
+  "slug_es": "csv-a-kml",
+  "slug_en": "csv-to-kml",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7) «columnas de latitud y longitud»; Anexo A: sin entrada",
+  "engine": "GDAL/OGR (driver CSV con X/Y_POSSIBLE_NAMES) o csv estándar + KML; charset-normalizer para la codificación",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "gdal-bin"
+  ],
+  "new_dependencies": [
+   "GDAL/OGR",
+   "charset-normalizer (MIT)"
+  ],
+  "license_constraints": "Igual que gpx-a-kml.",
+  "flags": "TOOL_CSV_A_KML_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: columna latitud/longitud [auto: lat, latitud, latitude, y / lon, lng, longitud, x], columna de nombre y descripción, separador [auto], decimal [auto , o .], codificación [auto]",
+  "fixtures_needed": [
+   "CSV con lat/lon en Windows-1252 y con coma decimal"
+  ],
+  "notes": "Validar rangos (-90..90, -180..180) e informar filas descartadas."
+ },
+ {
+  "slug_es": "fit-a-gpx",
+  "slug_en": "fit-to-gpx",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7) «fit-a-gpx, fit-a-csv (Garmin) — fitparse»; Anexo A: sin entrada",
+  "engine": "fitparse + gpxpy",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "fitparse (MIT)",
+   "gpxpy"
+  ],
+  "license_constraints": "fitparse MIT. No usar el SDK oficial de Garmin (garmin-fit-sdk, licencia FIT Protocol propia fuera de las listas de 11-11).",
+  "flags": "TOOL_FIT_A_GPX_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: incluir FC, cadencia y temperatura como extensiones Garmin [sí]; semicírculos → grados",
+  "fixtures_needed": [
+   "FIT de actividad Garmin (01-1 lista FIT; descargar muestra con licencia apta y anotar en tests/fixtures/SOURCES.md)"
+  ],
+  "notes": "fitparse 1.2.0 está sin mantenimiento desde ~2020: anotar alternativa (fitdecode, MIT) en DECISIONS si falla en el Python de la imagen."
+ },
+ {
+  "slug_es": "fit-a-csv",
+  "slug_en": "fit-to-csv",
+  "phase": "F6",
+  "spec_section": "7.15 (07-7); Anexo A: sin entrada",
+  "engine": "fitparse + csv estándar",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "fitparse"
+  ],
+  "license_constraints": "Igual que fit-a-gpx.",
+  "flags": "TOOL_FIT_A_CSV_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: mensajes [records] | laps | sesiones | todos (ZIP), unidades [métricas] | imperiales, separador [,] | ;, UTF-8 con BOM [sí] para Excel",
+  "fixtures_needed": [
+   "FIT de actividad"
+  ],
+  "notes": "Columnas: timestamp, lat, lon, altitud, velocidad, FC, cadencia, potencia, temperatura."
+ },
+ {
+  "slug_es": "vcf-a-csv",
+  "slug_en": "vcf-to-csv",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7) «con plantillas de Google y Outlook — vobject»; Anexo A: sin entrada",
+  "engine": "vobject",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "vobject (Apache-2.0)",
+   "charset-normalizer"
+  ],
+  "license_constraints": "vobject Apache-2.0: sin trampas.",
+  "flags": "TOOL_VCF_A_CSV_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: plantilla [Google Contacts] | Outlook | genérica (todas las propiedades), separador [,] | ;, codificación [UTF-8 con BOM] | Windows-1252 (Outlook)",
+  "fixtures_needed": [
+   "VCF con varios contactos, vCard 2.1 (quoted-printable), 3.0 y 4.0, con foto y tildes (01-1 lista VCF)"
+  ],
+  "notes": "16.5: VCF → CSV → VCF conserva los contactos. Fijar las cabeceras exactas de las plantillas de importación de Google y Outlook."
+ },
+ {
+  "slug_es": "csv-a-vcf",
+  "slug_en": "csv-to-vcf",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7); Anexo A: sin entrada",
+  "engine": "vobject + charset-normalizer",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "vobject",
+   "charset-normalizer"
+  ],
+  "license_constraints": "Ninguna.",
+  "flags": "TOOL_CSV_A_VCF_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: plantilla de entrada [auto: Google | Outlook | mapeo manual de columnas], versión vCard [3.0] | 4.0 | 2.1, salida [un .vcf con todos] | uno por contacto en ZIP",
+  "fixtures_needed": [
+   "CSV exportado de Google y de Outlook (este en Windows-1252)"
+  ],
+  "notes": "Ida y vuelta de 16.5 con vcf-a-csv; detección automática de la codificación (como arreglar-codificacion-csv de 7.12)."
+ },
+ {
+  "slug_es": "vcf-a-excel",
+  "slug_en": "vcf-to-excel",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7); Anexo A: sin entrada",
+  "engine": "vobject + openpyxl",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "vobject",
+   "openpyxl (MIT)"
+  ],
+  "license_constraints": "Ninguna.",
+  "flags": "TOOL_VCF_A_EXCEL_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: plantilla de columnas [Google] | Outlook | genérica; cabecera fija y autofiltro [sí]",
+  "fixtures_needed": [
+   "VCF (el de vcf-a-csv)"
+  ],
+  "notes": "Comparte el mapeo con vcf-a-csv."
+ },
+ {
+  "slug_es": "ics-a-csv",
+  "slug_en": "ics-to-csv",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7) «ics-a-csv, csv-a-ics, ics-a-excel — icalendar»; Anexo A: sin entrada",
+  "engine": "icalendar (+ dateutil.rrule o recurring-ical-events para expandir repeticiones)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "icalendar (BSD-2-Clause)",
+   "recurring-ical-events (LGPL-3.0+, opcional) o python-dateutil (Apache-2.0/BSD)",
+   "tzdata"
+  ],
+  "license_constraints": "recurring-ical-events es LGPL-3.0: permitido en backend (11-11).",
+  "flags": "TOOL_ICS_A_CSV_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: zona horaria de salida [la del calendario] | elegida, expandir eventos repetidos [no] con rango de fechas, separador [,] | ;, plantilla [Google Calendar] | Outlook | genérica",
+  "fixtures_needed": [
+   "ICS con eventos de día completo, repetidos (RRULE/EXDATE) y VTIMEZONE (01-1 lista ICS)"
+  ],
+  "notes": "Límite de ocurrencias al expandir (p. ej. 10.000) para no explotar."
+ },
+ {
+  "slug_es": "csv-a-ics",
+  "slug_en": "csv-to-ics",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7); Anexo A: sin entrada",
+  "engine": "icalendar + charset-normalizer",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "icalendar",
+   "charset-normalizer"
+  ],
+  "license_constraints": "Ninguna.",
+  "flags": "TOOL_CSV_A_ICS_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: mapeo de columnas [auto: Subject/Start Date/Start Time/End.../All Day Event de Google y Outlook], formato de fecha [auto] | dd/mm/aaaa | mm/dd/aaaa, zona horaria [Europe/Madrid o la del navegador]",
+  "fixtures_needed": [
+   "CSV de eventos de Google Calendar y de Outlook"
+  ],
+  "notes": "UID estable por fila; validar con icalendar al terminar."
+ },
+ {
+  "slug_es": "ics-a-excel",
+  "slug_en": "ics-to-excel",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7); Anexo A: sin entrada",
+  "engine": "icalendar + openpyxl",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "icalendar",
+   "openpyxl"
+  ],
+  "license_constraints": "Ninguna.",
+  "flags": "TOOL_ICS_A_EXCEL_ENABLED",
+  "options_summary": "Sin Anexo A; mismas que ics-a-csv; fechas como fecha de Excel con formato",
+  "fixtures_needed": [
+   "ICS (el de ics-a-csv)"
+  ],
+  "notes": "Comparte lectura con ics-a-csv."
+ },
+ {
+  "slug_es": "mbox-a-eml",
+  "slug_en": "mbox-to-eml",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7) «mbox-a-eml, mbox-a-pdf, pst-a-mbox, pst-a-pdf — readpst y el flujo de eml-a-pdf»; Anexo A: sin entrada",
+  "engine": "mailbox de la biblioteca estándar (readpst no hace falta para MBOX)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Ninguna (stdlib). 02-2 lista mail-parser (Apache-2.0) como utilidad; eml-a-pdf actual usa `email` estándar.",
+  "flags": "TOOL_MBOX_A_EML_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: nombre de archivo [fecha-asunto], un .eml por mensaje en ZIP (A.0)",
+  "fixtures_needed": [
+   "MBOX con varios mensajes, adjuntos y From_ escapados (01-1 lista MBOX)"
+  ],
+  "notes": "Límite de mensajes por trabajo y de tamaño total (2 GB, 12-12 12.3); variantes mboxo/mboxrd."
+ },
+ {
+  "slug_es": "mbox-a-pdf",
+  "slug_en": "mbox-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7); Anexo A: sin entrada (eml-a-pdf en 7.3 usa CorreoOptions)",
+  "engine": "mailbox + flujo de eml-a-pdf (tools.media.correo: nh3, Chromium de `gotenberg` sin red, merge_with_bookmarks)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "nh3 y olefile en la imagen utils (ya usados por media)"
+  ],
+  "license_constraints": "Ninguna nueva.",
+  "flags": "TOOL_MBOX_A_PDF_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: reutilizar CorreoOptions (adjuntos [sí], papel [A4] | Letter) + salida [un PDF con todos, con marcador por mensaje] | un PDF por mensaje en ZIP",
+  "fixtures_needed": [
+   "MBOX con HTML, texto y adjuntos convertibles"
+  ],
+  "notes": "cost_class heavy si hay muchos mensajes; progreso por mensaje (SSE)."
+ },
+ {
+  "slug_es": "pst-a-mbox",
+  "slug_en": "pst-to-mbox",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7); 02-2 (readpst GPL externo); 12-12 12.1 (readpst como subproceso)",
+  "engine": "readpst (libpst) como programa externo",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "readpst (paquete pst-utils de Debian)"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "libpst/readpst GPL-2.0+: solo subproceso con entorno vacío, prlimit, directorio del trabajo; nunca enlazar libpst ni usar bindings (11-11). Imagen privada (03-3).",
+  "flags": "TOOL_PST_A_MBOX_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: estructura [un mbox por carpeta conservando el árbol (readpst -r)], incluir eliminados [no] (-D), salida ZIP",
+  "fixtures_needed": [
+   "PST real (01-1 lista PST); no hay escritor PST libre: descargar muestra con licencia que permita guardarla y anotarla en SOURCES.md"
+  ],
+  "notes": "PST suelen superar los límites del plan (50 MB/100 MB/1 GB, 09-9); limitar -j a THREADS_UTILS; ANSI y Unicode PST; OST no soportado."
+ },
+ {
+  "slug_es": "pst-a-pdf",
+  "slug_en": "pst-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.16 (07-7); Anexo A: sin entrada",
+  "engine": "readpst -e (un EML por mensaje) + flujo de eml-a-pdf",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "readpst"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Igual que pst-a-mbox.",
+  "flags": "TOOL_PST_A_PDF_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: CorreoOptions + salida [un PDF por carpeta con marcadores por mensaje] | un PDF por mensaje en ZIP; filtro de carpetas y de fechas",
+  "fixtures_needed": [
+   "PST con carpetas, HTML, RTF y adjuntos"
+  ],
+  "notes": "Trabajo largo: cost_class heavy, time_limit alto, progreso; disco del trabajo puede multiplicar el tamaño (guarda de disco 4-4)."
+ },
+ {
+  "slug_es": "drawio-a-pdf",
+  "slug_en": "drawio-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7) «draw.io desktop (GPL-3.0, externo) en modo exportación con xvfb-run, sin red y con tiempo máximo»; 11-11; 12-12 12.1/12.3",
+  "engine": "draw.io desktop (Electron) `-x -f pdf` bajo xvfb-run",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "drawio (.deb de jgraph/drawio-desktop, versión fijada)",
+   "xvfb / xvfb-run",
+   "libgbm, libnss3, libasound2 (deps de Electron)"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Solo proceso externo (11-11). Ojo: el repositorio jgraph/drawio-desktop declara Apache-2.0, no GPL-3.0 como dice la spec: comprobar la licencia real y registrarla en docs/LICENSES.md. Electron trae su propia libffmpeg (códecs propietarios): anotarlo.",
+  "flags": "TOOL_DRAWIO_A_PDF_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: páginas [todas] | página n, recortar al diagrama [sí] (--crop), borde [0] px, papel [ajustado] | A4",
+  "fixtures_needed": [
+   "Archivo .drawio con varias páginas, comprimido y sin comprimir (01-1: draw.io)"
+  ],
+  "notes": "defusedxml previo del .drawio (12-12); con cap_drop ALL y no-new-privileges, Chromium/Electron necesita --no-sandbox: documentarlo en SECURITY.md. Prueba 16.4 por motor (leer /etc/hostname vía imagen file://). HOME en el directorio del trabajo; imagen grande (~250 MB)."
+ },
+ {
+  "slug_es": "drawio-a-png",
+  "slug_en": "drawio-to-png",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7); Anexo A: sin entrada",
+  "engine": "draw.io desktop `-x -f png` bajo xvfb-run",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "drawio",
+   "xvfb-run"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Igual que drawio-a-pdf.",
+  "flags": "TOOL_DRAWIO_A_PNG_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: escala [1] (0,5–4) o ancho px, fondo transparente [no], borde [0], página [todas → ZIP] | n",
+  "fixtures_needed": [
+   "El .drawio de drawio-a-pdf"
+  ],
+  "notes": "Comparte runner con drawio-a-pdf; tiempo máximo y prlimit."
+ },
+ {
+  "slug_es": "mermaid-a-png",
+  "slug_en": "mermaid-to-png",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7) «mermaid en el navegador»; 02-2 (mermaid en el stack de navegador); 11-11 paridad frontend (mermaid, @resvg/resvg-wasm)",
+  "engine": "mermaid (render a SVG) + @resvg/resvg-wasm (rasterizado), en el navegador",
+  "runs_on": "browser",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "",
+  "system_binaries": [],
+  "new_dependencies": [
+   "mermaid@11 (MIT) en apps/web o packages/client-tools"
+  ],
+  "license_constraints": "mermaid MIT; DOMPurify MPL-2.0 OR Apache-2.0 (elegir Apache); NO instalar @mermaid-js/layout-elk (elkjs es EPL-2.0, solo permitida en backend según 11-11).",
+  "flags": "TOOL_MERMAID_A_PNG_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta coherente con A.10 svg-a-png: tamaño [original] | 2× | 3× | 4× | ancho [1000] px, tema [default] | neutral | dark | forest, fondo [blanco] | transparente",
+  "fixtures_needed": [
+   "Archivos .mmd: flowchart, secuencia, gantt, clases (01-1: Mermaid)"
+  ],
+  "notes": "resvg no soporta foreignObject: configurar htmlLabels:false; cargar fuentes Noto en resvg. mermaid necesita DOM (no corre en Web Worker como pide 02-2): usar iframe sandbox o documentarlo en DECISIONS. securityLevel 'strict'. Playwright: no sube el archivo (16.1)."
+ },
+ {
+  "slug_es": "mermaid-a-svg",
+  "slug_en": "mermaid-to-svg",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7); Anexo A: sin entrada",
+  "engine": "mermaid en el navegador",
+  "runs_on": "browser",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "",
+  "system_binaries": [],
+  "new_dependencies": [
+   "mermaid@11"
+  ],
+  "license_constraints": "Igual que mermaid-a-png.",
+  "flags": "TOOL_MERMAID_A_SVG_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: tema [default], fondo [transparente], texto como trazos [no]",
+  "fixtures_needed": [
+   "Los .mmd de mermaid-a-png"
+  ],
+  "notes": "Editor con vista previa en vivo; SVG saneado sin scripts."
+ },
+ {
+  "slug_es": "latex-a-pdf",
+  "slug_en": "latex-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7) «Tectonic sin shell-escape, sin red, paquete de TeX precargado, modo sin descargas, entorno vacío, aislamiento de 12.1»; 12-12 12.3; 14-14 TECTONIC_BUNDLE_PATH; 16-16 16.4",
+  "engine": "Tectonic (XeTeX) con bundle local (`--bundle $TECTONIC_BUNDLE_PATH`, `--only-cached`), `--untrusted`",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "tectonic (binario fijado)",
+   "bundle TeX precargado en la imagen"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Tectonic MIT. El bundle de TeX Live mezcla LPPL, GPL con excepción de fuentes, OFL, etc.: son datos dentro de una imagen privada; registrar en docs/LICENSES.md.",
+  "flags": "TOOL_LATEX_A_PDF_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: entrada .tex o .zip con archivo principal [auto: el que tiene \\documentclass], pasadas [auto], bibliografía [bibtex automático]",
+  "fixtures_needed": [
+   "Documento .tex con bibliografía, imagen y tildes; ZIP de proyecto; .tex malicioso con \\input{/etc/hostname} (16.4)"
+  ],
+  "notes": "16.4 exige que \\input{/etc/hostname} se rechace o no aparezca: Tectonic puede leer rutas absolutas, así que hace falta un análisis previo (\\input, \\include, \\openin, \\includegraphics, \\lstinputlisting con rutas absolutas o ..) además de entorno vacío y prlimit. biber no viene en Tectonic: biblatex con biber no funcionará sin red/binario. Bundle de varios cientos de MB."
+ },
+ {
+  "slug_es": "midi-a-mp3",
+  "slug_en": "midi-to-mp3",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7) «FluidSynth con un banco de sonidos cuya licencia permita uso comercial (verifícala y regístrala)»; 11-11 (Modelos y recursos, FFmpeg LGPL); 14-14 SOUNDFONT_PATH",
+  "engine": "FluidSynth (render a WAV, `-ni -F`) + FFmpeg LGPL (libmp3lame) a MP3",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "fluidsynth",
+   "ffmpeg LGPL (copiar el de la etapa worker-av)",
+   "banco .sf2/.sf3"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "FluidSynth LGPL-2.1 (permitido). Banco: FluidR3_GM (MIT) o MuseScore_General (MIT) o GeneralUser GS (licencia propia que permite uso comercial). Trampa: el paquete fluidsynth de Debian recomienda un soundfont por defecto que puede ser TimGM6mb (GPL-2.0): instalar con --no-install-recommends. FFmpeg solo LGPL, nunca libfdk_aac (11-11).",
+  "flags": "TOOL_MIDI_A_MP3_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: calidad MP3 [192 kbps] | 128 | 256 | 320, frecuencia [44.100 Hz], reverberación y coro [sí], normalizar volumen [sí]",
+  "fixtures_needed": [
+   "MIDI tipo 0 y tipo 1 con varios instrumentos y percusión (generado con mido en scripts/fixtures/; 01-1: MIDI)"
+  ],
+  "notes": "16.5: duración conservada ±50 ms y códec correcto con ffprobe (cola final de reverb aparte). Límite de duración del MIDI."
+ },
+ {
+  "slug_es": "midi-a-wav",
+  "slug_en": "midi-to-wav",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7); 14-14 SOUNDFONT_PATH",
+  "engine": "FluidSynth `-F out.wav`",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "fluidsynth",
+   "banco de sonidos"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Igual que midi-a-mp3 (banco con licencia comercial registrada en LICENSES.md).",
+  "flags": "TOOL_MIDI_A_WAV_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: frecuencia [44.100] | 48.000 Hz, profundidad [16 bits] | 24, reverberación y coro [sí]",
+  "fixtures_needed": [
+   "MIDI de midi-a-mp3"
+  ],
+  "notes": "Comparte runner con midi-a-mp3; 16.5 con ffprobe."
+ },
+ {
+  "slug_es": "musicxml-a-pdf",
+  "slug_en": "musicxml-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7) «MuseScore (GPL, externo, sin interfaz)»; 02-2; 12-12 12.1 y 12.3 (MusicXML con defusedxml)",
+  "engine": "MuseScore `-o out.pdf` sin interfaz (QT_QPA_PLATFORM=offscreen o xvfb-run)",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "MuseScore (musescore3 de Debian o AppImage de MuseScore 4 extraída, versión fijada)",
+   "xvfb-run si hace falta"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "MuseScore GPL-3.0: solo subproceso externo con entorno vacío (11-11, 12-12); imagen privada.",
+  "flags": "TOOL_MUSICXML_A_PDF_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: papel [A4] | Letter, partes [partitura completa] | cada parte (ZIP)",
+  "fixtures_needed": [
+   "MusicXML .musicxml y comprimido .mxl (ZIP con zipguard) — 01-1: MusicXML"
+  ],
+  "notes": "defusedxml previo; .mxl pasa por check_zip. HOME en el trabajo (MuseScore escribe configuración). Arranque lento: tiempo máximo y prlimit."
+ },
+ {
+  "slug_es": "midi-a-pdf",
+  "slug_en": "midi-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7) «musicxml-a-pdf, midi-a-pdf (partitura) — MuseScore»",
+  "engine": "MuseScore (importación MIDI con cuantización) a PDF",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [
+   "MuseScore"
+  ],
+  "new_dependencies": [],
+  "license_constraints": "Igual que musicxml-a-pdf.",
+  "flags": "TOOL_MIDI_A_PDF_ENABLED",
+  "options_summary": "Sin Anexo A; propuesta: papel [A4] | Letter; cuantización [automática]",
+  "fixtures_needed": [
+   "MIDI de midi-a-mp3"
+  ],
+  "notes": "La calidad de la partitura depende de la cuantización de MuseScore: avisar en la página."
+ },
+ {
+  "slug_es": "captura-web",
+  "slug_en": "website-screenshot",
+  "phase": "F6",
+  "spec_section": "7.17 (07-7) «Chromium de gotenbergweb, por egressweb»; 03-3; 12-12 12.2 (URL http/https puerto 80/443); 16-16 16.4 (SSRF)",
+  "engine": "Gotenberg 8.39 ruta /forms/chromium/screenshot/url en `gotenbergweb` (proxy egressweb)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "office (el catálogo dice utils, ver notas)",
+  "system_binaries": [],
+  "new_dependencies": [],
+  "license_constraints": "Ninguna nueva.",
+  "flags": "TOOL_CAPTURA_WEB_ENABLED",
+  "options_summary": "Sin Anexo A propia; propuesta alineada con web-a-pdf (a-1-a-1-crear.md): formato [PNG] | JPG | WEBP, calidad JPG [90], ancho de ventana [1280] px (320–3840), página completa [sí] (clip=false), espera [1 s] (0–10), esquema de color [claro] | oscuro, tipo de medio [screen]",
+  "fixtures_needed": [
+   "Página HTML local servida en CI; URLs de SSRF (169.254.169.254, localhost, nombre de otro servicio, redirección a IP privada)"
+  ],
+  "notes": "Conflicto: en docker-compose.coolify.yml `gotenbergweb` solo está en la red `webrender`, y 12.2 solo pone ahí gotenbergweb, egressweb, workeroffice y workersign; workerutils no puede llegar a gotenbergweb. Ejecutarla en `office` reutilizando tools.office.web_a_pdf (check_web_url, gotenberg.chromium_url) y anotarlo en DECISIONS. Pruebas SSRF de 16.4."
+ },
+ {
+  "slug_es": "crear-tarjeta",
+  "slug_en": "card-maker",
+  "phase": "F6",
+  "spec_section": "7.23 Crear (07-7) «mismo motor que crear-collage, salida para imprenta (sangrado, TrimBox, BleedBox y marcas de corte)»; Anexo A: a-1-a-1-crear.md crear-tarjeta; 12-12 12.4 (cámara)",
+  "engine": "Konva (MIT) + @cantoo/pdf-lib en el navegador, reutilizando packages/client-tools/src/collage; qr-code-styling para QR; SheetJS CE para XLSX",
+  "runs_on": "browser",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "",
+  "system_binaries": [],
+  "new_dependencies": [
+   "SheetJS Community Edition desde cdn.sheetjs.com con versión fijada (11-11) si aún no está"
+  ],
+  "license_constraints": "Frontend solo permisivas (11-11); fuentes OFL; SheetJS de cdn.sheetjs.com, no 0.18.5 de npm; Renovate no la vigila.",
+  "flags": "TOOL_CREAR_TARJETA_ENABLED",
+  "options_summary": "A.1: formato postal | díptica con plantillas por ocasión; fotos con filtros y máscaras; texto con curva, sombra y contorno; stickers, marcos, patrones y QR; salida [Imprimir en casa] (varias por A4/Letter, marcas de corte, reversos alineados a doble cara, díptica doblada) | Imprenta (tamaño final, sangrado [3 mm], BleedBox y TrimBox, marcas, imágenes ≥300 ppp) | Imagen; destinatarios desde CSV/XLSX con {Nombre} y dirección al reverso; fotos de archivo o cámara",
+  "fixtures_needed": [
+   "Fotos JPG/HEIC de prueba, CSV y XLSX de destinatarios"
+  ],
+  "notes": "Permissions-Policy camera=(self) ya prevista en D-105 para crear-tarjeta. Vitest para geometría de sangrado/TrimBox y n-up; Playwright: el archivo no sale del dispositivo."
+ },
+ {
+  "slug_es": "escribir-pdf",
+  "slug_en": "write-pdf",
+  "phase": "F6",
+  "spec_section": "7.23 Crear (07-7); Anexo A: a-1-a-1-crear.md escribir-pdf; 11-11 (TipTap solo MIT, docx, mammoth, KaTeX)",
+  "engine": "TipTap (paquetes MIT) en el navegador; PDF con Gotenberg Chromium (generateDocumentOutline, generateTaggedPdf) en dos pasadas; campos con pdf-lib; DOCX con `docx`; abrir DOCX con mammoth, ODT con LibreOffice en workeroffice, PDF con Docling; ODT de salida con pandoc",
+  "runs_on": "hybrid",
+  "complexity": "XL",
+  "already_exists": false,
+  "worker_group": "office (Gotenberg/LibreOffice), convert (Docling para abrir PDF), utils (pandoc ODT)",
+  "system_binaries": [
+   "pandoc (GPL, externo, --sandbox) en utils"
+  ],
+  "new_dependencies": [
+   "@tiptap/* MIT (core, starter-kit, table, task-list, image, link, mathematics…)",
+   "katex (MIT)",
+   "docx (MIT)",
+   "mammoth (BSD-2-Clause)",
+   "SheetJS CE (combinación de correspondencia XLSX)"
+  ],
+  "license_constraints": "TipTap: solo paquetes MIT del npm público; Pages y la conversión a DOCX de TipTap son de pago y prohibidas (11-11, A.1). Verificar por paquete (índice/TOC, notas al pie, emojis): si alguno es Pro, implementarlo propio. pandoc solo como proceso externo con --sandbox.",
+  "flags": "TOOL_ESCRIBIR_PDF_ENABLED",
+  "options_summary": "A.1: editor completo (títulos, fuentes, colores, listas y tareas, tablas, imágenes, enlaces, notas al pie, fórmulas KaTeX, columnas, índice automático, saltos, especiales/emojis, buscar y reemplazar); página: papel [A4], márgenes [25 mm], encabezado/pie con números, marca de agua, membrete con PDF de fondo (como superponer-pdf), borde; plantillas (carta, presupuesto, CV, acta, informe, certificado, folleto, solicitud); vista previa exacta en servidor; PDF con índice de números reales en dos pasadas, campos rellenables (texto, casilla, fecha) y propiedades; abrir DOCX/ODT/Markdown/PDF; exportar PDF/DOCX/Markdown/ODT; combinación de correspondencia CSV/XLSX con {Columna} y salida [un PDF por fila en ZIP] | uno con todas; firma dibujada y QR como imagen; borradores en IndexedDB; dictado y lectura con Web Speech API",
+  "fixtures_needed": [
+   "DOCX, ODT, Markdown y PDF de texto para abrir; CSV y XLSX para la combinación"
+  ],
+  "notes": "La herramienta más grande del bloque: dividir en lotes (editor, exportación PDF de dos pasadas, importación, combinación). Nada se guarda en servidor; sincronización en cuenta como mejora en docs/TOOLS.md. crear-pdf (A.1) debe enlazarla al existir."
+ },
+ {
+  "slug_es": "factura-electronica-a-pdf",
+  "slug_en": "e-invoice-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.23 Facturas (07-7) «amplía cii-a-pdf, ubl-a-pdf y facturae-a-pdf (7.14); PDF/A-3 con el XML original incrustado sin modificar un byte; lotes»; Anexo A: a-2-a-2-facturas.md factura-electronica-a-pdf",
+  "engine": "Validación XSD oficial + plantilla HTML + Chromium de `gotenberg` (PDF/A-3b) + incrustación del XML byte a byte (pikepdf, AFRelationship) o factur-x para CII",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "utils",
+  "system_binaries": [],
+  "new_dependencies": [
+   "lxml/defusedxml para XSD",
+   "factur-x (BSD) opcional",
+   "XSD de Facturae 3.2.x, UBL 2.1 (OASIS) y CII D16B (UN/CEFACT) como datos"
+  ],
+  "license_constraints": "Registrar la licencia de cada XSD en docs/LICENSES.md. No genera facturas: no va detrás de INVOICING_ES_ENABLED (7.23).",
+  "flags": "TOOL_FACTURA_ELECTRONICA_A_PDF_ENABLED; fuera de INVOICING_ES_ENABLED (flags.py THEMATIC_TOOLS ya lo excluye)",
+  "options_summary": "A.2: entrada CII, UBL o Facturae en lote; salida [PDF/A-3 con el XML original incrustado byte a byte] | PDF simple; idioma de la representación [el de la factura]",
+  "fixtures_needed": [
+   "Facturae 3.2.2, UBL, XRechnung CII y UBL, Peppol BIS, Factur-X/ZUGFeRD (01-1)"
+  ],
+  "notes": "Solapa con 7.14 (otro agente): unificar en un módulo; veraPDF valida PDF/A-3 (16.1); prueba de que el XML extraído coincide byte a byte."
+ },
+ {
+  "slug_es": "udf-a-pdf",
+  "slug_en": "udf-to-pdf",
+  "phase": "F6",
+  "spec_section": "7.23 Convertir (07-7) «documentos de UYAP (Turquía); flag apagado por defecto; investiga el formato; si no es viable, documéntalo en docs/TOOLS.md»; a-8-a-8-convertir-a-pdf.md «UDF: solo con su flag»",
+  "engine": "No fijado por la spec. Propuesta: UDF es un ZIP con content.xml (texto en CDATA + elementos con offsets y estilos, imágenes en base64): zipguard + defusedxml → HTML → Chromium de `gotenberg`",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "utils (o office)",
+  "system_binaries": [],
+  "new_dependencies": [
+   "defusedxml"
+  ],
+  "license_constraints": "Formato sin especificación pública: no copiar código de terceros sin licencia compatible.",
+  "flags": "Apagado por defecto (7.23). flags.py hoy activa todo lo que esté en el registro: hace falta un flag por defecto a false (p. ej. TOOL_UDF_A_PDF_ENABLED=false en .env.example o un conjunto DEFAULT_OFF)",
+  "options_summary": "Sin opciones propias en Anexo A (A.8 solo dice «solo con su flag»); usa las de Office de A.8 que apliquen (papel, PDF | PDF/A-2b)",
+  "fixtures_needed": [
+   "UDF de muestra generado con UYAP Editor (difícil de conseguir; anotar origen y licencia en SOURCES.md)"
+  ],
+  "notes": "Primero investigar y anotar en docs/TOOLS.md; los paquetes firmados (.eyp) quedan fuera. ZIP con check_zip (12.3)."
+ },
+ {
+  "slug_es": "mp4-a-webm",
+  "slug_en": "mp4-to-webm",
+  "phase": "F5 (vídeo de F5 se ejecuta después de F6, según 17)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md; sin entrada en el Anexo A (a-*.md no cubren vídeo)",
+  "engine": "FFmpeg (compilación LGPL de BtbN en worker-av, D-13)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "av (cola av.heavy, cost_class heavy según 9.3)",
+  "flags": "Solo Pro (plans.yaml video=true solo en Pro, hasta 60 min y 1 GB, 9.3); HEVC_DECODE_ENABLED para entradas HEVC; TOOL_MP4_A_WEBM_ENABLED",
+  "options_summary": "Anexo A no fija opciones: decidir en DECISIONS (como D-78). Propuesta: códec de vídeo [VP9] | AV1, calidad/CRF, resolución máxima [original], audio Opus [128 kbps]; lote con ZIP (A.0).",
+  "license_constraints": "WebM siempre recodifica salvo VP8/VP9/AV1+Opus/Vorbis de origen: VP9 (libvpx, BSD) y AV1 (SVT-AV1 BSD / libaom BSD) con pools que reclaman licencias: anotar en docs/LEGAL.md (11). Nunca ffmpeg.wasm en el navegador (@ffmpeg/core GPL-2.0+).",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MP4 H.264+AAC",
+   "MP4 HEVC (iPhone)",
+   "MP4 con VP9+Opus (para el caso de remultiplexar)"
+  ],
+  "notes": "Remultiplexar con -c copy si el códec cabe en WebM; si no, recodificar. Comprobar duración ±50 ms y códec con ffprobe (16.5). Seguridad FFmpeg de 12.3: -nostdin, -protocol_whitelist file,pipe, lista blanca de demuxers, ffprobe previo, límites de duración y tiempo."
+ },
+ {
+  "slug_es": "webm-a-mp4",
+  "slug_en": "webm-to-mp4",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md; sin Anexo A",
+  "engine": "FFmpeg LGPL",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; VIDEO_H264_ENCODING_ENABLED (apagado: el MP4 sale en AV1 y la página lo indica); HEVC_DECODE_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: modo [compatible: recodifica] | rápido (remultiplexa VP9/AV1+Opus dentro de MP4, ISO-BMFF lo admite); calidad; audio AAC nativo [160 kbps] u Opus.",
+  "license_constraints": "H.264 solo con VIDEO_H264_ENCODING_ENABLED (la compilación LGPL no trae libx264; una GPL con x264 solo como programa externo, 11); AAC con el codificador nativo, nunca libfdk_aac.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "WEBM VP9+Opus",
+   "WEBM VP8+Vorbis",
+   "WEBM AV1"
+  ],
+  "notes": "VP9/Opus en MP4 es válido pero poco compatible (Safari, WhatsApp); por defecto sin flag H.264 sale AV1, cuya reproducción en dispositivos antiguos es limitada: avisarlo en la página."
+ },
+ {
+  "slug_es": "mov-a-mp4",
+  "slug_en": "mov-to-mp4",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md; prueba de 16.5 en 16-16-pruebas.md",
+  "engine": "FFmpeg LGPL (-c copy)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; HEVC_DECODE_ENABLED solo si hay que decodificar HEVC (remultiplexar HEVC no lo necesita: -tag:v hvc1); VIDEO_H264_ENCODING_ENABLED para recodificar a H.264",
+  "options_summary": "Sin Anexo A. Remultiplexar siempre que H.264/HEVC+AAC quepan; si no, recodificar a AV1 (o H.264 con flag).",
+  "license_constraints": "El decodificador HEVC nativo de FFmpeg viene en la compilación LGPL: el flag HEVC hay que aplicarlo en código mirando codec_name con ffprobe, no por compilación.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MOV H.264+AAC (obligatorio por 16.5)",
+   "MOV HEVC de iPhone",
+   "MOV con pista de metadatos/timecode"
+  ],
+  "notes": "Prueba obligatoria 16.5: MOV H.264+AAC pasa a MP4 sin recodificar (mismo códec y mismo número de fotogramas). Descartar pistas tmcd/mebx que MP4 no admite con -map selectivo."
+ },
+ {
+  "slug_es": "mkv-a-mp4",
+  "slug_en": "mkv-to-mp4",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "FFmpeg LGPL",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; HEVC_DECODE_ENABLED; VIDEO_H264_ENCODING_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: pistas de audio [todas] | primera; subtítulos [convertir a mov_text] | quitar; remultiplexar si cabe.",
+  "license_constraints": "Igual que mov-a-mp4.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MKV H.264+AAC con subtítulos SRT y ASS",
+   "MKV HEVC",
+   "MKV con adjuntos (fuentes)"
+  ],
+  "notes": "Subtítulos ASS/SRT no van en MP4 salvo mov_text; los adjuntos se descartan; audio FLAC/Vorbis/Opus en MP4 puede necesitar recodificar a AAC."
+ },
+ {
+  "slug_es": "avi-a-mp4",
+  "slug_en": "avi-to-mp4",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "FFmpeg LGPL",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; VIDEO_H264_ENCODING_ENABLED",
+  "options_summary": "Sin Anexo A. Remultiplexar MPEG-4 Part 2/H.264 + MP3/AAC si cabe; si no, recodificar.",
+  "license_constraints": "Igual que el resto de vídeo.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "AVI Xvid/MPEG-4 Part 2 + MP3",
+   "AVI MJPEG + PCM"
+  ],
+  "notes": "AVI con B-frames empaquetados (packed bitstream) necesita el filtro mpeg4_unpack_bframes al remultiplexar."
+ },
+ {
+  "slug_es": "video-a-gif",
+  "slug_en": "video-to-gif",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "FFmpeg LGPL (palettegen + paletteuse)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; HEVC_DECODE_ENABLED para entradas HEVC",
+  "options_summary": "Sin Anexo A. Propuesta: inicio/fin (h:mm:ss), fps [12] (1–30), ancho [480] px, bucle [infinito], dithering [sierra2_4a] | bayer | ninguno, tamaño máximo.",
+  "license_constraints": "GIF sin patentes vigentes; codificador nativo.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MP4 corto H.264",
+   "WEBM corto"
+  ],
+  "notes": "Dos pasadas (paleta y aplicación); limitar duración del GIF (p. ej. 60 s) para no producir archivos enormes; GIF animado ya existe en fixtures de imagen."
+ },
+ {
+  "slug_es": "gif-a-mp4",
+  "slug_en": "gif-to-mp4",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "FFmpeg LGPL",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; VIDEO_H264_ENCODING_ENABLED (sin él sale AV1)",
+  "options_summary": "Sin Anexo A. Propuesta: repeticiones [1], fondo para transparencia [blanco], calidad.",
+  "license_constraints": "Siempre codifica: AV1 por defecto, H.264 solo con flag.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "GIF animado (ya en tests/fixtures de imagen)",
+   "GIF con transparencia y dimensiones impares"
+  ],
+  "notes": "Rellenar a dimensiones pares (yuv420p) y aplanar la transparencia. El caso de uso típico (compatibilidad) pierde valor con AV1 sin el flag H.264: riesgo de UX."
+ },
+ {
+  "slug_es": "comprimir-video",
+  "slug_en": "compress-video",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "FFmpeg LGPL (SVT-AV1/libaom o H.264 con flag)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; VIDEO_H264_ENCODING_ENABLED; HEVC_DECODE_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: nivel [recomendado] | fuerte | ligero (CRF), resolución máxima [original] | 1080p | 720p | 480p, tamaño objetivo en MB (dos pasadas), audio [128 kbps] | quitar; nunca devolver un archivo mayor que el original.",
+  "license_constraints": "Igual que el resto de vídeo.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MP4 1080p de 30–60 s",
+   "MOV HEVC"
+  ],
+  "notes": "Siempre recodifica: es el más caro en CPU (AV1 a 2 hilos, THREADS_AV); fijar time_limit y comprobar visibility_timeout > time_limit + 10 min (5.3)."
+ },
+ {
+  "slug_es": "recortar-video",
+  "slug_en": "trim-video",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "FFmpeg LGPL (-ss/-to con -c copy cuando se puede)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; VIDEO_H264_ENCODING_ENABLED para el corte exacto en MP4",
+  "options_summary": "Sin Anexo A. Propuesta: inicio/fin (h:mm:ss.mmm), modo [rápido: en fotograma clave, sin recodificar] | exacto (recodifica); **Extra** recortar el encuadre (crop) con recodificación.",
+  "license_constraints": "Corte exacto recodifica: AV1 o H.264 con flag.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MP4 H.264 con GOP conocido",
+   "MKV"
+  ],
+  "notes": "«Recortar» es ambiguo (duración o encuadre): decidir en DECISIONS; slug_en propuesto trim-video. Mostrar el punto de corte real en el modo rápido."
+ },
+ {
+  "slug_es": "rotar-video",
+  "slug_en": "rotate-video",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "FFmpeg LGPL (matriz de visualización sin recodificar; transpose si se recodifica)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "av (av.heavy)",
+  "flags": "Solo Pro; VIDEO_H264_ENCODING_ENABLED si se pide rotación «quemada»",
+  "options_summary": "Sin Anexo A. Propuesta: 90° | 180° | 270°, voltear horizontal/vertical (recodifica), modo [metadatos: sin recodificar] | aplicar en los píxeles.",
+  "license_constraints": "Igual que el resto de vídeo.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MP4 H.264 vertical de móvil con rotación en metadatos"
+  ],
+  "notes": "Con -c copy se escribe la rotación como display matrix (-display_rotation en FFmpeg 7.x: verificar en la versión fijada); algunos reproductores la ignoran: avisar."
+ },
+ {
+  "slug_es": "quitar-audio-video",
+  "slug_en": "remove-audio-from-video",
+  "phase": "F5 (vídeo)",
+  "spec_section": "7.9 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "FFmpeg LGPL (-map 0 -map -0:a -c copy)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "av (av.heavy, aunque es rápida; valorar av.light)",
+  "flags": "Solo Pro",
+  "options_summary": "Sin Anexo A. Sin recodificar; conservar subtítulos [sí].",
+  "license_constraints": "No codifica nada; HEVC remultiplexado sin flag.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MP4 H.264+AAC",
+   "MKV con varias pistas de audio"
+  ],
+  "notes": "Comprobar con ffprobe que no queda pista de audio y que el vídeo conserva códec y número de fotogramas."
+ },
+ {
+  "slug_es": "transcribir-audio",
+  "slug_en": "transcribe-audio",
+  "phase": "F5",
+  "spec_section": "7.10 en 07-7-catalogo-completo-de-herramientas.md; 6.3/6.4 en 06-6-ia-con-modelos-gratuitos-de-openrouter.md",
+  "engine": "faster-whisper 1.2.1 local sin PyAV (D-111 a D-114) + FFmpeg LGPL para decodificar",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": true,
+  "worker_group": "av (av.heavy)",
+  "flags": "WHISPER_MODEL small/medium; 0 peticiones de IA",
+  "options_summary": "Ya implementadas (registry: idioma, formato TXT|DOCX|SRT, marcas_de_tiempo, precision).",
+  "license_constraints": "PyAV prohibido (ruedas con x264/x265 GPL, D-111); modelos Systran CTranslate2 MIT.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "tests/fixtures/jfk.ogg (ya existe)"
+  ],
+  "notes": "Hecha (lote E de F5). Las entradas del registro no incluyen mov ni mkv (sí mp4 y webm): ampliarlas al llegar el vídeo de F5."
+ },
+ {
+  "slug_es": "video-a-subtitulos",
+  "slug_en": "video-to-subtitles",
+  "phase": "F5",
+  "spec_section": "7.10 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "faster-whisper local + FFmpeg LGPL (solo la pista de audio)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": true,
+  "worker_group": "av (av.heavy)",
+  "flags": "No está marcada como solo Pro en el registro; decodifica solo audio, así que HEVC no aplica",
+  "options_summary": "Ya implementadas (idioma, formato SRT|VTT, caracteres_por_linea 30–60 [42], precision; D-113).",
+  "license_constraints": "Igual que transcribir-audio.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg",
+   "ffprobe"
+  ],
+  "fixtures_needed": [
+   "MP4/MKV con voz (existentes)"
+  ],
+  "notes": "Hecha (D-111 a D-114). docs/TOOLS.md aún la muestra como «pendiente» en la columna de estado: revisar."
+ },
+ {
+  "slug_es": "traducir-subtitulos",
+  "slug_en": "translate-subtitles",
+  "phase": "F5 (se hace en F3 lote E según PLAN.md y D-119)",
+  "spec_section": "7.10 en 07-7-catalogo-completo-de-herramientas.md; 6.3 (1 petición por bloque de transcripción) en 06-6-ia-con-modelos-gratuitos-de-openrouter.md",
+  "engine": "faster-whisper local (si la entrada es audio o vídeo) + LLM de OpenRouter mediante TranslationProvider (D-132)",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "av (transcripción, av.heavy) + ai (traducción, solo workerai tiene clave y egressai)",
+  "flags": "cost_class ai; AI_REQUIRE_CONSENT; cuotas de IA de 9.3 (anónimo 0); presupuesto AI_DAILY_BUDGET; TOOL_TRADUCIR_SUBTITULOS_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: idioma de destino, idioma de origen [auto], salida [SRT] | VTT, conservar tiempos [sí]; **Extra** entrada directa SRT/VTT/ASS sin transcribir y bilingüe (dos líneas).",
+  "license_constraints": "Igual que faster-whisper; modelos :free con política de datos de 6.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg"
+  ],
+  "fixtures_needed": [
+   "SRT y VTT de prueba",
+   "tests/fixtures/jfk.ogg"
+  ],
+  "notes": "Necesita una cadena de trabajos av → ai (workerav no tiene clave y workerai no tiene FFmpeg ni Whisper, 12.2). ai_requests_estimate antes de encolar y rechazo si supera AI_TASK_MAX_REQUESTS. Proveedor falso devuelve traducciones alineadas (D-133)."
+ },
+ {
+  "slug_es": "resumir-reunion",
+  "slug_en": "summarize-meeting",
+  "phase": "F5 (se hace en F3 lote E)",
+  "spec_section": "7.10 en 07-7-catalogo-completo-de-herramientas.md; 6.3 en 06-6-ia-con-modelos-gratuitos-de-openrouter.md",
+  "engine": "faster-whisper local + LLM de OpenRouter (salida estructurada, 6.5)",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "av (transcripción) + ai (resumen)",
+  "flags": "cost_class ai; consentimiento; cuotas de IA",
+  "options_summary": "Sin Anexo A. Propuesta: idioma, longitud [media], secciones (resumen, decisiones, tareas con responsable, temas), salida [DOCX] | TXT | Markdown, incluir transcripción [no].",
+  "license_constraints": "Igual que traducir-subtitulos.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "ffmpeg"
+  ],
+  "fixtures_needed": [
+   "Audio de reunión de varios minutos con licencia que permita guardarlo (anotar en tests/fixtures/SOURCES.md)"
+  ],
+  "notes": "1 petición por bloque de transcripción + resumen final; reunión de 4 h (Pro) puede superar AI_TASK_MAX_REQUESTS=20: la API debe avisar antes y ofrecer un tramo."
+ },
+ {
+  "slug_es": "convertir-archivo",
+  "slug_en": "file-converter",
+  "phase": "F5 (7.22)",
+  "spec_section": "7.22 en 07-7-catalogo-completo-de-herramientas.md; D-115 a D-118",
+  "engine": "Detección por bytes en el navegador (client-tools/src/filetype.ts) y rutas sacadas del registro",
+  "runs_on": "browser",
+  "complexity": "S",
+  "already_exists": true,
+  "worker_group": "ninguno (enruta a la herramienta ganadora)",
+  "flags": "Las combinaciones sin página propia llevan noindex",
+  "options_summary": "Sin opciones propias; preset oculto de ToolRunner (D-117).",
+  "license_constraints": "Ninguna.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "Los de vídeo para las rutas nuevas"
+  ],
+  "notes": "Hecha. Al entrar el vídeo de F5, comprobar que el sniffer distingue MOV/MP4/MKV/WEBM/AVI (core/filetype.py ya lo hace) y que las salidas de vídeo salen solo para Pro o con explicación."
+ },
+ {
+  "slug_es": "generar-codigo-qr",
+  "slug_en": "qr-code-generator",
+  "phase": "F5",
+  "spec_section": "7.23 (Crear) en 07-7-catalogo-completo-de-herramientas.md; A.1 en a-1-a-1-crear.md",
+  "engine": "qr-code-styling (MIT) en el navegador + verificación con zxing-cpp (zxing-wasm)",
+  "runs_on": "browser",
+  "complexity": "S",
+  "already_exists": true,
+  "options_summary": "A.1: tipos URL, WiFi, texto, vCard, SEPA EPC, PayPal (+Extra email, teléfono, SMS, evento); logotipo [0,4] y margen [0] con corrección H forzada; estilo y colores; versión [auto], modo [Byte], corrección [Q]; tamaño [500] px (100–10000), PNG|SVG|Extra PDF; JSON de configuración.",
+  "license_constraints": "qr-code-styling MIT (11, paridad PDF24).",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [],
+  "notes": "Hecha (lote B2, D-88 a D-94). Prueba de efecto 16.6 con logotipo y corrección H."
+ },
+ {
+  "slug_es": "crear-collage",
+  "slug_en": "collage-maker",
+  "phase": "F5",
+  "spec_section": "7.23 (Crear) en 07-7-catalogo-completo-de-herramientas.md; A.1 en a-1-a-1-crear.md",
+  "engine": "Konva (MIT) y pdf-lib en el navegador",
+  "runs_on": "browser",
+  "complexity": "S",
+  "already_exists": true,
+  "options_summary": "A.1: plantillas 1–30 fotos, edición, adornos, tamaños reales con marcas de corte (carné 35×45, DNI 26×32, ID-1), documentación fotográfica; salida papel [A4], [300 ppp], [PDF]|JPG|PNG|Imprimir.",
+  "license_constraints": "Konva MIT.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [],
+  "notes": "Hecha (lotes D1 y D2, D-100 a D-110)."
+ },
+ {
+  "slug_es": "stl-a-obj",
+  "slug_en": "stl-to-obj",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md; sin Anexo A (las opciones están en 7.18)",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_A_OBJ_ENABLED; grupo mesh desactivable con 16 GB de RAM (3.1)",
+  "options_summary": "Opciones comunes de 7.18: unidades de origen y destino (mm, cm, m, pulgadas) [por decidir, p. ej. mm], escala [1], fusionar | separar objetos, conservar colores y materiales cuando el destino lo permite con aviso de pérdida; lote con ZIP (A.0).",
+  "license_constraints": "trimesh MIT; no instalar trimesh[all] sin revisar extras (evitar el paquete triangle, de licencia no comercial).",
+  "new_dependencies": [
+   "trimesh",
+   "numpy",
+   "scipy (si lo pide trimesh)"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL ASCII",
+   "STL binario"
+  ],
+  "notes": "Motor común de mallas (carga, unidades, escala, fusión/separación, avisos, límite de triángulos de 9.3: 1M/2M/10M) es L; cada página es S."
+ },
+ {
+  "slug_es": "obj-a-stl",
+  "slug_en": "obj-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_OBJ_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18; aviso de que STL pierde colores, materiales y texturas.",
+  "license_constraints": "trimesh MIT.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "OBJ con MTL y textura (subida de varios archivos o ZIP)"
+  ],
+  "notes": "OBJ con MTL llega en varios archivos: definir subida múltiple o ZIP (zipguard de 12.3)."
+ },
+ {
+  "slug_es": "stl-a-3mf",
+  "slug_en": "stl-to-3mf",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md; 16.5 en 16-16-pruebas.md",
+  "engine": "trimesh (lectura) + lib3mf (escritura y validación)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_A_3MF_ENABLED",
+  "options_summary": "Comunes de 7.18 (la unidad se escribe en el atributo unit del modelo 3MF).",
+  "license_constraints": "lib3mf BSD-2-Clause (11).",
+  "new_dependencies": [
+   "lib3mf",
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL binario",
+   "STL ASCII"
+  ],
+  "notes": "16.5: STL → 3MF → STL conserva volumen (error < 0,1 %) y número de triángulos; lib3mf valida cada 3MF generado."
+ },
+ {
+  "slug_es": "3mf-a-stl",
+  "slug_en": "3mf-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md; 16.5",
+  "engine": "lib3mf (lectura) + trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_3MF_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18; separar objetos produce un STL por objeto en ZIP.",
+  "license_constraints": "lib3mf BSD-2.",
+  "new_dependencies": [
+   "lib3mf",
+   "trimesh",
+   "defusedxml"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "3MF con varios objetos, componentes y transformaciones",
+   "3MF con colores"
+  ],
+  "notes": "3MF es ZIP+XML: zipguard (rutas, enlaces, 10.000 entradas, 2 GB, 100:1) y defusedxml (12.3). Aplicar las transformaciones de build items."
+ },
+ {
+  "slug_es": "obj-a-3mf",
+  "slug_en": "obj-to-3mf",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh + lib3mf",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_OBJ_A_3MF_ENABLED",
+  "options_summary": "Comunes de 7.18; colores y materiales a basematerials/colorgroups de 3MF.",
+  "license_constraints": "lib3mf BSD-2.",
+  "new_dependencies": [
+   "lib3mf",
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "OBJ con MTL"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "3mf-a-obj",
+  "slug_en": "3mf-to-obj",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "lib3mf + trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_3MF_A_OBJ_ENABLED",
+  "options_summary": "Comunes de 7.18; salida OBJ + MTL (+ texturas) en ZIP.",
+  "license_constraints": "lib3mf BSD-2.",
+  "new_dependencies": [
+   "lib3mf",
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "3MF con colores"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "stl-a-ply",
+  "slug_en": "stl-to-ply",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_A_PLY_ENABLED",
+  "options_summary": "Comunes de 7.18; PLY binario | ASCII (decidir).",
+  "license_constraints": "trimesh MIT.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL binario"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "ply-a-stl",
+  "slug_en": "ply-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_PLY_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18; aviso de pérdida de colores de vértice.",
+  "license_constraints": "trimesh MIT.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "PLY con colores de vértice",
+   "PLY de nube de puntos (sin caras: rechazar con mensaje claro)"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "amf-a-stl",
+  "slug_en": "amf-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md (AMF con lector propio según ISO/ASTM 52915)",
+  "engine": "Lector AMF propio (XML, opcionalmente comprimido en ZIP) + trimesh",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_AMF_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18; unidad del atributo unit de AMF.",
+  "license_constraints": "Implementación propia; sin dependencias externas de licencia.",
+  "new_dependencies": [
+   "defusedxml"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "AMF sin comprimir",
+   "AMF comprimido (ZIP)",
+   "AMF con constelaciones y materiales"
+  ],
+  "notes": "defusedxml y zipguard obligatorios (12.3). Triángulos curvos (edges/normals) se ignoran con aviso."
+ },
+ {
+  "slug_es": "stl-a-amf",
+  "slug_en": "stl-to-amf",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Escritor AMF propio",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_A_AMF_ENABLED",
+  "options_summary": "Comunes de 7.18; comprimir [sí] (decidir).",
+  "license_constraints": "Propio.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL binario"
+  ],
+  "notes": "Validar el AMF generado contra el XSD público de AMF en las pruebas."
+ },
+ {
+  "slug_es": "amf-a-3mf",
+  "slug_en": "amf-to-3mf",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Lector AMF propio + lib3mf",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_AMF_A_3MF_ENABLED",
+  "options_summary": "Comunes de 7.18; conserva materiales y colores (3MF los admite).",
+  "license_constraints": "lib3mf BSD-2.",
+  "new_dependencies": [
+   "lib3mf"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "AMF con varios materiales"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "glb-a-stl",
+  "slug_en": "glb-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_GLB_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18; aplanar el grafo de escena con sus transformaciones.",
+  "license_constraints": "trimesh MIT; DracoPy (Apache-2.0) si se decodifica KHR_draco_mesh_compression.",
+  "new_dependencies": [
+   "trimesh",
+   "DracoPy (opcional, verificar licencia y ruedas)"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "GLB simple",
+   "GLB con Draco",
+   "GLB con EXT_meshopt_compression"
+  ],
+  "notes": "trimesh no decodifica Draco ni meshopt: decidir DracoPy/assimp o rechazar con mensaje."
+ },
+ {
+  "slug_es": "stl-a-glb",
+  "slug_en": "stl-to-glb",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_A_GLB_ENABLED",
+  "options_summary": "Comunes de 7.18; glTF usa metros: convertir unidades.",
+  "license_constraints": "trimesh MIT.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL binario"
+  ],
+  "notes": "Ofrecer «Seguir con comprimir-glb»."
+ },
+ {
+  "slug_es": "gltf-a-stl",
+  "slug_en": "gltf-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_GLTF_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18.",
+  "license_constraints": "trimesh MIT.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "glTF con .bin y texturas externas",
+   "glTF con buffers en data: URI"
+  ],
+  "notes": "glTF referencia archivos externos: aceptar solo los subidos en el mismo trabajo (o ZIP) y rechazar URI http(s) o rutas con .. (12.3)."
+ },
+ {
+  "slug_es": "fbx-a-stl",
+  "slug_en": "fbx-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md (FBX solo lectura, assimp)",
+  "engine": "assimp",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_FBX_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18.",
+  "license_constraints": "assimp BSD-3-Clause (11). Nunca el SDK de Autodesk FBX.",
+  "new_dependencies": [
+   "pyassimp o binario assimp (decidir)"
+  ],
+  "system_binaries": [
+   "assimp (assimp-utils de Debian) si se usa como proceso"
+  ],
+  "fixtures_needed": [
+   "FBX binario 7.x",
+   "FBX ASCII"
+  ],
+  "notes": "assimp tiene muchos fallos de fuzzing en sus importadores: mejor como subproceso con prlimit y entorno vacío (run_engine) que cargado en el proceso del worker."
+ },
+ {
+  "slug_es": "fbx-a-obj",
+  "slug_en": "fbx-to-obj",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "assimp",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_FBX_A_OBJ_ENABLED",
+  "options_summary": "Comunes de 7.18; materiales y texturas a MTL en ZIP.",
+  "license_constraints": "assimp BSD-3.",
+  "new_dependencies": [
+   "pyassimp o assimp CLI"
+  ],
+  "system_binaries": [
+   "assimp"
+  ],
+  "fixtures_needed": [
+   "FBX con texturas incrustadas"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "dae-a-stl",
+  "slug_en": "dae-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md; 12.3 (XML con defusedxml)",
+  "engine": "assimp (o trimesh con pycollada, BSD)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_DAE_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18.",
+  "license_constraints": "assimp BSD-3; pycollada BSD.",
+  "new_dependencies": [
+   "defusedxml"
+  ],
+  "system_binaries": [
+   "assimp"
+  ],
+  "fixtures_needed": [
+   "DAE (Collada) con jerarquía y unidades"
+  ],
+  "notes": "assimp usa su propio analizador XML: pasar antes una validación con defusedxml (sin DOCTYPE ni entidades) para cumplir 12.3."
+ },
+ {
+  "slug_es": "3ds-a-stl",
+  "slug_en": "3ds-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md (3DS solo lectura)",
+  "engine": "assimp",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_3DS_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18.",
+  "license_constraints": "assimp BSD-3.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "assimp"
+  ],
+  "fixtures_needed": [
+   "3DS"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "wrl-a-stl",
+  "slug_en": "wrl-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "assimp",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_WRL_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18.",
+  "license_constraints": "assimp BSD-3.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "assimp"
+  ],
+  "fixtures_needed": [
+   "WRL VRML 2.0 (IndexedFaceSet)",
+   "WRL VRML 1.0 (comprobar soporte)",
+   "WRL comprimido con gzip"
+  ],
+  "notes": "El soporte de VRML de assimp es parcial (va por su importador X3D): verificar con muestras reales; si falla, lector propio de IndexedFaceSet."
+ },
+ {
+  "slug_es": "stl-a-wrl",
+  "slug_en": "stl-to-wrl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Escritor VRML 2.0 propio (assimp no exporta VRML)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_A_WRL_ENABLED",
+  "options_summary": "Comunes de 7.18; color de vértice o material si existe.",
+  "license_constraints": "Propio.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL binario"
+  ],
+  "notes": "VRML se usa en impresión a color (Mimaki, Stratasys): comprobar que lo abren."
+ },
+ {
+  "slug_es": "x3d-a-stl",
+  "slug_en": "x3d-to-stl",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md; 12.3",
+  "engine": "assimp",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_X3D_A_STL_ENABLED",
+  "options_summary": "Comunes de 7.18.",
+  "license_constraints": "assimp BSD-3.",
+  "new_dependencies": [
+   "defusedxml"
+  ],
+  "system_binaries": [
+   "assimp"
+  ],
+  "fixtures_needed": [
+   "X3D XML"
+  ],
+  "notes": "Validación previa con defusedxml (12.3)."
+ },
+ {
+  "slug_es": "stl-a-x3d",
+  "slug_en": "stl-to-x3d",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "assimp (exportador X3D) o escritor propio",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_A_X3D_ENABLED",
+  "options_summary": "Comunes de 7.18.",
+  "license_constraints": "assimp BSD-3.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "assimp"
+  ],
+  "fixtures_needed": [
+   "STL binario"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "stl-a-usdz",
+  "slug_en": "stl-to-usdz",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md; 11 (usd-core TOST-1.0)",
+  "engine": "usd-core (UsdGeom.Mesh, UsdPreviewSurface, paquete USDZ)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_A_USDZ_ENABLED",
+  "options_summary": "Comunes de 7.18; metersPerUnit y upAxis Y para AR Quick Look.",
+  "license_constraints": "usd-core LicenseRef-TOST-1.0 (ya en la lista backend de scripts/license_policy.yaml; puede hacer falta un override si los metadatos dicen otra cosa).",
+  "new_dependencies": [
+   "usd-core"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL binario",
+   "USDZ de referencia para comparar"
+  ],
+  "notes": "Comprobar que el USDZ abre en iOS (AR Quick Look): archivos sin comprimir y alineados a 64 bytes."
+ },
+ {
+  "slug_es": "obj-a-usdz",
+  "slug_en": "obj-to-usdz",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh + usd-core",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_OBJ_A_USDZ_ENABLED",
+  "options_summary": "Comunes de 7.18; materiales y texturas de MTL a UsdPreviewSurface.",
+  "license_constraints": "usd-core TOST-1.0.",
+  "new_dependencies": [
+   "usd-core",
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "OBJ con MTL y textura"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "stl-ascii-a-binario",
+  "slug_en": "stl-ascii-to-binary",
+  "phase": "F7",
+  "spec_section": "7.18 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh (o lector y escritor propios, triviales)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_STL_ASCII_A_BINARIO_ENABLED",
+  "options_summary": "Comunes de 7.18; **Extra** sentido inverso (binario a ASCII).",
+  "license_constraints": "trimesh MIT.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL ASCII con varios sólidos"
+  ],
+  "notes": "Podría hacerse en el navegador, pero 7.18 la pone en el grupo mesh."
+ },
+ {
+  "slug_es": "convertir-modelo-3d",
+  "slug_en": "3d-model-converter",
+  "phase": "F7 (7.22)",
+  "spec_section": "7.22 y 7.18 en 07-7-catalogo-completo-de-herramientas.md; 8.1 en 08-8-frontend-y-seo.md (/es/convertir-modelo-3d)",
+  "engine": "Detección por bytes en el navegador y enrutado a las herramientas de mesh (y cad para STEP/IGES)",
+  "runs_on": "hybrid",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh (y cad según la entrada)",
+  "flags": "Combinaciones sin página propia: sin URL indexable; enlaces con parámetros con noindex (7.22)",
+  "options_summary": "Comunes de 7.18; matriz de entradas (STL, OBJ+MTL, 3MF, AMF, PLY, OFF, glTF/GLB, FBX, DAE, 3DS, VRML, X3D, USD/USDZ) × salidas (STL, OBJ, 3MF, AMF, PLY, OFF, GLB, X3D, VRML, USDZ).",
+  "license_constraints": "Las de cada motor.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "Todos los de 3D de 01-1-como-trabajar.md"
+  ],
+  "notes": "Necesita una herramienta genérica de servidor (p. ej. un convertir-modelo-3d con formato de salida) para las combinaciones sin página, y ampliar el sniffer (core/filetype.py y client-tools/src/filetype.ts) con firmas 3D."
+ },
+ {
+  "slug_es": "step-a-stl",
+  "slug_en": "step-to-stl",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md; 16.5 (STEP → STL estanco)",
+  "engine": "OpenCascade (cadquery/OCP): STEPControl_Reader + BRepMesh_IncrementalMesh + StlAPI_Writer",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_STEP_A_STL_ENABLED; cost_class heavy (9.3: CAD es pesado); grupo cad desactivable con 16 GB (3.1)",
+  "options_summary": "7.19: calidad de teselado elegible (propuesta: baja | [media] | alta | personalizada con desviación lineal y angular); unidades de 7.18; un STL por sólido o fusionado.",
+  "license_constraints": "OpenCascade LGPL-2.1 con excepción (permitido, 11). Preferir cadquery-ocp sin cadquery (cadquery arrastra casadi LGPL-3, nlopt y otros). No instalar gmsh (GPL) ni bindings de CGAL.",
+  "new_dependencies": [
+   "cadquery-ocp (o variante sin VTK si existe en la versión fijada: verificar)",
+   "lib3mf",
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STEP AP203/AP214/AP242 con varios sólidos (generar con OCP/FreeCAD en scripts/fixtures)",
+   "STEP con ensamblaje y colores"
+  ],
+  "notes": "Motor común CAD (carga, teselado, unidades, límites de tiempo y memoria 4/6 GB) es L. 5.2: importar el registro no debe cargar OpenCascade (spec.py sin motores). Comprobar estanqueidad del resultado con trimesh."
+ },
+ {
+  "slug_es": "stp-a-stl",
+  "slug_en": "stp-to-stl",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OpenCascade (OCP), mismo que step-a-stl",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_STP_A_STL_ENABLED",
+  "options_summary": "Igual que step-a-stl.",
+  "license_constraints": "OCCT LGPL.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "Archivo .stp"
+  ],
+  "notes": "La especificación no dice que sea alias: decidir página propia con contenido 8.2 o canonical a step-a-stl (como pub-a-pdf) para evitar contenido duplicado."
+ },
+ {
+  "slug_es": "step-a-3mf",
+  "slug_en": "step-to-3mf",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OCP (teselado) + lib3mf",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_STEP_A_3MF_ENABLED",
+  "options_summary": "Calidad de teselado; conservar colores de STEP en 3MF.",
+  "license_constraints": "OCCT LGPL; lib3mf BSD-2.",
+  "new_dependencies": [
+   "lib3mf"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STEP con colores"
+  ],
+  "notes": "lib3mf valida el 3MF (16.5)."
+ },
+ {
+  "slug_es": "step-a-obj",
+  "slug_en": "step-to-obj",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OCP + trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_STEP_A_OBJ_ENABLED",
+  "options_summary": "Calidad de teselado; colores a MTL.",
+  "license_constraints": "OCCT LGPL.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STEP"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "step-a-glb",
+  "slug_en": "step-to-glb",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OCP (RWGltf_CafWriter con XCAF, o teselado + trimesh)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_STEP_A_GLB_ENABLED",
+  "options_summary": "Calidad de teselado; conservar jerarquía de ensamblaje y colores.",
+  "license_constraints": "OCCT LGPL.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STEP con ensamblaje"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "iges-a-stl",
+  "slug_en": "iges-to-stl",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OCP (IGESControl_Reader)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_IGES_A_STL_ENABLED",
+  "options_summary": "Calidad de teselado; coser superficies (IGES suele traer caras sueltas).",
+  "license_constraints": "OCCT LGPL.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "IGES de superficies",
+   "IGES de sólido"
+  ],
+  "notes": "IGES de superficies sueltas puede no quedar estanco: avisar."
+ },
+ {
+  "slug_es": "igs-a-step",
+  "slug_en": "igs-to-step",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OCP (IGESControl_Reader + STEPControl_Writer)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_IGS_A_STEP_ENABLED",
+  "options_summary": "Esquema STEP [AP214] | AP203 | AP242 (decidir); coser superficies.",
+  "license_constraints": "OCCT LGPL.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "IGS"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "brep-a-stl",
+  "slug_en": "brep-to-stl",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OCP (BRepTools.Read_s)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_BREP_A_STL_ENABLED",
+  "options_summary": "Calidad de teselado.",
+  "license_constraints": "OCCT LGPL.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "BREP nativo de OCCT (generar con OCP)"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "stl-a-step",
+  "slug_en": "stl-to-step",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OCP: sólido facetado (BRepBuilderAPI_Sewing + MakeSolid) y STEPControl_Writer",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_STL_A_STEP_ENABLED; límite de triángulos propio más bajo (decidir)",
+  "options_summary": "Avisar de que no recupera superficies paramétricas (7.19); **Extra** unir caras coplanares (simplificación).",
+  "license_constraints": "OCCT LGPL.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL estanco de pocos miles de triángulos",
+   "STL con huecos (debe fallar con mensaje claro o reparar antes)"
+  ],
+  "notes": "Coser cientos de miles de triángulos es muy lento y consume mucha memoria: fijar un límite de triángulos para esta herramienta y time_limit."
+ },
+ {
+  "slug_es": "obj-a-step",
+  "slug_en": "obj-to-step",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh + OCP (sólido facetado)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_OBJ_A_STEP_ENABLED",
+  "options_summary": "Igual que stl-a-step.",
+  "license_constraints": "OCCT LGPL.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "OBJ estanco"
+  ],
+  "notes": "Comparte el motor de stl-a-step."
+ },
+ {
+  "slug_es": "scad-a-stl",
+  "slug_en": "scad-to-stl",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md; 12.3 (análisis previo de include/use/import/surface); 16.5; OPENSCAD_TIMEOUT_SECONDS en 14-14-variables-de-entorno.md",
+  "engine": "OpenSCAD (GPL, programa externo) en sandbox",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_SCAD_A_STL_ENABLED; OPENSCAD_TIMEOUT_SECONDS=60",
+  "options_summary": "Sin Anexo A. Propuesta: variables del Customizer (-D) editables, $fn por defecto, STL binario [sí].",
+  "license_constraints": "OpenSCAD GPL-2: solo como proceso externo, nunca importado (11); su CGAL interno va dentro del binario externo y no cuenta como enlace.",
+  "new_dependencies": [],
+  "system_binaries": [
+   "openscad (versión con backend manifold recomendada; la de Debian bookworm es 2021.01, verificar)"
+  ],
+  "fixtures_needed": [
+   "SCAD simple",
+   "SCAD con include de archivo subido en el mismo trabajo",
+   "SCAD con import('/etc/passwd') y con '..' (debe fallar, 16.5)"
+  ],
+  "notes": "Análisis previo rechaza include, use, import y surface con rutas absolutas o '..'; cwd = directorio del trabajo, entorno vacío, prlimit, sin red; prueba 16.4 de leer /etc/hostname."
+ },
+ {
+  "slug_es": "scad-a-3mf",
+  "slug_en": "scad-to-3mf",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "OpenSCAD (externo) + lib3mf para validar",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_SCAD_A_3MF_ENABLED",
+  "options_summary": "Igual que scad-a-stl; colores de color() en 3MF si la versión de OpenSCAD los exporta.",
+  "license_constraints": "OpenSCAD GPL externo.",
+  "new_dependencies": [
+   "lib3mf"
+  ],
+  "system_binaries": [
+   "openscad"
+  ],
+  "fixtures_needed": [
+   "SCAD con color()"
+  ],
+  "notes": "La exportación 3MF de OpenSCAD depende de que esté compilado con lib3mf: comprobar en la imagen."
+ },
+ {
+  "slug_es": "dwg-a-dxf",
+  "slug_en": "dwg-to-dxf",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "LibreDWG dwg2dxf (GPL, programa externo)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "cad",
+  "flags": "TOOL_DWG_A_DXF_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: versión DXF de salida [R2000] | R2007 | R2013 (verificar las que admite dwg2dxf).",
+  "license_constraints": "LibreDWG GPL-3: solo como programa externo (11); la imagen es privada (3.3).",
+  "new_dependencies": [],
+  "system_binaries": [
+   "dwg2dxf (LibreDWG; probablemente compilado en una etapa propia de workers/Dockerfile con versión y SHA-256 fijados)"
+  ],
+  "fixtures_needed": [
+   "DWG R2000, R2007, R2013 y R2018 con licencia que permita guardarlo (anotar en tests/fixtures/SOURCES.md)"
+  ],
+  "notes": "Calidad irregular: avisar al usuario (7.19). LibreDWG tiene muchos CVE de fuzzing: prlimit estricto y gVisor recomendado. Conseguir DWG de prueba es difícil (LibreDWG no escribe DWG fiable): si no hay muestra válida, desactivar (01, regla 8)."
+ },
+ {
+  "slug_es": "dwg-a-pdf",
+  "slug_en": "dwg-to-pdf",
+  "phase": "F7",
+  "spec_section": "7.19 en 07-7-catalogo-completo-de-herramientas.md (ruta de dxf-a-pdf de 7.3)",
+  "engine": "LibreDWG (a DXF) + ruta existente de dxf-a-pdf (ezdxf con backend SVG, tools.media.dxf)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "cad (dxf-a-pdf vive en media)",
+  "flags": "TOOL_DWG_A_PDF_ENABLED",
+  "options_summary": "Las de dxf-a-pdf del registro (papel, orientacion, monocromo, margenes_mm).",
+  "license_constraints": "ezdxf sin el extra [draw] (instala PyMuPDF, AGPL) (11).",
+  "new_dependencies": [
+   "ezdxf==1.4.5 en la imagen cad si se reutiliza en proceso"
+  ],
+  "system_binaries": [
+   "dwg2dxf"
+  ],
+  "fixtures_needed": [
+   "DWG"
+  ],
+  "notes": "Decidir entre encadenar trabajos cad → media o instalar ezdxf y el renderizador de dxf-a-pdf también en worker-cad."
+ },
+ {
+  "slug_es": "visor-3d",
+  "slug_en": "3d-viewer",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md; 2 (three.js en Web Workers) en 02-2-stack-obligatorio.md",
+  "engine": "three.js en el navegador (STLLoader, OBJLoader+MTLLoader, 3MFLoader, PLYLoader, GLTFLoader+DRACOLoader, AMFLoader)",
+  "runs_on": "browser",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "ninguno",
+  "flags": "TOOL_VISOR_3D_ENABLED",
+  "options_summary": "Sin Anexo A. Formatos STL, OBJ, 3MF, PLY, GLB, AMF; propuesta: órbita, rejilla y medidas, alambre, sección, color, captura PNG.",
+  "license_constraints": "three.js MIT; decodificador Draco Apache-2.0 servido desde el propio dominio (CSP, sin CDN); 3MFLoader usa fflate (MIT, ya dependencia).",
+  "new_dependencies": [
+   "three"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL, OBJ+MTL, 3MF, PLY, GLB y AMF"
+  ],
+  "notes": "Componente de visor reutilizable para vista previa de resultados de todas las herramientas 3D. Comprobar CSP para wasm del decodificador Draco."
+ },
+ {
+  "slug_es": "visor-gcode",
+  "slug_en": "gcode-viewer",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "three.js en el navegador + parser de G-code propio en TypeScript",
+  "runs_on": "browser",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "ninguno",
+  "flags": "TOOL_VISOR_GCODE_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: capa actual y rango, desplazamientos visibles, color por tipo de extrusión/velocidad/herramienta, reproducción.",
+  "license_constraints": "three.js MIT; no copiar visores AGPL (PrusaSlicer, OrcaSlicer).",
+  "new_dependencies": [
+   "three"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "G-code de PrusaSlicer, Cura y OrcaSlicer",
+   "bgcode (si se admite decodificándolo en el navegador)"
+  ],
+  "notes": "GCodeLoader de three.js es básico; para archivos grandes hacen falta buffers por capa en un Web Worker. Abrir bgcode en el navegador exige portar Heatshrink y MeatPack a TS."
+ },
+ {
+  "slug_es": "reparar-stl",
+  "slug_en": "repair-stl",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md; 16.5 (deja estanca una malla con huecos)",
+  "engine": "manifold3d y trimesh",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_REPARAR_STL_ENABLED",
+  "options_summary": "7.20: huecos, normales invertidas, aristas no manifold y autointersecciones (cada una activable; valores por defecto a decidir); informe antes/después.",
+  "license_constraints": "manifold3d Apache-2.0. Trampas: pymeshfix (MeshFix, GPL), pymeshlab (GPL-3), bindings de CGAL (GPL) prohibidos como paquete instalado.",
+  "new_dependencies": [
+   "manifold3d",
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL con huecos",
+   "STL con normales invertidas",
+   "STL no manifold",
+   "STL con autointersecciones"
+  ],
+  "notes": "Las autointersecciones se resuelven con la unión booleana de manifold3d, que exige una entrada casi estanca: cerrar huecos primero."
+ },
+ {
+  "slug_es": "reducir-poligonos",
+  "slug_en": "reduce-polygons",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "fast-simplification (decimación cuádrica)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_REDUCIR_POLIGONOS_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: reducción [50] % o número de triángulos objetivo, conservar bordes [sí].",
+  "license_constraints": "fast-simplification MIT.",
+  "new_dependencies": [
+   "fast-simplification"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL de 1 millón de triángulos"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "escalar-modelo-3d",
+  "slug_en": "scale-3d-model",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh y manifold3d",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_ESCALAR_MODELO_3D_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: porcentaje uniforme [100], por eje o a una dimensión objetivo en mm.",
+  "license_constraints": "MIT/Apache.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL binario"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "cambiar-unidades-stl",
+  "slug_en": "change-stl-units",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_CAMBIAR_UNIDADES_STL_ENABLED",
+  "options_summary": "Unidades de origen y destino (mm, cm, m, pulgadas), con detección sugerida por tamaño.",
+  "license_constraints": "trimesh MIT.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL en pulgadas"
+  ],
+  "notes": "STL no guarda unidades: sugerir la probable por la caja envolvente."
+ },
+ {
+  "slug_es": "cortar-modelo-3d",
+  "slug_en": "cut-3d-model",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md (por un plano)",
+  "engine": "manifold3d (split_by_plane) y trimesh",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_CORTAR_MODELO_3D_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: plano X/Y/Z y posición en mm o %, conservar [ambas partes], cerrar cortes [sí]; **Extra** espigas de unión.",
+  "license_constraints": "manifold3d Apache-2.0.",
+  "new_dependencies": [
+   "manifold3d"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL estanco"
+  ],
+  "notes": "Necesita el visor (visor-3d) para elegir el plano visualmente."
+ },
+ {
+  "slug_es": "separar-piezas",
+  "slug_en": "split-model-parts",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh (split por componentes conexos) y manifold3d",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_SEPARAR_PIEZAS_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: descartar piezas menores de N triángulos, salida un archivo por pieza en ZIP.",
+  "license_constraints": "MIT/Apache.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL con varias piezas"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "unir-modelos",
+  "slug_en": "merge-3d-models",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh y manifold3d (unión booleana)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_UNIR_MODELOS_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: [juntar sin fusionar] | unión booleana, disposición [conservar posiciones] | distribuir en la cama.",
+  "license_constraints": "manifold3d Apache-2.0.",
+  "new_dependencies": [
+   "manifold3d",
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "Dos STL que se solapan"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "analizar-stl",
+  "slug_en": "stl-analyzer",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "trimesh",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_ANALIZAR_STL_ENABLED",
+  "options_summary": "7.20: estanqueidad, dimensiones, volumen, superficie y estimación de filamento en gramos y metros por material (PLA, PETG, ABS, TPU) y relleno, marcada como estimación. Propuesta: diámetro [1,75] mm, relleno [20] %, perímetros.",
+  "license_constraints": "trimesh MIT.",
+  "new_dependencies": [
+   "trimesh"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL de volumen conocido (cubo de 20 mm)"
+  ],
+  "notes": "Densidades a fijar en DECISIONS (p. ej. PLA 1,24, PETG 1,27, ABS 1,04, TPU 1,21 g/cm³); la página dice que es una estimación."
+ },
+ {
+  "slug_es": "comprimir-glb",
+  "slug_en": "compress-glb",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md; 2 en 02-2-stack-obligatorio.md",
+  "engine": "glTF Transform con draco3d en el navegador",
+  "runs_on": "browser",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "ninguno",
+  "flags": "TOOL_COMPRIMIR_GLB_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: Draco con bits de cuantización [posición 14, normal 10, UV 12], deduplicar, soldar, texturas a WebP (jSquash) y tamaño máximo; **Extra** meshopt.",
+  "license_constraints": "glTF Transform MIT; draco3dgltf Apache-2.0 (11, paridad PDF24); meshoptimizer MIT si se usa.",
+  "new_dependencies": [
+   "@gltf-transform/core",
+   "@gltf-transform/functions",
+   "@gltf-transform/extensions",
+   "draco3dgltf"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "GLB con texturas"
+  ],
+  "notes": "En Web Worker; nunca devolver un archivo mayor."
+ },
+ {
+  "slug_es": "render-modelo-3d",
+  "slug_en": "render-3d-model",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "three.js en el navegador (miniatura PNG)",
+  "runs_on": "browser",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "ninguno",
+  "flags": "TOOL_RENDER_MODELO_3D_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: tamaño [1024] px, ángulo (isométrico, frontal, superior), fondo transparente, color del material.",
+  "license_constraints": "three.js MIT.",
+  "new_dependencies": [
+   "three"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "STL, GLB, 3MF"
+  ],
+  "notes": "OffscreenCanvas con WebGL en worker cuando el navegador lo permite; alternativa en el hilo principal."
+ },
+ {
+  "slug_es": "svg-a-stl",
+  "slug_en": "svg-to-stl",
+  "phase": "F7",
+  "spec_section": "7.20 (generadores) en 07-7-catalogo-completo-de-herramientas.md; 12.3 (SVG en servidor solo con imágenes data:)",
+  "engine": "shapely, trimesh y manifold3d (extrusión)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh (7.20 no fija grupo: decidir)",
+  "flags": "TOOL_SVG_A_STL_ENABLED",
+  "options_summary": "7.20: altura de extrusión elegible (propuesta [5] mm); tamaño objetivo; base opcional.",
+  "license_constraints": "shapely BSD-3 (GEOS LGPL); triangulación con mapbox-earcut (ISC), nunca el paquete triangle (no comercial).",
+  "new_dependencies": [
+   "shapely",
+   "mapbox-earcut",
+   "svgelements o svg.path (verificar licencia)",
+   "defusedxml"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "SVG con trayectorias, huecos y texto convertido",
+   "SVG con referencia externa (debe rechazarse)"
+  ],
+  "notes": "Ninguna referencia a archivos ni URL en el SVG (12.3)."
+ },
+ {
+  "slug_es": "dxf-a-stl",
+  "slug_en": "dxf-to-stl",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "ezdxf (lectura) + shapely + trimesh/manifold3d",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_DXF_A_STL_ENABLED",
+  "options_summary": "Altura de extrusión elegible; capas a incluir; unidades del DXF ($INSUNITS).",
+  "license_constraints": "ezdxf MIT sin [draw] (instala PyMuPDF, AGPL; 11).",
+  "new_dependencies": [
+   "ezdxf==1.4.5"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "DXF 2D con polilíneas cerradas y arcos"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "imagen-a-stl",
+  "slug_en": "image-to-stl",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "vtracer (vectorizar) + shapely + trimesh (extruir)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_IMAGEN_A_STL_ENABLED",
+  "options_summary": "Altura de extrusión; umbral/colores; tamaño en mm; invertir.",
+  "license_constraints": "vtracer MIT (ya usado en media).",
+  "new_dependencies": [
+   "vtracer==0.6.15",
+   "pillow"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "PNG de logotipo",
+   "JPG de foto"
+  ],
+  "notes": "IMAGE_MAX_PIXELS antes de decodificar (12.3)."
+ },
+ {
+  "slug_es": "logo-a-stl",
+  "slug_en": "logo-to-stl",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "vtracer + extrusión (mismo motor que imagen-a-stl)",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_LOGO_A_STL_ENABLED",
+  "options_summary": "Igual que imagen-a-stl, con alturas por color (multicolor) como propuesta.",
+  "license_constraints": "vtracer MIT.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "PNG de logotipo con 2–3 colores"
+  ],
+  "notes": "Diferenciar el contenido 8.2 de imagen-a-stl para no duplicar."
+ },
+ {
+  "slug_es": "texto-a-stl",
+  "slug_en": "text-to-stl",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md; A.0 (fuentes Noto OFL)",
+  "engine": "fontTools (contornos) + shapely + extrusión",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_TEXTO_A_STL_ENABLED",
+  "options_summary": "Texto, fuente Sans | Serif | Mono (Noto, A.0) o fuente subida, tamaño, altura, base/placa, alineación.",
+  "license_constraints": "fontTools MIT; fuentes Noto OFL-1.1.",
+  "new_dependencies": [
+   "fonttools",
+   "shapely"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "TTF y OTF (CFF)"
+  ],
+  "notes": "Curvas cuadráticas y cúbicas a polilíneas; tildes, eñes y escrituras no latinas."
+ },
+ {
+  "slug_es": "litofania",
+  "slug_en": "lithophane-maker",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Pillow/numpy (mapa de alturas) + trimesh",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_LITOFANIA_ENABLED",
+  "options_summary": "7.20: plana, curva o cilíndrica. Propuesta: ancho [100] mm, grosor mínimo [0,8] y máximo [3] mm, resolución (píxeles por mm), marco, positivo/negativo.",
+  "license_constraints": "Pillow HPND/MIT-CMU.",
+  "new_dependencies": [
+   "pillow",
+   "numpy"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "JPG de foto"
+  ],
+  "notes": "Controlar el número de triángulos generado frente a 9.3."
+ },
+ {
+  "slug_es": "mapa-de-alturas-a-stl",
+  "slug_en": "heightmap-to-stl",
+  "phase": "F7",
+  "spec_section": "7.20 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Pillow/numpy + trimesh (relieve)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_MAPA_DE_ALTURAS_A_STL_ENABLED",
+  "options_summary": "Propuesta: tamaño en mm, altura máxima y de base, suavizado, invertir.",
+  "license_constraints": "Pillow.",
+  "new_dependencies": [
+   "pillow",
+   "numpy"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "PNG de 16 bits en escala de grises"
+  ],
+  "notes": "Comparte motor con litofania."
+ },
+ {
+  "slug_es": "gcode-a-bgcode",
+  "slug_en": "gcode-to-bgcode",
+  "phase": "F7",
+  "spec_section": "7.21 en 07-7-catalogo-completo-de-herramientas.md; 16.5 (bgcode → gcode → bgcode con archivos reales de PrusaSlicer); 11 (libbgcode AGPL)",
+  "engine": "Implementación propia según la especificación publicada por Prusa: bloques, CRC32, DEFLATE (zlib), Heatshrink y MeatPack",
+  "runs_on": "server",
+  "complexity": "L",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_GCODE_A_BGCODE_ENABLED",
+  "options_summary": "Sin Anexo A. Propuesta: compresión de metadatos [DEFLATE], de G-code [Heatshrink 12/4 + MeatPack con comentarios] | Heatshrink 11/4 | ninguna, conservar miniaturas (PNG, JPG, QOI).",
+  "license_constraints": "No copiar código de libbgcode (AGPL, 11) ni usar pybgcode; Heatshrink original es ISC (heatshrink2 en PyPI: verificar licencia) o implementación propia; MeatPack propio desde su descripción.",
+  "new_dependencies": [
+   "heatshrink2 (opcional, verificar ISC)"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "G-code y bgcode de PrusaSlicer generados con scripts/fixtures (PrusaSlicer se puede usar para fixtures, 01)"
+  ],
+  "notes": "Motor bgcode común (lectura y escritura) es L. Prueba de ida y vuelta byte a byte frente a archivos reales."
+ },
+ {
+  "slug_es": "bgcode-a-gcode",
+  "slug_en": "bgcode-to-gcode",
+  "phase": "F7",
+  "spec_section": "7.21 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Implementación propia (mismo motor bgcode)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_BGCODE_A_GCODE_ENABLED",
+  "options_summary": "Propuesta: incluir miniaturas como comentarios [sí], incluir metadatos [sí].",
+  "license_constraints": "Igual que gcode-a-bgcode.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "bgcode de PrusaSlicer con todas las compresiones"
+  ],
+  "notes": "Comprobar CRC de cada bloque y rechazar archivos dañados con un error claro."
+ },
+ {
+  "slug_es": "analizar-gcode",
+  "slug_en": "gcode-analyzer",
+  "phase": "F7",
+  "spec_section": "7.21 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Parser propio (comentarios de PrusaSlicer, OrcaSlicer, Bambu Studio, Cura, Simplify3D)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_ANALIZAR_GCODE_ENABLED",
+  "options_summary": "7.21: extrae tiempo, filamento, temperaturas, capas y laminador leyendo los comentarios; acepta G-code y bgcode.",
+  "license_constraints": "Propio.",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "G-code de PrusaSlicer, Cura, OrcaSlicer y Bambu Studio",
+   "bgcode"
+  ],
+  "notes": "Sin comentarios, estimar con una pasada de movimientos y marcarlo como estimación."
+ },
+ {
+  "slug_es": "gcode-a-imagen",
+  "slug_en": "gcode-to-image",
+  "phase": "F7",
+  "spec_section": "7.21 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Parser propio + Pillow (PNG) o SVG propio",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_GCODE_A_IMAGEN_ENABLED",
+  "options_summary": "7.21: trayectorias por capa en PNG o SVG. Propuesta: capas [todas en ZIP] | rango | una, tamaño, color por tipo, mostrar desplazamientos [no].",
+  "license_constraints": "Propio.",
+  "new_dependencies": [
+   "pillow"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "G-code de varias capas"
+  ],
+  "notes": "Limitar número de capas/archivos de salida."
+ },
+ {
+  "slug_es": "extraer-miniatura-gcode",
+  "slug_en": "extract-gcode-thumbnail",
+  "phase": "F7",
+  "spec_section": "7.21 en 07-7-catalogo-completo-de-herramientas.md",
+  "engine": "Parser propio (bloques thumbnail en comentarios base64 y bloques de miniatura de bgcode)",
+  "runs_on": "server",
+  "complexity": "M",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_EXTRAER_MINIATURA_GCODE_ENABLED",
+  "options_summary": "Propuesta: todas las miniaturas en ZIP o la mayor; salida PNG (convertir QOI y JPG).",
+  "license_constraints": "Decodificador QOI propio o paquete MIT (verificar).",
+  "new_dependencies": [
+   "pillow"
+  ],
+  "system_binaries": [],
+  "fixtures_needed": [
+   "G-code con thumbnail PNG, JPG y QOI",
+   "bgcode con miniaturas"
+  ],
+  "notes": ""
+ },
+ {
+  "slug_es": "extraer-gcode-3mf",
+  "slug_en": "extract-gcode-from-3mf",
+  "phase": "F7",
+  "spec_section": "7.21 en 07-7-catalogo-completo-de-herramientas.md; 12.3 (.gcode.3mf es contenedor ZIP)",
+  "engine": "ZIP y parser propio",
+  "runs_on": "server",
+  "complexity": "S",
+  "already_exists": false,
+  "worker_group": "mesh",
+  "flags": "TOOL_EXTRAER_GCODE_3MF_ENABLED",
+  "options_summary": "7.21: G-code y miniaturas de un .gcode.3mf de Bambu Lab; propuesta: por placa, incluir slice_info.",
+  "license_constraints": "Propio; no usar código de Bambu Studio (AGPL).",
+  "new_dependencies": [],
+  "system_binaries": [],
+  "fixtures_needed": [
+   ".gcode.3mf de Bambu Studio con varias placas (generar con Bambu Studio en scripts/fixtures)"
+  ],
+  "notes": "zipguard obligatorio (rutas, enlaces, entradas, tamaño, relación de compresión)."
+ }
+]
