@@ -1017,6 +1017,7 @@
   "title": "Cierre técnico de F3",
   "tools": [],
   "cross_cutting": [
+   "Lighthouse CI en GitHub (run 43562441822, 14/11/2026) da 0,89 de rendimiento en /es/pdf-a-word y /es/resumir-pdf (umbral 0,9, 1.3): bajar JS y CSS de la plantilla de herramienta de servidor y del panel de IA (carga diferida del formulario y del panel, sin bloquear el render) hasta 0,9 o más con margen, sin bajar el umbral ni quitar URL.",
    "Todas las pruebas de 16.3 en verde con las 12 herramientas de F3 más las dos de 7.10; prueba de contrato y Playwright de todas",
    "Contenido 8.2 de las 12 de F3 (las de F3-C, D y E en sus lotes; las seis anteriores en G2-C10)",
    "Revisión externa exigente de 01-1 regla 9 (seguridad, licencias, accesibilidad, rendimiento, disco y presupuesto de IA) y corrección",

@@ -171,6 +171,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
+      # Construir todas las imágenes (libheif desde el código, modelos) no cabe en los 14 GB libres del runner:
+      # se quitan los SDK preinstalados que este trabajo no usa.
+      - name: Liberar disco
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          docker system prune -af --volumes
+          df -h /
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
