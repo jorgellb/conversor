@@ -63,8 +63,15 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Con Google Drive y Dropbox activados: abrir un PDF desde cada uno y guardar un resultado en cada uno.
 - [ ] Copia ejecutada por la tarea de Coolify, subida con restic, y restauración probada en una base vacía.
 - [ ] `CF-Connecting-IP` falsificado contra la IP del origen: ignorado (los puertos 80/443 solo aceptan Cloudflare).
-- [ ] Lighthouse móvil ≥ 90 en rendimiento y accesibilidad en la portada y en `comprimir-pdf` (1.3).
-- [ ] Prueba de carga k6 (`tests/load/k6.js`) y valores de concurrencia anotados en `OPERATIONS.md`.
+- [ ] Lighthouse móvil ≥ 90 en rendimiento y accesibilidad en la portada y en `comprimir-pdf` con el dominio real, Cloudflare
+      y Umami (1.3); la CI ya lo mide contra `next start` en cada cambio (D-145).
+- [ ] Prueba de carga k6 con los pasos de `OPERATIONS.md` (límites por IP subidos y claves de prueba de Turnstile solo
+      durante la prueba, `tests/load/recursos.sh` en el servidor) y resultados y concurrencias anotados en
+      `OPERATIONS.md` (D-146). Volver a dejar `RATE_LIMIT_PER_MINUTE`, `ANON_TOKENS_PER_IP_DAY` y las claves de Turnstile
+      de producción al terminar.
+- [ ] Primera ejecución de G0-B en la CI: Lighthouse en el job `web`, regresión visual de la plantilla con el Chromium de
+      Playwright y de los PDF en el job `python`; si una captura falla solo por el suavizado del texto, regenerar las
+      referencias en la CI con `--update-snapshots` y revisarlas antes de confirmarlas (D-144).
 - [ ] escaner-pdf en un Android con Chrome y en un iPhone con Safari: permiso de cámara, borde detectado en vivo,
       varias páginas, filtro Documento con sombras reales, PDF descargado, instalación como aplicación y uso sin conexión
       tras la primera visita; con OCR al terminar, el PDF con texto.

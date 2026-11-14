@@ -1,0 +1,10 @@
+{
+  "_comentario": "Prueba de carga de 16.1. La leen tests/load/k6.js y tests/test_carga_k6.py (que comprueba que sigue a 16.1, al registro y a los umbrales de espera de 4.5). Las muestras salen de scripts/fixtures/generate.py.",
+  "comprimir": { "herramienta": "comprimir-pdf", "muestra": "fotos.pdf", "opciones": { "nivel": "equilibrado" }, "trabajos_simultaneos": 50 },
+  "audio": { "herramienta": "ogg-a-mp3", "muestra": "voz.ogg", "opciones": { "calidad": "192" }, "trabajos_simultaneos": 10 },
+  "pico": { "herramienta": "comprimir-pdf", "muestra": "texto.pdf", "opciones": { "nivel": "sin_perdida" }, "trabajos": 300, "minutos": 5, "clientes": 100, "empieza": "30s" },
+  "paginas": { "rutas": ["/es", "/es/comprimir-pdf", "/en/compress-pdf", "/es/ogg-a-mp3"], "clientes": 5, "minutos": 6 },
+  "umbrales": { "pagina_ms": 1000, "espera_cola_s": { "pdf": 120, "av": 300 } },
+  "sondeo_s": 2,
+  "duracion_maxima": "15m"
+}

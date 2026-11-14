@@ -10,6 +10,7 @@ __pycache__/
 .pytest_cache/
 test-results/
 playwright-report/
+.lighthouseci/
 *.tsbuildinfo
 # Entorno y secretos: nunca en el repositorio (18)
 .env

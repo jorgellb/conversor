@@ -85,7 +85,8 @@
   --color-brand-50: #fff4ec;
   --color-brand-100: #ffe3cf;
   --color-brand-500: #e67610;
-  --color-brand-600: #c9620a;
+  /* 4,9:1 con el blanco (texto de los botones y del logotipo): WCAG AA para texto normal (8.3, D-145). */
+  --color-brand-600: #b35609;
   --color-brand-700: #a14d07;
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", sans-serif;
 }
@@ -112,6 +113,17 @@
 body {
   background: var(--bg);
   color: var(--fg);
+}
+
+/* Nombre del sitio en la cabecera: en oscuro, el naranja claro (6,2:1 sobre el fondo) en vez del de los botones. */
+.brand-link {
+  color: var(--color-brand-600);
+}
+
+@media (prefers-color-scheme: dark) {
+  .brand-link {
+    color: var(--color-brand-500);
+  }
 }
 
 /* En la capa «components» para que las utilidades de Tailwind (w-16, px-2…) puedan ajustarlas. */

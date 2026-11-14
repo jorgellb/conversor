@@ -45,6 +45,24 @@ actualiza también `CLOUDFLARE_IP_RANGES` (o `packages/core/core/clientip.py`).
 
 Pendiente de la prueba de carga k6 en el VPS (16.1). Valores por defecto de 5.4 para 8 vCPU.
 
+## Prueba de carga (16.1, D-146)
+
+Escenario en `tests/load/escenarios.json` (comprobado por `tests/test_carga_k6.py`): 50 comprimir-pdf y 10 ogg-a-mp3 a
+la vez, y un pico de 300 trabajos ligeros en 5 minutos desde 100 clientes, cada uno con su sesión anónima. Pasa si las
+páginas siguen por debajo de 1 s (p99), la espera en cola no supera `QUEUE_MAX_WAIT_SECONDS_<GRUPO>` (120 s en pdf y
+300 s en av) porque antes aparece `QUEUE_FULL`, y no hay trabajos fallidos, llegadas descartadas ni `RATE_LIMITED`.
+
+1. Muestras: `python scripts/fixtures/generate.py /tmp/muestras` (necesita FFmpeg para `voz.ogg`).
+2. Todos los clientes virtuales salen de una IP: durante la prueba, en Coolify, `RATE_LIMIT_PER_MINUTE=100000`,
+   `ANON_TOKENS_PER_IP_DAY=1000` y las claves de prueba de Turnstile de `.env.example` (`TURNSTILE_SITE_KEY` y
+   `TURNSTILE_SECRET_KEY`); al terminar, se vuelven a poner los valores de producción. Mejor fuera de horas de uso.
+3. En el servidor, mientras dura la prueba: `DATOS=/srv/files sh tests/load/recursos.sh recursos-k6.csv` (CPU y RAM por
+   contenedor con `docker stats`, y disco de los archivos con `df`, cada 5 s; se para con Ctrl+C).
+4. Desde otra máquina: `k6 run -e API=https://api.{{DOMINIO}} -e UPLOAD=https://upload.{{DOMINIO}}/files/
+   -e WEB=https://{{DOMINIO}} -e FIXTURES=/tmp/muestras -e SALIDA=resultados-k6.json tests/load/k6.js`.
+5. Anotar aquí el resumen que imprime k6 (páginas, espera por grupo, tiempos, `QUEUE_FULL`), el máximo de CPU y RAM de
+   cada worker y el disco de `recursos-k6.csv`, y ajustar las concurrencias de 5.4 si sobra o falta CPU.
+
 ## Perfiles de 8 y 16 vCPU (5.4, D-138)
 
 `docker-compose.coolify.yml` trae el perfil de 8 vCPU y 32 GB (suma de `mem_limit` de 36,75 GB, dentro del 15 % sobre la

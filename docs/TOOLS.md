@@ -63,8 +63,8 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `crear-favicon` / `favicon-generator` | navegador | — | light | F5 | activa | png, jpg, webp, svg → ico, png, zip | redactado, sin revisar |
 | `quitar-metadatos-foto` / `remove-photo-metadata` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp, zip | redactado, sin revisar |
 | `imagen-a-base64` / `image-to-base64` | navegador | — | light | F5 | activa | jpg, png, webp, gif, svg, avif, bmp, ico → txt, zip | redactado, sin revisar |
-| `leer-codigo-qr` / `qr-code-reader` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif, tiff, svg, pdf → csv | pendiente |
-| `generar-codigo-qr` / `qr-code-generator` | navegador | — | light | F5 | activa | — → png, svg, pdf | pendiente |
+| `leer-codigo-qr` / `qr-code-reader` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif, tiff, svg, pdf → csv | redactado, sin revisar |
+| `generar-codigo-qr` / `qr-code-generator` | navegador | — | light | F5 | activa | — → png, svg, pdf | redactado, sin revisar |
 | `crear-collage` / `collage-maker` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif → pdf, jpg, png, zip | incompleto |
 | `comprimir-pdf` / `compress-pdf` | servidor | pdf | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `proteger-pdf` / `protect-pdf` | servidor | pdf | light | F2 | activa | pdf → pdf, zip | redactado, sin revisar |
@@ -150,13 +150,13 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `eml-a-pdf` / `eml-to-pdf` | servidor | media | light | F2 | activa | eml → pdf, zip | redactado, sin revisar |
 | `msg-a-pdf` / `msg-to-pdf` | servidor | media | light | F2 | activa | msg → pdf, zip | redactado, sin revisar |
 | `dxf-a-pdf` / `dxf-to-pdf` | servidor | media | light | F2 | activa | dxf → pdf, zip | redactado, sin revisar |
-| `heic-a-jpg` / `heic-to-jpg` | servidor | media | light | F5 | apagada | heic → jpg, zip | pendiente |
-| `heic-a-png` / `heic-to-png` | servidor | media | light | F5 | apagada | heic → png, zip | pendiente |
-| `raw-a-jpg` / `raw-to-jpg` | servidor | media | light | F5 | activa | cr2, nef, arw, dng → jpg, zip | pendiente |
-| `psd-a-png` / `psd-to-png` | servidor | media | light | F5 | activa | psd, psb → png, zip | pendiente |
-| `png-a-svg` / `png-to-svg` | servidor | media | light | F5 | activa | png → svg, zip | pendiente |
-| `jpg-a-svg` / `jpg-to-svg` | servidor | media | light | F5 | activa | jpg → svg, zip | pendiente |
-| `quitar-fondo` / `remove-background` | servidor | media | heavy | F5 | activa | jpg, png, webp → png, webp, jpg, zip | pendiente |
+| `heic-a-jpg` / `heic-to-jpg` | servidor | media | light | F5 | apagada | heic → jpg, zip | redactado, sin revisar |
+| `heic-a-png` / `heic-to-png` | servidor | media | light | F5 | apagada | heic → png, zip | redactado, sin revisar |
+| `raw-a-jpg` / `raw-to-jpg` | servidor | media | light | F5 | activa | cr2, nef, arw, dng → jpg, zip | redactado, sin revisar |
+| `psd-a-png` / `psd-to-png` | servidor | media | light | F5 | activa | psd, psb → png, zip | redactado, sin revisar |
+| `png-a-svg` / `png-to-svg` | servidor | media | light | F5 | activa | png → svg, zip | redactado, sin revisar |
+| `jpg-a-svg` / `jpg-to-svg` | servidor | media | light | F5 | activa | jpg → svg, zip | redactado, sin revisar |
+| `quitar-fondo` / `remove-background` | servidor | media | heavy | F5 | activa | jpg, png, webp → png, webp, jpg, zip | redactado, sin revisar |
 | `resumir-pdf` / `summarize-pdf` | servidor | ai | ai | F3 | activa | pdf → docx, txt, md | redactado, sin revisar |
 | `chat-pdf` / `chat-with-pdf` | servidor | ai | ai | F3 | activa | pdf → pantalla | redactado, sin revisar |
 | `generador-de-preguntas` / `question-generator` | servidor | ai | ai | F3 | activa | pdf → docx, txt | redactado, sin revisar |

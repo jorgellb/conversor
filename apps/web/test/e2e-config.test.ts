@@ -6,16 +6,32 @@ import { describe, expect, it } from "vitest";
 const E2E = path.join(import.meta.dirname, "..", "..", "..", "tests", "e2e");
 
 describe("proyectos de Playwright (16.1)", () => {
-  it("cada archivo *.spec.ts de tests/e2e entra en un solo proyecto, también los de F4, F6 y F7", () => {
+  it("cada archivo *.spec.ts de tests/e2e entra en un solo proyecto, también los de F1, F4, F6 y F7", () => {
     const config = readFileSync(path.join(E2E, "playwright.config.ts"), "utf-8");
     const projects = [...config.matchAll(/name: "([a-z]+)", testMatch: \/(.+?)\/,/g)].map((m) => ({ name: m[1], re: new RegExp(m[2]) }));
     expect(projects.map((p) => p.name)).toEqual(["navegador", "servidor"]);
     const specs = readdirSync(E2E).filter((f) => f.endsWith(".spec.ts"));
-    for (const file of [...specs, "firmas-f4.spec.ts", "datos-f6.spec.ts", "mallas-f7.spec.ts"]) {
+    for (const file of [...specs, "flujos-f1.spec.ts", "plantilla-f1.spec.ts", "firmas-f4.spec.ts", "datos-f6.spec.ts", "mallas-f7.spec.ts"]) {
       const owners = projects.filter((p) => p.re.test(file)).map((p) => p.name);
       expect(owners, file).toHaveLength(1);
     }
     expect(projects[0].re.test("servidor.spec.ts")).toBe(false);
+  });
+
+  it("regresión visual de 16.1: referencias sin sufijo del sistema, con tolerancia, y una por cada captura", () => {
+    const config = readFileSync(path.join(E2E, "playwright.config.ts"), "utf-8");
+    expect(config).toContain('snapshotPathTemplate: "{testDir}/__capturas__/{testFilePath}/{arg}{ext}"');
+    expect(config).toMatch(/toHaveScreenshot: \{ maxDiffPixelRatio: 0\.\d+/);
+    for (const file of readdirSync(E2E).filter((f) => f.endsWith(".spec.ts"))) {
+      const source = readFileSync(path.join(E2E, file), "utf-8");
+      if (!source.includes("toHaveScreenshot(")) continue;
+      // Los nombres se forman con `${pagina}-${pantalla}.png` a partir de PAGES y VIEWPORTS de la propia prueba.
+      const pages = [...source.matchAll(/\{ name: "([a-z0-9-]+)", path: "/g)].map((m) => m[1]);
+      const viewports = [...source.matchAll(/\{ name: "([a-z]+)", use: \{/g)].map((m) => m[1]);
+      expect(pages.length * viewports.length, file).toBeGreaterThan(0);
+      const refs = readdirSync(path.join(E2E, "__capturas__", file)).sort();
+      expect(refs, file).toEqual(pages.flatMap((p) => viewports.map((v) => `${p}-${v}.png`)).sort());
+    }
   });
 
   it("la CI arranca la web con las URL de la API, tus y descargas que simulan las pruebas (D-141)", () => {

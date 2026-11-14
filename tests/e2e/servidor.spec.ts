@@ -5,13 +5,27 @@ import path from "node:path";
 
 import { expect, test, type Page } from "@playwright/test";
 
-// Muestras generadas con scripts/fixtures/generate.py (Pillow, pikepdf, FFmpeg y LibreOffice si está).
+// Muestras generadas con scripts/fixtures/generate.py (Pillow, pikepdf, FFmpeg y LibreOffice si está). En la CI las
+// genera antes el job e2e-compose (E2E_FIXTURES); si no, se usa el Python de .venv, que tiene esas dependencias.
 const FIXTURES = process.env.E2E_FIXTURES ?? path.join(tmpdir(), "conversor-e2e");
+const PYTHON = process.env.PYTHON ?? (existsSync(".venv/bin/python") ? ".venv/bin/python" : "python3");
 test.beforeAll(() => {
   if (!existsSync(path.join(FIXTURES, "texto.pdf"))) {
-    execFileSync("python3", ["-c", `import sys; sys.path.insert(0, "scripts/fixtures"); from generate import generate; from pathlib import Path; generate(Path(${JSON.stringify(FIXTURES)}))`], { stdio: "inherit" });
+    execFileSync(PYTHON, ["-c", `import sys; sys.path.insert(0, "scripts/fixtures"); from generate import generate; from pathlib import Path; generate(Path(${JSON.stringify(FIXTURES)}))`], { stdio: "inherit" });
   }
 });
+
+/** Enlace de confirmación del correo que recibe Mailpit (puede tardar unos segundos en llegar). */
+async function verificationLink(page: Page, email: string): Promise<string> {
+  let id = "";
+  await expect.poll(async () => {
+    const mail = await (await page.request.get(`http://localhost:8025/api/v1/search?query=to:${encodeURIComponent(email)}`)).json();
+    id = mail.messages?.[0]?.ID ?? "";
+    return id;
+  }, { timeout: 30_000 }).not.toBe("");
+  const message = await (await page.request.get(`http://localhost:8025/api/v1/message/${id}`)).json();
+  return /https?:\/\/\S+/.exec(message.Text)![0];
+}
 
 async function runServerTool(page: Page, slug: string, files: string[]) {
   await page.goto(`/es/${slug}`);
@@ -65,15 +79,12 @@ test("pago con FakePaymentProvider", async ({ page }) => {
   await page.goto("/es/registro");
   await page.getByLabel("Correo electrónico").fill(email);
   await page.getByLabel("Contraseña").fill("contrasena-de-prueba");
-  await page.getByRole("button", { name: "Crear cuenta" }).click();
+  await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
   await expect(page.getByText("Te hemos enviado un correo")).toBeVisible();
   // Mailpit: abre el enlace de confirmación.
-  const mail = await (await page.request.get(`http://localhost:8025/api/v1/search?query=to:${encodeURIComponent(email)}`)).json();
-  const message = await (await page.request.get(`http://localhost:8025/api/v1/message/${mail.messages[0].ID}`)).json();
-  const verify = /https?:\/\/\S+/.exec(message.Text)![0];
-  await page.goto(verify);
+  await page.goto(await verificationLink(page, email));
   await page.goto("/es/precios");
-  await page.getByRole("button", { name: "Mensual" }).click();
+  await page.getByRole("button", { name: "Mensual", exact: true }).click();
   await page.waitForURL(/\/es\/cuenta\?pago=ok/);
   await expect(page.getByText("Pago completado")).toBeVisible();
   await expect(page.locator("strong", { hasText: "pro" })).toBeVisible();
@@ -85,17 +96,15 @@ test("chat-pdf con el LLM falso", async ({ page }) => {
   await page.goto("/es/registro");
   await page.getByLabel("Correo electrónico").fill(email);
   await page.getByLabel("Contraseña").fill("contrasena-de-prueba");
-  await page.getByRole("button", { name: "Crear cuenta" }).click();
+  await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
   await expect(page.getByText("Te hemos enviado un correo")).toBeVisible();
-  const mail = await (await page.request.get(`http://localhost:8025/api/v1/search?query=to:${encodeURIComponent(email)}`)).json();
-  const message = await (await page.request.get(`http://localhost:8025/api/v1/message/${mail.messages[0].ID}`)).json();
-  await page.goto(/https?:\/\/\S+/.exec(message.Text)![0]);
+  await page.goto(await verificationLink(page, email));
   await page.goto("/es/chat-pdf");
   await page.locator("[data-chat-file]").setInputFiles(path.join(FIXTURES, "texto.pdf"));
   await page.locator("[data-ai-consent]").check();
-  await page.getByRole("button", { name: "Preparar el documento" }).click();
+  await page.getByRole("button", { name: "Preparar el documento", exact: true }).click();
   await expect(page.locator("[data-chat-ready]")).toBeVisible({ timeout: 120_000 });
   await page.locator("[data-chat-input]").fill("¿Qué dice la primera página?");
-  await page.getByRole("button", { name: "Preguntar" }).click();
+  await page.getByRole("button", { name: "Preguntar", exact: true }).click();
   await expect(page.locator('[data-chat-message="assistant"]').last()).toContainText("Respuesta de prueba", { timeout: 60_000 });
 });

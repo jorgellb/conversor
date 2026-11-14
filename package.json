@@ -17,7 +17,8 @@
     "node": ">=22"
   },
   "devDependencies": {
-    "@playwright/test": "1.64.1",
-    "@cantoo/pdf-lib": "2.11.1"
+    "@cantoo/pdf-lib": "2.11.1",
+    "@lhci/cli": "0.16.1",
+    "@playwright/test": "1.64.1"
   }
 }

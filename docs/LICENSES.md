@@ -11,6 +11,10 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | `@cantoo/pdf-lib`, `@cantoo/fontkit` | MIT | Herramientas PDF en el navegador |
 | `@embedpdf/pdfium` (PDFium en WebAssembly) | MIT (envoltorio); PDFium con su propia licencia BSD/Apache incluida en `LICENSE.pdfium` | Renderizado en el navegador |
 | Noto Sans, Noto Serif y Noto Sans Mono | OFL-1.1 (`apps/web/public/fonts/OFL.txt`) | Texto incrustado en PDF |
+| `@lhci/cli` 0.16.1 y `lighthouse` 13.6.0 | Apache-2.0 | Lighthouse CI en el job `web` (solo desarrollo y CI, no se distribuye; D-145) |
+| `axe-core` 4.14.0 (dependencia de Lighthouse) | MPL-2.0 | Auditoría de accesibilidad de Lighthouse (solo CI) |
+| `sentry` 0.49.0 (CLI de Sentry, dependencia de `@sentry/node` de Lighthouse) | FSL-1.1-Apache-2.0 (código fuente disponible; Apache-2.0 a los dos años) | Arrastrada por Lighthouse; no se ejecuta ni se distribuye, solo está instalada en desarrollo y CI (D-145) |
+| k6 (Grafana) | AGPL-3.0 | Programa externo para la prueba de carga que ejecuta el propietario (16.1); no se instala en el repositorio, en las imágenes ni en la CI |
 | `@uppy/core`, `@uppy/tus`, `tus-js-client` | MIT | Subidas reanudables |
 | `diff-match-patch` 1.0.5 (y `@types/diff-match-patch` 1.0.36, MIT, solo desarrollo) | Apache-2.0 | comparar-pdf en el navegador; versiones exactas (D-140) |
 | OpenCV.js (`@techstark/opencv-js`) | Apache-2.0 | escaner-pdf en el navegador (servido desde `public/opencv/`) |

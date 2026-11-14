@@ -42,9 +42,19 @@ export async function uploadFiles(files: File[], tool: string, token: string, on
     allowedMetaFields: ["filename", "tool"],
   });
   for (const file of files) uppy.addFile({ name: file.name, type: file.type, data: file, meta: { filename: file.name, tool } });
-  uppy.on("progress", (p) => onPercent(p));
+  // Uppy limita la frecuencia del evento «progress» y emite el último aviso con retraso, a veces cuando la subida ya ha
+  // terminado: ese aviso tardío volvía a poner la página en «Subiendo…» y borraba el resultado o la conversación de
+  // chat-pdf. Después de la subida no se atiende ninguno más.
+  let finished = false;
+  const progress = (p: number) => {
+    if (!finished) onPercent(p);
+  };
+  uppy.on("progress", progress);
   signal.addEventListener("abort", () => uppy.cancelAll());
-  const result = await uppy.upload();
+  const result = await uppy.upload().finally(() => {
+    finished = true;
+    uppy.off("progress", progress);
+  });
   const failed = result?.failed ?? [];
   if (failed.length) {
     const body = failed[0].response?.body as { error?: { code?: string; message?: string } } | undefined;

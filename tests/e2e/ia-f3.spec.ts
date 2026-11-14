@@ -121,6 +121,6 @@ test("lote B de F3: formularios de preguntas, fichas, presentación y traducció
   await page.goto("/en/translate-pdf");
   await expect(page.getByRole("heading", { name: "Translate PDF" })).toBeVisible();
   await expect(page.getByLabel("Translate into")).toHaveValue("en");
-  await page.getByText("More options").click();
+  await page.getByText("More options", { exact: true }).click();
   await expect(page.getByLabel("Terms not to translate (one per line)")).toBeVisible();
 });

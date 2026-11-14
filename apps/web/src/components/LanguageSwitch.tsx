@@ -7,7 +7,8 @@ export function LanguageSwitch({ map, label, ariaLabel }: { map: Record<string, 
   const pathname = usePathname() || "/es";
   const target = map[pathname.replace(/\/$/, "")] ?? (pathname.startsWith("/en") ? "/es" : "/en");
   return (
-    <Link href={target} aria-label={ariaLabel} hrefLang={target.slice(1, 3)} className="rounded border px-2 py-1" style={{ borderColor: "var(--line)" }}>
+    // El nombre accesible empieza por el texto visible (WCAG 2.5.3): «English: Cambiar a inglés».
+    <Link href={target} aria-label={`${label}: ${ariaLabel}`} hrefLang={target.slice(1, 3)} className="rounded border px-2 py-1" style={{ borderColor: "var(--line)" }}>
       {label}
     </Link>
   );

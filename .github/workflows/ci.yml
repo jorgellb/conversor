@@ -62,6 +62,12 @@ jobs:
         run: |
           sh infra/embeddings/fetch-model.sh "$RUNNER_TEMP/embeddings"
           echo "EMBEDDINGS_HOME=$RUNNER_TEMP/embeddings" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22.23.4"
+          cache: npm
+      - name: Node para la regresión visual de 16.1 (los PDF de folleto, varias por hoja, numerar y marca de agua salen del código del navegador)
+        run: npm ci --no-audit --no-fund
       - name: Dependencias
         run: |
           uv venv .venv
@@ -132,6 +138,27 @@ jobs:
             AUTH_SECRET=ci-solo-pruebas-0123456789abcdef npx next start -p 3100 &)
           for i in $(seq 60); do curl -sf http://127.0.0.1:3100/api/health && break; sleep 2; done
           npx playwright test -c tests/e2e/playwright.config.ts --project=navegador
+      - name: Lighthouse CI (1.3 y 8.3; móvil, mediana de 3, 90 o más en rendimiento y accesibilidad)
+        run: |
+          # Contra el mismo next start del paso anterior, con el Chromium fijado por @playwright/test (o el Chrome del runner).
+          CHROME_PATH="$(node -e 'console.log(require("playwright-core").chromium.executablePath())')"
+          [ -x "$CHROME_PATH" ] || CHROME_PATH="$(command -v google-chrome)"
+          export CHROME_PATH
+          npx lhci autorun --config=tests/lighthouse/lighthouserc.json
+      - name: Informes de Lighthouse
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse
+          path: .lighthouseci/informes
+          if-no-files-found: ignore
+      - name: Diferencias de la regresión visual si falla
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-resultados
+          path: test-results
+          if-no-files-found: ignore
 
   e2e-compose:
     # Sistema completo con Docker Compose: subida por tus, trabajos de servidor, descargas y pago falso.
@@ -147,6 +174,17 @@ jobs:
       - name: Arranque de humo con healthchecks
         run: docker compose up -d --build --wait --wait-timeout 900
       - run: npm ci --no-audit --no-fund
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+      - name: Muestras de servidor.spec.ts (FFmpeg y LibreOffice solo para generarlas, nunca en las imágenes)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ffmpeg libreoffice-writer-nogui fonts-dejavu
+          uv venv .venv
+          uv pip install --python .venv -r pyproject.toml --extra pdf
+          .venv/bin/python scripts/fixtures/generate.py "$RUNNER_TEMP/muestras"
+          echo "E2E_FIXTURES=$RUNNER_TEMP/muestras" >> "$GITHUB_ENV"
       - name: Playwright de extremo a extremo
         run: |
           npx playwright install --with-deps chromium

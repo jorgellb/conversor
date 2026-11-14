@@ -21,7 +21,7 @@ test("video-a-subtitulos: vídeos admitidos, SRT o VTT y ancho de línea en las 
   await expect(page.locator('input[type="file"]')).toHaveAttribute("accept", ".mp4,.mov,.mkv,.webm,.avi");
   await expect(page.getByLabel("Video language")).toHaveValue("auto");
   await expect(page.getByLabel("Format")).toHaveValue("srt");
-  await page.getByText("More options").click();
+  await page.getByText("More options", { exact: true }).click();
   await expect(page.getByLabel("Characters per line (two lines at most)")).toHaveValue("42");
   await expect(page.getByLabel("Accuracy")).toHaveValue("normal");
 });
