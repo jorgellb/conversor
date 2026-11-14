@@ -341,7 +341,7 @@ services:
     networks: [internal, airelay]
     mem_limit: 1g
     memswap_limit: 1g
-    cpus: 4
+    cpus: ${CPUS_WORKERAI:-4}
 
   # chat-pdf (6.4): embeddings locales en su propia cola. El modelo ocupa unos 0,7 GB por proceso, así que va en un
   # worker aparte y no en los 4 procesos de workerai. Sin clave ni salida a internet.
@@ -376,7 +376,7 @@ services:
       THREADS: "1"
     mem_limit: 3g
     memswap_limit: 3g
-    cpus: 3
+    cpus: ${CPUS_WORKERPDF:-3}
 
   workerocr:
     <<: *worker

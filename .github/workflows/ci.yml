@@ -177,6 +177,10 @@ jobs:
           node-version: "22.23.4"
           cache: npm
       - name: Arranque de humo con healthchecks
+        # El runner tiene 2 CPU y Docker rechaza un límite mayor que las CPU de la máquina.
+        env:
+          CPUS_WORKERAI: "2"
+          CPUS_WORKERPDF: "2"
         run: docker compose up -d --build --wait --wait-timeout 900
       - run: npm ci --no-audit --no-fund
       - uses: astral-sh/setup-uv@v7
