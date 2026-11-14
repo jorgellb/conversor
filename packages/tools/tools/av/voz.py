@@ -1,10 +1,11 @@
 """pdf-a-audio (7.6): lee un PDF en voz alta con Kokoro en local (6.4) y entrega un MP3 hecho con el FFmpeg LGPL.
 
-Flujo (cola `av.heavy`, D-166 a D-172):
+Flujo (cola `av.heavy`, D-166 a D-173):
 
 - La API, antes de encolar, cuenta en un proceso aparte los caracteres que se van a leer (`precheck`): sin cuenta no
   hay acceso (9.3: 0 caracteres), más de `tts_chars_task` se rechaza sin gastar la tarea y la voz española, mientras
-  `TTS_VOICE_ES` esté vacía (6.4, a la espera de la escucha del propietario), tampoco se encola.
+  `TTS_VOICE_ES` esté vacía (6.4, a la espera de la escucha del propietario), tampoco se encola. Un recuento que no
+  termina (90 s) o falla tampoco se encola (D-173).
 - El worker saca el texto con pypdfium2 (`document_texts`, como las herramientas de IA); las páginas escaneadas pasan
   por `workerocr` y vuelven (D-124). Quita cabeceras, pies y números de página, arma los párrafos, vuelve a comprobar
   el límite de caracteres (ya con el texto del OCR) y detecta el idioma si se pidió.
@@ -69,8 +70,10 @@ def thousands(n: int, locale: str) -> str:
 
 # ——— Antes de encolar (API) ———
 
-def count(path: Path, paginas: str, skip: bool, max_pages: int, timeout: int = 90) -> dict | None:
-    """Cuenta en un proceso aparte (`contar_texto.py`); None si no ha podido (el worker volverá a comprobarlo todo).
+def count(path: Path, paginas: str, skip: bool, max_pages: int, fallback: str | None = None, timeout: int = 90) -> dict:
+    """Cuenta en un proceso aparte (`contar_texto.py`). `fallback` es el idioma de la página, el que toma el worker
+    cuando hay muy poco texto para detectarlo. Si el recuento no termina a tiempo o falla, `{"error": "timeout"}` o
+    `{"error": "failed"}`: no se encola, porque el worker tardaría lo mismo o más con la tarea ya gastada (D-173).
 
     Antes, la API se marca con PR_SET_DUMPABLE=0 (como los workers): el proceso que abre el PDF corre con el mismo usuario
     y, sin eso, podría leer los secretos de la API en /proc/<pid>/environ."""
@@ -80,15 +83,20 @@ def count(path: Path, paginas: str, skip: bool, max_pages: int, timeout: int = 9
     script = Path(__file__).with_name("contar_texto.py")
     with tempfile.TemporaryDirectory(prefix="contar-") as tmp:
         try:
-            res = run_engine([sys.executable, "-I", str(script), str(path), paginas, "1" if skip else "0", str(max_pages)],
-                             cwd=Path(tmp), timeout=timeout, mem_mb=1024)
-            return json.loads(res.stdout or b"null")
-        except (ToolError, ValueError, OSError):
-            return None
+            res = run_engine([sys.executable, "-I", str(script), str(path), paginas, "1" if skip else "0", str(max_pages),
+                              fallback or ""], cwd=Path(tmp), timeout=timeout, mem_mb=1024)
+            info = json.loads(res.stdout or b"null")
+        except ToolError as exc:
+            return {"error": "timeout" if exc.code == ErrorCode.TIMEOUT else "failed"}
+        except (ValueError, OSError):
+            return {"error": "failed"}
+        return info if isinstance(info, dict) else {"error": "failed"}
 
 
-def precheck(settings: Settings, plan: PlanLimits, owner_type: str, options: dict, paths: list[Path]) -> None:
-    """9.3 y 6.4 antes de encolar: cuenta, caracteres por tarea y voz del idioma."""
+def precheck(settings: Settings, plan: PlanLimits, owner_type: str, options: dict, paths: list[Path],
+             locale: str = "es") -> None:
+    """9.3 y 6.4 antes de encolar: cuenta, caracteres por tarea y voz del idioma. `locale` es el de la página desde la
+    que se pide, el mismo que recibe el worker, para detectar el idioma igual que él."""
     limit = plan.tts_chars_task
     if limit <= 0:
         raise AppError(ErrorCode.UNAUTHORIZED if owner_type == "anon" else ErrorCode.QUOTA_EXCEEDED,
@@ -97,10 +105,13 @@ def precheck(settings: Settings, plan: PlanLimits, owner_type: str, options: dic
     if lang in ("es", "en") and not configured_voice(settings, lang):
         raise AppError(ErrorCode.TOOL_DISABLED, status=400, detail=f"tts_voice_{lang}")
     for path in paths:
-        info = count(path, options.get("paginas", "todas"), bool(options.get("saltar_cabeceras", True)), plan.pdf_pages)
-        if not info:
-            continue
+        info = count(path, options.get("paginas", "todas"), bool(options.get("saltar_cabeceras", True)), plan.pdf_pages,
+                     "en" if locale == "en" else "es")
         error = info.get("error")
+        if error == "timeout":
+            raise AppError(ErrorCode.LIMIT_EXCEEDED, status=400, detail="tts_count")
+        if error == "failed":
+            raise AppError(ErrorCode.ENGINE_FAILED, status=422)
         if error == "password":
             raise AppError(ErrorCode.PASSWORD_REQUIRED, status=400)
         if error == "corrupt":

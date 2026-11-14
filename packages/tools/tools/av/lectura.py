@@ -140,44 +140,65 @@ def strip_furniture(pages: list[str], reference: list[str] | None = None) -> lis
 
 def _clean_line(line: str) -> str:
     line = unicodedata.normalize("NFC", line)
-    line = "".join(" " if unicodedata.category(c) in ("Cc", "Cf", "Zl", "Zp") and c not in SOFT_HYPHENS else c for c in line)
+    if not line.isprintable():  # solo entonces hay caracteres de control o de formato (Cc, Cf, Zl, Zp) que cambiar
+        line = "".join(" " if unicodedata.category(c) in ("Cc", "Cf", "Zl", "Zp") and c not in SOFT_HYPHENS else c for c in line)
     return re.sub(r"[ \t  -​  　]+", " ", line).strip()
 
 
-def _join(prev: str, line: str) -> str:
-    """Une dos líneas de un párrafo; «infor-» + «mación» da «información»."""
+HYPHEN_END = re.compile(r"[A-Za-zÁÉÍÓÚÑÜáéíóúñü]-")
+
+
+def _tail(parts: list[str], n: int = 2) -> str:
+    """Los últimos `n` caracteres del párrafo que se está armando (sin unir las líneas: unirlas cada vez es cuadrático)."""
+    tail = ""
+    for part in reversed(parts):
+        tail = part + tail
+        if len(tail) >= n:
+            break
+    return tail[-n:]
+
+
+def _join(parts: list[str], line: str) -> None:
+    """Añade una línea al párrafo; «infor-» + «mación» da «información». Solo mira el final de la última línea, para
+    que armar un párrafo muy largo cueste lo mismo que leerlo."""
+    prev = parts[-1]
     for mark in SOFT_HYPHENS:
         if prev.endswith(mark):
-            return prev[: -len(mark)] + line
-    if re.search(r"[A-Za-zÁÉÍÓÚÑÜáéíóúñü]-$", prev) and line[:1].islower():
-        return prev[:-1] + line
-    return f"{prev} {line}"
+            parts[-1] = prev[: -len(mark)]
+            parts.append(line)
+            return
+    if HYPHEN_END.fullmatch(_tail(parts)) and line[:1].islower():
+        parts[-1] = prev[:-1]
+        parts.append(line)
+        return
+    parts.append(" " + line)
 
 
 def paragraphs(pages: list[str], skip_furniture: bool = True, reference: list[str] | None = None) -> list[str]:
     """Párrafos que se leen, en orden, a partir del texto de cada página (`reference`: todas las del documento)."""
     split = strip_furniture(pages, reference) if skip_furniture else [_lines(p) for p in pages]
     out: list[str] = []
-    current = ""
-    last_len = 0
+    current: list[str] = []  # las líneas del párrafo, que se unen una sola vez al cerrarlo
 
     def flush() -> None:
-        nonlocal current
-        text = current
+        text = "".join(current)
         for mark in SOFT_HYPHENS:
             text = text.replace(mark, "")
         text = re.sub(r"\s+", " ", text).strip()
         if re.search(r"[^\W_]", text):
             out.append(text)
-        current = ""
+        current.clear()
 
-    joined = 0
+    def ends(suffixes: tuple[str, ...]) -> bool:
+        return _tail(current, 1).endswith(suffixes)
+
+    last_len = 0
     for lines in split:
-        widths = sorted(len(_clean_line(ln)) for ln in lines if ln.strip())
+        cleaned = [_clean_line(ln) for ln in lines]
+        widths = sorted(len(c) for c, ln in zip(cleaned, lines) if ln.strip())
         # Ancho de una línea llena de esta página (con pocas líneas, la más larga).
         typical = (widths[-1] if len(widths) < 10 else widths[int(0.9 * (len(widths) - 1))]) if widths else 0
-        for raw in lines:
-            line = _clean_line(raw)
+        for line in cleaned:
             if not line:
                 flush()
                 continue
@@ -188,17 +209,16 @@ def paragraphs(pages: list[str], skip_furniture: bool = True, reference: list[st
                 line = line[bullet.end():]
                 if not line:
                     continue
-            elif current and current.endswith(TERMINAL) and last_len < 0.8 * typical:
+            elif current and ends(TERMINAL) and last_len < 0.8 * typical:
                 flush()
-            elif current and joined == 1 and starts and not current.endswith((",", ";", "-")) and last_len < 0.6 * typical:
+            elif len(current) == 1 and starts and not ends((",", ";", "-")) and last_len < 0.6 * typical:
                 flush()  # un título: una línea corta suelta antes de un párrafo
             if current:
-                current = _join(current, line)
-                joined += 1
+                _join(current, line)
             else:
-                current, joined = line, 1
+                current.append(line)
             last_len = len(line)
-        if current and current.endswith(TERMINAL):
+        if current and ends(TERMINAL):
             flush()
     flush()
     return out

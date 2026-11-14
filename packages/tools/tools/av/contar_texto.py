@@ -1,9 +1,12 @@
 """Cuenta los caracteres que leería pdf-a-audio (9.3) en un proceso aparte: lo lanza la API antes de encolar.
 
-Uso: `python -I contar_texto.py <pdf> <páginas> <saltar 0|1> <máximo de páginas>`. Escribe en la salida estándar un
-JSON con `pages`, `selected`, `chars`, `scanned` (páginas sin capa de texto, que leerá el OCR) y `language` («es»,
-«en» o null), o `{"error": "password" | "corrupt" | "pages" | "range"}`. La API lo ejecuta con `run_engine` (entorno
-vacío, tiempo y memoria limitados) para no abrir un PDF del usuario dentro de su propio proceso (12).
+Uso: `python -I contar_texto.py <pdf> <páginas> <saltar 0|1> <máximo de páginas> [<idioma de la página>]`. Escribe en
+la salida estándar un JSON con `pages`, `selected`, `chars`, `scanned` (páginas sin capa de texto, que leerá el OCR) y
+`language` («es», «en» o null), o `{"error": "password" | "corrupt" | "pages" | "range"}`. El idioma se detecta como
+en el worker: con muy poco texto, el de la página desde la que se pidió (el quinto argumento), pero solo si no hay
+páginas escaneadas, porque entonces el worker decide con el texto del OCR, que aquí no se conoce. La API lo ejecuta
+con `run_engine` (entorno vacío, tiempo y memoria limitados) para no abrir un PDF del usuario dentro de su propio
+proceso (12).
 """
 from __future__ import annotations
 
@@ -22,6 +25,7 @@ def main(argv: list[str]) -> dict:
     from tools.av import lectura
 
     path, ranges, skip, max_pages = argv[0], argv[1], argv[2] == "1", int(argv[3])
+    fallback = argv[4] if len(argv) > 4 and argv[4] in ("es", "en") else None
     try:
         doc = pdfium.PdfDocument(path)
     except pdfium.PdfiumError as exc:
@@ -55,7 +59,7 @@ def main(argv: list[str]) -> dict:
         doc.close()
     paras = lectura.paragraphs(texts, skip, everything)
     return {"pages": total, "selected": len(selected), "chars": lectura.chars(paras), "scanned": scanned,
-            "language": lectura.detect_language(" ".join(paras))}
+            "language": lectura.detect_language(" ".join(paras), None if scanned else fallback)}
 
 
 if __name__ == "__main__":

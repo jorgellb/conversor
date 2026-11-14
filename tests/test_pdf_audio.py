@@ -106,6 +106,22 @@ def test_paragraphs_join_hyphenated_words_and_continue_across_pages():
     assert lectura.paragraphs(pages) == ["Una frase que se parte en dos líneas y sigue en la página siguiente sin punto. Fin del párrafo.",
                                          "Otro párrafo."]
     assert lectura.paragraphs(["• Primero\n• Segundo, con coma"]) == ["Primero", "Segundo, con coma"]
+    # Un guion blando (\x02 de PDFium) en una línea suelta y una palabra partida justo después.
+    assert lectura.paragraphs(["Una pala\x02\nbra y otra par-\nte que sigue sin punto"]) == [
+        "Una palabra y otra parte que sigue sin punto"]
+
+
+def test_paragraphs_take_linear_time():
+    """Un PDF de párrafos larguísimos (sin puntos ni líneas en blanco) no puede tardar horas en contarse: armar el
+    párrafo solo mira el final de la última línea. Con la unión cuadrática, 40 páginas así tardaban más de 2 minutos."""
+    import time
+
+    line = ("palabra " * 40)[:318]
+    pages = ["\n".join([line] * 190) for _ in range(40)]
+    start = time.monotonic()
+    paras = lectura.paragraphs(pages)
+    assert time.monotonic() - start < 10
+    assert len(paras) == 1 and lectura.chars(paras) == 40 * 190 * (318 + 1) - 1  # las líneas, unidas por un espacio
 
 
 def test_sentences_keep_abbreviations_and_clauses_carry_punctuation():
@@ -156,6 +172,8 @@ def test_error_messages_explain_the_limits():
     assert "20000 caracteres" in message("LIMIT_EXCEEDED", "es", "tts_chars:22417>20000")
     assert "22417" in message("LIMIT_EXCEEDED", "en", "tts_chars:22417>20000")
     assert "cuenta" in message("UNAUTHORIZED", "es", "tts_account")
+    assert "Dividir PDF" in message("LIMIT_EXCEEDED", "es", "tts_count")
+    assert "Split PDF" in message("LIMIT_EXCEEDED", "en", "tts_count")
     assert "español" in message("TOOL_DISABLED", "es", "tts_voice_es")
 
 
@@ -213,6 +231,44 @@ def test_precheck_rejects_before_enqueueing(fixtures_dir):
     with pytest.raises(AppError) as exc:
         voz.precheck(s, PLANS["free"], "user", {"paginas": "9"}, [en])
     assert exc.value.code == ErrorCode.INVALID_OPTIONS
+
+
+def test_precheck_detects_the_language_like_the_worker(fixtures_dir, tmp_path):
+    """Con muy poco texto, la API decide el idioma como el worker (el de la página), para no encolar una lectura que el
+    worker rechazaría con la tarea ya gastada. Con páginas escaneadas decide el worker, después del OCR."""
+    import sys
+
+    sys.path.insert(0, str(FIXTURES))
+    from lectura_pdf import prose_pdf
+
+    short = prose_pdf(tmp_path / "portada.pdf", [["Annual Report 2026 Summary"]])
+    s = Settings(TTS_VOICE_ES="", TTS_VOICE_EN="af_heart")
+    assert voz.count(short, "todas", True, 300, "es")["language"] == "es"
+    assert voz.count(short, "todas", True, 300, "en")["language"] == "en"
+    assert voz.count(short, "todas", True, 300)["language"] is None
+    with pytest.raises(AppError) as exc:
+        voz.precheck(s, PLANS["free"], "user", {}, [short], locale="es")
+    assert (exc.value.code, exc.value.detail) == (ErrorCode.TOOL_DISABLED, "tts_voice_es")
+    voz.precheck(s, PLANS["free"], "user", {}, [short], locale="en")
+    voz.precheck(s, PLANS["free"], "user", {"idioma": "en"}, [short], locale="es")
+    assert voz.count(fixtures_dir / "lectura-escaneada.pdf", "todas", True, 300, "es")["language"] is None
+    voz.precheck(s, PLANS["free"], "user", {}, [fixtures_dir / "lectura-escaneada.pdf"], locale="es")
+
+
+def test_precheck_rejects_when_the_count_does_not_finish(fixtures_dir, monkeypatch):
+    """Un recuento que no termina a tiempo (o falla) no se encola: el worker tardaría lo mismo con la tarea gastada."""
+    s = Settings(TTS_VOICE_ES="", TTS_VOICE_EN="af_heart")
+    en = fixtures_dir / "lectura-en.pdf"
+    assert voz.count(en, "todas", True, 300, timeout=0.001) == {"error": "timeout"}
+    cases = ((ErrorCode.TIMEOUT, (ErrorCode.LIMIT_EXCEEDED, "tts_count")), (ErrorCode.ENGINE_FAILED, (ErrorCode.ENGINE_FAILED, None)))
+    for code, expected in cases:
+        def fail(*args, code=code, **kwargs):
+            raise ToolError(code, "contar_texto.py")
+
+        monkeypatch.setattr(voz, "run_engine", fail)
+        with pytest.raises(AppError) as exc:
+            voz.precheck(s, PLANS["free"], "user", {}, [en])
+        assert (exc.value.code, exc.value.detail) == expected
 
 
 # ——— MP3 por tramos (FFmpeg, 16.5) ———
@@ -304,6 +360,29 @@ def test_spanish_needs_its_voice_and_auto_detects_it(make_ctx, fixtures_dir, no_
     assert "(detectado)" not in forced
     if whisper_model():
         assert "gracias" in heard(path, "es")
+
+
+@needs_voice
+def test_forced_language_changes_the_voice_and_the_phonemes(make_ctx, fixtures_dir, no_db, monkeypatch):
+    """«Idioma» pedido en vez de detectado: el PDF español leído como inglés usa la voz y los fonemas ingleses."""
+    base = {"paginas": "3", "velocidad": 2.0}
+    auto_path, auto_note, auto = speak(make_ctx, fixtures_dir, "lectura-es.pdf", base)
+    langs: list[str] = []
+    original = kokoro.phonemes
+
+    def spy(clauses, lang, work):
+        langs.append(lang)
+        return original(clauses, lang, work)
+
+    monkeypatch.setattr(kokoro, "phonemes", spy)
+    ctx = voiced(make_ctx("pdf-a-audio", [fixtures_dir / "lectura-es.pdf"], {**base, "idioma": "en"}), TTS_VOICE_ES="")
+    out = run("pdf-a-audio", ctx)
+    en_path = Path(out[0]["path"])
+    assert auto_note.startswith("Leído en español (detectado) con la voz ef_dora")
+    assert out[0]["note"].startswith("Leído en inglés con la voz af_heart") and "(detectado)" not in out[0]["note"]
+    assert langs and set(langs) == {"en"}
+    assert en_path.read_bytes() != auto_path.read_bytes()
+    assert abs(probe(en_path)["duration"] - auto["duration"]) > 0.2
 
 
 @needs_voice

@@ -157,7 +157,8 @@ def create_job(
     check = load_precheck(spec)
     if check is not None:
         # Antes de contar la tarea: lo que se rechaza aquí no gasta cuota (9.3).
-        check(settings, plan, owner.type, options, [store.upload_path(u.id) for u in ordered])
+        check(settings, plan, owner.type, options, [store.upload_path(u.id) for u in ordered],
+              locale="en" if locale == "en" else "es")
 
     owners = [(owner.type, owner.id)]
     if owner.type == "anon" and owner.ip_hash:

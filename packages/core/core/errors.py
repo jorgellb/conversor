@@ -114,6 +114,8 @@ DETAILS: dict[str, dict[str, str]] = {
     "tts_voice_en": {"es": "La lectura en inglés no está disponible ahora mismo.", "en": "Reading in English is not available right now."},
     "tts_language": {"es": "El texto no parece estar en español ni en inglés, los dos idiomas que se pueden leer.",
                      "en": "The text does not seem to be in Spanish or English, the two languages that can be read."},
+    "tts_count": {"es": "Este PDF tiene demasiado texto o es demasiado complejo para preparar su lectura a tiempo: divídelo antes con «Dividir PDF».",
+                  "en": "This PDF has too much text or is too complex to prepare for reading in time: split it first with “Split PDF”."},
     "tts_empty": {"es": "No hay texto que leer en las páginas elegidas.", "en": "There is no text to read in the selected pages."},
     "ai_scanned": {"es": "Las páginas {pages} son imágenes sin texto: activa «Leer las páginas escaneadas» o pasa antes OCR PDF.",
                    "en": "Pages {pages} are images without text: turn on “Read scanned pages” or run OCR PDF first."},

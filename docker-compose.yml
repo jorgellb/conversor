@@ -139,6 +139,11 @@ services:
     restart: unless-stopped
     environment:
       SERVICE_ROLE: api
+      # La API también lee las voces de pdf-a-audio para no encolar un idioma sin voz (D-169 y D-170): las mismas que
+      # workeravheavy.
+      TTS_ENGINE: kokoro
+      TTS_VOICE_ES: "${TTS_VOICE_ES:-}"
+      TTS_VOICE_EN: "${TTS_VOICE_EN:-af_heart}"
     ports: ["127.0.0.1:8000:8000"]
     networks: [internal, edge]
     depends_on:

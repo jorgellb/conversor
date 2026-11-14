@@ -89,8 +89,8 @@ class ToolSpec:
     # config/tools-notes.yaml y sale en docs/TOOLS.md (regla 7).
     default_enabled: bool = True
     # Comprobación previa en la API antes de encolar (pdf-a-audio: caracteres por tarea de 9.3), como
-    # «módulo:función». Recibe (settings, plan, owner_type, opciones, rutas de los archivos) y lanza AppError. Se importa
-    # solo al crear el trabajo, así que el registro sigue sin cargar motores.
+    # «módulo:función». Recibe (settings, plan, owner_type, opciones, rutas de los archivos, locale=«es»|«en», el de la
+    # página) y lanza AppError. Se importa solo al crear el trabajo, así que el registro sigue sin cargar motores.
     precheck: str | None = None
 
     @property
