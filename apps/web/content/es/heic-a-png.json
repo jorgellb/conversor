@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HEIC a PNG convierte las fotos HEIC del iPhone y el iPad en imágenes PNG sin pérdida. A diferencia del JPG, el PNG no vuelve a comprimir la foto con pérdida, así que conserva exactamente los píxeles que se decodifican del HEIC. Es la opción adecuada si vas a retocar la imagen, recortarla o usarla en un diseño, o si un programa de edición o una web no admite HEIC.",
+    "Las fotos HEIC van comprimidas con HEVC (H.265), una tecnología protegida por patentes cuyos programas de licencias alcanzan también a quien la decodifica como servicio en la nube. Por eso la conversión depende del ajuste de decodificación HEVC del servicio, que está apagado por defecto hasta que lo apruebe una revisión legal. Mientras esté apagado, la herramienta no acepta archivos y la página explica cómo exportar las fotos desde el iPhone o el Mac.",
+    "Con el ajuste activo, la foto se decodifica en nuestro servidor con libheif, compilado únicamente para leer HEIC, y se guarda en PNG con su perfil de color, para que los tonos se vean igual que en el móvil. Si un HEIC contiene varias imágenes, cada una se entrega en su propio PNG numerado. La foto ya sale en su orientación correcta.",
+    "Puedes conservar los datos EXIF, como la fecha, el modelo de cámara o la exposición, activados por defecto, y quitar la ubicación GPS, que también se quita por defecto para que nadie sepa dónde se tomó la foto. Con varias fotos recibes cada PNG por separado y un ZIP con todos. Los archivos se borran a la hora si no tienes cuenta o a las 24 horas si la tienes."
+  ],
+  "steps": [
+    "Sube una o varias fotos HEIC.",
+    "Decide si conservas el EXIF y la ubicación GPS.",
+    "Descarga los PNG o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el PNG pesa mucho más que el HEIC?",
+      "a": "Porque PNG comprime sin pérdida y HEIC con pérdida y de forma muy eficiente. Si no vas a editar la foto y quieres un archivo ligero, usa HEIC a JPG."
+    },
+    {
+      "q": "¿Por qué no puedo usar la herramienta ahora?",
+      "a": "Porque la decodificación HEVC está apagada en este servicio hasta completar la revisión de patentes. En el Mac puedes abrir la foto con Vista Previa y elegir Archivo › Exportar… con el formato PNG."
+    },
+    {
+      "q": "¿Se conserva la ubicación de la foto?",
+      "a": "Solo si desmarcas «Quitar la ubicación GPS». Por defecto el PNG lleva el resto del EXIF, pero no las coordenadas."
+    }
+  ]
+}

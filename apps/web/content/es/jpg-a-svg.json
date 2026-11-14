@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JPG a SVG transforma una imagen JPG en un gráfico vectorial SVG, hecho de formas en lugar de píxeles, para poder ampliarla sin que se pixele. Es útil cuando solo tienes el logotipo de tu negocio en un JPG pequeño sacado de una web o de un correo y lo necesitas para una lona, una camiseta, un rótulo o un archivo de corte, o cuando quieres convertir un dibujo escaneado o fotografiado en trazos limpios.",
+    "Hay que tener en cuenta que el JPG comprime con pérdida y deja alrededor de los bordes pequeñas manchas y degradados que no estaban en el original. Por eso, para logotipos y dibujos conviene elegir un detalle «Bajo», que ignora motas de hasta 10 píxeles y agrupa los colores parecidos, o la opción de blanco y negro, que aplica un umbral sobre la luminosidad y deja una sola tinta sobre fondo blanco, muy adecuada para firmas, sellos, bocetos a lápiz o textos escaneados.",
+    "Con el detalle «Alto» se conservan más matices, lo que sirve para ilustraciones con muchos colores; en una fotografía obtendrás un efecto artístico de póster con miles de formas, no una copia fiel. En las opciones adicionales puedes elegir trazados de curvas suaves, polígonos o píxeles.",
+    "La vectorización se hace en nuestro servidor con vtracer y respeta la orientación con que se hizo la foto. Las imágenes de más de 2000 píxeles por el lado mayor se reducen antes, porque más resolución solo añade trazados, y te lo indicamos. Con varios JPG recibes un SVG por imagen y un ZIP con todos, y se borran a la hora sin cuenta o a las 24 horas con cuenta."
+  ],
+  "steps": [
+    "Sube uno o varios JPG.",
+    "Elige color o blanco y negro y el nivel de detalle.",
+    "Descarga el SVG o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo convertir una foto de una persona en SVG?",
+      "a": "Sí, pero el resultado será una ilustración de zonas de color, no una foto. Si solo quieres ampliarla, es mejor usar Redimensionar imagen."
+    },
+    {
+      "q": "Mi logo tiene un fondo grisáceo con manchas, ¿cómo lo limpio?",
+      "a": "Elige blanco y negro si es de un color, o detalle «Bajo» si tiene varios. Si dispones del logo en PNG, vectorízalo con PNG a SVG: tendrá bordes más limpios."
+    },
+    {
+      "q": "¿El SVG se puede editar?",
+      "a": "Sí: cada zona es una forma que puedes recolorear, mover o borrar en Inkscape, Illustrator o cualquier editor de SVG."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "QR code reader finds and decodes the QR codes in a photo, a screenshot or a PDF, without pointing a phone camera at them. It helps when the code arrives in an email or on an invoice, when you have it on your computer rather than on paper, or when you want to know where a QR code leads before opening it.",
+    "It accepts JPG, PNG, WEBP, GIF, BMP, AVIF, TIFF, SVG and PDF. Every page of a TIFF is checked, and the first 50 pages of a PDF, which are drawn at 200 DPI so that small codes stay readable. One image can hold many codes: all of them are read and each content appears only once per file.",
+    "By default it looks for QR codes, including Micro QR and rectangular rMQR codes. If you choose “All”, it also looks for Data Matrix, Aztec, PDF417 and the barcodes used on products and in logistics, such as EAN, UPC or Code 128. Doubtful reads are discarded, such as a barcode that actually falls inside the modules of a QR code or an ITF code with fewer than six digits.",
+    "Decoding runs in your browser with zxing-cpp compiled to WebAssembly: the images are not uploaded to any server. The content of each code is shown on screen and downloaded as a CSV with the file, the page, the code format and its content, which opens in Excel or LibreOffice. For each file we tell you how many codes it had and of what kind: link, WiFi network, contact, event, email, phone, SMS, SEPA transfer or text."
+  ],
+  "steps": [
+    "Upload one or more images or PDFs with codes.",
+    "Choose whether to look for QR codes only or for every type.",
+    "Read the content on screen or download the CSV."
+  ],
+  "faq": [
+    {
+      "q": "Is the link in the code opened automatically?",
+      "a": "No. We only show you the text of the link so you can check the address before visiting it, because a QR code stuck on a street sign or received by email may lead to a fraudulent page."
+    },
+    {
+      "q": "It does not find the code in my photo, what can I do?",
+      "a": "Make sure the code is in focus, complete and free of glare, and crop the photo so the code takes up more space. If it is a barcode or a Data Matrix, choose “All” in the option for which codes to look for."
+    },
+    {
+      "q": "Can I read the password of a WiFi network?",
+      "a": "Yes: the content of a WiFi QR code includes the network name, the encryption type and the password exactly as they were encoded, and you will see it in full on screen and in the CSV."
+    }
+  ]
+}

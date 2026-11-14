@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG to SVG traces logos, icons, illustrations and drawings: it turns the pixels of the image into shaped paths that can be scaled to any size without looking blurry or pixelated. The resulting SVG is ready to print a logo large, cut it in vinyl or with a laser, edit it in Inkscape or Illustrator or put it on a website at a small file size.",
+    "Tracing runs on our server with vtracer, an open-source vectoriser that groups pixels of similar colour and draws each area as a filled shape, stacked one on top of another. The best results come from images with flat colours and crisp edges; a photo can be traced too, but it will produce a huge number of paths and a poster-like look.",
+    "Under “Colours” you choose between keeping the colours or switching to black and white, which applies a threshold to the brightness and produces a single-colour SVG, ideal for stamps, signatures, silhouettes or cutting templates; the transparent areas of the PNG then count as a white background. High “Detail” keeps small shapes and colour nuances, while low ignores specks of up to 10 pixels and merges nearby colours for a cleaner, lighter result.",
+    "In the additional options you choose the path type: smooth curves, straight-sided polygons that suit geometric drawings, or pixels, which keeps the blocky look of pixel art. Images larger than 2000 pixels on the longest side are scaled down before tracing, because more resolution only adds paths, and we tell you so. With several PNGs you get one SVG per image and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more PNGs.",
+    "Choose colour or black and white and the level of detail.",
+    "Download the SVG or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "The SVG has blotches or too many paths, what can I do?",
+      "a": "Lower the detail to “Low”, which removes specks and merges similar colours. If the logo has a single colour, the black and white option gives the cleanest result."
+    },
+    {
+      "q": "Is text recovered as editable text?",
+      "a": "No. Letters become shapes: they look perfect at any size, but they cannot be edited or copied as text."
+    },
+    {
+      "q": "What if I need to go back to PNG?",
+      "a": "Use SVG to PNG, which draws the SVG at the pixel size you choose, for example for a large version of the logo."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JPG to SVG turns a JPG image into an SVG vector graphic, made of shapes instead of pixels, so it can be enlarged without pixelation. It helps when all you have is your business logo as a small JPG taken from a website or an email and you need it for a banner, a T-shirt, a sign or a cutting file, or when you want to turn a scanned or photographed drawing into clean strokes.",
+    "Bear in mind that JPG compresses with loss and leaves small blotches and gradients around the edges that were not in the original. That is why, for logos and drawings, it is best to choose “Low” detail, which ignores specks of up to 10 pixels and groups similar colours, or the black and white option, which applies a threshold to the brightness and leaves a single ink on a white background, well suited to signatures, stamps, pencil sketches or scanned text.",
+    "With “High” detail more nuances are kept, which suits illustrations with many colours; with a photograph you will get an artistic poster effect with thousands of shapes, not a faithful copy. In the additional options you can choose smooth curves, polygons or pixels as the path type.",
+    "Tracing runs on our server with vtracer and respects the orientation in which the photo was taken. Images larger than 2000 pixels on the longest side are scaled down first, because more resolution only adds paths, and we tell you so. With several JPGs you get one SVG per image and a ZIP with all of them, and they are deleted after an hour without an account or after 24 hours with one."
+  ],
+  "steps": [
+    "Upload one or more JPGs.",
+    "Choose colour or black and white and the level of detail.",
+    "Download the SVG or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Can I turn a photo of a person into SVG?",
+      "a": "Yes, but the result will be an illustration made of colour areas, not a photo. If you only want to enlarge it, Resize image is a better fit."
+    },
+    {
+      "q": "My logo has a greyish, blotchy background, how do I clean it?",
+      "a": "Choose black and white if it has one colour, or “Low” detail if it has several. If you have the logo as a PNG, trace it with PNG to SVG: the edges will be cleaner."
+    },
+    {
+      "q": "Can the SVG be edited?",
+      "a": "Yes: each area is a shape you can recolour, move or delete in Inkscape, Illustrator or any SVG editor."
+    }
+  ]
+}

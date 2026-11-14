@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "RAW to JPG develops the RAW photos from your camera and turns them into JPGs you can view, send or publish anywhere. A RAW file stores the data exactly as the sensor captured it, unprocessed, and most viewers, phones and websites cannot open it. It accepts Canon CR2, Nikon NEF, Sony ARW and DNG, the open format used by Leica, Pentax, many phones and programs such as Lightroom.",
+    "Developing happens on our server with LibRaw, the reference library for reading RAW files, which runs in an isolated process with time and memory limits. The sensor colours are interpolated, the white balance is applied and the photo is rotated to the position in which it was taken. The result is an 8-bit-per-channel JPG at the quality you choose from 1 to 100 %, 90 % by default.",
+    "The white balance can be the one the camera recorded when shooting, which respects what you saw on its screen, or an automatic one calculated from the image, useful under mixed artificial light. In the additional options you can turn off automatic brightness adjustment, if you prefer the exposure as it is, and develop at half size, which is much faster and enough for the web or social media.",
+    "From the EXIF data, the make, model, date, artist, copyright and shooting details such as exposure, aperture or ISO sensitivity are copied into the JPG; the manufacturer's private notes are not. The GPS location is removed by default. With several photos you get each JPG and a ZIP with all of them, and the files are deleted after an hour without an account or after 24 hours with one."
+  ],
+  "steps": [
+    "Upload one or more CR2, NEF, ARW or DNG files.",
+    "Choose the quality and the white balance.",
+    "Download the JPGs or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Will the JPG look the same as on my camera?",
+      "a": "Similar, but not identical: the camera applies its own colour profile, contrast and sharpening, which are not stored in the RAW file in a standard way. For a fine finish use a dedicated RAW editor."
+    },
+    {
+      "q": "My camera saves CR3, RAF or ORF, can I use it?",
+      "a": "For now this tool only accepts CR2, NEF, ARW and DNG. Adobe's free DNG Converter can turn other RAW files into DNG first."
+    },
+    {
+      "q": "The photo comes out too bright or too dark, what can I do?",
+      "a": "Turn off “Adjust brightness automatically” in the additional options to respect the original exposure, or try the automatic white balance if the colour is not right either."
+    }
+  ]
+}

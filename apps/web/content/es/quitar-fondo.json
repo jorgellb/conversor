@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Quitar fondo separa la persona, el animal o el objeto principal de una foto y elimina todo lo que hay detrás. Sirve para preparar fotos de producto para una tienda online o un marketplace, hacer una foto de perfil o de carné con un fondo uniforme, crear pegatinas y montajes o poner un objeto sobre otro diseño sin tener que recortarlo a mano.",
+    "Funciona con fotos JPG, PNG y WEBP. El recorte se hace en nuestro servidor con rembg y un modelo abierto de segmentación de imágenes (U²-Net o IS-Net), que se ejecuta en el propio servidor sin conexión a internet: tus fotos no se envían a ningún servicio externo y se borran a la hora si no tienes cuenta o a las 24 horas si la tienes. La foto se gira antes según su orientación EXIF, y el resultado no lleva los metadatos de la original.",
+    "Puedes descargar un PNG o un WEBP sin pérdida con fondo transparente, o un JPG; como el JPG no admite transparencia, lleva siempre un color de fondo, blanco por defecto. Con «De un color» eliges cualquier color para el fondo, también en PNG y WEBP. «Recortar al contorno del objeto» ajusta la imagen al sujeto con un pequeño margen, práctico para catálogos y pegatinas.",
+    "En las opciones adicionales, «Refinar los bordes» calcula una transición más suave en el pelo, el pelaje o la piel; es más lento y se aplica a imágenes de hasta 4 megapíxeles, por encima se hace el recorte normal y te lo indicamos. Cada uso cuenta como tarea pesada del plan: 2 al día sin cuenta, 10 con la cuenta gratuita y 200 con Pro. Con varias fotos recibes cada resultado y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube una o varias fotos JPG, PNG o WEBP.",
+    "Elige el formato, el fondo transparente o de color y si recortas al objeto.",
+    "Descarga las imágenes sin fondo o el ZIP con todas."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué fotos dan mejor resultado?",
+      "a": "Las que tienen un sujeto claro, bien iluminado y que destaca del fondo. Con varios objetos parecidos o con fondos del mismo color que el sujeto, el modelo puede dejar o quitar partes de más."
+    },
+    {
+      "q": "¿Por qué mi JPG sigue teniendo fondo blanco?",
+      "a": "Porque el formato JPG no puede guardar transparencia. Elige PNG o WEBP si quieres el fondo transparente para colocar el objeto sobre otra imagen."
+    },
+    {
+      "q": "El borde del pelo se ve recortado, ¿se puede mejorar?",
+      "a": "Activa «Refinar los bordes» en las opciones adicionales. Si la foto supera los 4 megapíxeles, redúcela antes con Redimensionar imagen para que se pueda aplicar."
+    }
+  ]
+}

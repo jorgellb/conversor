@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HEIC a JPG convierte las fotos HEIC que hacen el iPhone y el iPad en archivos JPG, el formato de imagen que aceptan todos los programas, webs y dispositivos. Es lo que necesitas cuando un formulario, una tienda online o un ordenador con Windows no abre las fotos del móvil, o cuando quieres compartirlas con alguien sin preocuparte de si podrá verlas.",
+    "HEIC guarda las imágenes comprimidas con HEVC (H.265), una tecnología con patentes cuyos programas de licencias alcanzan también a los servicios en la nube que la decodifican. Por eso esta herramienta depende de un ajuste del servicio, la decodificación HEVC, que está apagado por defecto hasta completar una revisión legal. Mientras siga apagado, no acepta archivos y la página te explica cómo guardar o exportar las fotos en JPEG desde el propio iPhone o el Mac, sin usar ningún servicio.",
+    "Cuando está activa, cada foto se decodifica en nuestro servidor con libheif, compilado solo para leer, sin codificador HEVC. Si el archivo guarda varias imágenes, como una ráfaga, recibes un JPG por cada una, numerado. Eliges la calidad del JPG entre 1 y 100 %, con 90 % por defecto, un buen equilibrio entre nitidez y tamaño; el perfil de color de la foto se mantiene para que los tonos no cambien.",
+    "Los datos EXIF, como la fecha, la cámara o la exposición, se copian al JPG salvo que desactives «Conservar los datos EXIF». La ubicación GPS se quita por defecto para no revelar dónde se hizo la foto; desmarca «Quitar la ubicación GPS» si quieres conservarla. La foto ya sale girada en su posición correcta. Con varias fotos recibes cada JPG por separado y un ZIP con todos, y los archivos se borran a la hora si no tienes cuenta o a las 24 horas si la tienes."
+  ],
+  "steps": [
+    "Sube una o varias fotos HEIC.",
+    "Ajusta la calidad y decide si conservas el EXIF y la ubicación.",
+    "Descarga los JPG o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué la herramienta aparece desactivada?",
+      "a": "Porque la decodificación HEVC está apagada en este servicio hasta terminar la revisión de sus licencias de patentes. Mientras tanto, la página explica cómo obtener JPEG en el propio iPhone o el Mac."
+    },
+    {
+      "q": "¿Qué calidad elijo?",
+      "a": "El 90 % por defecto no muestra diferencias visibles con el original. Baja a 75–80 % si quieres archivos más ligeros para enviar por correo; por encima de 95 % el tamaño crece mucho sin mejora apreciable."
+    },
+    {
+      "q": "¿Se pierde la información de la foto?",
+      "a": "No, salvo la ubicación GPS, que se quita por defecto. Si alguna foto no traía EXIF, te lo indicamos junto al resultado."
+    }
+  ]
+}

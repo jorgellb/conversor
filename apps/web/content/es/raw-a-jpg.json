@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "RAW a JPG revela las fotos RAW de tu cámara y las convierte en JPG que puedes ver, enviar o publicar en cualquier sitio. Un archivo RAW guarda los datos tal como los captó el sensor, sin procesar, y la mayoría de los visores, móviles y webs no saben abrirlo. Admite CR2 de Canon, NEF de Nikon, ARW de Sony y DNG, el formato abierto que usan Leica, Pentax, muchos móviles y programas como Lightroom.",
+    "El revelado se hace en nuestro servidor con LibRaw, la biblioteca de referencia para leer RAW, que funciona en un proceso aislado con límites de tiempo y memoria. Se interpolan los colores del sensor, se aplica el balance de blancos y la foto se gira según la posición en que se tomó. El resultado es un JPG de 8 bits por canal con la calidad que elijas entre 1 y 100 %, 90 % por defecto.",
+    "El balance de blancos puede ser el que registró la cámara al disparar, que respeta lo que viste en la pantalla, o uno automático calculado sobre la imagen, útil con luz artificial mezclada. En las opciones adicionales puedes desactivar el ajuste automático de brillo, si prefieres la exposición tal cual, y revelar a la mitad de tamaño, que es mucho más rápido y suficiente para web o redes sociales.",
+    "Del EXIF se copian al JPG el fabricante, el modelo, la fecha, el autor, el copyright y los datos de la toma, como la exposición, la apertura o la sensibilidad ISO; las notas privadas del fabricante no. La ubicación GPS se quita por defecto. Con varias fotos recibes cada JPG y un ZIP con todos, y los archivos se borran a la hora sin cuenta o a las 24 horas con cuenta."
+  ],
+  "steps": [
+    "Sube uno o varios archivos CR2, NEF, ARW o DNG.",
+    "Elige la calidad y el balance de blancos.",
+    "Descarga los JPG o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿El JPG se verá igual que en mi cámara?",
+      "a": "Parecido, pero no idéntico: la cámara aplica su propio perfil de color, contraste y nitidez, que no se guardan en el RAW de forma estándar. Para un acabado fino usa un programa de revelado."
+    },
+    {
+      "q": "Mi cámara guarda CR3, RAF u ORF, ¿puedo usarla?",
+      "a": "Por ahora esta herramienta solo acepta CR2, NEF, ARW y DNG. Con el conversor gratuito DNG de Adobe puedes pasar antes otros RAW a DNG."
+    },
+    {
+      "q": "La foto sale demasiado clara u oscura, ¿qué hago?",
+      "a": "Desactiva «Ajustar el brillo automáticamente» en las opciones adicionales para respetar la exposición original, o prueba el balance de blancos automático si el color tampoco convence."
+    }
+  ]
+}

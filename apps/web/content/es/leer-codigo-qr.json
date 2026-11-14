@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Leer código QR encuentra y descifra los códigos QR que aparecen en una foto, una captura de pantalla o un PDF, sin necesidad de apuntar con la cámara del móvil. Es útil cuando el código te llega en un correo o en una factura, cuando lo tienes en el ordenador y no en papel, o cuando quieres saber adónde lleva un QR antes de abrirlo.",
+    "Admite JPG, PNG, WEBP, GIF, BMP, AVIF, TIFF, SVG y PDF. En un TIFF se revisan todas sus páginas y en un PDF las 50 primeras, que se dibujan a 200 ppp para que los códigos pequeños sigan siendo legibles. Una misma imagen puede contener muchos códigos: se leen todos y cada contenido aparece una sola vez por archivo.",
+    "Por defecto se buscan códigos QR, incluidos los Micro QR y los rMQR rectangulares. Si eliges «Todos», se buscan también Data Matrix, Aztec, PDF417 y los códigos de barras de productos y logística, como EAN, UPC o Code 128. Se descartan las lecturas dudosas, como un código de barras que en realidad cae dentro de los módulos de un QR o un ITF de menos de seis cifras.",
+    "La lectura se hace en tu navegador con zxing-cpp compilado a WebAssembly: las imágenes no se suben a ningún servidor. El contenido de cada código se muestra en pantalla y se descarga en un CSV con el archivo, la página, el formato del código y su contenido, que se abre en Excel o LibreOffice. Para cada archivo te decimos cuántos códigos tenía y de qué tipo: enlace, red WiFi, contacto, evento, correo, teléfono, SMS, transferencia SEPA o texto."
+  ],
+  "steps": [
+    "Sube una o varias imágenes o PDF con códigos.",
+    "Elige si buscas solo códigos QR o todos los tipos.",
+    "Lee el contenido en pantalla o descarga el CSV."
+  ],
+  "faq": [
+    {
+      "q": "¿Se abre el enlace del código automáticamente?",
+      "a": "No. Solo te mostramos el texto del enlace para que compruebes la dirección antes de visitarla, porque un QR pegado en la calle o recibido por correo puede llevar a una página fraudulenta."
+    },
+    {
+      "q": "No encuentra el código de mi foto, ¿qué hago?",
+      "a": "Comprueba que el código esté enfocado, entero y sin reflejos, y recorta la foto para que ocupe más espacio. Si es un código de barras o un Data Matrix, elige «Todos» en la opción de qué códigos buscar."
+    },
+    {
+      "q": "¿Puedo leer la contraseña de una red WiFi?",
+      "a": "Sí: el contenido de un QR de WiFi incluye el nombre de la red, el tipo de cifrado y la contraseña tal como se codificaron, y lo verás completo en pantalla y en el CSV."
+    }
+  ]
+}

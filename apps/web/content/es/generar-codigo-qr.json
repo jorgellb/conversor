@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Generar código QR crea códigos QR listos para imprimir en un cartel, una tarjeta de visita, un menú o un envase, o para poner en una presentación o una web. No caducan ni pasan por ningún servicio intermedio: el contenido va escrito dentro del propio código, así que seguirá funcionando mientras exista la dirección o el dato que contiene.",
+    "Puedes codificar un enlace, una red WiFi con su nombre, contraseña y cifrado WPA/WPA2, WEP o ninguno, también si es oculta; un texto de hasta 2900 caracteres; un contacto vCard con nombre, empresa, cargo, correo, web y teléfono; una transferencia SEPA en el formato EPC que leen las apps de muchos bancos europeos, con beneficiario, IBAN comprobado, BIC opcional, importe y concepto; un pago de PayPal o PayPal.Me con importe y moneda; un correo con destinatario, asunto y mensaje; un teléfono, un SMS o un evento de calendario con inicio, final, lugar y descripción.",
+    "En el estilo eliges los colores del fondo, los módulos y los ojos exteriores e interiores, cada uno con degradado lineal o radial si quieres; la forma de los módulos, de cuadrados a puntos o redondeados; la de los ojos; un contorno circular y un borde. Puedes añadir un logotipo en PNG, JPG, WEBP, SVG o GIF, con su tamaño, su margen y la opción de quitar los módulos de detrás; con logotipo, la corrección de errores pasa siempre a H (30 %). En las opciones técnicas se fijan la versión de 1 a 40, el modo de codificación y la corrección L, M, Q o H.",
+    "Se descarga en PNG de 100 a 10 000 píxeles, en SVG o en PDF vectorial, y la imagen se puede copiar al portapapeles. Antes de entregarlo, el código se dibuja y se vuelve a leer con zxing-cpp: te avisamos si no se lee o si se lee con otro contenido. Todo se hace en tu navegador, y puedes exportar la configuración a un JSON para recuperarla otro día."
+  ],
+  "steps": [
+    "Elige el tipo de contenido y rellena sus datos.",
+    "Ajusta los colores, la forma o el logotipo mirando la vista previa.",
+    "Pulsa «Generar código QR» y descarga el PNG, el SVG o el PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿El código QR caduca?",
+      "a": "No. Es un código estático: lleva el contenido dentro y no depende de nuestra web. Si cambias de dirección o de contraseña tendrás que generar uno nuevo."
+    },
+    {
+      "q": "¿Qué formato elijo para imprenta?",
+      "a": "SVG o PDF vectorial, que se amplían sin perder nitidez. Para pantallas o documentos de Office basta un PNG de unos 1000 píxeles."
+    },
+    {
+      "q": "Me avisa de que no se ha podido leer, ¿por qué?",
+      "a": "Suele deberse a poco contraste entre módulos y fondo, a un logotipo demasiado grande o a formas muy decorativas. Oscurece los módulos, reduce el logotipo o vuelve a los cuadrados y comprueba de nuevo."
+    }
+  ]
+}

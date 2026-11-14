@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HEIC to PNG converts HEIC photos from iPhones and iPads into lossless PNG images. Unlike JPG, PNG does not recompress the photo with loss, so it keeps exactly the pixels decoded from the HEIC. It is the right choice if you are going to retouch the image, crop it or use it in a design, or if an editing program or a website does not accept HEIC.",
+    "HEIC photos are compressed with HEVC (H.265), a patent-protected technology whose licensing programmes also reach anyone who decodes it as a cloud service. That is why the conversion depends on the service's HEVC decoding setting, which is off by default until a legal review approves it. While it is off, the tool does not accept files and the page explains how to export the photos from the iPhone or the Mac.",
+    "With the setting on, the photo is decoded on our server with libheif, built only to read HEIC, and saved as PNG with its colour profile, so the tones look the same as on the phone. If a HEIC file contains several images, each one is delivered in its own numbered PNG. The photo already comes out in its correct orientation.",
+    "You can keep the EXIF data, such as the date, the camera model or the exposure, which is on by default, and remove the GPS location, which is also removed by default so nobody can tell where the photo was taken. With several photos you get each PNG separately and a ZIP with all of them. The files are deleted after an hour without an account or after 24 hours with one."
+  ],
+  "steps": [
+    "Upload one or more HEIC photos.",
+    "Decide whether to keep the EXIF data and the GPS location.",
+    "Download the PNGs or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Why is the PNG so much larger than the HEIC?",
+      "a": "Because PNG compresses without loss, while HEIC compresses with loss and very efficiently. If you are not going to edit the photo and want a light file, use HEIC to JPG."
+    },
+    {
+      "q": "Why can I not use the tool right now?",
+      "a": "Because HEVC decoding is switched off on this service until the patent review is complete. On a Mac you can open the photo in Preview and choose File › Export… with the PNG format."
+    },
+    {
+      "q": "Is the photo location kept?",
+      "a": "Only if you untick “Remove the GPS location”. By default the PNG carries the rest of the EXIF data, but not the coordinates."
+    }
+  ]
+}

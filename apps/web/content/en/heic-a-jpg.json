@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HEIC to JPG converts the HEIC photos taken by iPhones and iPads into JPG files, the image format accepted by every program, website and device. It is what you need when a form, an online shop or a Windows computer will not open your phone photos, or when you want to share them without wondering whether the other person can view them.",
+    "HEIC stores images compressed with HEVC (H.265), a patented technology whose licensing programmes also reach cloud services that decode it. That is why this tool depends on a service setting, HEVC decoding, which is off by default until a legal review is complete. While it stays off, the tool does not accept files and the page explains how to save or export the photos as JPEG on the iPhone or the Mac itself, without using any service.",
+    "When it is active, each photo is decoded on our server with libheif, built for reading only, without an HEVC encoder. If the file holds several images, such as a burst, you get one numbered JPG for each of them. You choose the JPG quality from 1 to 100 %, with 90 % by default, a good balance between sharpness and size; the photo's colour profile is kept so the tones do not shift.",
+    "The EXIF data, such as the date, the camera or the exposure, is copied into the JPG unless you turn off “Keep the EXIF data”. The GPS location is removed by default so you do not reveal where the photo was taken; untick “Remove the GPS location” if you want to keep it. The photo already comes out turned the right way up. With several photos you get each JPG separately and a ZIP with all of them, and the files are deleted after an hour without an account or after 24 hours with one."
+  ],
+  "steps": [
+    "Upload one or more HEIC photos.",
+    "Set the quality and decide whether to keep the EXIF data and the location.",
+    "Download the JPGs or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Why does the tool appear disabled?",
+      "a": "Because HEVC decoding is switched off on this service until the review of its patent licences is finished. In the meantime, the page explains how to get JPEG on the iPhone or the Mac itself."
+    },
+    {
+      "q": "Which quality should I choose?",
+      "a": "The default 90 % shows no visible difference from the original. Go down to 75–80 % for lighter files to send by email; above 95 % the size grows a lot with no noticeable gain."
+    },
+    {
+      "q": "Is the photo information lost?",
+      "a": "No, except for the GPS location, which is removed by default. If a photo had no EXIF data, we tell you next to the result."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG a SVG vectoriza logotipos, iconos, ilustraciones y dibujos: convierte los píxeles de la imagen en trazados con forma, que se pueden ampliar al tamaño que quieras sin que se vean borrosos ni pixelados. El SVG resultante sirve para imprimir un logo en grande, cortarlo en vinilo o láser, editarlo en Inkscape o Illustrator o ponerlo en una web con un peso pequeño.",
+    "El trazado se hace en nuestro servidor con vtracer, un vectorizador de código abierto que agrupa los píxeles por colores parecidos y dibuja cada zona como una forma rellena, apiladas unas sobre otras. Los mejores resultados se obtienen con imágenes de colores planos y bordes nítidos; una foto también se puede vectorizar, pero dará muchísimos trazados y un aspecto de póster.",
+    "En «Colores» eliges entre conservar los colores o pasar a blanco y negro, que aplica un umbral sobre la luminosidad y produce un SVG de un solo color, ideal para sellos, firmas, siluetas o plantillas de corte; las zonas transparentes del PNG cuentan entonces como fondo blanco. El «Detalle» alto conserva formas pequeñas y matices de color, y el bajo ignora motas de hasta 10 píxeles y une colores cercanos para un resultado más limpio y ligero.",
+    "En las opciones adicionales eliges el tipo de trazado: curvas suaves, polígonos de lados rectos, que encajan con dibujos geométricos, o píxeles, que conserva el aspecto pixelado del pixel art. Las imágenes de más de 2000 píxeles por el lado mayor se reducen antes de vectorizar, porque más resolución solo añade trazados, y te lo indicamos. Con varios PNG recibes un SVG por imagen y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios PNG.",
+    "Elige color o blanco y negro y el nivel de detalle.",
+    "Descarga el SVG o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "El SVG tiene manchas o demasiados trazados, ¿qué hago?",
+      "a": "Baja el detalle a «Bajo», que elimina motas y une colores parecidos. Si el logo es de un solo color, la opción de blanco y negro da el resultado más limpio."
+    },
+    {
+      "q": "¿Recupera el texto como texto editable?",
+      "a": "No. Las letras se convierten en formas: se ven perfectas a cualquier tamaño, pero no se pueden editar como texto ni copiar."
+    },
+    {
+      "q": "¿Y si necesito volver a PNG?",
+      "a": "Usa SVG a PNG, que dibuja el SVG al tamaño en píxeles que elijas, por ejemplo para una versión grande del logotipo."
+    }
+  ]
+}

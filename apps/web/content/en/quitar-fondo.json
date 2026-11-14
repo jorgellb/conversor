@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Remove background separates the person, animal or main object in a photo and removes everything behind it. Use it to prepare product photos for an online shop or a marketplace, make a profile or ID-style photo with an even background, create stickers and collages or place an object on another design without cutting it out by hand.",
+    "It works with JPG, PNG and WEBP photos. The cut-out is made on our server with rembg and an open image segmentation model (U²-Net or IS-Net), which runs on the server itself without internet access: your photos are not sent to any outside service and are deleted after an hour without an account or after 24 hours with one. The photo is first rotated according to its EXIF orientation, and the result does not carry the original's metadata.",
+    "You can download a lossless PNG or WEBP with a transparent background, or a JPG; since JPG has no transparency, it always has a background colour, white by default. With “A colour” you pick any colour for the background, in PNG and WEBP as well. “Crop to the object” trims the image to the subject with a small margin, handy for catalogues and stickers.",
+    "In the additional options, “Refine the edges” computes a softer transition on hair, fur or skin; it is slower and applies to images of up to 4 megapixels, above which the normal cut-out is used and we tell you so. Each use counts as a heavy task in your plan: 2 a day without an account, 10 with the free account and 200 with Pro. With several photos you get each result and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more JPG, PNG or WEBP photos.",
+    "Choose the format, a transparent or coloured background and whether to crop to the object.",
+    "Download the images without background or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Which photos give the best results?",
+      "a": "Those with a clear, well-lit subject that stands out from the background. With several similar objects, or a background the same colour as the subject, the model may keep or remove too much."
+    },
+    {
+      "q": "Why does my JPG still have a white background?",
+      "a": "Because the JPG format cannot store transparency. Choose PNG or WEBP if you want a transparent background to place the object on another image."
+    },
+    {
+      "q": "The edge of the hair looks cut off, can it be improved?",
+      "a": "Turn on “Refine the edges” in the additional options. If the photo is larger than 4 megapixels, shrink it first with Resize image so the refinement can be applied."
+    }
+  ]
+}

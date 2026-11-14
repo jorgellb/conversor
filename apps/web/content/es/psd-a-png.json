@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PSD a PNG convierte archivos de Photoshop en imágenes PNG que se abren en cualquier ordenador, móvil o navegador, sin tener Photoshop instalado. Sirve para enseñar un diseño a un cliente, subir una maqueta a una web o una presentación, o sacar los elementos de un archivo que te han enviado. Admite PSD y también PSB, el formato de documento grande de Photoshop.",
+    "Con «La imagen completa» recibes un PNG con el aspecto final del documento. Se usa la imagen combinada que Photoshop guarda dentro del archivo cuando está activada la opción de maximizar la compatibilidad; si no está, se compone a partir de las capas y te lo indicamos, porque algunos efectos y capas de ajuste pueden verse algo distintos. La transparencia se conserva por defecto; si la desactivas, las zonas transparentes quedan en blanco.",
+    "Con «Cada capa visible en un PNG» recibes un ZIP con un PNG por capa, recortado a su propio contenido y con el nombre que tenía en Photoshop. También se exportan las capas que están dentro de grupos, pero no las ocultas ni los grupos en sí. Las capas que no se pueden pintar, como algunos trazos vectoriales, no van en el ZIP y te decimos cuántas son; si el archivo no tiene capas de imagen, se entrega la imagen completa.",
+    "La conversión se hace en nuestro servidor con psd-tools. Con varios archivos recibes cada resultado por separado y un ZIP con todos, y se borran a la hora si no tienes cuenta o a las 24 horas si la tienes."
+  ],
+  "steps": [
+    "Sube uno o varios archivos PSD o PSB.",
+    "Elige la imagen completa o cada capa visible.",
+    "Descarga el PNG o el ZIP con las capas."
+  ],
+  "faq": [
+    {
+      "q": "El PNG no se ve igual que en Photoshop, ¿por qué?",
+      "a": "Probablemente el archivo se guardó sin maximizar la compatibilidad y hubo que componerlo desde las capas. Ábrelo en Photoshop, activa esa opción en Preferencias › Gestión de archivos y vuelve a guardarlo."
+    },
+    {
+      "q": "¿Puedo exportar también las capas ocultas?",
+      "a": "No: solo se exportan las capas visibles. Muestra en Photoshop las que necesites antes de guardar el archivo."
+    },
+    {
+      "q": "¿Necesito el PNG en JPG o WEBP?",
+      "a": "Convierte después el resultado con Convertir imagen, que cambia el formato y permite ajustar la calidad o el tamaño."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PSD to PNG converts Photoshop files into PNG images that open on any computer, phone or browser, without Photoshop installed. Use it to show a design to a client, put a mock-up on a website or in a presentation, or pull the elements out of a file someone sent you. It accepts PSD and also PSB, Photoshop's large document format.",
+    "With “The whole image” you get one PNG with the final look of the document. It uses the combined image Photoshop stores inside the file when the maximize compatibility option is on; if it is missing, the image is composed from the layers and we tell you so, because some effects and adjustment layers may look slightly different. Transparency is kept by default; if you turn it off, transparent areas become white.",
+    "With “Each visible layer as a PNG” you get a ZIP with one PNG per layer, cropped to its own content and named as it was in Photoshop. The layers inside groups are exported, but not hidden layers or the groups themselves. Layers that cannot be drawn, such as some vector strokes, are left out of the ZIP and we tell you how many there are; if the file has no image layers, the whole image is delivered.",
+    "Conversion runs on our server with psd-tools. With several files you get each result separately and a ZIP with all of them, and they are deleted after an hour without an account or after 24 hours with one."
+  ],
+  "steps": [
+    "Upload one or more PSD or PSB files.",
+    "Choose the whole image or each visible layer.",
+    "Download the PNG or the ZIP with the layers."
+  ],
+  "faq": [
+    {
+      "q": "The PNG does not look the same as in Photoshop, why?",
+      "a": "The file was probably saved without maximize compatibility and had to be composed from its layers. Open it in Photoshop, turn that option on in Preferences › File Handling and save it again."
+    },
+    {
+      "q": "Can I also export hidden layers?",
+      "a": "No: only visible layers are exported. Show the ones you need in Photoshop before saving the file."
+    },
+    {
+      "q": "Do I need the PNG as JPG or WEBP?",
+      "a": "Convert the result afterwards with Convert image, which changes the format and lets you adjust the quality or the size."
+    }
+  ]
+}

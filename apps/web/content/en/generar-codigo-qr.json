@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "QR code generator creates QR codes ready to print on a poster, a business card, a menu or a package, or to put in a presentation or on a website. They never expire and do not go through any intermediate service: the content is written inside the code itself, so it keeps working as long as the address or the data it holds still exists.",
+    "You can encode a link; a WiFi network with its name, password and WPA/WPA2, WEP or no encryption, hidden or not; a text of up to 2900 characters; a vCard contact with name, company, job title, email, website and phone; a SEPA transfer in the EPC format read by the apps of many European banks, with beneficiary, checked IBAN, optional BIC, amount and reference; a PayPal or PayPal.Me payment with amount and currency; an email with recipient, subject and message; a phone number, an SMS or a calendar event with start, end, place and description.",
+    "In the style you choose the colours of the background, the modules and the outer and inner eyes, each with a linear or radial gradient if you like; the shape of the modules, from squares to dots or rounded ones; the shape of the eyes; a circular outline and a border. You can add a logo in PNG, JPG, WEBP, SVG or GIF, with its size, its margin and the option to remove the modules behind it; with a logo, error correction is always raised to H (30 %). The technical options set the version from 1 to 40, the encoding mode and the L, M, Q or H correction level.",
+    "It downloads as a PNG from 100 to 10,000 pixels, as SVG or as vector PDF, and the image can be copied to the clipboard. Before it is handed over, the code is drawn and read back with zxing-cpp: we warn you if it cannot be read or reads with different content. Everything happens in your browser, and you can export the settings to a JSON file to restore them another day."
+  ],
+  "steps": [
+    "Choose the type of content and fill in its details.",
+    "Adjust the colours, the shape or the logo while watching the preview.",
+    "Press “Generate QR code” and download the PNG, the SVG or the PDF."
+  ],
+  "faq": [
+    {
+      "q": "Does the QR code expire?",
+      "a": "No. It is a static code: it carries the content inside and does not depend on our website. If your address or password changes, you will need to generate a new one."
+    },
+    {
+      "q": "Which format should I choose for print?",
+      "a": "SVG or vector PDF, which scale up without losing sharpness. For screens or Office documents a PNG of about 1000 pixels is enough."
+    },
+    {
+      "q": "It warns me that the code could not be read, why?",
+      "a": "It is usually down to low contrast between modules and background, a logo that is too large or very decorative shapes. Darken the modules, shrink the logo or go back to squares and check again."
+    }
+  ]
+}
