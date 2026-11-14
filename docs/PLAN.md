@@ -93,7 +93,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 
 | Lote | Contenido | Estado |
 | --- | --- | --- |
-| G0-A. Infraestructura de proceso | Prueba de contrato 16.6 genérica y tabla del Anexo A, `default_enabled`, paridad de flags web y API, `gen_docs` con estado, motivos, 7.24 y paridad con PDF24, Playwright con f4, f6 y f7, `EXCLUDED_WORDS` con «firmas», FFmpeg fijado por fecha y SHA-256, diff-match-patch sin `^`, `${MEM_<NOMBRE>}` y perfil de 16 vCPU; URL simuladas de Playwright en la CI | Hecho (D-134 a D-141) |
+| G0-A. Infraestructura de proceso | Prueba de contrato 16.6 genérica y tabla del Anexo A, `default_enabled`, paridad de flags web y API, `gen_docs` con estado, motivos, 7.24 y paridad con PDF24, Playwright con f4, f6 y f7, `EXCLUDED_WORDS` con «firmas», FFmpeg fijado por fecha y SHA-256, diff-match-patch sin `^`, `${MEM_<NOMBRE>}` y perfil de 16 vCPU; URL simuladas de Playwright en la CI; `TOOLS.md` generado desde el índice de git | Hecho (D-134 a D-143) |
 | G0-B. CI de calidad | Lighthouse CI, regresión visual de 16.1, Playwright de 16.1 que falten, revisión de k6 | Pendiente (depende de G0-A) |
 | G1-A. Huecos | redactar-pdf (eliminar bajo el área, D-25), lector-pdf (enlaces, D-23), MozJPEG y oxipng (D-04 y D-79), notas en inglés (D-42 y D-54) | Pendiente |
 | G2-C01 a G2-C15. Contenido 8.2 | Contenido propio es/en de las 145 páginas que no lo tienen, en lotes de unas 10 | En curso (ver `PROGRESS.md`) |
