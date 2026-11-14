@@ -1,6 +1,9 @@
 """docs/TOOLS.md y docs/ERRORS.md generados (01-1, regla 7; 7.24 y 17): al día y con el motivo de cada desactivada."""
 from __future__ import annotations
 
+import json
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -57,3 +60,33 @@ def test_phase_status_comes_from_tools_notes():
         "Fases cerradas: F1, F2 y F3.")
     with pytest.raises(SystemExit, match="fases"):
         gen_docs._phase_status({})
+
+
+def _page(complete: bool, reviewed: bool = False) -> str:
+    return json.dumps({"complete": complete, "reviewed": reviewed, "intro": [], "faq": []})
+
+
+@pytest.mark.skipif(shutil.which("git") is None, reason="sin git")
+def test_content_status_comes_from_the_git_index(tmp_path, monkeypatch):
+    """La columna «Contenido propio» sale del índice de git: los archivos sin añadir de otro lote en paralelo no
+    cuentan (así TOOLS.md coincide con el árbol de su commit) y lo añadido se lee tal como está en el índice."""
+    content = tmp_path / gen_docs.CONTENT_DIR
+    content.mkdir(parents=True)
+    (content / "a.json").write_text(_page(True), encoding="utf-8")
+    (content / "b.json").write_text(_page(True, True), encoding="utf-8")
+    (content / "sin-anadir.json").write_text(_page(True), encoding="utf-8")
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    subprocess.run(["git", "-C", str(tmp_path), "add", f"{gen_docs.CONTENT_DIR}/a.json", f"{gen_docs.CONTENT_DIR}/b.json"],
+                   check=True)
+    (content / "a.json").write_text(_page(False), encoding="utf-8")  # cambio sin añadir: no cuenta
+    monkeypatch.setattr(gen_docs, "ROOT", tmp_path)
+    assert gen_docs._content() == {"a": "redactado, sin revisar", "b": "revisado"}
+
+
+def test_content_status_without_a_repository_reads_the_disk(tmp_path, monkeypatch):
+    content = tmp_path / gen_docs.CONTENT_DIR
+    content.mkdir(parents=True)
+    (content / "a.json").write_text(_page(False), encoding="utf-8")
+    monkeypatch.setenv("GIT_CEILING_DIRECTORIES", str(tmp_path.parent))
+    monkeypatch.setattr(gen_docs, "ROOT", tmp_path)
+    assert gen_docs._content() == {"a": "incompleto"}

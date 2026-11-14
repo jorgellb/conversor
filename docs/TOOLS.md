@@ -45,8 +45,8 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `generar-contrasena` / `password-generator` | navegador | — | light | F1 | activa | — → pantalla | redactado, sin revisar |
 | `png-a-jpg` / `png-to-jpg` | navegador | — | light | F5 | activa | png → jpg | redactado, sin revisar |
 | `webp-a-jpg` / `webp-to-jpg` | navegador | — | light | F5 | activa | webp → jpg | redactado, sin revisar |
-| `comprimir-imagen` / `compress-image` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp | pendiente |
-| `redimensionar-imagen` / `resize-image` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp | pendiente |
+| `comprimir-imagen` / `compress-image` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp | redactado, sin revisar |
+| `redimensionar-imagen` / `resize-image` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp | redactado, sin revisar |
 | `jpg-a-png` / `jpg-to-png` | navegador | — | light | F5 | activa | jpg → png, zip | redactado, sin revisar |
 | `webp-a-png` / `webp-to-png` | navegador | — | light | F5 | activa | webp → png, zip | redactado, sin revisar |
 | `gif-a-png` / `gif-to-png` | navegador | — | light | F5 | activa | gif → png, zip | redactado, sin revisar |
@@ -56,13 +56,13 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `jpg-a-avif` / `jpg-to-avif` | navegador | — | light | F5 | activa | jpg → avif, zip | redactado, sin revisar |
 | `bmp-a-jpg` / `bmp-to-jpg` | navegador | — | light | F5 | activa | bmp → jpg, zip | redactado, sin revisar |
 | `tiff-a-jpg` / `tiff-to-jpg` | navegador | — | light | F5 | activa | tiff → jpg, zip | redactado, sin revisar |
-| `png-a-ico` / `png-to-ico` | navegador | — | light | F5 | activa | png → ico, zip | pendiente |
-| `convertir-imagen` / `convert-image` | navegador | — | light | F5 | activa | jpg, png, webp, avif, gif, bmp, tiff, ico, svg → jpg, png, webp, avif, gif, bmp, tiff, ico, zip | pendiente |
-| `svg-a-png` / `svg-to-png` | navegador | — | light | F5 | activa | svg → png, zip | pendiente |
-| `svg-a-jpg` / `svg-to-jpg` | navegador | — | light | F5 | activa | svg → jpg, zip | pendiente |
-| `crear-favicon` / `favicon-generator` | navegador | — | light | F5 | activa | png, jpg, webp, svg → ico, png, zip | pendiente |
-| `quitar-metadatos-foto` / `remove-photo-metadata` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp, zip | pendiente |
-| `imagen-a-base64` / `image-to-base64` | navegador | — | light | F5 | activa | jpg, png, webp, gif, svg, avif, bmp, ico → txt, zip | pendiente |
+| `png-a-ico` / `png-to-ico` | navegador | — | light | F5 | activa | png → ico, zip | redactado, sin revisar |
+| `convertir-imagen` / `convert-image` | navegador | — | light | F5 | activa | jpg, png, webp, avif, gif, bmp, tiff, ico, svg → jpg, png, webp, avif, gif, bmp, tiff, ico, zip | redactado, sin revisar |
+| `svg-a-png` / `svg-to-png` | navegador | — | light | F5 | activa | svg → png, zip | redactado, sin revisar |
+| `svg-a-jpg` / `svg-to-jpg` | navegador | — | light | F5 | activa | svg → jpg, zip | redactado, sin revisar |
+| `crear-favicon` / `favicon-generator` | navegador | — | light | F5 | activa | png, jpg, webp, svg → ico, png, zip | redactado, sin revisar |
+| `quitar-metadatos-foto` / `remove-photo-metadata` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp, zip | redactado, sin revisar |
+| `imagen-a-base64` / `image-to-base64` | navegador | — | light | F5 | activa | jpg, png, webp, gif, svg, avif, bmp, ico → txt, zip | redactado, sin revisar |
 | `leer-codigo-qr` / `qr-code-reader` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif, tiff, svg, pdf → csv | pendiente |
 | `generar-codigo-qr` / `qr-code-generator` | navegador | — | light | F5 | activa | — → png, svg, pdf | pendiente |
 | `crear-collage` / `collage-maker` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif → pdf, jpg, png, zip | incompleto |

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -40,11 +41,45 @@ def _static_pages() -> set[str]:
     return set(re.findall(r'es: "([^"]+)"', block))
 
 
+CONTENT_DIR = "apps/web/content/es"
+
+
+def _git(*args: str, stdin: bytes | None = None) -> bytes:
+    return subprocess.run(["git", "-C", str(ROOT), *args], input=stdin, capture_output=True, check=True).stdout
+
+
+def _content_files() -> dict[str, bytes]:
+    """Archivos de contenido en español tal como están en el índice de git (lo que va a entrar en el commit), no en el
+    árbol de trabajo: los que otro lote en paralelo aún no ha añadido no cuentan, así `docs/TOOLS.md` coincide con el
+    árbol de su propio commit. Sin repositorio (por ejemplo, un `git archive` extraído), se leen del disco."""
+    try:
+        top = Path(_git("rev-parse", "--show-toplevel").decode().strip()).resolve()
+    except (OSError, subprocess.CalledProcessError):
+        top = None
+    if top != ROOT.resolve():
+        return {f.stem: f.read_bytes() for f in (ROOT / CONTENT_DIR).glob("*.json")}
+    paths = [p for p in _git("ls-files", "-z", "--", f"{CONTENT_DIR}/*.json").decode().split("\0")
+             if p and Path(p).parent.as_posix() == CONTENT_DIR]
+    if not paths:
+        return {}
+    out = _git("cat-file", "--batch", stdin="".join(f":{p}\n" for p in paths).encode())
+    files, pos = {}, 0
+    for p in paths:
+        header_end = out.index(b"\n", pos)
+        header = out[pos:header_end].split()
+        if len(header) != 3 or header[1] != b"blob":
+            raise SystemExit(f"git cat-file no devuelve {p}: {out[pos:header_end].decode(errors='replace')}")
+        size = int(header[2])
+        files[Path(p).stem] = out[header_end + 1:header_end + 1 + size]
+        pos = header_end + 1 + size + 1
+    return files
+
+
 def _content() -> dict[str, str]:
     content = {}
-    for f in (ROOT / "apps/web/content/es").glob("*.json"):
-        page = json.loads(f.read_text(encoding="utf-8"))
-        content[f.stem] = "revisado" if page.get("reviewed") else ("redactado, sin revisar" if page.get("complete") else "incompleto")
+    for stem, raw in _content_files().items():
+        page = json.loads(raw.decode("utf-8"))
+        content[stem] = "revisado" if page.get("reviewed") else ("redactado, sin revisar" if page.get("complete") else "incompleto")
     return content
 
 
