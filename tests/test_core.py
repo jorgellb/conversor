@@ -1,7 +1,11 @@
 """Pruebas unitarias del núcleo (sin servicios)."""
 from __future__ import annotations
 
+import os
 import shutil
+import subprocess
+import textwrap
+from pathlib import Path
 import sys
 
 import pytest
@@ -12,6 +16,8 @@ from core.filetype import detect, matches
 from core.flags import is_tool_enabled
 from core.options import parse_page_ranges
 from core.storage import sanitize_filename
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_sanitize_filename():
@@ -114,6 +120,29 @@ def test_registry_does_not_import_engines():
     for mod in ("torch", "docling", "ocrmypdf"):
         assert mod not in sys.modules
 
+
+
+def test_celery_includes_import_without_pdf_or_ai_engines():
+    """Todos los workers cargan los include de celeryapp; workerav no trae pikepdf, pypdfium2 ni fastembed."""
+    code = textwrap.dedent("""
+        import sys
+        from importlib.abc import MetaPathFinder
+
+        BLOCKED = {"pikepdf", "pypdfium2", "fastembed", "onnxruntime", "docling", "ocrmypdf"}
+
+        class Block(MetaPathFinder):
+            def find_spec(self, name, path=None, target=None):
+                if name.split(".")[0] in BLOCKED:
+                    raise ModuleNotFoundError(name)
+
+        sys.meta_path.insert(0, Block())
+        from core.celeryapp import celery_app
+        for mod in celery_app.conf.include:
+            __import__(mod)
+    """)
+    env = {**os.environ, "PYTHONPATH": os.pathsep.join(str(ROOT / p) for p in ("packages/core", "packages/tools", "apps/api"))}
+    proc = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, env=env, timeout=120)
+    assert proc.returncode == 0, proc.stderr[-2000:]
 
 def test_filetype_detection(fixtures_dir):
     assert detect(fixtures_dir / "texto.pdf").ext == "pdf"

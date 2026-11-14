@@ -23,7 +23,6 @@ from core.celeryapp import celery_app
 from core.db import session_scope
 from core.errors import AppError, ErrorCode, ToolError, message
 from core.settings import get_settings
-from tools.ai import documento
 from tools.base import ToolContext
 
 log = logging.getLogger("ai.chat")
@@ -44,6 +43,9 @@ stream_key = chat_stream_key
 
 
 def prepare(ctx: ToolContext) -> list[dict]:
+    # Aquí y no arriba: todos los workers cargan este módulo (include de celeryapp) y workerav no tiene pikepdf.
+    from tools.ai import documento
+
     inp = ctx.inputs[0]
     selected, texts = documento.text_of(ctx, inp)
     by_page = {i: t for i, t in zip(selected, texts) if t.strip()}
