@@ -17,7 +17,8 @@ import pikepdf
 
 from core.errors import ErrorCode, ToolError
 from tools.base import ToolContext, derived_name
-from tools.convert.docling_util import convert, libreoffice, page_of, parse_number, subset_pdf, table_rows
+from tools.convert.docling_util import convert, libreoffice, page_of, subset_pdf, table_rows
+from tools.numeros import parse_number
 from tools.convert.pdf_a_word import docx_from_document
 from tools.pdf.common import with_batch_zip
 

@@ -94,8 +94,9 @@ def pre_create(event: dict, session: Session, r, settings: Settings, registry: R
     plan = load_plan(session, owner.plan_id, settings)
     if size > plan.max_file_bytes or size > settings.UPLOAD_MAX_BYTES:
         return _reject(413, ErrorCode.FILE_TOO_LARGE, locale)
-    used = usage(session, owner.type, owner.id).get(spec.cost_class, 0)
-    if used >= plan.tasks_for(spec.cost_class):
+    task_class = spec.cost_for({})
+    used = usage(session, owner.type, owner.id).get(task_class, 0)
+    if used >= plan.tasks_for(task_class):
         return _reject(429, ErrorCode.QUOTA_EXCEEDED, locale)
     upload_id = uuid.uuid4().hex
     root = Path(settings.FILESTORE_PATH)

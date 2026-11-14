@@ -128,6 +128,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -322,6 +323,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -465,6 +467,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -551,6 +554,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -599,6 +603,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -668,6 +673,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -736,6 +742,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -1035,6 +1042,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf",
         "png",
@@ -1353,6 +1361,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -1473,6 +1482,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -1533,6 +1543,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -1789,6 +1800,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -2011,6 +2023,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -2290,6 +2303,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -2434,6 +2448,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -2500,6 +2515,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -2572,6 +2588,7 @@
       "where": "hybrid",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf",
         "doc",
@@ -2777,6 +2794,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -2886,6 +2904,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -3143,6 +3162,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf",
         "jpg",
@@ -3200,6 +3220,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -3251,6 +3272,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -3298,6 +3320,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -3372,6 +3395,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -3452,6 +3476,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "webp"
       ],
@@ -3769,6 +3794,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "gif"
       ],
@@ -4086,6 +4112,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "bmp"
       ],
@@ -4403,6 +4430,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "tiff"
       ],
@@ -4720,6 +4748,7 @@
       "where": "hybrid",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -5043,6 +5072,7 @@
       "where": "hybrid",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg"
       ],
@@ -5361,6 +5391,7 @@
       "where": "hybrid",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "png"
       ],
@@ -5679,6 +5710,7 @@
       "where": "hybrid",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -5863,6 +5895,7 @@
       "where": "hybrid",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -6047,6 +6080,7 @@
       "where": "hybrid",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -6231,6 +6265,7 @@
       "where": "hybrid",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -6413,6 +6448,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -6525,6 +6561,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [],
       "outputs": [],
       "phase": "F1",
@@ -6626,6 +6663,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "png"
       ],
@@ -6694,6 +6732,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "webp"
       ],
@@ -6762,6 +6801,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -6870,6 +6910,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -7039,6 +7080,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg"
       ],
@@ -7087,6 +7129,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "webp"
       ],
@@ -7135,6 +7178,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "gif"
       ],
@@ -7172,6 +7216,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg"
       ],
@@ -7246,6 +7291,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "png"
       ],
@@ -7319,6 +7365,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "avif"
       ],
@@ -7378,6 +7425,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg"
       ],
@@ -7456,6 +7504,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "bmp"
       ],
@@ -7514,6 +7563,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "tiff"
       ],
@@ -7596,6 +7646,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "png"
       ],
@@ -7729,6 +7780,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -8064,6 +8116,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "svg"
       ],
@@ -8158,6 +8211,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "svg"
       ],
@@ -8271,6 +8325,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "png",
         "jpg",
@@ -8379,6 +8434,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -8458,6 +8514,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -8535,6 +8592,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -8602,6 +8660,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [],
       "outputs": [
         "png",
@@ -10110,6 +10169,7 @@
       "where": "client",
       "worker_group": null,
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg",
         "png",
@@ -10265,6 +10325,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -10530,6 +10591,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -10714,6 +10776,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -10772,6 +10835,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -10809,6 +10873,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -10856,6 +10921,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -10918,6 +10984,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -11010,6 +11077,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -11096,6 +11164,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -11218,6 +11287,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -11256,6 +11326,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -11344,6 +11415,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -12033,6 +12105,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -12206,6 +12279,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -12253,6 +12327,7 @@
       "where": "server",
       "worker_group": "pdf",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -12360,6 +12435,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "doc",
         "docx",
@@ -12566,6 +12642,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "doc",
         "docx"
@@ -12752,6 +12829,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "xls",
         "xlsx"
@@ -12937,6 +13015,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "ppt",
         "pptx",
@@ -13123,6 +13202,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "odt"
       ],
@@ -13307,6 +13387,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "ods"
       ],
@@ -13491,6 +13572,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "odp"
       ],
@@ -13675,6 +13757,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "odg"
       ],
@@ -13859,6 +13942,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "rtf"
       ],
@@ -14043,6 +14127,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "txt"
       ],
@@ -14154,6 +14239,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "html",
         "zip"
@@ -14320,6 +14406,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "md"
       ],
@@ -14420,6 +14507,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf",
         "doc",
@@ -14566,6 +14654,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "svg"
       ],
@@ -14628,6 +14717,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pages"
       ],
@@ -14812,6 +14902,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "key"
       ],
@@ -14996,6 +15087,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "numbers"
       ],
@@ -15180,6 +15272,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "vsd",
         "vsdx"
@@ -15365,6 +15458,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pub"
       ],
@@ -15549,6 +15643,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pub"
       ],
@@ -15733,6 +15828,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "epub"
       ],
@@ -15831,6 +15927,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "mobi"
       ],
@@ -15929,6 +16026,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "azw3"
       ],
@@ -16027,6 +16125,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "fb2"
       ],
@@ -16125,6 +16224,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf",
         "doc",
@@ -16239,6 +16339,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [],
       "outputs": [
         "pdf"
@@ -16442,6 +16543,7 @@
       "where": "server",
       "worker_group": "office",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "csv"
       ],
@@ -16626,6 +16728,7 @@
       "where": "server",
       "worker_group": "ocr",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -16841,6 +16944,7 @@
       "where": "server",
       "worker_group": "ocr",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -16950,6 +17054,7 @@
       "where": "server",
       "worker_group": "ocr",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "pdf"
       ],
@@ -17071,6 +17176,7 @@
       "where": "server",
       "worker_group": "ocr",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "jpg",
         "png",
@@ -17192,6 +17298,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -17299,6 +17406,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -17407,6 +17515,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -17515,6 +17624,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -17628,6 +17738,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -17741,6 +17852,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -17849,6 +17961,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -17956,6 +18069,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -18067,6 +18181,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -18175,6 +18290,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -18283,6 +18399,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -18414,6 +18531,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -18515,6 +18633,7 @@
       "where": "hybrid",
       "worker_group": "convert",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -18588,6 +18707,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "light",
+      "task_class": "heavy",
       "inputs": [
         "pdf"
       ],
@@ -19398,6 +19518,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "ogg",
         "opus",
@@ -19509,6 +19630,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "opus",
         "ogg"
@@ -19619,6 +19741,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "m4a"
       ],
@@ -19728,6 +19851,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "mp4",
         "m4a"
@@ -19838,6 +19962,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "aac",
         "m4a"
@@ -19948,6 +20073,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "flac"
       ],
@@ -20057,6 +20183,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "wav"
       ],
@@ -20166,6 +20293,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "wma"
       ],
@@ -20275,6 +20403,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "amr"
       ],
@@ -20384,6 +20513,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "aiff",
         "aif"
@@ -20494,6 +20624,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "ogg",
         "opus",
@@ -20595,6 +20726,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "mp3"
       ],
@@ -20694,6 +20826,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "mp3",
         "wav",
@@ -20823,6 +20956,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "mp3",
         "wav",
@@ -20938,6 +21072,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "mp3",
         "wav",
@@ -21051,6 +21186,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "mp3",
         "wav",
@@ -21155,6 +21291,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "mp3",
         "wav",
@@ -21397,6 +21534,7 @@
       "where": "server",
       "worker_group": "av",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "mp4",
         "mov",
@@ -21622,6 +21760,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "heic"
       ],
@@ -21941,6 +22080,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "cbz"
       ],
@@ -22012,6 +22152,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "cbr"
       ],
@@ -22082,6 +22223,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "djvu"
       ],
@@ -22156,6 +22298,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "eml"
       ],
@@ -22225,6 +22368,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "msg"
       ],
@@ -22294,6 +22438,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "dxf"
       ],
@@ -22418,6 +22563,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "heic"
       ],
@@ -22491,6 +22637,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "heic"
       ],
@@ -22552,6 +22699,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "cr2",
         "nef",
@@ -22687,6 +22835,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "psd",
         "psb"
@@ -22762,6 +22911,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "png"
       ],
@@ -22881,6 +23031,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "light",
+      "task_class": "light",
       "inputs": [
         "jpg"
       ],
@@ -23000,6 +23151,7 @@
       "where": "server",
       "worker_group": "media",
       "cost_class": "heavy",
+      "task_class": "heavy",
       "inputs": [
         "jpg",
         "png",
@@ -23128,6 +23280,7 @@
       "where": "server",
       "worker_group": "ai",
       "cost_class": "ai",
+      "task_class": "ai",
       "inputs": [
         "pdf"
       ],
@@ -23378,6 +23531,7 @@
       "where": "server",
       "worker_group": "ai",
       "cost_class": "ai",
+      "task_class": "ai",
       "inputs": [
         "pdf"
       ],
@@ -23493,6 +23647,7 @@
       "where": "server",
       "worker_group": "ai",
       "cost_class": "ai",
+      "task_class": "ai",
       "inputs": [
         "pdf"
       ],
@@ -23814,6 +23969,7 @@
       "where": "server",
       "worker_group": "ai",
       "cost_class": "ai",
+      "task_class": "ai",
       "inputs": [
         "pdf"
       ],
@@ -24047,6 +24203,7 @@
       "where": "server",
       "worker_group": "ai",
       "cost_class": "ai",
+      "task_class": "ai",
       "inputs": [
         "pdf"
       ],
@@ -24264,6 +24421,7 @@
       "where": "server",
       "worker_group": "ai",
       "cost_class": "ai",
+      "task_class": "ai",
       "inputs": [
         "pdf"
       ],
@@ -24573,6 +24731,7 @@
       "where": "server",
       "worker_group": "convert",
       "cost_class": "ai",
+      "task_class": "heavy",
       "inputs": [
         "jpg",
         "png",
@@ -24745,6 +24904,7 @@
       "where": "server",
       "worker_group": "ocr",
       "cost_class": "ai",
+      "task_class": "ai",
       "inputs": [
         "jpg",
         "png",

@@ -143,7 +143,8 @@ def find_orphans() -> dict:
 
 
 def _settle_ai(session, r, job: Job) -> None:
-    if job.cost_class == "ai" and (job.ai_reserved or 0) > (job.ai_used or 0):
+    # Por la reserva y no por la clase de coste: imagen-a-excel reserva una petición y cuenta como tarea pesada (D-161).
+    if (job.ai_reserved or 0) > (job.ai_used or 0):
         from core.ai.client import settle_job
 
         settle_job(session, r, get_settings(), job)

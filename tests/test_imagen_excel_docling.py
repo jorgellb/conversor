@@ -63,6 +63,25 @@ def test_without_ai_an_unrecognised_table_lists_the_text_or_fails_in_csv(make_ct
     assert err.value.code == ErrorCode.NO_TABLES and err.value.detail == "image_no_tables"
 
 
+def test_ocr_languages_change_the_cells(make_ctx, fixtures_dir):
+    """«Idiomas del OCR» llega a Docling: en español se leen las tildes y la eñe, en inglés no. Los códigos postales con
+    un cero delante se quedan en texto."""
+    def rows(languages: list[str]) -> list[list]:
+        out = run(TOOL, make_ctx(TOOL, [fixtures_dir / "tabla-acentos.png"], {"idiomas": languages, "usar_ia": False}))
+        return next(iter(_values(out[0]["path"]).values()))
+
+    spanish, english = rows(["spa"]), rows(["eng"])
+    assert ["Almería", "04001", "Andalucía"] in spanish and ["Logroño", 26001, "La Rioja"] in spanish, spanish
+    assert spanish != english and not any("Logroño" in str(c) for r in english for c in r), english
+
+
+def test_csv_names_follow_the_locale(make_ctx, fixtures_dir):
+    ctx = make_ctx(TOOL, [fixtures_dir / "tabla-hoja.png"], {"formato": "csv"})
+    ctx.locale = "en"
+    out = run(TOOL, ctx)
+    assert out[0]["name"] == "tabla-hoja-table-1.csv"
+
+
 def test_pixel_bomb_is_rejected_before_docling(make_ctx, fixtures_dir):
     with pytest.raises(ToolError) as err:
         run(TOOL, make_ctx(TOOL, [fixtures_dir / "gigante.png"]))

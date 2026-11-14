@@ -122,6 +122,11 @@ DELIMITERS = {"coma": ("Coma (,)", "Comma (,)"), "punto_y_coma": ("Punto y coma 
               "tabulador": ("Tabulador", "Tab")}
 
 
+# Idiomas de Tesseract que instala la imagen worker-convert (workers/Dockerfile), donde corre imagen-a-excel; workerocr
+# (imagen-a-texto, ocr-pdf y ticket-a-excel) tiene tesseract-ocr-all. Se comprueba al validar, antes de encolar (D-160).
+CONVERT_LANGUAGES = ("spa", "eng", "cat", "eus", "glg", "fra", "deu", "ita", "por")
+
+
 class ImagenExcelOptions(BaseModel):
     """imagen-a-excel (7.6): el Anexo A no fija opciones; las de D-160, con las hojas y los números de pdf-a-excel (A.9)."""
 
@@ -142,7 +147,10 @@ class ImagenExcelOptions(BaseModel):
     @field_validator("idiomas")
     @classmethod
     def _codes(cls, v: list[str]) -> list[str]:
-        return _check_codes(v)
+        missing = [code for code in _check_codes(v) if code not in CONVERT_LANGUAGES]
+        if missing:
+            raise ValueError(f"Idiomas no disponibles en esta herramienta: {', '.join(missing)} (sí: {', '.join(CONVERT_LANGUAGES)})")
+        return v
 
 
 class TicketOptions(BaseModel):
@@ -205,7 +213,9 @@ SPECS: list[ToolSpec] = [
             "Turn the tables in a photo or a screenshot into Excel or CSV; if they are not recognised, AI rebuilds them.",
             AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=2000, option="usar_ia"),
             inputs=IMAGE_INPUTS, outputs=("xlsx", "csv", "zip"), worker_group="convert",
-            cost=lambda o: "ai" if o.get("usar_ia", True) else "heavy",
+            # Siempre pesada: Docling y Tesseract corren en `workerconvert` con la IA encendida o apagada (9.3); las
+            # peticiones de IA van aparte, en su propio límite diario (D-161).
+            cost=lambda o: "heavy",
             related=("pdf-a-excel", "imagen-a-texto", "ticket-a-excel")),
     # 6.3: 1 petición por ticket; la API reserva una por archivo al encolar (D-163). El OCR va antes en `workerocr`.
     ai_tool("ticket-a-excel", "receipt-to-excel", "Ticket a Excel", "Receipt to Excel", TicketOptions, "tools.ai.ticket:run",

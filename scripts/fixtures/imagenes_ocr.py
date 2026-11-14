@@ -18,10 +18,18 @@ FONTS = Path(__file__).resolve().parents[2] / "apps" / "web" / "public" / "fonts
 DOCUMENTO = ["El señor Muñoz pidió una canción", "en la pequeña aldea de Logroño.", "Año 2026: información útil y rápida."]
 CAPTURA = ["Configuración de la cuenta", "Correo electrónico verificado", "Last login: Monday 14 November"]
 TABLA = [["Producto", "Unidades", "Precio"], ["Manzanas", "12", "3,50"], ["Peras", "7", "2,10"], ["Naranjas", "1.230", "15,00"]]
+# Con tildes y eñes (el idioma del OCR cambia lo que se lee) y códigos postales con un cero delante (se quedan en texto).
+TABLA_ACENTOS = [["Población", "Código", "Región"], ["Logroño", "26001", "La Rioja"], ["Cádiz", "11001", "Andalucía"],
+                 ["Almería", "04001", "Andalucía"]]
 TICKET_ES = {
     "comercio": "FRUTERIA LA HUERTA S.L.", "nif": "B12345678", "fecha": "14/11/2026", "hora": "10:32",
     "lineas": [("PAN DE BARRA", "1", "1,20"), ("LECHE ENTERA 1L", "2", "2,30"), ("MANZANAS 1KG", "1", "2,49")],
     "impuestos": [("4%", "3,37", "0,13"), ("10%", "2,26", "0,23")], "total": "5,99", "pago": "TARJETA",
+}
+# El de la frutería con conceptos con tildes y eñes: el idioma del OCR cambia lo que se lee (ticket-a-excel).
+TICKET_ACENTOS = {
+    **TICKET_ES, "comercio": "FRUTERIA LA HUERTA S.L. - LOGROÑO",
+    "lineas": [("PIÑA TROPICAL", "1", "1,20"), ("JAMÓN COCIDO", "2", "2,30"), ("LIMÓN ECOLÓGICO", "1", "2,49")],
 }
 TICKET_EN = {
     "comercio": "CORNER BAKERY LTD", "nif": "VAT GB123456789", "fecha": "11/14/2026", "hora": "08:15",
@@ -78,6 +86,28 @@ def de_lado(path: Path) -> Path:
     return path
 
 
+def gris_16(path: Path) -> Path:
+    """El documento escaneado en gris de 16 bits (I;16), como lo guardan algunos escáneres: tinta gris oscura (no negro
+    puro) sobre papel algo gris, valor de 8 bits × 257."""
+    img = text_image(DOCUMENTO, size=(1800, 700)).filter(ImageFilter.GaussianBlur(0.6)).point(lambda v: 45 + v * 190 // 255)
+    img.convert("I").point(lambda v: v * 257).convert("I;16").save(path, format="PNG", dpi=(300, 300))
+    return path
+
+
+def movil_mpo(path: Path) -> Path:
+    """Foto de móvil con mapa de ganancia HDR: un MPO (JPEG con una segunda imagen) guardada de lado con la orientación
+    EXIF 6 (hay que girarla 90° en sentido horario para verla derecha)."""
+    from PIL import Image as Img
+
+    upright = text_image(DOCUMENTO, size=(1800, 700)).convert("RGB")
+    stored = upright.transpose(Img.Transpose.ROTATE_90)  # lo que guarda el sensor; la orientación 6 lo deshace
+    exif = Img.Exif()
+    exif[0x0112] = 6
+    gain = stored.resize((stored.width // 4, stored.height // 4))
+    stored.save(path, format="MPO", save_all=True, append_images=[gain], exif=exif, quality=90, dpi=(200, 200))
+    return path
+
+
 def paginas_tiff(path: Path) -> Path:
     pages = [text_image([f"Primera página del fax número {n}"], size=(1600, 400)) for n in (1,)]
     pages.append(text_image(["Segunda página: acción y corrección"], size=(1600, 400)))
@@ -94,8 +124,9 @@ def sin_texto(path: Path) -> Path:
     return path
 
 
-def tabla(path: Path, grid: bool = True, screenshot: bool = False) -> Path:
+def tabla(path: Path, grid: bool = True, screenshot: bool = False, rows: list[list[str]] = TABLA) -> Path:
     """Tabla impresa con rejilla (o captura de hoja de cálculo con cabecera gris; o sin líneas)."""
+    TABLA = rows  # noqa: N806 - la misma tabla de siempre salvo que se pida otra
     cw, rh, x0, y0 = 380, 90, 80, 160
     img = Image.new("RGB", (x0 * 2 + cw * 3, y0 + rh * len(TABLA) + 120), "white")
     draw = ImageDraw.Draw(img)
@@ -191,13 +222,17 @@ def generate(out: Path) -> dict[str, Path]:
         "ocr-inclinada.png": inclinada(out / "ocr-inclinada.png"),
         "ocr-de-lado.png": de_lado(out / "ocr-de-lado.png"),
         "ocr-paginas.tiff": paginas_tiff(out / "ocr-paginas.tiff"),
+        "ocr-16bits.png": gris_16(out / "ocr-16bits.png"),
+        "ocr-movil.jpg": movil_mpo(out / "ocr-movil.jpg"),
         "ocr-sin-texto.png": sin_texto(out / "ocr-sin-texto.png"),
         "tabla.png": tabla(out / "tabla.png"),
         "tabla-hoja.png": tabla(out / "tabla-hoja.png", grid=True, screenshot=True),
+        "tabla-acentos.png": tabla(out / "tabla-acentos.png", rows=TABLA_ACENTOS),
         "tabla-sin-rejilla.png": tabla(out / "tabla-sin-rejilla.png", grid=False),
         "tabla-torcida.png": tabla_torcida(out / "tabla-torcida.png"),
         "tabla-manuscrita.png": tabla_manuscrita(out / "tabla-manuscrita.png"),
         "ticket.png": ticket(out / "ticket.png", TICKET_ES),
+        "ticket-acentos.png": ticket(out / "ticket-acentos.png", TICKET_ACENTOS),
         "ticket-torcido.jpg": ticket(out / "ticket-torcido.jpg", TICKET_ES, rotate=3, noise=True),
         "ticket-en.png": ticket(out / "ticket-en.png", TICKET_EN, labels={"qty": "QTY", "total": "TOTAL", "base": "NET",
                                                                             "tax": "VAT", "pay": "PAID"}),

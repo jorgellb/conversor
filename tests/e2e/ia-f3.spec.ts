@@ -148,20 +148,41 @@ test("lote C de F3: imagen a texto sin IA, imagen a Excel con la IA opcional y t
   await expect(page.locator("[data-ai-panel]")).toContainText("Las herramientas de IA necesitan una cuenta gratuita.");
   await ia.uncheck();
   await expect(page.locator("[data-ai-panel]")).toHaveCount(0);
+  await expect(page.locator('input[type="file"]').first()).toHaveAttribute("accept", ".jpg,.png,.webp,.tiff,.bmp,.gif");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.getByLabel("Formato")).toHaveValue("xlsx");
   await expect(page.getByLabel("Hojas")).toHaveValue("una_por_tabla");
   await expect(page.getByLabel("Separador")).toHaveCount(0);  // solo en CSV
+  await page.getByText("Opciones adicionales", { exact: true }).click();
+  await expect(page.getByLabel("Convertir los números (1.234,56) en números de verdad")).toBeChecked();
+  await expect(page.getByLabel("Idiomas del OCR")).toHaveValue("spa, eng");
   await page.getByLabel("Formato").selectOption("csv");
   await expect(page.getByLabel("Separador")).toHaveValue("coma");
   await expect(page.getByLabel("Hojas")).toHaveCount(0);
+  await expect(page.getByLabel("Convertir los números (1.234,56) en números de verdad")).toHaveCount(0);  // solo en XLSX
 
   // ticket-a-excel: hasta 20 tickets; las filas y el separador solo para CSV.
   await page.goto("/en/receipt-to-excel");
   await expect(page.getByRole("heading", { name: "Receipt to Excel" })).toBeVisible();
   await expect(page.locator("[data-ai-panel]")).toContainText("AI tools need a free account.");
+  await expect(page.locator('input[type="file"]').first()).toHaveAttribute("accept", ".jpg,.png,.webp,.tiff,.bmp,.gif");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.getByLabel("Format")).toHaveValue("xlsx");
   await expect(page.getByLabel("CSV rows")).toHaveCount(0);
   await page.getByLabel("Format").selectOption("csv");
   await expect(page.getByLabel("CSV rows")).toHaveValue("ticket");
   await expect(page.getByLabel("Delimiter")).toHaveValue("punto_y_coma");
   await page.getByText("More options", { exact: true }).click();
   await expect(page.getByLabel("Receipt language (for OCR)")).toHaveValue("auto");
+
+  // Las mismas opciones en español.
+  await page.goto("/es/ticket-a-excel");
+  await expect(page.getByRole("heading", { name: "Ticket a Excel" })).toBeVisible();
+  await expect(page.getByLabel("Formato")).toHaveValue("xlsx");
+  await expect(page.getByLabel("Filas del CSV")).toHaveCount(0);
+  await page.getByLabel("Formato").selectOption("csv");
+  await expect(page.getByLabel("Filas del CSV")).toHaveValue("ticket");
+  await expect(page.getByLabel("Separador")).toHaveValue("punto_y_coma");
+  await page.getByText("Opciones adicionales", { exact: true }).click();
+  await expect(page.getByLabel("Idioma de los tickets (para el OCR)")).toHaveValue("auto");
 });

@@ -95,7 +95,7 @@ function LimitsTable({ tool, locale, t }: { tool: ToolSpec; locale: Locale; t: A
   const rows = [
     ["maxFile", (p: Record<string, unknown>) => t("mb", { value: Number(p.max_file_mb) })],
     ["filesPerTask", (p: Record<string, unknown>) => String(p.files_per_task)],
-    ["dailyTasks", (p: Record<string, unknown>) => String(tool.cost_class === "heavy" ? p.heavy_tasks_day : p.light_tasks_day)],
+    ["dailyTasks", (p: Record<string, unknown>) => String((tool.task_class ?? tool.cost_class) === "heavy" ? p.heavy_tasks_day : p.light_tasks_day)],
     ["retention", (p: Record<string, unknown>) => t("hours", { value: Number(p.retention_hours) })],
   ] as const;
   const plans = ["anon", "free", "pro"] as const;

@@ -21,10 +21,10 @@ TOOL = "imagen-a-excel"
 MAX_PAGES = 10  # páginas de un TIFF: cada una es una pasada de Docling
 MAX_TEXT = 24000  # caracteres de OCR que se mandan al modelo (una imagen no suele pasar de unos pocos miles)
 TEXTS = {
-    "es": {"table": "Tabla {n}", "tables": "Tablas", "text": "Texto", "suffix": "-tablas", "found": "Tablas reconocidas sin IA: {n}.",
+    "es": {"table": "Tabla {n}", "tables": "Tablas", "csv": "tabla", "text": "Texto", "suffix": "-tablas", "found": "Tablas reconocidas sin IA: {n}.",
            "no_tables": "No se ha encontrado ninguna tabla: van las líneas de texto de la imagen, una por fila.",
            "ocr": "Buscando la tabla con IA…", "ai": "La tabla no se reconocía y se ha reconstruido con IA."},
-    "en": {"table": "Table {n}", "tables": "Tables", "text": "Text", "suffix": "-tables", "found": "Tables recognised without AI: {n}.",
+    "en": {"table": "Table {n}", "tables": "Tables", "csv": "table", "text": "Text", "suffix": "-tables", "found": "Tables recognised without AI: {n}.",
            "no_tables": "No table was found: the image's lines of text are listed, one per row.",
            "ocr": "Looking for the table with AI…", "ai": "The table was not recognised and has been rebuilt with AI."},
 }
@@ -96,7 +96,7 @@ def _deliver(ctx: ToolContext, tables: list[dict], lines: list[str], note: str) 
     for k, table in enumerate(tables, start=1):
         path = ctx.work / f"tabla-{k}.csv"
         path.write_bytes(hojas.csv_bytes(([table["header"]] if table["header"] else []) + table["rows"], o.delimitador, ctx.locale))
-        files.append((path, f"{stem}-tabla-{k}.csv"))
+        files.append((path, f"{stem}-{t['csv']}-{k}.csv"))
     if len(files) == 1:
         name = files[0][1]
         dst = ctx.output(name)

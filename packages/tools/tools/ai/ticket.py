@@ -142,8 +142,10 @@ def _preprocess(ctx: ToolContext, src: Path, n: int, k: int) -> Path:
     """Escala de grises, contraste y, en tickets pequeños, el doble de tamaño: Tesseract lee mejor la letra térmica."""
     from PIL import Image, ImageFilter, ImageOps
 
+    from tools.ocr.imagen import to_8bit
+
     with Image.open(src) as img:
-        gray = ImageOps.autocontrast(img.convert("L").filter(ImageFilter.MedianFilter(3)))
+        gray = ImageOps.autocontrast(to_8bit(img).convert("L").filter(ImageFilter.MedianFilter(3)))
     if gray.width < 1000 and gray.width * gray.height * 4 <= ctx.settings.IMAGE_MAX_PIXELS:
         gray = gray.resize((gray.width * 2, gray.height * 2), Image.LANCZOS)
     dst = ctx.work / f"ticket-{n}-{k}.png"

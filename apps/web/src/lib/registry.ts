@@ -39,6 +39,8 @@ export interface ToolSpec {
   where: "client" | "server" | "hybrid";
   worker_group: string;
   cost_class: "light" | "heavy" | "ai";
+  /** Clase de las tareas diarias que gasta con sus opciones por defecto (imagen-a-excel: heavy aunque sea de IA, D-161). */
+  task_class?: "light" | "heavy" | "ai";
   inputs: string[];
   outputs: string[];
   phase: string;

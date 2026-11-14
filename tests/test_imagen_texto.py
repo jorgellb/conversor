@@ -83,6 +83,63 @@ def test_autorotate_reads_a_sideways_page(make_ctx, fixtures_dir):
     assert "Logroño" in rotated and "Logroño" not in plain
 
 
+def test_16_bit_grayscale_scan_is_read(make_ctx, fixtures_dir):
+    """Un PNG de 16 bits (I;16) se pasa a 8 bits antes del OCR: con `convert("RGB")` todo lo que no es negro puro salía
+    blanco y no se leía nada."""
+    text = _text(run(TOOL, make_ctx(TOOL, [fixtures_dir / "ocr-16bits.png"])))
+    assert "Logroño" in text and "Muñoz" in text, text
+
+
+def test_phone_photo_mpo_follows_its_exif_orientation(make_ctx, fixtures_dir):
+    """Las fotos de móvil con HDR son MPO (JPEG con una segunda imagen): se giran con su orientación EXIF (6) aunque
+    «Girar» esté apagado, igual que un JPEG normal."""
+    from PIL import Image
+
+    with Image.open(fixtures_dir / "ocr-movil.jpg") as img:
+        assert img.format == "MPO" and img.getexif().get(0x0112) == 6
+    text = _text(run(TOOL, make_ctx(TOOL, [fixtures_dir / "ocr-movil.jpg"], {"autorrotar": False})))
+    assert "Logroño" in text and "canción" in text, text
+
+
+def test_to_8bit_scales_high_bit_depth_modes():
+    from PIL import Image
+
+    from tools.ocr.imagen import to_8bit
+
+    def values(img) -> list[int]:
+        return list(img.get_flattened_data())
+
+    sixteen = Image.new("I;16", (4, 1))
+    sixteen.putdata([0, 1000, 30000, 65535])
+    assert to_8bit(sixteen).mode == "L" and values(to_8bit(sixteen)) == [0, 3, 116, 255]
+    floats = Image.new("F", (3, 1))
+    floats.putdata([0.0, 0.5, 1.0])
+    assert values(to_8bit(floats)) == [0, 127, 255]
+    wide = Image.new("I", (3, 1))
+    wide.putdata([-100, 0, 100])
+    low, mid, high = values(to_8bit(wide))
+    assert low == 0 and 126 <= mid <= 128 and high == 255
+    gray = Image.new("L", (1, 1), 9)
+    assert to_8bit(gray) is gray
+
+
+def test_deskew_never_grows_the_page_past_the_pixel_limit(make_ctx, fixtures_dir):
+    """12.3: girar con `expand` agranda la página; si pasa del límite de píxeles, se reduce (y su resolución con ella)."""
+    from PIL import Image
+
+    from tools.ocr.imagen import frames, straighten
+
+    ctx = make_ctx(TOOL, [fixtures_dir / "ocr-inclinada.png"])
+    page = frames(ctx, ctx.inputs[0], 0)[0]
+    with Image.open(page[0]) as img:
+        area = img.width * img.height
+    ctx.settings = ctx.settings.model_copy(update={"IMAGE_MAX_PIXELS": area + 1000})  # cabe la original, no la girada
+    path, dpi = straighten(ctx, page, rotate=False, deskew=True)
+    with Image.open(path) as img:
+        assert path != page[0] and img.width * img.height <= area + 1000
+    assert dpi < page[1]
+
+
 def test_multipage_tiff_keeps_pages_apart(make_ctx, fixtures_dir):
     from docx import Document
 

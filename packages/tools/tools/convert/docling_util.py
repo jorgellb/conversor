@@ -122,26 +122,6 @@ def table_rows(table, doc) -> list[list[str]]:
     return [header, *rows] if header is not None else rows
 
 
-NUMBER = {"es": re.compile(r"^-?(\d{1,3}(\.\d{3})+|\d+)(,\d+)?$"), "en": re.compile(r"^-?(\d{1,3}(,\d{3})+|\d+)(\.\d+)?$")}
-
-
-def parse_number(text: str, locale: str) -> int | float | None:
-    """Número escrito como en el idioma de la página («1.234,56» en español, «1,234.56» en inglés) o None."""
-    t = text.strip().replace(" ", "").replace(" ", "")
-    pattern = NUMBER.get(locale, NUMBER["es"])
-    if not t or not pattern.match(t):
-        return None
-    if locale == "en":
-        t = t.replace(",", "")
-    else:
-        t = t.replace(".", "").replace(",", ".")
-    try:
-        value = float(t)
-    except ValueError:
-        return None
-    return int(value) if value.is_integer() and "." not in t else value
-
-
 def libreoffice(ctx: ToolContext, src: Path, target: str, infilter: str | None = None) -> Path:
     """Convierte con LibreOffice local (perfil dentro del trabajo, entorno vacío y sin red)."""
     profile = ctx.work / "lo-perfil"

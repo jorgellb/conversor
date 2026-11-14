@@ -48,11 +48,47 @@ def _dpi(img) -> int:
     return dpi if 70 <= dpi <= 1200 else DEFAULT_DPI
 
 
+def _orientation(img) -> int:
+    """Orientación EXIF (1 a 8) de una foto en cualquier formato que la lleve (JPEG, MPO, WebP, PNG, TIFF); 1 si no."""
+    try:
+        value = int(img.getexif().get(0x0112, 1))
+    except (OSError, ValueError, TypeError, SyntaxError):
+        return 1
+    return value if 1 <= value <= 8 else 1
+
+
+def to_8bit(img):
+    """Gris de 16 bits (I;16*, I) o de coma flotante (F) a gris de 8 bits sin quemar la imagen.
+
+    `convert("L")` o `convert("RGB")` recortan a 255 cualquier valor mayor, así que una página de 16 bits saldría casi
+    blanca. Los modos de 16 bits se dividen entre 257 (65.535 → 255); los de 32 bits y los de coma flotante se llevan
+    de su mínimo a su máximo a 0-255 (o se dejan si ya están en 0-255; F en 0-1 se multiplica por 255).
+    """
+    mode = img.mode
+    if mode.startswith("I;16"):
+        return img.convert("I").point(lambda v: v / 257).convert("L")
+    if mode not in ("I", "F"):
+        return img
+    lo, hi = img.getextrema()
+    if mode == "F" and 0 <= lo and hi <= 1:
+        scale, offset = 255.0, 0.0
+    elif 0 <= lo and hi <= 255:
+        scale, offset = 1.0, 0.0
+    elif 0 <= lo and hi <= 65535 and mode == "I":
+        scale, offset = 1 / 257, 0.0
+    else:
+        scale = 255.0 / (hi - lo) if hi > lo else 1.0
+        offset = 0.5 - lo * scale  # redondeo: el modo I trunca
+    return img.point(lambda v: v * scale + offset).convert("L")
+
+
 def frames(ctx: ToolContext, inp: InputFile, n: int, max_frames: int | None = None) -> list[tuple[Path, int]]:
     """Cada página de la imagen (los TIFF pueden tener varias) como PNG o JPEG listo para OCR, con su resolución.
 
     Comprueba el límite de píxeles antes de descomprimir nada y el de páginas del plan; quita la transparencia sobre
-    blanco y aplica la orientación EXIF de las fotos. Un JPEG normal se usa tal cual (img2pdf no lo recomprime).
+    blanco, pasa a 8 bits las imágenes de 16 bits o de coma flotante (escáneres) y aplica la orientación EXIF de las
+    fotos en cualquier formato. Un JPEG normal y derecho se usa tal cual (img2pdf no lo recomprime); un MPO (el JPEG de
+    los móviles con mapa de ganancia HDR) se trata como JPEG, pero solo con su primera imagen.
     """
     from PIL import Image, ImageOps, ImageSequence
 
@@ -63,7 +99,7 @@ def frames(ctx: ToolContext, inp: InputFile, n: int, max_frames: int | None = No
         if count > limit:
             raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{count} páginas")
         dpi = _dpi(img)
-        orientation = img.getexif().get(0x0112, 1) if img.format == "JPEG" else 1
+        orientation = _orientation(img)
         if img.format == "JPEG" and img.mode in ("RGB", "L") and orientation == 1:
             dst = ctx.work / f"img-{n}-0.jpg"
             shutil.copyfile(inp.path, dst)
@@ -73,7 +109,9 @@ def frames(ctx: ToolContext, inp: InputFile, n: int, max_frames: int | None = No
             if frame.width * frame.height > ctx.settings.IMAGE_MAX_PIXELS:
                 raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Imagen demasiado grande")
             try:
-                page = ImageOps.exif_transpose(frame) if orientation != 1 else frame.copy()
+                # Cada página de un TIFF puede llevar su propia orientación.
+                page = ImageOps.exif_transpose(frame) if (_orientation(frame) if k else orientation) != 1 else frame.copy()
+                page = to_8bit(page)
                 if page.mode in ("RGBA", "LA", "P", "PA") or "transparency" in page.info:
                     rgba = page.convert("RGBA")
                     page = Image.new("RGB", rgba.size, "white")
@@ -110,7 +148,7 @@ def skew_angle(img) -> float:
     """
     from PIL import Image, ImageOps
 
-    gray = img.convert("L")
+    gray = to_8bit(img).convert("L")
     scale = 1000 / max(gray.size)
     if scale < 1:
         gray = gray.resize((max(1, int(gray.width * scale)), max(1, int(gray.height * scale))))
@@ -144,6 +182,14 @@ def straighten(ctx: ToolContext, page: tuple[Path, int], rotate: bool, deskew: b
         if abs(angle) >= 0.2:
             work = work.convert("L" if work.mode == "1" else work.mode).rotate(angle, resample=Image.BICUBIC, expand=True,
                                                                                 fillcolor=fill)
+            # Al girar con `expand` la página crece (hasta 1,5 veces con 15°): se reduce para no pasar del límite de 12.3
+            # con lo que van a procesar Tesseract, OCRmyPDF o Docling. La resolución baja igual y el tamaño no cambia.
+            limit = ctx.settings.IMAGE_MAX_PIXELS
+            if work.width * work.height > limit:
+                scale = (limit / (work.width * work.height)) ** 0.5
+                size = (max(1, int(work.width * scale)), max(1, int(work.height * scale)))
+                work = work.resize(size, Image.LANCZOS)
+                dpi = max(1, int(dpi * scale))
         dst = path.with_name(f"{path.stem}-recta.png")
         work.save(dst, format="PNG", dpi=(dpi, dpi))
     return dst, dpi

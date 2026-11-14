@@ -131,6 +131,8 @@ class ToolSpec:
             "where": self.where,
             "worker_group": self.worker_group,
             "cost_class": self.cost_class,
+            # Límite diario de tareas que gasta con sus opciones por defecto (puede no coincidir con la clase: D-161).
+            "task_class": self.cost_for({}),
             "inputs": list(self.inputs),
             "outputs": list(self.outputs),
             "phase": self.phase,

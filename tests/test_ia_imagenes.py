@@ -135,6 +135,68 @@ def test_without_ai_no_account_consent_or_requests(api, ai, anon_token, tus_uplo
     assert resp.status_code == 401
 
 
+def _heavy_tasks(services, uid: str) -> int | None:
+    from sqlalchemy import create_engine, text
+
+    with create_engine(services["db_url"]).begin() as conn:
+        return conn.execute(text("SELECT tasks FROM usage_daily WHERE owner_id = :u AND cost_class = 'heavy'"), {"u": uid}).scalar()
+
+
+def test_with_ai_on_it_still_counts_as_a_heavy_task(api, ai, user_token, tus_upload, fixtures_dir, services, hops, monkeypatch):
+    """9.3: Docling y Tesseract corren siempre en `workerconvert`, así que la tarea es pesada aunque «usar IA» esté
+    encendida y Docling devuelva la petición reservada; agotadas las pesadas del día, no se encola nada (D-161)."""
+    from sqlalchemy import create_engine, text
+
+    from core.plans import load_plans_file
+    from core.quotas import today
+    from core.settings import get_settings
+    from tools.ai import imagen_excel
+
+    monkeypatch.setattr(imagen_excel, "_docling_tables", lambda ctx, pages, languages: [dict(TABLE)])
+    uid = "img-excel-pesada"
+    token = _user(api, user_token, uid)
+    job = _job(api, token, tus_upload, "imagen-a-excel", [fixtures_dir / "tabla.png"])
+    assert job["status"] == "succeeded", job
+    assert _heavy_tasks(services, uid) == 1 and _used(api, token) == 0
+    uploaded, _ = tus_upload(token, "imagen-a-excel", fixtures_dir / "tabla.png")
+    limit = load_plans_file(get_settings().PLANS_FILE)["free"].heavy_tasks_day
+    with create_engine(services["db_url"]).begin() as conn:
+        conn.execute(text("UPDATE usage_daily SET tasks = :n WHERE owner_id = :u AND cost_class = 'heavy' AND date = :d"),
+                     {"n": limit, "u": uid, "d": today()})
+    # Subido antes de agotarlas: lo para POST /v1/jobs. Después, ya la subida (pre-create de tusd).
+    resp = api.post("/v1/jobs", json={"tool": "imagen-a-excel", "upload_ids": [uploaded], "options": {"formato": "csv"},
+                                      "ai_consent": True},
+                    headers=auth(token))
+    assert resp.status_code == 429 and resp.json()["error"]["code"] == "QUOTA_EXCEEDED", resp.json()
+    assert _used(api, token) == 0  # ni se ha reservado la petición
+    upload_id, hook = tus_upload(token, "imagen-a-excel", fixtures_dir / "tabla.png")
+    assert upload_id is None and hook["RejectUpload"] and hook["HTTPResponse"]["StatusCode"] == 429
+    from core.registry import load_registry
+
+    spec = load_registry().require("imagen-a-excel")
+    assert spec.cost_class == "ai" and spec.to_public()["task_class"] == "heavy"
+
+
+def test_ocr_languages_change_the_text_sent_to_the_model(api, ai, user_token, tus_upload, fixtures_dir, services, hops,
+                                                         monkeypatch):
+    """«Idiomas del OCR» (avanzada) cambia el texto que lee Tesseract y que recibe el modelo; la caché va por idiomas,
+    así que cada combinación es una petición. Un idioma que `workerconvert` no tiene se rechaza antes de encolar."""
+    from tools.ai import imagen_excel
+
+    monkeypatch.setattr(imagen_excel, "_docling_tables", lambda ctx, pages, languages: [])
+    token = _user(api, user_token, "img-excel-idiomas")
+    sample = fixtures_dir / "ocr-documento.jpg"
+    for languages in (["spa"], ["eng"]):
+        job = _job(api, token, tus_upload, "imagen-a-excel", [sample], {"idiomas": languages})
+        assert job["status"] == "succeeded", job
+    assert len(ai.calls) == 2 and _used(api, token) == 2
+    spanish, english = (c["messages"][1]["content"] for c in ai.calls)
+    assert "Logroño" in spanish and "Logroño" not in english and spanish != english
+    resp = _job(api, token, tus_upload, "imagen-a-excel", [sample], {"idiomas": ["jpn"]})
+    assert resp.status_code == 422 and resp.json()["error"]["code"] == "INVALID_OPTIONS"
+    assert len(ai.calls) == 2 and _used(api, token) == 2
+
+
 def test_consent_and_unavailable_models(api, ai, user_token, tus_upload, fixtures_dir):
     token = _user(api, user_token, "img-excel-consentimiento")
     resp = _job(api, token, tus_upload, "imagen-a-excel", [fixtures_dir / "tabla.png"], consent=None)
@@ -230,6 +292,57 @@ def test_receipt_that_does_not_add_up_csv_per_item_and_cache(api, ai, user_token
     assert job["status"] == "succeeded" and len(ai.calls) == 1 and "no ha gastado" in job["outputs"][0]["note"]
     lines = _out(services, job).read_bytes().decode("utf-8").splitlines()
     assert len(lines) == 2 and lines[1].endswith(";No")
+
+
+def test_receipt_language_picks_tesseract_languages_and_csv_delimiter(api, ai, user_token, tus_upload, fixtures_dir, services,
+                                                                    hops, monkeypatch):
+    """«Idioma de los tickets» elige los idiomas de Tesseract (es → spa, en → eng) y forma parte de la clave de la
+    caché: cada idioma es una petición. El separador del CSV cambia los bytes (tabulador y coma)."""
+    from core.ai.provider import set_provider
+    from tools.ocr import imagen
+
+    seen: list[str] = []
+    engine = imagen.run_engine
+
+    def spy(args, **kw):
+        if "-l" in args:
+            seen.append(args[args.index("-l") + 1])
+        return engine(args, **kw)
+
+    monkeypatch.setattr(imagen, "run_engine", spy)
+    set_provider(TicketProvider(ai))
+    token = _user(api, user_token, "tickets-idioma")
+    sample = [fixtures_dir / "ticket-acentos.png"]
+    job = _job(api, token, tus_upload, "ticket-a-excel", sample, {"idioma_ticket": "es", "formato": "csv", "delimitador": "tabulador"})
+    assert job["status"] == "succeeded", job
+    body = _out(services, job).read_bytes().decode("utf-8")
+    assert "Archivo\tComercio\tNIF\tFecha" in body and "\t5,99\t" in body and ";" not in body
+    job = _job(api, token, tus_upload, "ticket-a-excel", sample, {"idioma_ticket": "en"})
+    assert job["status"] == "succeeded", job
+    assert seen == ["spa", "eng"] and len(ai.calls) == 2 and _used(api, token) == 2
+    spanish, english = (c["messages"][1]["content"] for c in ai.calls)
+    assert "PIÑA" in spanish and "JAMÓN" in spanish and "PIÑA" not in english and spanish != english
+    # Mismo idioma, otro separador: de la caché, sin OCR ni peticiones nuevas.
+    job = _job(api, token, tus_upload, "ticket-a-excel", sample, {"idioma_ticket": "es", "formato": "csv", "delimitador": "coma"})
+    assert job["status"] == "succeeded" and len(ai.calls) == 2 and seen == ["spa", "eng"]
+    lines = _out(services, job).read_bytes().decode("utf-8").splitlines()
+    assert lines[0].startswith("\ufeffArchivo,Comercio,NIF,Fecha") and lines[1].count('"') >= 2  # «5,99» va entre comillas
+
+
+def test_receipt_language_mapping():
+    from core.registry import load_registry
+    from tools.ai import ticket
+    from tools.ai.specs import TicketOptions
+
+    class Ctx:
+        def __init__(self, value):
+            self.options = TicketOptions(idioma_ticket=value)
+
+    expected = {"auto": ["spa", "eng"], "es": ["spa"], "en": ["eng"], "fr": ["fra"], "de": ["deu"], "it": ["ita"],
+                "pt": ["por"], "ca": ["cat"]}
+    schema = load_registry().require("ticket-a-excel").options.model_json_schema()["properties"]["idioma_ticket"]
+    assert set(schema["enum"]) == set(expected)
+    assert {value: ticket.languages(Ctx(value)) for value in expected} == expected
 
 
 def test_not_a_receipt_fails_clearly(api, ai, user_token, tus_upload, fixtures_dir, hops):

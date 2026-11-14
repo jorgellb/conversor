@@ -11,22 +11,14 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from tools import numeros
+
 DELIMITERS = {"coma": ",", "punto_y_coma": ";", "tabulador": "\t"}
-NUMBER = {"es": re.compile(r"^-?(\d{1,3}(\.\d{3})+|\d+)(,\d+)?$"), "en": re.compile(r"^-?(\d{1,3}(,\d{3})+|\d+)(\.\d+)?$")}
 
 
 def parse_number(text: str, locale: str) -> int | float | None:
-    """Número escrito como en el idioma de la página («1.234,56» en español, «1,234.56» en inglés) o None."""
-    t = text.strip().replace(" ", "").replace(" ", "").replace("€", "").replace("$", "").replace("£", "")
-    pattern = NUMBER.get(locale, NUMBER["es"])
-    if not t or not pattern.match(t):
-        return None
-    t = t.replace(",", "") if locale == "en" else t.replace(".", "").replace(",", ".")
-    try:
-        value = float(t)
-    except ValueError:
-        return None
-    return int(value) if value.is_integer() and "." not in t else value
+    """Número de una celda del OCR o del modelo; los importes pueden llevar €, $ o £ (la regla común, D-67)."""
+    return numeros.parse_number(text, locale, currency=True)
 
 
 @dataclass
@@ -39,7 +31,8 @@ class Sheet:
 
 
 def sheet_title(text: str, used: set[str]) -> str:
-    base = re.sub(r"[\[\]:*?/\\]", "", text)[:31] or "Hoja"
+    # Excel no admite []:*?/\ ni un apóstrofo al principio o al final (el título lo puede escribir el modelo).
+    base = re.sub(r"[\[\]:*?/\\]", "", text).strip().strip("'").strip()[:31].strip().strip("'") or "Hoja"
     title, k = base, 2
     while title.lower() in used:
         suffix = f" {k}"
