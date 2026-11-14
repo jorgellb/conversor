@@ -45,6 +45,9 @@ def overview_data(session: Session, r, settings: Settings, registry: Registry) -
         # enciende, así que el panel no ofrece encenderlas.
         "locked_off": sorted(s.slug_es for s in registry.specs
                              if not is_tool_enabled(s.slug_es, {s.slug_es: True}, default=s.default_enabled)),
+        # Encendidas por TOOL_<SLUG>_ENABLED=true: el entorno gana a la fila, así que tampoco se pueden apagar desde aquí.
+        "locked_on": sorted(s.slug_es for s in registry.specs
+                            if is_tool_enabled(s.slug_es, {s.slug_es: False}, default=s.default_enabled)),
     }
 
 

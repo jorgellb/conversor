@@ -40,3 +40,20 @@ def test_default_off_tool_needs_a_reason():
 def test_thematic_flag_needs_a_reason():
     with pytest.raises(SystemExit, match="HEVC_DECODE_ENABLED"):
         gen_docs._off_reasons({"tools": []}, {"temas": {}})
+
+
+def test_pdf24_row_of_a_registered_tool_drops_its_phase(monkeypatch):
+    parity = {"revisado": "2026-11-14", "herramientas": [{"pdf24": "Merge PDF", "ruta": "/en/merge-pdf",
+                                                          "equivalentes": ["unir-pdf:F1"]}]}
+    monkeypatch.setattr(gen_docs, "_yaml", lambda name: parity)
+    with pytest.raises(SystemExit, match="unir-pdf ya está en el registro"):
+        gen_docs._pdf24({"tools": [{"slug_es": "unir-pdf"}]}, {})
+
+
+def test_phase_status_comes_from_tools_notes():
+    assert gen_docs._phase_status({"fases": {"cerradas": ["F1", "F2", "F5 sin vídeo"], "en_curso": ["F3"]}}) == (
+        "Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3.")
+    assert gen_docs._phase_status({"fases": {"cerradas": ["F1", "F2", "F3"], "en_curso": []}}) == (
+        "Fases cerradas: F1, F2 y F3.")
+    with pytest.raises(SystemExit, match="fases"):
+        gen_docs._phase_status({})

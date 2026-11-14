@@ -18,10 +18,11 @@ const OFF_BY_DEFAULT = new Set(
     .map((tool) => tool.slug_es),
 );
 
-function envFlag(name: string): boolean | undefined {
-  const value = process.env[name];
-  if (value === undefined || value === "") return undefined;
-  return ["1", "true", "yes", "si", "sí", "on"].includes(value.toLowerCase());
+/** Igual que `_env_bool` de packages/core/core/flags.py: sin valor (o solo espacios) es undefined. */
+export function envFlag(name: string): boolean | undefined {
+  const value = (process.env[name] ?? "").trim().toLowerCase();
+  if (value === "") return undefined;
+  return ["1", "true", "yes", "si", "sí", "on"].includes(value);
 }
 
 export function envVarName(slug: string): string {

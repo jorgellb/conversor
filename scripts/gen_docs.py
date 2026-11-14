@@ -80,6 +80,25 @@ def _phase_counts(data: dict) -> str:
     return ", ".join(f"{phase} {n}" for phase, n in sorted(counts.items()))
 
 
+def _join(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " y " + items[-1]
+
+
+def _phase_status(notes: dict) -> str:
+    """Fases cerradas y en curso, de `fases:` en config/tools-notes.yaml (la actualizan los lotes de cierre)."""
+    fases = notes.get("fases") or {}
+    closed = [str(x) for x in fases.get("cerradas") or []]
+    current = [str(x) for x in fases.get("en_curso") or []]
+    if not closed and not current:
+        raise SystemExit("config/tools-notes.yaml: falta `fases:` con `cerradas` y `en_curso`")
+    parts = []
+    if closed:
+        parts.append(f"Fases cerradas: {_join(closed)}")
+    if current:
+        parts.append(f"en curso: {_join(current)}")
+    return "; ".join(parts) + "."
+
+
 def _pdf24(data: dict, reasons: dict[str, str]) -> list[str]:
     registered = {t["slug_es"] for t in data["tools"]}
     pages = _static_pages()
@@ -97,6 +116,8 @@ def _pdf24(data: dict, reasons: dict[str, str]) -> list[str]:
         missing, phases = [], set()
         for item in eq:
             slug, _, phase = item.partition(":")
+            if phase and slug in registered:
+                raise SystemExit(f"config/pdf24.yaml: {slug} ya está en el registro; quita «:{phase}» de su fila")
             if slug not in registered:
                 if not phase:
                     raise SystemExit(f"config/pdf24.yaml: {slug} no está en el registro y no dice en qué fase llega")
@@ -132,8 +153,8 @@ def tools() -> str:
     content = _content()
     reasons = _off_reasons(data, notes)
     lines = ["# Herramientas (7, 7.24 y 17)", "",
-             f"Catálogo publicado en esta entrega: {len(data['tools'])} herramientas ({_phase_counts(data)}). Fases cerradas: "
-             "F1, F2 y F5 sin vídeo; F3 en curso. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. "
+             f"Catálogo publicado en esta entrega: {len(data['tools'])} herramientas ({_phase_counts(data)}). "
+             f"{_phase_status(notes)} El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. "
              "Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y "
              "`config/pdf24.yaml`: no lo edites a mano.", "",
              "«Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y "

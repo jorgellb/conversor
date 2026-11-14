@@ -16,6 +16,7 @@ interface Overview {
   flags: Record<string, boolean>;
   /** Apagadas por el entorno, un flag temático o por defecto (D-134): la tabla feature_flags no las enciende. */
   locked_off?: string[];
+  locked_on?: string[];
 }
 
 export function AdminPage({ tools }: { tools: { slug: string; name: string }[] }) {
@@ -79,14 +80,17 @@ export function AdminPage({ tools }: { tools: { slug: string; name: string }[] }
         <h2 className="font-semibold">{t("flags")}</h2>
         <ul className="mt-2 grid gap-1 sm:grid-cols-2">
           {tools.map((tool) => {
-            const locked = data.locked_off?.includes(tool.slug) ?? false;
-            const on = !locked && data.flags[tool.slug] !== false;
+            const lockedOff = data.locked_off?.includes(tool.slug) ?? false;
+            const lockedOn = data.locked_on?.includes(tool.slug) ?? false;
+            const locked = lockedOff || lockedOn;
+            const on = lockedOn || (!lockedOff && data.flags[tool.slug] !== false);
             return (
               <li key={tool.slug}>
                 <label className="flex items-center gap-2">
                   <input type="checkbox" checked={on} disabled={locked} onChange={(e) => void setFlag(tool.slug, e.target.checked)} />
                   {tool.name}
-                  {locked && <span className="text-sm opacity-70">({t("lockedOff")})</span>}
+                  {lockedOff && <span className="text-sm opacity-70">({t("lockedOff")})</span>}
+                  {lockedOn && <span className="text-sm opacity-70">({t("lockedOn")})</span>}
                 </label>
               </li>
             );

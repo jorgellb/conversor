@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { THEMATIC, disabledByEnv, envVarName } from "../src/lib/flags";
+import { THEMATIC, disabledByEnv, envFlag, envVarName } from "../src/lib/flags";
 
 const FLAGS_PY = readFileSync(path.join(import.meta.dirname, "..", "..", "..", "packages", "core", "core", "flags.py"), "utf-8");
 
@@ -64,6 +64,27 @@ describe("flags de la web y de la API (5.2)", () => {
     expect(disabledByEnv("heic-a-pdf")).toBe(true);
     setEnv("HEVC_DECODE_ENABLED", "true");
     expect(disabledByEnv("heic-a-pdf")).toBe(false);
+  });
+
+  it("envFlag lee los valores igual que _env_bool de flags.py (espacios y mayúsculas)", () => {
+    const py = FLAGS_PY.slice(FLAGS_PY.indexOf("def _env_bool"));
+    expect(py).toMatch(/\.strip\(\)\.lower\(\)/);
+    const set = py.match(/return value in \{([^}]*)\}/);
+    expect(set, "conjunto de valores verdaderos en _env_bool").toBeTruthy();
+    const truthy = [...set![1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+    expect(truthy.sort()).toEqual(["1", "on", "si", "sí", "true", "yes"]);
+    for (const [value, expected] of [
+      ["true ", true], [" TRUE", true], ["\tSí\n", true], [" 1 ", true], [" on", true],
+      [" false ", false], ["0", false], ["no", false], ["   ", undefined], ["", undefined],
+    ] as const) {
+      setEnv("TOOL_X_ENABLED", value);
+      expect(envFlag("TOOL_X_ENABLED"), JSON.stringify(value)).toBe(expected);
+      if (expected === true) expect(truthy).toContain(value.trim().toLowerCase());
+    }
+    delete process.env.TOOL_X_ENABLED;
+    expect(envFlag("TOOL_X_ENABLED")).toBeUndefined();
+    setEnv("TOOL_COMPRIMIR_PDF_ENABLED", " false ");
+    expect(disabledByEnv("comprimir-pdf")).toBe(true);
   });
 
   it("una herramienta con default_enabled=false solo se enciende con TOOL_<SLUG>_ENABLED=true (D-134)", async () => {

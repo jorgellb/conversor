@@ -223,6 +223,7 @@
     "errors": "Tasa de error por herramienta (24 h)",
     "flags": "Herramientas",
     "lockedOff": "apagada por el entorno o por defecto",
+    "lockedOn": "encendida por el entorno",
     "enabled": "Activa",
     "purge": "Purgar archivos caducados ahora",
     "purged": "Purga lanzada.",

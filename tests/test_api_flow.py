@@ -143,7 +143,7 @@ def test_wrong_password(api, user_token, tus_upload, fixtures_dir):
     assert job["error"]["code"] == "WRONG_PASSWORD"
 
 
-def test_admin_requires_role(api, user_token):
+def test_admin_requires_role(api, user_token, monkeypatch):
     assert api.get("/v1/admin/overview", headers=auth(user_token())).status_code == 403
     admin = user_token(role="admin")
     data = api.get("/v1/admin/overview", headers=auth(admin)).json()
@@ -151,6 +151,12 @@ def test_admin_requires_role(api, user_token):
     # D-134: las que apaga el entorno (aquí, HEVC sin revisión legal) no se pueden encender desde el panel.
     assert {"heic-a-pdf", "heic-a-jpg", "heic-a-png"} <= set(data["locked_off"])
     assert "comprimir-pdf" not in data["locked_off"]
+    # Y las que enciende TOOL_<SLUG>_ENABLED=true tampoco se pueden apagar desde el panel (el entorno gana a la fila).
+    assert "unir-pdf" not in data["locked_on"]
+    monkeypatch.setenv("TOOL_UNIR_PDF_ENABLED", "true")
+    data = api.get("/v1/admin/overview", headers=auth(admin)).json()
+    assert "unir-pdf" in data["locked_on"] and "unir-pdf" not in data["locked_off"]
+    monkeypatch.delenv("TOOL_UNIR_PDF_ENABLED")
     assert api.put("/v1/admin/flags/comprimir-pdf", json={"enabled": False}, headers=auth(admin)).status_code == 200
     tools = {t["slug_es"]: t for t in api.get("/v1/tools").json()["tools"]}
     assert tools["comprimir-pdf"]["enabled"] is False

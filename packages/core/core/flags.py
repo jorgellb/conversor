@@ -38,9 +38,11 @@ def env_var_name(slug: str) -> str:
 
 
 def _env_bool(value: str | None) -> bool | None:
-    if value is None or value == "":
+    """Sin valor (o solo espacios) es None. Igual que envFlag de apps/web/src/lib/flags.ts (test/flags.test.ts)."""
+    value = (value or "").strip().lower()
+    if not value:
         return None
-    return value.strip().lower() in {"1", "true", "yes", "si", "sí", "on"}
+    return value in {"1", "true", "yes", "si", "sí", "on"}
 
 
 def thematic_enabled(name: str, env: Mapping[str, str] | None = None) -> bool:

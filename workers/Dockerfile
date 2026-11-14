@@ -186,7 +186,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl xz-utils \
  && tar -xJf /tmp/ffmpeg.tar.xz -C /tmp \
  && install -m 0755 /tmp/ffmpeg-*/bin/ffmpeg /tmp/ffmpeg-*/bin/ffprobe /usr/local/bin/ \
  && rm -rf /tmp/ffmpeg* && apt-get purge -y curl xz-utils && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* \
- && ffmpeg -hide_banner -buildconf | grep -q -- "--enable-gpl" && exit 1 || true
+ && ffmpeg -hide_banner -version >/dev/null && ffprobe -hide_banner -version >/dev/null \
+ && ! (ffmpeg -hide_banner -buildconf | grep -q -- "--enable-gpl")
 COPY infra/uv-overrides.txt ./infra/uv-overrides.txt
 # faster-whisper sin PyAV (D-111), y comprobado: ni el módulo `av` ni libx264/libx265 en la imagen.
 RUN uv pip install -r pyproject.toml --extra av --override infra/uv-overrides.txt \

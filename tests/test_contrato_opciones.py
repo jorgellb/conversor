@@ -75,6 +75,8 @@ def invalid_values(prop: dict) -> list[tuple[str, object]]:
             out.append(("pattern", _not_matching(b["pattern"])))
         if "maxLength" in b:
             out.append(("maxLength", "a" * (b["maxLength"] + 1)))
+        if b.get("minLength", 0) > 0:
+            out.append(("minLength", ""))
         if "enum" in b or "const" in b:
             values = b.get("enum", [b.get("const")])
             bad = 987654321 if all(isinstance(v, int) for v in values) else "__fuera_de_la_lista__"
@@ -84,6 +86,8 @@ def invalid_values(prop: dict) -> list[tuple[str, object]]:
             if "maxItems" in b:
                 sample = items.get("enum", [None])[0] if "enum" in items else ("a" if items.get("type") == "string" else 1)
                 out.append(("maxItems", [sample] * (b["maxItems"] + 1)))
+            if b.get("minItems", 0) > 0:
+                out.append(("minItems", []))
             if "enum" in items:
                 out.append(("items.enum", ["__fuera_de_la_lista__"]))
     return out
@@ -229,7 +233,8 @@ def test_every_constrained_option_has_a_case():
     assert len(CASES) > 300
     constrained = {(s.slug_es, n) for s in SPECS for n, p in s.to_public()["options_schema"].get("properties", {}).items()
                    if any(k in b for b in _branches(p) for k in ("minimum", "maximum", "pattern", "enum", "const",
-                                                                 "maxLength", "exclusiveMinimum"))}
+                                                                 "maxLength", "exclusiveMinimum", "exclusiveMaximum"))
+                   or any(b.get(k, 0) > 0 for b in _branches(p) for k in ("minLength", "minItems"))}
     assert constrained <= {(c.values[0], c.values[1]) for c in CASES}
 
 

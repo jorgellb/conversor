@@ -223,6 +223,7 @@
     "errors": "Error rate by tool (24 h)",
     "flags": "Tools",
     "lockedOff": "off by environment or by default",
+    "lockedOn": "on by environment",
     "enabled": "Enabled",
     "purge": "Purge expired files now",
     "purged": "Purge started.",

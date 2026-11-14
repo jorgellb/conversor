@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48). Fases cerradas: F1, F2 y F5 sin vídeo; F3 en curso. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -43,19 +43,19 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `pdf-a-imagenes` / `pdf-to-images` | híbrida | pdf | light | F1 | activa | pdf → zip | redactado, sin revisar |
 | `escaner-pdf` / `pdf-scanner` | navegador | — | light | F2 | activa | jpg, png, webp → pdf | incompleto |
 | `generar-contrasena` / `password-generator` | navegador | — | light | F1 | activa | — → pantalla | redactado, sin revisar |
-| `png-a-jpg` / `png-to-jpg` | navegador | — | light | F5 | activa | png → jpg | pendiente |
-| `webp-a-jpg` / `webp-to-jpg` | navegador | — | light | F5 | activa | webp → jpg | pendiente |
+| `png-a-jpg` / `png-to-jpg` | navegador | — | light | F5 | activa | png → jpg | redactado, sin revisar |
+| `webp-a-jpg` / `webp-to-jpg` | navegador | — | light | F5 | activa | webp → jpg | redactado, sin revisar |
 | `comprimir-imagen` / `compress-image` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp | pendiente |
 | `redimensionar-imagen` / `resize-image` | navegador | — | light | F5 | activa | jpg, png, webp → jpg, png, webp | pendiente |
-| `jpg-a-png` / `jpg-to-png` | navegador | — | light | F5 | activa | jpg → png, zip | pendiente |
-| `webp-a-png` / `webp-to-png` | navegador | — | light | F5 | activa | webp → png, zip | pendiente |
-| `gif-a-png` / `gif-to-png` | navegador | — | light | F5 | activa | gif → png, zip | pendiente |
-| `jpg-a-webp` / `jpg-to-webp` | navegador | — | light | F5 | activa | jpg → webp, zip | pendiente |
-| `png-a-webp` / `png-to-webp` | navegador | — | light | F5 | activa | png → webp, zip | pendiente |
-| `avif-a-jpg` / `avif-to-jpg` | navegador | — | light | F5 | activa | avif → jpg, zip | pendiente |
-| `jpg-a-avif` / `jpg-to-avif` | navegador | — | light | F5 | activa | jpg → avif, zip | pendiente |
-| `bmp-a-jpg` / `bmp-to-jpg` | navegador | — | light | F5 | activa | bmp → jpg, zip | pendiente |
-| `tiff-a-jpg` / `tiff-to-jpg` | navegador | — | light | F5 | activa | tiff → jpg, zip | pendiente |
+| `jpg-a-png` / `jpg-to-png` | navegador | — | light | F5 | activa | jpg → png, zip | redactado, sin revisar |
+| `webp-a-png` / `webp-to-png` | navegador | — | light | F5 | activa | webp → png, zip | redactado, sin revisar |
+| `gif-a-png` / `gif-to-png` | navegador | — | light | F5 | activa | gif → png, zip | redactado, sin revisar |
+| `jpg-a-webp` / `jpg-to-webp` | navegador | — | light | F5 | activa | jpg → webp, zip | redactado, sin revisar |
+| `png-a-webp` / `png-to-webp` | navegador | — | light | F5 | activa | png → webp, zip | redactado, sin revisar |
+| `avif-a-jpg` / `avif-to-jpg` | navegador | — | light | F5 | activa | avif → jpg, zip | redactado, sin revisar |
+| `jpg-a-avif` / `jpg-to-avif` | navegador | — | light | F5 | activa | jpg → avif, zip | redactado, sin revisar |
+| `bmp-a-jpg` / `bmp-to-jpg` | navegador | — | light | F5 | activa | bmp → jpg, zip | redactado, sin revisar |
+| `tiff-a-jpg` / `tiff-to-jpg` | navegador | — | light | F5 | activa | tiff → jpg, zip | redactado, sin revisar |
 | `png-a-ico` / `png-to-ico` | navegador | — | light | F5 | activa | png → ico, zip | pendiente |
 | `convertir-imagen` / `convert-image` | navegador | — | light | F5 | activa | jpg, png, webp, avif, gif, bmp, tiff, ico, svg → jpg, png, webp, avif, gif, bmp, tiff, ico, zip | pendiente |
 | `svg-a-png` / `svg-to-png` | navegador | — | light | F5 | activa | svg → png, zip | pendiente |
@@ -91,22 +91,22 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `odg-a-pdf` / `odg-to-pdf` | servidor | office | light | F1 | activa | odg → pdf, zip | redactado, sin revisar |
 | `rtf-a-pdf` / `rtf-to-pdf` | servidor | office | light | F1 | activa | rtf → pdf, zip | redactado, sin revisar |
 | `txt-a-pdf` / `txt-to-pdf` | servidor | office | light | F1 | activa | txt → pdf, zip | redactado, sin revisar |
-| `html-a-pdf` / `html-to-pdf` | servidor | office | light | F1 | activa | html, zip → pdf, zip | pendiente |
-| `markdown-a-pdf` / `markdown-to-pdf` | servidor | office | light | F1 | activa | md → pdf, zip | pendiente |
+| `html-a-pdf` / `html-to-pdf` | servidor | office | light | F1 | activa | html, zip → pdf, zip | redactado, sin revisar |
+| `markdown-a-pdf` / `markdown-to-pdf` | servidor | office | light | F1 | activa | md → pdf, zip | redactado, sin revisar |
 | `superponer-pdf` / `overlay-pdf` | servidor | office | light | F2 | activa | pdf, doc, docx, rtf, odt, txt, xls, xlsx, ods, csv, ppt, pptx, pps, odp, odg, jpg, png, gif, bmp, tiff, webp → pdf, zip | redactado, sin revisar |
-| `svg-a-pdf` / `svg-to-pdf` | servidor | office | light | F2 | activa | svg → pdf, zip | pendiente |
-| `pages-a-pdf` / `pages-to-pdf` | servidor | office | light | F2 | activa | pages → pdf, zip | pendiente |
-| `keynote-a-pdf` / `keynote-to-pdf` | servidor | office | light | F2 | activa | key → pdf, zip | pendiente |
-| `numbers-a-pdf` / `numbers-to-pdf` | servidor | office | light | F2 | activa | numbers → pdf, zip | pendiente |
-| `visio-a-pdf` / `visio-to-pdf` | servidor | office | light | F2 | activa | vsd, vsdx → pdf, zip | pendiente |
-| `publisher-a-pdf` / `publisher-to-pdf` | servidor | office | light | F2 | activa | pub → pdf, zip | pendiente |
+| `svg-a-pdf` / `svg-to-pdf` | servidor | office | light | F2 | activa | svg → pdf, zip | redactado, sin revisar |
+| `pages-a-pdf` / `pages-to-pdf` | servidor | office | light | F2 | activa | pages → pdf, zip | redactado, sin revisar |
+| `keynote-a-pdf` / `keynote-to-pdf` | servidor | office | light | F2 | activa | key → pdf, zip | redactado, sin revisar |
+| `numbers-a-pdf` / `numbers-to-pdf` | servidor | office | light | F2 | activa | numbers → pdf, zip | redactado, sin revisar |
+| `visio-a-pdf` / `visio-to-pdf` | servidor | office | light | F2 | activa | vsd, vsdx → pdf, zip | redactado, sin revisar |
+| `publisher-a-pdf` / `publisher-to-pdf` | servidor | office | light | F2 | activa | pub → pdf, zip | redactado, sin revisar |
 | `pub-a-pdf` / `pub-to-pdf` | servidor | office | light | F2 | activa, alias de `publisher-a-pdf` | pub → pdf, zip | no aplica (alias) |
-| `epub-a-pdf` / `epub-to-pdf` | servidor | office | light | F2 | activa | epub → pdf, zip | pendiente |
-| `mobi-a-pdf` / `mobi-to-pdf` | servidor | office | light | F2 | activa | mobi → pdf, zip | pendiente |
-| `azw3-a-pdf` / `azw3-to-pdf` | servidor | office | light | F2 | activa | azw3 → pdf, zip | pendiente |
-| `fb2-a-pdf` / `fb2-to-pdf` | servidor | office | light | F2 | activa | fb2 → pdf, zip | pendiente |
+| `epub-a-pdf` / `epub-to-pdf` | servidor | office | light | F2 | activa | epub → pdf, zip | redactado, sin revisar |
+| `mobi-a-pdf` / `mobi-to-pdf` | servidor | office | light | F2 | activa | mobi → pdf, zip | redactado, sin revisar |
+| `azw3-a-pdf` / `azw3-to-pdf` | servidor | office | light | F2 | activa | azw3 → pdf, zip | redactado, sin revisar |
+| `fb2-a-pdf` / `fb2-to-pdf` | servidor | office | light | F2 | activa | fb2 → pdf, zip | redactado, sin revisar |
 | `solicitud-de-empleo-pdf` / `job-application-pdf` | servidor | office | light | F2 | activa | pdf, doc, docx, rtf, odt, txt, xls, xlsx, ods, csv, ppt, pptx, pps, odp, odg, jpg, png, gif, bmp, tiff, webp → pdf, zip | redactado, sin revisar |
-| `web-a-pdf` / `web-to-pdf` | servidor | office | light | F1 | activa | — → pdf | pendiente |
+| `web-a-pdf` / `web-to-pdf` | servidor | office | light | F1 | activa | — → pdf | redactado, sin revisar |
 | `csv-a-pdf` / `csv-to-pdf` | servidor | office | light | F1 | activa | csv → pdf, zip | redactado, sin revisar |
 | `ocr-pdf` / `ocr-pdf` | servidor | ocr | heavy | F2 | activa | pdf → pdf, txt, zip | redactado, sin revisar |
 | `pdf-a-pdfa` / `pdf-to-pdfa` | servidor | ocr | heavy | F2 | activa | pdf → pdf, html, zip | redactado, sin revisar |
@@ -125,24 +125,24 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `pdf-a-json` / `pdf-to-json` | servidor | convert | heavy | F2 | activa | pdf → json, zip | redactado, sin revisar |
 | `copiar-de-pdf` / `copy-from-pdf` | híbrida | convert | heavy | F2 | activa | pdf → json, md, xlsx | incompleto |
 | `convertir-desde-pdf` / `convert-from-pdf` | servidor | convert | light | F2 | activa | pdf → csv, docx, epub, html, jpg, json, md, odp, ods, odt, pdf, png, pptx, rtf, svg, tiff, txt, webp, xlsx, zip | redactado, sin revisar |
-| `ogg-a-mp3` / `ogg-to-mp3` | servidor | av | light | F5 | activa | ogg, opus, oga → mp3, zip | pendiente |
-| `opus-a-mp3` / `opus-to-mp3` | servidor | av | light | F5 | activa | opus, ogg → mp3, zip | pendiente |
-| `m4a-a-mp3` / `m4a-to-mp3` | servidor | av | light | F5 | activa | m4a → mp3, zip | pendiente |
-| `mp4-a-mp3` / `mp4-to-mp3` | servidor | av | light | F5 | activa | mp4, m4a → mp3, zip | pendiente |
-| `aac-a-mp3` / `aac-to-mp3` | servidor | av | light | F5 | activa | aac, m4a → mp3, zip | pendiente |
-| `flac-a-mp3` / `flac-to-mp3` | servidor | av | light | F5 | activa | flac → mp3, zip | pendiente |
-| `wav-a-mp3` / `wav-to-mp3` | servidor | av | light | F5 | activa | wav → mp3, zip | pendiente |
-| `wma-a-mp3` / `wma-to-mp3` | servidor | av | light | F5 | activa | wma → mp3, zip | pendiente |
-| `amr-a-mp3` / `amr-to-mp3` | servidor | av | light | F5 | activa | amr → mp3, zip | pendiente |
-| `aiff-a-mp3` / `aiff-to-mp3` | servidor | av | light | F5 | activa | aiff, aif → mp3, zip | pendiente |
-| `ogg-a-wav` / `ogg-to-wav` | servidor | av | light | F5 | activa | ogg, opus, oga → wav, zip | pendiente |
-| `mp3-a-wav` / `mp3-to-wav` | servidor | av | light | F5 | activa | mp3 → wav, zip | pendiente |
-| `cortar-audio` / `cut-audio` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, zip | pendiente |
-| `unir-audios` / `merge-audio` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr | pendiente |
-| `normalizar-volumen` / `normalize-audio` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, zip | pendiente |
-| `cambiar-velocidad-audio` / `change-audio-speed` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, zip | pendiente |
-| `transcribir-audio` / `transcribe-audio` | servidor | av | heavy | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, webm → txt, docx, srt, zip | pendiente |
-| `video-a-subtitulos` / `video-to-subtitles` | servidor | av | heavy | F5 | activa | mp4, mov, mkv, webm, avi → srt, vtt, zip | pendiente |
+| `ogg-a-mp3` / `ogg-to-mp3` | servidor | av | light | F5 | activa | ogg, opus, oga → mp3, zip | redactado, sin revisar |
+| `opus-a-mp3` / `opus-to-mp3` | servidor | av | light | F5 | activa | opus, ogg → mp3, zip | redactado, sin revisar |
+| `m4a-a-mp3` / `m4a-to-mp3` | servidor | av | light | F5 | activa | m4a → mp3, zip | redactado, sin revisar |
+| `mp4-a-mp3` / `mp4-to-mp3` | servidor | av | light | F5 | activa | mp4, m4a → mp3, zip | redactado, sin revisar |
+| `aac-a-mp3` / `aac-to-mp3` | servidor | av | light | F5 | activa | aac, m4a → mp3, zip | redactado, sin revisar |
+| `flac-a-mp3` / `flac-to-mp3` | servidor | av | light | F5 | activa | flac → mp3, zip | redactado, sin revisar |
+| `wav-a-mp3` / `wav-to-mp3` | servidor | av | light | F5 | activa | wav → mp3, zip | redactado, sin revisar |
+| `wma-a-mp3` / `wma-to-mp3` | servidor | av | light | F5 | activa | wma → mp3, zip | redactado, sin revisar |
+| `amr-a-mp3` / `amr-to-mp3` | servidor | av | light | F5 | activa | amr → mp3, zip | redactado, sin revisar |
+| `aiff-a-mp3` / `aiff-to-mp3` | servidor | av | light | F5 | activa | aiff, aif → mp3, zip | redactado, sin revisar |
+| `ogg-a-wav` / `ogg-to-wav` | servidor | av | light | F5 | activa | ogg, opus, oga → wav, zip | redactado, sin revisar |
+| `mp3-a-wav` / `mp3-to-wav` | servidor | av | light | F5 | activa | mp3 → wav, zip | redactado, sin revisar |
+| `cortar-audio` / `cut-audio` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, zip | redactado, sin revisar |
+| `unir-audios` / `merge-audio` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr | redactado, sin revisar |
+| `normalizar-volumen` / `normalize-audio` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, zip | redactado, sin revisar |
+| `cambiar-velocidad-audio` / `change-audio-speed` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, zip | redactado, sin revisar |
+| `transcribir-audio` / `transcribe-audio` | servidor | av | heavy | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, webm → txt, docx, srt, zip | redactado, sin revisar |
+| `video-a-subtitulos` / `video-to-subtitles` | servidor | av | heavy | F5 | activa | mp4, mov, mkv, webm, avi → srt, vtt, zip | redactado, sin revisar |
 | `heic-a-pdf` / `heic-to-pdf` | servidor | media | light | F2 | apagada | heic → pdf, zip | redactado, sin revisar |
 | `cbz-a-pdf` / `cbz-to-pdf` | servidor | media | light | F2 | activa | cbz → pdf, zip | redactado, sin revisar |
 | `cbr-a-pdf` / `cbr-to-pdf` | servidor | media | light | F2 | activa | cbr → pdf, zip | redactado, sin revisar |
@@ -157,12 +157,12 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `png-a-svg` / `png-to-svg` | servidor | media | light | F5 | activa | png → svg, zip | pendiente |
 | `jpg-a-svg` / `jpg-to-svg` | servidor | media | light | F5 | activa | jpg → svg, zip | pendiente |
 | `quitar-fondo` / `remove-background` | servidor | media | heavy | F5 | activa | jpg, png, webp → png, webp, jpg, zip | pendiente |
-| `resumir-pdf` / `summarize-pdf` | servidor | ai | ai | F3 | activa | pdf → docx, txt, md | pendiente |
-| `chat-pdf` / `chat-with-pdf` | servidor | ai | ai | F3 | activa | pdf → pantalla | pendiente |
-| `generador-de-preguntas` / `question-generator` | servidor | ai | ai | F3 | activa | pdf → docx, txt | pendiente |
-| `pdf-a-fichas` / `pdf-to-flashcards` | servidor | ai | ai | F3 | activa | pdf → txt, csv, docx | pendiente |
-| `pdf-a-presentacion` / `pdf-to-presentation` | servidor | ai | ai | F3 | activa | pdf → pptx | pendiente |
-| `traducir-pdf` / `translate-pdf` | servidor | ai | ai | F3 | activa | pdf → docx, pdf | pendiente |
+| `resumir-pdf` / `summarize-pdf` | servidor | ai | ai | F3 | activa | pdf → docx, txt, md | redactado, sin revisar |
+| `chat-pdf` / `chat-with-pdf` | servidor | ai | ai | F3 | activa | pdf → pantalla | redactado, sin revisar |
+| `generador-de-preguntas` / `question-generator` | servidor | ai | ai | F3 | activa | pdf → docx, txt | redactado, sin revisar |
+| `pdf-a-fichas` / `pdf-to-flashcards` | servidor | ai | ai | F3 | activa | pdf → txt, csv, docx | redactado, sin revisar |
+| `pdf-a-presentacion` / `pdf-to-presentation` | servidor | ai | ai | F3 | activa | pdf → pptx | redactado, sin revisar |
+| `traducir-pdf` / `translate-pdf` | servidor | ai | ai | F3 | activa | pdf → docx, pdf | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

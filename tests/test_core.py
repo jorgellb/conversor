@@ -72,6 +72,10 @@ def test_flags_precedence():
     assert is_tool_enabled("comprimir-pdf", {"comprimir-pdf": False}, env={"TOOL_COMPRIMIR_PDF_ENABLED": "true"})
     assert not is_tool_enabled("heic-a-pdf", {}, env={})
     assert is_tool_enabled("heic-a-pdf", {}, env={"HEVC_DECODE_ENABLED": "true"})
+    # Espacios y mayúsculas como en envFlag de la web (apps/web/test/flags.test.ts); solo espacios es «sin valor».
+    assert is_tool_enabled("heic-a-pdf", {}, env={"HEVC_DECODE_ENABLED": " True "})
+    assert not is_tool_enabled("comprimir-pdf", {}, env={"TOOL_COMPRIMIR_PDF_ENABLED": "false "})
+    assert not is_tool_enabled("comprimir-pdf", {"comprimir-pdf": False}, env={"TOOL_COMPRIMIR_PDF_ENABLED": "   "})
 
 
 def test_flags_default_enabled_false():
