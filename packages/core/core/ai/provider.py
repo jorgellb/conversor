@@ -220,16 +220,29 @@ def _fake_value(schema: dict, seed: str, depth: int = 0, ctx: dict | None = None
     («exactamente N»), la página del texto, la opción 0 como correcta y las traducciones alineadas con la entrada."""
     ctx = ctx or {}
     kind = schema.get("type")
+    if isinstance(kind, list):  # tipos con null (ticket-a-excel): el primero que no lo es
+        kind = next((k for k in kind if k != "null"), "null")
+        schema = {**schema, "type": kind}
     if "enum" in schema:
         return schema["enum"][0]
     if kind == "object":
         props = schema.get("properties") or {}
-        return {k: _fake_value(v, f"{seed}.{k}", depth + 1, ctx, k) for k, v in props.items()}
+        value = {k: _fake_value(v, f"{seed}.{k}", depth + 1, ctx, k) for k, v in props.items()}
+        if isinstance(value.get("lineas"), list) and "total" in value:
+            # Un ticket que cuadra: el total es la suma de los conceptos, y la fecha y la hora tienen su formato.
+            value["total"] = round(sum(float(x.get("importe") or 0) for x in value["lineas"]), 2)
+            value["impuestos"] = []
+            value["fecha"], value["hora"], value["moneda"] = "2026-11-14", "10:32", "EUR"
+        return value
     if kind == "array":
         if name == "traducciones" and ctx.get("items") is not None:
             return [f"[{ctx.get('target', 'xx')}] {item}" for item in ctx["items"]]
         if name in ("preguntas", "fichas", "diapositivas", "secciones") and ctx.get("count"):
             n = ctx["count"] if name != "secciones" else 3
+        elif name in ("tablas", "lineas"):
+            n = 1 if name == "tablas" else 3
+        elif name in ("filas", "columnas"):
+            n = 3
         elif name == "opciones":
             n = ctx.get("options", 4) if not ctx.get("no_options") else 0
         elif "minItems" in schema:

@@ -106,8 +106,9 @@ export function ToolRunner({ spec, retentionHours, nextTools, enabled, pdfaHref,
   const turnstileBox = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const noFiles = spec.inputs.length === 0;
-  // Herramientas de IA (6.6): cuenta, modelo disponible, peticiones y consentimiento antes de poder empezar.
-  const isAi = spec.costClass === "ai";
+  // Herramientas de IA (6.6): cuenta, modelo disponible, peticiones y consentimiento antes de poder empezar. Si la IA es
+  // una opción (imagen-a-excel, D-161) y está apagada, la herramienta funciona como cualquier otra.
+  const isAi = spec.costClass === "ai" && (!spec.aiOption || values[spec.aiOption] !== false);
   const [ai, setAi] = useState<AiReady>({ ready: false });
   const onAiChange = useCallback((next: AiReady) => setAi((cur) => (cur.ready === next.ready ? cur : next)), []);
   const aiRefresh = state.kind === "done" || state.kind === "error" ? 1 : 0;

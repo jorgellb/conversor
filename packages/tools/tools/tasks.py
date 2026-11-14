@@ -100,7 +100,7 @@ def execute(job_id: str, attempt: int, sealed: str = "") -> str:
         report=report, charge=charge, owner=owner, expires_at=expires_at, stage=stage, home_queue=spec.queue,
     )
     ai_budget = None
-    if spec.ai is not None:
+    if spec.ai is not None and spec.ai.used_by(options.model_dump()):
         ai_budget, ctx.ai = _ai_client(settings, r, spec, owner, plan, job_id, ai_state)
     started = time.monotonic()
     result = "ok"

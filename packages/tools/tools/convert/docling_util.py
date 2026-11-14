@@ -69,6 +69,34 @@ def convert(src: Path, ocr: bool, languages: list[str] | None = None, pictures: 
     return result.document
 
 
+@lru_cache(maxsize=2)
+def _image_converter(languages: tuple[str, ...]):
+    """Docling para imágenes (imagen-a-excel): OCR de toda la página con Tesseract y estructura de tablas."""
+    from docling.datamodel.base_models import InputFormat
+    from docling.datamodel.pipeline_options import PdfPipelineOptions, TesseractCliOcrOptions
+    from docling.document_converter import DocumentConverter, ImageFormatOption
+
+    opts = PdfPipelineOptions()
+    opts.do_ocr = True
+    opts.ocr_options = TesseractCliOcrOptions(lang=list(languages), force_full_page_ocr=True)
+    opts.do_table_structure = True
+    opts.generate_picture_images = False
+    return DocumentConverter(format_options={InputFormat.IMAGE: ImageFormatOption(pipeline_options=opts)})
+
+
+def convert_image(src: Path, languages: list[str]):
+    """DoclingDocument de una imagen (PNG o JPEG ya comprobados con el límite de píxeles)."""
+    from docling.datamodel.base_models import ConversionStatus
+
+    try:
+        result = _image_converter(tuple(languages)).convert(str(src), raises_on_error=False)
+    except Exception as exc:  # noqa: BLE001 - errores internos de Docling o de sus modelos
+        raise ToolError(ErrorCode.ENGINE_FAILED, "Docling") from exc
+    if result.status not in (ConversionStatus.SUCCESS, ConversionStatus.PARTIAL_SUCCESS):
+        raise ToolError(ErrorCode.ENGINE_FAILED, f"Docling: {result.status.value}")
+    return result.document
+
+
 def page_of(item) -> int | None:
     return item.prov[0].page_no if getattr(item, "prov", None) else None
 

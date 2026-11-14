@@ -9,6 +9,8 @@ from core.options import opt
 from core.registry import ToolSpec
 
 TESSERACT_CODE = r"^[a-z]{3}(_[a-z]+)?$"
+# Imágenes que leen imagen-a-texto, imagen-a-excel y ticket-a-excel (HEIC no: necesita HEVC_DECODE_ENABLED, 11).
+IMAGE_INPUTS = ("jpg", "png", "webp", "tiff", "bmp", "gif")
 
 
 class OcrOptions(BaseModel):
@@ -70,6 +72,24 @@ class PdfaOptions(BaseModel):
         return _check_codes(v)
 
 
+class ImagenTextoOptions(BaseModel):
+    """imagen-a-texto (7.6): el Anexo A no fija opciones; las de D-159, con los idiomas y el enderezado de ocr-pdf (A.5)."""
+
+    idiomas: list[str] = opt(["spa", "eng"], "Idiomas del texto", "Text languages", min_length=1, max_length=3)
+    salida: Literal["txt", "docx", "pdf"] = opt(
+        "txt", "Salida", "Output", labels={"txt": ("Texto (TXT)", "Text (TXT)"), "docx": ("Word (DOCX)", "Word (DOCX)"),
+                                             "pdf": ("PDF con capa de texto (buscable)", "PDF with text layer (searchable)")})
+    enderezar: bool = opt(True, "Enderezar", "Deskew")
+    autorrotar: bool = opt(False, "Girar las imágenes que estén de lado o del revés", "Rotate images that are sideways or upside down",
+                           advanced=True)
+    unir: bool = opt(False, "Un solo archivo con todas las imágenes", "One file with all the images", advanced=True)
+
+    @field_validator("idiomas")
+    @classmethod
+    def _codes(cls, v: list[str]) -> list[str]:
+        return _check_codes(v)
+
+
 class ValidarPdfaOptions(BaseModel):
     """A.6: perfil automático (el que declara el archivo) o uno concreto."""
 
@@ -104,5 +124,15 @@ SPECS: list[ToolSpec] = [
         summary_es="Comprueba con veraPDF si un PDF cumple PDF/A o PDF/UA y explica cada fallo en lenguaje sencillo.",
         summary_en="Check with veraPDF whether a PDF meets PDF/A or PDF/UA and explain each failure in plain language.",
         related=("pdf-a-pdfa",),
+    ),
+    # 6.3: 0 peticiones (OCR local). Categoría ai en la web (7.6), pero sin IA externa: ni cuenta ni consentimiento.
+    ToolSpec(
+        slug_es="imagen-a-texto", slug_en="image-to-text", name_es="Imagen a texto", name_en="Image to text", category="ai",
+        where="server", inputs=IMAGE_INPUTS, outputs=("txt", "docx", "pdf", "zip"),
+        options=ImagenTextoOptions, worker_group="ocr", cost_class="heavy", impl="tools.ocr.imagen:run", launch=True,
+        phase="F3", time_limit=1800,
+        summary_es="Saca el texto de fotos, capturas y escaneos con OCR, sin enviarlo a ninguna IA externa.",
+        summary_en="Extract the text from photos, screenshots and scans with OCR, without sending it to any external AI.",
+        related=("ocr-pdf", "imagen-a-excel", "imagenes-a-pdf"),
     ),
 ]

@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 160 herramientas (F1 43, F2 60, F3 9, F5 48). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -111,6 +111,7 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `ocr-pdf` / `ocr-pdf` | servidor | ocr | heavy | F2 | activa | pdf → pdf, txt, zip | redactado, sin revisar |
 | `pdf-a-pdfa` / `pdf-to-pdfa` | servidor | ocr | heavy | F2 | activa | pdf → pdf, html, zip | redactado, sin revisar |
 | `validar-pdfa` / `validate-pdfa` | servidor | ocr | light | F2 | activa | pdf → html, zip | redactado, sin revisar |
+| `imagen-a-texto` / `image-to-text` | servidor | ocr | heavy | F3 | activa | jpg, png, webp, tiff, bmp, gif → txt, docx, pdf, zip | redactado, sin revisar |
 | `pdf-a-word` / `pdf-to-word` | servidor | convert | heavy | F2 | activa | pdf → docx, zip | redactado, sin revisar |
 | `pdf-a-odt` / `pdf-to-odt` | servidor | convert | heavy | F2 | activa | pdf → odt, zip | redactado, sin revisar |
 | `pdf-a-rtf` / `pdf-to-rtf` | servidor | convert | heavy | F2 | activa | pdf → rtf, zip | redactado, sin revisar |
@@ -163,6 +164,8 @@ Catálogo publicado en esta entrega: 157 herramientas (F1 43, F2 60, F3 6, F5 48
 | `pdf-a-fichas` / `pdf-to-flashcards` | servidor | ai | ai | F3 | activa | pdf → txt, csv, docx | redactado, sin revisar |
 | `pdf-a-presentacion` / `pdf-to-presentation` | servidor | ai | ai | F3 | activa | pdf → pptx | redactado, sin revisar |
 | `traducir-pdf` / `translate-pdf` | servidor | ai | ai | F3 | activa | pdf → docx, pdf | redactado, sin revisar |
+| `imagen-a-excel` / `image-to-excel` | servidor | convert | ai | F3 | activa | jpg, png, webp, tiff, bmp, gif → xlsx, csv, zip | redactado, sin revisar |
+| `ticket-a-excel` / `receipt-to-excel` | servidor | ocr | ai | F3 | activa | jpg, png, webp, tiff, bmp, gif → xlsx, csv | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

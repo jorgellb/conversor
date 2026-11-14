@@ -25,6 +25,11 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       entrenar ni publicar), `OPENROUTER_API_KEY` solo en `workerai`, y comprobar en el panel (IA) que hay modelos tras el
       descubrimiento y que la reconciliación muestra `free_model_daily_requests`. Cierre técnico de F3: una tarea real de
       resumir-pdf registrada en `ai_requests` con el modelo usado.
+- [ ] Lote C de F3 con la pila completa: imagen-a-texto en `workerocr` con una foto real de un documento (TXT, Word y
+      PDF buscable); imagen-a-excel con una captura de una hoja de cálculo (termina en `workerconvert` y la petición
+      reservada vuelve, D-160) y con una tabla escrita a mano (pasa a `workerai`); ticket-a-excel con 3 tickets reales en
+      papel térmico (una petición por ticket en `ai_requests` y la columna «Cuadra» correcta, D-163). `workerconvert` y
+      `workerocr` sin reinicios por memoria y la imagen `worker-ai` con openpyxl.
 - [ ] Revisión de la IA por un especialista en protección de datos (aviso, política de privacidad y EIPD de `LEGAL.md`)
       antes de anunciar las herramientas de IA.
 - [ ] SMTP con SPF, DKIM y DMARC en el dominio de `MAIL_FROM`.

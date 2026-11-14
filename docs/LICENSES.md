@@ -10,7 +10,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | --- | --- | --- |
 | `@cantoo/pdf-lib`, `@cantoo/fontkit` | MIT | Herramientas PDF en el navegador |
 | `@embedpdf/pdfium` (PDFium en WebAssembly) | MIT (envoltorio); PDFium con su propia licencia BSD/Apache incluida en `LICENSE.pdfium` | Renderizado en el navegador |
-| Noto Sans, Noto Serif y Noto Sans Mono | OFL-1.1 (`apps/web/public/fonts/OFL.txt`) | Texto incrustado en PDF |
+| Noto Sans, Noto Serif y Noto Sans Mono | OFL-1.1 (`apps/web/public/fonts/OFL.txt`) | Texto incrustado en PDF; también las muestras generadas de imágenes con texto, tablas y tickets (`scripts/fixtures/imagenes_ocr.py`) |
 | `@lhci/cli` 0.16.1 y `lighthouse` 13.6.0 | Apache-2.0 | Lighthouse CI en el job `web` (solo desarrollo y CI, no se distribuye; D-145) |
 | `axe-core` 4.14.0 (dependencia de Lighthouse) | MPL-2.0 | Auditoría de accesibilidad de Lighthouse (solo CI) |
 | `sentry` 0.49.0 (CLI de Sentry: `@lhci/cli` > `lighthouse` > `@sentry/node` > `@sentry/bundler-plugins` > `sentry`) | FSL-1.1-Apache-2.0 (código fuente disponible; Apache-2.0 a los dos años) | Arrastrada por Lighthouse; no se ejecuta ni se distribuye, solo está instalada en desarrollo y CI (D-145) |
@@ -50,6 +50,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | Docling | MIT (código); revisar la ficha de cada modelo descargado | Desde PDF: Word, Excel, PowerPoint, ODF, RTF, Markdown, HTML, EPUB, CSV y JSON |
 | PyTorch (solo CPU), transformers, accelerate | BSD-3-Clause y otras permisivas; Apache-2.0 | Modelos de Docling |
 | python-docx, openpyxl, python-pptx, lxml | MIT; MIT; MIT; BSD-3-Clause | DOCX, XLSX, PPTX y EPUB fluido |
+| openpyxl 3.1.5 (y su dependencia et-xmlfile) en el extra `ai`; python-docx 1.2.0 e img2pdf 0.6.3 en el extra `ocr` | MIT; MIT; MIT y LGPL-3.0 | XLSX de imagen-a-excel y ticket-a-excel en `workerai`; DOCX e imágenes a PDF de imagen-a-texto en `workerocr` (F3, lote C; las mismas versiones que en los otros extras) |
 | psycopg | LGPL-3.0 | Controlador de PostgreSQL |
 | LibreOffice | MPL-2.0 | Programa externo en `workeroffice`, `workerconvert` y dentro de Gotenberg |
 | Gotenberg | MIT | Servicio externo (`gotenberg` sin red y `gotenbergweb` para web-a-pdf) |

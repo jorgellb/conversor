@@ -81,7 +81,7 @@ Se hace por lotes, cada uno con sus pruebas (D-119):
 | A1. Núcleo de IA y resumir-pdf | `LLMProvider` (OpenRouter y falso), descubrimiento de modelos, limitador y presupuesto en Valkey con reserva Pro, reconciliación con `/key`, consentimiento, caché por propietario, `workerai` y `egressai`, texto de los PDF con OCR de escaneos en `ocr`, panel de IA en la página y en administración; resumir-pdf | Hecho (D-120 a D-126) |
 | A2. chat-pdf | Embeddings locales (fastembed) en pgvector con su propio worker, `POST /v1/ai/chat` con eventos por un stream de Valkey, interfaz de chat con las páginas citadas y Playwright con LLM falso (16.1) | Hecho (D-127 a D-129) |
 | B. Documento con LLM | generador-de-preguntas (Word, Moodle y texto), pdf-a-fichas (Anki o Quizlet, CSV y Word), pdf-a-presentacion (python-pptx, 2 peticiones) y traducir-pdf (`TranslationProvider`, Word y PDF con maquetación simplificada) | Hecho (D-130 a D-133) |
-| C (F3-C). Imagen y datos | imagen-a-texto (Tesseract), imagen-a-excel (OCR, Docling y LLM si hace falta) y ticket-a-excel | Pendiente (depende de G0-A) |
+| C (F3-C). Imagen y datos | imagen-a-texto (Tesseract en `ocr`, sin IA), imagen-a-excel (Docling en `convert` y, si no reconoce la tabla, LLM con esquema en `ai`; IA opcional) y ticket-a-excel (OCR en `ocr` y LLM con esquema en `ai`, 1 petición por ticket, comprobación de la suma) | Hecho (D-159 a D-164) |
 | D (F3-D). Voz | pdf-a-audio (Kokoro con fonemas de espeak-ng como proceso externo) | Pendiente (depende de G0-A) |
 | E (F3-E). IA de audio (de F5) | traducir-subtitulos y resumir-reunion | Pendiente (depende de F3-D) |
 | F3-Z. Cierre de F3 | 16.3 y uso real de peticiones (clave de OpenRouter del propietario) | Pendiente (F3-C, F3-D, F3-E, G2-C10 y G0-B) |
@@ -163,4 +163,4 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
    incluidas `gotenbergweb` y `egressweb`.
 2. Cierre operativo de F1 con las entradas del propietario (0.1): VPS, Cloudflare, Stripe, SMTP y repositorio de restic.
 3. Revisión del contenido propio redactado y contenido del resto de páginas para quitar el `noindex`.
-4. Onda 1 de `docs/GOAL.md`: G0-B hecho; F3-C y F3-D en paralelo; después F3-E y F3-Z; luego F4, F6, vídeo de F5 y F7 (orden de 17).
+4. Onda 1 de `docs/GOAL.md`: G0-B y F3-C hechos; F3-D en paralelo; después F3-E y F3-Z; luego F4, F6, vídeo de F5 y F7 (orden de 17).

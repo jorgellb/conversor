@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Imagen a Excel saca las tablas de una foto o una captura de pantalla y las convierte en una hoja de cálculo. Sirve para la foto de un listado impreso, la captura de una tabla de una web o de otra hoja de cálculo y, en general, cualquier imagen JPG, PNG, WebP, BMP, GIF o TIFF con filas y columnas.",
+    "Primero, Docling busca la estructura de la tabla en la imagen, con el OCR de Tesseract para leer cada celda, después de enderezar la imagen si está torcida. Si la encuentra, la tabla sale sin usar IA externa. Solo si no la reconoce, por ejemplo en una tabla escrita a mano o muy descolocada, y tienes activada la opción de usar IA, el texto leído por el OCR se envía a un modelo de IA que reconstruye las filas y las columnas.",
+    "Esa reconstrucción gasta una petición de IA. Se reserva al empezar y se devuelve si al final no hace falta. Con la IA activada necesitas una cuenta y aceptar un aviso: el texto de la imagen se envía a un proveedor externo a través de OpenRouter, que puede estar fuera de la Unión Europea. Si desactivas la opción, nada sale de nuestros servidores y no hace falta cuenta.",
+    "En Excel puedes poner cada tabla en su hoja o todas en una, y los números escritos como 1.234,56 pasan a ser números de verdad para que puedas sumar y ordenar. En CSV recibes un archivo por tabla, con el separador que elijas y con BOM para que Excel abra bien las tildes."
+  ],
+  "steps": [
+    "Sube la foto o la captura en la que aparece la tabla.",
+    "Elige Excel o CSV y decide si quieres usar la IA cuando la tabla no se reconozca.",
+    "Descarga la hoja de cálculo y revisa las celdas antes de usarla."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuándo se usa la IA?",
+      "a": "Solo cuando Docling no encuentra ninguna tabla en la imagen y tienes activada la opción. Si la tabla se reconoce sin IA, el resultado lo indica y la petición reservada vuelve a tu cupo del día. Con la cuenta gratuita tienes 3 peticiones de IA al día y con Pro, 30."
+    },
+    {
+      "q": "¿Puedo usarla sin cuenta?",
+      "a": "Sí, si desactivas la opción de usar IA. En ese caso funciona como una tarea pesada más: 2 al día sin cuenta, 10 con la cuenta gratuita y 200 con Pro. Si no aparece ninguna tabla, el Excel trae las líneas de texto de la imagen, una por fila, y el CSV avisa de que no hay tablas."
+    },
+    {
+      "q": "¿Los datos de la tabla son siempre exactos?",
+      "a": "Depende de la imagen. Una captura nítida suele salir bien, pero una foto borrosa, con sombras o escrita a mano puede traer letras o cifras mal leídas, y la IA también puede equivocarse. Compara siempre los importes importantes con el original."
+    },
+    {
+      "q": "¿Y si mi tabla está en un PDF?",
+      "a": "Usa PDF a Excel, que lee directamente el texto y las tablas del PDF sin pasar por una imagen. Para tickets de compra está Ticket a Excel, que además separa comercio, fecha, conceptos e IVA."
+    }
+  ]
+}

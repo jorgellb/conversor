@@ -90,6 +90,9 @@ DETAILS: dict[str, dict[str, str]] = {
     # «ai_task:25>20»: peticiones que necesita el documento y máximo por tarea (6.3).
     "ai_task": {"es": "Este documento necesitaría {need} peticiones de IA y tu plan permite {max} por tarea: elige un rango de páginas más corto.",
                 "en": "This document would need {need} AI requests and your plan allows {max} per task: choose a shorter page range."},
+    # «ai_files:25>20»: peticiones (una por archivo, ticket-a-excel) y máximo por tarea (6.3).
+    "ai_files": {"es": "Estos archivos necesitarían {need} peticiones de IA (una por archivo) y tu plan permite {max} por tarea: sube menos a la vez.",
+                 "en": "These files would need {need} AI requests (one per file) and your plan allows {max} per task: upload fewer at once."},
     "ai_day": {"es": "Has usado todas tus peticiones de IA de hoy.", "en": "You have used all your AI requests for today."},
     "chat_expired": {"es": "El documento de este chat ya no está: vuelve a prepararlo.",
                      "en": "This chat's document is no longer available: prepare it again."},
@@ -98,6 +101,9 @@ DETAILS: dict[str, dict[str, str]] = {
     "ai_empty": {"es": "No se ha encontrado texto en las páginas elegidas.", "en": "No text was found in the selected pages."},
     "ai_account": {"es": "Las herramientas de IA necesitan una cuenta: inicia sesión o regístrate gratis.",
                    "en": "AI tools need an account: sign in or sign up for free."},
+    "image_no_tables": {"es": "No se ha encontrado ninguna tabla en la imagen.", "en": "No table was found in the image."},
+    "not_receipt": {"es": "La imagen no parece un ticket de compra ni una factura simplificada.",
+                    "en": "The image does not look like a receipt or a simplified invoice."},
     "ai_scanned": {"es": "Las páginas {pages} son imágenes sin texto: activa «Leer las páginas escaneadas» o pasa antes OCR PDF.",
                    "en": "Pages {pages} are images without text: turn on “Read scanned pages” or run OCR PDF first."},
 }

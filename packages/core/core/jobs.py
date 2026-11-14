@@ -162,11 +162,11 @@ def create_job(
     group, queue = spec.target(options)
     queueguard.check(r, queue, group, settings.queue_wait_limit(group), owner.is_pro)
     ai_reserved = 0
-    if spec.ai is not None:
+    if spec.ai is not None and spec.ai.used_by(options):
         from core.ai.jobs import prepare
 
         # Lo último antes de crear el trabajo: la reserva en Valkey no se deshace con la transacción (6.3).
-        ai_reserved = prepare(session, r, settings, spec, owner.type, owner.id, plan, options, ai_consent)
+        ai_reserved = prepare(session, r, settings, spec, owner.type, owner.id, plan, options, ai_consent, files=len(ordered))
 
     job = Job(
         id=uuid.uuid4(),

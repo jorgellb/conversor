@@ -148,7 +148,7 @@ Archivos comunes que se fusionan en la integración y no impiden el paralelismo:
 | G2-C13 | Contenido 8.2 | png-a-jpg, webp-a-jpg, jpg-a-png, webp-a-png, gif-a-png, jpg-a-webp, png-a-webp, avif-a-jpg, jpg-a-avif, bmp-a-jpg | web | — | S |
 | G2-C14 | Contenido 8.2 | tiff-a-jpg, png-a-ico, convertir-imagen, svg-a-png, svg-a-jpg, comprimir-imagen, redimensionar-imagen, crear-favicon, quitar-metadatos-foto, imagen-a-base64 | web | — | S |
 | G2-C15 | Contenido 8.2 | leer-codigo-qr, generar-codigo-qr, heic-a-jpg, heic-a-png, raw-a-jpg, psd-a-png, png-a-svg, jpg-a-svg, quitar-fondo | web | — | S |
-| F3-C | F3 | imagen-a-texto, imagen-a-excel, ticket-a-excel | ocr, convert y ai (Tesseract, Docling y LLM con esquema) | G0-A | L |
+| F3-C | F3 | imagen-a-texto, imagen-a-excel, ticket-a-excel. **Hecho** (D-159 a D-164) | ocr, convert y ai (Tesseract, Docling y LLM con esquema) | G0-A | L |
 | F3-D | F3 | pdf-a-audio | av.heavy (Kokoro en ONNX y espeak-ng externo) | G0-A | XL |
 | F3-E | F3 (7.10) | traducir-subtitulos, resumir-reunion | av.heavy y ai (faster-whisper y LLM, pysubs2) | F3-D | M |
 | F3-Z | Cierre de F3 | — | — | F3-C, F3-D, F3-E, G2-C10, G0-B | S |

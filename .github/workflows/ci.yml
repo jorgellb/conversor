@@ -36,7 +36,7 @@ jobs:
       - name: Motores del sistema para las pruebas de efecto
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa ffmpeg libreoffice-writer-nogui fonts-dejavu postgresql-client restic \
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng tesseract-ocr-osd ffmpeg libreoffice-writer-nogui fonts-dejavu postgresql-client restic \
             djvulibre-bin libarchive13 calibre libheif-examples libheif-plugin-libde265 libheif-plugin-x265
       # x265 solo en la CI, para crear la muestra HEIC de la prueba; nunca en las imágenes (D-49).
       - name: Herramientas del lote D (tiffcp, pdftocairo, perfil CMYK) y veraPDF fijado por SHA-256
@@ -89,7 +89,8 @@ jobs:
         run: .venv/bin/python scripts/check_licenses.py python
 
   docling:
-    # Lote D2 de F2 con Docling, LibreOffice y Tesseract reales; los modelos se guardan en la caché de la CI.
+    # Lote D2 de F2 e imagen-a-excel (F3, lote C) con Docling, LibreOffice y Tesseract reales; los modelos se guardan en
+    # la caché de la CI.
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
@@ -104,14 +105,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends libreoffice-writer-nogui libreoffice-calc-nogui libreoffice-impress-nogui \
-            tesseract-ocr tesseract-ocr-spa poppler-utils fonts-dejavu
+            tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng poppler-utils fonts-dejavu
       - name: Dependencias
         run: |
           uv venv .venv
           uv pip install --python .venv --index-url https://download.pytorch.org/whl/cpu torch torchvision
           uv pip install --python .venv -r pyproject.toml --extra pdf --extra ocr --extra dev --extra convert
       - name: Pruebas con Docling
-        run: .venv/bin/pytest -q tests/test_desde_pdf_docling.py -p no:cacheprovider
+        # imagen-a-excel (F3, lote C): Docling sobre imágenes, sin IA (el camino con IA va en el job python).
+        run: .venv/bin/pytest -q tests/test_desde_pdf_docling.py tests/test_imagen_excel_docling.py -p no:cacheprovider
 
   web:
     runs-on: ubuntu-24.04

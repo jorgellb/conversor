@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Image to text recognises the letters in a photo, a screenshot or a scan and gives you the text to copy, edit or search. It works with JPG, PNG, WebP, BMP, GIF and TIFF, including multi-page TIFF files from a fax or a scanner, and it keeps accents and other special letters.",
+    "Recognition is done by Tesseract on our servers, the same engine behind OCR PDF. Nothing is sent to an external AI provider and no AI requests are used, so you need neither an account nor to accept any notice. Files are deleted automatically when the job expires: after one hour without an account and after 24 hours with one.",
+    "Before reading, the tool straightens the image if it is slightly tilted and, if you turn it on, rotates images that are sideways or upside down. By default it reads Spanish and English; you can choose up to three languages at once with their Tesseract codes, such as eng, spa, fra, deu, ita, por, cat, glg or eus.",
+    "The result can be a TXT file, a Word document or a PDF with a text layer that looks just like the image but can be searched and selected. If you upload several images, you get one file for each plus a ZIP with all of them, or a single file with every image if you tick that option."
+  ],
+  "steps": [
+    "Upload one or more images with text (photo, screenshot or scan).",
+    "Choose the text languages and the output: TXT, Word or searchable PDF.",
+    "Download the recognised text or the ZIP with all the results."
+  ],
+  "faq": [
+    {
+      "q": "Are my images sent to an AI?",
+      "a": "No. Recognition is local, with Tesseract on our servers, and no external AI model is involved. That is why this tool asks for no consent and uses none of your account's AI requests."
+    },
+    {
+      "q": "What if the text comes out with mistakes?",
+      "a": "Check that the selected languages match the text, because each language brings its own letters and words. A sharp, well-lit photo taken straight on reads far better than a blurred or angled one. If the image is turned 90 or 180 degrees, enable rotation in the additional options."
+    },
+    {
+      "q": "How many images can I upload?",
+      "a": "Each task counts as a heavy one. Without an account you can run 2 a day with up to 5 files of 50 MB; with a free account, 10 a day with up to 20 files of 100 MB; and with Pro, 200 a day. In a multi-page TIFF, every page counts towards the plan's page limit."
+    },
+    {
+      "q": "What if the image has no text?",
+      "a": "You get an empty file and a notice saying no text was found in that image, and the task does not fail. If you are after the tables in an image, try Image to Excel; for a scanned PDF, use OCR PDF."
+    }
+  ]
+}

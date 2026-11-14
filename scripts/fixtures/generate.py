@@ -139,6 +139,10 @@ def generate(out: Path) -> dict[str, Path]:
     docx = docx_with_libreoffice(out / "carta.docx", work)
     if docx:
         files["carta.docx"] = docx
+    # F3, lote C: imágenes con texto, tablas y tickets para imagen-a-texto, imagen-a-excel y ticket-a-excel.
+    from imagenes_ocr import generate as ocr_images
+
+    files.update(ocr_images(out))
     (out / "falso.pdf").write_bytes(b"esto no es un PDF, es texto")
     files["falso.pdf"] = out / "falso.pdf"
     (out / "hls.m3u8").write_text("#EXTM3U\n#EXTINF:1,\nfile:///etc/passwd\n", encoding="utf-8")

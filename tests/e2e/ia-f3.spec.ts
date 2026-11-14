@@ -2,7 +2,7 @@ import { expect, test, type Page, type Route } from "@playwright/test";
 
 // IA (F3) con el servidor simulado: cuenta, aviso de 6.6 con casilla obligatoria, peticiones que quedan y «no disponible
 // temporalmente». El trabajo real (proveedor falso, reservas y caché) lo prueba pytest (tests/test_ia.py).
-const WEB = "http://127.0.0.1:3100", API = "http://127.0.0.1:8100", UP = "http://127.0.0.1:8180", FILES = "http://127.0.0.1:8190";
+const WEB = process.env.WEB_URL ?? "http://127.0.0.1:3100", API = "http://127.0.0.1:8100", UP = "http://127.0.0.1:8180", FILES = "http://127.0.0.1:8190";
 const cors = {
   "Access-Control-Allow-Origin": WEB, "Access-Control-Allow-Methods": "GET, POST, PATCH, HEAD, OPTIONS",
   "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept-Language, Tus-Resumable, Upload-Length, Upload-Offset, Upload-Metadata, Upload-Defer-Length, X-Requested-With",
@@ -123,4 +123,45 @@ test("lote B de F3: formularios de preguntas, fichas, presentación y traducció
   await expect(page.getByLabel("Translate into")).toHaveValue("en");
   await page.getByText("More options", { exact: true }).click();
   await expect(page.getByLabel("Terms not to translate (one per line)")).toBeVisible();
+});
+
+test("lote C de F3: imagen a texto sin IA, imagen a Excel con la IA opcional y ticket a Excel", async ({ page }) => {
+  // imagen-a-texto: OCR local (6.3: 0 peticiones), sin panel de IA ni consentimiento.
+  await page.goto("/es/imagen-a-texto");
+  await expect(page.getByRole("heading", { name: "Imagen a texto" })).toBeVisible();
+  await expect(page.locator("[data-ai-panel]")).toHaveCount(0);
+  await expect(page.locator('input[type="file"]').first()).toHaveAttribute("accept", ".jpg,.png,.webp,.tiff,.bmp,.gif");
+  await expect(page.getByLabel("Idiomas del texto")).toHaveValue("spa, eng");
+  await expect(page.getByLabel("Salida")).toHaveValue("txt");
+  await expect(page.getByLabel("Salida").locator("option", { hasText: "PDF con capa de texto (buscable)" })).toHaveCount(1);
+  await expect(page.getByLabel("Enderezar")).toBeChecked();
+  await page.getByText("Opciones adicionales", { exact: true }).click();
+  await expect(page.getByLabel("Girar las imágenes que estén de lado o del revés")).not.toBeChecked();
+  await expect(page.getByLabel("Un solo archivo con todas las imágenes")).not.toBeChecked();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);  // contenido sin revisar (D-15)
+
+  // imagen-a-excel: con «usar IA» (por defecto) pide cuenta; apagada, el panel de IA desaparece.
+  await page.goto("/es/imagen-a-excel");
+  await expect(page.getByRole("heading", { name: "Imagen a Excel" })).toBeVisible();
+  const ia = page.getByLabel("Si no se reconoce la tabla, reconstruirla con IA (1 petición)");
+  await expect(ia).toBeChecked();
+  await expect(page.locator("[data-ai-panel]")).toContainText("Las herramientas de IA necesitan una cuenta gratuita.");
+  await ia.uncheck();
+  await expect(page.locator("[data-ai-panel]")).toHaveCount(0);
+  await expect(page.getByLabel("Hojas")).toHaveValue("una_por_tabla");
+  await expect(page.getByLabel("Separador")).toHaveCount(0);  // solo en CSV
+  await page.getByLabel("Formato").selectOption("csv");
+  await expect(page.getByLabel("Separador")).toHaveValue("coma");
+  await expect(page.getByLabel("Hojas")).toHaveCount(0);
+
+  // ticket-a-excel: hasta 20 tickets; las filas y el separador solo para CSV.
+  await page.goto("/en/receipt-to-excel");
+  await expect(page.getByRole("heading", { name: "Receipt to Excel" })).toBeVisible();
+  await expect(page.locator("[data-ai-panel]")).toContainText("AI tools need a free account.");
+  await expect(page.getByLabel("CSV rows")).toHaveCount(0);
+  await page.getByLabel("Format").selectOption("csv");
+  await expect(page.getByLabel("CSV rows")).toHaveValue("ticket");
+  await expect(page.getByLabel("Delimiter")).toHaveValue("punto_y_coma");
+  await page.getByText("More options", { exact: true }).click();
+  await expect(page.getByLabel("Receipt language (for OCR)")).toHaveValue("auto");
 });

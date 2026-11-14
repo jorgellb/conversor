@@ -147,6 +147,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "ordenar_por_nombre": {
@@ -340,6 +341,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "modo": {
@@ -480,6 +482,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "angulo": {
@@ -565,6 +568,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -613,6 +617,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -681,6 +686,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "orden": {
@@ -747,6 +753,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "patron": {
@@ -1048,6 +1055,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tipo": {
@@ -1364,6 +1372,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "editar-pdf (A.3): el contenido se edita en pantalla; estas opciones son las de empezar en blanco.",
         "properties": {
@@ -1482,6 +1491,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "guardar": {
@@ -1541,6 +1551,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "izquierda": {
@@ -1797,6 +1808,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano": {
@@ -2018,6 +2030,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "por_hoja": {
@@ -2295,6 +2308,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "papel": {
@@ -2439,6 +2453,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "aplanar": {
@@ -2504,6 +2519,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "anotar-pdf (A.3): las marcas se hacen en pantalla; aquí, cómo se guardan.",
         "properties": {
@@ -2597,6 +2613,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -2779,6 +2796,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "corte": {
@@ -2887,6 +2905,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -3148,6 +3167,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "montar-pdf: el tablero de la web rellena `docs` (documentos y sus páginas).",
         "properties": {
@@ -3198,6 +3218,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "marcadores-pdf: el editor de la web rellena `items` (árbol de marcadores).",
         "properties": {
@@ -3248,6 +3269,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "ignorar_mayusculas_espacios": {
@@ -3294,6 +3316,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "texto": {
@@ -3367,6 +3390,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "color": {
@@ -3445,6 +3469,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano_pagina": {
@@ -3761,6 +3786,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano_pagina": {
@@ -4077,6 +4103,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano_pagina": {
@@ -4393,6 +4420,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano_pagina": {
@@ -4715,6 +4743,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano_pagina": {
@@ -5032,6 +5061,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano_pagina": {
@@ -5349,6 +5379,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano_pagina": {
@@ -5667,6 +5698,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -5850,6 +5882,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -6033,6 +6066,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -6214,6 +6248,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -6399,6 +6434,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "escaner-pdf (A.4): todo en el navegador; el OCR opcional del final sube el PDF a ocr-pdf.",
         "properties": {
@@ -6502,6 +6538,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "longitud": {
@@ -6607,6 +6644,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -6674,6 +6712,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -6744,6 +6783,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -6851,6 +6891,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "modo": {
@@ -7017,6 +7058,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "conservar_metadatos": {
@@ -7064,6 +7106,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "conservar_metadatos": {
@@ -7110,6 +7153,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "Herramienta sin opciones propias.",
         "properties": {},
@@ -7148,6 +7192,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -7220,6 +7265,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -7292,6 +7338,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -7350,6 +7397,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -7426,6 +7474,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -7484,6 +7533,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -7565,6 +7615,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamanos_ico": {
@@ -7713,6 +7764,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -8032,6 +8084,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "svg-a-png (A.10): resvg en el navegador, sin cargar recursos externos.",
         "properties": {
@@ -8124,6 +8177,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano": {
@@ -8240,6 +8294,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "nombre": {
@@ -8347,6 +8402,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "que": {
@@ -8427,6 +8483,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -8503,6 +8560,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formatos": {
@@ -8564,6 +8622,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "generar-codigo-qr (A.1): qr-code-styling en la página y comprobación de lectura con zxing-cpp en el worker.",
         "properties": {
@@ -10078,6 +10137,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "crear-collage (A.1): el editor compone el collage en la página; el worker recibe además el documento (`doc`).",
         "properties": {
@@ -10227,6 +10287,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "nivel": {
@@ -10491,6 +10552,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "contrasena_apertura": {
@@ -10672,6 +10734,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "contrasena": {
@@ -10727,6 +10790,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "Herramientas sin opciones (reparar-pdf y eliminar-metadatos-pdf).",
         "properties": {},
@@ -10763,6 +10827,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "comprimir_antes": {
@@ -10810,6 +10875,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "metodo": {
@@ -10870,6 +10936,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "modo": {
@@ -10960,6 +11027,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -11046,6 +11114,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "Vacío deja el valor que ya tiene cada archivo; la web rellena el formulario con los del primero.",
         "properties": {
@@ -11168,6 +11237,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "Herramientas sin opciones (reparar-pdf y eliminar-metadatos-pdf).",
         "properties": {},
@@ -11205,6 +11275,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "dpi": {
@@ -11291,6 +11362,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "A.7: todas empiezan en «No cambiar».",
         "properties": {
@@ -11980,6 +12052,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "A.9, imagen: TIFF con tiffcp; CMYK con LittleCMS y el perfil FOGRA39 (D-60).",
         "properties": {
@@ -12152,6 +12225,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -12198,6 +12272,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -12327,6 +12402,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -12512,6 +12588,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -12696,6 +12773,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -12881,6 +12959,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -13064,6 +13143,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -13247,6 +13327,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -13430,6 +13511,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -13613,6 +13695,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -13796,6 +13879,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -13978,6 +14062,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "txt-a-pdf (A.8): la codificación se detecta sola (charset-normalizer).",
         "properties": {
@@ -14089,6 +14174,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "html-a-pdf (7.3): Chromium de `gotenberg`, sin red.",
         "properties": {
@@ -14253,6 +14339,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "markdown-a-pdf (A.8): GitHub Flavored con markdown-it y Chromium.",
         "properties": {
@@ -14372,6 +14459,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "superponer-pdf (A.3): el primer archivo es la superposición y los demás, los documentos.",
         "properties": {
@@ -14497,6 +14585,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "svg-a-pdf (A.8).",
         "properties": {
@@ -14559,6 +14648,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -14742,6 +14832,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -14925,6 +15016,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -15109,6 +15201,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -15292,6 +15385,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -15475,6 +15569,7 @@
       ],
       "canonical_of": "publisher-a-pdf",
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -15657,6 +15752,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "epub-a-pdf, mobi-a-pdf, azw3-a-pdf y fb2-a-pdf (A.8) con Calibre.",
         "properties": {
@@ -15754,6 +15850,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "epub-a-pdf, mobi-a-pdf, azw3-a-pdf y fb2-a-pdf (A.8) con Calibre.",
         "properties": {
@@ -15851,6 +15948,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "epub-a-pdf, mobi-a-pdf, azw3-a-pdf y fb2-a-pdf (A.8) con Calibre.",
         "properties": {
@@ -15948,6 +16046,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "epub-a-pdf, mobi-a-pdf, azw3-a-pdf y fb2-a-pdf (A.8) con Calibre.",
         "properties": {
@@ -16065,6 +16164,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "solicitud-de-empleo-pdf (A.1): carta (opcional), CV y adjuntos, en el orden elegido.",
         "properties": {
@@ -16155,6 +16255,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "web-a-pdf (A.1): campos de la ruta Chromium de Gotenberg; la URL se comprueba en la API (12.2).",
         "properties": {
@@ -16361,6 +16462,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -16544,6 +16646,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "idiomas": {
@@ -16758,6 +16861,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "A.5: nivel [PDF/A-2b] | 1b | 2u | 3b; 2a y 3a solo si el PDF está etiquetado.",
         "properties": {
@@ -16864,6 +16968,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "A.6: perfil automático (el que declara el archivo) o uno concreto.",
         "properties": {
@@ -16956,6 +17061,127 @@
       }
     },
     {
+      "slug_es": "imagen-a-texto",
+      "slug_en": "image-to-text",
+      "name_es": "Imagen a texto",
+      "name_en": "Image to text",
+      "summary_es": "Saca el texto de fotos, capturas y escaneos con OCR, sin enviarlo a ninguna IA externa.",
+      "summary_en": "Extract the text from photos, screenshots and scans with OCR, without sending it to any external AI.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "ocr",
+      "cost_class": "heavy",
+      "inputs": [
+        "jpg",
+        "png",
+        "webp",
+        "tiff",
+        "bmp",
+        "gif"
+      ],
+      "outputs": [
+        "txt",
+        "docx",
+        "pdf",
+        "zip"
+      ],
+      "phase": "F3",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "ocr-pdf",
+        "imagen-a-excel",
+        "imagenes-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "imagen-a-texto (7.6): el Anexo A no fija opciones; las de D-159, con los idiomas y el enderezado de ocr-pdf (A.5).",
+        "properties": {
+          "idiomas": {
+            "default": [
+              "spa",
+              "eng"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Idiomas del texto",
+            "type": "array",
+            "x-title": {
+              "en": "Text languages",
+              "es": "Idiomas del texto"
+            }
+          },
+          "salida": {
+            "default": "txt",
+            "enum": [
+              "txt",
+              "docx",
+              "pdf"
+            ],
+            "title": "Salida",
+            "type": "string",
+            "x-labels": {
+              "docx": {
+                "en": "Word (DOCX)",
+                "es": "Word (DOCX)"
+              },
+              "pdf": {
+                "en": "PDF with text layer (searchable)",
+                "es": "PDF con capa de texto (buscable)"
+              },
+              "txt": {
+                "en": "Text (TXT)",
+                "es": "Texto (TXT)"
+              }
+            },
+            "x-title": {
+              "en": "Output",
+              "es": "Salida"
+            }
+          },
+          "enderezar": {
+            "default": true,
+            "title": "Enderezar",
+            "type": "boolean",
+            "x-title": {
+              "en": "Deskew",
+              "es": "Enderezar"
+            }
+          },
+          "autorrotar": {
+            "default": false,
+            "title": "Girar las imágenes que estén de lado o del revés",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Rotate images that are sideways or upside down",
+              "es": "Girar las imágenes que estén de lado o del revés"
+            }
+          },
+          "unir": {
+            "default": false,
+            "title": "Un solo archivo con todas las imágenes",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "One file with all the images",
+              "es": "Un solo archivo con todas las imágenes"
+            }
+          }
+        },
+        "title": "ImagenTextoOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "pdf-a-word",
       "slug_en": "pdf-to-word",
       "name_es": "PDF a Word",
@@ -16985,6 +17211,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "modo": {
@@ -17091,6 +17318,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "pdf-a-odt y pdf-a-rtf: lo mismo que pdf-a-word.",
         "properties": {
@@ -17198,6 +17426,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "pdf-a-odt y pdf-a-rtf: lo mismo que pdf-a-word.",
         "properties": {
@@ -17305,6 +17534,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "pdf-a-excel y pdf-a-ods.",
         "properties": {
@@ -17417,6 +17647,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "pdf-a-excel y pdf-a-ods.",
         "properties": {
@@ -17529,6 +17760,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "pdf-a-ppt y pdf-a-odp: una diapositiva por página.",
         "properties": {
@@ -17635,6 +17867,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "pdf-a-ppt y pdf-a-odp: una diapositiva por página.",
         "properties": {
@@ -17742,6 +17975,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "imagenes": {
@@ -17852,6 +18086,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "pdf-a-html y pdf-a-epub.",
         "properties": {
@@ -17959,6 +18194,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "pdf-a-html y pdf-a-epub.",
         "properties": {
@@ -18066,6 +18302,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "delimitador": {
@@ -18195,6 +18432,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "contenido": {
@@ -18298,6 +18536,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "copiar-de-pdf (A.4): los escaneos pasan antes por ocr-pdf desde la web; aquí solo el OCR de Docling, opcional.",
         "properties": {
@@ -18387,6 +18626,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "formato": {
@@ -19179,6 +19419,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -19288,6 +19529,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -19396,6 +19638,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -19505,6 +19748,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -19614,6 +19858,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -19722,6 +19967,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -19830,6 +20076,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -19938,6 +20185,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -20046,6 +20294,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -20155,6 +20404,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -20265,6 +20515,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "frecuencia": {
@@ -20363,6 +20614,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "frecuencia": {
@@ -20479,6 +20731,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "inicio": {
@@ -20605,6 +20858,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "pausa": {
@@ -20721,6 +20975,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "objetivo": {
@@ -20832,6 +21087,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "velocidad": {
@@ -20931,6 +21187,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "idioma": {
@@ -21164,6 +21421,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "idioma": {
@@ -21383,6 +21641,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano_pagina": {
@@ -21701,6 +21960,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano": {
@@ -21770,6 +22030,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "tamano": {
@@ -21840,6 +22101,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "calidad": {
@@ -21912,6 +22174,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "adjuntos": {
@@ -21980,6 +22243,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "adjuntos": {
@@ -22048,6 +22312,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "papel": {
@@ -22172,6 +22437,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "heic-a-jpg y heic-a-png (A.10): solo con HEVC_DECODE_ENABLED.",
         "properties": {
@@ -22244,6 +22510,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "conservar_exif": {
@@ -22307,6 +22574,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "raw-a-jpg: revelado de LibRaw; el Anexo A no fija opciones (D-97).",
         "properties": {
@@ -22438,6 +22706,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "salida": {
@@ -22512,6 +22781,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "png-a-svg y jpg-a-svg con vtracer.",
         "properties": {
@@ -22630,6 +22900,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "png-a-svg y jpg-a-svg con vtracer.",
         "properties": {
@@ -22752,6 +23023,7 @@
       ],
       "canonical_of": null,
       "ai": false,
+      "ai_option": null,
       "options_schema": {
         "description": "quitar-fondo con rembg (6.4); el Anexo A no fija opciones (D-96).",
         "properties": {
@@ -22877,6 +23149,7 @@
       ],
       "canonical_of": null,
       "ai": true,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -23122,6 +23395,7 @@
       ],
       "canonical_of": null,
       "ai": true,
+      "ai_option": null,
       "options_schema": {
         "description": "chat-pdf: las mismas que cualquier herramienta que lee un PDF (páginas y OCR).",
         "properties": {
@@ -23239,6 +23513,7 @@
       ],
       "canonical_of": null,
       "ai": true,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -23560,6 +23835,7 @@
       ],
       "canonical_of": null,
       "ai": true,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -23790,6 +24066,7 @@
       ],
       "canonical_of": null,
       "ai": true,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -24007,6 +24284,7 @@
       ],
       "canonical_of": null,
       "ai": true,
+      "ai_option": null,
       "options_schema": {
         "properties": {
           "paginas": {
@@ -24281,6 +24559,361 @@
           }
         },
         "title": "TraducirOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "imagen-a-excel",
+      "slug_en": "image-to-excel",
+      "name_es": "Imagen a Excel",
+      "name_en": "Image to Excel",
+      "summary_es": "Pasa las tablas de una foto o una captura a Excel o CSV; si no se reconocen, las reconstruye con IA.",
+      "summary_en": "Turn the tables in a photo or a screenshot into Excel or CSV; if they are not recognised, AI rebuilds them.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "convert",
+      "cost_class": "ai",
+      "inputs": [
+        "jpg",
+        "png",
+        "webp",
+        "tiff",
+        "bmp",
+        "gif"
+      ],
+      "outputs": [
+        "xlsx",
+        "csv",
+        "zip"
+      ],
+      "phase": "F3",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "pdf-a-excel",
+        "imagen-a-texto",
+        "ticket-a-excel"
+      ],
+      "canonical_of": null,
+      "ai": true,
+      "ai_option": "usar_ia",
+      "options_schema": {
+        "description": "imagen-a-excel (7.6): el Anexo A no fija opciones; las de D-160, con las hojas y los números de pdf-a-excel (A.9).",
+        "properties": {
+          "formato": {
+            "default": "xlsx",
+            "enum": [
+              "xlsx",
+              "csv"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "csv": {
+                "en": "CSV",
+                "es": "CSV"
+              },
+              "xlsx": {
+                "en": "Excel (XLSX)",
+                "es": "Excel (XLSX)"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "hojas": {
+            "default": "una_por_tabla",
+            "enum": [
+              "una_por_tabla",
+              "todas_en_una"
+            ],
+            "title": "Hojas",
+            "type": "string",
+            "x-labels": {
+              "todas_en_una": {
+                "en": "All tables in one sheet",
+                "es": "Todas las tablas en una hoja"
+              },
+              "una_por_tabla": {
+                "en": "One sheet per table",
+                "es": "Una hoja por tabla"
+              }
+            },
+            "x-show-if": {
+              "formato": [
+                "xlsx"
+              ]
+            },
+            "x-title": {
+              "en": "Sheets",
+              "es": "Hojas"
+            }
+          },
+          "delimitador": {
+            "default": "coma",
+            "enum": [
+              "coma",
+              "punto_y_coma",
+              "tabulador"
+            ],
+            "title": "Separador",
+            "type": "string",
+            "x-labels": {
+              "coma": {
+                "en": "Comma (,)",
+                "es": "Coma (,)"
+              },
+              "punto_y_coma": {
+                "en": "Semicolon (;), for Excel in Spanish",
+                "es": "Punto y coma (;), para Excel en español"
+              },
+              "tabulador": {
+                "en": "Tab",
+                "es": "Tabulador"
+              }
+            },
+            "x-show-if": {
+              "formato": [
+                "csv"
+              ]
+            },
+            "x-title": {
+              "en": "Delimiter",
+              "es": "Separador"
+            }
+          },
+          "usar_ia": {
+            "default": true,
+            "title": "Si no se reconoce la tabla, reconstruirla con IA (1 petición)",
+            "type": "boolean",
+            "x-title": {
+              "en": "If the table is not recognised, rebuild it with AI (1 request)",
+              "es": "Si no se reconoce la tabla, reconstruirla con IA (1 petición)"
+            }
+          },
+          "numeros": {
+            "default": true,
+            "title": "Convertir los números (1.234,56) en números de verdad",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-show-if": {
+              "formato": [
+                "xlsx"
+              ]
+            },
+            "x-title": {
+              "en": "Turn numbers (1,234.56) into real numbers",
+              "es": "Convertir los números (1.234,56) en números de verdad"
+            }
+          },
+          "idiomas": {
+            "default": [
+              "spa",
+              "eng"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Idiomas del OCR",
+            "type": "array",
+            "x-advanced": true,
+            "x-title": {
+              "en": "OCR languages",
+              "es": "Idiomas del OCR"
+            }
+          }
+        },
+        "title": "ImagenExcelOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "ticket-a-excel",
+      "slug_en": "receipt-to-excel",
+      "name_es": "Ticket a Excel",
+      "name_en": "Receipt to Excel",
+      "summary_es": "Pasa tus tickets de compra a una hoja de Excel: comercio, fecha, conceptos, IVA y total, y avisa si no cuadran.",
+      "summary_en": "Turn your shopping receipts into an Excel sheet: shop, date, items, tax and total, with a warning if they do not add up.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "ocr",
+      "cost_class": "ai",
+      "inputs": [
+        "jpg",
+        "png",
+        "webp",
+        "tiff",
+        "bmp",
+        "gif"
+      ],
+      "outputs": [
+        "xlsx",
+        "csv"
+      ],
+      "phase": "F3",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "imagen-a-excel",
+        "imagen-a-texto",
+        "pdf-a-excel"
+      ],
+      "canonical_of": null,
+      "ai": true,
+      "ai_option": null,
+      "options_schema": {
+        "description": "ticket-a-excel (7.6): el Anexo A no fija opciones; las de D-163.",
+        "properties": {
+          "formato": {
+            "default": "xlsx",
+            "enum": [
+              "xlsx",
+              "csv"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "csv": {
+                "en": "CSV",
+                "es": "CSV"
+              },
+              "xlsx": {
+                "en": "Excel (XLSX, with a receipts sheet and an items sheet)",
+                "es": "Excel (XLSX, con una hoja de tickets y otra de conceptos)"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "filas": {
+            "default": "ticket",
+            "enum": [
+              "ticket",
+              "concepto"
+            ],
+            "title": "Filas del CSV",
+            "type": "string",
+            "x-labels": {
+              "concepto": {
+                "en": "One row per item",
+                "es": "Una fila por concepto"
+              },
+              "ticket": {
+                "en": "One row per receipt",
+                "es": "Una fila por ticket"
+              }
+            },
+            "x-show-if": {
+              "formato": [
+                "csv"
+              ]
+            },
+            "x-title": {
+              "en": "CSV rows",
+              "es": "Filas del CSV"
+            }
+          },
+          "delimitador": {
+            "default": "punto_y_coma",
+            "enum": [
+              "coma",
+              "punto_y_coma",
+              "tabulador"
+            ],
+            "title": "Separador",
+            "type": "string",
+            "x-labels": {
+              "coma": {
+                "en": "Comma (,)",
+                "es": "Coma (,)"
+              },
+              "punto_y_coma": {
+                "en": "Semicolon (;), for Excel in Spanish",
+                "es": "Punto y coma (;), para Excel en español"
+              },
+              "tabulador": {
+                "en": "Tab",
+                "es": "Tabulador"
+              }
+            },
+            "x-show-if": {
+              "formato": [
+                "csv"
+              ]
+            },
+            "x-title": {
+              "en": "Delimiter",
+              "es": "Separador"
+            }
+          },
+          "idioma_ticket": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca"
+            ],
+            "title": "Idioma de los tickets (para el OCR)",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "Spanish or English",
+                "es": "Español o inglés"
+              },
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              }
+            },
+            "x-title": {
+              "en": "Receipt language (for OCR)",
+              "es": "Idioma de los tickets (para el OCR)"
+            }
+          }
+        },
+        "title": "TicketOptions",
         "type": "object"
       }
     }

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Imagen a texto reconoce las letras de una foto, una captura de pantalla o un escaneo y te devuelve el texto para copiarlo, editarlo o buscar en él. Funciona con JPG, PNG, WebP, BMP, GIF y TIFF, también con los TIFF de varias páginas que salen de un fax o de un escáner, y respeta tildes, eñes y diéresis.",
+    "El reconocimiento lo hace Tesseract en nuestros servidores, el mismo motor que usa OCR de PDF. No se envía nada a un proveedor de IA externo ni se gasta ninguna petición de IA, así que no hace falta cuenta ni aceptar ningún aviso. Los archivos se borran solos al caducar el trabajo: a la hora sin cuenta y a las 24 horas con ella.",
+    "Antes de leer, la herramienta endereza la imagen si está algo torcida y, si lo activas, gira las que estén de lado o del revés. Por defecto lee español e inglés; puedes elegir hasta tres idiomas a la vez con sus códigos de Tesseract, como spa, eng, fra, deu, ita, por, cat, glg o eus.",
+    "El resultado puede ser un TXT, un Word o un PDF con capa de texto que se ve igual que la imagen pero en el que se puede buscar y seleccionar. Si subes varias imágenes, recibes un archivo por cada una y un ZIP con todos, o un solo archivo con todas si marcas esa opción."
+  ],
+  "steps": [
+    "Sube una o varias imágenes con texto (foto, captura o escaneo).",
+    "Elige los idiomas del texto y la salida: TXT, Word o PDF buscable.",
+    "Descarga el texto reconocido o el ZIP con todos los resultados."
+  ],
+  "faq": [
+    {
+      "q": "¿Mis imágenes se envían a una IA?",
+      "a": "No. El reconocimiento es local, con Tesseract en nuestros servidores, y no usa ningún modelo de IA externo. Por eso esta herramienta no pide consentimiento ni gasta peticiones de IA de tu cuenta."
+    },
+    {
+      "q": "¿Qué hago si el texto sale con errores?",
+      "a": "Comprueba que los idiomas elegidos son los del texto, porque cada idioma trae sus letras y palabras. Una foto nítida, bien iluminada y tomada de frente se lee mucho mejor que una movida o en ángulo. Si la imagen está girada 90 o 180 grados, activa la opción de girar las imágenes en las opciones adicionales."
+    },
+    {
+      "q": "¿Cuántas imágenes puedo subir?",
+      "a": "Cada tarea cuenta como pesada. Sin cuenta puedes hacer 2 al día con hasta 5 archivos de 50 MB; con la cuenta gratuita, 10 al día con hasta 20 archivos de 100 MB, y con Pro, 200 al día. En un TIFF de varias páginas, cada página cuenta para el límite de páginas del plan."
+    },
+    {
+      "q": "¿Y si la imagen no tiene texto?",
+      "a": "Recibes el archivo vacío y un aviso de que no se ha encontrado texto en esa imagen, sin que la tarea falle. Si lo que buscas son las tablas de la imagen, prueba Imagen a Excel; si tienes un PDF escaneado, usa OCR de PDF."
+    }
+  ]
+}

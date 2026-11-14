@@ -3,10 +3,11 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from core.options import opt
 from core.registry import AiSpec, ToolSpec
+from tools.ocr.specs import IMAGE_INPUTS, _check_codes
 
 LANGUAGES = {
     "documento": ("El del documento", "The document's language"),
@@ -48,7 +49,8 @@ class ResumirOptions(DocumentoIAOptions):
 def ai_tool(slug_es, slug_en, name_es, name_en, options, impl, summary_es, summary_en, ai: AiSpec, **kw) -> ToolSpec:
     return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category="ai", where="server",
                     inputs=kw.pop("inputs", ("pdf",)), outputs=kw.pop("outputs", ("docx", "txt", "md")), options=options,
-                    worker_group="ai", cost_class="ai", impl=impl, launch=True, phase="F3", max_files=1,
+                    worker_group=kw.pop("worker_group", "ai"), cost_class="ai", impl=impl, launch=True, phase="F3",
+                    max_files=kw.pop("max_files", 1),
                     time_limit=kw.pop("time_limit", 1800), summary_es=summary_es, summary_en=summary_en, ai=ai, **kw)
 
 
@@ -115,6 +117,50 @@ class TraducirOptions(DocumentoIAOptions):
                         advanced=True, widget="textarea", max_length=1000)
 
 
+DELIMITERS = {"coma": ("Coma (,)", "Comma (,)"), "punto_y_coma": ("Punto y coma (;), para Excel en español",
+                                                                  "Semicolon (;), for Excel in Spanish"),
+              "tabulador": ("Tabulador", "Tab")}
+
+
+class ImagenExcelOptions(BaseModel):
+    """imagen-a-excel (7.6): el Anexo A no fija opciones; las de D-160, con las hojas y los números de pdf-a-excel (A.9)."""
+
+    formato: Literal["xlsx", "csv"] = opt("xlsx", "Formato", "Format",
+                                         labels={"xlsx": ("Excel (XLSX)", "Excel (XLSX)"), "csv": ("CSV", "CSV")})
+    hojas: Literal["una_por_tabla", "todas_en_una"] = opt(
+        "una_por_tabla", "Hojas", "Sheets", show_if={"formato": ("xlsx",)},
+        labels={"una_por_tabla": ("Una hoja por tabla", "One sheet per table"),
+                "todas_en_una": ("Todas las tablas en una hoja", "All tables in one sheet")})
+    delimitador: Literal["coma", "punto_y_coma", "tabulador"] = opt("coma", "Separador", "Delimiter", labels=DELIMITERS,
+                                                                   show_if={"formato": ("csv",)})
+    usar_ia: bool = opt(True, "Si no se reconoce la tabla, reconstruirla con IA (1 petición)",
+                        "If the table is not recognised, rebuild it with AI (1 request)")
+    numeros: bool = opt(True, "Convertir los números (1.234,56) en números de verdad", "Turn numbers (1,234.56) into real numbers",
+                        advanced=True, show_if={"formato": ("xlsx",)})
+    idiomas: list[str] = opt(["spa", "eng"], "Idiomas del OCR", "OCR languages", min_length=1, max_length=3, advanced=True)
+
+    @field_validator("idiomas")
+    @classmethod
+    def _codes(cls, v: list[str]) -> list[str]:
+        return _check_codes(v)
+
+
+class TicketOptions(BaseModel):
+    """ticket-a-excel (7.6): el Anexo A no fija opciones; las de D-163."""
+
+    formato: Literal["xlsx", "csv"] = opt(
+        "xlsx", "Formato", "Format", labels={"xlsx": ("Excel (XLSX, con una hoja de tickets y otra de conceptos)",
+                                                       "Excel (XLSX, with a receipts sheet and an items sheet)"),
+                                              "csv": ("CSV", "CSV")})
+    filas: Literal["ticket", "concepto"] = opt(
+        "ticket", "Filas del CSV", "CSV rows", show_if={"formato": ("csv",)},
+        labels={"ticket": ("Una fila por ticket", "One row per receipt"), "concepto": ("Una fila por concepto", "One row per item")})
+    delimitador: Literal["coma", "punto_y_coma", "tabulador"] = opt("punto_y_coma", "Separador", "Delimiter", labels=DELIMITERS,
+                                                                   show_if={"formato": ("csv",)})
+    idioma_ticket: Literal["auto", "es", "en", "fr", "de", "it", "pt", "ca"] = opt(
+        "auto", "Idioma de los tickets (para el OCR)", "Receipt language (for OCR)", advanced=True, labels=DOC_LANGUAGES)
+
+
 SPECS: list[ToolSpec] = [
     ai_tool("resumir-pdf", "summarize-pdf", "Resumir PDF", "Summarize PDF", ResumirOptions, "tools.ai.resumir:run",
             "Resume un PDF con IA: puntos clave o párrafos, en el idioma que elijas.",
@@ -152,4 +198,20 @@ SPECS: list[ToolSpec] = [
             "Translate a PDF into another language and get it as Word and PDF with a simple layout.",
             AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=2000), outputs=("docx", "pdf"),
             related=("pdf-a-word", "resumir-pdf", "chat-pdf")),
+    # 6.3 no fija su coste: se reserva 1 petición al encolar y se devuelve si Docling reconoce la tabla en `workerconvert`
+    # sin la IA (D-160). Con «usar IA» apagado no pide cuenta, consentimiento ni peticiones (D-161).
+    ai_tool("imagen-a-excel", "image-to-excel", "Imagen a Excel", "Image to Excel", ImagenExcelOptions, "tools.ai.imagen_excel:run",
+            "Pasa las tablas de una foto o una captura a Excel o CSV; si no se reconocen, las reconstruye con IA.",
+            "Turn the tables in a photo or a screenshot into Excel or CSV; if they are not recognised, AI rebuilds them.",
+            AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=2000, option="usar_ia"),
+            inputs=IMAGE_INPUTS, outputs=("xlsx", "csv", "zip"), worker_group="convert",
+            cost=lambda o: "ai" if o.get("usar_ia", True) else "heavy",
+            related=("pdf-a-excel", "imagen-a-texto", "ticket-a-excel")),
+    # 6.3: 1 petición por ticket; la API reserva una por archivo al encolar (D-163). El OCR va antes en `workerocr`.
+    ai_tool("ticket-a-excel", "receipt-to-excel", "Ticket a Excel", "Receipt to Excel", TicketOptions, "tools.ai.ticket:run",
+            "Pasa tus tickets de compra a una hoja de Excel: comercio, fecha, conceptos, IVA y total, y avisa si no cuadran.",
+            "Turn your shopping receipts into an Excel sheet: shop, date, items, tax and total, with a warning if they do not add up.",
+            AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=1500, per_file=True),
+            inputs=IMAGE_INPUTS, outputs=("xlsx", "csv"), worker_group="ocr", max_files=20,
+            related=("imagen-a-excel", "imagen-a-texto", "pdf-a-excel")),
 ]

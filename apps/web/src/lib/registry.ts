@@ -51,6 +51,8 @@ export interface ToolSpec {
   related: string[];
   /** Alias (como pub-a-pdf): la página existe, pero su URL canónica es la de esta herramienta y no sale en listados. */
   canonical_of?: string | null;
+  /** Opción booleana que enciende la IA (imagen-a-excel, D-161): apagada, ni cuenta ni consentimiento ni peticiones. */
+  ai_option?: string | null;
   options_schema: { properties: Record<string, JsonSchemaProp>; required?: string[] };
 }
 
@@ -98,6 +100,7 @@ export function clientSpec(tool: ToolSpec, locale: Locale) {
     name: nameOf(tool, locale),
     where: tool.where,
     costClass: tool.cost_class,
+    aiOption: tool.ai_option ?? null,
     inputs: tool.inputs,
     outputs: tool.outputs,
     maxFiles: tool.max_files,

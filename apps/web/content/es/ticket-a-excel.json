@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Ticket a Excel pasa tus tickets de compra y facturas simplificadas a una hoja de cálculo para llevar los gastos, preparar una nota de gastos o revisar lo que has pagado. Sube las fotos o los escaneos de los tickets y recibes un solo Excel con todos.",
+    "Cada ticket se lee primero con el OCR de Tesseract en nuestros servidores, después de enderezarlo si está torcido. Luego, un modelo de IA identifica en ese texto el comercio, su NIF, la fecha, la hora, los conceptos con su cantidad e importe, el IVA desglosado por tipo con su base y su cuota, el total, la forma de pago y la moneda, y lo devuelve en un formato con esquema fijo que comprobamos antes de usarlo.",
+    "La herramienta comprueba además que los conceptos sumen el total y, si hay desglose de IVA, que la base más la cuota también lo hagan. El Excel trae una hoja con una fila por ticket, con una columna que dice si cuadra, y otra hoja con una fila por concepto. Si un ticket no cuadra, el resultado te avisa para que lo revises.",
+    "Cada ticket gasta una petición de IA, y una imagen que no tiene texto no gasta ninguna. Necesitas una cuenta y aceptar un aviso: el texto del ticket se envía a un proveedor externo a través de OpenRouter, que puede estar fuera de la Unión Europea. Es una herramienta beta, sujeta al cupo diario de IA."
+  ],
+  "steps": [
+    "Sube las fotos o los escaneos de los tickets, hasta 20 en una tarea.",
+    "Elige Excel o CSV y, para el CSV, si quieres una fila por ticket o por concepto.",
+    "Acepta el aviso de IA y descarga la hoja con todos los tickets."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántos tickets puedo procesar?",
+      "a": "Cada ticket es una petición de IA. Con la cuenta gratuita tienes 3 peticiones al día y hasta 5 por tarea; con Pro, 30 al día y hasta 20 por tarea. Si subes más tickets de los que permite tu plan en una tarea, te lo decimos antes de empezar, sin gastar nada."
+    },
+    {
+      "q": "¿Qué pasa si un ticket no cuadra?",
+      "a": "La columna «Cuadra» dice «No» y el resultado nombra los tickets que no cuadran. Suele deberse a una cifra mal leída en una foto movida o arrugada, a un descuento o a un redondeo; compara esos tickets con el papel."
+    },
+    {
+      "q": "¿Sirve para tickets en otros idiomas?",
+      "a": "Sí. Por defecto el OCR lee español e inglés, y en las opciones adicionales puedes elegir francés, alemán, italiano, portugués o catalán. Las fechas salen siempre como fecha de verdad en Excel y la moneda con su código, como EUR o GBP."
+    },
+    {
+      "q": "¿Y si subo una imagen que no es un ticket?",
+      "a": "Se deja fuera y el resultado lo indica. Si ninguna de las imágenes es un ticket, la tarea termina con un aviso claro. Para sacar tablas de otras imágenes usa Imagen a Excel y, para el texto, Imagen a texto."
+    }
+  ]
+}

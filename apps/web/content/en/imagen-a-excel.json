@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Image to Excel takes the tables out of a photo or a screenshot and turns them into a spreadsheet. Use it for a photo of a printed list, a screenshot of a table from a website or from another spreadsheet and, in general, any JPG, PNG, WebP, BMP, GIF or TIFF image with rows and columns.",
+    "First, Docling looks for the table structure in the image, with Tesseract OCR reading each cell, after straightening the image if it is tilted. If it finds the table, you get it without any external AI. Only when it does not, for example with a handwritten or badly misaligned table, and the AI option is on, is the OCR text sent to an AI model that rebuilds the rows and columns.",
+    "That rebuild uses one AI request. It is reserved when the job starts and given back if it turns out not to be needed. With AI on you need an account and must accept a notice: the image text is sent to an external provider through OpenRouter, which may be outside the European Union. If you switch the option off, nothing leaves our servers and no account is required.",
+    "In Excel you can put each table on its own sheet or all of them on one, and numbers written as 1,234.56 become real numbers you can add up and sort. In CSV you get one file per table, with the delimiter you choose and a BOM so Excel opens accented letters correctly."
+  ],
+  "steps": [
+    "Upload the photo or screenshot that shows the table.",
+    "Choose Excel or CSV and decide whether to use AI when the table is not recognised.",
+    "Download the spreadsheet and check the cells before relying on it."
+  ],
+  "faq": [
+    {
+      "q": "When is AI used?",
+      "a": "Only when Docling finds no table in the image and the option is on. If the table is recognised without AI, the result says so and the reserved request goes back to your daily allowance. A free account has 3 AI requests a day and Pro has 30."
+    },
+    {
+      "q": "Can I use it without an account?",
+      "a": "Yes, if you switch off the AI option. It then works like any other heavy task: 2 a day without an account, 10 with a free account and 200 with Pro. If no table appears, the Excel file lists the image's lines of text, one per row, and the CSV tells you there are no tables."
+    },
+    {
+      "q": "Is the table data always accurate?",
+      "a": "It depends on the image. A sharp screenshot usually comes out well, but a blurred, shadowed or handwritten photo may bring misread letters or figures, and AI can make mistakes too. Always compare important amounts with the original."
+    },
+    {
+      "q": "What if my table is in a PDF?",
+      "a": "Use PDF to Excel, which reads the PDF's text and tables directly without going through an image. For shopping receipts there is Receipt to Excel, which also separates shop, date, items and tax."
+    }
+  ]
+}

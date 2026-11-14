@@ -19,13 +19,16 @@ const FORMAT_OPTION: Record<string, string> = {
   "convertir-desde-pdf": "formato",
   "transcribir-audio": "formato",
   "video-a-subtitulos": "formato",
+  "imagen-a-texto": "salida",
+  "imagen-a-excel": "formato",
 };
 /** Menos concretas: solo se usan si no hay otra. */
 const GENERIC = new Set(["convertir-imagen", "convertir-desde-pdf", "convertir-a-pdf", "imagenes-a-pdf"]);
 /** Conversores que no se llaman «x-a-y». */
 const NAMED = new Set(["convertir-imagen", "convertir-desde-pdf", "convertir-a-pdf", "transcribir-audio"]);
-/** Sin archivo de entrada (web-a-pdf) o con salida solo en ZIP (pdf-a-imagenes, cubierta por pdf-a-jpg y demás). */
-const NOT_CONVERTERS = new Set(["web-a-pdf", "pdf-a-imagenes"]);
+/** Sin archivo de entrada (web-a-pdf), con salida solo en ZIP (pdf-a-imagenes, cubierta por pdf-a-jpg y demás) o que
+ * solo sirven para un tipo de imagen concreto (ticket-a-excel: tickets de compra, no cualquier imagen a Excel). */
+const NOT_CONVERTERS = new Set(["web-a-pdf", "pdf-a-imagenes", "ticket-a-excel"]);
 /** Valores de formato que no son una salida («todos» los formatos, «ambos»). */
 const SEVERAL = new Set(["todos", "ambos"]);
 const WHERE_RANK: Record<ToolSpec["where"], number> = { client: 0, hybrid: 1, server: 2 };

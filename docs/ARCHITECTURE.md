@@ -38,6 +38,10 @@ PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files) · volumen bac
 - **Generar a partir de un PDF** (generador-de-preguntas, pdf-a-fichas, pdf-a-presentacion y traducir-pdf, `workerai`):
   JSON con esquema validado, repartido en bloques y tandas según el modelo; traducir-pdf traduce por lotes alineados
   (`TranslationProvider`) e imprime el PDF con el Chromium de `gotenberg` por la red interna (D-130 a D-133).
+- **Imágenes con texto y tablas** (F3, lote C): imagen-a-texto, solo en `workerocr` (Tesseract por OCRmyPDF, sin IA).
+  imagen-a-excel empieza en `workerconvert` (Docling sobre la imagen enderezada) y solo si no hay tabla, y con la IA
+  activada, pasa a `workerai`; ticket-a-excel lee los tickets en `workerocr` y pasa a `workerai`, una petición por ticket.
+  El texto del OCR viaja por `document_texts` del propietario (D-159 a D-164).
 - **Transcripción** (`workeravheavy`, cola `av.heavy`): FFmpeg decodifica la pista de audio a PCM de 16 kHz en un proceso
   aparte y faster-whisper (modelo small en int8 dentro de la imagen) la transcribe por tramos de 20 minutos; sin PyAV (D-111).
 - **Híbridas**: imágenes a PDF y PDF a imágenes pasan al servidor con TIFF o con más de `CLIENT_MAX_MB`; `lector-pdf` abre los PDF en el navegador y convierte en servidor (motor de convertir-a-pdf) lo que no es PDF.

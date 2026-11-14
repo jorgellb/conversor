@@ -35,6 +35,19 @@ describe("IA en la web", () => {
     }
   });
 
+  it("imagen-a-excel enciende la IA con una opción; imagen-a-texto es OCR local sin IA (6.3 y D-161)", () => {
+    type Tool = { slug_es: string; ai: boolean; ai_option?: string | null; cost_class: string;
+      options_schema: { properties: Record<string, { type?: string; default?: unknown }> } };
+    const tools = (registry as unknown as { tools: Tool[] }).tools;
+    const excel = tools.find((t) => t.slug_es === "imagen-a-excel")!;
+    expect(excel.ai_option).toBe("usar_ia");
+    expect(excel.options_schema.properties.usar_ia).toMatchObject({ type: "boolean", default: true });
+    const text = tools.find((t) => t.slug_es === "imagen-a-texto")!;
+    expect(text.ai).toBe(false);
+    expect(text.cost_class).toBe("heavy");
+    expect(tools.find((t) => t.slug_es === "ticket-a-excel")!.ai_option ?? null).toBeNull();
+  });
+
   it("la política de privacidad nombra a OpenRouter y la transferencia fuera de la UE", () => {
     const legal = read("..", "src", "components", "legal.ts");
     expect(legal).toContain("OpenRouter (Estados Unidos)");

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Receipt to Excel turns your shopping receipts and simplified invoices into a spreadsheet so you can track spending, prepare an expense claim or check what you paid. Upload photos or scans of the receipts and you get a single Excel file with all of them.",
+    "Each receipt is first read with Tesseract OCR on our servers, after straightening it if it is tilted. An AI model then picks out from that text the shop, its tax ID, the date and time, the items with their quantity and amount, the tax broken down by rate with its net amount and tax, the total, the payment method and the currency, and returns them in a format with a fixed schema that we check before using it.",
+    "The tool also checks that the items add up to the total and, when there is a tax breakdown, that the net amounts plus the tax do as well. The Excel file has one sheet with a row per receipt, including a column that says whether it adds up, and another sheet with a row per item. If a receipt does not add up, the result warns you so you can review it.",
+    "Each receipt uses one AI request, and an image without text uses none. You need an account and must accept a notice: the receipt text is sent to an external provider through OpenRouter, which may be outside the European Union. This is a beta tool, subject to the daily AI allowance."
+  ],
+  "steps": [
+    "Upload photos or scans of the receipts, up to 20 in one task.",
+    "Choose Excel or CSV and, for CSV, one row per receipt or per item.",
+    "Accept the AI notice and download the sheet with all your receipts."
+  ],
+  "faq": [
+    {
+      "q": "How many receipts can I process?",
+      "a": "Each receipt is one AI request. A free account has 3 requests a day and up to 5 per task; Pro has 30 a day and up to 20 per task. If you upload more receipts than your plan allows in one task, we tell you before starting, without spending anything."
+    },
+    {
+      "q": "What if a receipt does not add up?",
+      "a": "The “Adds up” column says “No” and the result names the receipts that do not add up. It is usually a figure misread from a blurred or crumpled photo, a discount or a rounding; compare those receipts with the paper copy."
+    },
+    {
+      "q": "Does it work with receipts in other languages?",
+      "a": "Yes. By default the OCR reads Spanish and English, and in the additional options you can choose French, German, Italian, Portuguese or Catalan. Dates always come out as real dates in Excel and the currency as its code, such as EUR or GBP."
+    },
+    {
+      "q": "What if I upload an image that is not a receipt?",
+      "a": "It is left out and the result says so. If none of the images is a receipt, the task ends with a clear message. To get tables from other images use Image to Excel and, for plain text, Image to text."
+    }
+  ]
+}

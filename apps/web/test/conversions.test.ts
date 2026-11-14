@@ -24,6 +24,12 @@ describe("convertir-archivo: rutas desde el registro (7.22)", () => {
     expect(find("mp4", "mp3")?.tool).toBe("mp4-a-mp3");
     expect(find("png", "base64")?.tool).toBe("imagen-a-base64");
     expect(find("heic", "jpg")?.tool).toBe("heic-a-jpg");
+    // F3, lote C: el OCR de imágenes con su salida fijada; un PDF de una imagen sigue siendo jpg-a-pdf (en el navegador).
+    expect(find("jpg", "txt")).toMatchObject({ tool: "imagen-a-texto", preset: { salida: "txt" } });
+    expect(find("png", "docx")).toMatchObject({ tool: "imagen-a-texto", preset: { salida: "docx" } });
+    expect(find("png", "xlsx")).toMatchObject({ tool: "imagen-a-excel", preset: { formato: "xlsx" } });
+    expect(find("tiff", "pdf")?.tool).toBe("tiff-a-pdf");
+    expect(Object.values(routes).flat().some((r) => r.tool === "ticket-a-excel")).toBe(false);
   });
 
   it("nunca a sí mismo, sin «todos» ni «ambos», y solo conversores", () => {

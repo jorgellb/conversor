@@ -17,7 +17,7 @@ def needs_of(spec: ToolSpec) -> catalog.Needs:
 
 
 def prepare(session: Session, r, settings: Settings, spec: ToolSpec, owner_type: str, owner_id: str, plan: PlanLimits,
-            options: dict, consent: bool | None) -> int:
+            options: dict, consent: bool | None, files: int = 1) -> int:
     """Consentimiento, disponibilidad y reserva. Devuelve las peticiones reservadas (Valkey va lo último)."""
     if plan.ai_requests_day <= 0:
         # Anónimos: la IA necesita una cuenta (9.3: 0 peticiones al día).
@@ -29,10 +29,12 @@ def prepare(session: Session, r, settings: Settings, spec: ToolSpec, owner_type:
         record_consent(session, owner_type, owner_id, CONSENT_VERSION, quota.ai_day(settings))
     if not catalog.available(session, settings, needs_of(spec)):
         raise AppError(ErrorCode.AI_UNAVAILABLE, status=503)
-    n = spec.ai.requests_for(options) if spec.ai else 1
+    n = spec.ai.requests_for(options, files) if spec.ai else 1
     top = quota.per_task_limit(plan, settings)
     if n > top:
-        raise AppError(ErrorCode.LIMIT_EXCEEDED, status=400, detail=f"ai_task:{n}>{top}", extra={"ai_requests": n, "max": top})
+        # Por archivo (ticket-a-excel): el mensaje pide menos archivos, no un rango de páginas.
+        key = "ai_files" if spec.ai and spec.ai.per_file else "ai_task"
+        raise AppError(ErrorCode.LIMIT_EXCEEDED, status=400, detail=f"{key}:{n}>{top}", extra={"ai_requests": n, "max": top})
     quota.reserve(session, settings, owner_type, owner_id, plan, n)
     if not budget.reserve(r, settings, n, plan.id == "pro"):
         raise AppError(ErrorCode.AI_BUDGET_EXHAUSTED, status=429, extra={"reset": budget.reset_local(settings),

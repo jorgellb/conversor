@@ -34,10 +34,22 @@ class AiSpec:
     images: bool = False
     min_context: int = 8000
     min_output: int = 1000
+    # Opción booleana que enciende la IA (imagen-a-excel, D-161): apagada, el trabajo no pide cuenta, consentimiento ni
+    # peticiones. None: la herramienta siempre usa la IA.
+    option: str | None = None
+    # La estimación es por archivo (ticket-a-excel: 1 petición por ticket, 6.3).
+    per_file: bool = False
 
-    def requests_for(self, options: dict) -> int:
+    def used_by(self, options: dict) -> bool:
+        """Si el trabajo con estas opciones puede llamar al modelo."""
+        return self.option is None or bool(options.get(self.option, True))
+
+    def requests_for(self, options: dict, files: int = 1) -> int:
         """Peticiones que se reservan al encolar; 0 si el trabajo no llama al modelo (chat-pdf solo prepara)."""
-        return max(0, int(self.estimate(options))) if self.estimate else 1
+        if not self.used_by(options):
+            return 0
+        n = max(0, int(self.estimate(options))) if self.estimate else 1
+        return n * max(1, files) if self.per_file else n
 
 
 @dataclass(frozen=True)
@@ -130,6 +142,7 @@ class ToolSpec:
             "related": list(self.related),
             "canonical_of": self.canonical_of,
             "ai": self.ai is not None,
+            "ai_option": self.ai.option if self.ai is not None else None,
             "options_schema": schema,
         }
 
