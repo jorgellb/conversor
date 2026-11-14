@@ -37,8 +37,10 @@ def make_celery() -> Celery:
         },
         task_default_queue="pdf",
         # Las tareas de IA necesitan la clave y la salida a OpenRouter: solo las ejecuta `workerai` (12.1 y 12.2).
+        # El mantenimiento lo ejecuta el propio contenedor de beat (`worker -B -Q maintenance`): borra filas de `uploads`
+        # y `shares`, que el usuario de base de datos de los workers no puede tocar, y avisa por SMTP (D-181).
         task_routes={"core.ai.tasks.*": {"queue": "ai"}, "tools.ai.chat.answer": {"queue": "ai"},
-                     "tools.ai.chat.retrieve": {"queue": "ai.embed"}},
+                     "tools.ai.chat.retrieve": {"queue": "ai.embed"}, "core.maintenance.*": {"queue": "maintenance"}},
         beat_schedule={
             "cleanup-expired": {"task": "core.maintenance.cleanup_expired", "schedule": 300.0},
             "requeue-stale": {"task": "core.maintenance.requeue_stale", "schedule": 60.0},

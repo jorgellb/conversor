@@ -12,6 +12,9 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docker-compose.coolify.yml"
 
+# Beat programa las tareas y además ejecuta las de mantenimiento, con el usuario principal de la base de datos (D-181).
+BEAT_COMMAND = ["celery", "-A", "core.celeryapp", "worker", "-B", "-Q", "maintenance", "--pool", "solo", "-n", "beat@%h",
+                "--pidfile", "/tmp/beat.pid", "-s", "/tmp/celerybeat-schedule"]
 LOG = {"driver": "json-file", "options": {"max-size": "10m", "max-file": "5"}}
 IMG = "ghcr.io/${GHCR_OWNER:?Propietario del registro}/conversor-NAME:${IMAGE_TAG:?Etiqueta de imagen}"
 DB = "postgresql+psycopg://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@postgres:5432/conversor"
@@ -238,7 +241,7 @@ def build() -> dict:
             depends_on=after_migrate, healthcheck=py_hc(8001),
         ),
         "beat": svc(
-            img("api"), command=["celery", "-A", "core.celeryapp", "beat", "--pidfile", "/tmp/beat.pid", "-s", "/tmp/celerybeat-schedule"],
+            img("api"), command=BEAT_COMMAND,
             environment=beat_env, volumes=FS, networks=["internal", "edge"], mem_limit="512m", memswap_limit="512m",
             user="10001:10001", read_only=True, tmpfs=["/tmp:size=16m"], depends_on=after_migrate,
             healthcheck=hc(["CMD-SHELL", "kill -0 $$(cat /tmp/beat.pid)"], "60s", "30s"),

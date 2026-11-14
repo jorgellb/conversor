@@ -9,11 +9,7 @@ import { disabledByEnv } from "@/lib/flags";
 import { PLANS, TOOLS, clientSpec, nameOf, toolBySlugEs } from "@/lib/registry";
 import { SITE_NAME, pagePath, toolPath, type StaticKey } from "@/lib/site";
 
-import { AccountPage } from "./AccountPage";
-import { AdminPage } from "./AdminPage";
-import { AuthPage } from "./AuthPage";
-import { ConverterPage } from "./ConverterPage";
-import { FileConverter } from "./FileConverter";
+import { AccountPage, AdminPage, AuthPage, ConverterPage, FileConverter } from "./LazyViews";
 import { ToolRunner } from "./ToolRunner";
 import { CreatePdfPage } from "./CreatePdfPage";
 import { LEGAL } from "./legal";

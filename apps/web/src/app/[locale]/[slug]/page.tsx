@@ -4,17 +4,8 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { PdfEditor } from "@/components/editor/PdfEditor";
-import { PdfViewer } from "@/components/viewer/PdfViewer";
-import { BoardEditor } from "@/components/f2/BoardEditor";
-import { BookmarksEditor } from "@/components/f2/BookmarksEditor";
-import { CompareView } from "@/components/f2/CompareView";
-import { CopyView } from "@/components/f2/CopyView";
-import { ScannerView } from "@/components/f2/ScannerView";
-import { SearchView } from "@/components/f2/SearchView";
-import { QrGeneratorView } from "@/components/f5/QrGeneratorView";
-import { CollageView } from "@/components/f5/collage/CollageView";
-import { ChatPdfView } from "@/components/f3/ChatPdfView";
+import { BoardEditor, BookmarksEditor, ChatPdfView, CollageView, CompareView, CopyView, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
+  SearchView } from "@/components/LazyViews";
 import { Feedback } from "@/components/Feedback";
 import { StaticPage } from "@/components/StaticPage";
 import { ToolRunner, type NextTool } from "@/components/ToolRunner";

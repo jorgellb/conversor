@@ -77,6 +77,10 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] `gotenbergweb` no responde desde `api` ni desde los workers que no son `workeroffice` (solo está en `webrender`).
 - [ ] `GET https://api.{{DOMINIO}}/readyz` responde 200 con `secrets: ok` en `api` y `apiint`.
 - [ ] Una descarga con el token cambiado devuelve 403 y `files.` envía las cabeceras de 4.4.
+- [ ] `upload.` y `files.` responden a través del proxy de Coolify (los dos servicios solo están en `internal` más la red que
+      añade Coolify; D-181) y una subida de prueba llega a tusd.
+- [ ] Los logs de `beat` muestran `beat: Starting...` y `cleanup_expired ... succeeded` cada 5 minutos, sin
+      `permission denied` (D-181).
 - [ ] Un anónimo puede comprimir un PDF y la tercera tarea pesada del día devuelve `QUOTA_EXCEEDED`.
 - [ ] Pago de prueba con Stripe (modo test) y webhook recibido una sola vez.
 - [ ] «Enviar por correo» con una cuenta gratuita (solo a sí misma) y otra Pro (3 destinatarios): llega el enlace, descarga

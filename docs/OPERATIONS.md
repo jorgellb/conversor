@@ -13,6 +13,10 @@
 
 `cleanup_expired` también borra el texto extraído y la caché de IA caducados, y las filas de `ai_requests` de más de 90 días.
 
+Las cuatro de `core.maintenance` van a la cola `maintenance` y las ejecuta el propio contenedor `beat`
+(`celery worker -B -Q maintenance --pool solo`), con el usuario principal de la base de datos y salida SMTP; las de IA, en
+`workerai`. Antes caían en la cola `pdf` y `workerpdf`, con el usuario restringido, no podía borrar `uploads` (D-181).
+
 ## Copias
 
 - Base de datos: `python -m app.ops.backup` en `apiint` cada 6 horas (tarea de Coolify, 3.600 s). `pg_dump -Fc` a

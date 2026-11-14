@@ -212,3 +212,10 @@ jobs:
       - name: Logs si falla
         if: failure()
         run: docker compose logs --no-color --tail 300
+      - name: Trazas de Playwright si falla
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-servidor
+          path: test-results
+          if-no-files-found: ignore

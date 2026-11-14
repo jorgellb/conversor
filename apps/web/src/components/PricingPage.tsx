@@ -5,7 +5,7 @@ import type { Locale } from "@/i18n/routing";
 import type { PlanLimits } from "@/lib/registry";
 import { pagePath } from "@/lib/site";
 
-import { CheckoutButton } from "./CheckoutButton";
+import { CheckoutButton } from "./LazyViews";
 
 export async function PricingPage({ locale, plans }: { locale: Locale; plans: Record<string, PlanLimits> }) {
   const t = await getTranslations({ locale, namespace: "pricing" });

@@ -349,7 +349,14 @@ services:
     - celery
     - -A
     - core.celeryapp
-    - beat
+    - worker
+    - -B
+    - -Q
+    - maintenance
+    - --pool
+    - solo
+    - -n
+    - beat@%h
     - --pidfile
     - /tmp/beat.pid
     - -s

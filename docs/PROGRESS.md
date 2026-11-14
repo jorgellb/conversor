@@ -383,6 +383,21 @@ Las 162 herramientas con página propia tienen contenido completo en español y 
 necesita). Los últimos, copiar-de-pdf, escaner-pdf y crear-collage, en D-180. Todas siguen con `noindex` hasta la revisión
 del propietario (D-15). Vitest de `apps/web` (35) y `gen_docs.py --check` en verde.
 
+## F3-Z (cierre de F3), primer lote
+
+Rendimiento: las vistas de una sola herramienta o página se cargan con `next/dynamic` (`components/LazyViews.tsx`);
+Turbopack metía Konva, el editor de PDF y el chat en el JS de entrada de todas las páginas de herramientas. pdf-a-word baja
+de 408 KB a 222 KB de JS transferido (Lighthouse móvil local: 0,97 en pdf-a-word y 0,92 a 0,97 en resumir-pdf; la última CI
+ya pasaba el umbral con margen escaso). e2e-compose no había pasado nunca: `upload` y `files` solo estaban en la red
+`internal: true` y Docker no publicaba sus puertos, así que el navegador no llegaba a tusd; ahora van además en `proxy`,
+solo en desarrollo. En los mismos logs, el mantenimiento de beat fallaba siempre (`permission denied for table uploads`)
+porque lo ejecutaba `workerpdf` con el usuario restringido: ahora lo ejecuta el contenedor `beat` en la cola `maintenance`
+(comprobado aquí con un worker `-B` real contra PostgreSQL y Redis). La CI sube las trazas de e2e-compose si falla. Regla
+del 10 %: ninguna herramienta de F3 desactivada. Salvedades en D-181.
+Verificado aquí: Vitest (301 de client-tools y 35 de web), `tsc`, `next build`, Playwright del proyecto navegador (75 en
+verde, también las que simulan la API en el puerto 3100) y `tests/test_compose.py` y `tests/test_operations.py`. Sin
+verificar aquí: e2e-compose (Docker, solo en la CI) y Lighthouse en el runner de GitHub.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`); después F4, F6, vídeo de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).

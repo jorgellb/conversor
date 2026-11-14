@@ -46,7 +46,7 @@ services:
       POSTGRES_PASSWORD: conversor
       POSTGRES_DB: conversor
     volumes: [pgdata:/var/lib/postgresql/data]
-    networks: [internal]
+    networks: [internal, proxy]  # para publicar el puerto en local (ver upload)
     ports: ["127.0.0.1:5432:5432"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U conversor -d conversor"]
@@ -172,7 +172,9 @@ services:
   beat:
     <<: *python
     restart: unless-stopped
-    command: ["celery", "-A", "core.celeryapp", "beat", "--pidfile", "/tmp/beat.pid", "-s", "/tmp/celerybeat-schedule"]
+    # Programa las tareas y ejecuta las de mantenimiento con el usuario principal de la base de datos (D-181).
+    command: ["celery", "-A", "core.celeryapp", "worker", "-B", "-Q", "maintenance", "--pool", "solo", "-n", "beat@%h",
+              "--pidfile", "/tmp/beat.pid", "-s", "/tmp/celerybeat-schedule"]
     environment:
       SERVICE_ROLE: beat
     networks: [internal, edge]
@@ -204,7 +206,9 @@ services:
       - -cors-allow-headers=Authorization,Accept-Language
     ports: ["127.0.0.1:8080:8080"]
     volumes: [filestore:/srv/files]
-    networks: [internal]
+    # «proxy» hace en local lo que la red de Coolify en el VPS (12.2): Docker no publica los puertos de un servicio que
+    # solo está en redes `internal: true`, y el navegador no llegaba a tusd (e2e-compose, D-181).
+    networks: [internal, proxy]
     depends_on:
       apiint: { condition: service_healthy }
     healthcheck:
@@ -226,7 +230,7 @@ services:
       - filestore:/srv/files:ro
       - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
     ports: ["127.0.0.1:8090:8090"]
-    networks: [internal]
+    networks: [internal, proxy]
     depends_on:
       apiint: { condition: service_healthy }
     healthcheck:
@@ -520,6 +524,9 @@ networks:
   internal:
     internal: true
   edge: {}
+  # Solo en desarrollo, para publicar los puertos de upload, files y postgres; en Coolify, upload y files van en la red
+  # que añade el proxy (12.2).
+  proxy: {}
   webrender:
     internal: true
   airelay:

@@ -85,3 +85,41 @@ def test_profile_cli(capsys):
     lines = capsys.readouterr().out.strip().splitlines()
     assert dict(line.split("=", 1) for line in lines) == gen.PROFILE_16
     assert gen.main(["--profile", "8"]) == 2
+
+
+EDGE = {"web", "api", "apiint", "beat", "egressai", "egressweb"}  # 12.2
+
+
+def _networks(path: Path) -> tuple[dict, dict]:
+    data = yaml.safe_load(path.read_text())
+    return data["services"], data["networks"]
+
+
+def test_networks_follow_12_2_and_published_ports_are_reachable():
+    """`edge` (con salida) solo para los servicios de 12.2, en los dos Compose. Docker no publica los puertos de un
+    servicio que solo está en redes `internal: true`: en desarrollo, upload, files y postgres van además en `proxy`, que en el VPS
+    es la red que añade Coolify (D-181)."""
+    for path, extra in ((ROOT / "docker-compose.coolify.yml", set()), (ROOT / "docker-compose.yml", {"mailpit"})):
+        services, networks = _networks(path)
+        on_edge = {name for name, s in services.items() if "edge" in (s.get("networks") or [])}
+        assert on_edge == EDGE | extra, path.name
+        for name, s in services.items():
+            if s.get("ports"):
+                assert any(not (networks[n] or {}).get("internal") for n in s["networks"]), f"{path.name}: {name}"
+    services, _ = _networks(ROOT / "docker-compose.yml")
+    assert {name for name, s in services.items() if "proxy" in (s.get("networks") or [])} == {"upload", "files", "postgres"}
+
+
+def test_maintenance_runs_in_beat_with_the_main_database_user():
+    """Las tareas de mantenimiento borran filas de `uploads` y `shares`, que el usuario de los workers no puede tocar:
+    van a la cola `maintenance`, que solo consume beat (D-181)."""
+    from core.celeryapp import celery_app
+
+    routes = celery_app.conf.task_routes
+    assert routes["core.maintenance.*"] == {"queue": "maintenance"}
+    for path in (ROOT / "docker-compose.yml", ROOT / "docker-compose.coolify.yml"):
+        services, _ = _networks(path)
+        consumers = {name for name, s in services.items() if "maintenance" in (s.get("command") or [])}
+        assert consumers == {"beat"}, path.name
+        cmd = services["beat"]["command"]
+        assert cmd[3:5] == ["worker", "-B"] and "/tmp/beat.pid" in cmd
