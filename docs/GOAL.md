@@ -131,7 +131,7 @@ Archivos comunes que se fusionan en la integración y no impiden el paralelismo:
 | Lote | Fase | Herramientas | Grupo y motor | Depende de | Tamaño |
 | --- | --- | --- | --- | --- | --- |
 | G0-A | Transversal | — (prueba de contrato 16.6 genérica, `default_enabled`, paridad de flags, `gen_docs` con motivos y tabla de PDF24, testMatch f4, f6 y f7, `EXCLUDED_WORDS` firmas, fijar FFmpeg y diff-match-patch, `${MEM_<GRUPO>}`, tablas de PLAN y D-134 en adelante). **Hecho** (D-134 a D-143) | — | — | M |
-| G0-B | Transversal | — (Lighthouse CI, regresión visual de 16.1, Playwright de 16.1 que falten, revisión de k6) | CI | G0-A | M |
+| G0-B | Transversal | — (Lighthouse CI, regresión visual de 16.1, Playwright de 16.1 que falten, revisión de k6). **Hecho** (D-144 a D-149) | CI | G0-A | M |
 | G1-A | Huecos | redactar-pdf (eliminar bajo el área, D-25), lector-pdf (enlaces, D-23), comprimir-imagen, convertir-imagen, png-a-jpg, jpg-a-png y redimensionar-imagen (MozJPEG y oxipng, D-04 y D-79); notas en inglés (D-42 y D-54) | navegador y servidor | — | M |
 | G2-C01 | Contenido 8.2 | dividir, girar, eliminar-paginas, extraer-paginas, organizar, montar, cortar-paginas-por-la-mitad, imprimir, folleto, varias-paginas-por-hoja | web | — | S |
 | G2-C02 | Contenido 8.2 | numerar, marca-de-agua, recortar, cambiar-tamano-pagina, aplanar, anotar, redactar, marcadores, comparar, buscar-en-pdf | web | — | S |

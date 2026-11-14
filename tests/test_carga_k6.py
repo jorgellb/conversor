@@ -187,8 +187,10 @@ def test_limites_documentados_cubren_el_escenario_desde_una_ip():
         jobs[spec.cost_for(options)] += count
     total = jobs["light"] + jobs["heavy"]
     assert total == 360
-    # Una sesión por trabajo.
-    assert limits["ANON_TOKENS_PER_IP_DAY"] >= total > Settings().ANON_TOKENS_PER_IP_DAY
+    # Una sesión por trabajo. Se compara con el valor por defecto del campo y no con Settings(): el fixture `services`
+    # de conftest sube ANON_TOKENS_PER_IP_DAY en os.environ para toda la sesión de pytest.
+    default_tokens = Settings.model_fields["ANON_TOKENS_PER_IP_DAY"].default
+    assert limits["ANON_TOKENS_PER_IP_DAY"] >= total > default_tokens
     anon = load_plans_file(ROOT / "config" / "plans.yaml")["anon"]
     assert limits["anon.light_tasks_day"] >= jobs["light"] > anon.light_tasks_day
     assert jobs["heavy"] <= anon.heavy_tasks_day
