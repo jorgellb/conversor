@@ -75,4 +75,4 @@ overrides:
   py-rust-stemmers: MIT  # sin campo License en los metadatos; el README y LICENSE de la rueda dicen MIT (dependencia de fastembed)
   py_rust_stemmers: MIT
 # Paquetes que solo se usan en desarrollo y pruebas y nunca llegan a una imagen.
-dev_only: [pytest, respx, pip-licenses, prettytable, wcwidth, iniconfig, pluggy, pygments]
+dev_only: [pytest, respx, pip-licenses, prettytable, wcwidth, iniconfig, pluggy, pygments, fpdf2]

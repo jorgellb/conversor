@@ -77,10 +77,12 @@ convert = [
 av = ["faster-whisper==1.2.1", "ctranslate2==4.8.5", "python-docx==1.2.0", "onnxruntime==1.31.0", "pypdfium2==5.14.0",
       "pikepdf==10.17.0"]
 # IA (F3): texto de los PDF y resultados en DOCX; las peticiones van con httpx (dependencia común). openpyxl (MIT) escribe
-# los XLSX de imagen-a-excel y ticket-a-excel (F3, lote C).
+# los XLSX de imagen-a-excel y ticket-a-excel (F3, lote C). pysubs2 (MIT, Python puro y sin dependencias) lee y escribe
+# los SRT, VTT y ASS de traducir-subtitulos (F3, lote E); se adelanta de F6 (7.13), donde también lo usará utils.
 ai = ["pikepdf==10.17.0", "pypdfium2==5.14.0", "python-docx==1.2.0", "python-pptx==1.0.2", "pillow==13.0.0", "fastembed==0.9.1",
-      "onnxruntime==1.31.0", "openpyxl==3.1.5"]
-dev = ["pytest==9.2.0", "respx==0.23.1", "pip-licenses==5.0.0"]
+      "onnxruntime==1.31.0", "openpyxl==3.1.5", "pysubs2==1.9.1"]
+# fpdf2 (LGPL-3.0) solo genera muestras de prueba en scripts/fixtures (1.8); nunca llega a una imagen.
+dev = ["pytest==9.2.0", "respx==0.23.1", "pip-licenses==5.0.0", "fpdf2==2.9.0"]
 
 [tool.pytest.ini_options]
 pythonpath = ["packages/core", "packages/tools", "apps/api"]

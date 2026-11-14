@@ -202,7 +202,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ffmpeg libreoffice-writer-nogui fonts-dejavu
           uv venv .venv
-          uv pip install --python .venv -r pyproject.toml --extra pdf
+          uv pip install --python .venv -r pyproject.toml --extra pdf --extra dev
           .venv/bin/python scripts/fixtures/generate.py "$RUNNER_TEMP/muestras"
           echo "E2E_FIXTURES=$RUNNER_TEMP/muestras" >> "$GITHUB_ENV"
       - name: Playwright de extremo a extremo
