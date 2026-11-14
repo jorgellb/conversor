@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JPG to WEBP converts your photos to the format recommended by web performance tools: for a practically identical look, a WEBP is usually noticeably smaller than the equivalent JPG. It is a simple way to lighten the images on a shop, a blog or a gallery so the page loads faster.",
+    "Encoding is done with libwebp compiled to WebAssembly and runs in your browser; the photos are not uploaded. You can convert one or hundreds: each WEBP downloads separately and, when there is more than one, in a ZIP as well.",
+    "Quality starts at 80, a good balance between size and sharpness for photos. If you turn on “Lossless”, the WEBP stores the JPG pixels exactly and the quality control disappears, because it no longer makes sense. The camera orientation is applied to the image so it does not come out rotated.",
+    "Metadata is not copied by default; in the advanced options you can keep the original EXIF if you want to preserve the date or camera details."
+  ],
+  "faq": [
+    {
+      "q": "Should I turn on “Lossless” for JPG photos?",
+      "a": "Hardly ever. The JPG already lost information when it was compressed, and storing it losslessly as WEBP usually gives a file larger than the original. Use it only if you will keep editing and do not want extra compression."
+    },
+    {
+      "q": "Do WEBP images show in every browser?",
+      "a": "Yes, current browsers display them. Some older desktop programs still cannot open them; for those cases, WEBP to JPG goes the other way."
+    },
+    {
+      "q": "Is there anything that compresses even more?",
+      "a": "JPG to AVIF usually achieves even smaller files at the same visual quality, in exchange for slower encoding."
+    }
+  ]
+}

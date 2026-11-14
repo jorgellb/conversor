@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG a WEBP convierte imágenes PNG a WEBP manteniendo la transparencia, algo que JPG no puede hacer. Es la opción natural para logotipos, iconos, capturas e ilustraciones con fondo transparente que quieres publicar en una web pesando menos.",
+    "Elige entre dos modos. Con pérdida, el modo por defecto, controlas la calidad de 1 a 100 (empieza en 80) y el ahorro de espacio suele ser grande, sobre todo en fotos guardadas como PNG. Sin pérdida, cada píxel y cada nivel de transparencia quedan idénticos al PNG y aun así el archivo suele ser más pequeño, lo que lo hace ideal para gráficos con texto o colores planos.",
+    "El codificador es libwebp en WebAssembly y funciona dentro de tu navegador, así que tus imágenes se quedan en tu dispositivo. Puedes convertir varias de golpe y descargar cada WEBP o el ZIP con todos.",
+    "La opción avanzada de metadatos copia el EXIF del PNG al WEBP si existe; desactivada, el archivo sale sin esos datos."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué modo elijo para un logotipo o una captura?",
+      "a": "Sin pérdida. En imágenes con bordes nítidos, texto o pocos colores la compresión con pérdida puede crear manchas alrededor de las letras, y el modo sin pérdida ya ofrece un buen ahorro."
+    },
+    {
+      "q": "¿Se mantiene la semitransparencia de sombras y bordes suavizados?",
+      "a": "Sí. WEBP guarda un canal alfa completo, en los dos modos, de modo que las sombras y los bordes antialias conservan sus distintos niveles de transparencia."
+    },
+    {
+      "q": "¿Cómo vuelvo a PNG?",
+      "a": "WEBP a PNG hace la conversión inversa, también conservando la transparencia."
+    }
+  ]
+}

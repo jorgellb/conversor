@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GIF to PNG converts GIF images into PNG, a more modern format that every design, office and editing program opens without trouble. It is handy for old graphics, icons, diagrams or forum images you want to reuse or retouch with current tools.",
+    "The conversion happens in the browser and your GIF files are not uploaded anywhere. The exact pixels are kept, and so is transparency: if the GIF had a colour marked as transparent, those areas stay transparent in the PNG.",
+    "There are no options to configure. Drop the files, they are converted and you download them, one at a time or in the ZIP that is prepared automatically when there are several.",
+    "For animated GIFs the first frame is taken, and the page tells you so when it finishes, so you know the PNG is a still image rather than the whole animation."
+  ],
+  "faq": [
+    {
+      "q": "Do the colours improve when converting to PNG?",
+      "a": "No. A GIF stores at most 256 colours, and the PNG reproduces exactly those same colours. The benefit is compatibility, plus you can edit it afterwards without the palette limit."
+    },
+    {
+      "q": "Can I get every frame of an animated GIF?",
+      "a": "No: only the first frame of each animated GIF is saved. If what you want is to put that still image in a document, GIF to PDF places it straight onto a page."
+    },
+    {
+      "q": "What if I want the GIF in another format?",
+      "a": "Convert image accepts GIF as input and lets you choose the output: JPG, WEBP, AVIF, BMP, TIFF or ICO, as well as PNG."
+    }
+  ]
+}

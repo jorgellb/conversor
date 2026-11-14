@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG a JPG convierte capturas de pantalla, gráficos o fotos guardadas en PNG al formato JPG, el que aceptan sin rechistar los formularios web, las tiendas online, el correo y casi cualquier programa. Una foto en PNG puede ocupar varias veces más que en JPG, así que el cambio suele reducir mucho el peso del archivo.",
+    "La conversión se hace en tu navegador, dentro de esta misma pestaña: tus PNG no se envían a ningún servidor y el resultado se genera en tu equipo. Puedes soltar varios a la vez; cada uno se descarga por separado y, si hay más de uno, también tienes un ZIP con todos.",
+    "El control de calidad va de 1 a 100 y empieza en 90, un punto en el que la diferencia con el original apenas se nota. Bájalo si buscas archivos más ligeros. Como JPG no tiene transparencia, las zonas transparentes del PNG se rellenan con el color de fondo que elijas, blanco si no tocas nada.",
+    "En las opciones avanzadas puedes conservar los metadatos EXIF del original, si los tiene. Por defecto el JPG sale limpio, sin datos de cámara ni ubicación."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el fondo transparente sale blanco?",
+      "a": "El formato JPG no puede guardar transparencia, así que hay que pintar algo debajo. Elige otro color en «Fondo para la transparencia» o, si necesitas conservarla, convierte a WEBP o quédate con el PNG."
+    },
+    {
+      "q": "¿Pierdo calidad al pasar de PNG a JPG?",
+      "a": "JPG comprime con pérdida, de modo que algo se descarta. Con la calidad en 90 apenas se aprecia en fotos; en capturas con texto pequeño o bordes muy nítidos sube a 95 o 100 para evitar halos."
+    },
+    {
+      "q": "¿Tengo otra opción si mis imágenes están en WEBP?",
+      "a": "Sí: WEBP a JPG hace lo mismo con imágenes WEBP y tiene las mismas opciones. Si lo que quieres es reducir el peso sin cambiar de formato, prueba Comprimir imagen."
+    }
+  ]
+}

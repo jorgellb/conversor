@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WEBP a PNG pasa imágenes WEBP a PNG sin perder nada por el camino: ni detalle ni transparencia. Es la conversión adecuada para logotipos, iconos, ilustraciones o recortes de producto descargados de una web que necesitas editar, insertar en una presentación o abrir en un programa que no reconoce WEBP.",
+    "Todo el trabajo lo hace tu navegador. Si por ser antiguo no sabe abrir WEBP por sí mismo, la herramienta usa un decodificador en WebAssembly que viaja con la página, de modo que la imagen sigue sin salir de tu equipo.",
+    "El canal alfa se copia tal cual: lo que era transparente o semitransparente en el WEBP lo sigue siendo en el PNG, sin bordes blancos ni fondo añadido. Como PNG también es sin pérdida, no hay control de calidad que ajustar. En las opciones avanzadas puedes mantener los metadatos EXIF si el archivo los trae.",
+    "Admite lotes: suelta varias imágenes y obtendrás un PNG por cada una, más un ZIP con todas cuando son dos o más."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué ocurre si el WEBP es animado?",
+      "a": "PNG guarda una sola imagen, así que se convierte el primer fotograma y la página te avisa de que el original era una animación."
+    },
+    {
+      "q": "¿Por qué el PNG pesa más que el WEBP?",
+      "a": "WEBP suele usar compresión con pérdida, que reduce mucho el tamaño. Al pasar a PNG, que guarda cada píxel exacto, el archivo crece; es normal y no indica ningún error."
+    },
+    {
+      "q": "¿Y si prefiero JPG?",
+      "a": "Usa WEBP a JPG. Ten en cuenta que JPG no admite transparencia y la rellenará con un color de fondo."
+    }
+  ]
+}

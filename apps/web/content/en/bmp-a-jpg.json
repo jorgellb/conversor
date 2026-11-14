@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "BMP to JPG converts BMP bitmaps, the classic Windows and Paint format, into JPG. A BMP stores every pixel uncompressed and an ordinary picture can take up tens of megabytes; the same content as JPG fits in a small part of that space and can be emailed or uploaded to any website.",
+    "Files are processed in your browser, without going through any server. Drop one or many BMP files: each JPG downloads separately and, if there are several, in a ZIP too.",
+    "JPG quality ranges from 1 to 100 and sits at 90, enough for no visible difference in photos and scans. For drawings with flat colours, text or screenshots it may be worth raising it a little to avoid halos around the edges.",
+    "Some 32-bit BMP files include transparency. JPG does not support it, so those areas are painted with the background colour you choose; if you change nothing, they are filled with white."
+  ],
+  "faq": [
+    {
+      "q": "How much space will I save?",
+      "a": "It depends on the image, but for photos or scans the JPG usually weighs a small fraction of the BMP. For drawings with large single-colour areas the saving is even bigger."
+    },
+    {
+      "q": "Is the JPG exactly the same as the BMP?",
+      "a": "Not quite: JPG uses lossy compression. At quality 90 the difference is almost impossible to see; if you need a pixel-perfect copy, convert to PNG with Convert image."
+    },
+    {
+      "q": "Can I turn a BMP into a PDF document?",
+      "a": "Yes, BMP to PDF places one or more BMP images on the pages of a PDF."
+    }
+  ]
+}

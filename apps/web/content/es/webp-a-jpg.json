@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WEBP a JPG sirve para esas imágenes que descargas de una web y luego no se abren en tu visor de fotos, en un programa de edición antiguo o en el formulario donde tenías que subirlas. JPG es el formato de imagen más compatible que existe, y pasar a él resuelve casi siempre el problema.",
+    "No hace falta instalar nada ni subir los archivos: el navegador decodifica cada WEBP y lo vuelve a codificar como JPG en tu propio dispositivo. Arrastra todos los que quieras de una vez; recibirás un JPG por imagen y, cuando son varios, un ZIP que los reúne.",
+    "La calidad, de 1 a 100, viene en 90. Con ese valor el JPG suele ocupar algo más que el WEBP de partida, porque WEBP comprime mejor; si el tamaño te importa, bájala a 75 u 80. Muchos WEBP llevan transparencia, por ejemplo logotipos o recortes de productos, y JPG no la admite: esas zonas se rellenan con el color de fondo que indiques, blanco por defecto.",
+    "Si el WEBP incluye metadatos EXIF puedes conservarlos activando la opción avanzada; si no, el JPG se genera sin ellos."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué pasa con los WEBP animados?",
+      "a": "JPG solo guarda imágenes fijas, así que de un WEBP animado obtendrás una imagen estática del primer fotograma, no la animación."
+    },
+    {
+      "q": "¿Por qué mi JPG pesa más que el WEBP?",
+      "a": "WEBP consigue archivos más pequeños que JPG con un aspecto similar. Al convertir con calidad alta es normal que el JPG crezca; reduce la calidad o pasa el resultado por Comprimir imagen."
+    },
+    {
+      "q": "¿Puedo hacer lo mismo con PNG?",
+      "a": "Sí, PNG a JPG funciona igual para archivos PNG, con el mismo control de calidad, el color de fondo y la opción de metadatos."
+    }
+  ]
+}

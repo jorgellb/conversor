@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JPG a WEBP convierte tus fotos al formato que recomiendan las herramientas de rendimiento web: con un aspecto prácticamente igual, un WEBP suele ocupar bastante menos que el JPG equivalente. Es una forma sencilla de aligerar las imágenes de una tienda, un blog o una galería y que la página cargue antes.",
+    "La codificación se hace con libwebp compilado a WebAssembly y se ejecuta en tu navegador; las fotos no se suben. Puedes convertir una o cientos: cada WEBP se descarga por separado y, si hay más de uno, también en un ZIP.",
+    "La calidad parte de 80, un buen equilibrio entre peso y nitidez para fotos. Si activas «Sin pérdida», el WEBP guarda exactamente los píxeles del JPG y el control de calidad desaparece, porque deja de tener sentido. La orientación de la cámara se aplica a la imagen para que no salga girada.",
+    "Por defecto no se copian los metadatos; en las opciones avanzadas puedes conservar el EXIF del original si te interesa mantener la fecha o los datos de la cámara."
+  ],
+  "faq": [
+    {
+      "q": "¿Conviene activar «Sin pérdida» con fotos JPG?",
+      "a": "Casi nunca. El JPG ya perdió información al comprimirse, y guardarlo sin pérdida en WEBP suele dar un archivo más grande que el original. Úsalo solo si vas a seguir editando y no quieres añadir más compresión."
+    },
+    {
+      "q": "¿Se ven los WEBP en todos los navegadores?",
+      "a": "Sí, los navegadores actuales los muestran. Algunos programas de escritorio antiguos aún no los abren; para esos casos, WEBP a JPG hace el camino inverso."
+    },
+    {
+      "q": "¿Hay algo que comprima todavía más?",
+      "a": "JPG a AVIF suele lograr archivos aún más pequeños con la misma calidad visual, a cambio de una codificación más lenta."
+    }
+  ]
+}

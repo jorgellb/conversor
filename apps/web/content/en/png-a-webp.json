@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG to WEBP converts PNG images to WEBP while keeping their transparency, something JPG cannot do. It is the natural choice for logos, icons, screenshots and illustrations with a transparent background that you want to publish on a website at a smaller size.",
+    "Choose between two modes. In lossy mode, the default, you control quality from 1 to 100 (it starts at 80) and the space saved is usually large, especially for photos stored as PNG. In lossless mode, every pixel and every level of transparency stays identical to the PNG and the file is still usually smaller, which makes it ideal for graphics with text or flat colours.",
+    "The encoder is libwebp in WebAssembly and works inside your browser, so your images stay on your device. You can convert several at once and download each WEBP or the ZIP with all of them.",
+    "The advanced metadata option copies the PNG EXIF data into the WEBP if there is any; when it is off, the file comes out without that data."
+  ],
+  "faq": [
+    {
+      "q": "Which mode should I pick for a logo or a screenshot?",
+      "a": "Lossless. On images with sharp edges, text or few colours, lossy compression can create smudges around letters, and lossless mode already gives a good saving."
+    },
+    {
+      "q": "Is the partial transparency of shadows and smooth edges kept?",
+      "a": "Yes. WEBP stores a full alpha channel in both modes, so shadows and anti-aliased edges keep their different levels of transparency."
+    },
+    {
+      "q": "How do I go back to PNG?",
+      "a": "WEBP to PNG performs the reverse conversion, also keeping the transparency."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "BMP a JPG convierte mapas de bits BMP, el formato clásico de Windows y de Paint, en JPG. Un BMP guarda cada píxel sin comprimir y una imagen corriente puede ocupar decenas de megas; el mismo contenido en JPG cabe en una pequeña parte de ese espacio y se puede enviar por correo o subir a cualquier web.",
+    "Los archivos se procesan en tu navegador, sin pasar por ningún servidor. Suelta uno o muchos BMP: cada JPG se descarga por separado y, si son varios, también en un ZIP.",
+    "La calidad del JPG va de 1 a 100 y está en 90, suficiente para que no se note diferencia en fotos y escaneos. Para dibujos con colores planos, texto o capturas de pantalla puede convenir subirla un poco y evitar halos alrededor de los bordes.",
+    "Algunos BMP de 32 bits incluyen transparencia. JPG no la admite, así que esas zonas se pintan con el color de fondo que elijas; si no cambias nada, se rellenan de blanco."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuánto espacio voy a ahorrar?",
+      "a": "Depende de la imagen, pero con fotos o escaneos el JPG suele pesar una pequeña fracción del BMP. En dibujos con grandes zonas de un solo color el ahorro es todavía mayor."
+    },
+    {
+      "q": "¿El JPG es exactamente igual que el BMP?",
+      "a": "No del todo: JPG comprime con pérdida. Con la calidad en 90 la diferencia es casi imperceptible; si necesitas una copia idéntica píxel a píxel, convierte a PNG con Convertir imagen."
+    },
+    {
+      "q": "¿Puedo pasar un BMP a un documento PDF?",
+      "a": "Sí, BMP a PDF coloca una o varias imágenes BMP en páginas de un PDF."
+    }
+  ]
+}

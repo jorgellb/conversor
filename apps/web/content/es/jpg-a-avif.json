@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JPG a AVIF reduce el peso de tus fotos convirtiéndolas a AVIF, un formato moderno que consigue la misma calidad visual con muchos menos bytes que JPG e incluso que WEBP. Es especialmente útil para webs y tiendas con muchas imágenes, donde cada kilobyte ahorrado acelera la carga.",
+    "El codificador AVIF se ejecuta en WebAssembly dentro de tu navegador, de modo que las fotos no se suben a ningún servidor. Codificar AVIF exige mucho cálculo, así que una foto grande puede tardar unos segundos; con varias a la vez, el progreso se va mostrando y al final tienes cada archivo y un ZIP con todos.",
+    "La calidad viene en 60. En AVIF los números no equivalen a los de JPG: 60 suele dar un resultado muy parecido al original con una fracción del tamaño. Súbela si notas pérdida de detalle o bájala para ahorrar aún más.",
+    "En las opciones avanzadas eliges la velocidad de compresión: rápida, equilibrada (por defecto) o lenta, que tarda más pero deja un archivo más pequeño con la misma calidad. La orientación de la foto se aplica antes de codificar y el AVIF no incluye los metadatos EXIF."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo usar AVIF en mi web?",
+      "a": "Sí, los navegadores actuales lo muestran. Si te preocupan visitantes con navegadores muy antiguos, sirve también una versión JPG o WEBP como alternativa."
+    },
+    {
+      "q": "¿Por qué tarda más que pasar a WEBP?",
+      "a": "El codificador AVIF prueba muchas más formas de comprimir cada zona de la imagen. Con la velocidad «Rápida» va antes, a cambio de un archivo algo mayor."
+    },
+    {
+      "q": "¿Y si alguien no puede abrir el AVIF?",
+      "a": "Puede convertirlo de vuelta con AVIF a JPG. Si buscas un término medio entre ahorro y compatibilidad, prueba JPG a WEBP."
+    }
+  ]
+}

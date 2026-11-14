@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WEBP to JPG is for those images you download from a website that then refuse to open in your photo viewer, an older editing program or the form you needed to upload them to. JPG is the most widely supported image format there is, and switching to it almost always solves the problem.",
+    "There is nothing to install and nothing to upload: the browser decodes each WEBP and re-encodes it as JPG on your own device. Drag in as many as you like at once; you will get one JPG per image and, when there are several, a ZIP that bundles them.",
+    "Quality, from 1 to 100, is set to 90. At that value the JPG is often a little larger than the original WEBP, because WEBP compresses better; if size matters, lower it to 75 or 80. Many WEBP files carry transparency, such as logos or product cut-outs, and JPG does not support it: those areas are filled with the background colour you set, white by default.",
+    "If the WEBP contains EXIF metadata you can keep it by turning on the advanced option; otherwise the JPG is created without it."
+  ],
+  "faq": [
+    {
+      "q": "What happens to animated WEBP files?",
+      "a": "JPG only stores still images, so an animated WEBP gives you a static picture of its first frame, not the animation."
+    },
+    {
+      "q": "Why is my JPG bigger than the WEBP?",
+      "a": "WEBP produces smaller files than JPG for a similar look. Converting at high quality naturally makes the JPG grow; lower the quality or run the result through Compress image."
+    },
+    {
+      "q": "Can I do the same with PNG?",
+      "a": "Yes, PNG to JPG works the same way for PNG files, with the same quality control, background colour and metadata option."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AVIF to JPG converts AVIF images, increasingly common on websites and on some phones, into good old JPG, which any viewer, editor, social network or form can open. Use it when an AVIF picture will not open in your program or a platform will not let you upload it.",
+    "The image is decoded in your browser. If the browser cannot open AVIF, a WebAssembly decoder bundled with the page steps in; either way, the file never leaves your device. You can convert several AVIF files at once and download them individually or in a ZIP.",
+    "Set the JPG quality between 1 and 100; it defaults to 90 so the result looks the same as the original. If the AVIF has transparent areas, they are filled with the background colour you choose, white by default, because JPG does not store transparency.",
+    "The JPG is created without metadata: any date, camera or location the AVIF may carry is not copied."
+  ],
+  "faq": [
+    {
+      "q": "Why is the JPG larger than the AVIF?",
+      "a": "AVIF is one of the most efficient formats around; JPG needs many more bytes for a similar look. If you want a lighter file, lower the quality to 75 or 80."
+    },
+    {
+      "q": "Is HDR or wide colour gamut preserved?",
+      "a": "No. JPG works with 8 bits per channel, so an HDR or 10-bit AVIF image is brought down to a standard colour range and may look slightly different."
+    },
+    {
+      "q": "Can I convert JPG to AVIF?",
+      "a": "Yes, with JPG to AVIF, the opposite conversion, which is useful for saving space."
+    }
+  ]
+}
