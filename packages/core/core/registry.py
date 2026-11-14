@@ -72,6 +72,10 @@ class ToolSpec:
     cost: Callable[[dict], CostClass] | None = None
     # Herramientas de IA (F3): requisitos del modelo y estimación de peticiones.
     ai: AiSpec | None = None
+    # Apagada por defecto (D-134): solo se enciende con `TOOL_<SLUG>_ENABLED=true` en el entorno, que leen la API y la
+    # web. Para udf-a-pdf (7.23) y las herramientas sin muestra válida (01-1, regla 8). El motivo va en
+    # config/tools-notes.yaml y sale en docs/TOOLS.md (regla 7).
+    default_enabled: bool = True
 
     @property
     def slug(self) -> str:
@@ -119,6 +123,7 @@ class ToolSpec:
             "outputs": list(self.outputs),
             "phase": self.phase,
             "launch": self.launch,
+            "default_enabled": self.default_enabled,
             "indexable": self.indexable,
             "max_files": self.max_files,
             "secret_fields": list(self.secret_fields),

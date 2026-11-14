@@ -12,7 +12,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | `@embedpdf/pdfium` (PDFium en WebAssembly) | MIT (envoltorio); PDFium con su propia licencia BSD/Apache incluida en `LICENSE.pdfium` | Renderizado en el navegador |
 | Noto Sans, Noto Serif y Noto Sans Mono | OFL-1.1 (`apps/web/public/fonts/OFL.txt`) | Texto incrustado en PDF |
 | `@uppy/core`, `@uppy/tus`, `tus-js-client` | MIT | Subidas reanudables |
-| `diff-match-patch` | Apache-2.0 | comparar-pdf en el navegador |
+| `diff-match-patch` 1.0.5 (y `@types/diff-match-patch` 1.0.36, MIT, solo desarrollo) | Apache-2.0 | comparar-pdf en el navegador; versiones exactas (D-140) |
 | OpenCV.js (`@techstark/opencv-js`) | Apache-2.0 | escaner-pdf en el navegador (servido desde `public/opencv/`) |
 | `@jsquash/avif` y `@jsquash/webp` (códecs de Squoosh en WebAssembly) | Apache-2.0; dentro, libavif y libaom BSD-2-Clause y libwebp BSD-3-Clause | AVIF y WebP en el navegador (servidos desde `public/codecs/`) |
 | `@resvg/resvg-wasm` | MPL-2.0 (sin modificar) | svg-a-png, svg-a-jpg y crear-favicon |
@@ -51,7 +51,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | markdown-it-py, mdit-py-plugins | MIT | markdown-a-pdf |
 | Pygments | BSD-2-Clause | Código resaltado en markdown-a-pdf |
 | charset-normalizer | MIT | Detección de la codificación en txt-a-pdf y markdown-a-pdf |
-| FFmpeg (compilación LGPL de BtbN) | LGPL-2.1 o posterior | Programa externo en `workerav`; la imagen falla si detecta `--enable-gpl` |
+| FFmpeg (compilación LGPL de BtbN, n8.1.3-27 del autobuild 2026-10-31, D-137) | LGPL-2.1 o posterior | Programa externo en `workerav`; SHA-256 fijado y la imagen falla si detecta `--enable-gpl` |
 | tusd | MIT | Servicio de subidas |
 | Caddy | Apache-2.0 | Descargas |
 | PostgreSQL y pgvector | PostgreSQL License | Base de datos |

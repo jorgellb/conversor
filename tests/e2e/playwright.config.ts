@@ -17,7 +17,7 @@ export default defineConfig({
     launchOptions: process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {},
   },
   projects: [
-    { name: "navegador", testMatch: /(navegador|editor|f2|f3|f5)\.spec\.ts/, use: { baseURL: process.env.WEB_URL ?? "http://127.0.0.1:3100" } },
+    { name: "navegador", testMatch: /(navegador|editor|f2|f3|f4|f5|f6|f7)\.spec\.ts/, use: { baseURL: process.env.WEB_URL ?? "http://127.0.0.1:3100" } },
     { name: "servidor", testMatch: /servidor\.spec\.ts/, use: { baseURL: process.env.WEB_URL ?? "http://localhost:3000" } },
   ],
 });

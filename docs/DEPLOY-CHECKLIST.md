@@ -4,7 +4,16 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 
 ## Antes del primer despliegue
 
-- [ ] Fijar `FFMPEG_BUILD` en `workers/Dockerfile` a un autobuild de BtbN con fecha y comprobar su SHA-256 (D-13).
+- [x] Fijar `FFMPEG_BUILD` en `workers/Dockerfile` a un autobuild de BtbN con fecha y comprobar su SHA-256 (D-13):
+      `autobuild-2026-10-31-12-59`, FFmpeg n8.1.3-27 LGPL, con `FFMPEG_SHA256` (D-137).
+- [ ] Construir `worker-av` en la CI de imágenes con ese FFmpeg 8.1 (`sha256sum -c` y la comprobación de
+      `--enable-gpl` pasan) y repetir el audio de F5 (`tests/test_audio_f5.py`) con ese binario; guardar una copia del
+      archivo de BtbN (por ejemplo, como recurso de una publicación propia) por si BtbN lo retira.
+- [ ] Perfil de memoria y CPU: en un VPS de 16 vCPU y 64 GB, pegar en Coolify las variables de
+      `python scripts/gen_coolify_compose.py --profile 16` (`docs/OPERATIONS.md`, D-138); `--validate` (`docker compose
+      config`) pasa en la CI con las variables `${MEM_*}` y `${CPUS_*}`.
+- [ ] **Propietario:** decidir si se añaden equivalentes de «Print PDF as poster» y «OFD to PDF» de PDF24, que no están
+      en la especificación (tabla de paridad de `docs/TOOLS.md`, D-139).
 - [ ] Revisar la ficha de licencia de los modelos que descarga `docling-tools` en `worker-convert`.
 - [ ] Confirmar que `ghcr.io/stripe/smokescreen:v0.1.0` está publicada y fijar su digest (`@sha256:…`) en `scripts/gen_coolify_compose.py` y `docker-compose.yml` (D-30).
 - [ ] Contenido propio de cada página revisado por muestreo y marcado con `reviewed: true` en `apps/web/content/` (7.22).

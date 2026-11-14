@@ -2,6 +2,9 @@
 # Generado por scripts/gen_coolify_compose.py: edita el generador, no este archivo.
 # Los servicios de fases posteriores (workersign, workerutils, workermesh, workercad y umami) se añaden con su
 # fase; `workersign` se unirá también a `webrender`.
+# Memoria y CPU (5.4): `MEM_<NOMBRE>` cambia `mem_limit` y `memswap_limit` de postgres, gotenberg, gotenbergweb y cada
+# worker, y `CPUS_<NOMBRE>` y `CONCURRENCY_<NOMBRE>`, los de cada worker. Por defecto, el perfil de 8 vCPU; el de
+# 16 vCPU lo imprime `python scripts/gen_coolify_compose.py --profile 16` (docs/OPERATIONS.md).
 services:
   postgres:
     image: pgvector/pgvector:0.8.7-pg16-bookworm
@@ -19,8 +22,8 @@ services:
     - pgdata:/var/lib/postgresql/data
     networks:
     - internal
-    mem_limit: 2560m
-    memswap_limit: 2560m
+    mem_limit: ${MEM_POSTGRES:-2560m}
+    memswap_limit: ${MEM_POSTGRES:-2560m}
     oom_score_adj: -500
     shm_size: 256m
     healthcheck:
@@ -508,8 +511,8 @@ services:
     - --webhook-deny-private-ips=true
     networks:
     - internal
-    mem_limit: 3g
-    memswap_limit: 3g
+    mem_limit: ${MEM_GOTENBERG:-3g}
+    memswap_limit: ${MEM_GOTENBERG:-3g}
     cpus: 2
     oom_score_adj: 500
     healthcheck:
@@ -539,8 +542,8 @@ services:
     - --webhook-deny-private-ips=true
     networks:
     - webrender
-    mem_limit: 2g
-    memswap_limit: 2g
+    mem_limit: ${MEM_GOTENBERGWEB:-2g}
+    memswap_limit: ${MEM_GOTENBERGWEB:-2g}
     cpus: 1
     oom_score_adj: 500
     depends_on:
@@ -674,9 +677,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 1g
-    memswap_limit: 1g
-    cpus: 4
+    mem_limit: ${MEM_AI:-1g}
+    memswap_limit: ${MEM_AI:-1g}
+    cpus: ${CPUS_AI:-4}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -738,9 +741,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 1280m
-    memswap_limit: 1280m
-    cpus: 1
+    mem_limit: ${MEM_AI_EMBED:-1280m}
+    memswap_limit: ${MEM_AI_EMBED:-1280m}
+    cpus: ${CPUS_AI_EMBED:-1}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -803,9 +806,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 3g
-    memswap_limit: 3g
-    cpus: 3
+    mem_limit: ${MEM_PDF:-3g}
+    memswap_limit: ${MEM_PDF:-3g}
+    cpus: ${CPUS_PDF:-3}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -867,9 +870,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 3g
-    memswap_limit: 3g
-    cpus: 2
+    mem_limit: ${MEM_OCR:-3g}
+    memswap_limit: ${MEM_OCR:-3g}
+    cpus: ${CPUS_OCR:-2}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -936,9 +939,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 1536m
-    memswap_limit: 1536m
-    cpus: 1
+    mem_limit: ${MEM_OFFICE_LIGHT:-1536m}
+    memswap_limit: ${MEM_OFFICE_LIGHT:-1536m}
+    cpus: ${CPUS_OFFICE_LIGHT:-1}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -1002,9 +1005,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 2g
-    memswap_limit: 2g
-    cpus: 1
+    mem_limit: ${MEM_OFFICE_HEAVY:-2g}
+    memswap_limit: ${MEM_OFFICE_HEAVY:-2g}
+    cpus: ${CPUS_OFFICE_HEAVY:-1}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -1067,9 +1070,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 1536m
-    memswap_limit: 1536m
-    cpus: 1
+    mem_limit: ${MEM_MEDIA:-1536m}
+    memswap_limit: ${MEM_MEDIA:-1536m}
+    cpus: ${CPUS_MEDIA:-1}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -1132,9 +1135,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 5g
-    memswap_limit: 5g
-    cpus: 2
+    mem_limit: ${MEM_CONVERT:-5g}
+    memswap_limit: ${MEM_CONVERT:-5g}
+    cpus: ${CPUS_CONVERT:-2}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -1196,9 +1199,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 3g
-    memswap_limit: 3g
-    cpus: 2
+    mem_limit: ${MEM_AV_LIGHT:-3g}
+    memswap_limit: ${MEM_AV_LIGHT:-3g}
+    cpus: ${CPUS_AV_LIGHT:-2}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -1263,9 +1266,9 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: 3g
-    memswap_limit: 3g
-    cpus: 2
+    mem_limit: ${MEM_AV_HEAVY:-3g}
+    memswap_limit: ${MEM_AV_HEAVY:-3g}
+    cpus: ${CPUS_AV_HEAVY:-2}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}

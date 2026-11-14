@@ -1,0 +1,393 @@
+# Paridad con PDF24 (0.8, 7.23 y 17): cada herramienta web de tools.pdf24.org y su equivalente aquí.
+# Lista tomada de https://tools.pdf24.org/en/all-tools el 14/11/2026; la paridad es de funciones, nunca de textos,
+# diseño ni marca. scripts/gen_docs.py la publica en docs/TOOLS.md con el estado de cada equivalente. Claves:
+# - equivalentes: slugs del registro; «slug:Fn» si aún no está y llega en esa fase.
+# - paginas: páginas fijas de la web (apps/web/src/lib/site.ts, STATIC_PAGES).
+# - nota: explicación cuando no hay equivalente o no es evidente (17: «o una explicación de por qué no»).
+revisado: 2026-11-14
+herramientas:
+  - pdf24: "Merge PDF"
+    ruta: /en/merge-pdf
+    equivalentes: [unir-pdf]
+  - pdf24: "Split PDF"
+    ruta: /en/split-pdf
+    equivalentes: [dividir-pdf]
+  - pdf24: "Compress PDF"
+    ruta: /en/compress-pdf
+    equivalentes: [comprimir-pdf]
+  - pdf24: "Edit PDF"
+    ruta: /en/edit-pdf
+    equivalentes: [editar-pdf]
+  - pdf24: "Sign PDF"
+    ruta: /en/sign-pdf
+    equivalentes: [firmar-pdf:F4]
+  - pdf24: "Create PDF"
+    ruta: /en/create-pdf
+    paginas: [crear-pdf]
+  - pdf24: "PDF Converter"
+    ruta: /en/pdf-converter
+    paginas: [conversor-pdf]
+  - pdf24: "Images to PDF"
+    ruta: /en/images-to-pdf
+    equivalentes: [imagenes-a-pdf]
+  - pdf24: "PDF to Images"
+    ruta: /en/pdf-to-images
+    equivalentes: [pdf-a-imagenes]
+  - pdf24: "Write PDF"
+    ruta: /en/write-pdf
+    equivalentes: [escribir-pdf:F6]
+  - pdf24: "Create PDF with a camera"
+    ruta: /en/scan-pdf
+    equivalentes: [escaner-pdf]
+  - pdf24: "Straighten scans"
+    ruta: /en/straighten-pdf
+    equivalentes: [ocr-pdf]
+    nota: "Sin página propia en 7: el enderezado está en ocr-pdf (Enderezar, A.5) y en escaner-pdf (corrección de perspectiva, A.1)."
+  - pdf24: "Webpage to PDF"
+    ruta: /en/webpage-to-pdf
+    equivalentes: [web-a-pdf]
+  - pdf24: "Create photo collage"
+    ruta: /en/create-photo-collage
+    equivalentes: [crear-collage]
+  - pdf24: "Create card"
+    ruta: /en/create-card
+    equivalentes: [crear-tarjeta:F6]
+  - pdf24: "Create PDF form"
+    ruta: /en/create-fillable-pdf-form
+    equivalentes: [crear-formulario-pdf:F4, hacer-pdf-rellenable:F4]
+  - pdf24: "Create PDF job application"
+    ruta: /en/create-job-application
+    equivalentes: [solicitud-de-empleo-pdf]
+  - pdf24: "Generate QR code"
+    ruta: /en/generate-qr-code
+    equivalentes: [generar-codigo-qr]
+  - pdf24: "Create invoice"
+    ruta: /en/create-invoice
+    equivalentes: [crear-factura:F4]
+  - pdf24: "Create invoice visually"
+    ruta: /en/create-invoice-visually
+    equivalentes: [crear-factura:F4]
+    nota: "Diseñador visual de crear-factura (7.23)."
+  - pdf24: "Create electronic invoice"
+    ruta: /en/create-electronic-invoice
+    equivalentes: [crear-factura-electronica:F4]
+  - pdf24: "PDF invoice to e-invoice"
+    ruta: /en/pdf-to-e-invoice
+    equivalentes: [pdf-a-factura-electronica:F4]
+  - pdf24: "XML e-invoice to PDF"
+    ruta: /en/xml-invoice-to-pdf
+    equivalentes: [factura-electronica-a-pdf:F6]
+  - pdf24: "Validate e-invoice"
+    ruta: /en/validate-e-invoice
+    equivalentes: [validar-factura-electronica:F4]
+  - pdf24: "Annotate PDF"
+    ruta: /en/annotate-pdf
+    equivalentes: [anotar-pdf]
+  - pdf24: "Fill out PDF"
+    ruta: /en/fill-out-pdf
+    equivalentes: [rellenar-pdf]
+  - pdf24: "Make PDF fillable"
+    ruta: /en/make-pdf-fillable
+    equivalentes: [hacer-pdf-rellenable:F4]
+  - pdf24: "Add watermark"
+    ruta: /en/add-watermark
+    equivalentes: [marca-de-agua-pdf]
+  - pdf24: "Add page numbers"
+    ruta: /en/add-page-numbers
+    equivalentes: [numerar-paginas-pdf]
+  - pdf24: "PDF Overlay"
+    ruta: /en/overlay-pdf
+    equivalentes: [superponer-pdf]
+  - pdf24: "Crop PDF"
+    ruta: /en/crop-pdf
+    equivalentes: [recortar-pdf]
+  - pdf24: "Change PDF page size"
+    ruta: /en/change-pdf-page-size
+    equivalentes: [cambiar-tamano-pagina-pdf]
+  - pdf24: "Change PDF document information"
+    ruta: /en/change-pdf-doc-info
+    equivalentes: [metadatos-pdf]
+  - pdf24: "PDF info"
+    ruta: /en/analyze-pdf
+    equivalentes: [metadatos-pdf]
+    nota: "Sin página propia en 7: metadatos-pdf muestra la información del documento (A.3)."
+  - pdf24: "Assemble PDF"
+    ruta: /en/assemble-pdf
+    equivalentes: [montar-pdf]
+  - pdf24: "Rearrange PDF pages"
+    ruta: /en/rearrange-pdf-pages
+    equivalentes: [organizar-pdf]
+  - pdf24: "Remove PDF pages"
+    ruta: /en/remove-pdf-pages
+    equivalentes: [eliminar-paginas-pdf]
+  - pdf24: "Extract PDF pages"
+    ruta: /en/extract-pdf-pages
+    equivalentes: [extraer-paginas-pdf]
+  - pdf24: "Rotate PDF pages"
+    ruta: /en/rotate-pdf-pages
+    equivalentes: [girar-pdf]
+  - pdf24: "Pages per sheet"
+    ruta: /en/pages-per-sheet
+    equivalentes: [varias-paginas-por-hoja]
+  - pdf24: "Print PDF"
+    ruta: /en/print-pdf
+    equivalentes: [imprimir-pdf]
+  - pdf24: "Create booklet"
+    ruta: /en/create-pdf-booklet
+    equivalentes: [folleto-pdf]
+  - pdf24: "Print PDF as poster"
+    ruta: /en/print-pdf-as-poster
+    equivalentes: []
+    nota: "No está en el catálogo de 7 ni en 7.23. Pendiente de decisión del propietario (posible herramienta nueva en F6)."
+  - pdf24: "Halve PDF pages"
+    ruta: /en/halve-pdf-pages
+    equivalentes: [cortar-paginas-por-la-mitad]
+  - pdf24: "Bookmark PDF"
+    ruta: /en/bookmark-pdf
+    equivalentes: [marcadores-pdf]
+  - pdf24: "Extract PDF images"
+    ruta: /en/extract-images
+    equivalentes: [extraer-imagenes-pdf]
+  - pdf24: "Copy from PDF"
+    ruta: /en/copy-from-pdf
+    equivalentes: [copiar-de-pdf]
+  - pdf24: "PDF to grayscale"
+    ruta: /en/convert-pdf-to-grayscale
+    equivalentes: [pdf-escala-de-grises]
+  - pdf24: "Invert PDF colors"
+    ruta: /en/invert-pdf
+    equivalentes: [pdf-modo-oscuro]
+    nota: "Modo «Negativo» de pdf-modo-oscuro (A.5)."
+  - pdf24: "Web optimize PDF"
+    ruta: /en/web-optimize-pdf
+    equivalentes: [optimizar-pdf-web]
+  - pdf24: "PDF OCR"
+    ruta: /en/ocr-pdf
+    equivalentes: [ocr-pdf]
+  - pdf24: "Repair PDF"
+    ruta: /en/repair-pdf
+    equivalentes: [reparar-pdf]
+  - pdf24: "Rasterize PDF"
+    ruta: /en/rasterize-pdf
+    equivalentes: [rasterizar-pdf]
+  - pdf24: "Flatten PDF"
+    ruta: /en/flatten-pdf
+    equivalentes: [aplanar-pdf]
+  - pdf24: "PDF to PDF/A"
+    ruta: /en/pdf-to-pdfa
+    equivalentes: [pdf-a-pdfa]
+  - pdf24: "Protect PDF"
+    ruta: /en/lock-pdf
+    equivalentes: [proteger-pdf]
+  - pdf24: "Unlock PDF"
+    ruta: /en/unlock-pdf
+    equivalentes: [desbloquear-pdf]
+  - pdf24: "Redact PDF"
+    ruta: /en/redact-pdf
+    equivalentes: [redactar-pdf]
+  - pdf24: "Remove PDF metadata"
+    ruta: /en/remove-pdf-metadata
+    equivalentes: [eliminar-metadatos-pdf]
+  - pdf24: "Generate password"
+    ruta: /en/generate-password
+    equivalentes: [generar-contrasena]
+  - pdf24: "View as PDF"
+    ruta: /en/view-pdf
+    equivalentes: [lector-pdf]
+  - pdf24: "Compare PDFs"
+    ruta: /en/compare-pdf
+    equivalentes: [comparar-pdf]
+  - pdf24: "Search in PDFs"
+    ruta: /en/search-pdf
+    equivalentes: [buscar-en-pdf]
+  - pdf24: "Check PDF/A"
+    ruta: /en/validate-pdfa
+    equivalentes: [validar-pdfa]
+  - pdf24: "Verify PDF signatures"
+    ruta: /en/verify-pdf-signatures
+    equivalentes: [verificar-firmas-pdf:F4]
+  - pdf24: "Set PDF viewer preferences"
+    ruta: /en/set-pdf-viewer-preferences
+    equivalentes: [preferencias-visor-pdf]
+  - pdf24: "Convert to PDF"
+    ruta: /en/convert-to-pdf
+    equivalentes: [convertir-a-pdf]
+  - pdf24: "Word to PDF"
+    ruta: /en/word-to-pdf
+    equivalentes: [word-a-pdf]
+  - pdf24: "PowerPoint to PDF"
+    ruta: /en/powerpoint-to-pdf
+    equivalentes: [ppt-a-pdf]
+  - pdf24: "Excel to PDF"
+    ruta: /en/excel-to-pdf
+    equivalentes: [excel-a-pdf]
+  - pdf24: "Publisher to PDF"
+    ruta: /en/publisher-to-pdf
+    equivalentes: [publisher-a-pdf]
+  - pdf24: "JPG to PDF"
+    ruta: /en/jpg-to-pdf
+    equivalentes: [jpg-a-pdf]
+  - pdf24: "PNG to PDF"
+    ruta: /en/png-to-pdf
+    equivalentes: [png-a-pdf]
+  - pdf24: "WEBP to PDF"
+    ruta: /en/webp-to-pdf
+    equivalentes: [webp-a-pdf]
+  - pdf24: "HEIC to PDF"
+    ruta: /en/heic-to-pdf
+    equivalentes: [heic-a-pdf]
+  - pdf24: "SVG to PDF"
+    ruta: /en/svg-to-pdf
+    equivalentes: [svg-a-pdf]
+  - pdf24: "TIFF to PDF"
+    ruta: /en/tiff-to-pdf
+    equivalentes: [tiff-a-pdf]
+  - pdf24: "DOCX to PDF"
+    ruta: /en/docx-to-pdf
+    equivalentes: [word-a-pdf]
+  - pdf24: "PPTX to PDF"
+    ruta: /en/pptx-to-pdf
+    equivalentes: [ppt-a-pdf]
+  - pdf24: "XLSX to PDF"
+    ruta: /en/xlsx-to-pdf
+    equivalentes: [excel-a-pdf]
+  - pdf24: "DOC to PDF"
+    ruta: /en/doc-to-pdf
+    equivalentes: [word-a-pdf]
+    nota: "Formatos antiguos de Office en word-a-pdf (A.8)."
+  - pdf24: "PPT to PDF"
+    ruta: /en/ppt-to-pdf
+    equivalentes: [ppt-a-pdf]
+    nota: "Formatos antiguos de Office en ppt-a-pdf (A.8)."
+  - pdf24: "XLS to PDF"
+    ruta: /en/xls-to-pdf
+    equivalentes: [excel-a-pdf]
+    nota: "Formatos antiguos de Office en excel-a-pdf (A.8)."
+  - pdf24: "ODT to PDF"
+    ruta: /en/odt-to-pdf
+    equivalentes: [odt-a-pdf]
+  - pdf24: "ODG to PDF"
+    ruta: /en/odg-to-pdf
+    equivalentes: [odg-a-pdf]
+  - pdf24: "ODS to PDF"
+    ruta: /en/ods-to-pdf
+    equivalentes: [ods-a-pdf]
+  - pdf24: "ODP to PDF"
+    ruta: /en/odp-to-pdf
+    equivalentes: [odp-a-pdf]
+  - pdf24: "Text to PDF"
+    ruta: /en/txt-to-pdf
+    equivalentes: [txt-a-pdf]
+  - pdf24: "RTF to PDF"
+    ruta: /en/rtf-to-pdf
+    equivalentes: [rtf-a-pdf]
+  - pdf24: "EPUB to PDF"
+    ruta: /en/epub-to-pdf
+    equivalentes: [epub-a-pdf]
+  - pdf24: "PS to PDF"
+    ruta: /en/ps-to-pdf
+    equivalentes: []
+    nota: "Fuera de alcance (7.24): PostScript depende de Ghostscript (AGPL). Posible con licencia comercial o tras revisión legal."
+  - pdf24: "Markdown to PDF"
+    ruta: /en/markdown-to-pdf
+    equivalentes: [markdown-a-pdf]
+  - pdf24: "PUB to PDF"
+    ruta: /en/pub-to-pdf
+    equivalentes: [pub-a-pdf]
+  - pdf24: "UDF to PDF"
+    ruta: /en/udf-to-pdf
+    equivalentes: [udf-a-pdf:F6]
+  - pdf24: "OFD to PDF"
+    ruta: /en/ofd-to-pdf
+    equivalentes: []
+    nota: "No está en el catálogo de 7 ni en 7.23 (formato OFD chino). Pendiente de decisión del propietario; sin motor libre conocido revisado contra 11."
+  - pdf24: "Convert PDF to ..."
+    ruta: /en/convert-from-pdf
+    equivalentes: [convertir-desde-pdf]
+  - pdf24: "PDF to Word"
+    ruta: /en/pdf-to-word
+    equivalentes: [pdf-a-word]
+  - pdf24: "PDF to PowerPoint"
+    ruta: /en/pdf-to-powerpoint
+    equivalentes: [pdf-a-ppt]
+  - pdf24: "PDF to Excel"
+    ruta: /en/pdf-to-excel
+    equivalentes: [pdf-a-excel]
+  - pdf24: "PDF to JPG"
+    ruta: /en/pdf-to-jpg
+    equivalentes: [pdf-a-jpg]
+  - pdf24: "PDF to PNG"
+    ruta: /en/pdf-to-png
+    equivalentes: [pdf-a-png]
+  - pdf24: "PDF to SVG"
+    ruta: /en/pdf-to-svg
+    equivalentes: [pdf-a-svg]
+  - pdf24: "PDF to TIFF"
+    ruta: /en/pdf-to-tiff
+    equivalentes: [pdf-a-tiff]
+  - pdf24: "PDF to DOCX"
+    ruta: /en/pdf-to-docx
+    equivalentes: [pdf-a-word]
+  - pdf24: "PDF to PPTX"
+    ruta: /en/pdf-to-pptx
+    equivalentes: [pdf-a-ppt]
+  - pdf24: "PDF to XLSX"
+    ruta: /en/pdf-to-xlsx
+    equivalentes: [pdf-a-excel]
+  - pdf24: "PDF to ODT"
+    ruta: /en/pdf-to-odt
+    equivalentes: [pdf-a-odt]
+  - pdf24: "PDF to ODS"
+    ruta: /en/pdf-to-ods
+    equivalentes: [pdf-a-ods]
+  - pdf24: "PDF to ODP"
+    ruta: /en/pdf-to-odp
+    equivalentes: [pdf-a-odp]
+  - pdf24: "PDF to Text"
+    ruta: /en/pdf-to-txt
+    equivalentes: [pdf-a-txt]
+  - pdf24: "PDF to RTF"
+    ruta: /en/pdf-to-rtf
+    equivalentes: [pdf-a-rtf]
+  - pdf24: "PDF to EPUB"
+    ruta: /en/pdf-to-epub
+    equivalentes: [pdf-a-epub]
+  - pdf24: "PDF to HTML"
+    ruta: /en/pdf-to-html
+    equivalentes: [pdf-a-html]
+  - pdf24: "PDF to Markdown"
+    ruta: /en/pdf-to-markdown
+    equivalentes: [pdf-a-markdown]
+  - pdf24: "Compress images"
+    ruta: /en/compress-images
+    equivalentes: [comprimir-imagen]
+  - pdf24: "HEIC to JPG"
+    ruta: /en/heic-to-jpg
+    equivalentes: [heic-a-jpg]
+  - pdf24: "HEIC to PNG"
+    ruta: /en/heic-to-png
+    equivalentes: [heic-a-png]
+  - pdf24: "WEBP to JPG"
+    ruta: /en/webp-to-jpg
+    equivalentes: [webp-a-jpg]
+  - pdf24: "WEBP to PNG"
+    ruta: /en/webp-to-png
+    equivalentes: [webp-a-png]
+  - pdf24: "SVG to JPG"
+    ruta: /en/svg-to-jpg
+    equivalentes: [svg-a-jpg]
+  - pdf24: "SVG to PNG"
+    ruta: /en/svg-to-png
+    equivalentes: [svg-a-png]
+  - pdf24: "PDF24 Creator"
+    ruta: /en/creator
+    equivalentes: []
+    nota: "No aplica (7.23): programa de escritorio; el equivalente es la PWA instalable (8.3)."
+  - pdf24: "PDF Printer"
+    ruta: /en/pdf-printer
+    equivalentes: []
+    nota: "No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3)."
+  - pdf24: "PDF Reader"
+    ruta: /en/pdf-reader
+    equivalentes: []
+    nota: "No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf."

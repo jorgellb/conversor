@@ -64,7 +64,8 @@ class GirarOptions(BaseModel):
 
 
 class EliminarOptions(BaseModel):
-    paginas: str = opt("", "Páginas que se eliminan", "Pages to delete", min_length=1)
+    # Obligatoria (D-135): sin páginas no hay nada que eliminar, y la web no deja empezar hasta que se rellena.
+    paginas: str = opt(..., "Páginas que se eliminan", "Pages to delete", min_length=1)
 
 
 class ExtraerOptions(BaseModel):

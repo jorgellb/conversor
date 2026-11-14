@@ -74,6 +74,22 @@ def test_flags_precedence():
     assert is_tool_enabled("heic-a-pdf", {}, env={"HEVC_DECODE_ENABLED": "true"})
 
 
+def test_flags_default_enabled_false():
+    """D-134: apagada por defecto, la fila de feature_flags no la enciende; solo el entorno."""
+    assert not is_tool_enabled("udf-a-pdf", {}, env={}, default=False)
+    assert not is_tool_enabled("udf-a-pdf", {"udf-a-pdf": True}, env={}, default=False)
+    assert is_tool_enabled("udf-a-pdf", {}, env={"TOOL_UDF_A_PDF_ENABLED": "true"}, default=False)
+    assert not is_tool_enabled("udf-a-pdf", {}, env={"TOOL_UDF_A_PDF_ENABLED": "false"}, default=False)
+    # Los flags temáticos siguen mandando sobre el entorno de la herramienta.
+    assert not is_tool_enabled("crear-factura", {}, env={"TOOL_CREAR_FACTURA_ENABLED": "true"}, default=False)
+    # Sin `default`, se lee del registro (todas las de hoy están encendidas por defecto).
+    from core.registry import load_registry
+
+    for spec in load_registry().specs:
+        assert is_tool_enabled(spec.slug_es, {}, env={}) == (spec.default_enabled and spec.slug_es not in
+                                                            {"heic-a-pdf", "heic-a-jpg", "heic-a-png"})
+
+
 def test_secret_matrix():
     env = {"FILE_TOKEN_SECRET": "x", "JOB_SECRETS_KEY": "y", "OPENROUTER_API_KEY": "z"}
     assert violations("worker-pdf", env) == ["FILE_TOKEN_SECRET", "OPENROUTER_API_KEY"]
@@ -107,3 +123,15 @@ def test_filetype_detection(fixtures_dir):
     assert not matches(hls, ".ogg", ("ogg", "opus"))
     if (fixtures_dir / "carta.docx").exists():
         assert detect(fixtures_dir / "carta.docx").ext == "docx"
+
+
+def test_ai_excluded_by_name():
+    """6.6 y 16.3: firma, verificación de firmas, contactos, calendario, correo y certificados nunca llegan a la IA."""
+    from core.ai import is_excluded
+
+    for slug in ("verificar-firmas-pdf", "solicitar-firmas", "firmar-pdf", "verificar-firma", "csig-a-pdf", "p7m-a-pdf",
+                 "xsig-a-pdf", "vcf-a-csv", "ics-a-excel", "mbox-a-pdf", "pst-a-mbox", "eml-a-pdf", "msg-a-pdf"):
+        assert is_excluded(slug, "pdf"), slug
+    assert is_excluded("cualquiera", "sign")
+    for slug in ("resumir-pdf", "traducir-pdf", "chat-pdf", "pdf-a-fichas"):
+        assert not is_excluded(slug, "ai"), slug

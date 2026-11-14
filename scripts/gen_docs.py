@@ -1,9 +1,13 @@
-"""Genera docs/ERRORS.md (códigos estables y mensajes) y docs/TOOLS.md (catálogo) desde el código y el registro."""
+"""Genera docs/ERRORS.md (códigos estables y mensajes) y docs/TOOLS.md (catálogo, desactivadas con su motivo, 7.24 y
+paridad con PDF24) desde el código, el registro y config/. `--check` falla si no están al día."""
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "packages/core"), str(ROOT / "packages/tools")]
@@ -23,33 +27,160 @@ def errors() -> str:
     return "\n".join(lines) + "\n"
 
 
-def tools() -> str:
-    data = json.loads((ROOT / "packages/registry/registry.json").read_text(encoding="utf-8"))
+WHERE = {"client": "navegador", "server": "servidor", "hybrid": "híbrida"}
+
+
+def _yaml(name: str) -> dict:
+    return yaml.safe_load((ROOT / "config" / name).read_text(encoding="utf-8")) or {}
+
+
+def _static_pages() -> set[str]:
+    text = (ROOT / "apps/web/src/lib/site.ts").read_text(encoding="utf-8")
+    block = text[text.index("STATIC_PAGES"):text.index("} as const")]
+    return set(re.findall(r'es: "([^"]+)"', block))
+
+
+def _content() -> dict[str, str]:
     content = {}
     for f in (ROOT / "apps/web/content/es").glob("*.json"):
         page = json.loads(f.read_text(encoding="utf-8"))
         content[f.stem] = "revisado" if page.get("reviewed") else ("redactado, sin revisar" if page.get("complete") else "incompleto")
-    lines = ["# Herramientas (7 y 17.1)", "",
-             "Catálogo publicado en esta entrega: F1 completo (lista de lanzamiento de 17.1 y resto de F1) y las herramientas adelantadas de F2 y F5. Generado por `scripts/gen_docs.py` "
-             "desde `packages/registry/registry.json`. «Indexable» exige herramienta activa, pruebas en verde y contenido "
-             "propio completo en el idioma (7.22); sin él, la página lleva `noindex`.", "",
-             "| Herramienta (es / en) | Dónde | Grupo | Coste | Fase | Entrada → salida | Contenido propio |",
-             "| --- | --- | --- | --- | --- | --- | --- |"]
+    return content
+
+
+def _off_reasons(data: dict, notes: dict) -> dict[str, str]:
+    """Herramientas apagadas en un despliegue con los valores por defecto, con su motivo (01-1, regla 7)."""
+    from core.flags import THEMATIC_FLAGS, THEMATIC_TOOLS
+
+    temas = notes.get("temas") or {}
+    per_tool = notes.get("herramientas") or {}
+    reasons: dict[str, str] = {}
+    for flag, slugs in THEMATIC_TOOLS.items():
+        if slugs and not temas.get(flag):
+            raise SystemExit(f"config/tools-notes.yaml: falta el motivo del flag temático {flag}")
+        if THEMATIC_FLAGS.get(flag):
+            continue
+        for slug in slugs:
+            reasons[slug] = f"Apagada mientras `{flag}` no esté a `true`. {temas[flag]}"
     for t in data["tools"]:
-        where = {"client": "navegador", "server": "servidor", "hybrid": "híbrida"}[t["where"]]
-        lines.append(f"| `{t['slug_es']}` / `{t['slug_en']}` | {where} | {t['worker_group'] or '—'} | {t['cost_class']} | {t['phase']} | "
-                     f"{', '.join(t['inputs']) or '—'} → {', '.join(t['outputs']) or 'pantalla'} | {content.get(t['slug_es'], 'pendiente')} |")
-    lines += ["", "La lista de lanzamiento (17.1) está completa. El resto del catálogo (secciones 7.3 a 7.23) llega en su fase; "
-              "la comparación con PDF24 se cierra en F6 (17.1)."]
+        if t.get("default_enabled", True):
+            continue
+        reason = per_tool.get(t["slug_es"])
+        if not reason:
+            raise SystemExit(f"config/tools-notes.yaml: falta el motivo de {t['slug_es']}, apagada por defecto (D-134)")
+        flag = "TOOL_" + t["slug_es"].upper().replace("-", "_") + "_ENABLED"
+        reasons[t["slug_es"]] = f"Apagada por defecto; se enciende con `{flag}=true`. {reason}"
+    return reasons
+
+
+def _phase_counts(data: dict) -> str:
+    counts: dict[str, int] = {}
+    for t in data["tools"]:
+        counts[t["phase"]] = counts.get(t["phase"], 0) + 1
+    return ", ".join(f"{phase} {n}" for phase, n in sorted(counts.items()))
+
+
+def _pdf24(data: dict, reasons: dict[str, str]) -> list[str]:
+    registered = {t["slug_es"] for t in data["tools"]}
+    pages = _static_pages()
+    parity = _yaml("pdf24.yaml")
+    lines = ["## Paridad con PDF24 (0.8, 7.23 y 17)", "",
+             f"Cada herramienta web de tools.pdf24.org (lista revisada el {parity['revisado']}, `config/pdf24.yaml`) y su "
+             "equivalente aquí. La paridad es de funciones: no se copian textos, diseños, plantillas ni marca. Al cerrar F6 "
+             "no puede quedar ninguna fila «pendiente» sin su fase ni ninguna «sin equivalente» sin explicación (17).", "",
+             "| PDF24 | Equivalente | Estado | Nota |", "| --- | --- | --- | --- |"]
+    totals = {"disponible": 0, "pendiente": 0, "sin equivalente": 0}
+    for row in parity["herramientas"]:
+        eq = [str(x) for x in row.get("equivalentes") or []]
+        fixed = [str(x) for x in row.get("paginas") or []]
+        note = row.get("nota", "")
+        missing, phases = [], set()
+        for item in eq:
+            slug, _, phase = item.partition(":")
+            if slug not in registered:
+                if not phase:
+                    raise SystemExit(f"config/pdf24.yaml: {slug} no está en el registro y no dice en qué fase llega")
+                missing.append(slug)
+                phases.add(phase)
+        for page in fixed:
+            if page not in pages:
+                raise SystemExit(f"config/pdf24.yaml: la página fija {page} no está en STATIC_PAGES")
+        if not eq and not fixed:
+            if not note:
+                raise SystemExit(f"config/pdf24.yaml: {row['pdf24']} no tiene equivalente ni explicación")
+            state = "sin equivalente"
+        elif missing:
+            state = "pendiente"
+        else:
+            state = "disponible"
+        totals[state] += 1
+        shown = [f"`{x.partition(':')[0]}`" for x in eq] + [f"`{x}` (página fija)" for x in fixed]
+        label = state
+        if state == "pendiente":
+            label = f"pendiente ({', '.join(sorted(phases))})"
+        elif state == "disponible" and any(x.partition(":")[0] in reasons for x in eq):
+            label = "disponible, apagada (ver «Desactivadas»)"
+        lines.append(f"| {row['pdf24']} (`{row['ruta']}`) | {', '.join(shown) or '—'} | {label} | {note} |")
+    lines += ["", f"Resumen: {totals['disponible']} disponibles, {totals['pendiente']} pendientes de su fase y "
+              f"{totals['sin equivalente']} sin equivalente (con su explicación).", ""]
+    return lines
+
+
+def tools() -> str:
+    data = json.loads((ROOT / "packages/registry/registry.json").read_text(encoding="utf-8"))
+    notes = _yaml("tools-notes.yaml")
+    content = _content()
+    reasons = _off_reasons(data, notes)
+    lines = ["# Herramientas (7, 7.24 y 17)", "",
+             f"Catálogo publicado en esta entrega: {len(data['tools'])} herramientas ({_phase_counts(data)}). Fases cerradas: "
+             "F1, F2 y F5 sin vídeo; F3 en curso. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. "
+             "Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y "
+             "`config/pdf24.yaml`: no lo edites a mano.", "",
+             "«Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y "
+             "la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio "
+             "completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.", "",
+             "| Herramienta (es / en) | Dónde | Grupo | Coste | Fase | Estado | Entrada → salida | Contenido propio |",
+             "| --- | --- | --- | --- | --- | --- | --- | --- |"]
+    for t in data["tools"]:
+        state = "apagada" if t["slug_es"] in reasons else "activa"
+        if t.get("canonical_of"):
+            state += f", alias de `{t['canonical_of']}`"
+        page = "no aplica (alias)" if t.get("canonical_of") else content.get(t["slug_es"], "pendiente")
+        lines.append(f"| `{t['slug_es']}` / `{t['slug_en']}` | {WHERE[t['where']]} | {t['worker_group'] or '—'} | "
+                     f"{t['cost_class']} | {t['phase']} | {state} | {', '.join(t['inputs']) or '—'} → "
+                     f"{', '.join(t['outputs']) or 'pantalla'} | {page} |")
+    lines += ["", "## Desactivadas y por qué (01-1, regla 7)", ""]
+    if reasons:
+        lines += ["| Herramienta | Motivo |", "| --- | --- |"]
+        lines += [f"| `{slug}` | {reason} |" for slug, reason in sorted(reasons.items())
+                  if slug in {t["slug_es"] for t in data["tools"]}]
+        future = sorted(slug for slug in reasons if slug not in {t["slug_es"] for t in data["tools"]})
+        if future:
+            lines += ["", "Además, cuando lleguen a su fase: " + ", ".join(f"`{s}`" for s in future) +
+                      " (mismo motivo que su flag temático)."]
+    else:
+        lines.append("Ninguna.")
+    lines += ["", "## Fuera de alcance (7.24)", "", "| Qué | Por qué | Cómo sería posible |", "| --- | --- | --- |"]
+    for item in notes.get("fuera_de_alcance") or []:
+        lines.append(f"| {item['formato']} | {item['motivo']} | {item['posible']} |")
+    lines += [""] + _pdf24(data, reasons)
+    lines += ["## Mejoras posteriores", ""] + [f"- {m}" for m in notes.get("mejoras") or []]
     return "\n".join(lines) + "\n"
 
 
-def main() -> int:
-    (ROOT / "docs" / "ERRORS.md").write_text(errors(), encoding="utf-8")
-    (ROOT / "docs" / "TOOLS.md").write_text(tools(), encoding="utf-8")
+def main(argv: list[str]) -> int:
+    outputs = {ROOT / "docs" / "ERRORS.md": errors(), ROOT / "docs" / "TOOLS.md": tools()}
+    if "--check" in argv:
+        stale = [p.name for p, text in outputs.items() if not p.exists() or p.read_text(encoding="utf-8") != text]
+        if stale:
+            print(f"{', '.join(stale)} no está al día: ejecuta python scripts/gen_docs.py", file=sys.stderr)
+            return 1
+        return 0
+    for path, text in outputs.items():
+        path.write_text(text, encoding="utf-8")
     print("docs/ERRORS.md y docs/TOOLS.md generados")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

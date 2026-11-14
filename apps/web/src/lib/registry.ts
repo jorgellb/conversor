@@ -43,6 +43,8 @@ export interface ToolSpec {
   outputs: string[];
   phase: string;
   launch: boolean;
+  /** Apagada por defecto (D-134): solo la enciende TOOL_<SLUG>_ENABLED=true. */
+  default_enabled: boolean;
   indexable: boolean;
   max_files: number;
   secret_fields: string[];

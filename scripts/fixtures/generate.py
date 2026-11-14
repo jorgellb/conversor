@@ -104,6 +104,8 @@ def docx_with_libreoffice(path: Path, work: Path) -> Path | None:
     subprocess.run([soffice, f"-env:UserInstallation=file://{work}/lo", "--headless", "--convert-to", "docx", "--outdir", str(work), str(txt)],
                    check=True, capture_output=True, timeout=180)
     produced = work / "carta.docx"
+    if not produced.exists():  # LibreOffice sin Writer (solo libreoffice-core o -calc): sin muestra DOCX, como sin soffice
+        return None
     shutil.move(produced, path)
     return path
 

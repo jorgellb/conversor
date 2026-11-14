@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.deps import current_admin, db, registry_dep, settings_dep, valkey_dep
 from core import disk, queueguard
+from core.flags import is_tool_enabled
 from core.jobs import Owner, db_flags
 from core.models import AuditLog, FeatureFlag, Job
 from core.registry import Registry
@@ -40,6 +41,10 @@ def overview_data(session: Session, r, settings: Settings, registry: Registry) -
         "jobs_by_status": by_status,
         "errors_by_tool": dict(sorted(errors.items(), key=lambda kv: -kv[1]["rate"])),
         "flags": db_flags(session),
+        # Apagadas por el entorno, un flag temático o `default_enabled=False` (D-134): una fila de feature_flags no las
+        # enciende, así que el panel no ofrece encenderlas.
+        "locked_off": sorted(s.slug_es for s in registry.specs
+                             if not is_tool_enabled(s.slug_es, {s.slug_es: True}, default=s.default_enabled)),
     }
 
 

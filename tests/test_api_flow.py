@@ -148,6 +148,9 @@ def test_admin_requires_role(api, user_token):
     admin = user_token(role="admin")
     data = api.get("/v1/admin/overview", headers=auth(admin)).json()
     assert "disk" in data and "queues" in data
+    # D-134: las que apaga el entorno (aquí, HEVC sin revisión legal) no se pueden encender desde el panel.
+    assert {"heic-a-pdf", "heic-a-jpg", "heic-a-png"} <= set(data["locked_off"])
+    assert "comprimir-pdf" not in data["locked_off"]
     assert api.put("/v1/admin/flags/comprimir-pdf", json={"enabled": False}, headers=auth(admin)).status_code == 200
     tools = {t["slug_es"]: t for t in api.get("/v1/tools").json()["tools"]}
     assert tools["comprimir-pdf"]["enabled"] is False

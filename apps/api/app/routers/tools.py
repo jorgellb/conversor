@@ -24,7 +24,7 @@ def list_tools(session: Session = Depends(db), registry: Registry = Depends(regi
     tools = []
     for spec in registry.specs:
         item = spec.to_public()
-        item["enabled"] = is_tool_enabled(spec.slug_es, flags)
+        item["enabled"] = is_tool_enabled(spec.slug_es, flags, default=spec.default_enabled)
         tools.append(item)
     return {"tools": tools, "plans": plans, "client_max_mb": settings.CLIENT_MAX_MB}
 

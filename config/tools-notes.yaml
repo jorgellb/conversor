@@ -1,0 +1,37 @@
+# Notas de herramientas para docs/TOOLS.md (01-1, regla 7, y 7.24). Las lee scripts/gen_docs.py; no edites TOOLS.md.
+#
+# - temas: por qué un flag temático (core/flags.py, THEMATIC_TOOLS) apaga sus herramientas y qué hace falta para
+#   encenderlo. Cada flag con herramientas tiene que tener su motivo.
+# - herramientas: motivo de cada herramienta apagada por defecto (ToolSpec.default_enabled=False, D-134) o que el
+#   propietario deba conocer. gen_docs falla si una herramienta apagada por defecto no tiene motivo aquí.
+# - fuera_de_alcance: lo que 7.24 deja fuera, con lo que haría falta para hacerlo.
+# - mejoras: mejoras posteriores que la especificación pide anotar en TOOLS.md.
+temas:
+  HEVC_DECODE_ENABLED: >-
+    Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube
+    (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo
+    exportar a JPEG desde el iPhone o el Mac y lleva noindex.
+  INVOICING_ES_ENABLED: >-
+    Las herramientas que generan facturas son un sistema informático de facturación (Veri*factu, RD 1007/2023) y
+    tocan la factura electrónica obligatoria (RD 238/2026). Apagado hasta la revisión con un asesor anotada en
+    docs/LEGAL.md (7.23). Las que validan o muestran facturas no dependen de este flag.
+herramientas: {}
+fuera_de_alcance:
+  - formato: XPS, PostScript/EPS y PDF/X
+    motivo: Dependen de Ghostscript o MuPDF (AGPL, 11).
+    posible: Con licencia comercial de Ghostscript o MuPDF, o tras revisión legal.
+  - formato: Laminar modelos 3D a G-code
+    motivo: PrusaSlicer, OrcaSlicer, Bambu Studio y CuraEngine son AGPL (11).
+    posible: Con un laminador con licencia comercial, o tras revisión legal.
+  - formato: Archivos laminados para resina (CTB, PWMX, GOO, SL1 y similares)
+    motivo: La herramienta de referencia, UVtools, es AGPL, y CTB va cifrado.
+    posible: Con licencia comercial o un SDK del fabricante, tras revisión legal.
+  - formato: CAD propietario (SLDPRT, F3D, IPT, CATPart)
+    motivo: Sin SDK comercial no se pueden leer.
+    posible: Con el SDK comercial de cada fabricante.
+  - formato: Quitar DRM, convertir certificados con clave privada y descargar de YouTube o redes sociales
+    motivo: Fuera de alcance por motivos legales y de seguridad (7.24).
+    posible: No se contempla.
+mejoras:
+  - "escribir-pdf: sincronizar los borradores y versiones con la cuenta (hoy solo en IndexedDB del navegador, A.1)."
+  - "Extensión para Chrome equivalente a la de PDF24 (7.23, «No aplica»)."

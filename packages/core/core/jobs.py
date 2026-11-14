@@ -63,7 +63,7 @@ def db_flags(session: Session) -> dict[str, bool]:
 
 
 def ensure_enabled(session: Session, spec: ToolSpec) -> None:
-    if not is_tool_enabled(spec.slug_es, db_flags(session)):
+    if not is_tool_enabled(spec.slug_es, db_flags(session), default=spec.default_enabled):
         raise AppError(ErrorCode.TOOL_DISABLED, status=403)
 
 

@@ -86,6 +86,35 @@ def py_hc(port: int) -> dict:
     return hc(["CMD", "python", "-c", code])
 
 
+def env_name(name: str) -> str:
+    return name.upper().replace("-", "_")
+
+
+def memory(name: str, default: str) -> dict:
+    """`mem_limit` y `memswap_limit` sobreescribibles con `MEM_<NOMBRE>` (5.4): el valor por defecto es el perfil de
+    8 vCPU y 32 GB; el de 16 vCPU y 64 GB está en docs/OPERATIONS.md (D-138)."""
+    value = f"${{MEM_{env_name(name)}:-{default}}}"
+    return {"mem_limit": value, "memswap_limit": value}
+
+
+# Perfil de 16 vCPU y 64 GB (5.4; con workerai y workeraiembed repartidos como en D-128): variables para Coolify que
+# imprime `--profile 16` y que se documentan en docs/OPERATIONS.md. Los nombres son los de los servicios sin
+# «worker». Los grupos de F4, F6 y F7 (sign, utils, mesh y cad) se añaden con su fase.
+PROFILE_16 = {
+    "MEM_POSTGRES": "4g", "MEM_GOTENBERG": "4g", "MEM_GOTENBERGWEB": "2g",
+    "CONCURRENCY_AI": "6", "MEM_AI": "1536m", "CPUS_AI": "6",
+    "CONCURRENCY_AI_EMBED": "1", "MEM_AI_EMBED": "1536m", "CPUS_AI_EMBED": "1",
+    "CONCURRENCY_PDF": "6", "MEM_PDF": "6g", "CPUS_PDF": "6",
+    "CONCURRENCY_OCR": "2", "MEM_OCR": "6g", "CPUS_OCR": "4",
+    "CONCURRENCY_OFFICE_LIGHT": "2", "MEM_OFFICE_LIGHT": "2g", "CPUS_OFFICE_LIGHT": "2",
+    "CONCURRENCY_OFFICE_HEAVY": "1", "MEM_OFFICE_HEAVY": "2g", "CPUS_OFFICE_HEAVY": "1",
+    "CONCURRENCY_MEDIA": "3", "MEM_MEDIA": "4g", "CPUS_MEDIA": "3",
+    "CONCURRENCY_CONVERT": "1", "MEM_CONVERT": "8g", "CPUS_CONVERT": "2",
+    "CONCURRENCY_AV_LIGHT": "2", "MEM_AV_LIGHT": "3g", "CPUS_AV_LIGHT": "4",
+    "CONCURRENCY_AV_HEAVY": "1", "MEM_AV_HEAVY": "3g", "CPUS_AV_HEAVY": "2",
+}
+
+
 def svc(image: str, **kw) -> dict:
     return {"image": image, "restart": "unless-stopped", "logging": LOG, **kw}
 
@@ -101,14 +130,15 @@ def worker(target: str, role: str, name: str, queue: str, conc: int, threads: in
     if secrets:
         env["JOB_SECRETS_KEY"] = "${SERVICE_PASSWORD_64_JOBSECRETS}"
     env.update(extra_env or {})
-    var = "CONCURRENCY_" + name.upper().replace("-", "_")
+    var = "CONCURRENCY_" + env_name(name)
     cmd = ["celery", "-A", "core.celeryapp", "worker", "-Q", queue, "-n", f"{name}@%h", "-c", f"${{{var}:-{conc}}}",
            "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
     ping = 'celery -A core.celeryapp inspect ping -d "$${WORKER_NAME}@$${HOSTNAME}" --timeout 10 >/dev/null'
     return svc(
         img(target), command=cmd, environment=env, volumes=FS, networks=networks or ["internal"], user="10001:10001",
         read_only=True, tmpfs=["/tmp:size=64m"], cap_drop=["ALL"], security_opt=["no-new-privileges:true"],
-        pids_limit=256, mem_limit=mem, memswap_limit=mem, cpus=cpus, oom_score_adj=500, stop_grace_period="10m",
+        pids_limit=256, **memory(name, mem), cpus=f"${{CPUS_{env_name(name)}:-{cpus}}}", oom_score_adj=500,
+        stop_grace_period="10m",
         runtime="${WORKER_RUNTIME:-runc}",
         depends_on={"migrate": {"condition": "service_completed_successfully"}, "valkey": {"condition": "service_healthy"}},
         healthcheck=hc(["CMD-SHELL", ping], "60s", "90s"),
@@ -151,7 +181,7 @@ def build() -> dict:
             "pgvector/pgvector:0.8.7-pg16-bookworm",
             environment={"POSTGRES_USER": "${SERVICE_USER_POSTGRES}", "POSTGRES_PASSWORD": "${SERVICE_PASSWORD_POSTGRES}",
                          "POSTGRES_DB": "conversor"},
-            volumes=["pgdata:/var/lib/postgresql/data"], networks=["internal"], mem_limit="2560m", memswap_limit="2560m",
+            volumes=["pgdata:/var/lib/postgresql/data"], networks=["internal"], **memory("postgres", "2560m"),
             oom_score_adj=-500, shm_size="256m",
             healthcheck=hc(["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d conversor"], "10s", "20s"),
         ),
@@ -236,7 +266,7 @@ def build() -> dict:
                      "--libreoffice-deny-public-ips=true", "--libreoffice-deny-private-ips=true",
                      "--api-download-from-deny-public-ips=true", "--api-download-from-deny-private-ips=true",
                      "--webhook-deny-public-ips=true", "--webhook-deny-private-ips=true"],
-            networks=["internal"], mem_limit="3g", memswap_limit="3g", cpus=2, oom_score_adj=500,
+            networks=["internal"], **memory("gotenberg", "3g"), cpus=2, oom_score_adj=500,
             healthcheck=hc(["CMD", "curl", "-fsS", "http://127.0.0.1:3000/health"]),
         ),
         # web-a-pdf (12.2): Chromium con salida solo por egressweb; nunca recibe archivos de usuarios.
@@ -246,7 +276,7 @@ def build() -> dict:
                      "--chromium-proxy-server=http://egressweb:4750", "--libreoffice-disable-routes=true",
                      "--api-download-from-deny-public-ips=true", "--api-download-from-deny-private-ips=true",
                      "--webhook-deny-public-ips=true", "--webhook-deny-private-ips=true"],
-            networks=["webrender"], mem_limit="2g", memswap_limit="2g", cpus=1, oom_score_adj=500,
+            networks=["webrender"], **memory("gotenbergweb", "2g"), cpus=1, oom_score_adj=500,
             depends_on={"egressweb": {"condition": "service_started"}},
             healthcheck=hc(["CMD", "curl", "-fsS", "http://127.0.0.1:3000/health"]),
         ),
@@ -302,6 +332,9 @@ HEADER = """# Producción en Coolify v4 (13.2): solo `image:` con etiquetas fija
 # Generado por scripts/gen_coolify_compose.py: edita el generador, no este archivo.
 # Los servicios de fases posteriores (workersign, workerutils, workermesh, workercad y umami) se añaden con su
 # fase; `workersign` se unirá también a `webrender`.
+# Memoria y CPU (5.4): `MEM_<NOMBRE>` cambia `mem_limit` y `memswap_limit` de postgres, gotenberg, gotenbergweb y cada
+# worker, y `CPUS_<NOMBRE>` y `CONCURRENCY_<NOMBRE>`, los de cada worker. Por defecto, el perfil de 8 vCPU; el de
+# 16 vCPU lo imprime `python scripts/gen_coolify_compose.py --profile 16` (docs/OPERATIONS.md).
 """
 
 
@@ -349,6 +382,12 @@ def validate() -> int:
 def main(argv: list[str]) -> int:
     if "--validate" in argv:
         return validate()
+    if "--profile" in argv:
+        if argv[argv.index("--profile") + 1:argv.index("--profile") + 2] != ["16"]:
+            print("Uso: --profile 16 (el perfil de 8 vCPU es el valor por defecto del archivo)", file=sys.stderr)
+            return 2
+        print("\n".join(f"{k}={v}" for k, v in PROFILE_16.items()))
+        return 0
     content = render()
     if "--check" in argv:
         if not OUT.exists() or OUT.read_text(encoding="utf-8") != content:

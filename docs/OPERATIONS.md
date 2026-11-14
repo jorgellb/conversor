@@ -45,6 +45,58 @@ actualiza también `CLOUDFLARE_IP_RANGES` (o `packages/core/core/clientip.py`).
 
 Pendiente de la prueba de carga k6 en el VPS (16.1). Valores por defecto de 5.4 para 8 vCPU.
 
+## Perfiles de 8 y 16 vCPU (5.4, D-138)
+
+`docker-compose.coolify.yml` trae el perfil de 8 vCPU y 32 GB (suma de `mem_limit` de 36,75 GB, dentro del 15 % sobre la
+RAM). Cada valor se cambia en las variables de Coolify, sin editar el archivo:
+
+- `MEM_<NOMBRE>`: `mem_limit` y `memswap_limit` de `postgres`, `gotenberg`, `gotenbergweb` y cada worker.
+- `CPUS_<NOMBRE>` y `CONCURRENCY_<NOMBRE>`: `cpus` y procesos de cada worker (`cpus` = concurrencia × hilos).
+
+`<NOMBRE>` es el del worker en mayúsculas (`PDF`, `OCR`, `OFFICE_LIGHT`, `OFFICE_HEAVY`, `MEDIA`, `CONVERT`, `AV_LIGHT`,
+`AV_HEAVY`, `AI`, `AI_EMBED`). Para un VPS de 16 vCPU y 64 GB (el catálogo completo, D-128), pega estas variables, que
+imprime `python scripts/gen_coolify_compose.py --profile 16` (unos 52 GB en total hoy; los workers de F4, F6 y F7 se
+suman con su fase sin pasar de 73,6 GB):
+
+```
+MEM_POSTGRES=4g
+MEM_GOTENBERG=4g
+MEM_GOTENBERGWEB=2g
+CONCURRENCY_AI=6
+MEM_AI=1536m
+CPUS_AI=6
+CONCURRENCY_AI_EMBED=1
+MEM_AI_EMBED=1536m
+CPUS_AI_EMBED=1
+CONCURRENCY_PDF=6
+MEM_PDF=6g
+CPUS_PDF=6
+CONCURRENCY_OCR=2
+MEM_OCR=6g
+CPUS_OCR=4
+CONCURRENCY_OFFICE_LIGHT=2
+MEM_OFFICE_LIGHT=2g
+CPUS_OFFICE_LIGHT=2
+CONCURRENCY_OFFICE_HEAVY=1
+MEM_OFFICE_HEAVY=2g
+CPUS_OFFICE_HEAVY=1
+CONCURRENCY_MEDIA=3
+MEM_MEDIA=4g
+CPUS_MEDIA=3
+CONCURRENCY_CONVERT=1
+MEM_CONVERT=8g
+CPUS_CONVERT=2
+CONCURRENCY_AV_LIGHT=2
+MEM_AV_LIGHT=3g
+CPUS_AV_LIGHT=4
+CONCURRENCY_AV_HEAVY=1
+MEM_AV_HEAVY=3g
+CPUS_AV_HEAVY=2
+```
+
+Tras cambiar el perfil, comprobar en el panel que ningún worker se reinicia por memoria durante la prueba k6 y anotar aquí
+las concurrencias medidas.
+
 ## Logs
 
 JSON en la salida estándar, rotados por Docker (10 MB × 5). Nunca contienen contraseñas ni tokens: las contraseñas de

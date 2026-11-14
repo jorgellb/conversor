@@ -222,6 +222,7 @@
     "guard": "Guard active",
     "errors": "Error rate by tool (24 h)",
     "flags": "Tools",
+    "lockedOff": "off by environment or by default",
     "enabled": "Enabled",
     "purge": "Purge expired files now",
     "purged": "Purge started.",

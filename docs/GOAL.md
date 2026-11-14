@@ -287,7 +287,7 @@ Para cada lote, en el orden de 4:
   - `python scripts/fixtures/filetype_cases.py --check`.
 - **Web:** `npm test`, `npm run typecheck` (TypeScript 7) y `npm run build`.
 - **Playwright** con `next start -p 3100`:
-  - variables `PORT=3100`, `PUBLIC_WEB_URL=http://127.0.0.1:3100`, `BETTER_AUTH_URL=http://127.0.0.1:3100`, `AUTH_SECRET=...` y `PW_CHROMIUM_PATH` apuntando al Chrome de `/opt/google`;
+  - variables `PORT=3100`, `PUBLIC_WEB_URL=http://127.0.0.1:3100`, `BETTER_AUTH_URL=http://127.0.0.1:3100`, `PUBLIC_API_URL=http://127.0.0.1:8100`, `PUBLIC_UPLOAD_URL=http://127.0.0.1:8180`, `PUBLIC_FILES_URL=http://127.0.0.1:8190` (los simulados de las pruebas; D-141), `AUTH_SECRET=...` y `PW_CHROMIUM_PATH` apuntando al Chrome de `/opt/google`;
   - comando `npx playwright test -c tests/e2e/playwright.config.ts --project=navegador`.
 - **CI** (`.github/workflows/ci.yml` e `images.yml`): imágenes con SBOM, `check_images.sh`, job docling, `e2e-compose` con el proyecto servidor y Lighthouse (desde G0-B).
 

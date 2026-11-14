@@ -11,7 +11,9 @@ CONSENT_VERSION = "2026-11-05"
 # 6.6: nunca se envía a OpenRouter contenido de firma, verificación de firmas, contactos, calendario, correo o
 # certificados. Además de la categoría `sign`, se bloquean por nombre (las de F4 y F6 llegarán con estos nombres).
 EXCLUDED_CATEGORIES = frozenset({"sign"})
-EXCLUDED_WORDS = ("firma", "firmar", "certificado", "contacto", "vcf", "calendario", "ics", "eml", "msg", "correo", "pst", "mbox")
+# «firmas» cubre verificar-firmas-pdf y solicitar-firmas; csig, p7m y xsig, los contenedores de firma de F6 (D-136).
+EXCLUDED_WORDS = ("firma", "firmas", "firmar", "certificado", "contacto", "vcf", "calendario", "ics", "eml", "msg", "correo",
+                  "pst", "mbox", "csig", "p7m", "xsig")
 
 
 def is_excluded(slug: str, category: str) -> bool:

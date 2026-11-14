@@ -14,6 +14,8 @@ interface Overview {
   jobs_by_status: Record<string, number>;
   errors_by_tool: Record<string, { failed: number; total: number; rate: number } | number>;
   flags: Record<string, boolean>;
+  /** Apagadas por el entorno, un flag temático o por defecto (D-134): la tabla feature_flags no las enciende. */
+  locked_off?: string[];
 }
 
 export function AdminPage({ tools }: { tools: { slug: string; name: string }[] }) {
@@ -77,12 +79,14 @@ export function AdminPage({ tools }: { tools: { slug: string; name: string }[] }
         <h2 className="font-semibold">{t("flags")}</h2>
         <ul className="mt-2 grid gap-1 sm:grid-cols-2">
           {tools.map((tool) => {
-            const on = data.flags[tool.slug] !== false;
+            const locked = data.locked_off?.includes(tool.slug) ?? false;
+            const on = !locked && data.flags[tool.slug] !== false;
             return (
               <li key={tool.slug}>
                 <label className="flex items-center gap-2">
-                  <input type="checkbox" checked={on} onChange={(e) => void setFlag(tool.slug, e.target.checked)} />
+                  <input type="checkbox" checked={on} disabled={locked} onChange={(e) => void setFlag(tool.slug, e.target.checked)} />
                   {tool.name}
+                  {locked && <span className="text-sm opacity-70">({t("lockedOff")})</span>}
                 </label>
               </li>
             );

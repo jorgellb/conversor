@@ -175,10 +175,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
  && sh /tmp/fetch-models.sh /opt/models/whisper ${WHISPER_MODELS}
 
 FROM base AS worker-av
-# FFmpeg en compilación LGPL (11): binarios estáticos de BtbN con la variante «lgpl», versión fijada.
-ARG FFMPEG_BUILD=https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n7.1-latest-linux64-lgpl-7.1.tar.xz
+# FFmpeg en compilación LGPL (11): binarios estáticos de BtbN con la variante «lgpl», fijados por fecha y SHA-256
+# (D-13 y D-137). Autobuild de fin de mes (BtbN los conserva; los diarios se borran) de la rama 8.1, n8.1.3-27.
+# El SHA-256 es el de checksums.sha256 de esa publicación, que coincide con el resumen que da GitHub del archivo.
+ARG FFMPEG_BUILD=https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-31-12-59/ffmpeg-n8.1.3-27-g8dca1586f4-linux64-lgpl-8.1.tar.xz
+ARG FFMPEG_SHA256=a64f3171e6ad1f7d358d28890a907ee478c331d1177ec696a93418f79ac3f1f3
 RUN apt-get update && apt-get install -y --no-install-recommends curl xz-utils \
  && curl -fsSL "$FFMPEG_BUILD" -o /tmp/ffmpeg.tar.xz \
+ && echo "$FFMPEG_SHA256  /tmp/ffmpeg.tar.xz" | sha256sum -c - \
  && tar -xJf /tmp/ffmpeg.tar.xz -C /tmp \
  && install -m 0755 /tmp/ffmpeg-*/bin/ffmpeg /tmp/ffmpeg-*/bin/ffprobe /usr/local/bin/ \
  && rm -rf /tmp/ffmpeg* && apt-get purge -y curl xz-utils && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* \
