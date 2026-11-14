@@ -1,5 +1,13 @@
 [
  {
+  "title": "Primera ejecución real de la CI en GitHub (14/11/2026, run 43534657805 e images 43534657943): 4 trabajos en rojo",
+  "source": "GitHub Actions jorgellb/conversor",
+  "kind": "infra-ci",
+  "doable_without_owner": true,
+  "doable_without_docker_or_system_pkgs": true,
+  "detail": "PRIORIDAD ALTA, arreglar en G1-A: (1) images, python (worker-pdf): el RUN de workers/Dockerfile hace `test -f /usr/share/color/icc/colord/FOGRA39L_coated.icc` y falla: colord-data en esa base no trae ese perfil con esa ruta; buscar la ruta real (o el nombre del archivo) del perfil FOGRA39 en el paquete de la imagen base y corregir Dockerfile, ci.yml y el código CMYK de pdf-a-jpg que lo usa. (2) ci, e2e-compose: `ghcr.io/stripe/smokescreen:v0.1.0` da 'denied' (la imagen no existe o no es pública): elegir una fuente válida y fijada por digest o construir Smokescreen desde el código con su licencia MIT en workers/ o infra/smokescreen, y actualizar docker-compose.yml, gen_coolify_compose.py y DEPLOY-CHECKLIST. (3) ci, docling: los fixtures fallan al montar test_excel_without_tables_lists_the_text con `ValueError: illegal environment variable name` dentro de subprocess (una variable de entorno con nombre inválido al lanzar LibreOffice/soffice o run_engine): reproducir con .venv/bin/pytest tests/test_desde_pdf_docling.py y corregir. (4) ci, web: 5 Playwright fallan en la CI (chat-f3.spec.ts:68 y :95, f2.spec.ts:133 copiar-de-pdf, ia-f3.spec.ts:30 y :84 resumir-pdf): el panel [data-ai-panel] no muestra [data-ai-unavailable] ni los estados del servidor simulado; son pruebas con el servidor simulado de la API que en la CI no responden como en local (revisar playwright.config.ts, el servidor simulado y las variables de entorno del trabajo web en ci.yml). Comprobar cada arreglo con `gh run list` / `gh run view --log-failed` tras el push horario."
+ },
+ {
   "title": "F5 sin vídeo cerrado sin traducir-subtitulos ni resumir-reunion",
   "source": "07-7-catalogo-completo-de-herramientas.md §7.10; 17-17-fases-y-entregables.md; docs/PLAN.md (F5 lote E, F3 lote E); docs/DECISIONS.md D-119",
   "kind": "missing-tool-in-closed-phase",
