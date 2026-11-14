@@ -63,6 +63,8 @@ export function draw(src: Rgba, t: DrawTarget): Rgba {
 
 export interface NodeCodecLog {
   encodes: (DrawTarget & { format: string; quality: number })[];
+  /** Por dónde ha salido cada codificación: el codificador propio del códec («lienzo») o `rgba` (WebAssembly, D-150). */
+  via?: ("lienzo" | "wasm")[];
 }
 
 export function nodeCodec(log: NodeCodecLog = { encodes: [] }): ImageCodec {
@@ -88,16 +90,21 @@ export function nodeCodec(log: NodeCodecLog = { encodes: [] }): ImageCodec {
     async encode(img: Decoded, target) {
       await init();
       log.encodes.push({ ...target });
+      log.via?.push("lienzo");
       const px = draw(img.source as Rgba, target);
       // jSquash pide ImageData; en Node basta un objeto con los mismos campos.
       if (target.format === "png") return new Uint8Array(await encodePng(px as unknown as ImageData));
       if (target.format === "webp") return encodeWebp(nodeWasm, px, { quality: Math.round(target.quality * 100), lossless: false });
       const flat = flatten(px, target.background ?? "#FFFFFF");
-      return new Uint8Array(await encodeJpeg(flat as unknown as ImageData, { quality: Math.round(target.quality * 100) }));
+      // JPEG base (SOF0), como el lienzo de los navegadores: así el progresivo (SOF2) solo puede venir de MozJPEG.
+      return new Uint8Array(await encodeJpeg(flat as unknown as ImageData, { quality: Math.round(target.quality * 100), progressive: false }));
     },
     async rgba(img, target) {
       // Con `wasmEncoding`, la codificación pasa por aquí con el formato y la calidad en el destino.
-      if ("format" in target) log.encodes.push({ ...(target as DrawTarget & { format: string; quality: number }) });
+      if ("format" in target) {
+        log.encodes.push({ ...(target as DrawTarget & { format: string; quality: number }) });
+        log.via?.push("wasm");
+      }
       return draw(img.source as Rgba, target);
     },
     async fromRgba(px) {

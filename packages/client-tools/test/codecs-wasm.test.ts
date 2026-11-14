@@ -4,13 +4,13 @@ import encodePlainPng from "@jsquash/png/encode.js";
 import { unzipSync } from "fflate";
 import { describe, expect, it } from "vitest";
 
-import { runClientTool, type ClientEnv } from "../src/index";
+import { runClientTool, wasmEncoding, type ClientEnv } from "../src/index";
 import { rgba, type Rgba } from "../src/rasters";
 import { oxipngLevel } from "../src/wasmcodecs";
-import { init, nodeCodec, readImage } from "./image-node";
+import { init, nodeCodec, readImage, type NodeCodecLog } from "./image-node";
 import { nodeWasm } from "./wasm-node";
 
-const env = (): ClientEnv => ({ codec: nodeCodec(), wasm: nodeWasm });
+const env = (log?: NodeCodecLog): ClientEnv => ({ codec: nodeCodec(log), wasm: nodeWasm });
 
 /** Degradado con un cuadro semitransparente: una «foto» sin derechos de terceros. */
 function photo(w = 96, h = 64, alpha = false): Rgba {
@@ -48,7 +48,11 @@ describe("MozJPEG y oxipng en las herramientas de imagen (D-150)", () => {
   it("png-a-jpg codifica con MozJPEG: JPEG progresivo, sin transparencia y con la calidad pedida", async () => {
     const input = { name: "foto.png", bytes: await png(photo(96, 64, true)) };
     const opts = { fondo: "#FFFFFF", conservar_metadatos: false };
-    const high = (await runClientTool("png-a-jpg", [input], { ...opts, calidad: 95 }, env())).outputs[0];
+    const log: NodeCodecLog = { encodes: [], via: [] };
+    const high = (await runClientTool("png-a-jpg", [input], { ...opts, calidad: 95 }, env(log))).outputs[0];
+    // Los píxeles se piden con `rgba` (camino de WebAssembly) y el codificador del códec no se usa.
+    expect(log.via).toEqual(["wasm"]);
+    expect(log.encodes[0]).toMatchObject({ format: "jpg", quality: 0.95, background: "#FFFFFF" });
     const low = (await runClientTool("png-a-jpg", [input], { ...opts, calidad: 30 }, env())).outputs[0];
     expect(high.mime).toBe("image/jpeg");
     // SOF2 (progresivo) de MozJPEG; el lienzo de los navegadores guarda JPEG base (SOF0).
@@ -87,7 +91,9 @@ describe("MozJPEG y oxipng en las herramientas de imagen (D-150)", () => {
     const input = { name: "foto.jpg", bytes: (await runClientTool("png-a-jpg", [{ name: "foto.png", bytes: await png(photo(160, 120)) }],
       { calidad: 100, fondo: "#FFFFFF", conservar_metadatos: false }, env())).outputs[0].bytes };
     const base = { formato: "mismo", ancho_maximo: null, quitar_metadatos: true };
-    const q80 = (await runClientTool("comprimir-imagen", [input], { ...base, calidad: 80 }, env())).outputs[0];
+    const log: NodeCodecLog = { encodes: [], via: [] };
+    const q80 = (await runClientTool("comprimir-imagen", [input], { ...base, calidad: 80 }, env(log))).outputs[0];
+    expect(log.via).toEqual(["wasm"]);
     const q40 = (await runClientTool("comprimir-imagen", [input], { ...base, calidad: 40 }, env())).outputs[0];
     expect(q80.name).toBe("foto-comprimida.jpg");
     expect(hasMarker(q80.bytes, 0xc2)).toBe(true);
@@ -105,6 +111,26 @@ describe("MozJPEG y oxipng en las herramientas de imagen (D-150)", () => {
     const entries = unzipSync(zip.bytes);
     expect(Object.keys(entries).sort()).toEqual(["a-128x96.png", "b-64x64.png"]);
     for (const bytes of Object.values(entries)) expect(pngColorType(bytes)).toBe(3);
+  });
+
+  it("por encima del límite de píxeles, o si el WebAssembly aborta, codifica con el lienzo (D-157)", async () => {
+    const img = { name: "foto.png", bytes: await png(photo(96, 64)) };
+    const log: NodeCodecLog = { encodes: [], via: [] };
+    const small = wasmEncoding(nodeCodec(log), nodeWasm, 96 * 64 - 1);
+    const decoded = await small.decode(img);
+    const jpg = await small.encode(decoded, { width: 96, height: 64, format: "jpg", quality: 0.8 });
+    expect(log.via).toEqual(["lienzo"]);
+    expect(hasMarker(jpg, 0xc0)).toBe(true);
+    expect(hasMarker(jpg, 0xc2)).toBe(false);
+    // Hasta el límite, MozJPEG.
+    const atLimit = wasmEncoding(nodeCodec(log), nodeWasm, 96 * 64);
+    expect(hasMarker(await atLimit.encode(decoded, { width: 96, height: 64, format: "jpg", quality: 0.8 }), 0xc2)).toBe(true);
+    expect(log.via).toEqual(["lienzo", "wasm"]);
+    // Sin memoria para copiar los píxeles (o un módulo que aborta) no deja la tarea en un error opaco.
+    const tight = { ...nodeCodec(log), rgba: async () => { throw new RangeError("Array buffer allocation failed"); } };
+    const viaCanvas = await wasmEncoding(tight, nodeWasm).encode(decoded, { width: 96, height: 64, format: "png", quality: 1 });
+    expect(Array.from(viaCanvas.slice(1, 4))).toEqual([0x50, 0x4e, 0x47]);
+    expect(log.via?.at(-1)).toBe("lienzo");
   });
 
   it("baja el nivel de oxipng con imágenes grandes para no bloquear el navegador", () => {

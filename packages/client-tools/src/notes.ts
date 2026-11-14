@@ -27,7 +27,9 @@ export const NOTES = {
     objectsAsImage: (n: number) => `${n} dibujo(s), imagen(es) o grupo(s) que tocaban un área se han convertido en imagen para borrar su parte tapada.`,
     annotationsRemoved: (n: number) => `Se han quitado ${n} anotación(es), enlace(s) o campo(s) que tocaban un área.`,
     metadataRemoved: "Se han quitado los metadatos del documento.",
-    scrubbed: (n: number) => `Se ha tapado el texto redactado en ${n} marcador(es) o comentario(s).`,
+    textAsImage: (list: number[]) => `Páginas ${pages(list)}: el contenido bajo las áreas se ha eliminado, pero parte del texto de alrededor estaba en un mismo grupo con lo tapado y se ha convertido en imagen con él; ese texto ya no se puede seleccionar. Puedes pasar esas páginas por OCR.`,
+    structureRemoved: "Se han quitado las etiquetas de accesibilidad y la capa XFA del documento, que podían repetir el texto tapado.",
+    scrubbed: (n: number) => `Se ha tapado el texto redactado en ${n} texto(s) del archivo que no se ven en la página (marcadores, comentarios, enlaces o campos).`,
   },
   en: {
     annotations: (n: number) => `${n} standard annotations, editable in other readers.`,
@@ -51,7 +53,9 @@ export const NOTES = {
     objectsAsImage: (n: number) => `${n} drawing(s), image(s) or group(s) touching an area were turned into an image to erase their covered part.`,
     annotationsRemoved: (n: number) => `${n} annotation(s), link(s) or field(s) touching an area were removed.`,
     metadataRemoved: "The document metadata was removed.",
-    scrubbed: (n: number) => `The redacted text was covered in ${n} bookmark(s) or comment(s).`,
+    textAsImage: (list: number[]) => `Pages ${pages(list)}: the content under the areas was removed, but part of the text around it was in the same group as the covered content and was turned into an image with it; that text can no longer be selected. You can run those pages through OCR.`,
+    structureRemoved: "The document's accessibility tags and XFA layer were removed, as they could repeat the covered text.",
+    scrubbed: (n: number) => `The redacted text was covered in ${n} piece(s) of text in the file that are not shown on the page (bookmarks, comments, links or fields).`,
   },
 } satisfies Record<Locale, Record<string, unknown>>;
 

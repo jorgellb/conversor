@@ -1,6 +1,7 @@
 """Pruebas unitarias del núcleo (sin servicios)."""
 from __future__ import annotations
 
+import shutil
 import sys
 
 import pytest
@@ -118,9 +119,6 @@ def test_filetype_detection(fixtures_dir):
     assert detect(fixtures_dir / "texto.pdf").ext == "pdf"
     assert detect(fixtures_dir / "foto.jpg").ext == "jpg"
     assert detect(fixtures_dir / "imagen.webp").ext == "webp"
-    if (fixtures_dir / "voz.ogg").exists():  # solo con FFmpeg (scripts/fixtures/generate.py)
-        assert detect(fixtures_dir / "voz.opus").ext == "opus"
-        assert detect(fixtures_dir / "voz.ogg").ext == "ogg"
     assert detect(fixtures_dir / "multipagina.tiff").ext == "tiff"
     fake = detect(fixtures_dir / "falso.pdf", ".pdf")
     assert not matches(fake, ".pdf", ("pdf",))
@@ -128,6 +126,14 @@ def test_filetype_detection(fixtures_dir):
     assert not matches(hls, ".ogg", ("ogg", "opus"))
     if (fixtures_dir / "carta.docx").exists():
         assert detect(fixtures_dir / "carta.docx").ext == "docx"
+
+
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="FFmpeg no instalado: sin muestras de audio (D-156)")
+def test_filetype_detection_audio(fixtures_dir):
+    # Con FFmpeg, scripts/fixtures/generate.py tiene que haber creado las muestras: si faltan, la prueba falla.
+    assert (fixtures_dir / "voz.ogg").exists() and (fixtures_dir / "voz.opus").exists()
+    assert detect(fixtures_dir / "voz.opus").ext == "opus"
+    assert detect(fixtures_dir / "voz.ogg").ext == "ogg"
 
 
 def test_ai_excluded_by_name():

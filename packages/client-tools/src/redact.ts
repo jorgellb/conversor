@@ -1,19 +1,22 @@
 // redactar-pdf (A.6) con sus dos métodos. «Rasterizar»: las páginas con áreas pasan a imagen a 300 ppp con los recuadros
 // pintados. «Eliminar»: EmbedPDF y PDFium quitan solo lo que hay bajo las áreas (caracteres, y los trazados, imágenes,
 // sombreados y grupos que las tocan pasan a imagen con el área vacía) y el resto del texto sigue seleccionable (D-153).
-// En los dos se quitan los metadatos, las anotaciones afectadas y los objetos huérfanos, y se comprueba el resultado
-// antes de entregarlo: si algo falla, REDACTION_FAILED.
+// En los dos se quitan los metadatos, la estructura de etiquetas, la capa XFA, las anotaciones afectadas y los objetos
+// huérfanos, se tapan los términos en cualquier cadena del archivo y se comprueba el resultado antes de entregarlo (el
+// texto de las páginas y también las cadenas y flujos del archivo): si algo falla, REDACTION_FAILED (D-157).
 import {
   PDFArray,
   PDFDict,
   PDFHexString,
   PDFName,
   PDFNumber,
+  PDFRawStream,
   PDFRef,
   PDFStream,
   PDFString,
   StandardFonts,
   concatTransformationMatrix,
+  decodePDFRawStream,
   popGraphicsState,
   pushGraphicsState,
   rgb,
@@ -77,58 +80,111 @@ function replaceWithImage(doc: PDFDocument, page: PDFPage, img: { width: number;
   leaf.set(PDFName.of("Contents"), doc.context.register(content));
 }
 
-function textOf(value: unknown): string {
-  return value instanceof PDFHexString || value instanceof PDFString ? value.decodeText() : "";
+interface Visit {
+  /** Cadena de un diccionario o una matriz (decodificada), con la forma de sustituirla. */
+  string?(text: string, replace: (value: PDFObject) => void): void;
+  /** Flujo con la clave por la que se llega a él y la del diccionario que lo contiene. */
+  stream?(stream: PDFStream, key: string | undefined, parentKey: string | undefined): void;
 }
 
-/** Tapa los términos en títulos de marcadores y en comentarios de anotaciones, que no se ven al rasterizar. */
-function scrubDocument(doc: PDFDocument, terms: string[]): number {
-  if (!terms.length) return 0;
-  const folded = terms.map(fold).filter(Boolean);
-  let scrubbed = 0;
-  const clean = (text: string) => {
-    let out = text;
-    const low = fold(text);
+/** Recorre todo lo que se alcanza desde el catálogo (cada objeto indirecto una vez). */
+function walkReachable(doc: PDFDocument, visit: Visit) {
+  const ctx = doc.context;
+  const seen = new Set<string>();
+  type Item = { obj: PDFObject | undefined; key?: string; parentKey?: string; replace?: (value: PDFObject) => void };
+  const stack: Item[] = [{ obj: ctx.trailerInfo.Root }];
+  for (let guard = 0; stack.length && guard < 10_000_000; guard += 1) {
+    const { obj, key, parentKey, replace } = stack.pop()!;
+    if (!obj) continue;
+    if (obj instanceof PDFRef) {
+      if (seen.has(obj.tag)) continue;
+      seen.add(obj.tag);
+      stack.push({ obj: ctx.lookup(obj), key, parentKey, replace: (value) => ctx.assign(obj, value) });
+    } else if (obj instanceof PDFString || obj instanceof PDFHexString) {
+      let text: string;
+      try {
+        text = obj.decodeText();
+      } catch {
+        continue;
+      }
+      if (replace) visit.string?.(text, replace);
+    } else if (obj instanceof PDFDict) {
+      for (const [name, value] of obj.entries()) {
+        stack.push({ obj: value, key: name.decodeText(), parentKey: key, replace: (v) => obj.set(name, v) });
+      }
+    } else if (obj instanceof PDFArray) {
+      obj.asArray().forEach((value, i) => stack.push({ obj: value, key, parentKey, replace: (v) => obj.set(i, v) }));
+    } else if (obj instanceof PDFStream) {
+      visit.stream?.(obj, key, parentKey);
+      stack.push({ obj: obj.dict, key, parentKey });
+    }
+  }
+}
+
+/** Tapa cada aparición de los términos (sin distinguir mayúsculas ni tildes) con «█». */
+function masker(terms: string[]): (text: string) => string {
+  const folded = terms.map((t) => Array.from(fold(t))).filter((t) => t.length);
+  return (text) => {
+    const chars = Array.from(text);
+    const low = chars.map(foldChar);
     for (const term of folded) {
-      let at = low.indexOf(term);
-      while (at >= 0) {
-        out = out.slice(0, at) + "█".repeat(term.length) + out.slice(at + term.length);
-        at = low.indexOf(term, at + term.length);
-      }
-    }
-    return out;
-  };
-  const visit = (dict: PDFDict | undefined, guard = 0) => {
-    let node = dict;
-    while (node && guard < 100000) {
-      guard += 1;
-      const title = textOf(node.lookup(PDFName.of("Title")));
-      const cleaned = clean(title);
-      if (cleaned !== title) {
-        node.set(PDFName.of("Title"), PDFHexString.fromText(cleaned));
-        scrubbed += 1;
-      }
-      visit(node.lookupMaybe(PDFName.of("First"), PDFDict), guard);
-      node = node.lookupMaybe(PDFName.of("Next"), PDFDict);
-    }
-  };
-  visit(doc.catalog.lookupMaybe(PDFName.of("Outlines"), PDFDict)?.lookupMaybe(PDFName.of("First"), PDFDict));
-  for (const page of doc.getPages()) {
-    const annots = page.node.Annots();
-    for (let i = 0; annots && i < annots.size(); i += 1) {
-      const annot = annots.lookupMaybe(i, PDFDict);
-      if (!annot) continue;
-      for (const key of ["Contents", "T", "Subj"]) {
-        const value = textOf(annot.lookup(PDFName.of(key)));
-        const cleaned = clean(value);
-        if (cleaned !== value) {
-          annot.set(PDFName.of(key), PDFHexString.fromText(cleaned));
-          scrubbed += 1;
+      for (let at = 0; at + term.length <= low.length; at += 1) {
+        if (term.every((c, k) => low[at + k] === c)) {
+          for (let k = 0; k < term.length; k += 1) {
+            chars[at + k] = "█";
+            low[at + k] = "█";
+          }
+          at += term.length - 1;
         }
       }
     }
-  }
+    return chars.join("");
+  };
+}
+
+/**
+ * Tapa los términos en todas las cadenas del archivo: títulos de marcadores, comentarios y autores de anotaciones,
+ * enlaces, nombres y valores de campos, destinos... Lo que no se ve en la página y sobrevive a los dos métodos.
+ */
+function scrubDocument(doc: PDFDocument, terms: string[]): number {
+  if (!terms.length) return 0;
+  const clean = masker(terms);
+  let scrubbed = 0;
+  walkReachable(doc, {
+    string(text, replace) {
+      const cleaned = clean(text);
+      if (cleaned !== text) {
+        replace(PDFHexString.fromText(cleaned));
+        scrubbed += 1;
+      }
+    },
+  });
   return scrubbed;
+}
+
+/**
+ * Quita la estructura de etiquetas (con sus /ActualText, /Alt, /E y /T, que repiten el texto de la página) y la capa
+ * XFA (con los valores de los campos): ninguna de las dos se puede limpiar por áreas y las dos pueden guardar lo tapado.
+ */
+function stripStructure(doc: PDFDocument): boolean {
+  const catalog = doc.catalog;
+  let removed = false;
+  if (catalog.has(PDFName.of("StructTreeRoot"))) {
+    catalog.delete(PDFName.of("StructTreeRoot"));
+    removed = true;
+  }
+  if (catalog.has(PDFName.of("MarkInfo"))) catalog.set(PDFName.of("MarkInfo"), doc.context.obj({ Marked: false }));
+  for (const page of doc.getPages()) {
+    page.node.delete(PDFName.of("StructParents"));
+    const annots = page.node.Annots();
+    for (let i = 0; annots && i < annots.size(); i += 1) annots.lookupMaybe(i, PDFDict)?.delete(PDFName.of("StructParent"));
+  }
+  const acroForm = catalog.lookupMaybe(PDFName.of("AcroForm"), PDFDict);
+  if (acroForm?.has(PDFName.of("XFA"))) {
+    acroForm.delete(PDFName.of("XFA"));
+    removed = true;
+  }
+  return removed;
 }
 
 function removeMetadata(doc: PDFDocument) {
@@ -268,13 +324,27 @@ async function verify(bytes: Uint8Array, renderer: PdfiumRenderer, areas: Area[]
   }
 }
 
-/** «Eliminar»: antes de pintar los recuadros, bajo cada área no se dibuja nada ni queda ningún carácter. */
-async function verifyEmpty(bytes: Uint8Array, renderer: PdfiumRenderer, areas: Area[]) {
+/**
+ * Caracteres visibles que no tocan ningún área (con 1 pt de margen): los que «eliminar» debe dejar como texto. Si
+ * después hay menos, estaban dentro de un grupo (Form XObject) que tocaba un área y se ha convertido en imagen con él.
+ */
+function charsOutside(chars: TextChar[], areas: Area[]): number {
+  return chars.filter((c) => c.box && c.ch.trim() && !areas.some((a) =>
+    c.box![0] < a.x + a.width + 1 && c.box![2] > a.x - 1 && c.box![1] < a.y + a.height + 1 && c.box![3] > a.y - 1)).length;
+}
+
+/**
+ * «Eliminar»: antes de pintar los recuadros, bajo cada área no se dibuja nada ni queda ningún carácter. Devuelve, por
+ * página, los caracteres que siguen fuera de las áreas.
+ */
+async function verifyEmpty(bytes: Uint8Array, renderer: PdfiumRenderer, areas: Area[]): Promise<Map<number, number>> {
   const doc = await renderer.open(bytes);
+  const outside = new Map<number, number>();
   try {
     for (const index of new Set(areas.map((a) => a.page))) {
       const pageAreas = areas.filter((a) => a.page === index);
       const chars = doc.text(index);
+      outside.set(index, charsOutside(chars, pageAreas));
       if (chars.some((c) => c.box && pageAreas.some((a) => inside(c.box!, a)))) {
         throw new ToolError("REDACTION_FAILED", `Queda texto dentro de un área en la página ${index + 1}`);
       }
@@ -299,6 +369,133 @@ async function verifyEmpty(bytes: Uint8Array, renderer: PdfiumRenderer, areas: A
   } finally {
     doc.close();
   }
+  return outside;
+}
+
+// Flujos de fuentes y mapas de caracteres: binarios, en ellos una coincidencia sería casualidad.
+const BINARY_STREAM_KEYS = new Set(["FontFile", "FontFile2", "FontFile3", "ToUnicode", "CIDSet", "CIDToGIDMap", "Encoding", "UseCMap"]);
+
+function decodeBytes(b: Uint8Array): string {
+  if (b[0] === 0xfe && b[1] === 0xff) return new TextDecoder("utf-16be").decode(b.subarray(2));
+  if (b[0] === 0xff && b[1] === 0xfe) return new TextDecoder("utf-16le").decode(b.subarray(2));
+  if (b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf) return new TextDecoder().decode(b.subarray(3));
+  return new TextDecoder("latin1").decode(b);
+}
+
+const isSpace = (c: number) => c === 0 || c === 9 || c === 10 || c === 12 || c === 13 || c === 32;
+const isDelim = (c: number) => c === 0x28 || c === 0x29 || c === 0x3c || c === 0x3e || c === 0x5b || c === 0x5d
+  || c === 0x7b || c === 0x7d || c === 0x2f || c === 0x25;
+const ESCAPES: Record<number, number> = { 0x6e: 10, 0x72: 13, 0x74: 9, 0x62: 8, 0x66: 12 };
+
+/** Cadenas literales y hexadecimales de un flujo de contenido (texto mostrado y /ActualText de los BDC). */
+export function contentStrings(b: Uint8Array): Uint8Array[] {
+  const out: Uint8Array[] = [];
+  const n = b.length;
+  let i = 0;
+  while (i < n) {
+    const c = b[i];
+    if (c === 0x25) {
+      while (i < n && b[i] !== 10 && b[i] !== 13) i += 1;
+    } else if (c === 0x28) {
+      const bytes: number[] = [];
+      let depth = 1;
+      i += 1;
+      while (i < n) {
+        const ch = b[i++];
+        if (ch === 0x5c) {
+          if (i >= n) break;
+          const e = b[i++];
+          if (e in ESCAPES) bytes.push(ESCAPES[e]);
+          else if (e >= 0x30 && e <= 0x37) {
+            let v = e - 0x30;
+            for (let k = 0; k < 2 && i < n && b[i] >= 0x30 && b[i] <= 0x37; k += 1) v = v * 8 + b[i++] - 0x30;
+            bytes.push(v & 0xff);
+          } else if (e === 13) {
+            if (b[i] === 10) i += 1;
+          } else if (e !== 10) bytes.push(e);
+          continue;
+        }
+        if (ch === 0x28) depth += 1;
+        else if (ch === 0x29 && --depth === 0) break;
+        bytes.push(ch);
+      }
+      out.push(Uint8Array.from(bytes));
+    } else if (c === 0x3c && b[i + 1] === 0x3c) {
+      i += 2;
+    } else if (c === 0x3c) {
+      const digits: number[] = [];
+      i += 1;
+      while (i < n && b[i] !== 0x3e) {
+        const ch = b[i++];
+        const v = ch >= 0x30 && ch <= 0x39 ? ch - 0x30 : ch >= 0x41 && ch <= 0x46 ? ch - 55 : ch >= 0x61 && ch <= 0x66 ? ch - 87 : -1;
+        if (v >= 0) digits.push(v);
+      }
+      i += 1;
+      if (digits.length % 2) digits.push(0);
+      const bytes = new Uint8Array(digits.length / 2);
+      for (let k = 0; k < bytes.length; k += 1) bytes[k] = digits[2 * k] * 16 + digits[2 * k + 1];
+      out.push(bytes);
+    } else if (isSpace(c) || isDelim(c)) {
+      i += 1;
+    } else {
+      const start = i;
+      while (i < n && !isSpace(b[i]) && !isDelim(b[i])) i += 1;
+      if (i - start === 2 && b[start] === 0x49 && b[start + 1] === 0x44) {
+        // Datos de una imagen en línea (BI … ID datos EI): se saltan enteros.
+        i += 1;
+        while (i < n && !(isSpace(b[i - 1]) && b[i] === 0x45 && b[i + 1] === 0x49 && (i + 2 >= n || isSpace(b[i + 2]) || isDelim(b[i + 2])))) i += 1;
+        i += 2;
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * Comprobación de todo el archivo (A.6): ningún término redactado queda en una cadena (marcadores, anotaciones,
+ * etiquetas, campos), en las cadenas de un flujo de contenido (texto, /ActualText en línea) ni en un flujo de texto
+ * (XMP, XFA, JavaScript, adjuntos). Las imágenes y las fuentes no se leen.
+ */
+async function verifyFile(bytes: Uint8Array, terms: string[]) {
+  const folded = terms.map(fold).filter(Boolean);
+  if (!folded.length) return;
+  const doc = await loadPdf({ name: "redactado.pdf", bytes });
+  const found = (text: string) => {
+    const low = fold(text);
+    return folded.some((t) => low.includes(t));
+  };
+  let where = "";
+  walkReachable(doc, {
+    string(text) {
+      if (!where && found(text)) where = "cadena";
+    },
+    stream(stream, key, parentKey) {
+      if (where || !(stream instanceof PDFRawStream)) return;
+      const dict = stream.dict;
+      const type = dict.get(PDFName.of("Type"));
+      const subtype = dict.get(PDFName.of("Subtype"));
+      if (subtype === PDFName.of("Image") || (key && BINARY_STREAM_KEYS.has(key))) return;
+      const asText = type === PDFName.of("Metadata") || type === PDFName.of("EmbeddedFile") || subtype === PDFName.of("XML")
+        || key === "JS" || key === "XFA";
+      const asContent = key === "Contents" || subtype === PDFName.of("Form") || dict.has(PDFName.of("PatternType"))
+        || parentKey === "CharProcs";
+      if (!asText && !asContent) return;
+      let data: Uint8Array;
+      try {
+        data = decodePDFRawStream(stream).decode();
+      } catch {
+        // Un filtro que no se sabe leer: no se puede asegurar que esté limpio.
+        where = "flujo ilegible";
+        return;
+      }
+      if (asText) {
+        if (found(new TextDecoder().decode(data)) || found(decodeBytes(data))) where = "flujo";
+      } else if (contentStrings(data).some((part) => found(decodeBytes(part)))) {
+        where = "contenido";
+      }
+    },
+  });
+  if (where) throw new ToolError("REDACTION_FAILED", `El texto redactado sigue dentro del archivo (${where})`);
 }
 
 /** Recuadros y su texto encima de la página, en las coordenadas de la página vista (con su giro y su CropBox). */
@@ -346,10 +543,13 @@ export async function redactarPdf(files: InFile[], o: RedactarOptions, renderer?
     const pdf = await renderer.open(file.bytes);
     let rasterized = 0;
     let cleaned: Uint8Array;
+    const before = new Map<number, number>();
     try {
       for (const index of affected) {
         if (index < 0 || index >= pdf.pageCount) throw new ToolError("INVALID_OPTIONS", `Página ${index + 1} fuera del documento`);
-        rasterized += pdf.redactAreas(index, areas.filter((a) => a.page === index), dpi).rasterized;
+        const pageAreas = areas.filter((a) => a.page === index);
+        before.set(index, charsOutside(pdf.text(index), pageAreas));
+        rasterized += pdf.redactAreas(index, pageAreas, dpi).rasterized;
       }
       cleaned = pdf.save();
     } finally {
@@ -359,11 +559,15 @@ export async function redactarPdf(files: InFile[], o: RedactarOptions, renderer?
     const removedAnnots = removeAnnotationsUnder(doc, areas);
     pruneUnreachable(doc);
     // Comprobación de 16.4 antes de tapar: bajo las áreas ya no se dibuja nada.
-    await verifyEmpty(await savePdf(doc), renderer, areas);
+    const after = await verifyEmpty(await savePdf(doc), renderer, areas);
     const pages = doc.getPages();
     const state: { font?: PDFFont } = {};
     for (const index of affected) await drawBoxes(doc, pages[index], areas.filter((a) => a.page === index), o, fonts, state);
-    notes.push(t.removedUnder(affected));
+    // Las páginas cuyo texto fuera de las áreas estaba en un grupo que se ha convertido en imagen lo dicen aparte.
+    const lost = affected.filter((index) => (after.get(index) ?? 0) < (before.get(index) ?? 0));
+    const kept = affected.filter((index) => !lost.includes(index));
+    if (kept.length) notes.push(t.removedUnder(kept));
+    if (lost.length) notes.push(t.textAsImage(lost));
     if (rasterized) notes.push(t.objectsAsImage(rasterized));
     if (removedAnnots) notes.push(t.annotationsRemoved(removedAnnots));
   } else {
@@ -397,12 +601,15 @@ export async function redactarPdf(files: InFile[], o: RedactarOptions, renderer?
     }
     notes.push(t.rasterized(affected));
   }
+  const structure = stripStructure(doc);
   const scrubbed = scrubDocument(doc, terms);
   removeMetadata(doc);
   pruneUnreachable(doc);
   const bytes = await savePdf(doc);
   await verify(bytes, renderer, areas, terms, o.texto.trim(), rgb255);
+  await verifyFile(bytes, terms);
   notes.push(t.metadataRemoved);
+  if (structure) notes.push(t.structureRemoved);
   if (scrubbed) notes.push(t.scrubbed(scrubbed));
   return { outputs: [pdfOut(derivedName(file.name, "-redactado", "pdf"), bytes)], notes };
 }

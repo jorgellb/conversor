@@ -333,7 +333,7 @@
     "sig_clear": "Borrar",
     "sig_use": "Usar la firma",
     "tool_redact": "Área para redactar",
-    "redactHint": "Marca las zonas o búscalas. Al guardar, lo tapado desaparece del archivo: con «rasterizar», las páginas con áreas se convierten en imagen a 300 ppp; con «eliminar», solo se borra lo que hay bajo las áreas y el resto del texto sigue siendo seleccionable.",
+    "redactHint": "Marca las zonas o búscalas. Al guardar, lo tapado desaparece del archivo: con «rasterizar», las páginas con áreas se convierten en imagen a 300 ppp; con «eliminar», solo se borra lo que hay bajo las áreas y el resto del texto sigue siendo seleccionable, salvo el que esté en un mismo grupo con lo tapado, que pasa a imagen con él.",
     "redactPanel": "Redacción",
     "searchText": "Buscar texto",
     "search": "Buscar",

@@ -48,8 +48,12 @@ de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F
 - **Smokescreen**: la imagen se compila desde la etiqueta v0.1.0 (D-155); su compilación y el arranque de `egressweb` y
   `egressai` solo se comprueban en la CI de imágenes y en `e2e-compose` (sin Docker aquí).
 - **G1-A**: la imagen `worker-pdf` con el perfil FOGRA39 de `infra/icc` (D-154) y el job `docling` sin FFmpeg (D-156),
-  solo en la CI. `test_pdf_to_word_faithful_with_libreoffice` falla aquí porque el LibreOffice local no tiene el filtro de
-  importación de PDF (`libreoffice-pdfimport`); la CI lo instala.
+  solo en la CI. Cuatro pruebas de LibreOffice fallan aquí porque el LibreOffice local no tiene el filtro de importación
+  de PDF (`libreoffice-pdfimport`), que la CI instala: `test_pdf_to_word_faithful_with_libreoffice` (`tests/test_tools.py`)
+  y `test_ods_through_libreoffice`, `test_ppt_faithful_and_odp` y `test_odt_and_rtf_editable_and_faithful`
+  (`tests/test_desde_pdf_docling.py`). Las 10 pruebas de Playwright que simulan la API (`chat-f3.spec.ts`,
+  `ia-f3.spec.ts`, `flujos-f1.spec.ts` y la de copiar-de-pdf de `f2.spec.ts`) fijan el origen `http://127.0.0.1:3100`
+  en sus cabeceras CORS y no se pudieron ejecutar aquí en otro puerto: solo corren en la CI.
 - **Playwright del proyecto `servidor`**, la parte de servidor de `lector-pdf` y el formulario «Enviar por correo» en la
   web: pendientes de la ejecución con la pila completa (la API del envío sí tiene pruebas con PostgreSQL real).
 - **Google Drive y Dropbox** contra los servicios reales: hacen falta las claves del propietario (D-36).
@@ -272,7 +276,10 @@ con oxipng y WebP con libwebp en WebAssembly en lugar del lienzo. Las notas de r
 `infra/icc` porque el `colord-data` de bookworm ya no lo trae, Smokescreen se compila desde su etiqueta porque Stripe no
 publica imagen y las muestras de audio y vídeo solo se generan con FFmpeg (el job `docling` no lo tiene); los Playwright
 del servidor simulado ya estaban en verde desde G0-B. Contenido 8.2 de las siete páginas puesto al día. Salvedades en
-D-150 a D-156.
+D-150 a D-156. Tras la revisión (D-157): redactar-pdf quita también las etiquetas de accesibilidad y la capa XFA, tapa
+los términos en todas las cadenas del archivo y comprueba antes de entregar que no siguen en ninguna cadena ni flujo de
+texto o de contenido; el aviso de «eliminar» dice cuándo parte del texto de alrededor ha pasado a imagen con un grupo, y
+las imágenes de más de 50 MP (o si el WebAssembly se queda sin memoria) se codifican con el lienzo.
 
 Verificado aquí: Vitest (282 de client-tools y 34 de web), `tsc`, `next build`, licencias de npm (0 problemas) y pytest sin
 la marca `integration` (1441 en verde, 8 omitidas y las 4 de LibreOffice sin el filtro de importación de PDF de siempre;

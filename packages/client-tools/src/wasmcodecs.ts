@@ -22,6 +22,19 @@ type Factory = (opts: object) => Promise<unknown>;
 
 const ready = new Map<string, Promise<unknown>>();
 
+/**
+ * Llama al codificador y, si aborta (ExitStatus de Emscripten o sin memoria), descarta el módulo para que la
+ * siguiente llamada lo instancie de nuevo: un módulo abortado no vuelve a funcionar.
+ */
+function guarded<T>(key: string, run: () => T): T {
+  try {
+    return run();
+  } catch (err) {
+    ready.delete(key);
+    throw err;
+  }
+}
+
 function once<T>(key: string, make: () => Promise<T>): Promise<T> {
   let p = ready.get(key) as Promise<T> | undefined;
   if (!p) {
@@ -63,7 +76,7 @@ const MOZJPEG_DEFAULTS = {
 export async function encodeJpeg(load: WasmLoader, img: Rgba, quality: number): Promise<Uint8Array> {
   const mod = await emscripten<EncoderModule>(load, "mozjpeg_enc", () => import("@jsquash/jpeg/codec/enc/mozjpeg_enc.js"));
   const q = Math.min(100, Math.max(1, Math.round(quality)));
-  const out = mod.encode(img.data, img.width, img.height, { ...MOZJPEG_DEFAULTS, quality: q, chroma_quality: q });
+  const out = guarded("mozjpeg_enc", () => mod.encode(img.data, img.width, img.height, { ...MOZJPEG_DEFAULTS, quality: q, chroma_quality: q }));
   if (!out) throw new ToolError("INTERNAL", "Codificador JPEG");
   return new Uint8Array(out);
 }
@@ -89,7 +102,7 @@ export async function encodePng(load: WasmLoader, img: Rgba): Promise<Uint8Array
     await lib.default(wasm);
     return lib as unknown as Oxipng;
   });
-  const out = mod.optimise_raw(img.data, img.width, img.height, oxipngLevel(img.width, img.height), false, false);
+  const out = guarded("oxipng", () => mod.optimise_raw(img.data, img.width, img.height, oxipngLevel(img.width, img.height), false, false));
   if (!out?.length) throw new ToolError("INTERNAL", "Codificador PNG");
   return new Uint8Array(out);
 }
@@ -112,9 +125,9 @@ export async function encodeWebp(load: WasmLoader, img: Rgba, o: WebpOptions): P
   const withSimd = await simd();
   const mod = await emscripten<EncoderModule>(load, withSimd ? "webp_enc_simd" : "webp_enc", () =>
     withSimd ? import("@jsquash/webp/codec/enc/webp_enc_simd.js") : import("@jsquash/webp/codec/enc/webp_enc.js"));
-  const out = mod.encode(img.data, img.width, img.height, {
+  const out = guarded(withSimd ? "webp_enc_simd" : "webp_enc", () => mod.encode(img.data, img.width, img.height, {
     ...WEBP_DEFAULTS, quality: o.lossless ? 75 : o.quality, lossless: o.lossless ? 1 : 0, use_sharp_yuv: o.lossless ? 0 : 1,
-  });
+  }));
   if (!out) throw new ToolError("INTERNAL", "Codificador WebP");
   return new Uint8Array(out);
 }

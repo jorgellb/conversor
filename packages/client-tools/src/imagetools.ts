@@ -13,7 +13,7 @@ import {
 } from "./common";
 import { extractExif, insertExif, resetOrientation, stripJpegMetadata } from "./exif";
 
-import { flatten, type Rgba } from "./rasters";
+import { MAX_PIXELS, flatten, type Rgba } from "./rasters";
 import { encodeJpeg, encodePng, encodeWebp, type WasmLoader } from "./wasmcodecs";
 
 export type ImageFormat = "jpg" | "png" | "webp";
@@ -53,21 +53,36 @@ export interface ImageCodec {
  * Envuelve un códec para que JPEG, PNG y WebP salgan de MozJPEG, oxipng y libwebp en lugar del codificador del lienzo:
  * archivos más pequeños con la misma calidad e iguales en todos los navegadores (D-04, D-79 y D-150). El lienzo solo
  * decodifica y dibuja (tamaño, ajuste, fondo y margen). Sin `rgba` en el códec, se deja como está.
+ *
+ * Por encima de `maxPixels` (el límite de 50 MP de `rasters.ts`), o si el codificador en WebAssembly se queda sin
+ * memoria, la imagen se codifica con el códec envuelto (el lienzo del navegador), como antes de D-150 (D-157): copiar
+ * los píxeles RGBA al montón de WebAssembly no cabe en la memoria de una pestaña con imágenes tan grandes.
  */
-export function wasmEncoding(codec: ImageCodec, load: WasmLoader): ImageCodec {
+export function wasmEncoding(codec: ImageCodec, load: WasmLoader, maxPixels = MAX_PIXELS): ImageCodec {
   const pixels = codec.rgba?.bind(codec);
   if (!pixels) return codec;
+  const inWasm = async (img: Decoded, target: DrawTarget & { format: ImageFormat; quality: number }) => {
+    if (target.format === "jpg") {
+      const background = target.background ?? "#FFFFFF";
+      return encodeJpeg(load, flatten(await pixels(img, { ...target, background }), background), target.quality * 100);
+    }
+    // El destino completo (con formato y calidad) llega también a `rgba`: lo usan los registros de las pruebas.
+    const px = await pixels(img, target);
+    if (target.format === "png") return encodePng(load, px);
+    return encodeWebp(load, px, { quality: Math.min(100, Math.max(1, Math.round(target.quality * 100))), lossless: false });
+  };
   return {
     ...codec,
     async encode(img, target) {
-      if (target.format === "jpg") {
-        const background = target.background ?? "#FFFFFF";
-        return encodeJpeg(load, flatten(await pixels(img, { ...target, background }), background), target.quality * 100);
+      if (target.width * target.height > maxPixels) return codec.encode(img, target);
+      try {
+        return await inWasm(img, target);
+      } catch (err) {
+        // Un ToolError con código propio es una respuesta válida (p. ej. datos no válidos); lo demás (ExitStatus de
+        // Emscripten o RangeError al reservar memoria, o el codificador sin resultado) se reintenta con el lienzo.
+        if (err instanceof ToolError && err.code !== "INTERNAL") throw err;
+        return codec.encode(img, target);
       }
-      // El destino completo (con formato y calidad) llega también a `rgba`: lo usan los registros de las pruebas.
-      const px = await pixels(img, target);
-      if (target.format === "png") return encodePng(load, px);
-      return encodeWebp(load, px, { quality: Math.min(100, Math.max(1, Math.round(target.quality * 100))), lossless: false });
     },
   };
 }

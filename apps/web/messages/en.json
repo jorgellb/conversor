@@ -333,7 +333,7 @@
     "sig_clear": "Clear",
     "sig_use": "Use signature",
     "tool_redact": "Area to redact",
-    "redactHint": "Mark the areas or search for them. When saving, whatever is covered is removed from the file: with “rasterise”, pages with areas are turned into 300 dpi images; with “remove”, only what lies under the areas is deleted and the rest of the text can still be selected.",
+    "redactHint": "Mark the areas or search for them. When saving, whatever is covered is removed from the file: with “rasterise”, pages with areas are turned into 300 dpi images; with “remove”, only what lies under the areas is deleted and the rest of the text can still be selected, except text in the same group as the covered content, which becomes an image with it.",
     "redactPanel": "Redaction",
     "searchText": "Search text",
     "search": "Search",

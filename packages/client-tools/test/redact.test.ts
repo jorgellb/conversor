@@ -269,6 +269,80 @@ describe("redactar-pdf eliminando solo lo que hay bajo el área (A.6, 16.4 y 16.
     const pdf = await PDFDocument.load(out);
     expect(leaks(rawText(out, pdf), "4455")).toBe(false);
     expect(res.notes.join(" ")).toMatch(/convertido en imagen/);
+    // El texto del grupo que queda fuera del área («Dato publico») ha pasado a imagen con él: el aviso lo dice y no
+    // promete que siga seleccionable en esa página.
+    expect(text[0].chars.map((c) => c.ch).join("")).not.toContain("publico");
+    expect(res.notes.some((n) => n.startsWith("Páginas 1:") && /ya no se puede seleccionar/.test(n))).toBe(true);
+    expect(res.notes.some((n) => /sigue siendo seleccionable/.test(n) && /páginas 1(,|;|$)/.test(n))).toBe(false);
+    expect(res.notes.join(" ")).toMatch(/páginas 2; el resto del texto sigue siendo seleccionable/);
+  });
+
+  for (const metodo of ["eliminar", "rasterizar"] as const) {
+    it(`«${metodo}» no deja el texto en las etiquetas, la capa XFA ni las cadenas del archivo`, async () => {
+      const doc = await PDFDocument.create();
+      const font = await doc.embedFont(StandardFonts.Helvetica);
+      const page = doc.addPage([400, 400]);
+      page.drawText("Secreto 776655", { x: 50, y: 300, size: 14, font });
+      page.drawText("Texto que se queda", { x: 50, y: 100, size: 14, font });
+      const ctx = doc.context;
+      const utf16 = (text: string) => PDFHexString.fromText(text);
+      // Estructura de etiquetas con el texto repetido en /ActualText, /Alt, /E y /T.
+      const elem = ctx.register(ctx.obj({ Type: "StructElem", S: "P", ActualText: utf16("Secreto 776655"), Alt: utf16("Secreto 776655"),
+        E: utf16("776655"), T: PDFString.of("Cuenta 776655") }));
+      doc.catalog.set(PDFName.of("StructTreeRoot"), ctx.register(ctx.obj({ Type: "StructTreeRoot", K: [elem] })));
+      doc.catalog.set(PDFName.of("MarkInfo"), ctx.obj({ Marked: true }));
+      page.node.set(PDFName.of("StructParents"), PDFNumber.of(0));
+      // Capa XFA con el valor de un campo.
+      const xfa = ctx.register(ctx.flateStream("<xdp:xdp><xfa:datasets><cuenta>776655</cuenta></xfa:datasets></xdp:xdp>"));
+      doc.catalog.set(PDFName.of("AcroForm"), ctx.obj({ Fields: [], XFA: [PDFString.of("datasets"), xfa] }));
+      // Un enlace fuera del área con el término en la URL.
+      const link = ctx.obj({ Type: "Annot", Subtype: "Link", Rect: [50, 90, 200, 120], A: { S: "URI", URI: PDFString.of("https://example.com/?c=776655") } });
+      page.node.addAnnot(ctx.register(link));
+      const bytes = await doc.save();
+      const areas = findMatches(await pagesText(bytes), "776655").flatMap((m) => m.areas);
+      const res = await runClientTool("redactar-pdf", [{ name: "etiquetado.pdf", bytes }], {
+        color: "#000000", texto: "", metodo, model: { areas, terminos: ["776655"] },
+      }, { renderer: nodeRenderer });
+      const out = res.outputs[0].bytes;
+      const pdf = await PDFDocument.load(out);
+      const raw = rawText(out, pdf);
+      expect(leaks(raw, "776655")).toBe(false);
+      // UTF-16BE (como se guardan /ActualText y /Alt).
+      const utf16hex = Array.from("776655").map((c) => c.charCodeAt(0).toString(16).padStart(4, "0")).join("");
+      expect(raw.toLowerCase()).not.toContain(utf16hex);
+      expect(pdf.catalog.get(PDFName.of("StructTreeRoot"))).toBeUndefined();
+      expect(pdf.catalog.lookup(PDFName.of("AcroForm"), PDFDict).get(PDFName.of("XFA"))).toBeUndefined();
+      expect(res.notes.join(" ")).toMatch(/etiquetas de accesibilidad/);
+      // El enlace de fuera del área sigue (con «eliminar»; «rasterizar» quita las anotaciones de la página) y tapado.
+      if (metodo === "eliminar") expect(res.notes.join(" ")).toMatch(/en 1 texto\(s\) del archivo/);
+    });
+  }
+
+  it("la comprobación final falla si el término sigue en una cadena del flujo de contenido (/ActualText en línea)", async () => {
+    const doc = await PDFDocument.create();
+    const font = await doc.embedFont(StandardFonts.Helvetica);
+    const page = doc.addPage([400, 400]);
+    page.drawText("Clave 5566", { x: 50, y: 300, size: 14, font });
+    page.drawText("Otro texto", { x: 50, y: 100, size: 14, font });
+    // Un contenido marcado lejos del área con el término como /ActualText de un trazado (no es texto de la página).
+    const extra = doc.context.flateStream("/Span <</ActualText (Clave 5566)>> BDC 300 20 5 5 re f EMC\n");
+    page.node.normalizedEntries().Contents!.push(doc.context.register(extra));
+    const bytes = await doc.save();
+    const areas = findMatches(await pagesText(bytes), "5566").flatMap((m) => m.areas);
+    for (const metodo of ["eliminar", "rasterizar"] as const) {
+      const run = runClientTool("redactar-pdf", [{ name: "marcado.pdf", bytes }], {
+        color: "#000000", texto: "", metodo, model: { areas, terminos: ["5566"] },
+      }, { renderer: nodeRenderer });
+      if (metodo === "rasterizar") {
+        // La página entera pasa a imagen: el flujo con el contenido marcado desaparece.
+        const out = (await run).outputs[0].bytes;
+        expect(leaks(rawText(out, await PDFDocument.load(out)), "5566")).toBe(false);
+      } else {
+        // PDFium regenera el contenido y conserva el contenido marcado: la comprobación de todo el archivo lo
+        // encuentra y no se entrega nada (mejor un error que un archivo con el dato).
+        await expect(run).rejects.toMatchObject({ code: "REDACTION_FAILED", message: expect.stringMatching(/dentro del archivo/) });
+      }
+    }
   });
 
   it("fuera de las áreas la página se ve igual, con los objetos superpuestos en su orden", async () => {
@@ -317,6 +391,22 @@ describe("redactar-pdf eliminando solo lo que hay bajo el área (A.6, 16.4 y 16.
     }, { renderer: nodeRenderer });
     const out = res.outputs[0].bytes;
     expect(leaks(rawText(out, await PDFDocument.load(out)), "Juan P")).toBe(false);
+  });
+});
+
+describe("cadenas de un flujo de contenido (comprobación de redactar-pdf)", () => {
+  it("lee literales con escapes y paréntesis, hexadecimales y salta comentarios, diccionarios e imágenes en línea", async () => {
+    const { contentStrings } = await import("../src/redact");
+    const bytes = new TextEncoder().encode(
+      "% (comentario)\nBT (a\\(b\\) \\101 (c)) Tj <48 6f6C61> Tj <</ActualText <FEFF0041>>> BDC ET\n"
+      + "BI /W 1 /H 1 /BPC 8 /CS /G ID (x) EI\nre f",
+    );
+    const parts = contentStrings(bytes).map((b) => Array.from(b));
+    expect(parts).toEqual([
+      Array.from(new TextEncoder().encode("a(b) A (c)")),
+      [0x48, 0x6f, 0x6c, 0x61],
+      [0xfe, 0xff, 0x00, 0x41],
+    ]);
   });
 });
 
