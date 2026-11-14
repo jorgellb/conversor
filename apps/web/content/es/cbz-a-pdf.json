@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CBZ a PDF convierte cómics, mangas y novelas gráficas en formato CBZ en un PDF con todas sus páginas en orden. Un CBZ no es más que un archivo ZIP lleno de imágenes, y muchos lectores de libros electrónicos, tabletas y programas de oficina no lo abren; el PDF, en cambio, se lee en cualquier dispositivo y se imprime sin complicaciones.",
+    "Al abrir el CBZ en nuestro servidor solo se toman las imágenes JPG, PNG, GIF, WEBP, BMP y TIFF. Se descartan las carpetas ocultas que añade macOS, los archivos que empiezan por punto y cualquier otro contenido, como los ficheros de información del cómic. Las páginas se ordenan de forma natural por su nombre, de modo que «pagina2» va antes que «pagina10» aunque el nombre no lleve ceros delante.",
+    "Las imágenes JPG, PNG, GIF y TIFF se incrustan tal cual, sin recomprimir, así que el dibujo conserva toda su nitidez; las WEBP y BMP se pasan antes a PNG, también sin pérdida. Puedes mantener el tamaño de cada imagen como tamaño de página o ajustar todas a A4, A5 o Carta: en ese caso cada imagen se encaja entera en el papel, que se pone en horizontal cuando la imagen es apaisada, como en las dobles páginas.",
+    "Cada cómic da su propio PDF, y si subes varios los recibes también juntos en un ZIP. El número de páginas tiene el límite de tu plan: 100 sin cuenta, 300 con la cuenta gratuita y 2000 con Pro. Por seguridad también se limitan el número de archivos dentro del CBZ y su tamaño descomprimido, para frenar archivos manipulados."
+  ],
+  "steps": [
+    "Sube uno o varios archivos CBZ.",
+    "Elige el tamaño de página: el de cada imagen, A4, A5 o Carta.",
+    "Descarga el PDF de cada cómic o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "Las páginas salen desordenadas, ¿qué hago?",
+      "a": "El orden sale del nombre de cada imagen dentro del CBZ. Si los nombres no siguen una numeración, renómbralos para que la sigan y vuelve a comprimir el archivo."
+    },
+    {
+      "q": "¿Se reduce la calidad de las ilustraciones?",
+      "a": "No. Los JPG y PNG se copian sin recomprimir. Si el PDF resulta muy pesado para tu lector, pásalo por Comprimir PDF."
+    },
+    {
+      "q": "¿Y si mi cómic es CBR?",
+      "a": "Usa CBR a PDF, que abre los cómics comprimidos en RAR y funciona igual."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to JSON exports the tables of a PDF, or the full structure of the document, to a JSON file, so that a program, a spreadsheet with Power Query or a Python or JavaScript script can read the data without copying it by hand. The analysis is done by Docling, which finds the tables, rebuilds their rows and columns and recognises headings, paragraphs and lists.",
+    "With «The tables», the default option, you get a single JSON with the name of the source file and a list of tables. Each table carries its number, the PDF page where it appears, the header when it has one and the rows, with every cell as text exactly as it reads in the original. Keys are in English (source, tables, number, page, header, rows), as is usual in data formats.",
+    "With «The whole document» you get Docling's own format, which describes every element of the page: headings, paragraphs, lists and tables, with their reading order and position. It is useful to index documents, prepare them for a search engine or feed another process that needs to know what is a heading and what is body text.",
+    "You can limit the analysis to specific pages, for example «3-5,9»; the page numbers in the JSON are still those of the original PDF. If the pages are scanned, automatic OCR recognises the text before looking for tables, in up to three languages you choose in the additional options. With several PDFs you get one JSON per file and a ZIP with all of them. The work runs on our server, without internet access, and it is a heavy task: it counts towards your plan's daily limit of heavy tasks."
+  ],
+  "steps": [
+    "Upload one or more PDFs.",
+    "Choose whether you want only the tables or the whole document and, if needed, the pages.",
+    "Download the JSON or the ZIP with one JSON per PDF."
+  ],
+  "faq": [
+    {
+      "q": "What do I get if the PDF has no tables?",
+      "a": "With the tables option, a valid JSON with an empty list of tables. If what you want is the text, choose «The whole document»."
+    },
+    {
+      "q": "Are numbers turned into JSON numbers?",
+      "a": "No. Each cell is stored as text, just as it appears in the PDF, so leading zeros and formats are not lost. The program that reads the JSON decides how to interpret them."
+    },
+    {
+      "q": "What if I would rather have a spreadsheet?",
+      "a": "PDF to CSV saves each table in a CSV, and PDF to Excel places them in sheets with the numbers already converted."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CBR a PDF transforma cómics en formato CBR en un PDF que puedes leer en el visor de cualquier ordenador, tableta o lector de libros electrónicos sin instalar una aplicación de cómics. El CBR es un archivo comprimido con RAR que contiene una imagen por página; es muy común en colecciones antiguas y en escaneos de tebeos, y pocos programas lo abren directamente.",
+    "En la práctica, muchos archivos con extensión .cbr son en realidad ZIP renombrados. No importa: nuestro servidor abre el archivo con libarchive, que reconoce tanto RAR como ZIP, así que no tienes que cambiar la extensión ni descomprimir nada antes. Del contenido se quedan solo las imágenes JPG, PNG, GIF, WEBP, BMP y TIFF, ordenadas por nombre con orden natural: el número 9 va antes que el 10.",
+    "El PDF respeta las ilustraciones: los JPG, PNG, GIF y TIFF entran sin recomprimir y los WEBP y BMP pasan a PNG sin pérdida. Elige «Según la imagen» para que cada página tenga exactamente el tamaño de su viñeta escaneada, o A4, A5 o Carta para un tamaño uniforme que se imprime mejor; con papel fijo, la imagen se encaja sin recortes y el papel se pone apaisado para las dobles páginas.",
+    "Puedes subir varios cómics a la vez: recibes un PDF por cada uno y un ZIP que los reúne. Cada PDF puede tener hasta 100 páginas sin cuenta, 300 con la cuenta gratuita y 2000 con Pro. Se descartan las carpetas de sistema y los archivos ocultos, y se limitan las entradas y el tamaño descomprimido para protegerse de archivos maliciosos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos CBR.",
+    "Elige si cada página mantiene el tamaño de su imagen o va en A4, A5 o Carta.",
+    "Descarga los PDF, sueltos o en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Mi CBR es en realidad un ZIP, ¿funciona?",
+      "a": "Sí. Se detecta el formato real del archivo, RAR o ZIP, y se abre igual en los dos casos."
+    },
+    {
+      "q": "¿Funciona con CBR protegidos con contraseña?",
+      "a": "No. Si el archivo RAR está cifrado no se pueden leer sus imágenes; descomprímelo con su contraseña y vuelve a comprimirlo sin ella."
+    },
+    {
+      "q": "¿Qué hago si recibo un aviso de que el cómic no tiene imágenes?",
+      "a": "Significa que dentro no hay imágenes en un formato admitido. Comprueba que las páginas sean JPG, PNG, GIF, WEBP, BMP o TIFF."
+    }
+  ]
+}

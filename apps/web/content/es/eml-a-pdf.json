@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "EML a PDF guarda un correo electrónico en formato EML como documento PDF, listo para archivarlo, imprimirlo o presentarlo como prueba de una comunicación. EML es el formato estándar en el que Thunderbird, Apple Mail, Outlook en la web y muchos otros programas exportan un mensaje cuando lo arrastras al escritorio o eliges «Guardar como».",
+    "La primera página reproduce el mensaje como lo verías en tu programa de correo: una cabecera con el remitente, los destinatarios, las copias, la fecha y el asunto, y debajo el cuerpo. La fecha se muestra con la diferencia horaria del remitente respecto a UTC, y los rótulos de la cabecera van en el idioma de esta página. Si el mensaje es HTML, se limpia de scripts y elementos peligrosos antes de imprimirse; las imágenes incrustadas en el mensaje aparecen en su sitio, pero las que se cargan desde internet no se descargan, para no avisar al remitente de que se ha abierto.",
+    "Con la opción de adjuntos activada, que es la predeterminada, los adjuntos que se pueden convertir se añaden como páginas siguientes: los PDF tal cual; las imágenes JPG, PNG, GIF, BMP, TIFF y WEBP, cada una en una página; y los documentos de Word, Excel, PowerPoint, OpenDocument, RTF, TXT y CSV, pasados a PDF con LibreOffice. El PDF lleva un marcador para el mensaje y otro para cada adjunto, y la cabecera enumera todos los adjuntos por su nombre.",
+    "Los adjuntos que no se pueden convertir, como un ZIP o un ejecutable, no se incluyen y te lo indicamos con su nombre junto al resultado. Puedes elegir papel A4 o Carta. Con varios correos recibes un PDF por mensaje y un ZIP con todos. Todo se procesa en nuestro servidor, sin internet."
+  ],
+  "steps": [
+    "Sube uno o varios archivos EML.",
+    "Elige el papel y si quieres incluir los adjuntos.",
+    "Descarga el PDF de cada correo o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo consigo el archivo EML de un correo?",
+      "a": "En Thunderbird o Apple Mail, arrastra el mensaje a una carpeta o usa «Guardar como». En Gmail, abre el menú del mensaje y elige «Descargar mensaje»."
+    },
+    {
+      "q": "¿Por qué faltan algunas imágenes del correo?",
+      "a": "Las imágenes alojadas en servidores externos no se descargan por privacidad y seguridad. Solo se ven las que van dentro del propio mensaje."
+    },
+    {
+      "q": "Tengo el correo en formato MSG de Outlook, ¿qué uso?",
+      "a": "MSG a PDF hace lo mismo con los mensajes guardados desde Outlook en Windows."
+    }
+  ]
+}

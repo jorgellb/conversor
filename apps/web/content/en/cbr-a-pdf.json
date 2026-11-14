@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CBR to PDF turns comics in CBR format into a PDF you can read in the viewer of any computer, tablet or e-reader without installing a comic app. A CBR is an archive compressed with RAR that contains one image per page; it is very common in older collections and in scanned comic books, and few programs open it directly.",
+    "In practice, many files with the .cbr extension are actually renamed ZIPs. It does not matter: our server opens the file with libarchive, which recognises both RAR and ZIP, so you do not have to change the extension or extract anything beforehand. Only the JPG, PNG, GIF, WEBP, BMP and TIFF images are kept from the contents, sorted by name in natural order: number 9 comes before 10.",
+    "The PDF respects the artwork: JPG, PNG, GIF and TIFF go in without recompression and WEBP and BMP become lossless PNG. Choose «Same as the image» so that each page has exactly the size of its scanned panel, or A4, A5 or Letter for a uniform size that prints better; with fixed paper, the image is fitted without cropping and the paper turns to landscape for double-page spreads.",
+    "You can upload several comics at once: you get one PDF for each and a ZIP that bundles them. Each PDF can have up to 100 pages without an account, 300 with a free account and 2000 with Pro. System folders and hidden files are discarded, and the entries and uncompressed size are limited to guard against malicious archives."
+  ],
+  "steps": [
+    "Upload one or more CBR files.",
+    "Choose whether each page keeps the size of its image or goes on A4, A5 or Letter.",
+    "Download the PDFs, separately or in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "My CBR is actually a ZIP, does it work?",
+      "a": "Yes. The real format of the file, RAR or ZIP, is detected and it opens the same way in both cases."
+    },
+    {
+      "q": "Does it work with password-protected CBRs?",
+      "a": "No. If the RAR archive is encrypted its images cannot be read; extract it with its password and compress it again without one."
+    },
+    {
+      "q": "What if I get a warning that the comic has no images?",
+      "a": "It means there are no images in a supported format inside. Check that the pages are JPG, PNG, GIF, WEBP, BMP or TIFF."
+    }
+  ]
+}

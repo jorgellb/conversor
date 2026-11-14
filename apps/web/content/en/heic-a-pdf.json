@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HEIC to PDF converts HEIC photos, the format in which iPhones and iPads save images by default, into a PDF document that opens on any computer, phone or browser. Use it to hand in photos of documents, receipts or proofs to a procedure that only accepts PDF, or to gather several photos in a single file.",
+    "HEIC images are compressed with HEVC (H.265), a patented technology whose licensing programmes also charge cloud services that decode it. That is why this conversion depends on a service setting, HEVC decoding, which is off by default and is only switched on after a legal review. While it is off, the tool does not accept files and the page explains how to export the photos to JPEG from the iPhone or the Mac and then convert them with JPG to PDF.",
+    "When it is active, the photo is decoded on our server with libheif, built only to read HEIC, without any HEVC encoder. Each image is turned into a lossless PNG and placed in the PDF with img2pdf; if a HEIC file holds several images, each one takes its own page.",
+    "The options are those of Images to PDF: a page size from A0 to A6, Letter, Legal, your own measurements in millimetres or inches or the size of the photo itself at its DPI; automatic, portrait or landscape orientation; a margin from zero to 25 mm or whatever you specify, and a fit mode to fit, fill by cropping or keep the actual size. With several photos you can merge them into one PDF, with a bookmark per image if you like, or create one PDF per photo and download them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more HEIC photos.",
+    "Choose the page size, orientation and margin.",
+    "Download the PDF or the ZIP with one PDF per photo."
+  ],
+  "faq": [
+    {
+      "q": "Why does the tool appear disabled?",
+      "a": "Because HEVC decoding is switched off on this service until the review of its patent licences is complete. You can save the photos as JPEG on the iPhone itself and use JPG to PDF."
+    },
+    {
+      "q": "How do I make the iPhone save photos as JPEG?",
+      "a": "In Settings › Camera › Formats, choose «Most Compatible». Photos you already have are converted to JPEG when you copy them to a computer if you set Settings › Photos › Transfer to Mac or PC to «Automatic»."
+    },
+    {
+      "q": "Do the photos lose quality?",
+      "a": "Not compared with what is decoded: each image goes into the PDF as a lossless PNG. In exchange, the PDF may be larger than the HEIC; Compress PDF reduces it."
+    }
+  ]
+}

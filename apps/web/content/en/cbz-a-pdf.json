@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CBZ to PDF converts comics, manga and graphic novels in CBZ format into a PDF with all their pages in order. A CBZ is nothing more than a ZIP archive full of images, and many e-readers, tablets and office programs cannot open it; a PDF, on the other hand, reads on any device and prints without hassle.",
+    "When the CBZ is opened on our server, only JPG, PNG, GIF, WEBP, BMP and TIFF images are taken. The hidden folders that macOS adds, files whose names start with a dot and any other content, such as comic information files, are discarded. Pages are sorted naturally by name, so «page2» comes before «page10» even if the name has no leading zeros.",
+    "JPG, PNG, GIF and TIFF images are embedded as they are, without recompression, so the artwork keeps all its sharpness; WEBP and BMP are converted to PNG first, also losslessly. You can keep each image's size as the page size or fit them all to A4, A5 or Letter: in that case each image is fitted whole onto the paper, which turns to landscape when the image is wider than tall, as in double-page spreads.",
+    "Each comic produces its own PDF, and if you upload several you also get them together in a ZIP. The number of pages is limited by your plan: 100 without an account, 300 with a free account and 2000 with Pro. For security, the number of files inside the CBZ and its uncompressed size are also limited, to stop tampered archives."
+  ],
+  "steps": [
+    "Upload one or more CBZ files.",
+    "Choose the page size: that of each image, A4, A5 or Letter.",
+    "Download the PDF of each comic or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "The pages come out in the wrong order, what can I do?",
+      "a": "The order comes from the name of each image inside the CBZ. If the names do not follow a numbering, rename them so they do and compress the archive again."
+    },
+    {
+      "q": "Is the quality of the artwork reduced?",
+      "a": "No. JPGs and PNGs are copied without recompression. If the PDF is too heavy for your reader, run it through Compress PDF."
+    },
+    {
+      "q": "What if my comic is a CBR?",
+      "a": "Use CBR to PDF, which opens comics compressed with RAR and works the same way."
+    }
+  ]
+}

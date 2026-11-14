@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "EML to PDF saves an email in EML format as a PDF document, ready to archive, print or submit as evidence of a communication. EML is the standard format in which Thunderbird, Apple Mail, Outlook on the web and many other programs export a message when you drag it to the desktop or choose «Save as».",
+    "The first page reproduces the message as you would see it in your email program: a header with the sender, recipients, copies, date and subject, and the body below it. The date is shown with the sender's offset from UTC, and the header labels are in the language of this page. If the message is HTML, it is cleaned of scripts and dangerous elements before printing; images embedded in the message appear in place, but those loaded from the internet are not downloaded, so the sender is not told that the message was opened.",
+    "With the attachments option on, which is the default, the attachments that can be converted are added as following pages: PDFs as they are; JPG, PNG, GIF, BMP, TIFF and WEBP images, one per page; and Word, Excel, PowerPoint, OpenDocument, RTF, TXT and CSV documents, turned into PDF with LibreOffice. The PDF has a bookmark for the message and another for each attachment, and the header lists every attachment by name.",
+    "Attachments that cannot be converted, such as a ZIP or an executable, are left out and we tell you their names next to the result. You can choose A4 or Letter paper. With several emails you get one PDF per message and a ZIP with all of them. Everything is processed on our server, without internet access."
+  ],
+  "steps": [
+    "Upload one or more EML files.",
+    "Choose the paper and whether to include the attachments.",
+    "Download the PDF of each email or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "How do I get the EML file of an email?",
+      "a": "In Thunderbird or Apple Mail, drag the message to a folder or use «Save as». In Gmail, open the message menu and choose «Download message»."
+    },
+    {
+      "q": "Why are some of the email's images missing?",
+      "a": "Images hosted on external servers are not downloaded, for privacy and security. Only those carried inside the message itself are shown."
+    },
+    {
+      "q": "My email is an Outlook MSG file, what should I use?",
+      "a": "MSG to PDF does the same with messages saved from Outlook on Windows."
+    }
+  ]
+}

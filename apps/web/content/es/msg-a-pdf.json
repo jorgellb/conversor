@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MSG a PDF convierte los mensajes de Outlook guardados como archivo MSG en un PDF que cualquiera puede abrir sin tener Outlook instalado. Es el formato que genera Outlook para Windows cuando arrastras un correo a una carpeta o lo guardas desde el menú Archivo, y también el que suelen enviar como adjunto quienes reenvían un mensaje completo.",
+    "Leemos el MSG directamente en nuestro servidor, sin Outlook ni servicios externos, y extraemos el asunto, el remitente con su nombre y su dirección, los destinatarios, las copias y la fecha de envío, que en este formato se guarda en hora universal y por eso aparece marcada como UTC. Los rótulos de la cabecera van en el idioma de la página.",
+    "El cuerpo se toma en el formato más completo que traiga el mensaje. El HTML se sanea antes de imprimirse y muestra las imágenes incrustadas, pero nunca descarga contenido de internet. Si el mensaje solo trae texto sin formato, se respeta tal cual. Y si Outlook lo guardó en RTF, como hace con algunos mensajes antiguos o con formato enriquecido, el cuerpo se convierte con LibreOffice y va en las páginas que siguen a la cabecera.",
+    "Los adjuntos convertibles, que son los PDF, las imágenes y los documentos de oficina como Word, Excel, PowerPoint u OpenDocument, se añaden como páginas siguientes si dejas activada esa opción, cada uno con su propio marcador. Los mensajes incrustados, los objetos OLE y los formatos que no se pueden pasar a PDF aparecen nombrados en la cabecera y en un aviso, pero no se convierten. Elige papel A4 o Carta; con varios MSG recibes un PDF por mensaje y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos MSG de Outlook.",
+    "Elige el papel y si quieres añadir los adjuntos.",
+    "Descarga el PDF de cada mensaje o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué la hora sale en UTC?",
+      "a": "Outlook guarda la fecha de los MSG en hora universal, sin la zona horaria de quien lo envió. Para pasarla a hora peninsular española, suma una hora en invierno y dos en verano."
+    },
+    {
+      "q": "Un adjunto es otro correo, ¿se convierte?",
+      "a": "No. Los mensajes incrustados se nombran en la cabecera, pero no se añaden. Guárdalo aparte desde Outlook y conviértelo por separado."
+    },
+    {
+      "q": "¿Sirve para archivos PST con muchos correos?",
+      "a": "No, esta herramienta convierte mensajes sueltos. Si tus correos están en formato EML, usa EML a PDF."
+    }
+  ]
+}

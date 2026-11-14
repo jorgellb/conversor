@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MSG to PDF converts Outlook messages saved as MSG files into a PDF that anyone can open without having Outlook installed. It is the format Outlook for Windows produces when you drag an email to a folder or save it from the File menu, and also the one people usually send as an attachment when they forward a complete message.",
+    "We read the MSG directly on our server, without Outlook or external services, and extract the subject, the sender with name and address, the recipients, the copies and the sending date, which this format stores in universal time and therefore appears marked as UTC. The header labels are in the language of the page.",
+    "The body is taken in the richest format the message carries. HTML is sanitised before printing and shows embedded images, but never downloads content from the internet. If the message only has plain text, it is kept as it is. And if Outlook saved it as RTF, as it does with some older or rich-text messages, the body is converted with LibreOffice and goes on the pages that follow the header.",
+    "Convertible attachments, namely PDFs, images and office documents such as Word, Excel, PowerPoint or OpenDocument, are added as following pages if you leave that option on, each with its own bookmark. Embedded messages, OLE objects and formats that cannot be turned into PDF are named in the header and in a notice, but they are not converted. Choose A4 or Letter paper; with several MSG files you get one PDF per message and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more Outlook MSG files.",
+    "Choose the paper and whether to add the attachments.",
+    "Download the PDF of each message or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Why is the time shown in UTC?",
+      "a": "Outlook stores the date of MSG files in universal time, without the sender's time zone. Add or subtract your own offset from UTC to get your local time."
+    },
+    {
+      "q": "One attachment is another email, is it converted?",
+      "a": "No. Embedded messages are named in the header but not added. Save it separately from Outlook and convert it on its own."
+    },
+    {
+      "q": "Does it work for PST files with many emails?",
+      "a": "No, this tool converts individual messages. If your emails are in EML format, use EML to PDF."
+    }
+  ]
+}

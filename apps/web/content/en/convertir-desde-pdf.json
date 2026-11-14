@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Convert from PDF brings together on one page every conversion that starts from a PDF. You choose the output format and the form changes to show only the options that make sense for that format. Underneath it uses exactly the same engine as the specific tool for each format, so the result is identical to that of PDF to Word, PDF to Excel or PDF to images.",
+    "There are nineteen targets. Office documents: Word (DOCX), Excel (XLSX), PowerPoint (PPTX), ODT, ODS, ODP and RTF. Text and web: TXT, HTML, EPUB and Markdown. Data: CSV and JSON. Images: JPG, PNG, WEBP, TIFF and SVG. And PDF/A, the PDF variant designed to archive documents for decades.",
+    "Each format has its own settings. For Word, PowerPoint, ODT, ODP and RTF you choose between the editable mode, editable with vector graphics as images, or faithful layout. For Excel and ODS you decide whether each table gets its own sheet or they all go together, and whether numbers such as 1,234.56 become real numbers. For images, the resolution from 72 to 600 dpi, the colour (RGB, greyscale, black and white or CMYK) and the quality; for TIFF, multi-page output and black-and-white compression. CSV lets you choose the delimiter and encoding; HTML and EPUB, a fixed or flowing layout; Markdown, whether to include images in a ZIP and remove repeated headers; PDF/A, the level, from 1b to 3a.",
+    "In office, text and data formats, automatic OCR recognises scanned pages in up to three languages, and except for PDF/A you can limit the conversion to a page range. The conversion runs on our server, without internet access, and files are deleted when your plan's retention period ends: one hour without an account and 24 hours with one."
+  ],
+  "steps": [
+    "Upload one or more PDFs.",
+    "Choose the output format and adjust the options that appear for it.",
+    "Download the converted file or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Is it different from using PDF to Word or another specific tool?",
+      "a": "Not in the result: this page calls the same tool with the same options. It just saves you looking for the page of each format."
+    },
+    {
+      "q": "Which format should I choose to edit the content?",
+      "a": "Word or ODT for text, Excel or ODS for tables and PowerPoint or ODP for presentations. If it needs to look very close to the original, use the faithful layout mode."
+    },
+    {
+      "q": "Does it work with scanned PDFs?",
+      "a": "Yes, in text, office and data formats, thanks to automatic OCR. Images do not need it, because the page is drawn as it is."
+    }
+  ]
+}

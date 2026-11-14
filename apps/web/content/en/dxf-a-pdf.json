@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DXF to PDF converts plans and technical drawings in DXF format into a vector PDF that opens in any viewer, without AutoCAD, LibreCAD or any other CAD program. It is the simplest way to send a plan to a client, an agency or a print shop, or to attach it to a project or a building permit application.",
+    "The plan is read on our server with ezdxf, which tries to recover files with small structural errors instead of rejecting them. The model space, that is, everything the drawing contains, is drawn, converted to SVG and from there to PDF with a Chromium browser that has no internet access. Because the result is vector, you can zoom into any detail without the lines pixelating, and the text of the plan stays sharp.",
+    "Choose the paper from A4, A3, A2, A1 and A0. With automatic orientation, the paper turns to landscape if the drawing is wider than tall and to portrait otherwise, although you can also fix it. The drawing is scaled to fill the whole paper within the margins, which are 10 mm by default and can be set from 0 to 50 mm in the additional options; bear in mind that it is not printed at a specific scale such as 1:50 or 1:100.",
+    "By default the colours of layers and entities are kept on a white background. If you are going to print on a monochrome printer or want a plan that reads better when photocopied, tick «Black and white» and every line will come out black. With several DXF files you get one PDF per plan and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more DXF files.",
+    "Choose the paper, the orientation and whether you want the plan in black and white.",
+    "Download the PDF of each plan or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Are the drawing's layouts kept?",
+      "a": "No. The model space is converted; layouts with their title blocks and viewports are not drawn."
+    },
+    {
+      "q": "I get a warning that the plan has nothing to draw, why?",
+      "a": "The model space of the DXF is empty or its entities have no visible geometry. Check that the drawing is not only in a layout."
+    },
+    {
+      "q": "Can I convert DWG files?",
+      "a": "This tool only accepts DXF. From your CAD program, save or export the DWG as DXF and convert it here."
+    }
+  ]
+}

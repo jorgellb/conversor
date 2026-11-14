@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Convertir desde PDF reúne en una sola página todas las conversiones que parten de un PDF. Eliges el formato de salida y el formulario cambia para mostrar solo las opciones que tienen sentido para ese formato. Por debajo se usa exactamente el mismo motor que la herramienta específica de cada formato, así que el resultado es idéntico al de PDF a Word, PDF a Excel o PDF a imágenes.",
+    "Hay diecinueve destinos. Documentos de oficina: Word (DOCX), Excel (XLSX), PowerPoint (PPTX), ODT, ODS, ODP y RTF. Texto y web: TXT, HTML, EPUB y Markdown. Datos: CSV y JSON. Imágenes: JPG, PNG, WEBP, TIFF y SVG. Y PDF/A, la variante del PDF pensada para archivar documentos durante décadas.",
+    "Cada formato trae sus ajustes. En Word, PowerPoint, ODT, ODP y RTF eliges entre el modo editable, el editable con los gráficos vectoriales como imágenes o el fiel al diseño. En Excel y ODS decides si cada tabla va en su hoja o todas juntas, y si los números como 1.234,56 pasan a ser números de verdad. Para las imágenes, la resolución de 72 a 600 ppp, el color (RGB, gris, blanco y negro o CMYK) y la calidad; para TIFF, el multipágina y la compresión en blanco y negro. CSV permite elegir separador y codificación; HTML y EPUB, un diseño fijo o fluido; Markdown, si incluir las imágenes en un ZIP y quitar encabezados repetidos; PDF/A, el nivel, de 1b a 3a.",
+    "En los formatos de oficina, texto y datos, el OCR automático reconoce las páginas escaneadas en hasta tres idiomas, y salvo en PDF/A puedes limitar la conversión a un rango de páginas. La conversión se hace en nuestro servidor, sin internet, y los archivos se borran al vencer el plazo de tu plan: una hora sin cuenta y 24 horas con cuenta."
+  ],
+  "steps": [
+    "Sube uno o varios PDF.",
+    "Elige el formato de salida y ajusta las opciones que aparecen para él.",
+    "Descarga el archivo convertido o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Es distinto de usar PDF a Word u otra herramienta concreta?",
+      "a": "No en el resultado: esta página llama a la misma herramienta con las mismas opciones. Solo te ahorra buscar la página de cada formato."
+    },
+    {
+      "q": "¿Qué formato elijo para editar el contenido?",
+      "a": "Word u ODT para textos, Excel u ODS para tablas y PowerPoint u ODP para presentaciones. Si necesitas que se parezca mucho al original, usa el modo fiel al diseño."
+    },
+    {
+      "q": "¿Funciona con PDF escaneados?",
+      "a": "Sí, en los formatos de texto, oficina y datos, gracias al OCR automático. Para las imágenes no hace falta, porque se dibuja la página tal cual."
+    }
+  ]
+}

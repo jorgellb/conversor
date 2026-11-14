@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DjVu to PDF converts DjVu documents into PDF. DjVu is a format designed for scanned books, magazines and manuals that achieves very small files by splitting each page into layers: black-and-white text and strokes on one side and the colour background and illustrations on the other. Many digital libraries use it, but you need a dedicated viewer to open it, whereas a PDF reads anywhere.",
+    "The conversion runs on our server with ddjvu, the reference tool from DjVuLibre, which runs as an isolated process with an empty environment and time and memory limits. Each page of the DjVu becomes a page of the PDF, in the same order.",
+    "In the additional options you can set the image quality between 25 and 100 %, with 85 % by default: high values keep fine detail better and weigh more, and low values reduce the size of the PDF. Colour can be full or limited to the black-and-white layer, which leaves only the text and strokes on a white background and gives cleaner, lighter files for text documents with stains or yellowed backgrounds.",
+    "With several DjVu files you get one PDF per file and a ZIP with all of them. The number of pages is limited by your plan: 100 without an account, 300 with a free account and 2000 with Pro. The resulting PDF stores the pages as images; if you need to search or copy the text, run it through OCR PDF afterwards."
+  ],
+  "steps": [
+    "Upload one or more DjVu files.",
+    "If you like, adjust the quality or choose the black-and-white layer only.",
+    "Download the PDF or the ZIP with one PDF per document."
+  ],
+  "faq": [
+    {
+      "q": "The PDF is larger than the DjVu, is that normal?",
+      "a": "Yes: DjVu compresses scanned pages much better than PDF. Lower the quality, try the black-and-white layer or run the result through Compress PDF."
+    },
+    {
+      "q": "When should I choose «Black-and-white layer only»?",
+      "a": "For books and text documents without photos. It removes the background and colour images, so do not use it if the illustrations matter."
+    },
+    {
+      "q": "Can I search for words in the PDF?",
+      "a": "Not directly, because the pages are images. OCR PDF adds a text layer that lets you search and copy."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DXF a PDF convierte planos y dibujos técnicos en formato DXF en un PDF vectorial que se abre en cualquier visor, sin necesidad de AutoCAD, LibreCAD u otro programa de CAD. Es la forma más sencilla de enviar un plano a un cliente, a una gestoría o a la imprenta, o de adjuntarlo a un proyecto o una licencia de obra.",
+    "El plano se lee en nuestro servidor con ezdxf, que intenta recuperar los archivos con pequeños errores de estructura en lugar de rechazarlos. Se dibuja el espacio modelo, es decir, todo lo que contiene el dibujo, y se pasa a SVG y de ahí a PDF con un navegador Chromium sin acceso a internet. Como el resultado es vectorial, puedes ampliar cualquier detalle sin que las líneas se pixelen, y el texto del plano se mantiene nítido.",
+    "Elige el papel entre A4, A3, A2, A1 y A0. Con la orientación automática, el papel se pone en horizontal si el dibujo es más ancho que alto y en vertical en caso contrario, aunque también puedes fijarla. El dibujo se escala para ocupar todo el papel dentro de los márgenes, que son de 10 mm por defecto y se ajustan de 0 a 50 mm en las opciones adicionales; ten en cuenta que no se imprime a una escala concreta como 1:50 o 1:100.",
+    "Por defecto se respetan los colores de las capas y entidades sobre fondo blanco. Si vas a imprimir en una impresora monocroma o quieres un plano más legible en fotocopia, marca «En blanco y negro» y todas las líneas saldrán en negro. Con varios DXF recibes un PDF por plano y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos DXF.",
+    "Elige el papel, la orientación y si quieres el plano en blanco y negro.",
+    "Descarga el PDF de cada plano o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan las presentaciones del dibujo?",
+      "a": "No. Se convierte el espacio modelo; las presentaciones o layouts con sus cajetines y ventanas gráficas no se dibujan."
+    },
+    {
+      "q": "Recibo un aviso de que el plano no tiene nada que dibujar, ¿por qué?",
+      "a": "El espacio modelo del DXF está vacío o sus entidades no tienen geometría visible. Comprueba que el dibujo no esté solo en una presentación."
+    },
+    {
+      "q": "¿Puedo convertir archivos DWG?",
+      "a": "Esta herramienta solo admite DXF. Desde tu programa de CAD, guarda o exporta el DWG como DXF y conviértelo aquí."
+    }
+  ]
+}

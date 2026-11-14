@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HEIC a PDF convierte las fotos HEIC, el formato con el que el iPhone y el iPad guardan las imágenes de forma predeterminada, en un documento PDF que se abre en cualquier ordenador, móvil o navegador. Sirve para entregar fotos de documentos, justificantes o tickets en una gestión que solo admite PDF, o para reunir varias fotos en un único archivo.",
+    "Las imágenes HEIC van comprimidas con HEVC (H.265), una tecnología cubierta por patentes cuyos programas de licencias cobran también a los servicios en la nube que la decodifican. Por eso esta conversión depende de un ajuste del servicio, la decodificación HEVC, que está apagado por defecto y solo se enciende tras una revisión legal. Mientras esté apagado, la herramienta no acepta archivos y la página explica cómo exportar las fotos a JPEG desde el iPhone o el Mac para convertirlas después con JPG a PDF.",
+    "Cuando está activa, la foto se decodifica en nuestro servidor con libheif, compilado solo para leer HEIC, sin ningún codificador HEVC. Cada imagen se pasa a PNG sin pérdida y se coloca en el PDF con img2pdf; si un archivo HEIC guarda varias imágenes, cada una ocupa su propia página.",
+    "Las opciones son las de Imágenes a PDF: tamaño de página entre A0 y A6, Carta, Legal, unas medidas propias en milímetros o pulgadas o el tamaño de la propia foto según sus ppp; orientación automática, vertical u horizontal; margen de cero a 25 mm o el que indiques, y ajuste para encajar, rellenar recortando o mantener el tamaño real. Con varias fotos puedes unirlas en un PDF, con un marcador por imagen si quieres, o crear un PDF por foto y descargarlos en un ZIP."
+  ],
+  "steps": [
+    "Sube una o varias fotos HEIC.",
+    "Elige el tamaño de página, la orientación y el margen.",
+    "Descarga el PDF o el ZIP con un PDF por foto."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué la herramienta aparece desactivada?",
+      "a": "Porque la decodificación HEVC está apagada en este servicio hasta completar la revisión de sus licencias de patentes. Puedes guardar las fotos como JPEG en el propio iPhone y usar JPG a PDF."
+    },
+    {
+      "q": "¿Cómo hago que el iPhone guarde las fotos en JPEG?",
+      "a": "En Ajustes › Cámara › Formatos, elige «Más compatible». Las fotos que ya tienes se convierten a JPEG al pasarlas al ordenador si en Ajustes › Fotos activas «Automático»."
+    },
+    {
+      "q": "¿Pierden calidad las fotos?",
+      "a": "No respecto a lo que se decodifica: cada imagen entra en el PDF como PNG sin pérdida. A cambio, el PDF puede pesar más que el HEIC; Comprimir PDF lo reduce."
+    }
+  ]
+}

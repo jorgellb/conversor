@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a JSON saca a un archivo JSON las tablas de un PDF o la estructura completa del documento, para que un programa, una hoja de cálculo con Power Query o un script en Python o JavaScript pueda leer los datos sin copiarlos a mano. El análisis lo hace Docling, que localiza las tablas, reconstruye sus filas y columnas y reconoce títulos, párrafos y listas.",
+    "Con «Las tablas», que es la opción predeterminada, recibes un único JSON con el nombre del archivo de origen y una lista de tablas. Cada tabla lleva su número, la página del PDF en la que aparece, la cabecera cuando la tiene y las filas, con cada celda como texto tal y como se lee en el original. Las claves van en inglés (source, tables, number, page, header, rows), como es habitual en los formatos de datos.",
+    "Con «El documento entero» obtienes el formato propio de Docling, que describe cada elemento de la página: encabezados, párrafos, listas y tablas, con su orden de lectura y su posición. Es útil para indexar documentos, prepararlos para un buscador o alimentar otro proceso que necesite saber qué es un título y qué es texto normal.",
+    "Puedes limitar el análisis a unas páginas concretas, por ejemplo «3-5,9»; los números de página del JSON siguen siendo los del PDF original. Si las páginas son escaneadas, el OCR automático reconoce el texto antes de buscar las tablas, en hasta tres idiomas que eliges en las opciones adicionales. Con varios PDF recibes un JSON por archivo y un ZIP con todos. El trabajo se hace en nuestro servidor, sin conexión a internet, y es de los pesados: cuenta para el límite diario de tareas pesadas de tu plan."
+  ],
+  "steps": [
+    "Sube uno o varios PDF.",
+    "Elige si quieres solo las tablas o el documento entero y, si hace falta, las páginas.",
+    "Descarga el JSON o el ZIP con un JSON por PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué recibo si el PDF no tiene tablas?",
+      "a": "Con la opción de tablas, un JSON válido con la lista de tablas vacía. Si lo que quieres es el texto, elige «El documento entero»."
+    },
+    {
+      "q": "¿Los números se convierten en números del JSON?",
+      "a": "No. Cada celda se guarda como texto, igual que aparece en el PDF, para no perder ceros a la izquierda ni formatos. El programa que lea el JSON decide cómo interpretarlos."
+    },
+    {
+      "q": "¿Y si prefiero una hoja de cálculo?",
+      "a": "PDF a CSV guarda cada tabla en un CSV, y PDF a Excel las coloca en hojas con los números ya convertidos."
+    }
+  ]
+}

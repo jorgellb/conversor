@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DjVu a PDF convierte documentos DjVu en PDF. DjVu es un formato pensado para libros, revistas y manuales escaneados que consigue archivos muy ligeros separando cada página en capas: el texto y los trazos en blanco y negro por un lado y el fondo y las ilustraciones en color por otro. Muchas bibliotecas digitales lo usan, pero hace falta un visor específico para abrirlo, mientras que el PDF se lee en cualquier parte.",
+    "La conversión se hace en nuestro servidor con ddjvu, la herramienta de referencia de DjVuLibre, que se ejecuta como un proceso aislado, con un entorno vacío y límites de tiempo y memoria. Cada página del DjVu pasa a ser una página del PDF, en el mismo orden.",
+    "En las opciones adicionales puedes ajustar la calidad de imagen entre 25 y 100 %, con 85 % por defecto: los valores altos conservan mejor los detalles finos y pesan más, y los bajos reducen el tamaño del PDF. El color puede ser completo o limitarse a la capa de blanco y negro, que deja solo el texto y los trazos sobre fondo blanco y da archivos más limpios y ligeros en documentos de texto con manchas o fondos amarillentos.",
+    "Con varios DjVu recibes un PDF por archivo y un ZIP con todos. El número de páginas tiene el límite de tu plan: 100 sin cuenta, 300 con la cuenta gratuita y 2000 con Pro. El PDF resultante guarda las páginas como imagen; si necesitas buscar o copiar el texto, pásalo después por OCR de PDF."
+  ],
+  "steps": [
+    "Sube uno o varios archivos DjVu.",
+    "Si quieres, ajusta la calidad o elige solo la capa de blanco y negro.",
+    "Descarga el PDF o el ZIP con un PDF por documento."
+  ],
+  "faq": [
+    {
+      "q": "El PDF ocupa más que el DjVu, ¿es normal?",
+      "a": "Sí: DjVu comprime mucho mejor las páginas escaneadas que el PDF. Baja la calidad, prueba la capa de blanco y negro o pasa el resultado por Comprimir PDF."
+    },
+    {
+      "q": "¿Cuándo elijo «Solo la capa de blanco y negro»?",
+      "a": "En libros y documentos de texto sin fotos. Elimina el fondo y las imágenes en color, así que no la uses si las ilustraciones son importantes."
+    },
+    {
+      "q": "¿Puedo buscar palabras en el PDF?",
+      "a": "No directamente, porque las páginas son imágenes. OCR de PDF añade una capa de texto que permite buscar y copiar."
+    }
+  ]
+}
