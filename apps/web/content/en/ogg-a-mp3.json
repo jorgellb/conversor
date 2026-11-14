@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OGG to MP3 converts OGG files into MP3, the format that any phone, car, speaker or editing program can play. It is handy for the voice notes saved by WhatsApp and other messaging apps, for sound effects and music from games, and for audio downloaded from websites that use Ogg. It accepts .ogg, .oga and .opus files.",
+    "An OGG file can hold Vorbis or Opus audio, and you do not need to know which: the real content of the file is checked, not just its extension. FFmpeg decodes it on our server and re-encodes it as MP3 with LAME. The name is kept and only the extension changes, so \"audio.ogg\" becomes \"audio.mp3\".",
+    "You choose the MP3 quality from 128 kbps, enough for speech and for saving space, 192 kbps, which is the default, 320 kbps for music, and VBR, a variable bitrate that spends more bits on complex passages (LAME's V2 level). Channels can stay as in the original or be changed to mono or stereo.",
+    "Under more options you can normalize the volume to −16 LUFS, the usual level for the web and podcasts, so that a voice note recorded very quietly can be heard properly next to other audio. If you upload several files, you get each MP3 and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more OGG, OGA or OPUS files.",
+    "Choose the MP3 quality and the channels; normalize the volume if you need to.",
+    "Download each MP3 or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Does the audio gain quality when going from OGG to MP3?",
+      "a": "No. Both formats use lossy compression, so converting does not bring back what the OGG already discarded. A high quality setting avoids losing more along the way, but the MP3 will be larger without sounding better than the original."
+    },
+    {
+      "q": "How many OGG files can I convert, and how long can they be?",
+      "a": "Each file can last up to 10 minutes without an account, 30 minutes with a free account and 4 hours on Pro. You can upload up to 5, 20 or 100 files per task depending on the plan, and it is a light conversion: 20 tasks a day without an account, 50 with a free account and 1000 on Pro."
+    },
+    {
+      "q": "Are the title and artist kept?",
+      "a": "No. Only the audio track goes into the MP3: the OGG's tags, such as the title, artist or album, and the cover art are not copied."
+    },
+    {
+      "q": "What if I need a WAV to edit the audio?",
+      "a": "Use OGG to WAV, which gives uncompressed 16-bit PCM audio at 44.1 or 48 kHz, easy to open in any editor."
+    }
+  ]
+}

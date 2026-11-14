@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WAV a MP3 convierte grabaciones WAV en MP3, que ocupan muchísimo menos. Es lo que necesitas para enviar por correo o por mensajería lo que grabaste con una grabadora de mano, una tarjeta de sonido o un programa de edición, o para publicar un pódcast o una maqueta sin subir archivos enormes.",
+    "Un WAV suele guardar el audio sin comprimir. Un minuto con calidad de CD (44,1 kHz, 16 bits, estéreo) ocupa unos 10 MB; el mismo minuto en MP3 a 128 kbps, menos de 1 MB, y a 192 kbps, la opción por defecto, alrededor de 1,4 MB. Con 320 kbps o VBR, de tasa variable, el archivo crece algo, pero conserva más detalle para música.",
+    "Ten en cuenta el tamaño de subida: con el límite de 50 MB por archivo sin cuenta caben unos 5 minutos de WAV con calidad de CD, y con los 100 MB de la cuenta gratuita, unos 10. En Pro cada archivo puede tener hasta 1 GB y durar hasta 4 horas. Los WAV de 24 bits o de 96 kHz ocupan aún más por minuto.",
+    "El MP3 admite hasta 48 kHz y dos canales, así que una grabación a 96 kHz sale a 48 kHz y una multicanal se mezcla en estéreo. Puedes pasar a mono una grabación de voz para que ocupe menos, y en las opciones adicionales normalizar el volumen a −16 LUFS. Lo convierte FFmpeg con LAME en nuestro servidor."
+  ],
+  "steps": [
+    "Sube uno o varios archivos WAV.",
+    "Elige la calidad del MP3 y, para voz, el modo mono.",
+    "Descarga cada MP3 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué calidad elijo?",
+      "a": "Para voz, 128 kbps en mono; para un uso general, 192 kbps; para música que vas a escuchar con atención, 320 kbps o VBR. Una calidad más alta da un archivo más grande, nunca uno mejor que el WAV original."
+    },
+    {
+      "q": "¿Cuántos WAV puedo convertir al día?",
+      "a": "Es una conversión ligera: 20 tareas al día sin cuenta, 50 con cuenta gratuita y 1000 en Pro, con hasta 5, 20 o 100 archivos por tarea según el plan."
+    },
+    {
+      "q": "¿Se guardan los marcadores o los datos del WAV?",
+      "a": "No. El MP3 lleva solo el audio: los marcadores, las regiones y los metadatos que algunos programas guardan dentro del WAV no se copian."
+    },
+    {
+      "q": "¿Y si necesito lo contrario?",
+      "a": "MP3 a WAV convierte un MP3 en WAV PCM de 16 bits a 44,1 o 48 kHz, aunque no recupera la calidad perdida al comprimir."
+    }
+  ]
+}

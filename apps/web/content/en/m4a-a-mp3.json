@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "M4A to MP3 converts .m4a audio files into MP3. It is the format used by the iPhone's Voice Memos app, many Android recorders and programs such as GarageBand, and also by unprotected songs bought on iTunes. The MP3 opens in players, cars, TVs and programs that do not accept M4A.",
+    "An M4A file is an MP4 container that only carries audio, almost always AAC and sometimes ALAC, Apple's lossless format. Both are converted the same way: the real content of the file is checked, FFmpeg decodes it on our server and LAME encodes it as MP3. If the file has several audio tracks, the first one is converted.",
+    "You can choose 128 kbps, 192 kbps (the default), 320 kbps or VBR, a high-quality variable bitrate. For an iPhone voice memo, 128 kbps in mono is more than enough; for an ALAC song, 320 kbps keeps the most an MP3 can hold. Channels stay as in the original or are forced to mono or stereo, and under more options there is volume normalization to −16 LUFS.",
+    "The resulting file has the same name as the original with the .mp3 extension. If you convert several M4A files at once, you download them one by one or in a single ZIP."
+  ],
+  "steps": [
+    "Upload one or more M4A files.",
+    "Choose the MP3 quality and the channels.",
+    "Download each MP3 or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Can I convert songs bought on iTunes?",
+      "a": "Only those without copy protection. Older DRM-protected songs, which usually have the .m4p extension, and tracks downloaded from Apple Music for offline listening cannot be decrypted."
+    },
+    {
+      "q": "Are the title, artist and cover art kept?",
+      "a": "No. The MP3 carries only the audio, without the M4A's tags or image. If you need them, add them afterwards with a tag editor."
+    },
+    {
+      "q": "How long can each M4A be?",
+      "a": "Up to 10 minutes without an account, 30 minutes with a free account and 4 hours on Pro, which lets you convert a lecture or a meeting recorded on your phone. Without an account you can do 20 conversions a day; with a free account, 50."
+    },
+    {
+      "q": "Where is it converted?",
+      "a": "On our server, with FFmpeg. Your audio files and the MP3s are deleted after one hour without an account and after 24 hours with one."
+    }
+  ]
+}

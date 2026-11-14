@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WMA a MP3 convierte archivos Windows Media Audio en MP3. Muchas colecciones de música pasadas desde CD con el Reproductor de Windows Media en los años 2000 están en WMA, igual que algunas grabaciones de dictáfonos y programas de Windows. Hoy pocos móviles, coches y aplicaciones lo reproducen; el MP3, en cambio, funciona en casi todos.",
+    "Se admiten las variantes que usaba Windows: WMA estándar, WMA Pro, WMA Lossless (sin pérdida) y WMA Voice. FFmpeg las decodifica en nuestro servidor y LAME genera el MP3, con el mismo nombre de archivo y la extensión .mp3. Se comprueba el contenido real, así que un archivo que no sea WMA se rechaza aunque tenga esa extensión.",
+    "Como el WMA estándar ya comprime con pérdida, no tiene sentido subir mucho la calidad: si el original es de 128 kbps, un MP3 a 192 kbps (la opción por defecto) conserva lo que hay sin hincharlo. Con WMA Lossless o WMA Pro, 320 kbps o VBR, de tasa variable, aprovechan mejor el original. Los canales pueden quedar como estaban o pasar a mono o a estéreo.",
+    "La opción adicional «Normalizar volumen» lleva cada archivo a −16 LUFS, para que discos ripeados con niveles distintos suenen parecidos en una misma lista de reproducción. Con varios archivos descargas cada MP3 o un único ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos WMA.",
+    "Elige la calidad del MP3 y los canales.",
+    "Descarga los MP3 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué falla la conversión de algunos WMA?",
+      "a": "Los WMA con protección anticopia (DRM), como los de tiendas y servicios de suscripción antiguos, no se pueden descifrar y la conversión no es posible. También fallan los archivos dañados o incompletos."
+    },
+    {
+      "q": "¿Puedo convertir toda una carpeta de música?",
+      "a": "Por tandas: hasta 5 archivos sin cuenta, 20 con cuenta gratuita y 100 en Pro, cada uno de hasta 10 minutos, 30 minutos o 4 horas según el plan, y descargas cada tanda en un ZIP."
+    },
+    {
+      "q": "¿Se mantienen los datos del álbum?",
+      "a": "No. El título, el artista, el álbum y la carátula que guardaba el WMA no pasan al MP3, que lleva solo el audio."
+    },
+    {
+      "q": "¿Dónde quedan mis archivos?",
+      "a": "Se convierten en nuestro servidor y se borran a la hora sin cuenta o a las 24 horas con cuenta, sin que nadie los escuche."
+    }
+  ]
+}

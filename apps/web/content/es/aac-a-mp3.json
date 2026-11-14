@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AAC a MP3 convierte audios AAC en MP3. Los archivos .aac aparecen al grabar con algunas aplicaciones y grabadoras, al guardar emisiones de radio por internet o al sacar el audio de un vídeo sin contenedor. Son pequeños y suenan bien, pero muchos reproductores de coche, equipos de música y programas antiguos no los abren; el MP3 funciona en todos.",
+    "Acepta AAC «en bruto» (.aac, con cabeceras ADTS) y AAC dentro de un contenedor M4A. Un .aac empieza de forma muy parecida a un MP3, así que algunos programas los confunden; aquí se distinguen por la cabecera del archivo y se convierten de verdad, no solo se cambia la extensión. FFmpeg lo decodifica en nuestro servidor y LAME lo codifica en MP3.",
+    "Elige 128, 192 o 320 kbps, o VBR, una tasa variable que ajusta los bits a lo que suena. Como el AAC es más eficiente que el MP3, un AAC de 128 kbps suele necesitar algo más en MP3 para no perder calidad: 192 kbps, la opción por defecto, es un buen punto de partida. Puedes dejar los canales como vienen o pasar a mono o a estéreo.",
+    "En las opciones adicionales, «Normalizar volumen» lleva el audio a −16 LUFS, útil si juntas grabaciones con niveles distintos. El MP3 conserva el nombre del archivo, y con varios archivos recibes también un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos AAC o M4A.",
+    "Elige la calidad del MP3 y los canales.",
+    "Descarga los MP3 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué no basta con renombrar el .aac a .mp3?",
+      "a": "Porque son códecs distintos: cambiar la extensión no cambia el contenido, y muchos reproductores rechazan el archivo o lo reproducen mal. Aquí el audio se decodifica y se vuelve a codificar en MP3."
+    },
+    {
+      "q": "¿Qué límites tiene?",
+      "a": "Cada AAC puede durar 10 minutos sin cuenta, 30 con cuenta gratuita y 4 horas en Pro. Es una tarea ligera, de la que puedes hacer 20 al día sin cuenta, 50 con cuenta gratuita y 1000 en Pro."
+    },
+    {
+      "q": "¿Se copian las etiquetas del archivo?",
+      "a": "No. El MP3 sale sin título, artista, álbum ni carátula; solo lleva el audio de la primera pista."
+    },
+    {
+      "q": "¿Cuánto tiempo guardáis mis audios?",
+      "a": "Una hora si no tienes cuenta y 24 horas si la tienes; después se borran del servidor, el original y el MP3."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AMR to MP3 converts voice recordings in AMR format into MP3. It is the format of the voice recorders on many older phones, of some call-recording apps and of MMS voice messages. Many current players and computers no longer open .amr files; MP3 plays anywhere.",
+    "AMR is a telephone codec: the most common variant, AMR-NB, records at 8 kHz in mono, with a sound similar to a phone call, and the wideband one, AMR-WB, at 16 kHz. The MP3 keeps that sample rate, and at 8 kHz the MP3 format does not go above 64 kbps, so choosing 192 or 320 kbps gives neither a bigger nor a better file: the quality is set by the recording.",
+    "The most practical choice is to leave the default quality or pick 128 kbps, with channels as in the original or in mono. Under more options, \"Normalize volume\" brings the voice to −16 LUFS, which helps a lot with call or meeting recordings that came out quiet.",
+    "The conversion is done by FFmpeg with LAME on our server; the file keeps its name with the .mp3 extension. If you have several recordings, upload them together and download them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more AMR files.",
+    "Leave the default quality and, if you like, normalize the volume.",
+    "Download each MP3 or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Will the MP3 sound better than the AMR?",
+      "a": "No. The MP3 plays the same voice with the same telephone quality; what it gains is compatibility. Normalizing the volume can make it easier to understand if it was quiet, but it does not add detail."
+    },
+    {
+      "q": "Can I convert the MP3 back to AMR?",
+      "a": "Not here. FFmpeg has no free AMR encoder, so the portal reads AMR but does not produce it."
+    },
+    {
+      "q": "How long can the recordings be?",
+      "a": "Up to 10 minutes per file without an account, 30 minutes with a free account and 4 hours on Pro. Without an account you can upload 5 recordings per task; with a free account, 20."
+    },
+    {
+      "q": "Can I turn the recording into text?",
+      "a": "Yes, with Transcribe audio, which accepts AMR directly. Bear in mind that AMR's telephone quality makes the transcription less accurate than with a better-quality recording."
+    }
+  ]
+}

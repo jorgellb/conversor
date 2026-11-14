@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AIFF to MP3 converts AIFF files, Apple's uncompressed audio format, into MP3. AIFF files come from GarageBand, Logic Pro and other Mac programs, from sample libraries and from CDs imported in that format with Music or iTunes. They sound the same as a WAV and take up as much space; MP3 shrinks them to a fraction so you can share them or keep them on your phone.",
+    "It accepts .aiff and .aif files, and also AIFF-C, the variant that can carry compressed audio. One minute of CD-quality AIFF takes about 10 MB; as MP3 at 192 kbps, the default quality, around 1.4 MB. That is why, without an account, the 50 MB per file limit fits about 5 minutes; with a free account, about 10, and on Pro, up to 1 GB.",
+    "For a mix or a demo you want to show, choose 320 kbps or VBR, LAME's high-quality variable bitrate; for speech or tests, 128 kbps. 24-bit, 96 kHz exports come out at 48 kHz, the MP3 maximum, and multichannel ones are mixed down to stereo. You can force mono or stereo and, under more options, normalize to −16 LUFS.",
+    "FFmpeg does the conversion with LAME on our server and each MP3 keeps the AIFF's name. Upload several at once and download them separately or in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more AIFF or AIF files.",
+    "Choose the MP3 quality and the channels.",
+    "Download each MP3 or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Does it work with GarageBand or Logic exports?",
+      "a": "Yes, as long as you export them as AIFF. If you save the project in another format, such as M4A, use M4A to MP3."
+    },
+    {
+      "q": "Is the track information kept?",
+      "a": "No. The MP3 carries only the audio: the track name, artist and cover art stored in the AIFF are not copied."
+    },
+    {
+      "q": "How many minutes can I convert?",
+      "a": "Each AIFF can last up to 10 minutes without an account, 30 with a free account and 4 hours on Pro, on top of the size limit. You can do 20 conversions a day without an account, 50 with a free account and 1000 on Pro."
+    },
+    {
+      "q": "Do my files stay on the server?",
+      "a": "Only as long as needed: they are deleted after one hour if you have no account and after 24 hours if you do."
+    }
+  ]
+}

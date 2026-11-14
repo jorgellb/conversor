@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WMA to MP3 converts Windows Media Audio files into MP3. Many music collections ripped from CD with Windows Media Player in the 2000s are in WMA, as are some recordings from dictaphones and Windows programs. Few phones, cars and apps play it today; MP3, on the other hand, works almost everywhere.",
+    "The variants Windows used are supported: standard WMA, WMA Pro, WMA Lossless and WMA Voice. FFmpeg decodes them on our server and LAME produces the MP3, with the same file name and the .mp3 extension. The real content is checked, so a file that is not WMA is rejected even if it has that extension.",
+    "Since standard WMA is already lossy, there is no point in raising the quality too much: if the original is 128 kbps, an MP3 at 192 kbps (the default) keeps what is there without bloating it. With WMA Lossless or WMA Pro, 320 kbps or VBR, a variable bitrate, make better use of the original. Channels can stay as they were or switch to mono or stereo.",
+    "The extra option \"Normalize volume\" brings each file to −16 LUFS, so that albums ripped at different levels sound alike in the same playlist. With several files you download each MP3 or a single ZIP."
+  ],
+  "steps": [
+    "Upload one or more WMA files.",
+    "Choose the MP3 quality and the channels.",
+    "Download the MP3 files or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Why does the conversion fail for some WMA files?",
+      "a": "WMA files with copy protection (DRM), such as those from old stores and subscription services, cannot be decrypted, so they cannot be converted. Damaged or incomplete files also fail."
+    },
+    {
+      "q": "Can I convert a whole music folder?",
+      "a": "In batches: up to 5 files without an account, 20 with a free account and 100 on Pro, each one up to 10 minutes, 30 minutes or 4 hours long depending on the plan, and you download each batch as a ZIP."
+    },
+    {
+      "q": "Is the album information kept?",
+      "a": "No. The title, artist, album and cover art stored in the WMA do not carry over to the MP3, which contains only the audio."
+    },
+    {
+      "q": "Where do my files end up?",
+      "a": "They are converted on our server and deleted after one hour without an account or after 24 hours with one, without anyone listening to them."
+    }
+  ]
+}

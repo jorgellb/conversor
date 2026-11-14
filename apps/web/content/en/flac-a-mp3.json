@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FLAC to MP3 converts your lossless music into MP3 to carry it on your phone, on a USB stick for the car or on a player with little storage. FLAC keeps all the sound of a CD or a high-resolution download, but it takes up a lot of space; MP3 is several times smaller and plays anywhere.",
+    "For music, choose 320 kbps, the highest MP3 quality, or VBR, which spreads the bits according to how complex each passage is, at LAME's V2 level, and gives slightly smaller files. 192 kbps, the default, sounds good on most equipment, and 128 kbps suits you when space matters more than detail.",
+    "MP3 supports 48 kHz and two channels at most. A high-resolution FLAC, at 96 kHz for example, comes out at 48 kHz, and one with 5.1 surround sound is mixed down to stereo. You can also force mono or stereo and, under more options, normalize the volume to −16 LUFS, although on an album this changes the balance between songs that whoever mastered it decided on.",
+    "The conversion is done by FFmpeg with LAME on our server, and each file keeps its name with the .mp3 extension. Upload a whole album and download it in a single ZIP: up to 5 files per task without an account, 20 with a free account and 100 on Pro."
+  ],
+  "steps": [
+    "Upload the FLAC tracks you want to convert.",
+    "Choose 320 kbps or VBR for music, or a lower quality to save space.",
+    "Download the MP3 files or the album's ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Are the album's tags and cover art kept?",
+      "a": "No. The MP3 comes out with the audio only: the FLAC's title, artist, track number and cover art are not copied. To organise your library, add them afterwards with a tag editor."
+    },
+    {
+      "q": "Will I hear the difference from the FLAC?",
+      "a": "It depends on your ears and your equipment. At 320 kbps or in VBR, many people find it hard to tell the MP3 from the original on ordinary headphones; at 128 kbps it shows sooner in cymbals and reverb."
+    },
+    {
+      "q": "How long can each track be?",
+      "a": "Up to 10 minutes without an account, which covers almost any song, 30 minutes with a free account and 4 hours on Pro, enough for a DJ set or a concert in a single file."
+    },
+    {
+      "q": "Can I go back to FLAC later?",
+      "a": "The format can be changed, but the quality lost when going to MP3 does not come back. Keep the original FLAC files if you want to preserve the full sound."
+    }
+  ]
+}

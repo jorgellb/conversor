@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OPUS to MP3 converts WhatsApp voice notes, which your phone stores as .opus files, into MP3 you can play in any player, attach to an email, drop into a video editor or keep on your computer. It also accepts voice messages from Telegram and other apps that use Opus audio inside an .ogg file.",
+    "Opus is a codec designed for voice over the internet: it sounds good with very little data, but many programs, cars and older players cannot open it. The resulting MP3 keeps the 48 kHz sample rate that Opus works at and the same file name, with the extension changed. The conversion is done by FFmpeg with the LAME encoder on our server.",
+    "For a voice note, 128 kbps in mono is enough and gives a small file; 192 kbps, the default, 320 kbps and VBR, a variable bitrate, make more sense when the audio contains music. For channels you can keep the original, or choose mono or stereo.",
+    "Voice notes are often recorded far from the microphone or out in the street. With \"Normalize volume\", under more options, the audio is brought to −16 LUFS, the recommended level for speech on the web, and quiet recordings get louder without clipping."
+  ],
+  "steps": [
+    "Save the voice note to your phone or computer and upload it; you can upload several.",
+    "Choose the quality and, for speech, mono.",
+    "Download the MP3 files one by one or together in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "How do I get a voice note out of WhatsApp?",
+      "a": "From the chat, share or forward it as a file to your email, a cloud drive or your computer, or copy it from WhatsApp's media folder on the phone. What you get is the .opus or .ogg file you can upload here."
+    },
+    {
+      "q": "How many voice notes can I convert at once?",
+      "a": "Up to 5 per task without an account, 20 with a free account and 100 on Pro, and you get a ZIP with all of them. Each note can be up to 10 minutes long without an account, half an hour with a free account and 4 hours on Pro."
+    },
+    {
+      "q": "Can it also transcribe them?",
+      "a": "No: this tool only changes the format. To turn the voice note into text use Transcribe audio, which accepts OPUS directly and does not need the MP3."
+    },
+    {
+      "q": "Does anyone else listen to my audio?",
+      "a": "No. It is converted automatically on our server and deleted after one hour if you have no account, or after 24 hours if you do."
+    }
+  ]
+}

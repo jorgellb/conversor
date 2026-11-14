@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MP4 to MP3 extracts the audio from a video and saves it as MP3. Use it to keep the music from your own music video, the talk from a recorded conference, what was said in a video call or the sound of a phone video, so you can listen without a screen or use it in a podcast.",
+    "The picture is discarded: only the video's first audio track is read and encoded as MP3 with LAME, on our server. If the MP4 has several audio tracks, for example one per language, the first one is used. If the video has no sound, the task tells you instead of giving you an empty file. It also accepts M4A files.",
+    "Quality can be 128, 192 (the default) or 320 kbps, or VBR, a variable bitrate. For a talk or a lecture, 128 kbps in mono is enough; for music, 320 kbps. If the video has 5.1 surround sound, the MP3 comes out in stereo, because the format supports two channels at most. Under more options you can even out the volume to −16 LUFS.",
+    "Videos weigh much more than their audio, so mind the size: each file can be up to 50 MB without an account, 100 MB with a free account and 1 GB on Pro. Unlike the video tools, this one does not require the Pro plan."
+  ],
+  "steps": [
+    "Upload one or more MP4 videos.",
+    "Choose the MP3 quality and whether you want mono or stereo.",
+    "Download the MP3 of each video or a ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "How long can the video be?",
+      "a": "What counts is the length of the audio: up to 10 minutes without an account, 30 minutes with a free account and 4 hours on Pro, always within each plan's maximum file size."
+    },
+    {
+      "q": "Can I paste a YouTube link?",
+      "a": "No. The tool works with files you upload yourself and does not download videos from other websites. Only use videos you have the right to use."
+    },
+    {
+      "q": "Does it work with MOV, MKV or WebM?",
+      "a": "No: it only accepts MP4 and M4A. To turn what is said in a video into text, Video to subtitles also accepts MOV, MKV, WebM and AVI."
+    },
+    {
+      "q": "What happens to the video I upload?",
+      "a": "It is only used to extract the audio and is deleted, together with the MP3, after one hour if you have no account or after 24 hours if you do."
+    }
+  ]
+}

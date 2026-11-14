@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "M4A a MP3 convierte los audios .m4a en MP3. Es el formato en que guardan sus grabaciones la app Notas de voz del iPhone, muchas grabadoras de Android y programas como GarageBand, y también el de las canciones compradas en iTunes sin protección. El MP3 se abre en reproductores, coches, televisores y programas que no aceptan M4A.",
+    "Un M4A es un contenedor MP4 que solo lleva audio, casi siempre en AAC y a veces en ALAC, el formato sin pérdida de Apple. Los dos se convierten igual: se comprueba el contenido real del archivo, FFmpeg lo decodifica en nuestro servidor y LAME lo codifica en MP3. Si el archivo trae varias pistas de audio, se convierte la primera.",
+    "Puedes elegir 128 kbps, 192 kbps (por defecto), 320 kbps o VBR, una tasa variable de alta calidad. Para una nota de voz del iPhone, 128 kbps en mono sobra; para una canción en ALAC, 320 kbps conserva el máximo que admite el MP3. Los canales se dejan como en el original o se fuerzan a mono o a estéreo, y en las opciones adicionales hay normalización del volumen a −16 LUFS.",
+    "El archivo resultante se llama igual que el original con la extensión .mp3. Si conviertes varios M4A a la vez, los descargas uno a uno o en un único ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos M4A.",
+    "Elige la calidad del MP3 y los canales.",
+    "Descarga cada MP3 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo convertir canciones compradas en iTunes?",
+      "a": "Solo las que no tienen protección anticopia. Las canciones antiguas con DRM, que suelen tener la extensión .m4p, y las descargadas de Apple Music para escuchar sin conexión no se pueden descifrar."
+    },
+    {
+      "q": "¿Se mantienen el título, el artista y la carátula?",
+      "a": "No. El MP3 lleva solo el audio, sin las etiquetas ni la imagen del M4A. Si las necesitas, añádelas después con un editor de etiquetas."
+    },
+    {
+      "q": "¿Cuánto puede durar cada M4A?",
+      "a": "Hasta 10 minutos sin cuenta, 30 minutos con cuenta gratuita y 4 horas en Pro, lo que permite convertir una clase o una reunión grabada con el móvil. Sin cuenta puedes hacer 20 conversiones al día; con cuenta gratuita, 50."
+    },
+    {
+      "q": "¿Dónde se convierte?",
+      "a": "En nuestro servidor, con FFmpeg. Tus audios y los MP3 se borran a la hora sin cuenta y a las 24 horas con cuenta."
+    }
+  ]
+}

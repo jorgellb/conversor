@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MP4 a MP3 extrae el audio de un vídeo y lo guarda como MP3. Sirve para quedarte con la música de un videoclip propio, con la charla de una conferencia grabada, con lo que se dijo en una videollamada o con el sonido de un vídeo del móvil para escucharlo sin pantalla o usarlo en un pódcast.",
+    "La imagen se descarta: solo se lee la primera pista de audio del vídeo y se codifica en MP3 con LAME, en nuestro servidor. Si el MP4 tiene varias pistas de audio, por ejemplo una por idioma, se usa la primera. Si el vídeo no tiene sonido, la tarea te avisa en lugar de darte un archivo vacío. También acepta archivos M4A.",
+    "La calidad se elige entre 128, 192 (por defecto) y 320 kbps, o VBR, de tasa variable. Para una charla o una clase, 128 kbps en mono basta; para música, 320 kbps. Si el vídeo tiene sonido envolvente 5.1, el MP3 sale en estéreo, porque el formato admite como mucho dos canales. En las opciones adicionales puedes igualar el volumen a −16 LUFS.",
+    "Los vídeos pesan mucho más que su audio, así que fíjate en el tamaño: cada archivo puede tener hasta 50 MB sin cuenta, 100 MB con cuenta gratuita y 1 GB en Pro. Esta herramienta no requiere el plan Pro, a diferencia de las de vídeo."
+  ],
+  "steps": [
+    "Sube uno o varios vídeos MP4.",
+    "Elige la calidad del MP3 y si lo quieres en mono o en estéreo.",
+    "Descarga el MP3 de cada vídeo o un ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuánto puede durar el vídeo?",
+      "a": "Cuenta la duración del audio: hasta 10 minutos sin cuenta, 30 minutos con cuenta gratuita y 4 horas en Pro, siempre dentro del tamaño máximo de archivo de cada plan."
+    },
+    {
+      "q": "¿Puedo pegar un enlace de YouTube?",
+      "a": "No. La herramienta trabaja con archivos que subes tú y no descarga vídeos de otras webs. Usa solo vídeos que tengas derecho a usar."
+    },
+    {
+      "q": "¿Sirve para MOV, MKV o WebM?",
+      "a": "No: solo admite MP4 y M4A. Para pasar a texto lo que se dice en un vídeo, Vídeo a subtítulos acepta también MOV, MKV, WebM y AVI."
+    },
+    {
+      "q": "¿Qué pasa con el vídeo que subo?",
+      "a": "Se usa solo para extraer el audio y se borra, junto con el MP3, a la hora si no tienes cuenta o a las 24 horas si la tienes."
+    }
+  ]
+}

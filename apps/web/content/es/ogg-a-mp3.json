@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OGG a MP3 convierte archivos OGG en MP3, el formato que reproduce cualquier móvil, coche, altavoz o programa de edición. Sirve para las notas de voz que guardan WhatsApp y otras aplicaciones de mensajería, para efectos y músicas de juegos y para audios descargados de webs que usan Ogg. Admite archivos .ogg, .oga y .opus.",
+    "Dentro de un OGG puede haber audio Vorbis u Opus, y no necesitas saber cuál: se mira el contenido real del archivo, no solo su extensión. FFmpeg lo decodifica en nuestro servidor y lo vuelve a codificar en MP3 con LAME. El nombre se mantiene y solo cambia la extensión, de modo que «audio.ogg» pasa a llamarse «audio.mp3».",
+    "La calidad del MP3 se elige entre 128 kbps, suficiente para voz y para ahorrar espacio, 192 kbps, que es la opción por defecto, 320 kbps para música, y VBR, una tasa variable que dedica más bits a los pasajes complejos (el nivel V2 de LAME). Los canales pueden quedarse como en el original o pasar a mono o a estéreo.",
+    "En las opciones adicionales puedes normalizar el volumen a −16 LUFS, el nivel habitual de la web y los pódcast, para que una nota de voz grabada muy baja se oiga bien al lado de otros audios. Si subes varios archivos, recibes cada MP3 y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos OGG, OGA u OPUS.",
+    "Elige la calidad del MP3 y los canales; normaliza el volumen si lo necesitas.",
+    "Descarga cada MP3 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Gana calidad el audio al pasar de OGG a MP3?",
+      "a": "No. Los dos formatos comprimen con pérdida, así que convertir no recupera lo que el OGG ya descartó. Una calidad alta evita perder más por el camino, pero el MP3 ocupará más sin sonar mejor que el original."
+    },
+    {
+      "q": "¿Cuántos OGG puedo convertir y de qué duración?",
+      "a": "Cada audio puede durar hasta 10 minutos sin cuenta, 30 minutos con cuenta gratuita y 4 horas en Pro. Por tarea se suben hasta 5, 20 o 100 archivos según el plan, y es una conversión ligera: 20 tareas al día sin cuenta, 50 con cuenta gratuita y 1000 en Pro."
+    },
+    {
+      "q": "¿Se conservan el título y el artista?",
+      "a": "No. Al MP3 solo pasa la pista de audio: las etiquetas del OGG, como el título, el artista o el álbum, y la carátula no se copian."
+    },
+    {
+      "q": "¿Y si necesito un WAV para editar el audio?",
+      "a": "Usa OGG a WAV, que da audio PCM de 16 bits sin compresión a 44,1 o 48 kHz, cómodo para cualquier editor."
+    }
+  ]
+}

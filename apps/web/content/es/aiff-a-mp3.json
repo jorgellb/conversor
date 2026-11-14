@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AIFF a MP3 convierte archivos AIFF, el formato de audio sin compresión de Apple, en MP3. Los AIFF salen de GarageBand, Logic Pro y otros programas de Mac, de bibliotecas de sonidos y de CD importados con Música o iTunes en ese formato. Suenan igual que un WAV y ocupan lo mismo; el MP3 los reduce a una fracción para compartirlos o llevarlos en el móvil.",
+    "Admite archivos .aiff y .aif, y también AIFF-C, la variante que puede llevar el audio comprimido. Un minuto de AIFF con calidad de CD ocupa unos 10 MB; en MP3 a 192 kbps, la calidad por defecto, alrededor de 1,4 MB. Por eso, sin cuenta, con el límite de 50 MB por archivo, caben unos 5 minutos; con cuenta gratuita, unos 10, y en Pro, hasta 1 GB.",
+    "Para una mezcla o una maqueta que quieres enseñar, elige 320 kbps o VBR, la tasa variable de alta calidad de LAME; para voz o pruebas, 128 kbps. Las exportaciones a 24 bits y 96 kHz salen a 48 kHz, el máximo del MP3, y las multicanal se mezclan en estéreo. Puedes forzar mono o estéreo y, en las opciones adicionales, normalizar a −16 LUFS.",
+    "FFmpeg hace la conversión con LAME en nuestro servidor y cada MP3 conserva el nombre del AIFF. Sube varios a la vez y los descargas por separado o en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos AIFF o AIF.",
+    "Elige la calidad del MP3 y los canales.",
+    "Descarga cada MP3 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Sirve para exportaciones de GarageBand o Logic?",
+      "a": "Sí, siempre que las exportes como AIFF. Si el proyecto lo guardas en otro formato, como M4A, usa M4A a MP3."
+    },
+    {
+      "q": "¿Se conservan los datos de la pista?",
+      "a": "No. El MP3 solo lleva el audio: el nombre de la pista, el artista y la carátula que guardaba el AIFF no se copian."
+    },
+    {
+      "q": "¿Cuántos minutos puedo convertir?",
+      "a": "Cada AIFF puede durar hasta 10 minutos sin cuenta, 30 con cuenta gratuita y 4 horas en Pro, además del límite de tamaño. Puedes hacer 20 conversiones al día sin cuenta, 50 con cuenta gratuita y 1000 en Pro."
+    },
+    {
+      "q": "¿Mis archivos se quedan en el servidor?",
+      "a": "Solo el tiempo necesario: se borran a la hora si no tienes cuenta y a las 24 horas si la tienes."
+    }
+  ]
+}

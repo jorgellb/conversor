@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AAC to MP3 converts AAC audio into MP3. Files with the .aac extension turn up when recording with some apps and recorders, when saving internet radio streams or when taking the audio out of a video without a container. They are small and sound good, but many car stereos, hi-fi systems and older programs cannot open them; MP3 works on all of them.",
+    "It accepts \"raw\" AAC (.aac, with ADTS headers) and AAC inside an M4A container. An .aac file starts in a very similar way to an MP3, so some programs mix them up; here they are told apart by the file header and actually converted, not just renamed. FFmpeg decodes it on our server and LAME encodes it as MP3.",
+    "Choose 128, 192 or 320 kbps, or VBR, a variable bitrate that adjusts the bits to what is playing. Since AAC is more efficient than MP3, a 128 kbps AAC usually needs a little more in MP3 to avoid losing quality: 192 kbps, the default, is a good starting point. You can keep the channels as they are or switch to mono or stereo.",
+    "Under more options, \"Normalize volume\" brings the audio to −16 LUFS, useful if you are putting together recordings with different levels. The MP3 keeps the file name, and with several files you also get a ZIP."
+  ],
+  "steps": [
+    "Upload one or more AAC or M4A files.",
+    "Choose the MP3 quality and the channels.",
+    "Download the MP3 files or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Why isn't renaming the .aac to .mp3 enough?",
+      "a": "Because they are different codecs: changing the extension does not change the content, and many players reject the file or play it badly. Here the audio is decoded and encoded again as MP3."
+    },
+    {
+      "q": "What are the limits?",
+      "a": "Each AAC file can last 10 minutes without an account, 30 with a free account and 4 hours on Pro. It is a light task, of which you can run 20 a day without an account, 50 with a free account and 1000 on Pro."
+    },
+    {
+      "q": "Are the file's tags copied?",
+      "a": "No. The MP3 comes out without title, artist, album or cover art; it only carries the audio of the first track."
+    },
+    {
+      "q": "How long do you keep my audio?",
+      "a": "One hour if you have no account and 24 hours if you do; after that both the original and the MP3 are deleted from the server."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OPUS a MP3 convierte las notas de voz de WhatsApp, que el móvil guarda como archivos .opus, en MP3 que puedes escuchar en cualquier reproductor, adjuntar a un correo, subir a un editor de vídeo o guardar en el ordenador. También acepta los mensajes de voz de Telegram y otras aplicaciones que usan audio Opus dentro de un archivo .ogg.",
+    "Opus es un códec pensado para la voz por internet: suena bien con muy pocos datos, pero muchos programas, coches y reproductores antiguos no lo abren. El MP3 resultante conserva la frecuencia de 48 kHz con la que trabaja Opus y el mismo nombre de archivo, con la extensión cambiada. La conversión la hace FFmpeg con el codificador LAME en nuestro servidor.",
+    "Para una nota de voz, 128 kbps en mono basta y da un archivo pequeño; 192 kbps, la opción por defecto, 320 kbps y VBR, de tasa variable, tienen más sentido si el audio lleva música. En los canales eliges dejarlos como en el original, mono o estéreo.",
+    "Las notas de voz se graban a menudo lejos del micrófono o en la calle. Con «Normalizar volumen», en las opciones adicionales, el audio se lleva a −16 LUFS, el nivel recomendado para voz en la web, y las grabaciones flojas suben de volumen sin saturar."
+  ],
+  "steps": [
+    "Guarda la nota de voz en el móvil o el ordenador y súbela; puedes subir varias.",
+    "Elige la calidad y, para voz, el modo mono.",
+    "Descarga los MP3 uno a uno o juntos en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo saco una nota de voz de WhatsApp?",
+      "a": "Desde el chat, compártela o reenvíala como archivo a tu correo, a una nube o a tu ordenador, o cópiala desde la carpeta de medios de WhatsApp del móvil. Lo que obtienes es el archivo .opus u .ogg que puedes subir aquí."
+    },
+    {
+      "q": "¿Cuántas notas de voz puedo convertir a la vez?",
+      "a": "Hasta 5 por tarea sin cuenta, 20 con cuenta gratuita y 100 en Pro, y recibes un ZIP con todas. Cada nota puede durar hasta 10 minutos sin cuenta, media hora con cuenta gratuita y 4 horas en Pro."
+    },
+    {
+      "q": "¿Sirve también para transcribirlas?",
+      "a": "No: esta herramienta solo cambia el formato. Para pasar la nota de voz a texto usa Transcribir audio, que admite OPUS directamente y no necesita el MP3."
+    },
+    {
+      "q": "¿Alguien más escucha mis audios?",
+      "a": "No. Se convierten automáticamente en nuestro servidor y se borran a la hora si no tienes cuenta o a las 24 horas si la tienes."
+    }
+  ]
+}

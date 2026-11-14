@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FLAC a MP3 convierte tu música sin pérdida en MP3 para llevarla en el móvil, en un pendrive para el coche o en un reproductor con poca memoria. El FLAC conserva todo el sonido de un CD o de una descarga de alta resolución, pero ocupa mucho; el MP3 ocupa varias veces menos y se reproduce en cualquier sitio.",
+    "Para música, elige 320 kbps, la calidad más alta del MP3, o VBR, que reparte los bits según la complejidad de cada pasaje con el nivel V2 de LAME y da archivos algo más pequeños. 192 kbps, la opción por defecto, suena bien en la mayoría de equipos, y 128 kbps conviene si el espacio importa más que el detalle.",
+    "El MP3 admite como mucho 48 kHz y dos canales. Un FLAC de alta resolución, de 96 kHz por ejemplo, sale a 48 kHz, y uno con sonido envolvente 5.1 se mezcla en estéreo. Puedes forzar también mono o estéreo, y en las opciones adicionales normalizar el volumen a −16 LUFS, aunque en un disco eso cambia el equilibrio entre canciones que decidió quien lo masterizó.",
+    "La conversión la hace FFmpeg con LAME en nuestro servidor, y cada archivo conserva su nombre con la extensión .mp3. Sube un álbum entero y descárgalo en un solo ZIP: hasta 5 archivos por tarea sin cuenta, 20 con cuenta gratuita y 100 en Pro."
+  ],
+  "steps": [
+    "Sube las pistas FLAC que quieras convertir.",
+    "Elige 320 kbps o VBR para música, o una calidad menor para ahorrar espacio.",
+    "Descarga los MP3 o el ZIP del álbum."
+  ],
+  "faq": [
+    {
+      "q": "¿Se mantienen las etiquetas y la carátula del álbum?",
+      "a": "No. El MP3 sale solo con el audio: el título, el artista, el número de pista y la carátula del FLAC no se copian. Para ordenar tu biblioteca, añádelos después con un editor de etiquetas."
+    },
+    {
+      "q": "¿Notaré la diferencia con el FLAC?",
+      "a": "Depende del oído y del equipo. A 320 kbps o en VBR, a muchas personas les cuesta distinguir el MP3 del original con auriculares normales; a 128 kbps se nota antes en platillos y reverberaciones."
+    },
+    {
+      "q": "¿Cuánto puede durar cada pista?",
+      "a": "Hasta 10 minutos sin cuenta, lo que cubre casi cualquier canción, 30 minutos con cuenta gratuita y 4 horas en Pro, suficiente para una sesión o un concierto en un solo archivo."
+    },
+    {
+      "q": "¿Puedo volver a FLAC después?",
+      "a": "Se puede cambiar el formato, pero la calidad perdida al pasar a MP3 no se recupera. Guarda los FLAC originales si quieres conservar el sonido completo."
+    }
+  ]
+}

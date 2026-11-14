@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AMR a MP3 convierte grabaciones de voz en formato AMR en MP3. Es el formato de las grabadoras de voz de muchos móviles antiguos, de algunas aplicaciones que graban llamadas y de los mensajes de voz MMS. Muchos reproductores y ordenadores actuales ya no abren los .amr; el MP3 se escucha en cualquier sitio.",
+    "AMR es un códec telefónico: la variante más común, AMR-NB, graba a 8 kHz en mono, con un sonido parecido al de una llamada, y la de banda ancha, AMR-WB, a 16 kHz. El MP3 conserva esa frecuencia, y a 8 kHz el formato MP3 no pasa de 64 kbps, así que elegir 192 o 320 kbps no da un archivo mayor ni mejor: la calidad la pone la grabación.",
+    "Lo más práctico es dejar la calidad por defecto o elegir 128 kbps, y los canales como en el original o en mono. En las opciones adicionales, «Normalizar volumen» lleva la voz a −16 LUFS, lo que ayuda mucho con grabaciones de llamadas o de reuniones que quedaron bajas.",
+    "La conversión la hace FFmpeg con LAME en nuestro servidor; el archivo conserva su nombre con la extensión .mp3. Si tienes varias grabaciones, súbelas juntas y descárgalas en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos AMR.",
+    "Deja la calidad por defecto y, si quieres, normaliza el volumen.",
+    "Descarga cada MP3 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Sonará mejor el MP3 que el AMR?",
+      "a": "No. El MP3 reproduce la misma voz con la misma calidad telefónica; lo que gana es compatibilidad. Normalizar el volumen puede hacer que se entienda mejor si estaba baja, pero no añade detalle."
+    },
+    {
+      "q": "¿Puedo convertir el MP3 de vuelta a AMR?",
+      "a": "Aquí no. FFmpeg no tiene un codificador AMR libre, así que el portal lee AMR pero no lo genera."
+    },
+    {
+      "q": "¿Cuánto pueden durar las grabaciones?",
+      "a": "Hasta 10 minutos por archivo sin cuenta, 30 minutos con cuenta gratuita y 4 horas en Pro. Sin cuenta puedes subir 5 grabaciones por tarea; con cuenta gratuita, 20."
+    },
+    {
+      "q": "¿Puedo pasar la grabación a texto?",
+      "a": "Sí, con Transcribir audio, que acepta AMR directamente. Ten en cuenta que la calidad telefónica del AMR hace que la transcripción cometa más errores que con una grabación de mejor calidad."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WAV to MP3 converts WAV recordings into MP3, which take up far less space. It is what you need to send by email or messaging app something you recorded with a handheld recorder, a sound card or an editing program, or to publish a podcast or a demo without uploading huge files.",
+    "A WAV file usually stores audio uncompressed. One minute at CD quality (44.1 kHz, 16-bit, stereo) takes about 10 MB; the same minute as MP3 at 128 kbps, less than 1 MB, and at 192 kbps, the default, around 1.4 MB. With 320 kbps or VBR, a variable bitrate, the file grows a little but keeps more detail for music.",
+    "Bear in mind the upload size: the 50 MB per file limit without an account fits about 5 minutes of CD-quality WAV, and the 100 MB of a free account about 10. On Pro each file can be up to 1 GB and last up to 4 hours. 24-bit or 96 kHz WAV files take even more space per minute.",
+    "MP3 supports up to 48 kHz and two channels, so a 96 kHz recording comes out at 48 kHz and a multichannel one is mixed down to stereo. You can switch a speech recording to mono so it takes less space and, under more options, normalize the volume to −16 LUFS. FFmpeg converts it with LAME on our server."
+  ],
+  "steps": [
+    "Upload one or more WAV files.",
+    "Choose the MP3 quality and, for speech, mono.",
+    "Download each MP3 or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Which quality should I choose?",
+      "a": "For speech, 128 kbps in mono; for general use, 192 kbps; for music you will listen to carefully, 320 kbps or VBR. A higher quality gives a bigger file, never one better than the original WAV."
+    },
+    {
+      "q": "How many WAV files can I convert a day?",
+      "a": "It is a light conversion: 20 tasks a day without an account, 50 with a free account and 1000 on Pro, with up to 5, 20 or 100 files per task depending on the plan."
+    },
+    {
+      "q": "Are markers or other WAV data kept?",
+      "a": "No. The MP3 carries only the audio: the markers, regions and metadata that some programs store inside the WAV are not copied."
+    },
+    {
+      "q": "What if I need the opposite?",
+      "a": "MP3 to WAV turns an MP3 into 16-bit PCM WAV at 44.1 or 48 kHz, although it does not recover the quality lost in compression."
+    }
+  ]
+}
