@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extraer imágenes de un PDF saca las fotografías, logotipos e ilustraciones que hay dentro del documento y te las entrega en un ZIP, cada una como archivo independiente. No es lo mismo que convertir páginas en imágenes: no se hace una captura de la página, sino que se recupera la imagen que se incrustó al crear el PDF, con su resolución original.",
+    "Con el formato «Original», el predeterminado, las imágenes guardadas como JPEG se copian byte a byte, sin volver a comprimirlas, así que no pierden ninguna calidad. Las que usan otros sistemas de compresión se guardan en PNG, que tampoco pierde información. Si prefieres todas en el mismo formato, elige PNG o JPG; en JPG se usa una calidad de 90.",
+    "En las opciones adicionales puedes ignorar las imágenes pequeñas, como iconos, viñetas o adornos: por defecto se descartan las que miden menos de 32 píxeles de ancho o de alto, y puedes subir ese umbral hasta 10.000 o bajarlo a 0 para quedarte con todas. También se eliminan las duplicadas, de modo que un logotipo que se repite en cada página sale una sola vez; desactívalo si quieres conservar las copias idénticas que el PDF guarde por separado. Se buscan además las imágenes que están dentro de formularios XObject, no solo las colocadas directamente en la página.",
+    "Cada archivo se llama con la página en la que aparece y un contador, por ejemplo pagina-003-imagen-007.jpg, y si subes varios PDF el ZIP tiene una carpeta por documento. Al terminar verás cuántas imágenes se han extraído y, si alguna usa un códec que no podemos leer, como JBIG2, cuántas se han quedado fuera."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierden calidad las imágenes?",
+      "a": "Con «Original», los JPEG salen exactamente como estaban dentro del PDF y el resto se guarda en PNG sin pérdida. Solo se vuelven a comprimir si eliges JPG como formato."
+    },
+    {
+      "q": "¿Por qué faltan algunas imágenes?",
+      "a": "Puede que midan menos que el umbral de píxeles, que sean dibujos vectoriales, que no son imágenes, o máscaras de un bit. Baja el umbral a 0 o usa PDF a imágenes para capturar la página entera."
+    },
+    {
+      "q": "¿Y si el PDF no tiene imágenes?",
+      "a": "La tarea termina con un aviso de que no se ha encontrado ninguna, en lugar de entregarte un ZIP vacío."
+    },
+    {
+      "q": "¿Dónde se procesa y con qué límites?",
+      "a": "En nuestro servidor de la UE, con el límite de páginas de tu plan: 100 por PDF sin cuenta, 300 con cuenta gratuita y 2.000 en Pro. El ZIP se borra a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

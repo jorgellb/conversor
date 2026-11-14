@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Superponer PDF coloca una página encima o debajo del contenido de tus documentos. El uso más habitual es el membrete: diseñas una vez el papel de la empresa, con el logotipo, la dirección y el pie, y lo aplicas como fondo a cartas, facturas o presupuestos que se generaron sin él. También sirve para añadir un sello de «Copia», un marco o una plantilla encima de las páginas.",
+    "El primer archivo que subas es la superposición y los demás, los documentos a los que se aplica; en la lista verás la etiqueta de cada uno y puedes cambiar el orden con las flechas. La superposición puede ser un PDF, un documento de Word, Excel, PowerPoint u OpenDocument, que convertimos antes con LibreOffice, o una imagen JPG, PNG, GIF, BMP, TIFF o WEBP. Los documentos tienen que ser PDF; si tienes un Word, conviértelo primero con Word a PDF.",
+    "En «Posición» eliges fondo, detrás del texto, que es lo adecuado para un membrete, o primer plano, encima de todo. Si la superposición tiene varias páginas, su primera página va a la primera página a la que se aplica, la segunda a la siguiente y así sucesivamente. Con «Repetir la última página de la superposición», activada por defecto, la última se sigue usando en el resto; así puedes tener una primera hoja con el membrete completo y otra más sencilla para las demás. Si la desactivas, las páginas que sobran quedan sin superposición.",
+    "En las opciones adicionales puedes aplicarla a todas las páginas, solo a la primera o a un rango como «1-3, 5». Por defecto se escala al tamaño de cada página, de modo que un membrete en A4 encaja también en una página Carta; si lo desactivas, se coloca a su tamaño real desde la esquina inferior izquierda. Cada resultado se llama como el documento terminado en «-superpuesto» y, si hay varios, se descargan en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿El membrete tapa el texto?",
+      "a": "Con «Fondo», no: queda detrás del contenido. En primer plano, una superposición con fondo blanco opaco sí taparía la página; para sellos encima usa un PDF o un PNG con transparencia."
+    },
+    {
+      "q": "¿Puedo usar un Word como membrete?",
+      "a": "Sí. El primer archivo puede ser DOCX, DOC, ODT y otros formatos de oficina, y se convierte a PDF antes de aplicarlo. Revisa que los márgenes del documento no desplacen el logotipo."
+    },
+    {
+      "q": "¿Cuántos documentos puedo procesar a la vez?",
+      "a": "Los archivos por tarea de tu plan, contando la superposición: 5 sin cuenta, 20 con cuenta gratuita y 100 en Pro. Cada PDF puede tener hasta 100, 300 o 2.000 páginas según el plan."
+    }
+  ]
+}

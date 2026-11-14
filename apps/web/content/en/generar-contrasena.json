@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Password generator creates strong random passwords right in your browser. They are not sent to any server or stored anywhere: they are generated with the browser's own cryptographic generator (crypto.getRandomValues) and disappear when you close or reload the page.",
+    "Choose the length, between 8 and 64 characters, with 16 by default, and which kinds of characters to use: uppercase, lowercase, numbers and symbols. By default letters and numbers are used, without symbols, because some sites do not accept them; turn them on if the service allows it. The password always includes at least one character of each kind you ticked, and then they are all shuffled at random.",
+    "Each character is picked with rejection sampling, a method that avoids the small bias of naive generators and makes every character equally likely. Next to the result you will see an estimate of its strength in bits of entropy: the more bits, the harder it is to guess. As a guide, 16 characters with uppercase, lowercase and numbers come to about 95 bits.",
+    "In the additional options you can exclude characters that are easily confused when read or typed by hand, such as zero and O or lowercase L, one and capital I, and generate up to 20 passwords at once to pick the one you like. Each has its own “Copy” button so you can paste it into a sign-up form or your password manager."
+  ],
+  "faq": [
+    {
+      "q": "Do you store the passwords I generate?",
+      "a": "No. They are created on your device, they are not sent anywhere and the page does not keep them: if you do not copy them before closing it, they are gone."
+    },
+    {
+      "q": "What length should I choose?",
+      "a": "For everyday accounts, 16 characters with letters and numbers is a good starting point. For a password manager's master password or to encrypt a file, go up to 20 or more and add symbols."
+    },
+    {
+      "q": "Can I use it to protect a PDF?",
+      "a": "Yes. Generate one here, copy it and paste it into Password protect PDF. Keep it somewhere safe, because without it you will not be able to open the document."
+    },
+    {
+      "q": "Do I need an account?",
+      "a": "No. Everything happens in your browser, with nothing uploaded, so you can use it without signing up."
+    }
+  ]
+}

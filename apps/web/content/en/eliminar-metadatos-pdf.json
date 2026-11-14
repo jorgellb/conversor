@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Remove PDF metadata strips out the data that identifies a document and does not appear on its pages: title, author, subject, keywords, the application it was created with, the producer and the creation and modification dates. It is worth doing before sending a contract, a report or a piece of work outside your organisation, because these fields often reveal who wrote it, the company name or the version of the software used.",
+    "Before anything is processed, your browser reads the first PDF and shows you the list of what will be deleted with its values, or tells you that it has no metadata. That reading happens on your device; the file is then cleaned on our server.",
+    "The clean-up removes the document information dictionary, the XMP block of the document and of each page, and the private data that some design applications keep inside the PDF so they can edit it again (PieceInfo). Each file comes with a note listing what was removed. The result is named after the original with “-sin-metadatos” at the end and, if you upload several, they are delivered together in a ZIP.",
+    "It has no options: upload the files and press the button. Bear in mind that it only removes metadata; the visible text, comments, form fields and images, which may carry their own EXIF data, stay inside. To black out information that can be seen on the pages, use Redact PDF."
+  ],
+  "faq": [
+    {
+      "q": "Can it be undone?",
+      "a": "Not in the cleaned file: the data is really deleted. Your original is not modified, so keep it if you may need that information later."
+    },
+    {
+      "q": "Does the document look different?",
+      "a": "No. Pages, text, links and bookmarks stay the same; only the internal information describing the file disappears."
+    },
+    {
+      "q": "Why does my file manager still show a date?",
+      "a": "The dates your operating system shows, such as the download or last modified date, belong to the file on your disk and are not part of the PDF, so this tool cannot remove them."
+    },
+    {
+      "q": "What are the limits?",
+      "a": "Those of your plan for server tasks: up to 100 pages per PDF without an account, 300 with a free account and 2,000 on Pro. Cleaned files are deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

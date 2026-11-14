@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a TIFF convierte las páginas de un PDF en imágenes TIFF, el formato que siguen pidiendo muchos sistemas de archivo documental, servicios de fax por internet, imprentas y programas de gestión de expedientes. Por defecto obtienes un único TIFF multipágina por documento, con todas las páginas dentro, en lugar de una imagen suelta por página.",
+    "En «Color» eliges RGB de 24 bits; CMYK de 32 bits para preimpresión, convertido con LittleCMS y con el perfil FOGRA39 incrustado; gris de 8 bits; o blanco y negro de 1 bit, el que menos ocupa con documentos de texto. El color y el gris se comprimen con LZW, sin pérdida. En blanco y negro eliges la compresión según lo que acepte el sistema de destino: CCITT G4, la predeterminada y la más eficaz, G3 1D, G3 1D con EOL alineado, G3 2D, LZW o PackBits.",
+    "La resolución va de 72 a 600 ppp, con 144 por defecto; para archivo y fax se suelen pedir 200 o 300. Cada página tiene un límite de píxeles y, si la resolución elegida lo supera, se reduce lo justo. Puedes convertir solo algunas páginas con rangos como «2-5, 9» o con «pares» e «impares».",
+    "Si desactivas «TIFF multipágina», recibes un ZIP con un TIFF por página, cada uno con el nombre del PDF y su número de página. En las opciones adicionales también puedes pedir una sola imagen alta con todas las páginas una debajo de otra. El renderizado lo hace PDFium y la compresión, tiffcp de LibTIFF, en nuestro servidor."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué compresión elijo para blanco y negro?",
+      "a": "CCITT G4, salvo que el sistema que recibe el archivo pida otra. G3 es la de los faxes clásicos, y LZW o PackBits sirven cuando el programa no entiende CCITT."
+    },
+    {
+      "q": "¿Por qué el TIFF en color pesa tanto?",
+      "a": "LZW no pierde información, así que una página en color a alta resolución ocupa mucho. Baja los ppp o elige gris o blanco y negro si el documento es solo texto."
+    },
+    {
+      "q": "¿Para qué sirve el CMYK?",
+      "a": "Para imprentas y flujos de preimpresión que trabajan con tintas. Se convierte con FOGRA39, el perfil europeo de referencia para offset en papel estucado, que va incrustado en el archivo."
+    },
+    {
+      "q": "¿Hay límite de páginas?",
+      "a": "El de tu plan: 100 páginas por PDF sin cuenta, 300 con cuenta gratuita y 2.000 en Pro. Los TIFF se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

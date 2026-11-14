@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a TXT saca el texto de un PDF a un archivo de texto plano, sin formato, que se abre en cualquier editor, se puede buscar, copiar o procesar con otros programas y ocupa muy poco. Es la forma más directa de reutilizar el contenido de un informe, un contrato o un libro cuando no te importan la maquetación, las fuentes ni las imágenes.",
+    "El texto se extrae página a página con PDFium, el motor de PDF de Chrome, y se guarda en UTF-8, así que conserva tildes, eñes y caracteres de cualquier idioma.",
+    "Las páginas escaneadas no tienen texto, solo una imagen. Con «OCR automático si no hay texto», activado por defecto, la herramienta detecta esas páginas y solo a ellas les aplica reconocimiento óptico con Tesseract a través de OCRmyPDF; las que ya tienen texto se leen directamente. En las opciones adicionales eliges hasta tres idiomas para el OCR, español por defecto. Si hace falta OCR, la tarea cuenta como una de OCR: 2 al día sin cuenta, 10 con cuenta gratuita y 200 en Pro. Si ya las has gastado, recibes el texto que haya y un aviso con las páginas que se han quedado sin leer.",
+    "También eliges cómo se separan las páginas: con un salto de página, el carácter que muchos editores e impresoras interpretan como hoja nueva; con una línea que indica el número de página; o solo con una línea en blanco. Puedes extraer únicamente algunas páginas con rangos como «3-10» o con «pares» e «impares». Si subes varios PDF, recibes un TXT por documento dentro de un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan las tablas y las columnas?",
+      "a": "No del todo. Un TXT no tiene formato, así que las tablas quedan como líneas de texto y las columnas pueden mezclarse según cómo se creó el PDF. Si necesitas la estructura, prueba PDF a Word."
+    },
+    {
+      "q": "¿Por qué salen páginas vacías?",
+      "a": "Son páginas escaneadas y el OCR automático estaba desactivado o no te quedaban tareas de OCR; el aviso final dice cuáles son. Actívalo o pasa antes el PDF por OCR de PDF."
+    },
+    {
+      "q": "¿Cuántas páginas puedo convertir?",
+      "a": "Hasta 100 por PDF sin cuenta, 300 con cuenta gratuita y 2.000 en Pro. Se procesa en nuestro servidor de la UE y el TXT se borra a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Solicitud de empleo en PDF reúne en un único archivo todo lo que te piden al presentarte a una oferta: la carta de presentación, el currículum y los adjuntos, como títulos, certificados o cartas de recomendación. Muchos portales de empleo y departamentos de selección solo admiten un archivo, y un PDF ordenado da mejor impresión que varios adjuntos sueltos.",
+    "Cada documento puede estar en un formato distinto: Word, OpenDocument, RTF, texto, Excel, PowerPoint, imágenes JPG, PNG, GIF, BMP, TIFF o WEBP y, por supuesto, PDF. Los documentos de oficina se convierten en nuestro servidor con LibreOffice, las imágenes se colocan como página y todo se une en el orden de la lista, que puedes cambiar con las flechas.",
+    "Por defecto, el primer archivo se trata como carta de presentación y el segundo como currículum; si no llevas carta, desactiva esa opción y el primero será el CV. En la lista verás el papel de cada archivo. El PDF final tiene un marcador por documento, con los nombres «Carta de presentación» y «Currículum» y, para los adjuntos, el nombre de cada archivo, así que quien lo reciba salta directamente al apartado que le interesa. El resultado se llama «solicitud-» seguido del nombre de tu CV.",
+    "En las opciones adicionales puedes añadir un índice inicial, una página con cada documento y la página en la que empieza. También puedes comprimir el resultado si pasa de un tamaño: está activado con 10 MB, un límite frecuente en los formularios de candidatura. Solo se entrega la versión comprimida si de verdad pesa menos, y la tarea te avisa cuando lo ha hecho."
+  ],
+  "faq": [
+    {
+      "q": "¿Se respeta el diseño de mi CV en Word?",
+      "a": "LibreOffice convierte bien la mayoría de los documentos, pero las fuentes poco comunes pueden sustituirse por otras parecidas. Si tu CV tiene un diseño muy cuidado, expórtalo a PDF desde tu programa y súbelo ya como PDF."
+    },
+    {
+      "q": "¿Puedo quitar los marcadores?",
+      "a": "Sí. Desactiva «Un marcador por documento» y el PDF se entregará sin ellos; el orden de los documentos no cambia."
+    },
+    {
+      "q": "¿Cuántos adjuntos admite?",
+      "a": "Tantos como archivos por tarea permita tu plan: 5 sin cuenta, 20 con cuenta gratuita y 100 en Pro. Los archivos se procesan en nuestro servidor de la UE y se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

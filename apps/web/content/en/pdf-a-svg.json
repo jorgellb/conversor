@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to SVG turns each page of a PDF into an SVG file, the vector graphics format of the web. Unlike PNG or JPG, an SVG has no fixed resolution: lines, shapes and text stay sharp at any size, from a thumbnail to a poster. It is useful for bringing plans, diagrams, logos or charts from a report into a web page, Inkscape or another vector editor.",
+    "The conversion is done by pdftocairo, from Poppler, on our server. So that the result looks exactly like the PDF, text is converted into paths: it keeps its appearance and typeface, but it can no longer be selected or edited as text. Photos embedded in the PDF remain images inside the SVG.",
+    "The only option is “Pages”: all of them by default, a range such as “1, 4-6”, or “even” and “odd”. If you choose a single page you download its SVG directly; if there are several, you get a ZIP with one file per page, named after the PDF followed by the page number. With several PDFs, the result is a ZIP containing each document's ZIP.",
+    "Bear in mind that a very complex page, such as a map or a plan with thousands of elements, can produce an SVG heavier than the PDF and slow to open in a browser. If you only need to insert the page into a document, without scaling it, PDF to PNG is usually more practical."
+  ],
+  "faq": [
+    {
+      "q": "Can I edit the text in the SVG?",
+      "a": "Not as text, because it is stored as paths so it does not depend on installed fonts. You can change its colour, move it or delete it in a vector editor; if you need the text itself, use PDF to TXT or PDF to Word."
+    },
+    {
+      "q": "Does it work with scanned PDFs?",
+      "a": "Yes, but a scanned page is a photo and the SVG just wraps it: it does not turn it into vectors. This tool does not vectorise images."
+    },
+    {
+      "q": "What are the limits?",
+      "a": "It is processed on our server in the EU with your plan's page limit, 100, 300 or 2,000 per PDF, and the SVG files are deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

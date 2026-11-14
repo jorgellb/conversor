@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to TXT extracts the text of a PDF into a plain text file, with no formatting, that opens in any editor, can be searched, copied or processed with other software and takes up very little space. It is the most direct way to reuse the content of a report, a contract or a book when you do not care about layout, fonts or images.",
+    "The text is extracted page by page with PDFium, Chrome's PDF engine, and saved as UTF-8, so it keeps accents and characters from any language.",
+    "Scanned pages have no text, only an image. With “Automatic OCR if there is no text”, on by default, the tool detects those pages and applies optical character recognition only to them, with Tesseract through OCRmyPDF; pages that already have text are read directly. In the additional options you choose up to three OCR languages, Spanish by default. If OCR is needed, the task counts as an OCR task: 2 a day without an account, 10 with a free account and 200 on Pro. If you have used them up, you get whatever text there is and a message listing the pages that could not be read.",
+    "You also choose how pages are separated: with a page break, the character many editors and printers treat as a new sheet; with a line showing the page number; or just with a blank line. You can extract only some pages with ranges such as “3-10” or with “even” and “odd”. If you upload several PDFs, you get one TXT per document inside a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Are tables and columns kept?",
+      "a": "Not entirely. A TXT file has no formatting, so tables become lines of text and columns may get mixed depending on how the PDF was made. If you need the structure, try PDF to Word."
+    },
+    {
+      "q": "Why are some pages empty?",
+      "a": "They are scanned pages and automatic OCR was off or you had no OCR tasks left; the final message says which ones. Turn it on or run the PDF through OCR PDF first."
+    },
+    {
+      "q": "How many pages can I convert?",
+      "a": "Up to 100 per PDF without an account, 300 with a free account and 2,000 on Pro. It is processed on our server in the EU and the TXT is deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

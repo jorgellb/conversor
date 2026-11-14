@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to TIFF turns the pages of a PDF into TIFF images, the format still required by many document archiving systems, online fax services, print shops and case management software. By default you get a single multi-page TIFF per document, with all the pages inside, rather than one loose image per page.",
+    "In “Colour” you choose 24-bit RGB; 32-bit CMYK for prepress, converted with LittleCMS and with the FOGRA39 profile embedded; 8-bit greyscale; or 1-bit black and white, the smallest option for text documents. Colour and greyscale are compressed with lossless LZW. In black and white you pick the compression according to what the target system accepts: CCITT G4, the default and the most efficient, G3 1D, G3 1D with aligned EOL, G3 2D, LZW or PackBits.",
+    "The resolution ranges from 72 to 600 DPI, with 144 by default; archiving and fax usually call for 200 or 300. Each page has a pixel limit and, if the chosen resolution exceeds it, it is reduced just enough. You can convert only some pages with ranges such as “2-5, 9” or with “even” and “odd”.",
+    "If you turn off “Multi-page TIFF”, you get a ZIP with one TIFF per page, each named after the PDF and its page number. In the additional options you can also ask for a single tall image with all the pages one below the other. Rendering is done by PDFium and compression by tiffcp from LibTIFF, on our server."
+  ],
+  "faq": [
+    {
+      "q": "Which compression should I use for black and white?",
+      "a": "CCITT G4, unless the system receiving the file asks for another one. G3 is the one used by classic fax machines, and LZW or PackBits are for software that does not understand CCITT."
+    },
+    {
+      "q": "Why is the colour TIFF so big?",
+      "a": "LZW loses no information, so a colour page at high resolution takes up a lot of space. Lower the DPI or choose greyscale or black and white if the document is only text."
+    },
+    {
+      "q": "What is CMYK for?",
+      "a": "For print shops and prepress workflows that work with inks. It is converted with FOGRA39, the European reference profile for offset printing on coated paper, which is embedded in the file."
+    },
+    {
+      "q": "Is there a page limit?",
+      "a": "Your plan's: 100 pages per PDF without an account, 300 with a free account and 2,000 on Pro. The TIFF files are deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

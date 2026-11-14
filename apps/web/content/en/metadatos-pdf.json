@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Edit PDF metadata changes the information a document stores about itself: title, author, subject, keywords and creation and modification dates and, in the additional options, the creator application and the producer. This is the data shown in the reader's document properties, used by search engines when they index a PDF published on the web and read by many document management systems to file documents.",
+    "When you choose the file, your browser reads the metadata it already has and fills in the form with it, without uploading anything for that; this way you see what is there and change only what you need. An empty field keeps the value the file already had. Dates are written as YYYY-MM-DD HH:MM:SS, for example 2024-03-15 09:30:00; seconds are optional and, if you give no time zone, the time is taken as UTC.",
+    "A PDF keeps this data in two places: the classic information dictionary and the XMP block, which is the one modern software reads. The tool writes both at once with pikepdf so they do not contradict each other, something many editors fail to do, which is why one reader may show one title and another a different one. Pages, text and forms are left untouched.",
+    "If you upload several PDFs, the values in the form are applied to all of them and you download a ZIP with the files, which keep their names. As the form is filled in with the first file's data, clear any fields you do not want copied to the others."
+  ],
+  "faq": [
+    {
+      "q": "Can I delete a single field?",
+      "a": "Not here: an empty field means “no change”. To remove everything use Remove PDF metadata and then, if you like, come back to this tool to write only the data you want to keep."
+    },
+    {
+      "q": "Why does the reader still show the file name?",
+      "a": "Many readers show the file name in the title bar even when the PDF has a title. Turn on “Display the document title” in PDF viewer preferences to ask them to use the title."
+    },
+    {
+      "q": "Where is it processed?",
+      "a": "The form is filled in in your browser, but the PDF is changed on our server in the EU, with up to 100, 300 or 2,000 pages per file depending on your plan, and it is deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

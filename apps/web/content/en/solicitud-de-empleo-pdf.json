@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Job application PDF puts everything you are asked for when applying for a job into a single file: the cover letter, the CV and attachments such as degrees, certificates or reference letters. Many job portals and recruitment teams accept only one file, and a tidy PDF makes a better impression than several loose attachments.",
+    "Each document can be in a different format: Word, OpenDocument, RTF, text, Excel, PowerPoint, JPG, PNG, GIF, BMP, TIFF or WEBP images and, of course, PDF. Office documents are converted on our server with LibreOffice, images are placed as a page and everything is joined in the order of the list, which you can change with the arrows.",
+    "By default the first file is treated as the cover letter and the second as the CV; if you have no letter, turn that option off and the first file will be the CV. The list shows the role of each file. The final PDF has one bookmark per document, named “Cover letter” and “CV” and, for attachments, after each file name, so whoever receives it can jump straight to the part they want. The result is named “solicitud-” followed by the name of your CV.",
+    "In the additional options you can add a table of contents at the start, a page listing each document and the page where it begins. You can also compress the result if it goes over a size: it is on by default with 10 MB, a common limit in application forms. The compressed version is only delivered if it really is smaller, and the task tells you when it has done so."
+  ],
+  "faq": [
+    {
+      "q": "Is the design of my Word CV kept?",
+      "a": "LibreOffice converts most documents well, but unusual fonts may be replaced with similar ones. If your CV has a carefully crafted design, export it to PDF from your own application and upload it as a PDF."
+    },
+    {
+      "q": "Can I remove the bookmarks?",
+      "a": "Yes. Turn off “One bookmark per document” and the PDF will be delivered without them; the order of the documents does not change."
+    },
+    {
+      "q": "How many attachments can I add?",
+      "a": "As many as your plan's files per task allow: 5 without an account, 20 with a free account and 100 on Pro. Files are processed on our server in the EU and deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

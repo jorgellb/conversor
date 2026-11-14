@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Generar contraseña crea contraseñas aleatorias y seguras directamente en tu navegador. No se envían a ningún servidor ni se guardan: se generan con el generador criptográfico del propio navegador (crypto.getRandomValues) y desaparecen cuando cierras o recargas la página.",
+    "Elige la longitud, entre 8 y 64 caracteres, con 16 por defecto, y qué tipos de caracteres usar: mayúsculas, minúsculas, números y símbolos. Por defecto se usan letras y números, sin símbolos, porque algunos sitios no los aceptan; actívalos si el servicio lo permite. La contraseña incluye siempre al menos un carácter de cada tipo que hayas marcado y después se barajan todos al azar.",
+    "Cada carácter se elige con muestreo por rechazo, un método que evita el pequeño sesgo de los generadores ingenuos y hace que todos los caracteres tengan la misma probabilidad. Junto al resultado verás una estimación de su fuerza en bits de entropía: cuantos más bits, más difícil es de adivinar. Como referencia, 16 caracteres con mayúsculas, minúsculas y números rondan los 95 bits.",
+    "En las opciones adicionales puedes excluir los caracteres que se confunden al leerlos o al copiarlos a mano, como el cero y la O o la ele, el uno y la I mayúscula, y generar hasta 20 contraseñas de una vez para elegir la que prefieras. Cada una tiene su botón «Copiar» para pegarla en el formulario de registro o en tu gestor de contraseñas."
+  ],
+  "faq": [
+    {
+      "q": "¿Guardáis las contraseñas que genero?",
+      "a": "No. Se crean en tu dispositivo, no se envían a ningún sitio y la página no las guarda: si no las copias antes de cerrarla, se pierden."
+    },
+    {
+      "q": "¿Qué longitud elijo?",
+      "a": "Para cuentas normales, 16 caracteres con letras y números es un buen punto de partida. Para la contraseña maestra de un gestor o para cifrar un archivo, sube a 20 o más y añade símbolos."
+    },
+    {
+      "q": "¿Sirve para proteger un PDF?",
+      "a": "Sí. Genera una aquí, cópiala y pégala en Proteger PDF con contraseña. Guárdala en un lugar seguro, porque sin ella no podrás abrir el documento."
+    },
+    {
+      "q": "¿Necesito cuenta?",
+      "a": "No. Todo ocurre en tu navegador, sin subir nada, así que puedes usarla sin registrarte."
+    }
+  ]
+}

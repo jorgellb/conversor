@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF viewer preferences decides how a document is presented when someone opens it: whether one page or two facing pages are shown, whether the bookmarks or thumbnails panel appears, which page it starts on and at what zoom. These preferences are stored inside the PDF itself; Adobe Acrobat Reader and most desktop readers respect them, while some web and mobile viewers ignore part of them.",
+    "Every option starts at “No change”, so only what you choose is modified. The page layout can be a single page, one continuous column, or two columns or two pages with odd pages on the left or on the right, useful for magazines and books. In “On opening, show” you choose just the page, bookmarks, thumbnails, layers, attachments or full screen, which is very handy for presentations.",
+    "The initial page and zoom are stored together as the opening action: whole page, fit width, fit height or a custom percentage between 10 % and 6,400 %. If you only set the page, it opens as a whole page; if you only choose the zoom, it applies to the first page.",
+    "The additional options hold the rest of the PDF standard's preferences: centre the window and fit it to the page, display the document title instead of the file name, hide the menu bar, the toolbar and the window controls, what is shown after leaving full screen and the reading direction. There are print preferences too: single-sided or duplex on the long or short edge, scaling, and the print and view area and clip boxes.",
+    "If the PDF already carries preferences you do not want, tick “Remove all current preferences”: the layout, opening mode, initial action and viewer preferences are deleted, and then whatever you chose is applied. With several PDFs, the same settings are applied to all of them and they are downloaded in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Why does my reader ignore them?",
+      "a": "Preferences are a request from the document, not an order. Acrobat Reader applies almost all of them, but browser viewers and many mobile apps only respect some. Test the result in the reader your recipients will use."
+    },
+    {
+      "q": "What if the initial page does not exist?",
+      "a": "If you type a number higher than the total number of pages, the PDF opens on the last one. With 0, the initial page is not changed."
+    },
+    {
+      "q": "Does the PDF content change?",
+      "a": "No. Only a few entries are written in the document catalogue; pages, text and bookmarks stay the same. It is processed on our server in the EU, with up to 100, 300 or 2,000 pages depending on your plan."
+    }
+  ]
+}

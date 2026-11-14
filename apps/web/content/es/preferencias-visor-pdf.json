@@ -1,0 +1,25 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Preferencias de visualización del PDF decide cómo se presenta el documento cuando alguien lo abre: si se ve una página o dos enfrentadas, si aparece el panel de marcadores o el de miniaturas, en qué página empieza y con qué zoom. Estas preferencias se guardan dentro del propio PDF; Adobe Acrobat Reader y la mayoría de los lectores de escritorio las respetan, y algunos visores web y de móvil ignoran parte de ellas.",
+    "Todas las opciones empiezan en «No cambiar», así que solo se modifica lo que eliges. El diseño de página puede ser una página, una columna continua o dos columnas o dos páginas con las impares a la izquierda o a la derecha, útil para revistas y libros. En «Al abrir, mostrar» eliges solo la página, los marcadores, las miniaturas, las capas, los adjuntos o la pantalla completa, muy práctica para presentaciones.",
+    "La página inicial y el zoom se guardan juntos como acción de apertura: página completa, ajustar al ancho, ajustar al alto o un porcentaje personalizado entre el 10 % y el 6.400 %. Si solo indicas la página, se abre entera; si solo eliges el zoom, se aplica a la primera página.",
+    "En las opciones adicionales está el resto de preferencias del estándar PDF: centrar la ventana y ajustarla a la página, mostrar el título del documento en lugar del nombre del archivo, ocultar la barra de menús, la de herramientas y los controles de la ventana, qué se ve al salir de pantalla completa y la dirección de lectura. También las de impresión: una cara o doble cara por el borde largo o el corto, el escalado y las cajas de área y recorte de impresión y de vista.",
+    "Si el PDF ya trae preferencias que no quieres, marca «Quitar todas las preferencias actuales»: se borran el diseño, el modo de apertura, la acción inicial y las preferencias del visor, y después se aplica lo que hayas elegido. Con varios PDF, la misma configuración se aplica a todos y se descargan en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué mi lector no hace caso?",
+      "a": "Las preferencias son una petición del documento, no una orden. Acrobat Reader aplica casi todas, pero los visores de los navegadores y muchas aplicaciones de móvil solo respetan algunas. Prueba el resultado en el lector que vayan a usar tus destinatarios."
+    },
+    {
+      "q": "¿Qué pasa si la página inicial no existe?",
+      "a": "Si escribes un número mayor que el total de páginas, el PDF se abre en la última. Con 0 la página inicial no se cambia."
+    },
+    {
+      "q": "¿Cambia el contenido del PDF?",
+      "a": "No. Solo se escriben unas pocas entradas en el catálogo del documento; las páginas, el texto y los marcadores quedan igual. Se procesa en nuestro servidor de la UE, con hasta 100, 300 o 2.000 páginas según tu plan."
+    }
+  ]
+}

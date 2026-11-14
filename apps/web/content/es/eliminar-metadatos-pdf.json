@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Eliminar metadatos de un PDF quita del documento los datos que lo identifican y que no se ven en las páginas: título, autor, asunto, palabras clave, programa con el que se creó, productor y fechas de creación y de modificación. Conviene hacerlo antes de enviar un contrato, un informe o un trabajo fuera de tu organización, porque esos campos revelan a menudo quién lo escribió, el nombre de la empresa o la versión del programa usado.",
+    "Antes de procesar nada, tu navegador lee el primer PDF y te enseña la lista de lo que se va a borrar con sus valores, o te avisa de que no tiene metadatos. Esa lectura se hace en tu dispositivo; después, el archivo se limpia en nuestro servidor.",
+    "La limpieza quita el diccionario de información del documento, el bloque XMP del documento y el de cada página, y los datos privados que algunos programas de diseño guardan dentro del PDF para poder volver a editarlo (PieceInfo). Cada archivo trae al terminar una nota con lo que se ha quitado. El resultado se llama como el original terminado en «-sin-metadatos» y, si subes varios, se entregan juntos en un ZIP.",
+    "No tiene opciones: sube los archivos y pulsa el botón. Ten en cuenta que solo quita metadatos; el texto visible, los comentarios, los campos de formulario y las imágenes, que pueden llevar sus propios datos EXIF, siguen dentro. Para tapar información que se ve en las páginas usa Redactar PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Se puede deshacer?",
+      "a": "En el archivo limpio, no: los datos se borran de verdad. Tu original no se modifica, así que guárdalo si puedes necesitar esa información más adelante."
+    },
+    {
+      "q": "¿Cambia el aspecto del documento?",
+      "a": "No. Las páginas, el texto, los enlaces y los marcadores quedan igual; solo desaparece la información interna que describe el archivo."
+    },
+    {
+      "q": "¿Por qué el explorador sigue mostrando una fecha?",
+      "a": "Las fechas que enseña tu sistema operativo, como la de descarga o la de última modificación, son del archivo en tu disco y no forman parte del PDF, así que esta herramienta no puede quitarlas."
+    },
+    {
+      "q": "¿Qué límites tiene?",
+      "a": "Los de tu plan para tareas en el servidor: hasta 100 páginas por PDF sin cuenta, 300 con cuenta gratuita y 2.000 en Pro. Los archivos limpios se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Editar metadatos de un PDF cambia la información que el documento guarda sobre sí mismo: título, autor, asunto, palabras clave y fechas de creación y de modificación y, en las opciones adicionales, el programa creador y el productor. Son los datos que aparecen en las propiedades del lector, los que usan los buscadores al indexar un PDF publicado en la web y los que leen muchos gestores documentales para clasificar archivos.",
+    "Al elegir el archivo, tu navegador lee los metadatos que ya tiene y rellena el formulario con ellos, sin subir nada para eso; así ves lo que hay y cambias solo lo que te interesa. Un campo vacío deja el valor que el archivo ya tenía. Las fechas se escriben como AAAA-MM-DD HH:MM:SS, por ejemplo 2024-03-15 09:30:00; los segundos son opcionales y, si no indicas zona horaria, la hora se toma como UTC.",
+    "Un PDF guarda estos datos en dos sitios: el diccionario de información clásico y el bloque XMP, que es el que leen los programas más modernos. La herramienta escribe los dos a la vez con pikepdf para que no se contradigan, algo que muchos editores no hacen y que provoca que un lector muestre un título y otro uno distinto. Las páginas, el texto y los formularios no se tocan.",
+    "Si subes varios PDF, los valores del formulario se aplican a todos y descargas un ZIP con los archivos, que conservan su nombre. Como el formulario se rellena con los datos del primero, vacía los campos que no quieras copiar a los demás."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo borrar un campo concreto?",
+      "a": "Aquí no: un campo vacío significa «no cambiar». Para quitarlo todo usa Eliminar metadatos de un PDF y, si quieres, vuelve después a esta herramienta para escribir solo los datos que quieras conservar."
+    },
+    {
+      "q": "¿Por qué el lector sigue mostrando el nombre del archivo?",
+      "a": "Muchos lectores enseñan el nombre del archivo en la barra de título aunque el PDF tenga título. Activa «Mostrar el título del documento» en Preferencias de visualización del PDF para pedirles que usen el título."
+    },
+    {
+      "q": "¿Dónde se procesa?",
+      "a": "El formulario se rellena en tu navegador, pero el PDF se modifica en nuestro servidor de la UE, con un máximo de 100, 300 o 2.000 páginas por archivo según tu plan, y se borra a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

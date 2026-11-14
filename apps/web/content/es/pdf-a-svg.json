@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a SVG convierte cada página de un PDF en un archivo SVG, el formato de gráficos vectoriales de la web. A diferencia de PNG o JPG, un SVG no tiene una resolución fija: las líneas, las formas y el texto se ven nítidos a cualquier tamaño, desde una miniatura hasta un póster. Es útil para llevar planos, diagramas, logotipos o gráficas de un informe a una página web, a Inkscape o a otro editor vectorial.",
+    "La conversión la hace pdftocairo, de Poppler, en nuestro servidor. Para que el resultado se vea exactamente igual que el PDF, el texto se convierte en trazados: conserva su aspecto y su tipografía, pero ya no se puede seleccionar ni editar como texto. Las fotografías incrustadas en el PDF siguen siendo imágenes dentro del SVG.",
+    "La única opción es «Páginas»: todas por defecto, un rango como «1, 4-6» o «pares» e «impares». Si eliges una sola página descargas directamente su SVG; si son varias, recibes un ZIP con un archivo por página, llamado como el PDF seguido del número de página. Con varios PDF, el resultado es un ZIP que contiene el de cada documento.",
+    "Ten en cuenta que una página muy compleja, como un mapa o un plano con miles de elementos, puede dar un SVG más pesado que el PDF y lento de abrir en el navegador. Si solo necesitas insertar la página en un documento, sin escalarla, PDF a PNG suele ser más práctico."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo editar el texto del SVG?",
+      "a": "No como texto, porque se guarda como trazados para no depender de las fuentes instaladas. Sí puedes cambiar su color, moverlo o borrarlo en un editor vectorial; si necesitas el texto, usa PDF a TXT o PDF a Word."
+    },
+    {
+      "q": "¿Funciona con PDF escaneados?",
+      "a": "Sí, pero una página escaneada es una foto y el SVG solo la envuelve: no la convierte en vectores. Esta herramienta no vectoriza imágenes."
+    },
+    {
+      "q": "¿Qué límites tiene?",
+      "a": "Se procesa en nuestro servidor de la UE con el límite de páginas de tu plan, 100, 300 o 2.000 por PDF, y los SVG se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

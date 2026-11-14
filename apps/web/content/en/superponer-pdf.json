@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Overlay PDF places a page on top of or behind the content of your documents. The most common use is a letterhead: you design the company stationery once, with the logo, address and footer, and apply it as a background to letters, invoices or quotes that were produced without it. It also works for adding a “Copy” stamp, a frame or a template on top of the pages.",
+    "The first file you upload is the overlay and the rest are the documents it is applied to; the list shows the label of each one and you can change the order with the arrows. The overlay can be a PDF, a Word, Excel, PowerPoint or OpenDocument file, which we convert first with LibreOffice, or a JPG, PNG, GIF, BMP, TIFF or WEBP image. The documents must be PDFs; if you have a Word file, convert it first with Word to PDF.",
+    "In “Position” you choose background, behind the text, which is right for a letterhead, or foreground, on top of everything. If the overlay has several pages, its first page goes on the first page it is applied to, the second on the next one, and so on. With “Repeat the last overlay page”, on by default, the last one keeps being used for the rest; that way you can have a first sheet with the full letterhead and a simpler one for the following pages. If you turn it off, the extra pages are left without an overlay.",
+    "In the additional options you can apply it to all pages, to the first page only or to a range such as “1-3, 5”. By default it is scaled to the size of each page, so an A4 letterhead also fits a Letter page; if you turn this off, it is placed at its real size from the bottom-left corner. Each result is named after the document with “-superpuesto” at the end and, if there are several, they are downloaded in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Does the letterhead cover the text?",
+      "a": "With “Background”, no: it stays behind the content. In the foreground, an overlay with an opaque white background would cover the page; for stamps on top, use a PDF or a PNG with transparency."
+    },
+    {
+      "q": "Can I use a Word file as letterhead?",
+      "a": "Yes. The first file can be DOCX, DOC, ODT and other office formats, and it is converted to PDF before being applied. Check that the document's margins do not shift the logo."
+    },
+    {
+      "q": "How many documents can I process at once?",
+      "a": "As many as your plan's files per task, counting the overlay: 5 without an account, 20 with a free account and 100 on Pro. Each PDF can have up to 100, 300 or 2,000 pages depending on the plan."
+    }
+  ]
+}
