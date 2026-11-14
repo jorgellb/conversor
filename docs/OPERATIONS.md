@@ -45,29 +45,36 @@ actualiza también `CLOUDFLARE_IP_RANGES` (o `packages/core/core/clientip.py`).
 
 Pendiente de la prueba de carga k6 en el VPS (16.1). Valores por defecto de 5.4 para 8 vCPU.
 
-## Prueba de carga (16.1, D-146 y D-148)
+## Prueba de carga (16.1, D-146, D-148 y D-149)
 
 Escenario en `tests/load/escenarios.json` (comprobado por `tests/test_carga_k6.py`): 50 comprimir-pdf y 10 ogg-a-mp3 a
 la vez, y un pico de 300 trabajos ligeros en 5 minutos desde 100 clientes. Cada trabajo abre su propia sesión anónima
 (360 en total), para que la idempotencia no devuelva un trabajo ya hecho en vez de encolar uno nuevo. Pasa si las
 páginas siguen por debajo de 1 s (p99), la espera en cola no supera `QUEUE_MAX_WAIT_SECONDS_<GRUPO>` (120 s en pdf y
 300 s en av) porque antes aparece `QUEUE_FULL`, y no hay trabajos fallidos o reutilizados, llegadas descartadas,
-`RATE_LIMITED` ni `QUOTA_EXCEEDED`. Un trabajo que sigue en cola pasado el umbral se anota en ese momento; uno que no
-termina en la espera máxima más `proceso_max_s` (300 s), o con 5 sondeos seguidos sin 200, cuenta como fallido.
+`RATE_LIMITED` ni `QUOTA_EXCEEDED` (tampoco de los hooks de tusd) ni ninguna comprobación fallida. Cada llegada termina
+como trabajo creado o como `QUEUE_FULL`: una sesión, una subida o una creación rechazadas cuentan como trabajo fallido,
+con el motivo y el estado HTTP como etiquetas en `resultados-k6.json`. Un trabajo que sigue en cola pasado el umbral se
+anota en ese momento; uno que no termina en la espera máxima más `proceso_max_s` (300 s), o con 5 sondeos seguidos sin
+200, cuenta como fallido. El pico empieza con 100 clientes y k6 puede subir hasta 420 (una llegada por segundo × 420 s
+de plazo por trabajo), para que una espera larga pero dentro del umbral no descarte llegadas.
 
 1. Muestras: `python scripts/fixtures/generate.py /tmp/muestras` (necesita FFmpeg para `voz.ogg`).
 2. Todos los clientes virtuales salen de una IP, y los anónimos cuentan sesiones y tareas también por IP (9.3). Durante
    la prueba se ponen los valores de `limites_durante_la_prueba` de `escenarios.json`, mejor fuera de horas de uso:
    - En Coolify: `RATE_LIMIT_PER_MINUTE=100000`, `ANON_TOKENS_PER_IP_DAY=1000` y las claves de prueba de Turnstile de
      `.env.example` (`TURNSTILE_SITE_KEY` y `TURNSTILE_SECRET_KEY`).
-   - La cuota diaria de tareas ligeras del plan anónimo, que vive en la tabla `plans` (no tiene variable): en la
-     terminal del contenedor `postgres`,
+   - La cuota diaria de tareas ligeras del plan anónimo, que vive en la tabla `plans` (no tiene variable y, después de
+     sembrarla desde `config/plans.yaml`, se edita en la base). En la terminal del contenedor `postgres`, primero se
+     anota el valor actual:
+     `psql -U "$POSTGRES_USER" -d conversor -tAc "SELECT limits->'light_tasks_day' FROM plans WHERE id = 'anon'"`
+     (20 si nunca se ha cambiado, el valor de `config/plans.yaml`), y después se sube:
      `psql -U "$POSTGRES_USER" -d conversor -c "UPDATE plans SET limits = jsonb_set(limits, '{light_tasks_day}', '1000') WHERE id = 'anon'"`.
-     Con 20 (el valor de `config/plans.yaml`), desde el trabajo 21 la API responde `QUOTA_EXCEEDED`. El contador es
-     por día: una segunda ejecución el mismo día suma otras 360 tareas y otras 360 sesiones.
+     Con 20, desde el trabajo 21 la API responde `QUOTA_EXCEEDED`. El contador es por día: una segunda ejecución el
+     mismo día suma otras 360 tareas y otras 360 sesiones.
 
-   Al terminar se vuelven a poner los valores de producción, también la cuota:
-   `psql -U "$POSTGRES_USER" -d conversor -c "UPDATE plans SET limits = jsonb_set(limits, '{light_tasks_day}', '20') WHERE id = 'anon'"`.
+   Al terminar se vuelven a poner los valores de producción, también la cuota con el valor anotado:
+   `psql -U "$POSTGRES_USER" -d conversor -c "UPDATE plans SET limits = jsonb_set(limits, '{light_tasks_day}', '<valor anotado>') WHERE id = 'anon'"`.
 3. En el servidor, mientras dura la prueba: `DATOS=/srv/files sh tests/load/recursos.sh recursos-k6.csv` (CPU y RAM por
    contenedor con `docker stats`, y disco de los archivos con `df`, cada 5 s; se para con Ctrl+C).
 4. Desde otra máquina: `k6 run -e API=https://api.{{DOMINIO}} -e UPLOAD=https://upload.{{DOMINIO}}/files/

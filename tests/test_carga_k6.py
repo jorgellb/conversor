@@ -7,6 +7,7 @@ espera máxima es la de `Settings.queue_wait_limit` del grupo de cada herramient
 from __future__ import annotations
 
 import json
+import math
 import re
 import shutil
 import subprocess
@@ -88,13 +89,65 @@ def test_el_script_usa_el_escenario_y_falla_con_el_limitador():
 
 def test_cada_trabajo_es_nuevo():
     """Mismo propietario, herramienta, opciones y archivo = el mismo trabajo (idempotencia, 5.2): no llega a la cola."""
-    body = SCRIPT.split("function runJob(", 1)[1].split("\n}\n", 1)[0]
-    assert body.lstrip().split("\n")[2].strip() == "if (!newAnonSession()) return;"
+    body = _function("runJob")
+    first_steps = [line.strip() for line in body.split("try {", 1)[1].strip().split("\n")[:2]]
+    assert first_steps == ["const session = newAnonSession();", 'if (session !== 200) return fail("sesion", session);']
     session = SCRIPT.split("function newAnonSession()", 1)[1].split("\n}\n", 1)[0]
     assert "token = null;" in session and "if (token) return token" not in session
     # Y si vuelve a aparecer un id ya visto, la prueba falla.
     assert "seenJobs.has(job.id)" in body
     assert 'trabajos_reutilizados: ["count==0"]' in SCRIPT
+
+
+def _function(name: str) -> str:
+    return SCRIPT.split(f"function {name}(", 1)[1].split("\n}\n", 1)[0]
+
+
+def test_cada_llegada_es_trabajo_creado_o_queue_full():
+    """Ninguna salida temprana se pierde: sesión, subida o creación rechazadas cuentan como trabajo fallido."""
+    body = _function("runJob")
+    returns = [line.strip() for line in body.split("\n") if re.search(r"\breturn\b", line)]
+    assert returns, "runJob sin salidas"
+    for line in returns:
+        # La única salida sin fallo es QUEUE_FULL, que se cuenta justo antes.
+        after = line.split("return", 1)[1].strip()
+        assert after.startswith("fail(") or line == "return;", line
+    assert body.count("\n      return;\n") == 1
+    assert "queueFull.add(1, { herramienta: tool });\n      return;" in body
+    for motivo in ("sesion", "subida", "creacion", "excepcion"):
+        assert f'fail("{motivo}"' in body, motivo
+    assert "failedJobs.add(1, { herramienta: tool, motivo, respuesta: String(status) })" in body
+    assert "} catch (e) {" in body and "createdJobs.add(1" in body
+
+    # La subida devuelve el estado de la respuesta que falló, y los 429 de los hooks de tusd llegan a sus contadores.
+    upload = _function("tusUpload")
+    for line in (line.strip() for line in upload.split("\n") if re.search(r"\breturn\b", line)):
+        failed = line.startswith("if (!check(") and "return { id: null, status:" in line
+        assert failed or line.startswith("return { id: location"), line
+    assert "countLimit(create);" in upload and "countLimit(patch);" in upload
+    session = _function("newAnonSession")
+    assert "countLimit(res);" in session
+    # Las comprobaciones de páginas no pueden tapar las de los trabajos.
+    assert 'checks: ["rate==1"]' in SCRIPT
+    assert 'trabajos_fallidos: ["count==0"]' in SCRIPT
+
+
+def test_el_pico_tiene_clientes_para_trabajos_lentos_pero_aceptables():
+    """constant-arrival-rate: una iteración dura lo que el trabajo. Con 100 clientes y una llegada por segundo, una espera
+    media de más de unos 100 s (dentro del umbral de 120 s) descartaría llegadas sin que el sistema falle (D-149)."""
+    specs = _registry()
+    group = specs[E["pico"]["herramienta"]].worker_group
+    per_second = E["pico"]["trabajos"] / (E["pico"]["minutos"] * 60)
+    deadline_s = E["umbrales"]["espera_cola_s"][group] + E["proceso_max_s"]
+    needed = math.ceil(per_second * deadline_s)
+    assert needed > E["pico"]["clientes"]  # con 100 solo no bastaría
+    fn = _function("spikeMaxVus")
+    assert "E.pico.trabajos / (E.pico.minutos * 60)" in fn and "deadlineMs(E.pico.herramienta)) / 1000" in fn
+    assert "Math.max(E.pico.clientes, Math.ceil(" in fn
+    assert "preAllocatedVUs: E.pico.clientes, maxVUs: spikeMaxVus()" in SCRIPT
+    # Y las peticiones por minuto de todos esos clientes caben en el límite subido durante la prueba.
+    vus = E["comprimir"]["trabajos_simultaneos"] + E["audio"]["trabajos_simultaneos"] + needed
+    assert E["limites_durante_la_prueba"]["RATE_LIMIT_PER_MINUTE"] >= vus * (60 / E["sondeo_s"] + 10)
 
 
 def _duration_s(value: str) -> int:
@@ -105,7 +158,7 @@ def _duration_s(value: str) -> int:
 
 def test_ninguna_espera_se_pierde_al_cortar_la_iteracion():
     """La espera que pasa del umbral se anota durante el sondeo, y cada escenario deja terminar al trabajo más lento."""
-    loop = SCRIPT.split("function waitForJob(", 1)[1].split("\n}\n", 1)[0]
+    loop = _function("waitForJob")
     assert "elapsed > limitMs" in loop and "queueWait.add(elapsed" in loop
     assert 'fail("tiempo")' in loop and 'fail("sondeo")' in loop and "E.sondeos_fallidos_max" in loop
     assert "gracefulStop: `${deadlineMs(E.pico.herramienta) / 1000 + 60}s`" in SCRIPT
@@ -149,8 +202,12 @@ def test_limites_documentados_cubren_el_escenario_desde_una_ip():
     assert f"RATE_LIMIT_PER_MINUTE={limits['RATE_LIMIT_PER_MINUTE']}" in section
     assert f"ANON_TOKENS_PER_IP_DAY={limits['ANON_TOKENS_PER_IP_DAY']}" in section
     raise_sql = f"jsonb_set(limits, '{{light_tasks_day}}', '{limits['anon.light_tasks_day']}') WHERE id = 'anon'"
-    restore_sql = f"jsonb_set(limits, '{{light_tasks_day}}', '{anon.light_tasks_day}') WHERE id = 'anon'"
-    assert raise_sql in section and restore_sql in section
+    # El plan se edita en la base después de sembrarlo: se anota el valor antes de subirlo y se devuelve ese.
+    read_sql = "SELECT limits->'light_tasks_day' FROM plans WHERE id = 'anon'"
+    restore_sql = "jsonb_set(limits, '{light_tasks_day}', '<valor anotado>') WHERE id = 'anon'"
+    assert raise_sql in section and read_sql in section and restore_sql in section
+    assert section.index(read_sql) < section.index(raise_sql) < section.index(restore_sql)
+    assert f"{anon.light_tasks_day} si nunca se ha cambiado" in section
     checklist = (ROOT / "docs" / "DEPLOY-CHECKLIST.md").read_text(encoding="utf-8")
     assert f"`light_tasks_day` del plan `anon` ({anon.light_tasks_day})" in checklist
 

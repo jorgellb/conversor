@@ -13,7 +13,9 @@
 // durante la prueba hacen falta las claves de prueba de Turnstile (0.1) y los límites de `limites_durante_la_prueba`
 // de escenarios.json (RATE_LIMIT_PER_MINUTE, ANON_TOKENS_PER_IP_DAY y `light_tasks_day` del plan anon en la tabla
 // `plans`, que cuenta también por IP; ver OPERATIONS.md). Si no, la prueba mide el limitador y no las colas: por eso
-// falla en cuanto aparece un RATE_LIMITED o un QUOTA_EXCEEDED, que se cuentan por separado para saber cuál faltó.
+// falla en cuanto aparece un RATE_LIMITED o un QUOTA_EXCEEDED (de la API o de los hooks de tusd), que se cuentan por
+// separado para saber cuál faltó. Cada llegada termina como trabajo creado o como QUEUE_FULL; cualquier otra salida
+// (sesión, subida o creación rechazadas, respuesta inesperada) cuenta en trabajos_fallidos con su motivo y su estado.
 import http from "k6/http";
 import { check, sleep } from "k6";
 import encoding from "k6/encoding";
@@ -41,6 +43,12 @@ function deadlineMs(tool) {
   return (E.umbrales.espera_cola_s[GROUP[tool]] + E.proceso_max_s) * 1000;
 }
 
+/** Clientes que necesita el pico para no descartar llegadas aunque cada trabajo tarde hasta deadlineMs. */
+function spikeMaxVus() {
+  const perSecond = E.pico.trabajos / (E.pico.minutos * 60);
+  return Math.max(E.pico.clientes, Math.ceil((perSecond * deadlineMs(E.pico.herramienta)) / 1000));
+}
+
 const jobTime = new Trend("tiempo_trabajo_ms", true);
 const queueWait = new Trend("espera_cola_ms", true);
 const queueFull = new Counter("queue_full");
@@ -48,6 +56,7 @@ const rateLimited = new Counter("rate_limited");
 const quotaExceeded = new Counter("cuota_superada");
 const reusedJobs = new Counter("trabajos_reutilizados");
 const failedJobs = new Counter("trabajos_fallidos");
+const createdJobs = new Counter("trabajos_creados");
 
 const thresholds = {
   "http_req_duration{tipo:pagina}": [`p(99)<${E.umbrales.pagina_ms}`],
@@ -58,7 +67,8 @@ const thresholds = {
   trabajos_fallidos: ["count==0"],
   // El pico tiene que llegar entero: si no quedan clientes libres, k6 descarta llegadas y la prueba no vale.
   dropped_iterations: ["count==0"],
-  checks: ["rate>0.95"],
+  // Todas las comprobaciones: los cientos de páginas 200 no pueden tapar trabajos que no llegaron a crearse.
+  checks: ["rate==1"],
 };
 for (const [tool, group] of Object.entries(GROUP)) {
   thresholds[`espera_cola_ms{herramienta:${tool}}`] = [`max<${E.umbrales.espera_cola_s[group] * 1000}`];
@@ -68,11 +78,14 @@ export const options = {
   scenarios: {
     comprimir: { executor: "per-vu-iterations", vus: E.comprimir.trabajos_simultaneos, iterations: 1, exec: "comprimir", maxDuration: E.duracion_maxima },
     audio: { executor: "per-vu-iterations", vus: E.audio.trabajos_simultaneos, iterations: 1, exec: "audio", maxDuration: E.duracion_maxima },
-    // 300 llegadas repartidas en 5 minutos (una por segundo), atendidas por 100 clientes; cada llegada es un trabajo
-    // nuevo con su propia sesión. Las últimas tienen hasta deadlineMs para terminar antes de que k6 las corte.
+    // 300 llegadas repartidas en 5 minutos (una por segundo), que empiezan 100 clientes; cada llegada es un trabajo
+    // nuevo con su propia sesión. Una iteración dura lo que el trabajo (espera en cola más proceso): con una espera
+    // aceptable (hasta el umbral de 4.5) 100 clientes no bastan para una llegada por segundo y k6 las descartaría, así
+    // que puede añadir clientes hasta cubrir llegadas por segundo × deadlineMs (D-149). Las últimas tienen hasta
+    // deadlineMs para terminar antes de que k6 las corte.
     pico: {
       executor: "constant-arrival-rate", rate: E.pico.trabajos, timeUnit: `${E.pico.minutos}m`, duration: `${E.pico.minutos}m`,
-      preAllocatedVUs: E.pico.clientes, maxVUs: E.pico.clientes, exec: "ligero", startTime: E.pico.empieza,
+      preAllocatedVUs: E.pico.clientes, maxVUs: spikeMaxVus(), exec: "ligero", startTime: E.pico.empieza,
       gracefulStop: `${deadlineMs(E.pico.herramienta) / 1000 + 60}s`,
     },
     paginas: { executor: "constant-vus", vus: E.paginas.clientes, duration: `${E.paginas.minutos}m`, exec: "paginas" },
@@ -100,56 +113,78 @@ function countLimit(res) {
   else rateLimited.add(1);
 }
 
-/** Abre una sesión anónima nueva: cada trabajo es de un propietario distinto y no choca con la idempotencia. */
+/**
+ * Abre una sesión anónima nueva: cada trabajo es de un propietario distinto y no choca con la idempotencia.
+ * Devuelve el estado HTTP; el token queda en `token` solo con 200.
+ */
 function newAnonSession() {
   token = null;
   const res = http.post(`${API}/v1/session/anon`, JSON.stringify({ turnstile_token: TURNSTILE }),
     { headers: { "Content-Type": "application/json" }, tags: { tipo: "api" } });
   countLimit(res);
-  if (!check(res, { "sesión anónima": (r) => r.status === 200 })) return null;
+  if (!check(res, { "sesión anónima": (r) => r.status === 200 })) return res.status;
   token = res.json("token");
-  return token;
+  return token ? 200 : 0;
 }
 
 function auth(extra) {
   return Object.assign({ Authorization: `Bearer ${token}` }, extra || {});
 }
 
+/**
+ * Sube la muestra por tus. Devuelve `{ id, status }`; sin id, `status` es el de la respuesta que falló. Los 429 de los
+ * hooks de tusd (RATE_LIMITED por IP o por propietario, QUOTA_EXCEEDED) traen el mismo `error.code` que la API.
+ */
 function tusUpload(tool, name, data) {
   const meta = `filename ${encoding.b64encode(name)},tool ${encoding.b64encode(tool)}`;
   const create = http.post(UPLOAD, null, {
     headers: auth({ "Tus-Resumable": "1.0.0", "Upload-Length": String(data.byteLength), "Upload-Metadata": meta }), tags: { tipo: "subida" },
   });
-  if (!check(create, { "tus creado": (r) => r.status === 201 })) return null;
+  countLimit(create);
   const location = create.headers.Location;
+  if (!check(create, { "tus creado": (r) => r.status === 201 && Boolean(location) })) return { id: null, status: create.status };
   const target = location.startsWith("http") ? location : `${UPLOAD.match(/^https?:\/\/[^/]+/)[0]}${location}`;
   const patch = http.patch(target, data, {
     headers: auth({ "Tus-Resumable": "1.0.0", "Upload-Offset": "0", "Content-Type": "application/offset+octet-stream" }), tags: { tipo: "subida" },
   });
-  if (!check(patch, { "tus subido": (r) => r.status === 204 })) return null;
-  return location.split("/").filter(Boolean).pop();
+  countLimit(patch);
+  if (!check(patch, { "tus subido": (r) => r.status === 204 })) return { id: null, status: patch.status };
+  return { id: location.split("/").filter(Boolean).pop(), status: patch.status };
 }
 
+/**
+ * Una llegada: sesión, subida, creación y sondeo. Termina como trabajo creado (y luego terminado o fallido) o como
+ * QUEUE_FULL; cualquier otra salida cuenta como trabajo fallido con su motivo y el estado HTTP que la provocó.
+ */
 function runJob(scenario) {
   const { herramienta: tool, muestra: name, opciones } = E[scenario];
-  if (!newAnonSession()) return;
-  const id = tusUpload(tool, name, SAMPLES[name]);
-  if (!id) return;
-  const started = Date.now();
-  const res = http.post(`${API}/v1/jobs`, JSON.stringify({ tool, upload_ids: [id], options: opciones }),
-    { headers: auth({ "Content-Type": "application/json" }), tags: { tipo: "api" } });
-  const code = errorCode(res);
-  if (res.status === 503 && code === "QUEUE_FULL") {
-    // Lo esperado cuando la cola pasa del umbral (4.5): se rechaza enseguida en vez de dejar esperando.
-    queueFull.add(1, { herramienta: tool });
-    return;
+  const fail = (motivo, status) => failedJobs.add(1, { herramienta: tool, motivo, respuesta: String(status) });
+  try {
+    const session = newAnonSession();
+    if (session !== 200) return fail("sesion", session);
+    const upload = tusUpload(tool, name, SAMPLES[name]);
+    if (!upload.id) return fail("subida", upload.status);
+    const started = Date.now();
+    const res = http.post(`${API}/v1/jobs`, JSON.stringify({ tool, upload_ids: [upload.id], options: opciones }),
+      { headers: auth({ "Content-Type": "application/json" }), tags: { tipo: "api" } });
+    const code = errorCode(res);
+    if (res.status === 503 && code === "QUEUE_FULL") {
+      // Lo esperado cuando la cola pasa del umbral (4.5): se rechaza enseguida en vez de dejar esperando.
+      queueFull.add(1, { herramienta: tool });
+      return;
+    }
+    countLimit(res);
+    if (!check(res, { "trabajo creado": (r) => r.status === 201 })) return fail("creacion", res.status);
+    const job = res.json();
+    createdJobs.add(1, { herramienta: tool });
+    if (seenJobs.has(job.id)) reusedJobs.add(1, { herramienta: tool });
+    seenJobs.add(job.id);
+    waitForJob(job, tool, started);
+  } catch (e) {
+    // Una respuesta sin el JSON esperado no puede cortar la iteración sin dejar rastro.
+    check(null, { "respuesta esperada": () => false });
+    fail("excepcion", 0);
   }
-  countLimit(res);
-  if (!check(res, { "trabajo creado": (r) => r.status === 201 })) return;
-  let job = res.json();
-  if (seenJobs.has(job.id)) reusedJobs.add(1, { herramienta: tool });
-  seenJobs.add(job.id);
-  waitForJob(job, tool, started);
 }
 
 /**
@@ -218,7 +253,7 @@ export function handleSummary(data) {
     `espera en cola ogg-a-mp3: máx. ${stat(data, "espera_cola_ms{herramienta:ogg-a-mp3}", "max")} ms (umbral ${E.umbrales.espera_cola_s.av * 1000})`,
     `tiempo de trabajo: p50 ${stat(data, "tiempo_trabajo_ms", "med")} ms, p95 ${stat(data, "tiempo_trabajo_ms", "p(95)")} ms`,
     `QUEUE_FULL: ${stat(data, "queue_full", "count")}; RATE_LIMITED: ${stat(data, "rate_limited", "count")}; QUOTA_EXCEEDED: ${stat(data, "cuota_superada", "count")}`,
-    `fallidos: ${stat(data, "trabajos_fallidos", "count")}; reutilizados: ${stat(data, "trabajos_reutilizados", "count")}; descartados: ${stat(data, "dropped_iterations", "count")}`,
+    `creados: ${stat(data, "trabajos_creados", "count")}; fallidos: ${stat(data, "trabajos_fallidos", "count")}; reutilizados: ${stat(data, "trabajos_reutilizados", "count")}; descartados: ${stat(data, "dropped_iterations", "count")}`,
   ];
   return { stdout: `${lines.join("\n")}\n`, [__ENV.SALIDA || "resultados-k6.json"]: JSON.stringify(data, null, 2) };
 }

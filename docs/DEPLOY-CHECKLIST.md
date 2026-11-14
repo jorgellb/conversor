@@ -67,9 +67,9 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       y Umami (1.3); la CI ya lo mide contra `next start` en cada cambio (D-145).
 - [ ] Prueba de carga k6 con los pasos de `OPERATIONS.md` (límites por IP subidos, `light_tasks_day` del plan `anon`
       a 1000 en la tabla `plans` y claves de prueba de Turnstile solo durante la prueba, `tests/load/recursos.sh` en el
-      servidor) y resultados y concurrencias anotados en `OPERATIONS.md` (D-146 y D-148). Volver a dejar
+      servidor) y resultados y concurrencias anotados en `OPERATIONS.md` (D-146, D-148 y D-149). Volver a dejar
       `RATE_LIMIT_PER_MINUTE`, `ANON_TOKENS_PER_IP_DAY`, `light_tasks_day` del plan `anon` (20) y las claves de
-      Turnstile de producción al terminar.
+      Turnstile de producción al terminar (la cuota, con el valor anotado antes de subirla si se cambió desde la base).
 - [ ] Primera ejecución de G0-B en la CI: Lighthouse en el job `web`, regresión visual de la plantilla con el Chromium de
       Playwright y de los PDF en el job `python`; si una captura falla solo por el suavizado del texto, regenerar las
       referencias en la CI con `--update-snapshots` y revisarlas antes de confirmarlas (D-144).

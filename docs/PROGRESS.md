@@ -7,7 +7,7 @@ con programas externos), D1 (6 desde PDF sin Docling), D2 (12 desde PDF con Docl
 D1 y D2 (crear-collage), E (transcripción) y F (convertir-archivo). **F3 (IA) en curso**: lotes A1 (núcleo de IA y
 resumir-pdf), A2 (chat-pdf) y B (preguntas, fichas, presentación y traducción) hechos. **Goal de trabajo continuo**
 (`docs/GOAL.md`): lote transversal G0-A (infraestructura de proceso) hecho (D-134 a D-143) y G0-B (Lighthouse CI, regresión visual, Playwright
-de 16.1 y prueba de carga revisada) hecho (D-144 a D-147).
+de 16.1 y prueba de carga revisada) hecho (D-144 a D-149).
 
 ## Cierre técnico
 
@@ -240,8 +240,10 @@ word-a-pdf, pdf-a-word, ogg-a-mp3 y el pago con FakePaymentProvider, y `servidor
 `e2e-compose`, Mailpit con espera y nombres exactos). Al repetir las pruebas apareció un fallo real: el último aviso de
 progreso de Uppy, emitido con retraso, devolvía la página a «Subiendo…» y borraba el resultado o la conversación de
 chat-pdf; ya no se atiende después de la subida. k6 revisado frente a 16.1 con su escenario en JSON comprobado por pytest,
-el pico de 300 trabajos completo, una sesión por cliente, la espera en cola por grupo y `tests/load/recursos.sh` para CPU,
-RAM y disco. Salvedades en D-144 a D-147.
+el pico de 300 trabajos completo, una sesión anónima por trabajo (360), cualquier llegada que no acabe en trabajo creado o
+`QUEUE_FULL` contada como fallida, la espera en cola por grupo y `tests/load/recursos.sh` para CPU, RAM y disco; durante
+la prueba se suben temporalmente los límites por IP y `light_tasks_day` del plan anónimo, y se devuelven al terminar.
+Salvedades en D-144 a D-149.
 
 ## Pendiente
 
