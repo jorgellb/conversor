@@ -32,6 +32,12 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | Modelos faster-whisper `small` y `medium` (Systran, convertidos de Whisper) | MIT | Transcripción; descargados al construir con su SHA-256 (D-112) |
 | Silero VAD | MIT | Filtro de silencios, dentro del paquete faster-whisper |
 | PyAV (`av`) | **Prohibido**: sus ruedas traen libx264 y libx265 (GPL) | Se quita al instalar con `infra/uv-overrides.txt` (D-111) |
+| Modelo Kokoro-82M v1.0 (hexgrad) en la conversión a ONNX de `onnx-community/Kokoro-82M-v1.0-ONNX` (revisión `1939ad2a`), con su vocabulario de fonemas y las voces ef_dora, em_alex, em_santa, af_heart, af_bella y am_michael | Apache-2.0 (ficha del modelo y de la conversión) | Voz de pdf-a-audio en `workeravheavy`; descargado al construir con el SHA-256 de cada archivo (`infra/kokoro/fetch-model.sh`; D-167) |
+| espeak-ng y sus datos de idiomas (paquete de Debian) | GPL-3.0-or-later | Programa externo en worker-av: fonemas IPA de pdf-a-audio con `run_engine` (entorno vacío, tiempo y memoria limitados); nunca se carga en el proceso de Python (11; D-168) |
+| onnxruntime 1.31.0 | MIT | Inferencia de Kokoro en worker-av (también en quitar-fondo y en los embeddings) |
+| pypdfium2 5.14.0 y pikepdf 10.17.0 en worker-av | Apache-2.0 o BSD-3-Clause (PDFium BSD/Apache); MPL-2.0 | Texto del PDF de pdf-a-audio (el mismo extractor que las herramientas de IA) |
+| `misaki`, `phonemizer`, `phonemizer-fork`, `espeakng-loader`, `kokoro` y `kokoro-onnx` | **Prohibidos**: GPL o cargan espeak-ng (GPL) dentro del proceso | Nunca se instalan: están en `forbidden_packages` y worker-av y `scripts/check_images.sh` comprueban que no hay ninguno (D-167) |
+| fpdf2 (dependencia de OCRmyPDF) | LGPL-3.0 | Solo genera las muestras de pdf-a-audio en las pruebas (`scripts/fixtures/lectura_pdf.py`) |
 | rawpy con LibRaw | MIT; LibRaw LGPL-2.1 o CDDL-1.0 (sin los paquetes de demosaico GPL) | raw-a-jpg en `workermedia`, en un proceso aparte |
 | psd-tools | MIT | psd-a-png (sin aggdraw) |
 | vtracer | MIT | png-a-svg y jpg-a-svg |

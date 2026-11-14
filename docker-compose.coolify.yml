@@ -219,6 +219,9 @@ services:
       AI_REQUIRE_CONSENT: 'true'
       AI_CHAT_RPM_SHARE: ${AI_CHAT_RPM_SHARE:-0.5}
       AI_TASK_MAX_REQUESTS: ${AI_TASK_MAX_REQUESTS:-20}
+      TTS_ENGINE: ${TTS_ENGINE:-kokoro}
+      TTS_VOICE_ES: ${TTS_VOICE_ES:-}
+      TTS_VOICE_EN: ${TTS_VOICE_EN:-af_heart}
       SERVICE_URL_API_8000: ''
       SERVICE_ROLE: api
       DATABASE_URL: postgresql+psycopg://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@postgres:5432/conversor
@@ -1254,6 +1257,9 @@ services:
       WHISPER_MODEL: ${WHISPER_MODEL:-small}
       WHISPER_DEVICE: ${WHISPER_DEVICE:-cpu}
       WHISPER_COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-int8}
+      TTS_ENGINE: ${TTS_ENGINE:-kokoro}
+      TTS_VOICE_ES: ${TTS_VOICE_ES:-}
+      TTS_VOICE_EN: ${TTS_VOICE_EN:-af_heart}
     volumes: *id003
     networks:
     - internal

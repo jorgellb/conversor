@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 160 herramientas (F1 43, F2 60, F3 9, F5 48). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 161 herramientas (F1 43, F2 60, F3 10, F5 48). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -142,6 +142,7 @@ Catálogo publicado en esta entrega: 160 herramientas (F1 43, F2 60, F3 9, F5 48
 | `unir-audios` / `merge-audio` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr | redactado, sin revisar |
 | `normalizar-volumen` / `normalize-audio` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, zip | redactado, sin revisar |
 | `cambiar-velocidad-audio` / `change-audio-speed` | servidor | av | light | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr → mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, zip | redactado, sin revisar |
+| `pdf-a-audio` / `pdf-to-audio` | servidor | av | heavy | F3 | activa | pdf → mp3 | redactado, sin revisar |
 | `transcribir-audio` / `transcribe-audio` | servidor | av | heavy | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, webm → txt, docx, srt, zip | redactado, sin revisar |
 | `video-a-subtitulos` / `video-to-subtitles` | servidor | av | heavy | F5 | activa | mp4, mov, mkv, webm, avi → srt, vtt, zip | redactado, sin revisar |
 | `heic-a-pdf` / `heic-to-pdf` | servidor | media | light | F2 | apagada | heic → pdf, zip | redactado, sin revisar |

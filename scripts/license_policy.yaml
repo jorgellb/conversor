@@ -9,6 +9,7 @@ backend:
 forbidden_patterns: ["AGPL", "GPL-2.0-only", "GPL-3.0-only", "GPL-2.0-or-later", "GPL-3.0-or-later", "GPLv2", "GPLv3", "GNU General Public"]
 # `av` (PyAV) declara BSD-3-Clause, pero sus ruedas traen libx264 y libx265 (GPL) dentro de libavcodec (D-111).
 forbidden_packages: [ghostscript, mupdf, pymupdf, fitz, pdf2docx, babeldoc, ebooklib, extract-msg, xmlsig, misaki, phonemizer-fork,
+                     phonemizer, kokoro, kokoro-onnx, espeakng-loader,
                      pillow-heif, av, "@ffmpeg/core", "@ffmpeg/ffmpeg"]
 # Equivalencias de nombres que publican los paquetes (texto libre → SPDX).
 aliases:

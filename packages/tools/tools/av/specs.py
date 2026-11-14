@@ -1,4 +1,5 @@
-"""Audio con FFmpeg (7.8): conversiones a MP3 y WAV, cortar, unir, normalizar y cambiar la velocidad."""
+"""Audio con FFmpeg (7.8): conversiones a MP3 y WAV, cortar, unir, normalizar y cambiar la velocidad; transcripción
+local (7.10) y voz local de pdf-a-audio (7.6)."""
 from __future__ import annotations
 
 import re
@@ -122,6 +123,31 @@ class SubtitulosOptions(BaseModel):
     precision: Literal["normal", "alta"] = opt("normal", "Precisión", "Accuracy", labels=PRECISION, advanced=True)
 
 
+# ——— Voz local (7.6): pdf-a-audio con Kokoro y espeak-ng, sin IA externa (6.3: 0 peticiones) ———
+
+class PdfAudioOptions(BaseModel):
+    """pdf-a-audio (7.6 y 6.4). El Anexo A no fija opciones: páginas (A.0), idioma, voz, velocidad, calidad del MP3,
+    pausa entre párrafos, saltar cabeceras y OCR de las páginas escaneadas (D-166)."""
+
+    paginas: str = opt("todas", "Páginas", "Pages", max_length=200)
+    idioma: Literal["auto", "es", "en"] = opt("auto", "Idioma del texto", "Text language",
+                                              labels={"auto": ("Detectar el idioma", "Detect the language"),
+                                                      "es": ("Español", "Spanish"), "en": ("Inglés", "English")})
+    voz: Literal["predeterminada", "mujer", "hombre"] = opt(
+        "predeterminada", "Voz", "Voice",
+        labels={"predeterminada": ("La recomendada", "The recommended one"), "mujer": ("Voz de mujer", "Female voice"),
+                "hombre": ("Voz de hombre", "Male voice")})
+    velocidad: float = opt(1.0, "Velocidad (1 = normal; 2 = el doble de rápido)", "Speed (1 = normal; 2 = twice as fast)",
+                           ge=0.5, le=2.0)
+    calidad: Literal["128", "192"] = opt("128", "Calidad MP3", "MP3 quality",
+                                         labels={"128": ("128 kbps", "128 kbps"), "192": ("192 kbps", "192 kbps")})
+    pausa: float = opt(0.6, "Pausa entre párrafos (s)", "Pause between paragraphs (s)", ge=0, le=3, advanced=True)
+    saltar_cabeceras: bool = opt(True, "Saltar cabeceras, pies y números de página", "Skip headers, footers and page numbers",
+                                 advanced=True)
+    ocr: bool = opt(True, "Leer las páginas escaneadas con OCR (cuenta como tarea pesada)",
+                    "Read scanned pages with OCR (counts as a heavy task)", advanced=True)
+
+
 def transcription(slug_es, slug_en, name_es, name_en, category, inputs, outputs, options, impl, summary_es, summary_en, related) -> ToolSpec:
     # Cola `av.heavy` (5.4): con `small` en int8 y 2 hilos va a unos 0,7 veces la duración (D-112), así que 4 h de
     # audio del plan Pro tardan unas 3 h; el límite de tiempo deja margen.
@@ -183,6 +209,16 @@ SPECS: list[ToolSpec] = [
     audio("cambiar-velocidad-audio", "change-audio-speed", "Cambiar velocidad de audio", "Change audio speed", AUDIO_INPUTS,
           "Acelera o ralentiza un audio conservando el tono de voz.", "Speed up or slow down audio while keeping the pitch.",
           options=VelocidadOptions, outputs=(*AUDIO_INPUTS, "zip"), impl="tools.av.edicion:run_speed", related=("cortar-audio",)),
+    # Cola `av.heavy` (5.4). Kokoro va a unas 1,4 veces el tiempo real con 2 hilos (D-168): los 300.000 caracteres del
+    # plan Pro son unas 5 h de voz y casi 4 h de trabajo; el límite de tiempo deja margen. La API cuenta los caracteres
+    # antes de encolar (9.3).
+    ToolSpec(slug_es="pdf-a-audio", slug_en="pdf-to-audio", name_es="PDF a audio", name_en="PDF to audio", category="ai",
+             where="server", inputs=("pdf",), outputs=("mp3",), options=PdfAudioOptions, worker_group="av", cost_class="heavy",
+             queue_kind="heavy", impl="tools.av.voz:run", precheck="tools.av.voz:precheck", launch=True, phase="F3",
+             max_files=1, time_limit=6 * 3600,
+             summary_es="Escucha tus PDF: convierte su texto en un MP3 leído en voz alta en español o en inglés, con una voz generada en nuestro servidor.",
+             summary_en="Listen to your PDFs: turn their text into an MP3 read aloud in Spanish or English, with a voice generated on our server.",
+             related=("pdf-a-txt", "transcribir-audio", "resumir-pdf")),
     transcription("transcribir-audio", "transcribe-audio", "Transcribir audio", "Transcribe audio", "audio", (*AUDIO_INPUTS, "mp4", "webm"),
                   ("txt", "docx", "srt", "zip"), TranscribirOptions, "tools.av.transcribe:run_transcribe",
                   "Pasa a texto entrevistas, clases, reuniones y notas de voz en TXT, Word o SRT. Se transcribe en nuestro servidor, sin IA externa.",

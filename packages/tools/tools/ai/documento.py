@@ -1,12 +1,13 @@
-"""Texto de un PDF para las herramientas de IA (6.4): pypdfium2 en `workerai` y, para las páginas escaneadas, OCR con
-Tesseract en `workerocr`. El texto se guarda en `document_texts` (del propietario, con la caducidad de sus archivos) y
-las siguientes herramientas de IA lo reutilizan sin volver a leer el PDF."""
+"""Texto de un PDF para las herramientas de IA y para pdf-a-audio (6.4): pypdfium2 en `workerai` (o en `workerav`) y,
+para las páginas escaneadas, OCR con Tesseract en `workerocr`. El texto se guarda en `document_texts` (del propietario,
+con la caducidad de sus archivos) y las siguientes herramientas lo reutilizan sin volver a leer el PDF."""
 from __future__ import annotations
 
 from core.ai.store import texts_get, texts_put
 from core.db import session_scope
 from core.errors import ErrorCode, ToolError
 from core.options import parse_page_ranges
+from tools.av import lectura
 from tools.base import InputFile, ToolContext
 from tools.pdf.common import open_pdf
 
@@ -28,7 +29,7 @@ def _extract(ctx: ToolContext, inp: InputFile) -> list[str | None]:
             page = doc[i]
             textpage = page.get_textpage()
             try:
-                text = textpage.get_text_range().replace("\r\n", "\n").replace("\r", "\n")
+                text = lectura.page_text(textpage)
             finally:
                 textpage.close()
                 page.close()
@@ -51,31 +52,35 @@ def load(ctx: ToolContext, inp: InputFile) -> list[str | None]:
     return pages
 
 
-def selection(ctx: ToolContext, total: int) -> list[int]:
+def selection(ctx: ToolContext, total: int, ai_pages: bool = True) -> list[int]:
     try:
         selected = parse_page_ranges(ctx.options.paginas, total)
     except ValueError as exc:
         raise ToolError(ErrorCode.INVALID_OPTIONS, str(exc)) from exc
     limit = ctx.plan.ai_pages_task
-    if len(selected) > limit:
+    if ai_pages and len(selected) > limit:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"ai_pages:{len(selected)}>{limit}")
     return selected
 
 
-def text_of(ctx: ToolContext, inp: InputFile) -> tuple[list[int], list[str]]:
-    """Páginas elegidas y su texto. Si faltan escaneos y el OCR está activado, el trabajo pasa a `ocr` y vuelve."""
+def text_of(ctx: ToolContext, inp: InputFile, ai_pages: bool = True, ocr_langs: list[str] | None = None) -> tuple[list[int], list[str]]:
+    """Páginas elegidas y su texto. Si faltan escaneos y el OCR está activado, el trabajo pasa a `ocr` y vuelve a la
+    cola de la herramienta (`ai`, o `av.heavy` en pdf-a-audio). `ai_pages=False` no aplica el límite de páginas por
+    tarea de IA (pdf-a-audio tiene el suyo de caracteres, 9.3); `ocr_langs` fija los idiomas del OCR."""
     pages = load(ctx, inp)
-    selected = selection(ctx, len(pages))
+    selected = selection(ctx, len(pages), ai_pages)
     missing = [i for i in selected if pages[i] is None]
     if missing and ctx.stage == "ocr":
         from tools.pdf.texto import ocr_pages
 
-        found = ocr_pages(ctx, inp.path, missing, OCR_LANGS.get(ctx.options.idioma_documento, ["spa", "eng"]))
+        langs = ocr_langs or OCR_LANGS.get(ctx.options.idioma_documento, ["spa", "eng"])
+        found = ocr_pages(ctx, inp.path, missing, langs)
         for i in missing:
             pages[i] = (found.get(i) or "").strip()
         with session_scope() as s:
             texts_put(s, ctx.owner[0], ctx.owner[1], inp.sha256, pages, "pdfium+tesseract", ctx.expires_at)
-        ctx.handoff("ai", "ai", None, queue=ctx.home_queue)
+        home = ctx.home_queue or "ai"
+        ctx.handoff(home.split(".")[0], home.split(".")[0], None, queue=home)
     if missing:
         if not ctx.options.ocr:
             raise ToolError(ErrorCode.INVALID_OPTIONS, "ai_scanned:" + ", ".join(str(i + 1) for i in missing[:20]))

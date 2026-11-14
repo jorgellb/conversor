@@ -124,7 +124,8 @@ def test_faster_whisper_loads_without_pyav():
     pytest.importorskip("ctranslate2")
     import importlib.util
 
-    if importlib.util.find_spec("av") is not None:
+    # Otra prueba (pdf-a-audio, que comprueba la voz con faster-whisper) puede haber registrado ya el módulo vacío.
+    if "av" not in sys.modules and importlib.util.find_spec("av") is not None:
         pytest.skip("PyAV instalado en este entorno (en la imagen no está, D-111)")
     whisper = tr._whisper_class()
     assert whisper.__name__ == "WhisperModel"

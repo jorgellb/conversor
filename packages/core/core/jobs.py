@@ -18,7 +18,7 @@ from core.filetype import Detected, family_of, matches
 from core.flags import is_tool_enabled
 from core.models import FeatureFlag, Job, JobInput, JobOutput, Plan, Upload
 from core.plans import PlanLimits, load_plans_file
-from core.registry import Registry, ToolSpec
+from core.registry import Registry, ToolSpec, load_precheck
 from core.secretbox import seal
 from core.settings import Settings
 from core.storage import Store
@@ -153,6 +153,11 @@ def create_job(
         # Resultado borrado del disco: el trabajo antiguo deja de ocupar la clave de idempotencia.
         existing.status = "expired"
         session.flush()
+
+    check = load_precheck(spec)
+    if check is not None:
+        # Antes de contar la tarea: lo que se rechaza aquí no gasta cuota (9.3).
+        check(settings, plan, owner.type, options, [store.upload_path(u.id) for u in ordered])
 
     owners = [(owner.type, owner.id)]
     if owner.type == "anon" and owner.ip_hash:

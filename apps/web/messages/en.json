@@ -127,7 +127,9 @@
     "free": "Free",
     "pro": "Pro",
     "mb": "{value} MB",
-    "hours": "{value} h"
+    "hours": "{value} h",
+    "ttsChars": "Characters read per task",
+    "noAccess": "Needs an account"
   },
   "result": {
     "notSmaller": "The file was already optimised: you get the original back.",

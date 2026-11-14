@@ -25,6 +25,16 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       entrenar ni publicar), `OPENROUTER_API_KEY` solo en `workerai`, y comprobar en el panel (IA) que hay modelos tras el
       descubrimiento y que la reconciliación muestra `free_model_daily_requests`. Cierre técnico de F3: una tarea real de
       resumir-pdf registrada en `ai_requests` con el modelo usado.
+- [ ] Lote D de F3 con la pila completa: pdf-a-audio en `workeravheavy` con un PDF real en inglés de unas 20 páginas
+      (MP3 que se oye bien, sin cabeceras ni números de página, `ffprobe` con códec mp3 y la duración de la nota) y con
+      un escaneo (pasa por `workerocr` y vuelve a `av.heavy`); la imagen `worker-av` con espeak-ng, el modelo de Kokoro en
+      `/opt/models/kokoro` (SHA-256 de `infra/kokoro/fetch-model.sh`) y sin misaki, phonemizer ni kokoro
+      (`scripts/check_images.sh`); `workeravheavy` sin reinicios por memoria con faster-whisper y Kokoro cargados a la vez
+      (3 GB); la API rechaza un documento de más de 20.000 caracteres con la cuenta gratuita sin contar la tarea (D-169).
+- [ ] **Escucha de la voz española de Kokoro (6.4)**: generar con `TTS_VOICE_ES=ef_dora` en un entorno de prueba (o con
+      `python scripts/fixtures/lectura_pdf.py --voz es "<texto>" salida.ogg`) unos párrafos reales con números, fechas,
+      siglas y palabras en inglés, con ef_dora y em_alex; si se aceptan, poner `TTS_VOICE_ES=ef_dora` en Coolify (API y
+      `workeravheavy`). Hasta entonces la lectura en español está apagada (D-170).
 - [ ] Lote C de F3 con la pila completa: imagen-a-texto en `workerocr` con una foto real de un documento (TXT, Word y
       PDF buscable); imagen-a-excel con una captura de una hoja de cálculo (termina en `workerconvert` y la petición
       reservada vuelve, D-160) y con una tabla escrita a mano (pasa a `workerai`); ticket-a-excel con 3 tickets reales en

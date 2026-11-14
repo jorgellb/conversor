@@ -143,6 +143,10 @@ def generate(out: Path) -> dict[str, Path]:
     from imagenes_ocr import generate as ocr_images
 
     files.update(ocr_images(out))
+    # F3, lote D: PDF para leer en voz alta (pdf-a-audio), con cabeceras, números de página, uno largo y uno escaneado.
+    from lectura_pdf import generate as reading_pdfs
+
+    files.update(reading_pdfs(out))
     (out / "falso.pdf").write_bytes(b"esto no es un PDF, es texto")
     files["falso.pdf"] = out / "falso.pdf"
     (out / "hls.m3u8").write_text("#EXTM3U\n#EXTINF:1,\nfile:///etc/passwd\n", encoding="utf-8")

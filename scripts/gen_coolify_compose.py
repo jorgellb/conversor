@@ -65,6 +65,10 @@ AI = {
     "AI_TASK_MAX_REQUESTS": "${AI_TASK_MAX_REQUESTS:-20}",
 }
 
+# Voz de pdf-a-audio (6.4 y 14): la leen la API (no encola un idioma sin voz) y workeravheavy. La española se queda vacía
+# hasta la escucha del propietario (docs/DEPLOY-CHECKLIST.md).
+TTS = {"TTS_ENGINE": "${TTS_ENGINE:-kokoro}", "TTS_VOICE_ES": "${TTS_VOICE_ES:-}", "TTS_VOICE_EN": "${TTS_VOICE_EN:-af_heart}"}
+
 
 GOTENBERG = "gotenberg/gotenberg:8.39.0"
 # Smokescreen v0.1.0 (18-09-2026) compilado por images.yml desde infra/smokescreen/Dockerfile: Stripe no publica imagen (D-155).
@@ -147,7 +151,7 @@ def worker(target: str, role: str, name: str, queue: str, conc: int, threads: in
 
 def build() -> dict:
     api_env = {
-        **PUBLIC, **LIMITS, **MAIL, **AI, "SERVICE_URL_API_8000": "", "SERVICE_ROLE": "api", "DATABASE_URL": DB, "VALKEY_URL": VK,
+        **PUBLIC, **LIMITS, **MAIL, **AI, **TTS, "SERVICE_URL_API_8000": "", "SERVICE_ROLE": "api", "DATABASE_URL": DB, "VALKEY_URL": VK,
         "AUTH_JWKS_URL": "http://web:3000/api/auth/jwks", "FILE_TOKEN_SECRET": "${SERVICE_PASSWORD_64_FILES}",
         "ANON_TOKEN_SECRET": "${SERVICE_PASSWORD_64_ANON}", "JOB_SECRETS_KEY": "${SERVICE_PASSWORD_64_JOBSECRETS}",
         "TURNSTILE_SECRET_KEY": "${TURNSTILE_SECRET_KEY:?Clave secreta de Turnstile}",
@@ -319,7 +323,7 @@ def build() -> dict:
         # Transcripciones (cola pesada, 5.4): un trabajo a la vez con 2 hilos; el modelo va dentro de la imagen.
         "workeravheavy": worker("worker-av", "worker-av", "av-heavy", "av.heavy", 1, 2, "3g", 2,
                                 {"WHISPER_MODEL": "${WHISPER_MODEL:-small}", "WHISPER_DEVICE": "${WHISPER_DEVICE:-cpu}",
-                                 "WHISPER_COMPUTE_TYPE": "${WHISPER_COMPUTE_TYPE:-int8}"}),
+                                 "WHISPER_COMPUTE_TYPE": "${WHISPER_COMPUTE_TYPE:-int8}", **TTS}),
     }
     return {
         "services": services,

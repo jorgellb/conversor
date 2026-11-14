@@ -19,11 +19,17 @@ toca; un worker en esa situación no arranca (código 78).
 
 Usuario 10001, `read_only` con `/tmp` de 64 MB, `cap_drop: [ALL]`, `no-new-privileges`, `pids_limit`, `mem_limit` igual a
 `memswap_limit`, `cpus`, `oom_score_adj` +500 y `runtime` configurable (`WORKER_RUNTIME=runsc` con gVisor). Cada motor
-externo (LibreOffice, FFmpeg, ffprobe, Calibre, ddjvu, heif-dec, veraPDF, pdftocairo, tiffcp) corre con `run_engine`: entorno vacío salvo `PATH`,
+externo (LibreOffice, FFmpeg, ffprobe, Calibre, ddjvu, heif-dec, veraPDF, pdftocairo, tiffcp, espeak-ng) corre con `run_engine`: entorno vacío salvo `PATH`,
 `HOME` y `TMPDIR` del trabajo, nuevo grupo de procesos, `RLIMIT_AS` (o `RLIMIT_DATA` para Calibre, que lleva Chromium,
 y para la JVM de veraPDF; D-52 y D-63) y tiempo límite que mata al grupo. El proceso del worker se marca con `PR_SET_DUMPABLE=0`, así que un motor no
 puede leer su entorno por `/proc`. FFmpeg lleva `-nostdin` y lista blanca de protocolos; las listas HLS se rechazan por
 tipo real. Calibre usa una configuración y una caché dentro del directorio del trabajo.
+
+La API no abre los archivos de los usuarios en su proceso. La única excepción es el recuento de caracteres de pdf-a-audio
+antes de encolar (9.3). Se hace en un proceso aparte (`python -I tools/av/contar_texto.py`) con `run_engine`: entorno
+vacío, 1 GB y 90 s. Antes, la API se marca con `PR_SET_DUMPABLE=0`, como los workers, para que ese proceso (del mismo
+usuario) no pueda leer sus secretos por `/proc`. Si el recuento falla, se encola igual y el worker lo vuelve a comprobar
+todo (D-169).
 
 ## Redes (12.2)
 

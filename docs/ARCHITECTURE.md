@@ -44,6 +44,10 @@ PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files) · volumen bac
   El texto del OCR viaja por `document_texts` del propietario (D-159 a D-164).
 - **Transcripción** (`workeravheavy`, cola `av.heavy`): FFmpeg decodifica la pista de audio a PCM de 16 kHz en un proceso
   aparte y faster-whisper (modelo small en int8 dentro de la imagen) la transcribe por tramos de 20 minutos; sin PyAV (D-111).
+- **Voz de pdf-a-audio** (`workeravheavy`, cola `av.heavy`): la API cuenta antes de encolar, en un proceso aparte, los
+  caracteres que se van a leer (`ToolSpec.precheck`, 9.3); el worker saca el texto con pypdfium2 (`document_texts`; los
+  escaneos pasan por `workerocr` y vuelven), quita cabeceras y números de página, espeak-ng (proceso externo) da los
+  fonemas, Kokoro en ONNX Runtime la voz por frases y FFmpeg LGPL el MP3 por tramos de 10 minutos (D-166 a D-172).
 - **Híbridas**: imágenes a PDF y PDF a imágenes pasan al servidor con TIFF o con más de `CLIENT_MAX_MB`; `lector-pdf` abre los PDF en el navegador y convierte en servidor (motor de convertir-a-pdf) lo que no es PDF.
 - **Servidor**:
   1. Identidad: JWT de Better Auth (`/api/auth/token`, EdDSA, `iss` y `aud` = `BETTER_AUTH_URL`) o token anónimo de

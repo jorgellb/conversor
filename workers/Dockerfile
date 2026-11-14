@@ -177,6 +177,13 @@ COPY infra/whisper/fetch-models.sh /tmp/fetch-models.sh
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
  && sh /tmp/fetch-models.sh /opt/models/whisper ${WHISPER_MODELS}
 
+# Voz de pdf-a-audio (6.4): Kokoro-82M v1.0 en ONNX (Apache-2.0) con la revisión de Hugging Face y el SHA-256 de cada
+# archivo fijados (infra/kokoro/fetch-model.sh); nunca los paquetes kokoro ni kokoro-onnx (11, D-167).
+FROM ${PYTHON_IMAGE} AS kokoro-model
+COPY infra/kokoro/fetch-model.sh /tmp/fetch-model.sh
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+ && sh /tmp/fetch-model.sh /opt/models/kokoro && chmod -R a+rX /opt/models
+
 FROM base AS worker-av
 # FFmpeg en compilación LGPL (11): binarios estáticos de BtbN con la variante «lgpl», fijados por fecha y SHA-256
 # (D-13 y D-137). Autobuild de fin de mes (BtbN los conserva; los diarios se borran) de la rama 8.1, n8.1.3-27.
@@ -191,16 +198,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl xz-utils \
  && rm -rf /tmp/ffmpeg* && apt-get purge -y curl xz-utils && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* \
  && ffmpeg -hide_banner -version >/dev/null && ffprobe -hide_banner -version >/dev/null \
  && ! (ffmpeg -hide_banner -buildconf | grep -q -- "--enable-gpl")
+# espeak-ng (GPL-3.0) para los fonemas de pdf-a-audio, solo como programa externo con run_engine (11 y 12.1).
+RUN apt-get update && apt-get install -y --no-install-recommends espeak-ng \
+ && rm -rf /var/lib/apt/lists/* && espeak-ng --version
 COPY infra/uv-overrides.txt ./infra/uv-overrides.txt
-# faster-whisper sin PyAV (D-111), y comprobado: ni el módulo `av` ni libx264/libx265 en la imagen.
+# faster-whisper sin PyAV (D-111), y comprobado: ni el módulo `av` ni libx264/libx265 en la imagen. Tampoco los paquetes
+# de Python que cargarían espeak-ng dentro del proceso (misaki, phonemizer, kokoro, kokoro-onnx, espeakng-loader; 11).
 RUN uv pip install -r pyproject.toml --extra av --override infra/uv-overrides.txt \
  && ! python -c "import importlib.util, sys; sys.exit(0 if importlib.util.find_spec('av') else 1)" \
- && ! find / -xdev \( -name 'libx264*' -o -name 'libx265*' \) -print 2>/dev/null | grep -q .
+ && ! find / -xdev \( -name 'libx264*' -o -name 'libx265*' \) -print 2>/dev/null | grep -q . \
+ && ! python -c "import importlib.util as u, sys; sys.exit(0 if any(u.find_spec(m) for m in ('misaki', 'phonemizer', 'kokoro', 'kokoro_onnx', 'espeakng_loader')) else 1)"
 COPY --from=whisper-model /opt/models/whisper /opt/models/whisper
+COPY --from=kokoro-model /opt/models/kokoro /opt/models/kokoro
 COPY --from=code /app /app
 USER app
-# Sin descargas al ejecutar: el modelo ya está en WHISPER_HOME.
-ENV SERVICE_ROLE=worker-av WHISPER_HOME=/opt/models/whisper HF_HUB_OFFLINE=1
+# Sin descargas al ejecutar: los modelos ya están en WHISPER_HOME y KOKORO_HOME.
+ENV SERVICE_ROLE=worker-av WHISPER_HOME=/opt/models/whisper KOKORO_HOME=/opt/models/kokoro HF_HUB_OFFLINE=1
 CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "av.light", "-n", "av-light@%h", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
 
 # Modelo de embeddings de chat-pdf (6.4), fijado por revisión y SHA-256: los workers no descargan nada al ejecutar.

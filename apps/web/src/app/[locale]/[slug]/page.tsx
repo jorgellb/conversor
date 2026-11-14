@@ -91,13 +91,21 @@ export async function generateMetadata({ params, searchParams }: Params): Promis
   };
 }
 
+/** Herramientas con un límite propio del plan (9.3) que se enseña en su tabla. */
+const TOOL_LIMITS: Record<string, "ttsChars"> = { "pdf-a-audio": "ttsChars" };
+
 function LimitsTable({ tool, locale, t }: { tool: ToolSpec; locale: Locale; t: Awaited<ReturnType<typeof getTranslations>> }) {
-  const rows = [
-    ["maxFile", (p: Record<string, unknown>) => t("mb", { value: Number(p.max_file_mb) })],
-    ["filesPerTask", (p: Record<string, unknown>) => String(p.files_per_task)],
-    ["dailyTasks", (p: Record<string, unknown>) => String((tool.task_class ?? tool.cost_class) === "heavy" ? p.heavy_tasks_day : p.light_tasks_day)],
-    ["retention", (p: Record<string, unknown>) => t("hours", { value: Number(p.retention_hours) })],
-  ] as const;
+  const number = new Intl.NumberFormat(locale === "es" ? "es-ES" : "en-GB");
+  type Row = readonly [string, (p: Record<string, unknown>) => string];
+  const rows: Row[] = [
+    ["maxFile", (p) => t("mb", { value: Number(p.max_file_mb) })],
+    ["filesPerTask", (p) => String(p.files_per_task)],
+    ["dailyTasks", (p) => String((tool.task_class ?? tool.cost_class) === "heavy" ? p.heavy_tasks_day : p.light_tasks_day)],
+    ["retention", (p) => t("hours", { value: Number(p.retention_hours) })],
+  ];
+  if (TOOL_LIMITS[tool.slug_es] === "ttsChars") {
+    rows.push(["ttsChars", (p) => (Number(p.tts_chars_task) > 0 ? number.format(Number(p.tts_chars_task)) : t("noAccess"))]);
+  }
   const plans = ["anon", "free", "pro"] as const;
   return (
     <table className="w-full text-left text-sm">

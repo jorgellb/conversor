@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a audio lee en voz alta el texto de un PDF y te lo entrega como un MP3 que puedes escuchar en el móvil, en el coche o mientras haces otra cosa. Sirve para repasar apuntes, escuchar un informe largo, revisar un texto propio oyéndolo o hacer más accesible un documento para quien prefiere escuchar a leer.",
+    "La voz se genera en nuestro servidor con Kokoro, un modelo de voz abierto, y los fonemas los calcula espeak-ng: el documento no se envía a ningún servicio de IA externo y no gasta peticiones de IA. Puedes elegir entre la voz recomendada, una de mujer y una de hombre, y ajustar la velocidad entre la mitad y el doble de lo normal.",
+    "Antes de leer, la herramienta limpia el texto: quita las cabeceras y los pies que se repiten en las páginas y los números de página, une las palabras partidas con guion al final de la línea y respeta los párrafos, con una pausa entre uno y otro que puedes alargar o acortar. Si una página es un escaneo sin texto, se lee primero con OCR, lo que cuenta como otra tarea pesada; también puedes desactivarlo.",
+    "El idioma se detecta solo entre español e inglés, o lo puedes fijar tú. El resultado te dice en qué idioma se ha leído, con qué voz, cuánto dura el audio y cuántos caracteres se han leído. Si eliges un rango de páginas, solo se leen esas."
+  ],
+  "steps": [
+    "Sube el PDF que quieres escuchar (con cuenta, gratuita o Pro).",
+    "Elige las páginas, el idioma, la voz, la velocidad y la calidad del MP3, o deja los valores recomendados.",
+    "Espera a que se genere la voz y descarga el MP3."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuánto texto puedo convertir en audio?",
+      "a": "Hace falta una cuenta. Con la cuenta gratuita se leen hasta 20.000 caracteres por tarea, y con Pro, hasta 300.000. Si el documento tiene más, la página te lo dice antes de empezar, sin gastar la tarea, y puedes elegir un rango de páginas más corto. Cada lectura cuenta como tarea pesada: 10 al día con la cuenta gratuita y 200 con Pro."
+    },
+    {
+      "q": "¿Se puede escuchar en español?",
+      "a": "La voz española está en revisión antes de activarla. Mientras no esté disponible, la herramienta te lo dice al subir un documento en español, sin gastar la tarea, y puedes usarla con documentos en inglés."
+    },
+    {
+      "q": "¿Cuánto tarda?",
+      "a": "Depende de la longitud del texto y de la velocidad elegida. En nuestras mediciones, generar la voz lleva algo menos de lo que dura el audio resultante, y puedes seguir el avance en la página. Los documentos largos se procesan por tramos."
+    },
+    {
+      "q": "¿Lee las tablas, las imágenes y las fórmulas?",
+      "a": "Lee el texto en el orden en que está en el PDF. Las imágenes no se describen, y las tablas y las fórmulas se leen como texto corrido, así que pueden sonar raras. Los documentos con dos columnas se leen en el orden que guarda el PDF."
+    },
+    {
+      "q": "¿Qué pasa con mi archivo?",
+      "a": "Se procesa en nuestro servidor de la Unión Europea, sin enviarlo fuera. El PDF y el MP3 se borran a las 24 horas."
+    }
+  ]
+}

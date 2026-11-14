@@ -127,7 +127,9 @@
     "free": "Gratis",
     "pro": "Pro",
     "mb": "{value} MB",
-    "hours": "{value} h"
+    "hours": "{value} h",
+    "ttsChars": "Caracteres leídos por tarea",
+    "noAccess": "Necesita cuenta"
   },
   "result": {
     "notSmaller": "El archivo ya estaba optimizado: te devolvemos el original.",

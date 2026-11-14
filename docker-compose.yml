@@ -485,7 +485,8 @@ services:
     memswap_limit: 3g
     cpus: 2
 
-  # Cola pesada de av (5.4): transcripciones con faster-whisper, en un proceso aparte para no frenar las conversiones.
+  # Cola pesada de av (5.4): transcripciones con faster-whisper y la voz de pdf-a-audio con Kokoro, en un proceso aparte
+  # para no frenar las conversiones.
   workeravheavy:
     <<: *worker
     build: { context: ., dockerfile: workers/Dockerfile, target: worker-av }
@@ -502,6 +503,10 @@ services:
       WHISPER_MODEL: small
       WHISPER_DEVICE: cpu
       WHISPER_COMPUTE_TYPE: int8
+      # Voz de pdf-a-audio (6.4 y 14): Kokoro ya está en la imagen (KOKORO_HOME). La española, vacía hasta la escucha.
+      TTS_ENGINE: kokoro
+      TTS_VOICE_ES: "${TTS_VOICE_ES:-}"
+      TTS_VOICE_EN: "${TTS_VOICE_EN:-af_heart}"
     mem_limit: 3g
     memswap_limit: 3g
     cpus: 2

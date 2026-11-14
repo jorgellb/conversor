@@ -6,7 +6,7 @@ con programas externos), D1 (6 desde PDF sin Docling), D2 (12 desde PDF con Docl
 `PLAN.md`. **F5 sin vídeo cerrado**: lotes A (audio), B1 (imágenes en el navegador), B2 (códigos QR), C (imágenes en el servidor),
 D1 y D2 (crear-collage), E (transcripción) y F (convertir-archivo). **F3 (IA) en curso**: lotes A1 (núcleo de IA y
 resumir-pdf), A2 (chat-pdf), B (preguntas, fichas, presentación y traducción) y C (imagen a texto, imagen a Excel y
-ticket a Excel; D-159 a D-165) hechos. **Goal de trabajo continuo**
+ticket a Excel; D-159 a D-165) y D (pdf-a-audio con Kokoro y espeak-ng; D-166 a D-172) hechos. **Goal de trabajo continuo**
 (`docs/GOAL.md`): lote transversal G0-A (infraestructura de proceso) hecho (D-134 a D-143) y G0-B (Lighthouse CI, regresión visual, Playwright
 de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F2 y F5 y fallos de la primera CI) hecho
 (D-150 a D-158).
@@ -23,7 +23,7 @@ de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F
 | `next build` (Next 16.4.3) | Correcto |
 | Lighthouse CI (`@lhci/cli` 0.16.1, móvil, mediana de 3) contra `next start` | Rendimiento: portada 0,99, comprimir-pdf 0,98, pdf-a-word 0,97, resumir-pdf 0,98 y ogg-a-mp3 0,96; accesibilidad 1,0 en las cinco (D-145) |
 | Licencias (Python y npm de producción) | 0 problemas en npm; en Python, 0 en las dependencias del proyecto (la `.venv` local tiene además los paquetes CUDA de NVIDIA que trae un torch sin `--index-url .../cpu`, instalado fuera de G0-A; la CI y las imágenes usan el torch de CPU) |
-| `registry.json` (160 herramientas), `docs/TOOLS.md` y `docs/ERRORS.md` (`gen_docs.py --check`), `docker-compose.coolify.yml` y los casos de `filetype` al día; los dos Compose válidos con `docker compose config` (solo en la CI: no hay Docker) | Correcto |
+| `registry.json` (161 herramientas), `docs/TOOLS.md` y `docs/ERRORS.md` (`gen_docs.py --check`), `docker-compose.coolify.yml` y los casos de `filetype` al día; los dos Compose válidos con `docker compose config` (solo en la CI: no hay Docker) | Correcto |
 
 ## No verificado en esta entrega
 
@@ -71,6 +71,10 @@ de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F
   un proveedor de prueba con los datos de los tickets de muestra: la calidad con modelos reales de OpenRouter y con
   tickets reales en papel térmico, en el VPS (DEPLOY-CHECKLIST). Las imágenes `worker-ocr` (python-docx e img2pdf) y
   `worker-ai` (openpyxl), sin Docker, solo en la CI.
+- **F3, lote D**: la imagen `worker-av` con espeak-ng de bookworm (1.51; aquí se probó con el 1.52 de trixie), la etapa
+  `kokoro-model` y la comprobación de paquetes prohibidos, solo en la CI (sin Docker); pdf-a-audio con un PDF real largo
+  (horas de audio) y la memoria de `workeravheavy` con los dos modelos, en el VPS (DEPLOY-CHECKLIST); la calidad de la voz
+  española, en la escucha del propietario (6.4).
 - **G0-A**: `gen_coolify_compose.py --validate` y `docker compose config` con las variables `${MEM_*}` y `${CPUS_*}`, y la imagen `worker-av` con el FFmpeg 8.1 fijado por fecha y SHA-256 (D-137): solo en la CI, sin Docker. El audio de F5 con ese binario, en la CI de imágenes (DEPLOY-CHECKLIST).
 
 ## Herramientas y página de herramienta
@@ -236,6 +240,22 @@ ctranslate2, veraPDF y un DOCX de prueba; y las 4 de LibreOffice sin el filtro d
 `libreoffice-pdfimport`). Sin verificar aquí: imágenes `worker-ocr`, `worker-convert` y `worker-ai` (sin Docker), las
 8 pruebas de Playwright que fijan el origen 3100 y la calidad con modelos reales de OpenRouter (sin clave).
 
+## F3, lote D (voz local)
+
+pdf-a-audio (7.6): lee un PDF en voz alta y entrega un MP3. Kokoro-82M v1.0 en ONNX Runtime dentro de la imagen
+worker-av (revisión y SHA-256 fijados, `infra/kokoro/fetch-model.sh`), con los fonemas de espeak-ng como programa
+externo y un paso propio de IPA al alfabeto de Kokoro, sin los paquetes kokoro, kokoro-onnx, misaki ni phonemizer
+(prohibidos en la política de licencias y comprobados en la imagen). Cola `av.heavy`, 0 peticiones de IA, clase
+pesada. La API cuenta antes de encolar, en un proceso aparte, los caracteres que se van a leer (`ToolSpec.precheck`):
+sin cuenta no hay acceso, más de 20.000 (gratis) o 300.000 (Pro) se rechaza sin gastar la tarea, y la lectura en
+español no se encola mientras `TTS_VOICE_ES` esté vacía (6.4, a la espera de la escucha del propietario). El worker
+saca el texto con pypdfium2 (`document_texts`; los escaneos pasan por `workerocr` y vuelven a `av.heavy`), quita
+cabeceras, pies y números de página, arma los párrafos (también por el salto vertical entre líneas, que ahora marca el
+extractor común), detecta el idioma y genera el MP3 con el FFmpeg LGPL por tramos de 10 minutos. Opciones: páginas,
+idioma, voz (recomendada, de mujer o de hombre), velocidad, calidad MP3, pausa entre párrafos, saltar cabeceras y OCR.
+Muestras generadas con fpdf2 (`scripts/fixtures/lectura_pdf.py`), que también da la voz sintética para las pruebas de
+transcripción de F3-E (D-114). Salvedades en D-166 a D-172.
+
 ## F3, lote B (generar a partir de un PDF)
 
 generador-de-preguntas (test, verdadero o falso, respuesta corta o mezcla; Word para imprimir con soluciones, Moodle o
@@ -324,7 +344,7 @@ ejecutar en otro puerto: quedan para la CI.
 
 ## Pendiente
 
-- F3: lotes D y E (`PLAN.md`); después F4, F6, vídeo de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
+- F3: lote E (`PLAN.md`); después F4, F6, vídeo de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).
 - Cierre técnico de F3 (17): uso real de peticiones registrado, con la clave de OpenRouter del propietario.

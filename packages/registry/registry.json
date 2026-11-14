@@ -21281,6 +21281,178 @@
       }
     },
     {
+      "slug_es": "pdf-a-audio",
+      "slug_en": "pdf-to-audio",
+      "name_es": "PDF a audio",
+      "name_en": "PDF to audio",
+      "summary_es": "Escucha tus PDF: convierte su texto en un MP3 leído en voz alta en español o en inglés, con una voz generada en nuestro servidor.",
+      "summary_en": "Listen to your PDFs: turn their text into an MP3 read aloud in Spanish or English, with a voice generated on our server.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "pdf"
+      ],
+      "outputs": [
+        "mp3"
+      ],
+      "phase": "F3",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "pdf-a-txt",
+        "transcribir-audio",
+        "resumir-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "pdf-a-audio (7.6 y 6.4). El Anexo A no fija opciones: páginas (A.0), idioma, voz, velocidad, calidad del MP3,\npausa entre párrafos, saltar cabeceras y OCR de las páginas escaneadas (D-166).",
+        "properties": {
+          "paginas": {
+            "default": "todas",
+            "maxLength": 200,
+            "title": "Páginas",
+            "type": "string",
+            "x-title": {
+              "en": "Pages",
+              "es": "Páginas"
+            }
+          },
+          "idioma": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "es",
+              "en"
+            ],
+            "title": "Idioma del texto",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Detect the language",
+                "es": "Detectar el idioma"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              }
+            },
+            "x-title": {
+              "en": "Text language",
+              "es": "Idioma del texto"
+            }
+          },
+          "voz": {
+            "default": "predeterminada",
+            "enum": [
+              "predeterminada",
+              "mujer",
+              "hombre"
+            ],
+            "title": "Voz",
+            "type": "string",
+            "x-labels": {
+              "hombre": {
+                "en": "Male voice",
+                "es": "Voz de hombre"
+              },
+              "mujer": {
+                "en": "Female voice",
+                "es": "Voz de mujer"
+              },
+              "predeterminada": {
+                "en": "The recommended one",
+                "es": "La recomendada"
+              }
+            },
+            "x-title": {
+              "en": "Voice",
+              "es": "Voz"
+            }
+          },
+          "velocidad": {
+            "default": 1.0,
+            "maximum": 2.0,
+            "minimum": 0.5,
+            "title": "Velocidad (1 = normal; 2 = el doble de rápido)",
+            "type": "number",
+            "x-title": {
+              "en": "Speed (1 = normal; 2 = twice as fast)",
+              "es": "Velocidad (1 = normal; 2 = el doble de rápido)"
+            }
+          },
+          "calidad": {
+            "default": "128",
+            "enum": [
+              "128",
+              "192"
+            ],
+            "title": "Calidad MP3",
+            "type": "string",
+            "x-labels": {
+              "128": {
+                "en": "128 kbps",
+                "es": "128 kbps"
+              },
+              "192": {
+                "en": "192 kbps",
+                "es": "192 kbps"
+              }
+            },
+            "x-title": {
+              "en": "MP3 quality",
+              "es": "Calidad MP3"
+            }
+          },
+          "pausa": {
+            "default": 0.6,
+            "maximum": 3,
+            "minimum": 0,
+            "title": "Pausa entre párrafos (s)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Pause between paragraphs (s)",
+              "es": "Pausa entre párrafos (s)"
+            }
+          },
+          "saltar_cabeceras": {
+            "default": true,
+            "title": "Saltar cabeceras, pies y números de página",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Skip headers, footers and page numbers",
+              "es": "Saltar cabeceras, pies y números de página"
+            }
+          },
+          "ocr": {
+            "default": true,
+            "title": "Leer las páginas escaneadas con OCR (cuenta como tarea pesada)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Read scanned pages with OCR (counts as a heavy task)",
+              "es": "Leer las páginas escaneadas con OCR (cuenta como tarea pesada)"
+            }
+          }
+        },
+        "title": "PdfAudioOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "transcribir-audio",
       "slug_en": "transcribe-audio",
       "name_es": "Transcribir audio",

@@ -100,12 +100,22 @@ def available(settings: Settings, name: str) -> bool:
         return False
 
 
+def release() -> None:
+    """Suelta el modelo de la memoria (lo pide la voz de pdf-a-audio, que comparte los 3 GB de `workeravheavy`)."""
+    with _LOCK:
+        _MODELS.clear()
+
+
 def load_model(settings: Settings, name: str, threads: int):
     """El modelo en memoria se reutiliza entre trabajos del mismo proceso (cargarlo tarda unos segundos)."""
     path = model_dir(settings, name)
     if not (path / "model.bin").is_file():
         raise ToolError(ErrorCode.TOOL_DISABLED, f"Falta el modelo de transcripción {name} en {path}")
     key = (str(path), settings.WHISPER_DEVICE, settings.WHISPER_COMPUTE_TYPE, max(1, threads))
+    if key not in _MODELS:
+        from tools.av import kokoro
+
+        kokoro.release()  # la voz de pdf-a-audio, si estaba cargada (fuera del cerrojo de aquí)
     with _LOCK:
         model = _MODELS.get(key)
         if model is None:

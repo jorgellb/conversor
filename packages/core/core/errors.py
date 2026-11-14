@@ -104,6 +104,17 @@ DETAILS: dict[str, dict[str, str]] = {
     "image_no_tables": {"es": "No se ha encontrado ninguna tabla en la imagen.", "en": "No table was found in the image."},
     "not_receipt": {"es": "La imagen no parece un ticket de compra ni una factura simplificada.",
                     "en": "The image does not look like a receipt or a simplified invoice."},
+    # pdf-a-audio (9.3 y 6.4): «tts_chars:25000>20000» son los caracteres que se leerían y el máximo por tarea del plan.
+    "tts_chars": {"es": "Tu plan permite leer {max} caracteres por tarea y las páginas elegidas tienen {need}: elige un rango de páginas más corto.",
+                  "en": "Your plan allows {max} characters per task and the selected pages have {need}: choose a shorter page range."},
+    "tts_account": {"es": "PDF a audio necesita una cuenta: inicia sesión o regístrate gratis.",
+                    "en": "PDF to audio needs an account: sign in or sign up for free."},
+    "tts_voice_es": {"es": "La lectura en español aún no está disponible. Si el documento está en inglés, elige ese idioma.",
+                     "en": "Reading in Spanish is not available yet. If the document is in English, choose that language."},
+    "tts_voice_en": {"es": "La lectura en inglés no está disponible ahora mismo.", "en": "Reading in English is not available right now."},
+    "tts_language": {"es": "El texto no parece estar en español ni en inglés, los dos idiomas que se pueden leer.",
+                     "en": "The text does not seem to be in Spanish or English, the two languages that can be read."},
+    "tts_empty": {"es": "No hay texto que leer en las páginas elegidas.", "en": "There is no text to read in the selected pages."},
     "ai_scanned": {"es": "Las páginas {pages} son imágenes sin texto: activa «Leer las páginas escaneadas» o pasa antes OCR PDF.",
                    "en": "Pages {pages} are images without text: turn on “Read scanned pages” or run OCR PDF first."},
 }

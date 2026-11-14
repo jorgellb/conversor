@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to audio reads the text of a PDF aloud and gives it back to you as an MP3 you can play on your phone, in the car or while you do something else. Use it to go over study notes, listen to a long report, proofread your own writing by ear or make a document easier for people who would rather listen than read.",
+    "The voice is generated on our server with Kokoro, an open speech model, and espeak-ng works out the phonemes: the document is not sent to any external AI service and no AI requests are used. You can pick the recommended voice, a female voice or a male voice, and set the speed anywhere from half to twice the normal pace.",
+    "Before reading, the tool tidies up the text: it drops the headers and footers that repeat on every page and the page numbers, joins words split with a hyphen at the end of a line and keeps the paragraphs, with a pause between them that you can make longer or shorter. If a page is a scan with no text, it is read with OCR first, which counts as another heavy task; you can also turn that off.",
+    "The language is detected automatically between Spanish and English, or you can set it yourself. The result tells you which language was read, with which voice, how long the audio lasts and how many characters were read. If you choose a page range, only those pages are read."
+  ],
+  "steps": [
+    "Upload the PDF you want to listen to (with a free or Pro account).",
+    "Choose the pages, language, voice, speed and MP3 quality, or keep the recommended settings.",
+    "Wait for the voice to be generated and download the MP3."
+  ],
+  "faq": [
+    {
+      "q": "How much text can I turn into audio?",
+      "a": "You need an account. A free account reads up to 20,000 characters per task and Pro up to 300,000. If the document has more, the page tells you before starting, without using up the task, and you can choose a shorter page range. Each reading counts as a heavy task: 10 a day on the free account and 200 on Pro."
+    },
+    {
+      "q": "Can it read Spanish?",
+      "a": "The Spanish voice is being reviewed before it is switched on. Until it is available, the tool tells you when you upload a document in Spanish, without using up the task, and you can still use it with documents in English."
+    },
+    {
+      "q": "How long does it take?",
+      "a": "It depends on the length of the text and the speed you choose. In our measurements, generating the voice takes a little less time than the resulting audio lasts, and you can follow the progress on the page. Long documents are processed in parts."
+    },
+    {
+      "q": "Does it read tables, images and formulas?",
+      "a": "It reads the text in the order it is stored in the PDF. Images are not described, and tables and formulas are read as running text, so they may sound odd. Two-column documents are read in the order the PDF keeps them."
+    },
+    {
+      "q": "What happens to my file?",
+      "a": "It is processed on our server in the European Union and never sent anywhere else. The PDF and the MP3 are deleted after 24 hours."
+    }
+  ]
+}

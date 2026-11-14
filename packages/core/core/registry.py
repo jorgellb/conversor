@@ -88,6 +88,10 @@ class ToolSpec:
     # web. Para udf-a-pdf (7.23) y las herramientas sin muestra válida (01-1, regla 8). El motivo va en
     # config/tools-notes.yaml y sale en docs/TOOLS.md (regla 7).
     default_enabled: bool = True
+    # Comprobación previa en la API antes de encolar (pdf-a-audio: caracteres por tarea de 9.3), como
+    # «módulo:función». Recibe (settings, plan, owner_type, opciones, rutas de los archivos) y lanza AppError. Se importa
+    # solo al crear el trabajo, así que el registro sigue sin cargar motores.
+    precheck: str | None = None
 
     @property
     def slug(self) -> str:
@@ -193,6 +197,14 @@ def load_registry() -> Registry:
         module = importlib.import_module(module_name)
         specs.extend(module.SPECS)
     return Registry(specs)
+
+
+def load_precheck(spec: ToolSpec):
+    """La comprobación previa de la herramienta, o None si no tiene."""
+    if not spec.precheck:
+        return None
+    module_name, _, func = spec.precheck.partition(":")
+    return getattr(importlib.import_module(module_name), func)
 
 
 def load_impl(spec: ToolSpec):

@@ -84,6 +84,13 @@ class Settings(BaseSettings):
     WHISPER_DEVICE: str = "cpu"
     WHISPER_COMPUTE_TYPE: str = "int8"
     WHISPER_HOME: Path = Path("/opt/models/whisper")
+    # Voz de pdf-a-audio (6.4 y 14): Kokoro-82M en ONNX dentro de la imagen worker-av (infra/kokoro/fetch-model.sh), con
+    # los fonemas de espeak-ng. Un idioma sin voz configurada está apagado: la española se queda vacía hasta que el
+    # propietario la escuche (DEPLOY-CHECKLIST). La API también las lee, para no encolar un idioma apagado.
+    TTS_ENGINE: str = "kokoro"
+    TTS_VOICE_ES: str = ""
+    TTS_VOICE_EN: str = "af_heart"
+    KOKORO_HOME: Path = Path("/opt/models/kokoro")
     # IA (6 y 14): OpenRouter solo con modelos gratuitos. La clave solo está en workerai (12.1), que sale por egressai.
     OPENROUTER_API_KEY: str = ""
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
