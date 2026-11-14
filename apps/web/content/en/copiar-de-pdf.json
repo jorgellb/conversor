@@ -1,9 +1,10 @@
 {
-  "complete": false,
+  "complete": true,
   "reviewed": false,
   "intro": [
     "Copy from PDF lets you take exactly the part you need from a PDF into Word, Excel or an email, with its formatting. You can select text freely as in any viewer, without uploading anything, or ask for the document blocks to be recognised.",
     "Once the blocks are recognised, every heading, paragraph, list, table, image or table of contents is highlighted when you hover and copied with one click. Tables paste into cells in Excel and as a table in Word; you can also copy them as CSV, Markdown, HTML or JSON.",
+    "There are two modes. In «Free selection» you highlight text with the mouse and copy it as in any viewer; nothing leaves your device. In «Blocks» you first pick the «Copy as» format: formatted for Word and email, table for Excel, text, Markdown, HTML, CSV or JSON. An image block is copied as a PNG picture, and every page can be downloaded whole as a PNG.",
     "If the PDF is a scan, its text is first recognised with OCR and the page is straightened. You can also copy the whole document as Markdown or download all its tables to an Excel file with one sheet per table."
   ],
   "steps": [
@@ -19,6 +20,18 @@
     {
       "q": "Why does the table paste well into Excel?",
       "a": "When you copy a table it is stored both as HTML and as tab-separated text, so each program picks the format it understands."
+    },
+    {
+      "q": "What about a scanned PDF?",
+      "a": "A scanned page is a photo and has no text to recognise. Press the OCR button, choose the document language from more than 100 and the file first goes through OCR PDF, which also straightens skewed pages; the blocks are then recognised on the PDF that now has text."
+    },
+    {
+      "q": "How long does my PDF stay on the server?",
+      "a": "To recognise the blocks the PDF is uploaded encrypted and deleted when your plan's retention period ends, shown next to the button. Until then you can copy more blocks, copy everything as Markdown or download the Excel file with the tables without uploading it again."
+    },
+    {
+      "q": "Why is nothing copied when I click?",
+      "a": "The browser has to let the page write to the clipboard. If it blocks it, a message says the copy failed: check the clipboard permission for this site, or use free selection and copy with Ctrl+C."
     }
   ]
 }

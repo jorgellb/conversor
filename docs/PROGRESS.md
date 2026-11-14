@@ -377,6 +377,12 @@ carrera de escritura de siempre y pasó al repetirla); las 10 que simulan la API
 copiar-de-pdf y los flujos de 16.1) fijan el origen `http://127.0.0.1:3100` en sus cabeceras CORS y no se pudieron
 ejecutar en otro puerto: quedan para la CI.
 
+## G2-C (contenido 8.2)
+
+Las 162 herramientas con página propia tienen contenido completo en español y en inglés (pub-a-pdf es un alias y no lo
+necesita). Los últimos, copiar-de-pdf, escaner-pdf y crear-collage, en D-180. Todas siguen con `noindex` hasta la revisión
+del propietario (D-15). Vitest de `apps/web` (35) y `gen_docs.py --check` en verde.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`); después F4, F6, vídeo de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).

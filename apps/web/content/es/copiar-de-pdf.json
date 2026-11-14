@@ -1,9 +1,10 @@
 {
-  "complete": false,
+  "complete": true,
   "reviewed": false,
   "intro": [
     "Copiar de PDF te deja llevar a Word, Excel o un correo justo el trozo que necesitas de un PDF, con su formato. Puedes seleccionar el texto libremente como en cualquier visor, sin subir nada, o pedir que se reconozcan los bloques del documento.",
     "Al reconocer los bloques, cada título, párrafo, lista, tabla, imagen o índice se resalta al pasar el ratón y se copia con un clic. Las tablas se pegan en celdas en Excel y como tabla en Word; también puedes copiarlas como CSV, Markdown, HTML o JSON.",
+    "Hay dos modos. En «Selección libre» marcas el texto con el ratón y lo copias como en cualquier visor; nada sale de tu dispositivo. En «Bloques» eliges antes el formato de «Copiar como»: con formato para Word y el correo, tabla para Excel, texto, Markdown, HTML, CSV o JSON. Un bloque de imagen se copia como imagen PNG, y cada página se puede descargar entera como PNG.",
     "Si el PDF es un escaneo, primero se reconoce el texto con OCR y se endereza la página. También puedes copiar todo el documento como Markdown o descargar todas sus tablas en un Excel con una hoja por tabla."
   ],
   "steps": [
@@ -19,6 +20,18 @@
     {
       "q": "¿Por qué la tabla se pega bien en Excel?",
       "a": "Al copiar una tabla se guarda a la vez como HTML y como texto separado por tabuladores, así cada programa elige el formato que entiende."
+    },
+    {
+      "q": "¿Qué pasa con un PDF escaneado?",
+      "a": "Una página escaneada es una foto y no tiene texto que reconocer. Pulsa el botón de OCR, elige el idioma del documento entre más de 100 y se pasa antes por OCR PDF, que además endereza las páginas torcidas; después se reconocen los bloques del PDF ya con texto."
+    },
+    {
+      "q": "¿Cuánto tiempo se queda mi PDF en el servidor?",
+      "a": "Para reconocer los bloques el PDF se sube cifrado y se borra al vencer el plazo de tu plan, que se indica junto al botón. Mientras tanto puedes volver a copiar bloques, copiar todo como Markdown o descargar el Excel con las tablas sin subirlo otra vez."
+    },
+    {
+      "q": "¿Por qué no se copia nada al hacer clic?",
+      "a": "El navegador tiene que permitir a la página escribir en el portapapeles. Si lo bloquea, aparece un aviso de que no se ha podido copiar: revisa el permiso del portapapeles para este sitio o usa la selección libre y copia con Ctrl+C."
     }
   ]
 }

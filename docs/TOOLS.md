@@ -41,7 +41,7 @@ Catálogo publicado en esta entrega: 163 herramientas (F1 43, F2 60, F3 10, F5 5
 | `pdf-a-png` / `pdf-to-png` | híbrida | pdf | light | F1 | activa | pdf → png, zip | redactado, sin revisar |
 | `pdf-a-webp` / `pdf-to-webp` | híbrida | pdf | light | F2 | activa | pdf → webp, zip | redactado, sin revisar |
 | `pdf-a-imagenes` / `pdf-to-images` | híbrida | pdf | light | F1 | activa | pdf → zip | redactado, sin revisar |
-| `escaner-pdf` / `pdf-scanner` | navegador | — | light | F2 | activa | jpg, png, webp → pdf | incompleto |
+| `escaner-pdf` / `pdf-scanner` | navegador | — | light | F2 | activa | jpg, png, webp → pdf | redactado, sin revisar |
 | `generar-contrasena` / `password-generator` | navegador | — | light | F1 | activa | — → pantalla | redactado, sin revisar |
 | `png-a-jpg` / `png-to-jpg` | navegador | — | light | F5 | activa | png → jpg | redactado, sin revisar |
 | `webp-a-jpg` / `webp-to-jpg` | navegador | — | light | F5 | activa | webp → jpg | redactado, sin revisar |
@@ -65,7 +65,7 @@ Catálogo publicado en esta entrega: 163 herramientas (F1 43, F2 60, F3 10, F5 5
 | `imagen-a-base64` / `image-to-base64` | navegador | — | light | F5 | activa | jpg, png, webp, gif, svg, avif, bmp, ico → txt, zip | redactado, sin revisar |
 | `leer-codigo-qr` / `qr-code-reader` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif, tiff, svg, pdf → csv | redactado, sin revisar |
 | `generar-codigo-qr` / `qr-code-generator` | navegador | — | light | F5 | activa | — → png, svg, pdf | redactado, sin revisar |
-| `crear-collage` / `collage-maker` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif → pdf, jpg, png, zip | incompleto |
+| `crear-collage` / `collage-maker` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif → pdf, jpg, png, zip | redactado, sin revisar |
 | `comprimir-pdf` / `compress-pdf` | servidor | pdf | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `proteger-pdf` / `protect-pdf` | servidor | pdf | light | F2 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `desbloquear-pdf` / `unlock-pdf` | servidor | pdf | light | F2 | activa | pdf → pdf, zip | redactado, sin revisar |
@@ -124,7 +124,7 @@ Catálogo publicado en esta entrega: 163 herramientas (F1 43, F2 60, F3 10, F5 5
 | `pdf-a-epub` / `pdf-to-epub` | servidor | convert | heavy | F2 | activa | pdf → epub, zip | redactado, sin revisar |
 | `pdf-a-csv` / `pdf-to-csv` | servidor | convert | heavy | F2 | activa | pdf → csv, zip | redactado, sin revisar |
 | `pdf-a-json` / `pdf-to-json` | servidor | convert | heavy | F2 | activa | pdf → json, zip | redactado, sin revisar |
-| `copiar-de-pdf` / `copy-from-pdf` | híbrida | convert | heavy | F2 | activa | pdf → json, md, xlsx | incompleto |
+| `copiar-de-pdf` / `copy-from-pdf` | híbrida | convert | heavy | F2 | activa | pdf → json, md, xlsx | redactado, sin revisar |
 | `convertir-desde-pdf` / `convert-from-pdf` | servidor | convert | light | F2 | activa | pdf → csv, docx, epub, html, jpg, json, md, odp, ods, odt, pdf, png, pptx, rtf, svg, tiff, txt, webp, xlsx, zip | redactado, sin revisar |
 | `ogg-a-mp3` / `ogg-to-mp3` | servidor | av | light | F5 | activa | ogg, opus, oga → mp3, zip | redactado, sin revisar |
 | `opus-a-mp3` / `opus-to-mp3` | servidor | av | light | F5 | activa | opus, ogg → mp3, zip | redactado, sin revisar |

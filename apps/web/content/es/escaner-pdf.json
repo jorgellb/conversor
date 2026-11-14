@@ -1,9 +1,10 @@
 {
-  "complete": false,
+  "complete": true,
   "reviewed": false,
   "intro": [
     "Escáner PDF convierte la cámara del móvil o del portátil en un escáner de documentos. Mientras encuadras, detecta los bordes del papel y los marca en verde; al capturar, corrige la perspectiva para que la página quede recta aunque la hayas fotografiado de lado.",
     "El filtro Documento deja la página en blanco y negro limpio y quita las sombras, ideal para facturas, contratos y apuntes. Gris y Color realzado conservan más detalle para fotos y gráficos, y Original guarda la imagen tal cual.",
+    "Antes de crear el PDF puedes girar cada página, subirla o bajarla con las flechas, repetir la foto de una hoja que ha salido movida o añadir más. El tamaño de página «Automático» respeta las proporciones de cada foto con el lado largo de un A4; si prefieres que todas las hojas tengan el mismo formato, elige A4 o Carta.",
     "Todo ocurre en tu dispositivo: las fotos no se suben a ningún sitio. Solo si marcas el OCR al terminar se envía el PDF a nuestro servidor para que el texto se pueda buscar y copiar, y se borra después."
   ],
   "steps": [
@@ -23,6 +24,14 @@
     {
       "q": "¿Qué hago si no detecta el borde?",
       "a": "Pon el papel sobre un fondo que contraste, con buena luz. Si aun así no lo encuentra, la página se añade con la foto entera y puedes repetirla."
+    },
+    {
+      "q": "¿Cómo consigo un escaneo más nítido?",
+      "a": "Con luz uniforme y sin el flash, que deja un reflejo blanco en el centro. Sujeta el móvil paralelo al papel y espera a que el borde se marque antes de capturar. Para texto, el filtro Documento da el resultado más limpio y el archivo más ligero."
+    },
+    {
+      "q": "¿Qué hace el OCR del final?",
+      "a": "Está en las opciones adicionales y viene desactivado. Si lo marcas, el PDF se sube cifrado a OCR PDF, que reconoce el texto para que puedas buscarlo y copiarlo, y descargas el resultado. El archivo se borra del servidor al vencer el plazo de tu plan."
     }
   ]
 }

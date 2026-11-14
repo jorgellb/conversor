@@ -1,9 +1,10 @@
 {
-  "complete": false,
+  "complete": true,
   "reviewed": false,
   "intro": [
     "PDF scanner turns your phone or laptop camera into a document scanner. While you frame the page it finds the paper edges and outlines them in green; when you capture, it corrects the perspective so the page comes out straight even if you shot it at an angle.",
     "The Document filter gives a clean black and white page without shadows, ideal for invoices, contracts and notes. Grey and Enhanced colour keep more detail for photos and charts, and Original keeps the image as it is.",
+    "Before creating the PDF you can rotate each page, move it up or down with the arrows, retake a sheet that came out blurred or add more. The «Automatic» page size keeps each photo's proportions with the long side of an A4 sheet; if you want every page in the same format, choose A4 or Letter.",
     "Everything happens on your device: photos are never uploaded. Only if you tick OCR at the end is the PDF sent to our server so its text can be searched and copied, and it is deleted afterwards."
   ],
   "steps": [
@@ -23,6 +24,14 @@
     {
       "q": "What if it does not find the edge?",
       "a": "Put the paper on a contrasting background with good light. If it still cannot find it, the page is added with the whole photo and you can redo it."
+    },
+    {
+      "q": "How do I get a sharper scan?",
+      "a": "Use even light and no flash, which leaves a white glare in the middle. Hold the phone parallel to the paper and wait for the edge to be marked before capturing. For text, the Document filter gives the cleanest result and the smallest file."
+    },
+    {
+      "q": "What does the OCR at the end do?",
+      "a": "It is in the additional options and off by default. If you tick it, the PDF is uploaded encrypted to OCR PDF, which recognises the text so you can search and copy it, and you download the result. The file is deleted from the server when your plan's retention period ends."
     }
   ]
 }

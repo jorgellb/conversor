@@ -1,5 +1,5 @@
 {
-  "complete": false,
+  "complete": true,
   "reviewed": false,
   "intro": [
     "Crear collage junta tus fotos en una página lista para imprimir o compartir. Eliges una plantilla (cuadrícula, mosaico, filas que respetan la forma de cada foto, corazón, círculo, estrella, instantáneas o colocación libre) y las fotos se colocan solas; después puedes encuadrar cada una, cambiarlas de celda y ajustar la separación y las esquinas.",
@@ -27,7 +27,7 @@
     },
     {
       "q": "¿Puedo imprimir fotos de carné?",
-      "a": "Sí. Elige Tamaño real y la medida (35 × 45 mm o 26 × 32 mm, la del DNI y el pasaporte según el BOE), añade una foto y se llena la hoja con todas las copias. Imprime al 100 % o «Tamaño real» y recorta por las marcas. Comprueba antes la medida que pide tu trámite."
+      "a": "Sí. Elige Tamaño real y la medida (35 × 45 mm o 26 × 32 mm, la del DNI y el pasaporte españoles), añade una foto y se llena la hoja con todas las copias. Imprime al 100 % o «Tamaño real» y recorta por las marcas. Comprueba antes la medida que pide tu trámite."
     }
   ]
 }
