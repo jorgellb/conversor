@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Unir audios junta dos o más archivos en uno solo, uno detrás de otro, en el orden que elijas con las flechas que hay junto a cada archivo. Sirve para montar canciones seguidas, juntar las partes de una grabación que se cortó, enlazar varias notas de voz o preparar el audio de una presentación. Puedes mezclar formatos distintos: MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA y AMR.",
+    "Entre pista y pista puedes dejar un silencio de hasta 10 segundos. En las opciones adicionales está el fundido cruzado, también de hasta 10 segundos, que hace que una pista se desvanezca mientras empieza la siguiente; si lo activas, sustituye al silencio. Además puedes normalizar el volumen del archivo final para dejarlo en unos −16 LUFS, el nivel habitual de la web y los pódcast. Si las pistas tienen volúmenes muy distintos, puedes igualarlas antes una a una con Normalizar volumen.",
+    "Para poder juntarlas, todas las pistas se pasan a 44,1 kHz y estéreo; las grabaciones en mono se oyen igual por los dos altavoces. El resultado sale por defecto en MP3, y también puedes elegir WAV o el mismo formato que el primer archivo de la lista; si ese formato no se puede escribir, como pasa con AMR, sale en MP3 y te lo avisamos.",
+    "La unión la hace FFmpeg en nuestro servidor y da un único archivo, con el nombre del primero seguido de «-unido». La suma de las duraciones tiene el límite de tu plan: 10 minutos sin cuenta, 30 con la cuenta gratuita y 4 horas en Pro. También cuenta el número de archivos por tarea: 5 sin cuenta, 20 con la cuenta gratuita y 100 en Pro."
+  ],
+  "steps": [
+    "Sube al menos dos audios.",
+    "Ponlos en orden y elige el silencio o el fundido cruzado entre pistas y el formato de salida.",
+    "Descarga el audio unido."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo unir audios de formatos distintos?",
+      "a": "Sí. Cada pista se lee en su formato y se pasa a la misma frecuencia y al mismo número de canales antes de juntarlas, así que puedes mezclar, por ejemplo, un MP3 con una nota de voz OPUS y un WAV."
+    },
+    {
+      "q": "¿Qué diferencia hay entre el silencio y el fundido cruzado?",
+      "a": "Con el silencio, cada pista suena entera, se oye una pausa y empieza la siguiente. Con el fundido cruzado, el final de una pista y el principio de la siguiente se solapan durante los segundos que indiques, así que el total dura algo menos."
+    },
+    {
+      "q": "¿Se pierde calidad?",
+      "a": "Con salida WAV no se pierde nada más de lo que ya traían las pistas. En MP3, la salida por defecto, se codifica con bitrate variable de calidad alta."
+    }
+  ]
+}

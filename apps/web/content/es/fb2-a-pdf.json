@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FB2 a PDF convierte libros FictionBook, muy extendidos en las bibliotecas digitales de Rusia y de Europa del Este, en PDF. Un FB2 es un único archivo XML que guarda el texto estructurado en secciones, los datos del libro y las imágenes incrustadas; pocos lectores y programas lo abren, mientras que el PDF se lee y se imprime en cualquier parte.",
+    "Antes de convertirlo comprobamos que el XML está bien formado y lo leemos con un analizador seguro que rechaza las entidades XML, una vía de ataque conocida. Tampoco pasan los libros que enlazan archivos que no están dentro de ellos. Después, ebook-convert de Calibre lo maqueta en nuestro servidor, como un proceso aislado y sin acceso a la red.",
+    "Puedes elegir el papel, A5 por defecto, A4 o Carta; los márgenes, entre 0 y 50 mm, 15 por defecto; y el tamaño de letra base, entre 6 y 36 puntos, 12 por defecto. Con «Índice al principio», activado por defecto, el PDF empieza con la lista de secciones y sus páginas: Calibre la coloca al final y nosotros la pasamos delante, con las páginas del índice numeradas en romanos y el libro desde el 1.",
+    "Cada libro da su PDF y, si subes varios, también un ZIP con todos. El PDF tiene el límite de páginas de tu plan: 100 sin cuenta, 300 con la cuenta gratuita y 2000 con Pro. Si un libro no cabe, prueba con papel más grande o letra más pequeña."
+  ],
+  "steps": [
+    "Sube uno o varios libros FB2.",
+    "Elige el papel, los márgenes, el tamaño de letra y si quieres el índice al principio.",
+    "Descarga el PDF de cada libro o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Admite archivos .fb2.zip?",
+      "a": "No directamente: descomprime el ZIP y sube el archivo .fb2 que contiene."
+    },
+    {
+      "q": "Mi FB2 da error de archivo no válido, ¿por qué?",
+      "a": "Pasa cuando el XML está mal formado, por ejemplo con etiquetas sin cerrar o una codificación incorrecta, o cuando declara entidades. Ábrelo y guárdalo de nuevo con un editor de FB2 o con Calibre y vuelve a intentarlo."
+    },
+    {
+      "q": "¿Se conservan las imágenes?",
+      "a": "Sí, las imágenes incrustadas en el FB2, como la portada o las ilustraciones, aparecen en el PDF junto al texto."
+    }
+  ]
+}

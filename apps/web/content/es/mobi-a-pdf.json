@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MOBI a PDF convierte libros electrónicos en formato MOBI, el de Mobipocket y de los primeros Kindle, en un PDF de páginas fijas que se abre en cualquier ordenador, tableta o móvil sin aplicaciones de Amazon y que se puede imprimir. Es útil para rescatar libros antiguos de tu biblioteca o documentos personales que guardaste en ese formato.",
+    "En nuestro servidor, ebook-convert de Calibre lee el MOBI y lo maqueta con el papel, los márgenes y la letra que elijas: papel A5, A4 o Carta, con A5 por defecto; márgenes entre 0 y 50 mm, con 15 mm por defecto; y letra base entre 6 y 36 puntos, con 12 por defecto. Con márgenes pequeños y letra grande, el PDF se lee bien en el móvil; con A4 y márgenes amplios, queda mejor impreso.",
+    "Si mantienes «Índice al principio», el PDF arranca con la tabla de capítulos y sus números de página. Calibre la genera al final del documento, así que la movemos delante y numeramos las páginas: el índice en números romanos y el libro desde el 1, para que la página que indica el índice sea la que ves en tu visor de PDF.",
+    "Calibre se ejecuta como un proceso aislado, con un entorno vacío, sin acceso a la red y con límites de tiempo y memoria. Con varios libros recibes un PDF por cada uno y un ZIP con todos, y cada PDF tiene el límite de páginas de tu plan: 100 sin cuenta, 300 con la cuenta gratuita y 2000 en Pro."
+  ],
+  "steps": [
+    "Sube uno o varios archivos MOBI.",
+    "Ajusta el papel, los márgenes y el tamaño de letra.",
+    "Descarga el PDF o el ZIP con todos los libros."
+  ],
+  "faq": [
+    {
+      "q": "¿Convierte libros comprados en la tienda de Kindle?",
+      "a": "Solo si no tienen DRM. Los libros cifrados con DRM no se pueden abrir y la conversión falla; los MOBI sin protección, como muchos documentos personales o libros de dominio público, se convierten sin problema."
+    },
+    {
+      "q": "¿Se mantienen las imágenes y el formato?",
+      "a": "Se mantienen el texto, los capítulos, las imágenes y los estilos que traiga el MOBI. Como el PDF tiene páginas fijas, el texto se reparte de nuevo según el papel y la letra elegidos, así que el número de páginas depende de esas opciones."
+    },
+    {
+      "q": "¿Cuántos libros puedo convertir a la vez?",
+      "a": "Hasta 5 por tarea sin cuenta, 20 con la cuenta gratuita y 100 en Pro, con un tamaño máximo por archivo de 50 MB, 100 MB y 1 GB respectivamente."
+    },
+    {
+      "q": "¿Y si mi libro es AZW3 o EPUB?",
+      "a": "Usa AZW3 a PDF o EPUB a PDF, que tienen las mismas opciones."
+    }
+  ]
+}

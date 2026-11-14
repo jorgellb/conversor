@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FB2 to PDF converts FictionBook books, very common in the digital libraries of Russia and Eastern Europe, into PDF. An FB2 is a single XML file that holds the text structured in sections, the book's details and the embedded images; few readers and programs open it, while a PDF can be read and printed anywhere.",
+    "Before converting it we check that the XML is well formed and read it with a safe parser that rejects XML entities, a well-known attack route. Books that link to files that are not inside them do not get through either. Then Calibre's ebook-convert lays it out on our server, as an isolated process with no network access.",
+    "You can choose the paper, A5 by default, A4 or Letter; the margins, between 0 and 50 mm, 15 by default; and the base font size, between 6 and 36 points, 12 by default. With «Table of contents at the start», on by default, the PDF begins with the list of sections and their pages: Calibre puts it at the end and we move it to the front, with the contents pages numbered in roman numerals and the book from 1.",
+    "Each book gives its own PDF and, if you upload several, also a ZIP with all of them. The PDF is subject to your plan's page limit: 100 without an account, 300 with a free account and 2000 with Pro. If a book does not fit, try larger paper or a smaller font."
+  ],
+  "steps": [
+    "Upload one or more FB2 books.",
+    "Choose the paper, the margins, the font size and whether you want the table of contents at the start.",
+    "Download the PDF of each book or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Does it accept .fb2.zip files?",
+      "a": "Not directly: unzip the archive and upload the .fb2 file inside it."
+    },
+    {
+      "q": "My FB2 gives an invalid file error, why?",
+      "a": "It happens when the XML is malformed, for example with unclosed tags or a wrong encoding, or when it declares entities. Open it and save it again with an FB2 editor or with Calibre and try again."
+    },
+    {
+      "q": "Are the images kept?",
+      "a": "Yes, the images embedded in the FB2, such as the cover or the illustrations, appear in the PDF alongside the text."
+    }
+  ]
+}

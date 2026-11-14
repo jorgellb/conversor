@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Normalizar volumen sube o baja el volumen de un audio hasta un nivel de sonoridad concreto, medido en LUFS, la unidad que usan las plataformas de música, los pódcast y las televisiones. A diferencia de subir el volumen sin más, tiene en cuenta cómo se percibe el sonido de todo el archivo, de modo que varios audios normalizados al mismo objetivo suenan parecido de fuertes uno detrás de otro.",
+    "Hay tres objetivos: −16 LUFS, pensado para la web y los pódcast; −14 LUFS, el nivel habitual de la música en las plataformas de streaming; y −23 LUFS, el de la norma EBU R128 para radio y televisión. En todos, los picos se mantienen por debajo de −1,5 dBTP para evitar que el sonido sature.",
+    "El proceso usa el filtro loudnorm de FFmpeg en dos pasadas. En la primera mide la sonoridad, los picos y el rango dinámico del audio; en la segunda aplica el ajuste. Siempre que se puede, ese ajuste es una misma ganancia para todo el archivo, que no cambia la dinámica ni deforma el sonido; si con ella los picos pasarían del límite, o si el audio tiene más rango dinámico del que admite el objetivo, FFmpeg pasa a un ajuste dinámico. El resultado te dice el volumen medido antes y el objetivo aplicado.",
+    "Admite MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA y AMR, y se conserva la frecuencia de muestreo del original. Por defecto el archivo sale en su mismo formato, salvo AMR, que sale en MP3; en las opciones adicionales puedes pedir MP3 o WAV. Con varios archivos, cada uno se normaliza por separado al mismo objetivo y recibes también un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios audios.",
+    "Elige el volumen objetivo: web y pódcast, plataformas de música o radio y televisión.",
+    "Descarga el audio normalizado o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué objetivo elijo?",
+      "a": "Para un pódcast, un audio para la web o notas de voz, −16 LUFS. Para música que vas a subir a plataformas, −14 LUFS. Para entregar a una radio o una televisión que pida EBU R128, −23 LUFS."
+    },
+    {
+      "q": "Con −23 LUFS mi audio suena bajo, ¿es normal?",
+      "a": "Sí: es el nivel de emisión de radio y televisión, más bajo que el de la música en plataformas. Si quieres que suene más fuerte, elige −16 o −14 LUFS."
+    },
+    {
+      "q": "¿Cuánto audio puedo normalizar?",
+      "a": "Cada archivo puede durar hasta 10 minutos sin cuenta, 30 minutos con la cuenta gratuita y 4 horas en Pro, y en cada tarea entran 5, 20 o 100 archivos según el plan."
+    }
+  ]
+}

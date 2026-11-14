@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Merge audio files joins two or more files into one, one after another, in the order you set with the arrows next to each file. Use it to put songs back to back, join the parts of a recording that got split, link several voice notes or prepare the audio for a presentation. You can mix different formats: MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA and AMR.",
+    "Between tracks you can leave a silence of up to 10 seconds. Under more options there is the crossfade, also up to 10 seconds, which fades one track out while the next one starts; when you turn it on, it replaces the silence. You can also normalize the volume of the final file to about −16 LUFS, the usual level for the web and podcasts. If the tracks have very different volumes, you can even them out one by one first with Normalize audio volume.",
+    "So they can be joined, every track is converted to 44.1 kHz stereo; mono recordings play the same on both speakers. The result is MP3 by default, and you can also choose WAV or the same format as the first file in the list; if that format cannot be written, as happens with AMR, it comes out as MP3 and we tell you.",
+    "FFmpeg does the merge on our server and gives you a single file, named after the first one followed by «-unido». The total of the durations is limited by your plan: 10 minutes without an account, 30 with a free account and 4 hours on Pro. The number of files per task also counts: 5 without an account, 20 with a free account and 100 on Pro."
+  ],
+  "steps": [
+    "Upload at least two audio files.",
+    "Put them in order and choose the silence or the crossfade between tracks and the output format.",
+    "Download the merged audio."
+  ],
+  "faq": [
+    {
+      "q": "Can I merge files in different formats?",
+      "a": "Yes. Each track is read in its own format and brought to the same sample rate and number of channels before joining, so you can mix, for example, an MP3 with an OPUS voice note and a WAV."
+    },
+    {
+      "q": "What is the difference between the silence and the crossfade?",
+      "a": "With the silence, each track plays in full, there is a pause and the next one starts. With the crossfade, the end of one track and the start of the next overlap for the seconds you set, so the total is somewhat shorter."
+    },
+    {
+      "q": "Is quality lost?",
+      "a": "With WAV output nothing is lost beyond what the tracks already had. In MP3, the default output, the audio is encoded at a high-quality variable bitrate."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Cambiar velocidad de audio acelera o ralentiza una grabación: escuchar una clase o un pódcast en menos tiempo, ralentizar una canción para aprenderla con un instrumento, revisar con calma un dictado o ajustar la duración de una locución. Admite MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA y AMR.",
+    "La velocidad va de 0,25 a 4: 1 deja el audio igual, 1,5, el valor por defecto, lo hace un 50 % más rápido, 2 lo hace el doble de rápido y 0,5 lo reproduce a la mitad. La duración cambia en la misma proporción: una clase de 60 minutos a 1,5 dura 40.",
+    "Con «Conservar el tono de voz», activado por defecto, las voces no suenan agudas al acelerar ni graves al ralentizar: se usa el filtro atempo de FFmpeg, encadenado varias veces cuando la velocidad pasa de 2 o baja de 0,5. Si lo desactivas, el audio cambia de velocidad como un disco o una cinta, y el tono sube o baja con ella; a veces se busca justo ese efecto.",
+    "El proceso se hace en nuestro servidor. Por defecto el resultado sale en el mismo formato que el original, salvo AMR, que sale en MP3; en las opciones adicionales puedes pedir MP3 o WAV. El nombre del archivo lleva la velocidad, por ejemplo «clase-x1,5.mp3», y con varios archivos recibes también un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios audios.",
+    "Escribe la velocidad y decide si se conserva el tono de voz.",
+    "Descarga el audio con la nueva velocidad."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo poner velocidades como 1,25 o 0,8?",
+      "a": "Sí, cualquier valor entre 0,25 y 4 con decimales: por ejemplo, 1,25 para escuchar algo un poco más rápido o 0,8 para seguir mejor una canción."
+    },
+    {
+      "q": "¿Cuál es el límite de duración?",
+      "a": "Se mira la duración del audio que subes: hasta 10 minutos sin cuenta, 30 minutos con la cuenta gratuita y 4 horas en Pro. Da igual que al acelerarlo quede más corto."
+    },
+    {
+      "q": "¿Puedo cambiar el tono sin cambiar la velocidad?",
+      "a": "No, esta herramienta cambia la velocidad. Al desactivar «Conservar el tono de voz», tono y velocidad cambian juntos."
+    }
+  ]
+}

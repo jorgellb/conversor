@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "EPUB to PDF converts EPUB e-books into a fixed-page PDF, ready to read on a computer, print, send to someone without an e-reader or annotate in any PDF program. EPUB is the open format used by most digital bookshops and libraries, except Kindle.",
+    "The conversion is done by Calibre's ebook-convert on our server: it lays out the book's text, with its chapters, images and styles, on the paper you choose. The default is A5, a size close to that of many books, and you can also choose A4 or Letter. You set the margins, 15 mm by default and up to 50, and the base font size, 12 points by default and between 6 and 36: raising it gives more pages and easier reading on small screens.",
+    "With «Table of contents at the start», on by default, the PDF opens with the book's table of contents and its page numbers. Calibre puts it at the end, so we move it to the front and number the PDF's pages so that the contents use roman numerals, i, ii…, and the book starts at 1: that way the numbers in the contents match the ones your viewer shows. If the table of contents is not found, the PDF is delivered as it is.",
+    "Before converting we check the book. An EPUB is a ZIP, and we reject those tampered with to take up an enormous amount of space when unpacked or to write outside their folder, those that declare XML entities and those that link to files that are not inside the book itself. Calibre works without network access, so no images or fonts are downloaded from the internet. The PDF is subject to your plan's page limit: 100 without an account, 300 with a free account and 2000 with Pro."
+  ],
+  "steps": [
+    "Upload one or more EPUB books.",
+    "Choose the paper, the margins, the font size and whether you want the table of contents at the start.",
+    "Download the PDF of each book or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Can I convert books with DRM?",
+      "a": "No. Books protected with DRM, like many of those bought from shops, are encrypted and Calibre cannot open them. Only unprotected books are converted."
+    },
+    {
+      "q": "The book has too many pages for my plan, what can I do?",
+      "a": "Try A4 paper or a smaller font size, which reduce the number of pages, or use an account with a higher limit."
+    },
+    {
+      "q": "Can the text in the PDF be searched and copied?",
+      "a": "Yes: the text is still text and not an image, so you can search for words and copy passages."
+    }
+  ]
+}

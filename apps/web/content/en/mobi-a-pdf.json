@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MOBI to PDF converts e-books in MOBI format, the one used by Mobipocket and the first Kindles, into a fixed-page PDF that opens on any computer, tablet or phone without Amazon apps and can be printed. It is handy for rescuing old books from your library or personal documents you saved in that format.",
+    "On our server, Calibre's ebook-convert reads the MOBI and lays it out with the paper, margins and font you choose: A5, A4 or Letter paper, with A5 by default; margins between 0 and 50 mm, with 15 mm by default; and a base font between 6 and 36 points, with 12 by default. With small margins and a large font, the PDF reads well on a phone; with A4 and wide margins, it looks better printed.",
+    "If you keep «Table of contents at the start», the PDF opens with the list of chapters and their page numbers. Calibre generates it at the end of the document, so we move it to the front and number the pages: the contents in roman numerals and the book from 1, so the page the contents point to is the one you see in your PDF viewer.",
+    "Calibre runs as an isolated process, with an empty environment, no network access and time and memory limits. With several books you get one PDF for each and a ZIP with all of them, and each PDF is subject to your plan's page limit: 100 without an account, 300 with a free account and 2000 on Pro."
+  ],
+  "steps": [
+    "Upload one or more MOBI files.",
+    "Adjust the paper, the margins and the font size.",
+    "Download the PDF or the ZIP with all the books."
+  ],
+  "faq": [
+    {
+      "q": "Does it convert books bought from the Kindle store?",
+      "a": "Only if they have no DRM. Books encrypted with DRM cannot be opened and the conversion fails; unprotected MOBI files, such as many personal documents or public domain books, convert without trouble."
+    },
+    {
+      "q": "Are the images and formatting kept?",
+      "a": "The text, chapters, images and styles in the MOBI are kept. Since a PDF has fixed pages, the text is laid out again according to the paper and font chosen, so the number of pages depends on those options."
+    },
+    {
+      "q": "How many books can I convert at once?",
+      "a": "Up to 5 per task without an account, 20 with a free account and 100 on Pro, with a maximum size per file of 50 MB, 100 MB and 1 GB respectively."
+    },
+    {
+      "q": "What if my book is AZW3 or EPUB?",
+      "a": "Use AZW3 to PDF or EPUB to PDF, which have the same options."
+    }
+  ]
+}

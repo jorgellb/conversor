@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AZW3 a PDF convierte libros en AZW3, también llamado KF8, el formato de los Kindle actuales, en un PDF que puedes abrir sin un Kindle ni la aplicación de Amazon, imprimir o compartir. Sirve, por ejemplo, para libros que has preparado tú, documentos personales que enviaste al Kindle o libros sin protección que algunas editoriales venden en este formato.",
+    "La maqueta la hace ebook-convert de Calibre en nuestro servidor. Conserva los capítulos, las imágenes y los estilos del libro y reparte el texto en páginas del papel que elijas: A5 por defecto, A4 o Carta. Los márgenes, de 15 mm por defecto, se ajustan entre 0 y 50 mm, y la letra base, de 12 puntos por defecto, entre 6 y 36.",
+    "El índice de capítulos va al principio si dejas activada esa opción. Calibre lo genera al final, y nosotros movemos esas páginas delante y numeramos el PDF con el índice en romanos y el libro desde el 1, de modo que los números del índice coinciden con los de la barra de tu visor.",
+    "Los libros que se compran en la tienda de Kindle suelen llevar DRM, un cifrado que impide abrirlos fuera de los dispositivos y aplicaciones de Amazon, y esos no se pueden convertir. Calibre trabaja en un proceso aislado, sin red y con límites de tiempo y memoria, y cada PDF tiene el límite de páginas de tu plan: 100 sin cuenta, 300 con la cuenta gratuita y 2000 con Pro. Con varios libros recibes también un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios libros AZW3.",
+    "Elige el papel, los márgenes, la letra y si quieres el índice al principio.",
+    "Descarga el PDF o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo sé si mi libro tiene DRM?",
+      "a": "Si la conversión falla con un libro comprado y funciona con otros, lo más probable es que esté protegido. Los libros que tú mismo has pasado a AZW3 y los que la editorial vende sin DRM se convierten sin problema."
+    },
+    {
+      "q": "¿Qué papel me conviene?",
+      "a": "A5 para leer en pantalla o imprimir con formato de libro; A4 o Carta si vas a imprimir en una impresora doméstica y quieres menos páginas."
+    },
+    {
+      "q": "¿Se borran mis libros?",
+      "a": "Sí. Los libros y los PDF se borran a la hora si no tienes cuenta o a las 24 horas si la tienes."
+    }
+  ]
+}

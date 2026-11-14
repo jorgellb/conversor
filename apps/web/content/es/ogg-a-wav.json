@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OGG a WAV convierte audios OGG y OPUS en archivos WAV sin compresión. Es el caso típico de las notas de voz de WhatsApp y Telegram, de las grabaciones de algunas aplicaciones del móvil y de la música en Vorbis: muchos editores de audio, programas de dictado, mesas de mezclas y equipos antiguos no abren esos formatos, mientras que el WAV lo reconoce casi cualquier programa. También acepta archivos con la extensión .oga.",
+    "La conversión se hace en nuestro servidor con FFmpeg. Antes de convertir se comprueba que el archivo es de verdad un OGG u OPUS, que tiene una pista de audio y que su duración cabe en tu plan. El WAV sale en PCM de 16 bits, el formato estándar de los CD y de la mayoría de los editores, a 44,1 kHz o a 48 kHz, la frecuencia habitual en vídeo. Los canales pueden quedarse como en el original o pasar a mono o a estéreo.",
+    "En las opciones adicionales puedes normalizar el volumen, que lo lleva a unos −16 LUFS, el nivel habitual de la web y los pódcast; viene bien para notas de voz grabadas muy bajas. Las etiquetas del archivo original, como el título o el autor, no se copian al WAV. Si subes varios audios recibes un WAV por cada uno y un ZIP con todos.",
+    "Ten en cuenta que el WAV no comprime: un minuto en estéreo a 44,1 kHz ocupa unos 10 MB, muchas veces más que el OGG de partida. Y no recupera calidad: el sonido es el mismo que había en el OGG, solo que en un formato más fácil de editar."
+  ],
+  "steps": [
+    "Sube uno o varios audios OGG u OPUS.",
+    "Elige la frecuencia de muestreo y los canales y, si quieres, normaliza el volumen.",
+    "Descarga el WAV de cada audio o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué frecuencia elijo, 44,1 o 48 kHz?",
+      "a": "44,1 kHz es la de los CD y sirve para música y voz. Elige 48 kHz si vas a usar el audio en un vídeo o en un programa de edición configurado a esa frecuencia, para que no tenga que volver a convertirlo."
+    },
+    {
+      "q": "¿Cuánto puede durar cada audio?",
+      "a": "Hasta 10 minutos por archivo sin cuenta, 30 minutos con la cuenta gratuita y 4 horas en Pro. Por tarea puedes subir 5 archivos sin cuenta, 20 con la cuenta gratuita y 100 en Pro."
+    },
+    {
+      "q": "¿Y si prefiero un archivo que ocupe poco?",
+      "a": "Usa OGG a MP3, que da un MP3 compatible con casi cualquier reproductor y mucho más ligero que el WAV."
+    },
+    {
+      "q": "¿Se guardan mis audios?",
+      "a": "Se procesan en nuestro servidor y se borran a la hora si no tienes cuenta, o a las 24 horas si la tienes."
+    }
+  ]
+}

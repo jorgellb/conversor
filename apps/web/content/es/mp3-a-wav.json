@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MP3 a WAV convierte canciones, grabaciones y pódcast en MP3 a WAV, el formato sin compresión que piden muchos programas de edición, equipos de DJ, samplers, centralitas telefónicas y aplicaciones de dictado o de grabación de CD. Puedes convertir un MP3 suelto o varios de una vez.",
+    "El WAV que recibes está en PCM de 16 bits, con la frecuencia de muestreo que elijas: 44,1 kHz, la de los CD, o 48 kHz, la que se usa en vídeo y en muchos estudios. Puedes dejar los canales como vienen en el MP3, mezclarlos en mono, útil para voz o para sistemas que solo admiten un canal, o forzar estéreo. La conversión la hace FFmpeg en nuestro servidor, después de comprobar que el archivo es un MP3 con una pista de audio y de medir su duración.",
+    "Entre las opciones adicionales está normalizar el volumen a unos −16 LUFS, el nivel habitual de la web y los pódcast, que sube las grabaciones demasiado bajas y baja las demasiado fuertes. Las etiquetas ID3 del MP3, como el título, el artista o la carátula, no pasan al WAV. Con varios archivos recibes cada WAV por separado y un ZIP con todos.",
+    "Pasar de MP3 a WAV no mejora el sonido: el MP3 ya descartó parte de la información al comprimirse y el WAV conserva lo que queda tal cual, sin perder más. Lo que cambia es el tamaño, que crece mucho: un minuto en estéreo a 44,1 kHz ocupa unos 10 MB."
+  ],
+  "steps": [
+    "Sube uno o varios archivos MP3.",
+    "Elige la frecuencia de muestreo, 44,1 o 48 kHz, y los canales.",
+    "Descarga el WAV o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el WAV ocupa tanto más que el MP3?",
+      "a": "Porque guarda cada muestra de sonido sin comprimir. Un MP3 a 192 kbps ocupa unos 1,4 MB por minuto; el mismo audio en WAV estéreo a 44,1 kHz, unos 10 MB."
+    },
+    {
+      "q": "¿Hay límite de duración o de tamaño?",
+      "a": "Sí. Cada archivo puede durar 10 minutos sin cuenta, 30 con la cuenta gratuita y 4 horas en Pro, y pesar hasta 50 MB sin cuenta, 100 MB con la cuenta gratuita y 1 GB en Pro."
+    },
+    {
+      "q": "¿Puedo volver a pasarlo a MP3?",
+      "a": "Sí, con WAV a MP3. Si todavía tienes el MP3 original, guárdalo: comprimir otra vez el WAV supone una segunda pérdida, aunque sea pequeña."
+    },
+    {
+      "q": "¿Qué pasa con mis archivos?",
+      "a": "Se convierten en nuestro servidor y se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

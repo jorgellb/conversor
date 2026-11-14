@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Normalize audio volume raises or lowers the volume of an audio file to a specific loudness level, measured in LUFS, the unit used by music platforms, podcasts and broadcasters. Unlike simply turning the volume up, it takes into account how loud the whole file is perceived to be, so several files normalized to the same target sound similarly loud one after another.",
+    "There are three targets: −16 LUFS, meant for the web and podcasts; −14 LUFS, the usual level of music on streaming platforms; and −23 LUFS, the EBU R128 standard for radio and television. In all of them, peaks are kept below −1.5 dBTP so the sound does not clip.",
+    "The process uses FFmpeg's loudnorm filter in two passes. The first measures the loudness, the peaks and the dynamic range of the audio; the second applies the adjustment. Whenever possible, that adjustment is one and the same gain for the whole file, which does not change the dynamics or distort the sound; if that gain would push the peaks over the limit, or if the audio has more dynamic range than the target allows, FFmpeg switches to a dynamic adjustment. The result tells you the loudness measured before and the target applied.",
+    "It accepts MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA and AMR, and the original sample rate is kept. By default the file comes out in its own format, except AMR, which comes out as MP3; under more options you can ask for MP3 or WAV. With several files, each one is normalized separately to the same target and you also get a ZIP."
+  ],
+  "steps": [
+    "Upload one or more audio files.",
+    "Choose the target loudness: web and podcasts, music platforms, or radio and TV.",
+    "Download the normalized audio or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Which target should I choose?",
+      "a": "For a podcast, web audio or voice notes, −16 LUFS. For music you are going to upload to streaming platforms, −14 LUFS. To deliver to a radio or TV station that asks for EBU R128, −23 LUFS."
+    },
+    {
+      "q": "At −23 LUFS my audio sounds quiet, is that normal?",
+      "a": "Yes: it is the broadcast level for radio and television, lower than that of music on streaming platforms. If you want it to sound louder, choose −16 or −14 LUFS."
+    },
+    {
+      "q": "How much audio can I normalize?",
+      "a": "Each file can be up to 10 minutes long without an account, 30 minutes with a free account and 4 hours on Pro, and each task takes 5, 20 or 100 files depending on the plan."
+    }
+  ]
+}

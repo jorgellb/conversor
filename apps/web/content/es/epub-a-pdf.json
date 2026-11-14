@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "EPUB a PDF convierte libros electrónicos EPUB en un PDF de páginas fijas, listo para leer en el ordenador, imprimir, enviar a alguien que no tiene lector de libros electrónicos o anotar con cualquier programa de PDF. EPUB es el formato abierto que usan la mayoría de las tiendas y bibliotecas digitales, salvo Kindle.",
+    "La conversión la hace ebook-convert, de Calibre, en nuestro servidor: maqueta el texto del libro, con sus capítulos, imágenes y estilos, sobre el papel que elijas. Por defecto es A5, un tamaño parecido al de muchos libros, y también puedes elegir A4 o Carta. Decides los márgenes, 15 mm por defecto y hasta 50, y el tamaño de letra base, 12 puntos por defecto y entre 6 y 36: subirlo da más páginas y una lectura más cómoda en pantallas pequeñas.",
+    "Con «Índice al principio», activado por defecto, el PDF empieza con el índice de capítulos del libro y sus números de página. Calibre lo coloca al final, así que lo pasamos delante y numeramos las páginas del PDF para que el índice vaya en romanos, i, ii…, y el libro empiece en la 1: así los números del índice coinciden con los que muestra tu visor. Si no se encuentra el índice, el PDF se entrega tal cual.",
+    "Antes de convertir revisamos el libro. El EPUB es un ZIP, y se rechazan los que están manipulados para ocupar muchísimo al descomprimirse o para escribir fuera de su carpeta, los que declaran entidades XML y los que enlazan archivos que no están dentro del propio libro. Calibre trabaja sin acceso a la red, así que no se descargan imágenes ni fuentes de internet. El PDF tiene el límite de páginas de tu plan: 100 sin cuenta, 300 con la cuenta gratuita y 2000 con Pro."
+  ],
+  "steps": [
+    "Sube uno o varios libros EPUB.",
+    "Elige el papel, los márgenes, el tamaño de letra y si quieres el índice al principio.",
+    "Descarga el PDF de cada libro o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo convertir libros con DRM?",
+      "a": "No. Los libros protegidos con DRM, como muchos de los que se compran en tiendas, están cifrados y Calibre no puede abrirlos. Solo se convierten libros sin protección."
+    },
+    {
+      "q": "El libro tiene demasiadas páginas para mi plan, ¿qué hago?",
+      "a": "Prueba con papel A4 o con un tamaño de letra más pequeño, que reducen el número de páginas, o usa una cuenta con un límite mayor."
+    },
+    {
+      "q": "¿El texto del PDF se puede buscar y copiar?",
+      "a": "Sí: el texto sigue siendo texto y no una imagen, así que puedes buscar palabras y copiar fragmentos."
+    }
+  ]
+}

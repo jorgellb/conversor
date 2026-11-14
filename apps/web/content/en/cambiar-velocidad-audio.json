@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Change audio speed speeds up or slows down a recording: listening to a lecture or a podcast in less time, slowing down a song to learn it on an instrument, going through a dictation calmly or adjusting the length of a voice-over. It accepts MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA and AMR.",
+    "The speed ranges from 0.25 to 4: 1 leaves the audio unchanged, 1.5, the default, makes it 50 % faster, 2 makes it twice as fast and 0.5 plays it at half speed. The duration changes in the same proportion: a 60-minute lecture at 1.5 lasts 40.",
+    "With «Keep the pitch», on by default, voices do not sound high when sped up or low when slowed down: FFmpeg's atempo filter is used, chained several times when the speed goes above 2 or below 0.5. If you turn it off, the audio changes speed like a record or a tape, and the pitch goes up or down with it; sometimes that is exactly the effect you want.",
+    "The processing runs on our server. By default the result comes out in the same format as the original, except AMR, which comes out as MP3; under more options you can ask for MP3 or WAV. The file name carries the speed, for example «lecture-x1,5.mp3», and with several files you also get a ZIP."
+  ],
+  "steps": [
+    "Upload one or more audio files.",
+    "Enter the speed and decide whether to keep the pitch.",
+    "Download the audio at its new speed."
+  ],
+  "faq": [
+    {
+      "q": "Can I use speeds like 1.25 or 0.8?",
+      "a": "Yes, any value between 0.25 and 4 with decimals: for example, 1.25 to listen to something a little faster or 0.8 to follow a song more easily."
+    },
+    {
+      "q": "What is the duration limit?",
+      "a": "It looks at the length of the audio you upload: up to 10 minutes without an account, 30 minutes with a free account and 4 hours on Pro. It does not matter that speeding it up makes it shorter."
+    },
+    {
+      "q": "Can I change the pitch without changing the speed?",
+      "a": "No, this tool changes the speed. When you turn off «Keep the pitch», pitch and speed change together."
+    }
+  ]
+}

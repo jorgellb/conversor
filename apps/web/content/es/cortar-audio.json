@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Cortar audio recorta una grabación, una canción o un pódcast y se queda solo con el fragmento que te interesa: quitar el silencio del principio de una nota de voz, sacar un tono de llamada de una canción o separar una respuesta de una entrevista. Admite MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA y AMR.",
+    "Indicas el inicio y el final del fragmento en horas, minutos y segundos: vale «90», «1:30» o «1:01:30», y también fracciones de segundo, como «1:30,5». Si dejas el final vacío, el corte llega hasta el final del audio, y si pones un final que pasa de la duración, se queda en el final. El inicio tiene que ir antes del final; si no, la tarea te lo indica.",
+    "En las opciones adicionales puedes añadir un fundido de entrada y uno de salida de hasta 10 segundos cada uno, para que el fragmento no empiece ni acabe de golpe; si el fragmento es corto, cada fundido se limita a la mitad de su duración. También eliges el formato: el mismo que el original, MP3 o WAV. Los AMR no se pueden guardar en su formato y salen en MP3, y el resultado te lo avisa.",
+    "El corte lo hace FFmpeg en nuestro servidor y el fragmento se vuelve a codificar: en FLAC y WAV no se pierde nada, y en MP3, OGG, M4A y los demás formatos con pérdida se usa una calidad alta. Si subes varios archivos, a todos se les aplica el mismo corte y recibes también un ZIP. Cada archivo recortado lleva el nombre del original seguido de «-recortado»."
+  ],
+  "steps": [
+    "Sube el audio que quieres recortar.",
+    "Escribe el inicio y el final del fragmento y, si quieres, los fundidos.",
+    "Descarga el audio recortado."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo hacer varios cortes del mismo audio?",
+      "a": "Cada tarea saca un único fragmento de cada archivo. Para sacar varios, repite la tarea con otros tiempos; si después quieres juntarlos, usa Unir audios."
+    },
+    {
+      "q": "¿Cuánto puede durar el audio de partida?",
+      "a": "Hasta 10 minutos sin cuenta, 30 minutos con la cuenta gratuita y 4 horas en Pro. Cuenta la duración del archivo que subes, no la del fragmento que te quedas."
+    },
+    {
+      "q": "¿Se conservan el título y la carátula?",
+      "a": "No: los metadatos del original, como el título, el artista o la carátula, no se copian al archivo recortado."
+    }
+  ]
+}

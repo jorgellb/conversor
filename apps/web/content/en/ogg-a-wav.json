@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OGG to WAV converts OGG and OPUS audio into uncompressed WAV files. The typical case is WhatsApp and Telegram voice notes, recordings from some phone apps and music in Vorbis: many audio editors, dictation programs, mixing desks and older devices cannot open those formats, while WAV is recognised by almost any program. Files with the .oga extension are accepted too.",
+    "The conversion runs on our server with FFmpeg. Before converting, it checks that the file really is an OGG or OPUS, that it has an audio track and that its duration fits your plan. The WAV comes out as 16-bit PCM, the standard format of CDs and most editors, at 44.1 kHz or at 48 kHz, the usual rate for video. The channels can stay as in the original or be turned into mono or stereo.",
+    "Under more options you can normalize the volume, which brings it to about −16 LUFS, the usual level for the web and podcasts; it helps with voice notes recorded very quietly. Tags from the original file, such as the title or the author, are not copied to the WAV. If you upload several files you get one WAV for each and a ZIP with all of them.",
+    "Bear in mind that WAV does not compress: one minute in stereo at 44.1 kHz takes about 10 MB, many times more than the original OGG. Nor does it bring back quality: the sound is the same as in the OGG, just in a format that is easier to edit."
+  ],
+  "steps": [
+    "Upload one or more OGG or OPUS files.",
+    "Choose the sample rate and the channels and, if you like, normalize the volume.",
+    "Download the WAV of each file or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Which sample rate should I choose, 44.1 or 48 kHz?",
+      "a": "44.1 kHz is the CD rate and works for music and voice. Choose 48 kHz if you are going to use the audio in a video or in an editing program set to that rate, so it does not have to convert it again."
+    },
+    {
+      "q": "How long can each file be?",
+      "a": "Up to 10 minutes per file without an account, 30 minutes with a free account and 4 hours on Pro. Each task takes 5 files without an account, 20 with a free account and 100 on Pro."
+    },
+    {
+      "q": "What if I would rather have a small file?",
+      "a": "Use OGG to MP3, which gives you an MP3 that plays on almost any player and is much lighter than a WAV."
+    },
+    {
+      "q": "Are my files kept?",
+      "a": "They are processed on our server and deleted after one hour if you have no account, or after 24 hours if you do."
+    }
+  ]
+}

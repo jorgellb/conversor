@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Cut audio trims a recording, a song or a podcast and keeps only the part you want: removing the silence at the start of a voice note, making a ringtone from a song or pulling one answer out of an interview. It accepts MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA and AMR.",
+    "You give the start and the end of the clip in hours, minutes and seconds: «90», «1:30» or «1:01:30» all work, and so do fractions of a second, such as «1:30.5». If you leave the end empty, the cut runs to the end of the audio, and if you enter an end past the duration, it stops at the end. The start has to come before the end; otherwise the task tells you.",
+    "Under more options you can add a fade in and a fade out of up to 10 seconds each, so the clip does not start or stop abruptly; if the clip is short, each fade is limited to half its length. You also choose the format: the same as the original, MP3 or WAV. AMR files cannot be saved in their own format and come out as MP3, and the result tells you so.",
+    "FFmpeg makes the cut on our server and the clip is encoded again: FLAC and WAV lose nothing, and MP3, OGG, M4A and the other lossy formats use a high quality setting. If you upload several files, the same cut is applied to all of them and you also get a ZIP. Each trimmed file is named after the original followed by «-recortado»."
+  ],
+  "steps": [
+    "Upload the audio you want to trim.",
+    "Enter the start and the end of the clip and, if you like, the fades.",
+    "Download the trimmed audio."
+  ],
+  "faq": [
+    {
+      "q": "Can I make several cuts from the same audio?",
+      "a": "Each task takes a single clip from each file. To get several, run the task again with other times; if you then want to join them, use Merge audio files."
+    },
+    {
+      "q": "How long can the original audio be?",
+      "a": "Up to 10 minutes without an account, 30 minutes with a free account and 4 hours on Pro. What counts is the length of the file you upload, not of the clip you keep."
+    },
+    {
+      "q": "Are the title and the cover art kept?",
+      "a": "No: the original's metadata, such as the title, the artist or the cover art, is not copied to the trimmed file."
+    }
+  ]
+}
