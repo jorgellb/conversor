@@ -93,6 +93,16 @@ DETAILS: dict[str, dict[str, str]] = {
     # «ai_files:25>20»: peticiones (una por archivo, ticket-a-excel) y máximo por tarea (6.3).
     "ai_files": {"es": "Estos archivos necesitarían {need} peticiones de IA (una por archivo) y tu plan permite {max} por tarea: sube menos a la vez.",
                  "en": "These files would need {need} AI requests (one per file) and your plan allows {max} per task: upload fewer at once."},
+    # «ai_span:25>20»: peticiones que necesita una grabación o unos subtítulos y máximo por tarea (6.3, F3-E).
+    "ai_span": {"es": "Esto necesitaría {need} peticiones de IA y tu plan permite {max} por tarea: elige un tramo más corto con «Desde» y «Hasta».",
+                "en": "This would need {need} AI requests and your plan allows {max} per task: choose a shorter section with “From” and “To”."},
+    # «audio_minutes:45>30»: minutos del tramo elegido y máximo de audio por tarea del plan (9.3).
+    "audio_minutes": {"es": "Tu plan permite {max} minutos de audio por tarea y el tramo elegido dura {need}: elige un tramo más corto con «Desde» y «Hasta».",
+                      "en": "Your plan allows {max} minutes of audio per task and the chosen section lasts {need}: choose a shorter one with “From” and “To”."},
+    "subs_empty": {"es": "No hay texto que traducir en los subtítulos (o en el tramo elegido).",
+                   "en": "There is no text to translate in the subtitles (or in the chosen section)."},
+    "subs_range": {"es": "El tramo elegido no es válido: «Desde» tiene que ir antes de «Hasta» y dentro de la duración.",
+                   "en": "The chosen section is not valid: “From” must come before “To” and within the duration."},
     "ai_day": {"es": "Has usado todas tus peticiones de IA de hoy.", "en": "You have used all your AI requests for today."},
     "chat_expired": {"es": "El documento de este chat ya no está: vuelve a prepararlo.",
                      "en": "This chat's document is no longer available: prepare it again."},

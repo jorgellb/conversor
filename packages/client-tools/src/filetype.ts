@@ -16,9 +16,9 @@ const ASF = [0x30, 0x26, 0xb2, 0x75, 0x8e, 0x66, 0xcf, 0x11];
 const EBML = [0x1a, 0x45, 0xdf, 0xa3];
 
 export const OLE2_FAMILY = new Set(["doc", "xls", "ppt", "pps", "msg", "pub", "vsd"]);
-export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "srt", "vtt", "eml", "fb2", "dxf"]);
+export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "srt", "vtt", "ass", "eml", "fb2", "dxf"]);
 const RAW_TIFF = new Set(["cr2", "nef", "arw", "dng"]);
-const EXT_ALIASES: Record<string, string> = { jpeg: "jpg", tif: "tiff", htm: "html", markdown: "md", oga: "ogg", aif: "aiff" };
+const EXT_ALIASES: Record<string, string> = { jpeg: "jpg", tif: "tiff", htm: "html", markdown: "md", oga: "ogg", aif: "aiff", ssa: "ass" };
 const ODF: Record<string, string> = {
   "application/vnd.oasis.opendocument.text": "odt",
   "application/vnd.oasis.opendocument.spreadsheet": "ods",

@@ -49,6 +49,12 @@ PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files) · volumen bac
   escaneos pasan por `workerocr` y vuelven), quita cabeceras y números de página, espeak-ng (proceso externo) da los
   fonemas, Kokoro en ONNX Runtime la voz por frases y FFmpeg LGPL el MP3 por tramos de 10 minutos (D-166 a D-173;
   un recuento que no termina en 90 s no se encola).
+- **Grabaciones con IA** (F3, lote E: traducir-subtitulos y resumir-reunion): los subtítulos SRT, VTT o ASS se traducen
+  directamente en `workerai` (pysubs2 y `TranslationProvider`, un elemento JSON por subtítulo, tiempos intactos); un audio
+  o un vídeo empieza en `workeravheavy` (resumir-reunion siempre; traducir-subtitulos pasa de `ai` a `av.heavy`), que mide
+  el tramo, estima y reserva las peticiones antes de transcribir, transcribe con faster-whisper y deja los subtítulos o los
+  párrafos en `document_texts` del propietario; después `workerai` hace las peticiones (acta por bloques y una final si no
+  cabe). `workeravheavy` no tiene la clave de OpenRouter y `workerai` no tiene FFmpeg ni Whisper (D-174 a D-178).
 - **Híbridas**: imágenes a PDF y PDF a imágenes pasan al servidor con TIFF o con más de `CLIENT_MAX_MB`; `lector-pdf` abre los PDF en el navegador y convierte en servidor (motor de convertir-a-pdf) lo que no es PDF.
 - **Servidor**:
   1. Identidad: JWT de Better Auth (`/api/auth/token`, EdDSA, `iss` y `aud` = `BETTER_AUTH_URL`) o token anónimo de

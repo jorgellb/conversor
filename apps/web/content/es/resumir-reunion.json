@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Resumir reunión convierte la grabación de una reunión, una llamada, una entrevista o una clase en un acta que se lee en un par de minutos: un resumen, los temas tratados, las decisiones, las tareas con su responsable y su fecha cuando se dicen en voz alta, y las preguntas que quedaron abiertas. Admite audio MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA y AMR, y el audio de vídeos MP4, MOV, MKV, WebM y AVI.",
+    "Primero la grabación se transcribe en nuestro servidor con faster-whisper, sin IA externa; esa parte cuenta como una tarea pesada. Después la transcripción, y nunca el audio, se envía al modelo de IA, que devuelve el acta con una estructura fija. Si la reunión es larga y no cabe de una vez, se resume por partes y al final se unen en una sola acta.",
+    "Eliges la extensión del resumen, el idioma en que se escribe (el de la reunión u otro) y qué apartados quieres. El acta sale en Word (DOCX), con las tareas en una tabla, en texto (TXT) o en Markdown, y puede llevar al final la transcripción completa con el minuto de cada párrafo para comprobar cualquier punto. La transcripción no distingue quién habla, así que el responsable de una tarea solo aparece si se nombra.",
+    "Es una herramienta beta sujeta a la disponibilidad diaria de IA. Antes de la primera tarea aceptas un aviso: el texto de la transcripción se envía a un proveedor externo a través de OpenRouter, que puede estar fuera de la Unión Europea. No la uses con reuniones confidenciales ni con datos personales de terceros."
+  ],
+  "steps": [
+    "Sube la grabación de la reunión, en audio o en vídeo.",
+    "Elige el idioma de la reunión o deja que se detecte, la extensión, los apartados y el formato.",
+    "Acepta el aviso de IA, espera a que termine la transcripción y descarga el acta."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántas peticiones de IA gasta?",
+      "a": "Una si la transcripción cabe en el contexto del modelo; si no, una por cada parte y una más para unirlas. Se reservan antes de transcribir: si pasan de lo que tu plan permite por tarea, la tarea se detiene sin gastar ninguna y te pide un tramo más corto con «Desde» y «Hasta». Cambiar los apartados, el formato o añadir la transcripción después no gasta peticiones."
+    },
+    {
+      "q": "¿Cuánto puede durar la grabación?",
+      "a": "Hace falta una cuenta. El tramo que se transcribe puede durar hasta 30 minutos con la cuenta gratuita y 4 horas con Pro. La cuenta gratuita tiene 3 peticiones de IA al día y 5 por tarea, y 10 tareas pesadas al día; Pro, 30 peticiones al día, 20 por tarea y 200 tareas pesadas."
+    },
+    {
+      "q": "¿Es fiable el acta?",
+      "a": "Está hecha con IA a partir de una transcripción automática, así que puede tener errores u omisiones, sobre todo con audio de mala calidad o con varias personas hablando a la vez. El documento lo indica con el nombre del modelo usado. Revísala antes de enviarla."
+    },
+    {
+      "q": "¿Qué pasa con mi grabación?",
+      "a": "El audio se transcribe en nuestro servidor de la Unión Europea y no sale de él; solo el texto va al proveedor de IA. Los archivos y el acta se borran a las 24 horas."
+    }
+  ]
+}

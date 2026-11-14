@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Summarize meeting turns the recording of a meeting, a call, an interview or a lecture into minutes you can read in a couple of minutes: a summary, the topics discussed, the decisions, the action items with their owner and date when they are said out loud, and the questions left open. It accepts MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA and AMR audio, and the audio of MP4, MOV, MKV, WebM and AVI videos.",
+    "First the recording is transcribed on our server with faster-whisper, with no external AI; that part counts as a heavy task. Then the transcript, never the audio, is sent to the AI model, which returns the minutes in a fixed structure. If the meeting is long and does not fit in one go, it is summarized in parts that are then joined into a single set of minutes.",
+    "You choose the length of the summary, the language it is written in (the meeting's or another one) and which sections you want. The minutes come as Word (DOCX), with the action items in a table, as text (TXT) or as Markdown, and can end with the full transcript, with the time of each paragraph so you can check any point. The transcription does not tell speakers apart, so the owner of a task only appears if someone names them.",
+    "This is a beta tool, subject to the daily AI allowance. Before the first task you accept a notice: the transcript text is sent to an external provider through OpenRouter, possibly outside the European Union. Do not use it with confidential meetings or with other people's personal data."
+  ],
+  "steps": [
+    "Upload the meeting recording, as audio or video.",
+    "Choose the meeting language or let it be detected, the length, the sections and the format.",
+    "Accept the AI notice, wait for the transcription to finish and download the minutes."
+  ],
+  "faq": [
+    {
+      "q": "How many AI requests does it use?",
+      "a": "One if the transcript fits in the model's context; otherwise one per part and one more to join them. They are reserved before transcribing: if they exceed what your plan allows per task, the task stops without using any and asks for a shorter section with “From” and “To”. Changing the sections or the format, or adding the transcript later, uses no requests."
+    },
+    {
+      "q": "How long can the recording be?",
+      "a": "You need an account. The transcribed section can last up to 30 minutes with the free account and 4 hours with Pro. The free account has 3 AI requests a day and 5 per task, and 10 heavy tasks a day; Pro has 30 requests a day, 20 per task and 200 heavy tasks."
+    },
+    {
+      "q": "Are the minutes reliable?",
+      "a": "They are made with AI from an automatic transcript, so they may contain errors or omissions, especially with poor audio or several people talking at once. The document says so and names the model used. Review them before sending them."
+    },
+    {
+      "q": "What happens to my recording?",
+      "a": "The audio is transcribed on our server in the European Union and never leaves it; only the text goes to the AI provider. The files and the minutes are deleted after 24 hours."
+    }
+  ]
+}

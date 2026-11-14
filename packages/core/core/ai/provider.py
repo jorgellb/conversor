@@ -263,6 +263,10 @@ def _fake_value(schema: dict, seed: str, depth: int = 0, ctx: dict | None = None
     if name in ("enunciado", "anverso", "titulo") and words:
         k = int(tag, 16) % max(1, len(words))
         return f"{' '.join(words[k:k + 6]) or 'Texto'} ({tag})"
+    if name == "resumen" and words:  # resumir-reunion (F3-E): el acta empieza con lo que dice la transcripción
+        return f"Resumen de prueba (modelo falso): {' '.join(words[:30])}"
+    if name in ("responsable", "fecha"):
+        return "" if int(tag, 16) % 2 else ("Ana" if name == "responsable" else "2026-11-20")
     return f"Texto de prueba {tag}"
 
 

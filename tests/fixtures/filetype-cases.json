@@ -398,6 +398,24 @@
    "b64": "MQowMDowMDowMCwwMDAgLS0+IDAwOjAwOjAxLDAwMApIb2xhCg=="
   },
   {
+   "id": "vtt",
+   "declared": "vtt",
+   "expected": "vtt",
+   "b64": "V0VCVlRUCgowMDowMC4wMDAgLS0+IDAwOjAxLjAwMApIb2xhCg=="
+  },
+  {
+   "id": "ass",
+   "declared": "ass",
+   "expected": "ass",
+   "b64": "W1NjcmlwdCBJbmZvXQpTY3JpcHRUeXBlOiB2NC4wMCsKCltFdmVudHNdCg=="
+  },
+  {
+   "id": "ssa-es-ass",
+   "declared": "ssa",
+   "expected": "ass",
+   "b64": "W1NjcmlwdCBJbmZvXQpTY3JpcHRUeXBlOiB2NC4wMAoKW0V2ZW50c10K"
+  },
+  {
    "id": "texto-con-extension-rara",
    "declared": "exe",
    "expected": "txt",

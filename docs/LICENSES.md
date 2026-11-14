@@ -57,6 +57,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | PyTorch (solo CPU), transformers, accelerate | BSD-3-Clause y otras permisivas; Apache-2.0 | Modelos de Docling |
 | python-docx, openpyxl, python-pptx, lxml | MIT; MIT; MIT; BSD-3-Clause | DOCX, XLSX, PPTX y EPUB fluido |
 | openpyxl 3.1.5 (y su dependencia et-xmlfile) en el extra `ai`; python-docx 1.2.0 e img2pdf 0.6.3 en el extra `ocr` | MIT; MIT; MIT y LGPL-3.0 | XLSX de imagen-a-excel y ticket-a-excel en `workerai`; DOCX e imágenes a PDF de imagen-a-texto en `workerocr` (F3, lote C; las mismas versiones que en los otros extras) |
+| pysubs2 1.9.1 (Python puro, sin dependencias) en el extra `ai`; se adelanta de F6 (7.13, D-177) | MIT | Leer y escribir los SRT, WebVTT y ASS de traducir-subtitulos en `workerai` |
 | psycopg | LGPL-3.0 | Controlador de PostgreSQL |
 | LibreOffice | MPL-2.0 | Programa externo en `workeroffice`, `workerconvert` y dentro de Gotenberg |
 | Gotenberg | MIT | Servicio externo (`gotenberg` sin red y `gotenbergweb` para web-a-pdf) |

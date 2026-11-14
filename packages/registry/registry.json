@@ -25248,6 +25248,698 @@
         "title": "TicketOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "traducir-subtitulos",
+      "slug_en": "translate-subtitles",
+      "name_es": "Traducir subtítulos",
+      "name_en": "Translate subtitles",
+      "summary_es": "Traduce subtítulos SRT, VTT o ASS a otro idioma conservando los tiempos; también crea y traduce los de un audio o un vídeo.",
+      "summary_en": "Translate SRT, VTT or ASS subtitles into another language keeping their timings; it can also create and translate them from audio or video.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "ai",
+      "cost_class": "ai",
+      "task_class": "ai",
+      "inputs": [
+        "srt",
+        "vtt",
+        "ass",
+        "mp3",
+        "wav",
+        "ogg",
+        "opus",
+        "m4a",
+        "aac",
+        "flac",
+        "aiff",
+        "wma",
+        "amr",
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi"
+      ],
+      "outputs": [
+        "srt",
+        "vtt",
+        "ass"
+      ],
+      "phase": "F5",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "video-a-subtitulos",
+        "transcribir-audio",
+        "traducir-pdf"
+      ],
+      "canonical_of": null,
+      "ai": true,
+      "ai_option": null,
+      "options_schema": {
+        "description": "traducir-subtitulos (7.10): el Anexo A no fija opciones; las de D-174.",
+        "properties": {
+          "destino": {
+            "default": "es",
+            "enum": [
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Traducir al",
+            "type": "string",
+            "x-labels": {
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Translate into",
+              "es": "Traducir al"
+            }
+          },
+          "salida": {
+            "default": "mismo",
+            "enum": [
+              "mismo",
+              "srt",
+              "vtt"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "mismo": {
+                "en": "Same as the original (SRT for audio or video)",
+                "es": "El del original (SRT si subes audio o vídeo)"
+              },
+              "srt": {
+                "en": "SRT",
+                "es": "SRT"
+              },
+              "vtt": {
+                "en": "WebVTT (VTT)",
+                "es": "WebVTT (VTT)"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "bilingue": {
+            "default": false,
+            "title": "Bilingüe: el original y debajo la traducción",
+            "type": "boolean",
+            "x-title": {
+              "en": "Bilingual: the original with the translation below",
+              "es": "Bilingüe: el original y debajo la traducción"
+            }
+          },
+          "origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Idioma del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "Detect it",
+                "es": "Detectarlo"
+              },
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Original language",
+              "es": "Idioma del original"
+            }
+          },
+          "caracteres_por_linea": {
+            "default": 42,
+            "maximum": 60,
+            "minimum": 30,
+            "title": "Caracteres por línea",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Characters per line",
+              "es": "Caracteres por línea"
+            }
+          },
+          "glosario": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Términos que no se traducen (uno por línea)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Terms not to translate (one per line)",
+              "es": "Términos que no se traducen (uno por línea)"
+            },
+            "x-widget": "textarea"
+          },
+          "desde": {
+            "default": "0:00",
+            "maxLength": 20,
+            "title": "Desde (h:mm:ss)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "From (h:mm:ss)",
+              "es": "Desde (h:mm:ss)"
+            }
+          },
+          "hasta": {
+            "default": "",
+            "maxLength": 20,
+            "title": "Hasta (vacío: hasta el final)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "To (empty: until the end)",
+              "es": "Hasta (vacío: hasta el final)"
+            }
+          },
+          "precision": {
+            "default": "normal",
+            "enum": [
+              "normal",
+              "alta"
+            ],
+            "title": "Precisión de la transcripción (audio o vídeo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "alta": {
+                "en": "High, slower (medium model, if installed)",
+                "es": "Alta, más lenta (modelo medium, si está instalado)"
+              },
+              "normal": {
+                "en": "Normal (small model)",
+                "es": "Normal (modelo small)"
+              }
+            },
+            "x-title": {
+              "en": "Transcription accuracy (audio or video)",
+              "es": "Precisión de la transcripción (audio o vídeo)"
+            }
+          }
+        },
+        "title": "TraducirSubtitulosOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "resumir-reunion",
+      "slug_en": "summarize-meeting",
+      "name_es": "Resumir reunión",
+      "name_en": "Summarize meeting",
+      "summary_es": "Resume la grabación de una reunión con IA: resumen, temas, decisiones, tareas con responsable y preguntas abiertas.",
+      "summary_en": "Summarize a meeting recording with AI: summary, topics, decisions, action items with owners and open questions.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "ai",
+      "task_class": "heavy",
+      "inputs": [
+        "mp3",
+        "wav",
+        "ogg",
+        "opus",
+        "m4a",
+        "aac",
+        "flac",
+        "aiff",
+        "wma",
+        "amr",
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi"
+      ],
+      "outputs": [
+        "docx",
+        "txt",
+        "md"
+      ],
+      "phase": "F5",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "transcribir-audio",
+        "resumir-pdf",
+        "traducir-subtitulos"
+      ],
+      "canonical_of": null,
+      "ai": true,
+      "ai_option": null,
+      "options_schema": {
+        "description": "resumir-reunion (7.10): el Anexo A no fija opciones; las de D-175.",
+        "properties": {
+          "idioma": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "es",
+              "en",
+              "ca",
+              "eu",
+              "gl",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "nl",
+              "pl",
+              "ro",
+              "ru",
+              "uk",
+              "ar",
+              "zh",
+              "ja",
+              "ko",
+              "hi",
+              "tr"
+            ],
+            "title": "Idioma de la reunión",
+            "type": "string",
+            "x-labels": {
+              "ar": {
+                "en": "Arabic",
+                "es": "Árabe"
+              },
+              "auto": {
+                "en": "Detect the language",
+                "es": "Detectar el idioma"
+              },
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "hi": {
+                "en": "Hindi",
+                "es": "Hindi"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "ja": {
+                "en": "Japanese",
+                "es": "Japonés"
+              },
+              "ko": {
+                "en": "Korean",
+                "es": "Coreano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              },
+              "ru": {
+                "en": "Russian",
+                "es": "Ruso"
+              },
+              "tr": {
+                "en": "Turkish",
+                "es": "Turco"
+              },
+              "uk": {
+                "en": "Ukrainian",
+                "es": "Ucraniano"
+              },
+              "zh": {
+                "en": "Chinese",
+                "es": "Chino"
+              }
+            },
+            "x-title": {
+              "en": "Meeting language",
+              "es": "Idioma de la reunión"
+            }
+          },
+          "longitud": {
+            "default": "media",
+            "enum": [
+              "breve",
+              "media",
+              "detallada"
+            ],
+            "title": "Extensión del resumen",
+            "type": "string",
+            "x-labels": {
+              "breve": {
+                "en": "Short (a few lines)",
+                "es": "Breve (unas líneas)"
+              },
+              "detallada": {
+                "en": "Detailed (by topic)",
+                "es": "Detallada (por temas)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-title": {
+              "en": "Summary length",
+              "es": "Extensión del resumen"
+            }
+          },
+          "idioma_resumen": {
+            "default": "reunion",
+            "enum": [
+              "reunion",
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca"
+            ],
+            "title": "Idioma del resumen",
+            "type": "string",
+            "x-labels": {
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "reunion": {
+                "en": "The meeting's language",
+                "es": "El de la reunión"
+              }
+            },
+            "x-title": {
+              "en": "Summary language",
+              "es": "Idioma del resumen"
+            }
+          },
+          "temas": {
+            "default": true,
+            "title": "Temas tratados",
+            "type": "boolean",
+            "x-title": {
+              "en": "Topics discussed",
+              "es": "Temas tratados"
+            }
+          },
+          "decisiones": {
+            "default": true,
+            "title": "Decisiones",
+            "type": "boolean",
+            "x-title": {
+              "en": "Decisions",
+              "es": "Decisiones"
+            }
+          },
+          "tareas": {
+            "default": true,
+            "title": "Tareas, con responsable y fecha si se dicen",
+            "type": "boolean",
+            "x-title": {
+              "en": "Action items, with owner and date if mentioned",
+              "es": "Tareas, con responsable y fecha si se dicen"
+            }
+          },
+          "preguntas": {
+            "default": true,
+            "title": "Preguntas abiertas",
+            "type": "boolean",
+            "x-title": {
+              "en": "Open questions",
+              "es": "Preguntas abiertas"
+            }
+          },
+          "transcripcion": {
+            "default": false,
+            "title": "Añadir la transcripción completa al final",
+            "type": "boolean",
+            "x-title": {
+              "en": "Add the full transcript at the end",
+              "es": "Añadir la transcripción completa al final"
+            }
+          },
+          "formato": {
+            "default": "docx",
+            "enum": [
+              "docx",
+              "txt",
+              "md"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "docx": {
+                "en": "Word (DOCX)",
+                "es": "Word (DOCX)"
+              },
+              "md": {
+                "en": "Markdown",
+                "es": "Markdown"
+              },
+              "txt": {
+                "en": "Text (TXT)",
+                "es": "Texto (TXT)"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "desde": {
+            "default": "0:00",
+            "maxLength": 20,
+            "title": "Desde (h:mm:ss)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "From (h:mm:ss)",
+              "es": "Desde (h:mm:ss)"
+            }
+          },
+          "hasta": {
+            "default": "",
+            "maxLength": 20,
+            "title": "Hasta (vacío: hasta el final)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "To (empty: until the end)",
+              "es": "Hasta (vacío: hasta el final)"
+            }
+          },
+          "precision": {
+            "default": "normal",
+            "enum": [
+              "normal",
+              "alta"
+            ],
+            "title": "Precisión de la transcripción (audio o vídeo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "alta": {
+                "en": "High, slower (medium model, if installed)",
+                "es": "Alta, más lenta (modelo medium, si está instalado)"
+              },
+              "normal": {
+                "en": "Normal (small model)",
+                "es": "Normal (modelo small)"
+              }
+            },
+            "x-title": {
+              "en": "Transcription accuracy (audio or video)",
+              "es": "Precisión de la transcripción (audio o vídeo)"
+            }
+          }
+        },
+        "title": "ResumirReunionOptions",
+        "type": "object"
+      }
     }
   ]
 }

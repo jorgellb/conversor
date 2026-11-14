@@ -11,7 +11,7 @@ EBML = bytes.fromhex("1A45DFA3")
 
 # Formatos que comparten contenedor: se confía en la extensión declarada solo dentro de su familia.
 OLE2_FAMILY = {"doc", "xls", "ppt", "pps", "msg", "pub", "vsd"}
-TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "srt", "vtt", "eml", "fb2", "dxf"}
+TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "srt", "vtt", "ass", "eml", "fb2", "dxf"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr"}
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
@@ -40,9 +40,11 @@ MIME = {
     "cbr": "application/vnd.comicbook-rar", "fb2": "application/x-fictionbook+xml", "vsdx": "application/vnd.ms-visio.drawing",
     "psd": "image/vnd.adobe.photoshop", "psb": "image/vnd.adobe.photoshop", "cr2": "image/x-canon-cr2", "nef": "image/x-nikon-nef",
     "arw": "image/x-sony-arw", "dng": "image/x-adobe-dng",
+    # Subtítulos (F3-E): SRT, WebVTT y ASS (también SSA, su versión anterior).
+    "srt": "application/x-subrip", "vtt": "text/vtt", "ass": "text/x-ssa",
 }
 
-EXT_ALIASES = {"jpeg": "jpg", "tif": "tiff", "htm": "html", "markdown": "md", "oga": "ogg", "aif": "aiff"}
+EXT_ALIASES = {"jpeg": "jpg", "tif": "tiff", "htm": "html", "markdown": "md", "oga": "ogg", "aif": "aiff", "ssa": "ass"}
 
 
 @dataclass(frozen=True)

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Traducir subtítulos pasa a otro idioma los subtítulos de una película, una serie, un curso o un vídeo propio sin tocar sus tiempos: cada subtítulo traducido aparece y desaparece en el mismo instante que el original. Admite archivos SRT, WebVTT (VTT) y ASS o SSA, y traduce al español, inglés, francés, alemán, italiano, portugués, catalán, neerlandés, polaco, rumano, gallego o euskera.",
+    "Si no tienes los subtítulos, sube directamente el audio o el vídeo (MP3, WAV, OGG, M4A, MP4, MOV, MKV, WebM y otros): primero se transcribe en nuestro servidor con faster-whisper, sin IA externa, con el ancho de línea que elijas, y después se traduce. Esa transcripción cuenta como una tarea pesada y el resultado te dice qué idioma se ha detectado.",
+    "Cada subtítulo se envía al modelo como un elemento de una lista y se pide exactamente un elemento traducido por cada uno, para que la traducción no se desplace. Después las líneas se vuelven a partir al ancho elegido, entre 30 y 60 caracteres, en dos líneas equilibradas cuando caben. Se conservan la cursiva de una línea entera, la posición de los carteles y los estilos, comentarios y dibujos de un ASS; las notas musicales y los subtítulos sin letras se dejan como estaban. Con la opción bilingüe, cada subtítulo lleva el original y debajo la traducción.",
+    "Es una herramienta beta sujeta a la disponibilidad diaria de IA. Antes de la primera tarea aceptas un aviso: el texto de los subtítulos se envía a un proveedor externo a través de OpenRouter, que puede estar fuera de la Unión Europea. Revisa la traducción antes de publicarla."
+  ],
+  "steps": [
+    "Sube el archivo SRT, VTT o ASS, o el audio o el vídeo si aún no tienes subtítulos.",
+    "Elige el idioma de destino, el formato de salida y, si quieres, la versión bilingüe o los términos que no se traducen.",
+    "Acepta el aviso de IA y descarga los subtítulos traducidos, con el código del idioma en el nombre del archivo."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántas peticiones de IA gasta?",
+      "a": "Una por cada tanda de subtítulos que cabe en la respuesta del modelo: unos subtítulos cortos suelen necesitar una sola y una película entera, varias. Se reservan antes de empezar; si pasan de lo que tu plan permite por tarea, la tarea se detiene sin gastar ninguna y te pide un tramo más corto con «Desde» y «Hasta». Los subtítulos fuera del tramo quedan sin traducir, así que puedes subir el resultado y traducir el resto en otra tarea."
+    },
+    {
+      "q": "¿Qué límites tiene?",
+      "a": "Hace falta una cuenta. Con la gratuita, 3 peticiones de IA al día y 5 por tarea; con Pro, 30 al día y 20 por tarea. Si subes audio o vídeo, el tramo que se transcribe puede durar hasta 30 minutos con la cuenta gratuita y 4 horas con Pro. Repetir la misma traducción en otro formato o en bilingüe no gasta peticiones."
+    },
+    {
+      "q": "¿Se cambian los tiempos o el número de subtítulos?",
+      "a": "No. La herramienta solo cambia el texto: cada subtítulo conserva su inicio, su final y su orden, aunque la traducción sea más larga. Si no cabe en dos líneas del ancho elegido, usa las que hagan falta en lugar de cortar texto."
+    },
+    {
+      "q": "¿Mantiene la negrita o la cursiva de una palabra?",
+      "a": "Solo la de un subtítulo entero. Las etiquetas de estilo de dentro de una línea no se pueden llevar a otro idioma y se quitan; el resultado te avisa cuando pasa."
+    }
+  ]
+}

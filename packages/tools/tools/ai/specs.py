@@ -3,10 +3,11 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 
 from core.options import opt
 from core.registry import AiSpec, ToolSpec
+from tools.av.specs import AUDIO_INPUTS, LANGUAGES as AUDIO_LANGUAGES, PRECISION, VIDEO_INPUTS, Language as AudioLanguage, parse_time
 from tools.ocr.specs import IMAGE_INPUTS, _check_codes
 
 LANGUAGES = {
@@ -49,7 +50,7 @@ class ResumirOptions(DocumentoIAOptions):
 def ai_tool(slug_es, slug_en, name_es, name_en, options, impl, summary_es, summary_en, ai: AiSpec, **kw) -> ToolSpec:
     return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category="ai", where="server",
                     inputs=kw.pop("inputs", ("pdf",)), outputs=kw.pop("outputs", ("docx", "txt", "md")), options=options,
-                    worker_group=kw.pop("worker_group", "ai"), cost_class="ai", impl=impl, launch=True, phase="F3",
+                    worker_group=kw.pop("worker_group", "ai"), cost_class="ai", impl=impl, launch=True, phase=kw.pop("phase", "F3"),
                     max_files=kw.pop("max_files", 1),
                     time_limit=kw.pop("time_limit", 1800), summary_es=summary_es, summary_en=summary_en, ai=ai, **kw)
 
@@ -169,6 +170,86 @@ class TicketOptions(BaseModel):
         "auto", "Idioma de los tickets (para el OCR)", "Receipt language (for OCR)", advanced=True, labels=DOC_LANGUAGES)
 
 
+def _desde():
+    return opt("0:00", "Desde (h:mm:ss)", "From (h:mm:ss)", advanced=True, max_length=20)
+
+
+def _hasta():
+    return opt("", "Hasta (vacío: hasta el final)", "To (empty: until the end)", advanced=True, max_length=20)
+
+
+def _precision():
+    return opt("normal", "Precisión de la transcripción (audio o vídeo)", "Transcription accuracy (audio or video)",
+               labels=PRECISION, advanced=True)
+
+
+class TramoOptions(BaseModel):
+    """Comprobación del tramo de la grabación o de los subtítulos (F3-E, D-174 y D-175). Cada herramienta declara al
+    final sus campos `desde`, `hasta` y `precision`, para que salgan los últimos en el formulario."""
+
+    @field_validator("desde", "hasta", check_fields=False)
+    @classmethod
+    def _time(cls, v: str) -> str:
+        parse_time(v)
+        return v
+
+    @model_validator(mode="after")
+    def _span(self):
+        start, end = parse_time(self.desde) or 0.0, parse_time(self.hasta)
+        if end is not None and end <= start:
+            raise ValueError("«Hasta» tiene que ir después de «Desde»")
+        return self
+
+
+SUBTITLE_INPUTS = ("srt", "vtt", "ass")
+
+
+class TraducirSubtitulosOptions(TramoOptions):
+    """traducir-subtitulos (7.10): el Anexo A no fija opciones; las de D-174."""
+
+    destino: Target = opt("es", "Traducir al", "Translate into", labels=TARGETS)
+    salida: Literal["mismo", "srt", "vtt"] = opt(
+        "mismo", "Formato", "Format",
+        labels={"mismo": ("El del original (SRT si subes audio o vídeo)", "Same as the original (SRT for audio or video)"),
+                "srt": ("SRT", "SRT"), "vtt": ("WebVTT (VTT)", "WebVTT (VTT)")})
+    bilingue: bool = opt(False, "Bilingüe: el original y debajo la traducción", "Bilingual: the original with the translation below")
+    origen: Literal["auto", "es", "en", "fr", "de", "it", "pt", "ca", "nl", "pl", "ro", "gl", "eu"] = opt(
+        "auto", "Idioma del original", "Original language", advanced=True, labels={"auto": ("Detectarlo", "Detect it"), **TARGETS})
+    caracteres_por_linea: int = opt(42, "Caracteres por línea", "Characters per line", ge=30, le=60, advanced=True)
+    glosario: str = opt("", "Términos que no se traducen (uno por línea)", "Terms not to translate (one per line)",
+                        advanced=True, widget="textarea", max_length=1000)
+    desde: str = _desde()
+    hasta: str = _hasta()
+    precision: Literal["normal", "alta"] = _precision()
+
+
+MEETING_LANGUAGES = {"reunion": ("El de la reunión", "The meeting's language"),
+                     **{k: v for k, v in LANGUAGES.items() if k != "documento"}}
+
+
+class ResumirReunionOptions(TramoOptions):
+    """resumir-reunion (7.10): el Anexo A no fija opciones; las de D-175."""
+
+    idioma: AudioLanguage = opt("auto", "Idioma de la reunión", "Meeting language", labels=AUDIO_LANGUAGES)
+    longitud: Literal["breve", "media", "detallada"] = opt(
+        "media", "Extensión del resumen", "Summary length",
+        labels={"breve": ("Breve (unas líneas)", "Short (a few lines)"), "media": ("Media", "Medium"),
+                "detallada": ("Detallada (por temas)", "Detailed (by topic)")})
+    idioma_resumen: Literal["reunion", "es", "en", "fr", "de", "it", "pt", "ca"] = opt(
+        "reunion", "Idioma del resumen", "Summary language", labels=MEETING_LANGUAGES)
+    temas: bool = opt(True, "Temas tratados", "Topics discussed")
+    decisiones: bool = opt(True, "Decisiones", "Decisions")
+    tareas: bool = opt(True, "Tareas, con responsable y fecha si se dicen", "Action items, with owner and date if mentioned")
+    preguntas: bool = opt(True, "Preguntas abiertas", "Open questions")
+    transcripcion: bool = opt(False, "Añadir la transcripción completa al final", "Add the full transcript at the end")
+    formato: Literal["docx", "txt", "md"] = opt(
+        "docx", "Formato", "Format", labels={"docx": ("Word (DOCX)", "Word (DOCX)"), "txt": ("Texto (TXT)", "Text (TXT)"),
+                                              "md": ("Markdown", "Markdown")})
+    desde: str = _desde()
+    hasta: str = _hasta()
+    precision: Literal["normal", "alta"] = _precision()
+
+
 SPECS: list[ToolSpec] = [
     ai_tool("resumir-pdf", "summarize-pdf", "Resumir PDF", "Summarize PDF", ResumirOptions, "tools.ai.resumir:run",
             "Resume un PDF con IA: puntos clave o párrafos, en el idioma que elijas.",
@@ -224,4 +305,24 @@ SPECS: list[ToolSpec] = [
             AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=1500, per_file=True),
             inputs=IMAGE_INPUTS, outputs=("xlsx", "csv"), worker_group="ocr", max_files=20,
             related=("imagen-a-excel", "imagen-a-texto", "pdf-a-excel")),
+    # 6.3: 1 petición por bloque de cues que quepa en la salida máxima del modelo (un elemento JSON por cue). Los
+    # subtítulos van directos a `ai`; el audio y el vídeo pasan antes por `av.heavy` (transcripción, cuenta como tarea
+    # pesada) y vuelven. La API reserva 1; el worker reserva el resto antes de gastar (D-174).
+    ai_tool("traducir-subtitulos", "translate-subtitles", "Traducir subtítulos", "Translate subtitles", TraducirSubtitulosOptions,
+            "tools.ai.subtitulos:run",
+            "Traduce subtítulos SRT, VTT o ASS a otro idioma conservando los tiempos; también crea y traduce los de un audio o un vídeo.",
+            "Translate SRT, VTT or ASS subtitles into another language keeping their timings; it can also create and translate them from audio or video.",
+            AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=2000),
+            inputs=(*SUBTITLE_INPUTS, *AUDIO_INPUTS, *VIDEO_INPUTS), outputs=("srt", "vtt", "ass"), phase="F5", time_limit=4 * 3600,
+            related=("video-a-subtitulos", "transcribir-audio", "traducir-pdf")),
+    # 6.3: 1 petición si la transcripción cabe en el contexto; si no, 1 por bloque y 1 final (map-reduce). Empieza en
+    # `av.heavy` (faster-whisper) y sigue en `ai`; siempre es tarea pesada por la transcripción (D-175).
+    ai_tool("resumir-reunion", "summarize-meeting", "Resumir reunión", "Summarize meeting", ResumirReunionOptions,
+            "tools.ai.reunion:run",
+            "Resume la grabación de una reunión con IA: resumen, temas, decisiones, tareas con responsable y preguntas abiertas.",
+            "Summarize a meeting recording with AI: summary, topics, decisions, action items with owners and open questions.",
+            AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=1500),
+            inputs=(*AUDIO_INPUTS, *VIDEO_INPUTS), outputs=("docx", "txt", "md"), worker_group="av", queue_kind="heavy",
+            cost=lambda o: "heavy", phase="F5", time_limit=4 * 3600,
+            related=("transcribir-audio", "resumir-pdf", "traducir-subtitulos")),
 ]

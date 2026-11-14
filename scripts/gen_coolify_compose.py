@@ -51,7 +51,8 @@ LIMITS = {
     "INVOICING_ES_ENABLED": "${INVOICING_ES_ENABLED:-false}",
 }
 MAIL = {"SMTP_URL": "${SMTP_URL:?URL SMTP}", "MAIL_FROM": "${MAIL_FROM:?Remitente}"}
-# IA (6.3 y 14): los límites los leen la API (reserva al encolar), beat (calendario) y workerai (peticiones).
+# IA (6.3 y 14): los límites los leen la API (reserva al encolar), beat (calendario), workerai (peticiones) y
+# workeravheavy, que reserva las de traducir-subtitulos y resumir-reunion antes de transcribir (F3-E, D-174).
 AI = {
     "LLM_PREFERRED_MODELS": "${LLM_PREFERRED_MODELS:-}",
     "LLM_FALLBACK_ROUTER": "${LLM_FALLBACK_ROUTER:-openrouter/free}",
@@ -323,7 +324,7 @@ def build() -> dict:
         # Transcripciones (cola pesada, 5.4): un trabajo a la vez con 2 hilos; el modelo va dentro de la imagen.
         "workeravheavy": worker("worker-av", "worker-av", "av-heavy", "av.heavy", 1, 2, "3g", 2,
                                 {"WHISPER_MODEL": "${WHISPER_MODEL:-small}", "WHISPER_DEVICE": "${WHISPER_DEVICE:-cpu}",
-                                 "WHISPER_COMPUTE_TYPE": "${WHISPER_COMPUTE_TYPE:-int8}", **TTS}),
+                                 "WHISPER_COMPUTE_TYPE": "${WHISPER_COMPUTE_TYPE:-int8}", **TTS, **AI}),
     }
     return {
         "services": services,

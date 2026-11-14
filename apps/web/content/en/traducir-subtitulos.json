@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Translate subtitles puts the subtitles of a film, a series, a course or your own video into another language without touching their timings: each translated subtitle appears and disappears at exactly the same moment as the original. It accepts SRT, WebVTT (VTT) and ASS or SSA files, and translates into Spanish, English, French, German, Italian, Portuguese, Catalan, Dutch, Polish, Romanian, Galician or Basque.",
+    "If you do not have the subtitles yet, upload the audio or the video itself (MP3, WAV, OGG, M4A, MP4, MOV, MKV, WebM and more): it is first transcribed on our server with faster-whisper, with no external AI, at the line width you choose, and then translated. That transcription counts as a heavy task, and the result tells you which language was detected.",
+    "Each subtitle is sent to the model as one item of a list, and exactly one translated item is requested for each, so the translation never drifts out of sync. The lines are then rewrapped to the chosen width, between 30 and 60 characters, in two balanced lines when they fit. Whole-line italics, the position of on-screen signs and the styles, comments and drawings of an ASS file are kept; music notes and subtitles without letters stay as they were. With the bilingual option, each subtitle shows the original with the translation below.",
+    "This is a beta tool, subject to the daily AI allowance. Before the first task you accept a notice: the subtitle text is sent to an external provider through OpenRouter, possibly outside the European Union. Review the translation before publishing it."
+  ],
+  "steps": [
+    "Upload the SRT, VTT or ASS file, or the audio or video if you do not have subtitles yet.",
+    "Choose the target language, the output format and, if you like, the bilingual version or the terms not to translate.",
+    "Accept the AI notice and download the translated subtitles, with the language code in the file name."
+  ],
+  "faq": [
+    {
+      "q": "How many AI requests does it use?",
+      "a": "One for each batch of subtitles that fits in the model's response: short subtitles usually need just one, and a whole film needs several. They are reserved before starting; if they exceed what your plan allows per task, the task stops without using any and asks for a shorter section with “From” and “To”. Subtitles outside the section stay untranslated, so you can upload the result and translate the rest in another task."
+    },
+    {
+      "q": "What are the limits?",
+      "a": "You need an account. With the free one, 3 AI requests a day and 5 per task; with Pro, 30 a day and 20 per task. If you upload audio or video, the transcribed section can last up to 30 minutes with the free account and 4 hours with Pro. Repeating the same translation in another format or as bilingual uses no requests."
+    },
+    {
+      "q": "Do the timings or the number of subtitles change?",
+      "a": "No. The tool only changes the text: every subtitle keeps its start, its end and its order, even if the translation is longer. If it does not fit in two lines of the chosen width, it uses as many as needed instead of cutting text."
+    },
+    {
+      "q": "Does it keep bold or italics on a single word?",
+      "a": "Only on a whole subtitle. Style tags inside a line cannot be carried into another language and are removed; the result tells you when that happens."
+    }
+  ]
+}

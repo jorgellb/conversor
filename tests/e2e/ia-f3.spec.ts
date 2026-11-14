@@ -186,3 +186,50 @@ test("lote C de F3: imagen a texto sin IA, imagen a Excel con la IA opcional y t
   await page.getByText("Opciones adicionales", { exact: true }).click();
   await expect(page.getByLabel("Idioma de los tickets (para el OCR)")).toHaveValue("auto");
 });
+
+test("lote E de F3: traducir subtítulos y resumir reunión, con sus opciones y los formatos de audio y vídeo", async ({ page }) => {
+  // traducir-subtitulos: subtítulos o, si no los hay, audio o vídeo (se transcriben antes en av.heavy).
+  await page.goto("/es/traducir-subtitulos");
+  await expect(page.getByRole("heading", { name: "Traducir subtítulos" })).toBeVisible();
+  await expect(page.locator("[data-ai-panel]")).toContainText("Las herramientas de IA necesitan una cuenta gratuita.");
+  await expect(page.locator('input[type="file"]').first()).toHaveAttribute(
+    "accept", ".srt,.vtt,.ass,.mp3,.wav,.ogg,.opus,.m4a,.aac,.flac,.aiff,.wma,.amr,.mp4,.mov,.mkv,.webm,.avi");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);  // contenido sin revisar (D-15)
+  await expect(page.getByLabel("Traducir al")).toHaveValue("es");
+  await expect(page.getByLabel("Traducir al").locator("option")).toHaveCount(12);
+  await expect(page.getByLabel("Formato")).toHaveValue("mismo");
+  await expect(page.getByLabel("Bilingüe: el original y debajo la traducción")).not.toBeChecked();
+  await page.getByText("Opciones adicionales", { exact: true }).click();
+  await expect(page.getByLabel("Idioma del original")).toHaveValue("auto");
+  await expect(page.getByLabel("Caracteres por línea")).toHaveValue("42");
+  await expect(page.getByLabel("Términos que no se traducen (uno por línea)")).toHaveValue("");
+  await expect(page.getByLabel("Desde (h:mm:ss)")).toHaveValue("0:00");
+  await expect(page.getByLabel("Hasta (vacío: hasta el final)")).toHaveValue("");
+  await expect(page.getByLabel("Precisión de la transcripción (audio o vídeo)")).toHaveValue("normal");
+
+  // resumir-reunion: grabaciones de audio o vídeo (sin subtítulos), acta en Word por defecto.
+  await page.goto("/es/resumir-reunion");
+  await expect(page.getByRole("heading", { name: "Resumir reunión" })).toBeVisible();
+  await expect(page.locator("[data-ai-panel]")).toContainText("Las herramientas de IA necesitan una cuenta gratuita.");
+  await expect(page.locator('input[type="file"]').first()).toHaveAttribute(
+    "accept", ".mp3,.wav,.ogg,.opus,.m4a,.aac,.flac,.aiff,.wma,.amr,.mp4,.mov,.mkv,.webm,.avi");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(page.getByLabel("Idioma de la reunión")).toHaveValue("auto");
+  await expect(page.getByLabel("Extensión del resumen")).toHaveValue("media");
+  await expect(page.getByLabel("Idioma del resumen")).toHaveValue("reunion");
+  for (const label of ["Temas tratados", "Decisiones", "Tareas, con responsable y fecha si se dicen", "Preguntas abiertas"]) {
+    await expect(page.getByLabel(label, { exact: true })).toBeChecked();
+  }
+  await expect(page.getByLabel("Añadir la transcripción completa al final")).not.toBeChecked();
+  await expect(page.getByLabel("Formato")).toHaveValue("docx");
+
+  // En inglés, con sus slugs.
+  await page.goto("/en/summarize-meeting");
+  await expect(page.getByRole("heading", { name: "Summarize meeting" })).toBeVisible();
+  await expect(page.getByLabel("Summary language")).toHaveValue("reunion");
+  await page.goto("/en/translate-subtitles");
+  await expect(page.getByRole("heading", { name: "Translate subtitles" })).toBeVisible();
+  await page.getByText("More options", { exact: true }).click();
+  await expect(page.getByLabel("Characters per line")).toHaveValue("42");
+  await expect(page.getByLabel("From (h:mm:ss)")).toHaveValue("0:00");
+});

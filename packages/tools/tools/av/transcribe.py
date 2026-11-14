@@ -129,11 +129,15 @@ def load_model(settings: Settings, name: str, threads: int):
 
 # ——— Audio ———
 
-def decode_pcm(ctx: ToolContext, inp: InputFile, demuxer: str, duration: float, dst: Path) -> np.ndarray:
-    """La primera pista de audio en PCM de 16 bits, mono y 16 kHz, en el disco (se lee por tramos con memmap)."""
-    run_engine([ffmpeg(), *BASE, "-f", demuxer, "-i", str(inp.path), "-map", "0:a:0", "-vn", "-sn", "-dn", "-ac", "1",
-                "-ar", str(RATE), "-c:a", "pcm_s16le", "-f", "s16le", "-threads", str(max(1, ctx.threads)), "-y", str(dst)],
-               cwd=ctx.work, timeout=int(max(120, duration + 120)), mem_mb=1024)
+def decode_pcm(ctx: ToolContext, inp: InputFile, demuxer: str, duration: float, dst: Path, start: float = 0.0,
+               length: float | None = None) -> np.ndarray:
+    """La primera pista de audio en PCM de 16 bits, mono y 16 kHz, en el disco (se lee por tramos con memmap). Con
+    `start` y `length` (segundos), solo ese tramo (traducir-subtitulos y resumir-reunion, F3-E)."""
+    span = ["-ss", f"{start:.3f}"] if start > 0 else []
+    span_end = ["-t", f"{length:.3f}"] if length is not None else []
+    run_engine([ffmpeg(), *BASE, *span, "-f", demuxer, "-i", str(inp.path), *span_end, "-map", "0:a:0", "-vn", "-sn", "-dn",
+                "-ac", "1", "-ar", str(RATE), "-c:a", "pcm_s16le", "-f", "s16le", "-threads", str(max(1, ctx.threads)), "-y",
+                str(dst)], cwd=ctx.work, timeout=int(max(120, (length if length is not None else duration) + 120)), mem_mb=1024)
     if not dst.exists() or dst.stat().st_size < 2:
         raise ToolError(ErrorCode.CORRUPT_FILE, "Sin audio que transcribir")
     return np.memmap(dst, dtype=np.int16, mode="r")

@@ -31,6 +31,12 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       `/opt/models/kokoro` (SHA-256 de `infra/kokoro/fetch-model.sh`) y sin misaki, phonemizer ni kokoro
       (`scripts/check_images.sh`); `workeravheavy` sin reinicios por memoria con faster-whisper y Kokoro cargados a la vez
       (3 GB); la API rechaza un documento de más de 20.000 caracteres con la cuenta gratuita sin contar la tarea (D-169).
+- [ ] Lote E de F3 con la pila completa: traducir-subtitulos con un SRT real de una película (unos 1.500 subtítulos:
+      varias peticiones, tiempos idénticos al original, el resultado se abre en VLC como `<nombre>.es.srt`) y con un vídeo
+      MP4 (pasa de `ai` a `workeravheavy` y vuelve); resumir-reunion con una grabación real de 30 a 60 minutos con varias
+      voces (acta coherente con decisiones y tareas, en DOCX y en Markdown) y otra de más de 4 h con Pro (falla antes de
+      transcribir y pide un tramo); `workeravheavy` lee los límites `AI_*` y `LLM_*` del Compose de Coolify y no tiene
+      `OPENROUTER_API_KEY` (D-176); las peticiones de cada tarea aparecen en `ai_requests` y las reservas sin usar vuelven.
 - [ ] **Escucha de la voz española de Kokoro (6.4)**: generar con `TTS_VOICE_ES=ef_dora` en un entorno de prueba (o con
       `python scripts/fixtures/lectura_pdf.py --voz es "<texto>" salida.ogg`) unos párrafos reales con números, fechas,
       siglas y palabras en inglés, con ef_dora y em_alex; si se aceptan, poner `TTS_VOICE_ES=ef_dora` en Coolify (API y

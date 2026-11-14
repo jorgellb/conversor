@@ -147,6 +147,10 @@ def generate(out: Path) -> dict[str, Path]:
     from lectura_pdf import generate as reading_pdfs
 
     files.update(reading_pdfs(out))
+    # F3, lote E: subtítulos SRT, VTT y ASS para traducir-subtitulos.
+    from subtitulos import generate as subtitle_samples
+
+    files.update(subtitle_samples(out))
     (out / "falso.pdf").write_bytes(b"esto no es un PDF, es texto")
     files["falso.pdf"] = out / "falso.pdf"
     (out / "hls.m3u8").write_text("#EXTM3U\n#EXTINF:1,\nfile:///etc/passwd\n", encoding="utf-8")
