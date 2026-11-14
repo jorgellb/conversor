@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Convert image changes your images from one format to another without installing anything: JPG, PNG, WEBP, AVIF, GIF, BMP, TIFF and ICO, in any combination, plus SVG as an input format. Use it to open an AVIF photo on your phone, upload a WEBP image saved from a website to a form that only takes JPG, or prepare a PNG with transparency for a design.",
+    "The real type of each file is detected from its content, not its extension, so a wrongly renamed image still converts. The options change with the output format: quality from 1 to 100 % for JPG, WEBP and AVIF; lossless WEBP if you want to keep every pixel; a background colour for JPG and BMP, which have no transparency; and, for ICO, the icon sizes and whether a non-square image is fitted on a transparent background or cropped to the centre.",
+    "In the additional options you choose the AVIF compression speed (slow gives smaller files), whether to copy the original photo's EXIF into a JPG, PNG or WEBP result and, for multi-page TIFFs, whether to convert every page, one image per page, or only the first. GIFs come out with a 256-colour palette and TIFFs are compressed losslessly. If an animated GIF, WEBP or PNG comes in, its first frame is converted and you are told so.",
+    "Everything happens in your browser, using WebAssembly for AVIF, WEBP and SVG: the images are not uploaded to any server. You can convert many at once and download them one by one or in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Which format should I choose?",
+      "a": "JPG for photos you will share anywhere; PNG for screenshots, logos or images with transparency; WEBP or AVIF for websites, since they are much lighter at the same quality. AVIF compresses more, but some older programs still cannot open it."
+    },
+    {
+      "q": "Is the photo's data kept?",
+      "a": "Not by default: the result has no metadata. If you turn on «Keep metadata (EXIF)», it is copied into the JPG, PNG or WEBP, including the GPS location if the photo had one. To remove only the location, use Remove photo metadata."
+    },
+    {
+      "q": "Do I lose quality when converting?",
+      "a": "PNG, TIFF, BMP and lossless WEBP keep the pixels as they are. JPG, AVIF and regular WEBP are lossy, depending on the quality you choose; above 80 % the difference is rarely visible to the naked eye."
+    }
+  ]
+}

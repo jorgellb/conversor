@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SVG a PNG convierte gráficos vectoriales SVG, como logotipos, iconos, ilustraciones o esquemas exportados desde Inkscape, Illustrator o Figma, en imágenes PNG que cualquier programa, red social o presentación puede mostrar. El fondo transparente del SVG se mantiene, así que el logotipo se puede colocar sobre cualquier color.",
+    "Como un SVG no tiene un tamaño fijo en píxeles, tú decides el del PNG: el tamaño original que indica el propio archivo, el doble, el triple o cuatro veces más, para pantallas de alta densidad, o un ancho exacto entre 1 y 16384 píxeles. La altura se calcula sola para mantener la proporción, y la imagen se vuelve a dibujar a esa resolución desde los vectores, así que sale nítida y sin bordes pixelados. El límite es de 50 megapíxeles por imagen.",
+    "El dibujo se hace en tu navegador con resvg en WebAssembly y el SVG no se sube a ningún servidor. Por seguridad no se carga nada de internet: las imágenes incrustadas en el propio SVG sí se pintan, pero las enlazadas a otra dirección se omiten y te lo indicamos. Los textos se escriben con las fuentes Noto incluidas en la web (sin serifa, con serifa y monoespaciada); si tu SVG pide otra fuente, se usa una de esas tres en su lugar.",
+    "Puedes convertir varios SVG a la vez y descargarlos por separado o en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "El texto de mi SVG sale con otra letra, ¿por qué?",
+      "a": "Porque la herramienta solo dispone de las fuentes Noto incluidas: no usa las instaladas en tu equipo ni las que el SVG enlaza de internet. Para conservar la tipografía exacta, convierte los textos en trazados antes de exportar el SVG desde tu programa de diseño."
+    },
+    {
+      "q": "¿Qué tamaño elijo para la web?",
+      "a": "Para que se vea nítido en móviles y pantallas Retina, usa 2× o 3× sobre el tamaño al que se va a mostrar. Si el PNG es para imprimir, pon un ancho personalizado alto, por ejemplo 3000 píxeles."
+    },
+    {
+      "q": "¿Y si necesito fondo blanco o un archivo más ligero?",
+      "a": "SVG a JPG añade el color de fondo que elijas y comprime más. Si lo que quieres es un documento que conserve los vectores, usa SVG a PDF."
+    }
+  ]
+}

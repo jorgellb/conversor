@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Image to Base64 turns an image into text so you can put it straight into the code of a web page, a stylesheet, an email template or a JSON file, without hosting it separately. It is the usual approach for small icons, email signature logos, test images or assets that must live inside a single HTML file.",
+    "It accepts JPG, PNG, WEBP, GIF, SVG, AVIF, BMP and ICO. The image is not recompressed or changed: its original bytes are encoded, so quality and transparency are exactly the same. The MIME type (image/png, image/svg+xml…) is detected from the file's content, not its extension, so the browser shows it correctly even if the name is wrong.",
+    "Choose the text format: a full data URI (data:image/…;base64,…), ready for a src attribute or url(); just the Base64, if your program adds the rest; a CSS rule with background-image; or an HTML img tag with an empty alt attribute, which you should fill in with a description. The result appears on screen with a “Copy” button and you can also download it as a TXT file.",
+    "The conversion runs in your browser, without uploading the image. You can convert several at once and get all the TXT files in a ZIP. If together they go over 200,000 characters, the ones that do not fit on screen are offered only as a file, with a notice, so the page does not freeze."
+  ],
+  "steps": [
+    "Choose or drop your images.",
+    "Pick the format: data URI, Base64 only, CSS or HTML.",
+    "Press “Start”, then copy the text with the “Copy” button or download the TXT."
+  ],
+  "faq": [
+    {
+      "q": "Why is the text bigger than the image?",
+      "a": "Base64 represents every 3 bytes with 4 characters, so the result is roughly a third larger than the original file. That is why it pays off with small images; for large photos it is better to link the normal file."
+    },
+    {
+      "q": "Can I make it smaller before converting?",
+      "a": "Yes, and it is a good idea. Run the image through Compress image or Resize image, or turn it into WEBP with Convert image, then generate the Base64 of the result here."
+    },
+    {
+      "q": "Does it work in emails?",
+      "a": "It depends on the email program: quite a few block or do not show data URI images, especially webmail and corporate clients. For bulk emails, linking an image hosted on a website is usually more reliable."
+    }
+  ]
+}

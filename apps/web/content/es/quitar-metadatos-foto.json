@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Quitar metadatos de fotos borra la información oculta que el móvil o la cámara guardan dentro de cada imagen: las coordenadas GPS del lugar donde se hizo, la fecha y la hora, la marca y el modelo del aparato, el programa con que se editó o comentarios añadidos. Antes de publicar una foto en un anuncio, un foro o una red social, o de enviarla a alguien que no conoces, conviene quitarlos para no revelar, por ejemplo, dónde vives.",
+    "Funciona con JPG, PNG y WEBP y no vuelve a comprimir la imagen: se eliminan los bloques de metadatos y los píxeles quedan exactamente igual, así que la foto no pierde calidad. El perfil de color se conserva para que los colores no cambien. Con «Todos los metadatos» se quitan EXIF, GPS, XMP, IPTC y comentarios, y en los JPG también los datos que algunos móviles añaden tras la imagen, como el vídeo de las fotos en movimiento, los mapas de profundidad o las miniaturas.",
+    "Si solo te preocupa la ubicación, elige «Solo la ubicación GPS»: se borran las coordenadas, también las que estén repetidas en XMP, y se mantienen la fecha, la cámara y el resto, útiles para ordenar tus fotos. Con la opción completa puedes además conservar la orientación, activada por defecto, para que la foto no aparezca tumbada al quitar el EXIF.",
+    "Todo ocurre en tu navegador: las fotos no se suben a ningún servidor. Junto a cada resultado te decimos qué se ha quitado o si no tenía nada que quitar, y puedes procesar muchas fotos de una vez y descargarlas en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Las redes sociales no quitan ya estos datos?",
+      "a": "Muchas lo hacen al publicar, pero no todas, y casi nunca cuando envías la foto como archivo por correo, mensajería o una nube compartida. Quitarlos tú antes es la forma de estar seguro."
+    },
+    {
+      "q": "¿Puedo ver los metadatos antes de borrarlos?",
+      "a": "La herramienta no muestra su contenido, pero al terminar, con la opción completa, te indica qué tipo de información tenía cada foto: EXIF, ubicación GPS, XMP, IPTC, comentarios u otros bloques. Con «Solo la ubicación GPS» te dice si la tenía."
+    },
+    {
+      "q": "¿Funciona con fotos HEIC del iPhone o con documentos PDF?",
+      "a": "HEIC no está admitido; conviértela antes a JPG en el propio iPhone o con HEIC a JPG, si está disponible. Para los PDF usa Eliminar metadatos de un PDF, que quita el título, el autor, el programa y las fechas del documento."
+    }
+  ]
+}

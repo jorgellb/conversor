@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG to ICO creates a Windows icon (.ico) from a PNG image. An ICO is not a single picture but a small container holding the same image at several sizes: the system uses the 16-pixel one for the title bar, 32 or 48 for the desktop and 256 for the large views in File Explorer. Use it for the icon of a program, a shortcut or a folder, and also as a website's favicon.ico.",
+    "Choose which sizes to include from 16, 20, 24, 32, 40, 48, 64, 96, 128 and 256 pixels; by default you get 16, 32, 48 and 256, the ones Windows asks for. Every size is drawn from your original PNG, not from an already reduced size, and keeps its transparency. Up to 128 pixels they are stored as 32-bit bitmaps, and the 256 one goes inside the ICO compressed as PNG, as icons have done since Windows Vista.",
+    "If your image is not square, decide what to do: fit it whole and centred on a transparent background, or crop it to the centre so it fills the icon. Either way a notice tells you it has been adjusted.",
+    "The conversion runs in your browser, without uploading the PNG anywhere. You can convert several PNGs at once: you get one ICO for each and a ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "What size should my PNG be?",
+      "a": "Ideally square and at least 256 × 256 pixels, so the largest size does not look blurry. Simple drawings with good contrast read better at 16 pixels than detailed photos."
+    },
+    {
+      "q": "Can I use this as my website's favicon?",
+      "a": "Yes, favicon.ico is an ordinary ICO. If you also need the Apple and Android icons, the manifest and the HTML code, use Favicon generator, which prepares everything in one go."
+    },
+    {
+      "q": "Can I start from a JPG or an SVG?",
+      "a": "This tool only accepts PNG. Convert image also creates ICO files from JPG, WEBP, SVG and other formats, with the same size and fit options."
+    }
+  ]
+}

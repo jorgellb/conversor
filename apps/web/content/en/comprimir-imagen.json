@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Compress image makes your JPG, PNG and WEBP photos smaller so they fit in an email, upload faster to a website or do not fill up your phone. The compression happens in your browser: the photos are not sent to any server, so you can use it with personal or work images without worrying.",
+    "The main setting is quality, from 1 to 100 %, with 75 by default, a point where most photos get much lighter with no visible difference. You can keep the original format or switch to JPG or WEBP, which is usually where the biggest savings are: WEBP is considerably lighter than JPG for the same look and keeps transparency. If you turn an image with transparency into JPG, those areas become white.",
+    "In the additional options you can set a maximum width in pixels: wider photos are scaled down keeping their aspect ratio, which saves a lot on camera pictures of 4000 pixels or more. By default the metadata is removed too, EXIF and GPS location included; if you need it, turn the option off and the EXIF is kept whenever the result is a JPG. Either way the photo is saved the right way up.",
+    "When it finishes you see the size before and after. If you keep the format and set no maximum width, you never get a file bigger than yours: when an image was already optimised, you get the original back with a notice. You can compress many photos at once and download them in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Which quality should I use?",
+      "a": "Between 70 and 80 % for photos you will view on screen or send through messaging apps. For printing or later editing, 85 to 90 % is better. Below 50, blocks and halos around edges start to show."
+    },
+    {
+      "q": "My PNG hardly got smaller, why?",
+      "a": "PNG is a lossless format and the quality setting does not affect it: the browser can only save it the same way again. To really shrink it, choose WEBP as the output format or set a maximum width."
+    },
+    {
+      "q": "How is this different from resizing?",
+      "a": "Compressing keeps the dimensions, unless you set a maximum width, and cuts weight through quality. Resize image changes the width and height in pixels with more control: a percentage, a fixed width or height, or a bounding box."
+    }
+  ]
+}

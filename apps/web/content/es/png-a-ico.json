@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PNG a ICO crea un icono de Windows (.ico) a partir de una imagen PNG. Un ICO no es una imagen suelta, sino un pequeño contenedor con la misma imagen en varios tamaños: el sistema elige la de 16 píxeles para la barra de título, la de 32 o 48 para el escritorio y la de 256 para las vistas grandes del explorador. Sirve para el icono de un programa, de un acceso directo o de una carpeta, y también como favicon.ico de una web.",
+    "Elige qué tamaños incluir entre 16, 20, 24, 32, 40, 48, 64, 96, 128 y 256 píxeles; por defecto van 16, 32, 48 y 256, los que pide Windows. Cada tamaño se calcula desde tu PNG original, no a partir de otro tamaño ya reducido, y conserva la transparencia. Hasta 128 píxeles se guardan como mapas de bits de 32 bits y el de 256 va comprimido en PNG dentro del ICO, como hacen los iconos de Windows Vista en adelante.",
+    "Si tu imagen no es cuadrada, decide qué hacer: encajarla entera y centrada con fondo transparente, o recortarla al centro para que ocupe todo el icono. En los dos casos verás un aviso para que sepas que se ha ajustado.",
+    "La conversión se hace en tu navegador, sin subir el PNG a ningún sitio. Puedes convertir varios PNG de una vez: obtendrás un ICO por cada uno y un ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué tamaño debe tener mi PNG?",
+      "a": "Lo ideal es que sea cuadrado y de al menos 256 × 256 píxeles, para que el tamaño mayor no salga borroso. Los dibujos sencillos y con buen contraste se ven mejor en 16 píxeles que las fotos con mucho detalle."
+    },
+    {
+      "q": "¿Esto me sirve como favicon de mi web?",
+      "a": "Sí, el favicon.ico es un ICO normal. Si además necesitas los iconos de Apple y Android, el manifiesto y el código HTML, usa Crear favicon, que lo prepara todo de una vez."
+    },
+    {
+      "q": "¿Puedo partir de un JPG o de un SVG?",
+      "a": "Esta herramienta solo admite PNG. Convertir imagen también crea ICO desde JPG, WEBP, SVG y otros formatos, con las mismas opciones de tamaños y de ajuste."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Favicon generator prepares, from a single image, every icon your website needs: the one shown in the browser tab, the one an iPhone or iPad uses when someone saves the page to the home screen, and the ones for Android and installable web apps. Upload your logo as PNG, JPG, WEBP or SVG; ideally it is square and at least 512 pixels, or an SVG, which is drawn at 1024 pixels so it stays sharp.",
+    "You get, separately and together in a ZIP, favicon.ico (16, 32 and 48 pixels), a 180-pixel apple-touch-icon.png, icon-192.png and icon-512.png with a transparent background, icon-mask.png for Android, which keeps your logo inside the safe zone so it is not cut off when the system crops it into a circle, and manifest.webmanifest with the site name, the icons and the theme colour. If you start from an SVG, it is also included as icon.svg for the browsers that support it.",
+    "The ZIP also holds codigo-html.txt with the tags to paste into the head of your pages, and the same code is shown on screen with a button to copy it. The paths point to the root of your domain, so you only need to upload the files to the main folder of the site.",
+    "The options are the site name, which goes into the manifest (left empty, the file name is used), the theme colour and the background of the Apple and Android icons, because iOS does not show transparency. In the additional options you set the Apple icon margin, from 0 to 30 %, and whether a non-square image is fitted on a transparent background or cropped to the centre. Everything is generated in your browser, without uploading the logo."
+  ],
+  "steps": [
+    "Choose or drop your logo (PNG, JPG, WEBP or SVG).",
+    "Type the site name and pick the theme colour and the icon background.",
+    "Press “Start”, download the ZIP, upload its contents to the root of your site and paste the code we show you into the head."
+  ],
+  "faq": [
+    {
+      "q": "Why are there so many files?",
+      "a": "Each system looks for its own: desktop browsers use the ICO or the SVG, iOS the apple-touch-icon, and Android and web apps the PNGs listed in the manifest. With all the files in the ZIP your icon looks right everywhere."
+    },
+    {
+      "q": "My logo is wide, what should I do?",
+      "a": "If it is a logo with text, try just the symbol or the initial: letters cannot be read at 16 pixels. If it is still rectangular, choose fit to see it whole or crop to fill the icon; we will tell you it was not square."
+    },
+    {
+      "q": "What if I only want the ICO file?",
+      "a": "Use PNG to ICO, which also lets you choose the sizes stored inside it, from 16 up to 256 pixels."
+    }
+  ]
+}

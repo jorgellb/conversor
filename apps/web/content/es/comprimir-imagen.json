@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Comprimir imagen reduce lo que pesan tus fotos JPG, PNG y WEBP para que quepan en un correo, se suban antes a una web o no llenen la memoria del móvil. La compresión se hace en tu navegador: las fotos no se envían a ningún servidor, así que puedes usarla con imágenes personales o de trabajo sin preocuparte.",
+    "El ajuste principal es la calidad, del 1 al 100 %, con 75 por defecto, un punto en el que la mayoría de las fotos pesan mucho menos sin diferencias visibles. Puedes mantener el formato original o pasar a JPG o WEBP, que suele ser la forma de ganar más: WEBP pesa bastante menos que JPG con el mismo aspecto y conserva la transparencia. Si conviertes a JPG una imagen con transparencia, esas zonas pasan a blanco.",
+    "En las opciones adicionales puedes poner un ancho máximo en píxeles: las fotos más anchas se reducen manteniendo la proporción, lo que ahorra mucho con las imágenes de cámara de 4000 píxeles o más. Por defecto también se quitan los metadatos, EXIF y ubicación GPS incluidos; si los necesitas, desactiva la opción y el EXIF se conservará cuando el resultado sea JPG. En cualquier caso la foto se guarda con la orientación correcta.",
+    "Al terminar verás el tamaño antes y después. Si mantienes el formato y no fijas un ancho máximo, nunca te damos un archivo más grande que el tuyo: cuando una imagen ya estaba optimizada, te devolvemos la original con un aviso. Puedes comprimir muchas fotos a la vez y descargarlas en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué calidad me conviene?",
+      "a": "Entre 70 y 80 % para fotos que vas a ver en pantalla o enviar por mensajería. Para imprimir o retocar después, mejor de 85 a 90 %. Por debajo de 50 empiezan a notarse bloques y halos en los bordes."
+    },
+    {
+      "q": "Mi PNG apenas ha bajado, ¿por qué?",
+      "a": "PNG es un formato sin pérdida y la calidad no le afecta: el navegador solo puede volver a guardarlo igual. Para reducirlo de verdad elige WEBP como formato de salida o pon un ancho máximo."
+    },
+    {
+      "q": "¿En qué se diferencia de redimensionar?",
+      "a": "Comprimir conserva las dimensiones, salvo que fijes un ancho máximo, y recorta peso con la calidad. Redimensionar imagen cambia los píxeles de ancho y alto con más control: porcentaje, ancho o alto fijos, o una caja máxima."
+    }
+  ]
+}

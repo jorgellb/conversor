@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Remove photo metadata deletes the hidden information your phone or camera stores inside each image: the GPS coordinates of where it was taken, the date and time, the make and model of the device, the program it was edited with or added comments. Before posting a photo in a listing, a forum or a social network, or sending it to someone you do not know, it is wise to remove them so you do not reveal, for example, where you live.",
+    "It works with JPG, PNG and WEBP and does not recompress the image: the metadata blocks are removed and the pixels stay exactly the same, so the photo loses no quality. The colour profile is kept so the colours do not change. With «All metadata» it removes EXIF, GPS, XMP, IPTC and comments, and in JPGs also the data some phones append after the image, such as the video of motion photos, depth maps or thumbnails.",
+    "If you only care about the location, choose «Only the GPS location»: the coordinates are erased, including any copy of them in XMP, and the date, the camera and the rest are kept, which helps you sort your photos. With the full option you can also keep the orientation, on by default, so the photo is not shown on its side once the EXIF is gone.",
+    "Everything happens in your browser: the photos are not uploaded to any server. Next to each result we tell you what was removed or whether there was nothing to remove, and you can process many photos at once and download them in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Don't social networks remove this data already?",
+      "a": "Many do when you post, but not all, and hardly ever when you send the photo as a file by email, messaging or a shared cloud folder. Removing it yourself first is the way to be sure."
+    },
+    {
+      "q": "Can I see the metadata before deleting it?",
+      "a": "The tool does not display its contents, but when it finishes, with the full option, it tells you what kind of information each photo had: EXIF, GPS location, XMP, IPTC, comments or other blocks. With «Only the GPS location» it tells you whether it had one."
+    },
+    {
+      "q": "Does it work with iPhone HEIC photos or with PDF documents?",
+      "a": "HEIC is not supported; convert the photo to JPG on the iPhone itself or with HEIC to JPG, if it is available. For PDFs use Remove PDF metadata, which removes the document's title, author, program and dates."
+    }
+  ]
+}

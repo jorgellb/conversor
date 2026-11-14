@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Redimensionar imagen cambia el ancho y el alto en píxeles de tus fotos JPG, PNG y WEBP. Sirve para dejar una foto de cámara en un tamaño razonable antes de enviarla, ajustar una imagen a lo que pide un formulario o una tienda en línea, preparar miniaturas para una web o ampliar un icono pequeño. Se hace en tu navegador, sin subir las imágenes a ningún servidor.",
+    "Hay cuatro modos. Porcentaje escala la imagen entera, del 50 % que viene por defecto hasta un 1000 %. Ancho fijo deja la imagen con los píxeles de ancho que indiques, 1920 de partida, y calcula el alto para que no se deforme; Alto fijo hace lo mismo con la altura, 1080 de partida. Caja máxima encaja la foto dentro de un ancho y un alto sin deformarla y sin ampliarla nunca: si ya era más pequeña, se queda como estaba. Ningún lado puede pasar de 20000 píxeles.",
+    "En las opciones adicionales eliges el formato del resultado (el mismo que el original, JPG, PNG o WEBP) y la calidad de JPG y WEBP, con 90 % por defecto para que la reducción no añada defectos visibles. Si pasas a JPG una imagen con transparencia, el fondo se rellena de blanco. La foto se guarda con la orientación correcta, aunque el móvil la hubiera guardado girada, y sin los metadatos de la cámara.",
+    "Cada archivo lleva en el nombre sus nuevas medidas, por ejemplo foto-1920x1280.jpg, y puedes procesar muchas imágenes de una vez y descargarlas juntas en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se deforma la imagen?",
+      "a": "No. Todos los modos mantienen la proporción original: solo eliges una medida, o una caja en la que encajarla, y la otra se calcula sola. Si necesitas un recorte exacto a otra proporción, recórtala antes en tu editor."
+    },
+    {
+      "q": "¿Puedo ampliar una foto pequeña?",
+      "a": "Sí, con Porcentaje, Ancho fijo o Alto fijo. Ten en cuenta que ampliar no inventa detalle: la imagen se verá más grande, pero también más suave. Caja máxima, en cambio, nunca amplía."
+    },
+    {
+      "q": "Quiero que pese menos, ¿redimensiono o comprimo?",
+      "a": "Si la foto es mucho más grande de lo que se va a mostrar, redimensionar es lo que más ahorra. Si ya tiene el tamaño adecuado, usa Comprimir imagen para bajar la calidad sin tocar las medidas."
+    }
+  ]
+}

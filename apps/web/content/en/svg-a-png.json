@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SVG to PNG turns SVG vector graphics, such as logos, icons, illustrations or diagrams exported from Inkscape, Illustrator or Figma, into PNG images that any program, social network or presentation can show. The SVG's transparent background is kept, so the logo can sit on any colour.",
+    "Since an SVG has no fixed size in pixels, you decide the PNG's: the original size stated in the file itself, twice, three or four times that for high-density screens, or an exact width between 1 and 16384 pixels. The height is worked out to keep the aspect ratio, and the image is redrawn from the vectors at that resolution, so it comes out sharp with no pixelated edges. The limit is 50 megapixels per image.",
+    "The drawing happens in your browser with resvg in WebAssembly, and the SVG is not uploaded to any server. For safety nothing is loaded from the internet: images embedded in the SVG itself are drawn, but those linked to another address are left out and you are told so. Text is set in the Noto fonts bundled with the site (sans-serif, serif and monospace); if your SVG asks for another font, one of those three is used instead.",
+    "You can convert several SVGs at once and download them separately or in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Why does the text in my SVG show up in a different font?",
+      "a": "Because the tool only has the bundled Noto fonts: it does not use the fonts installed on your computer or those the SVG links from the internet. To keep the exact typeface, convert the text to outlines before exporting the SVG from your design program."
+    },
+    {
+      "q": "Which size should I pick for the web?",
+      "a": "To look sharp on phones and Retina screens, use 2× or 3× the size it will be displayed at. If the PNG is for printing, set a large custom width, for example 3000 pixels."
+    },
+    {
+      "q": "What if I need a white background or a lighter file?",
+      "a": "SVG to JPG adds the background colour you choose and compresses more. If you want a document that keeps the vectors, use SVG to PDF."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Crear favicon prepara a partir de una sola imagen todos los iconos que necesita tu web: el que aparece en la pestaña del navegador, el que usa un iPhone o un iPad cuando alguien guarda la página en la pantalla de inicio y los de Android y las aplicaciones web instalables. Sube tu logotipo en PNG, JPG, WEBP o SVG; lo mejor es que sea cuadrado y de al menos 512 píxeles, o un SVG, que se dibuja a 1024 píxeles para que no pierda nitidez.",
+    "Recibes, sueltos y juntos en un ZIP, favicon.ico (16, 32 y 48 píxeles), apple-touch-icon.png de 180 píxeles, icon-192.png e icon-512.png con fondo transparente, icon-mask.png para Android, que deja tu logotipo dentro de la zona segura para que no se corte al recortarlo en círculo, y manifest.webmanifest con el nombre del sitio, los iconos y el color del tema. Si partes de un SVG, también se incluye como icon.svg para los navegadores que lo admiten.",
+    "El ZIP lleva además codigo-html.txt con las etiquetas que debes pegar en el head de tus páginas, y ese mismo código aparece en pantalla con un botón para copiarlo. Las rutas apuntan a la raíz de tu dominio, así que basta con subir los archivos a la carpeta principal de la web.",
+    "Las opciones son el nombre del sitio, que va al manifiesto (si lo dejas vacío se usa el nombre del archivo), el color del tema y el fondo de los iconos de Apple y Android, porque iOS no muestra transparencias. En las opciones adicionales ajustas el margen del icono de Apple, del 0 al 30 %, y si una imagen que no es cuadrada se encaja con fondo transparente o se recorta al centro. Todo se genera en tu navegador, sin subir el logotipo."
+  ],
+  "steps": [
+    "Elige o arrastra tu logotipo (PNG, JPG, WEBP o SVG).",
+    "Escribe el nombre del sitio y elige el color del tema y el fondo de los iconos.",
+    "Pulsa «Empezar», descarga el ZIP, sube su contenido a la raíz de tu web y pega en el head el código que te mostramos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué hay tantos archivos?",
+      "a": "Cada sistema busca el suyo: los navegadores de escritorio usan el ICO o el SVG, iOS el apple-touch-icon y Android y las aplicaciones web los PNG que indica el manifiesto. Con todos los archivos del ZIP tu icono se ve bien en todos."
+    },
+    {
+      "q": "Mi logotipo es alargado, ¿qué hago?",
+      "a": "Si es un logotipo con texto, prueba con solo el símbolo o la inicial: a 16 píxeles las letras no se leen. Si aun así es rectangular, elige encajar para verlo entero o recortar para que llene el icono; te avisaremos de que no era cuadrado."
+    },
+    {
+      "q": "¿Y si solo quiero el archivo ICO?",
+      "a": "Usa PNG a ICO, que además te deja elegir los tamaños que lleva dentro, desde 16 hasta 256 píxeles."
+    }
+  ]
+}

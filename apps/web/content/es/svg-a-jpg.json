@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SVG a JPG convierte gráficos vectoriales SVG en fotos JPG, el formato que aceptan todos los formularios, tiendas en línea, programas de correo y redes sociales, incluso los que rechazan el SVG o no muestran la transparencia del PNG. Es útil para enviar un logotipo a una imprenta, subir una ilustración a un catálogo o pegar un esquema en un documento.",
+    "JPG no admite transparencia, así que eliges el color de fondo que ocupa las zonas vacías del dibujo: blanco por defecto, o el color corporativo, negro o cualquier otro que escribas en hexadecimal. La calidad va del 1 al 100 %, con 90 por defecto; si bajas a 70 u 80, el archivo pesa bastante menos y en dibujos con colores lisos apenas se nota.",
+    "El tamaño lo decides tú porque un SVG no tiene píxeles: el original del archivo, dos, tres o cuatro veces mayor, o un ancho exacto de 1 a 16384 píxeles con la altura calculada para mantener la proporción, siempre que no pase de 50 megapíxeles. Cada JPG se dibuja de nuevo desde los vectores a esa resolución, de modo que las líneas y los textos salen limpios.",
+    "La conversión se hace en tu navegador con resvg en WebAssembly, sin subir nada. No se descarga ningún recurso externo: las imágenes enlazadas a otras direcciones se omiten con un aviso, y los textos usan las fuentes Noto de la web en lugar de las de tu equipo. Puedes convertir varios SVG de una vez y bajarlos en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué sale un fondo blanco donde era transparente?",
+      "a": "Porque el formato JPG no puede guardar transparencia y algo tiene que ocupar ese hueco. Cambia el color en «Fondo» o, si necesitas conservar la transparencia, usa SVG a PNG."
+    },
+    {
+      "q": "Los bordes de mi logotipo se ven sucios, ¿qué hago?",
+      "a": "JPG comprime con pérdida y en bordes muy marcados puede dejar pequeñas manchas. Sube la calidad a 95 o 100 %, o elige PNG si el logotipo tiene pocos colores, porque ahí no pierde nada."
+    },
+    {
+      "q": "¿Puedo convertirlo en un PDF?",
+      "a": "Sí: SVG a PDF conserva los vectores, de modo que el resultado se puede ampliar o imprimir a cualquier tamaño sin perder nitidez."
+    }
+  ]
+}

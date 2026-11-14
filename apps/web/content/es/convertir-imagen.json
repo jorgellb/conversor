@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Convertir imagen pasa tus imágenes de un formato a otro sin instalar nada: JPG, PNG, WEBP, AVIF, GIF, BMP, TIFF e ICO, en cualquier combinación, y además SVG como formato de entrada. Sirve para abrir en el móvil una foto AVIF, subir a un formulario que solo acepta JPG una imagen WEBP descargada de una web o preparar un PNG con transparencia para un diseño.",
+    "El tipo real de cada archivo se detecta por su contenido, no por la extensión, así que una imagen mal renombrada se convierte igual. Las opciones cambian según el formato de salida: calidad del 1 al 100 % para JPG, WEBP y AVIF; WEBP sin pérdida si quieres conservar cada píxel; color de fondo para JPG y BMP, que no admiten transparencia; y, para ICO, los tamaños del icono y si una imagen no cuadrada se encaja con fondo transparente o se recorta al centro.",
+    "En las opciones adicionales eliges la velocidad de compresión de AVIF (la lenta da archivos más pequeños), si copias el EXIF de la foto original al resultado en JPG, PNG o WEBP y, para los TIFF de varias páginas, si conviertes todas, una imagen por página, o solo la primera. Los GIF salen con una paleta de 256 colores y los TIFF, comprimidos sin pérdida. Si una imagen animada llega como GIF, WEBP o PNG animado, se convierte su primer fotograma y te lo indicamos.",
+    "Todo ocurre en tu navegador, con WebAssembly para AVIF, WEBP y SVG: las imágenes no se suben a ningún servidor. Puedes convertir muchas a la vez y descargarlas una a una o en un ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué formato elijo?",
+      "a": "JPG para fotos que vas a compartir en cualquier sitio; PNG para capturas, logotipos o imágenes con transparencia; WEBP o AVIF para webs, porque pesan bastante menos con la misma calidad. AVIF comprime más, pero algunos programas antiguos aún no lo abren."
+    },
+    {
+      "q": "¿Se conservan los datos de la foto?",
+      "a": "Por defecto no: el resultado sale sin metadatos. Si activas «Conservar metadatos (EXIF)», se copian al JPG, PNG o WEBP, incluida la ubicación GPS si la foto la tenía. Para quitar solo la ubicación, usa Quitar metadatos de fotos."
+    },
+    {
+      "q": "¿Pierdo calidad al convertir?",
+      "a": "PNG, TIFF, BMP y WEBP sin pérdida guardan los píxeles tal cual. JPG, AVIF y WEBP normal comprimen con pérdida según la calidad que elijas; por encima del 80 % la diferencia rara vez se nota a simple vista."
+    }
+  ]
+}

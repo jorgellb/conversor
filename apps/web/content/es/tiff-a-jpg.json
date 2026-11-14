@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TIFF a JPG convierte imágenes TIFF, el formato que suelen generar los escáneres, los programas de maquetación y muchas cámaras profesionales, en fotos JPG que ocupan mucho menos y se abren en cualquier móvil, navegador o red social. Es la forma rápida de mandar por correo un documento escaneado o de subir a una web una imagen que te han pasado en TIFF.",
+    "Los TIFF de varias páginas, como los que salen de un escáner con alimentador o de un fax, se convierten enteros: cada página pasa a ser un JPG numerado (nombre-p1.jpg, nombre-p2.jpg…) y puedes descargarlas por separado o todas juntas en un ZIP. Si solo te interesa la primera, elige «Solo la primera» y verás un aviso con el número de páginas que tenía. Las miniaturas y versiones reducidas que algunos programas guardan dentro del archivo se descartan, y se respeta la orientación indicada en el TIFF para que la imagen no salga girada.",
+    "Todo se hace en tu navegador: el archivo no se sube a ningún servidor. La calidad del JPG va del 1 al 100 %, con 90 por defecto, un buen equilibrio entre nitidez y peso. Como JPG no admite transparencia, las zonas transparentes se rellenan con el color de fondo que elijas, blanco si no cambias nada.",
+    "Puedes convertir varios TIFF de una vez. Cada página puede tener hasta 50 megapíxeles; por encima, el navegador se quedaría sin memoria, así que la herramienta te avisa en lugar de intentarlo."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierde calidad la imagen?",
+      "a": "JPG comprime con pérdida, así que algo de detalle se va, aunque con el 90 % por defecto cuesta notarlo. Si necesitas una copia exacta, pasa el TIFF a PNG con Convertir imagen, que no pierde nada."
+    },
+    {
+      "q": "¿Puedo juntar todas las páginas en un solo archivo?",
+      "a": "En JPG no, porque cada JPG es una sola imagen. Para tener todas las páginas juntas usa TIFF a PDF, que coloca cada página del TIFF en una página del documento."
+    },
+    {
+      "q": "¿Y si quiero otro formato de salida?",
+      "a": "Convertir imagen pasa los TIFF a PNG, WEBP, AVIF, GIF, BMP o ICO, con la misma opción de convertir todas las páginas o solo la primera."
+    }
+  ]
+}

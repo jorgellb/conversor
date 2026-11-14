@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TIFF to JPG turns TIFF images, the format that scanners, layout software and many professional cameras tend to produce, into JPG photos that are much smaller and open on any phone, browser or social network. It is the quick way to email a scanned document or upload to a website an image someone sent you as a TIFF.",
+    "Multi-page TIFFs, like the ones a scanner with a document feeder or a fax produces, are converted in full: each page becomes a numbered JPG (name-p1.jpg, name-p2.jpg…) and you can download them one by one or all together in a ZIP. If you only need the first one, choose «Only the first» and a notice tells you how many pages the file had. The thumbnails and reduced versions some programs store inside the file are skipped, and the orientation recorded in the TIFF is applied so the picture is not shown rotated.",
+    "Everything happens in your browser: the file is not uploaded to any server. JPG quality goes from 1 to 100 %, with 90 by default, a good balance between sharpness and size. Since JPG has no transparency, transparent areas are filled with the background colour you pick, white unless you change it.",
+    "You can convert several TIFFs at once. Each page can be up to 50 megapixels; beyond that the browser would run out of memory, so the tool tells you instead of trying."
+  ],
+  "faq": [
+    {
+      "q": "Does the image lose quality?",
+      "a": "JPG is a lossy format, so some detail goes, although at the default 90 % it is hard to notice. If you need an exact copy, turn the TIFF into PNG with Convert image, which loses nothing."
+    },
+    {
+      "q": "Can I put all the pages in a single file?",
+      "a": "Not as JPG, because each JPG holds one image. To keep every page together use TIFF to PDF, which places each page of the TIFF on a page of the document."
+    },
+    {
+      "q": "What if I want another output format?",
+      "a": "Convert image turns TIFFs into PNG, WEBP, AVIF, GIF, BMP or ICO, with the same choice of converting every page or only the first."
+    }
+  ]
+}
