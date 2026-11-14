@@ -416,6 +416,42 @@
    "b64": "W1NjcmlwdCBJbmZvXQpTY3JpcHRUeXBlOiB2NC4wMAoKW0V2ZW50c10K"
   },
   {
+   "id": "srt-utf16le",
+   "declared": "srt",
+   "expected": "srt",
+   "b64": "//4xAA0ACgAwADAAOgAwADAAOgAwADEALAAwADAAMAAgAC0ALQA+ACAAMAAwADoAMAAwADoAMAAyACwAMAAwADAADQAKAEMAYQBuAGMAaQDzAG4ADQAKAA=="
+  },
+  {
+   "id": "srt-utf16be",
+   "declared": "srt",
+   "expected": "srt",
+   "b64": "/v8AMQAKADAAMAA6ADAAMAA6ADAAMQAsADAAMAAwACAALQAtAD4AIAAwADAAOgAwADAAOgAwADIALAAwADAAMAAKAEEA8QBvAAo="
+  },
+  {
+   "id": "vtt-utf32le",
+   "declared": "vtt",
+   "expected": "vtt",
+   "b64": "//4AAFcAAABFAAAAQgAAAFYAAABUAAAAVAAAAAoAAAAKAAAAMAAAADAAAAA6AAAAMAAAADEAAAAuAAAAMAAAADAAAAAwAAAAIAAAAC0AAAAtAAAAPgAAACAAAAAwAAAAMAAAADoAAAAwAAAAMgAAAC4AAAAwAAAAMAAAADAAAAAKAAAASAAAAG8AAABsAAAAYQAAAAoAAAA="
+  },
+  {
+   "id": "ass-utf16-chino",
+   "declared": "ass",
+   "expected": "ass",
+   "b64": "//5bAEUAdgBlAG4AdABzAF0ACgBEAGkAYQBsAG8AZwB1AGUAOgAgADAALAAwADoAMAAwADoAMAAxAC4AMAAwACwAMAA6ADAAMAA6ADAAMgAuADAAMAAsAEQAZQBmAGEAdQBsAHQALAAsADAALAAwACwAMAAsACwAYE99WQoA"
+  },
+  {
+   "id": "txt-utf16-no-admitido",
+   "declared": "txt",
+   "expected": null,
+   "b64": "//5IAG8AbABhACwAIABlAHMAdABvACAAZQBzACAAdABlAHgAdABvAC4ACgA="
+  },
+  {
+   "id": "mp3-capa1-ff-fe",
+   "declared": "mp3",
+   "expected": "mp3",
+   "b64": "//6QAAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHg=="
+  },
+  {
    "id": "texto-con-extension-rara",
    "declared": "exe",
    "expected": "txt",

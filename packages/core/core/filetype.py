@@ -17,6 +17,11 @@ ZIP_ALIASES = {"cbz", "cbr"}
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
 RAW_TIFF = {"cr2", "nef", "arw", "dng"}
 IWORK = {"pages", "key", "numbers"}
+# Texto en UTF-16 o UTF-32 con BOM: solo para las herramientas que lo leen (los subtítulos, D-179). Va antes de las
+# reglas de MP3 y AAC, porque el BOM FF FE parece una palabra de sincronía MPEG.
+WIDE_TEXT = {"srt", "vtt", "ass"}
+WIDE_BOMS = ((b"\xff\xfe\x00\x00", "utf-32-le"), (b"\x00\x00\xfe\xff", "utf-32-be"), (b"\xff\xfe", "utf-16-le"),
+             (b"\xfe\xff", "utf-16-be"))
 MOBI = {"mobi", "azw3", "azw"}
 
 MIME = {
@@ -166,12 +171,35 @@ def _looks_text(head: bytes) -> bool:
         return printable / max(1, len(head)) > 0.95
 
 
+def _wide_text(head: bytes) -> bool:
+    """UTF-16 o UTF-32 con BOM: sin controles (salvo tabulador y saltos de línea) y con al menos un 30 % de caracteres
+    ASCII (los tiempos y los números de unos subtítulos). Unos bytes al azar leídos así casi nunca dan ASCII."""
+    for bom, codec in WIDE_BOMS:
+        if head.startswith(bom):
+            unit = 4 if codec.startswith("utf-32") else 2
+            order = "little" if codec.endswith("le") else "big"
+            body = head[len(bom):]
+            units = [int.from_bytes(body[i:i + unit], order) for i in range(0, len(body) - unit + 1, unit)]
+            if not units:
+                return False
+            ascii_count = 0
+            for u in units:
+                if (u < 0x20 and u not in (9, 10, 13)) or 0x7F <= u < 0xA0 or (unit == 4 and (u > 0x10FFFF or 0xD800 <= u < 0xE000)):
+                    return False
+                if u < 0x7F:
+                    ascii_count += 1
+            return ascii_count / len(units) >= 0.3
+    return False
+
+
 def detect(path: Path, declared_ext: str = "") -> Detected | None:
     with open(path, "rb") as f:
         head = f.read(8192)
     declared = normalize_ext(declared_ext)
     if not head:
         return None
+    if _wide_text(head):
+        return Detected(declared, "wide-text") if declared in WIDE_TEXT else None
     if b"%PDF-" in head[:1024]:
         return Detected("pdf", "pdf")
     if head.startswith(b"\xff\xd8\xff"):

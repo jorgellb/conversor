@@ -118,6 +118,51 @@ def test_items_keep_markup_dialogue_and_skip_what_is_not_text(subs_dir):
     assert [i.index for i in inside] == [2, 4] and outside == 3
 
 
+def test_review_markup_encodings_and_limits(monkeypatch):
+    """Revisión de F3-E (D-179)."""
+    # UTF-32 con BOM en los dos órdenes.
+    assert st.decode("Año".encode("utf-32")) == "Año"
+    assert st.decode(b"\x00\x00\xfe\xff" + "Año".encode("utf-32-be")) == "Año"
+    # La cursiva que se cierra dentro de la línea no pasa a toda la traducción; la posición sí se queda.
+    srt = st.parse_text("1\n00:00:01,000 --> 00:00:02,000\n<i>Titanic</i> es una película.\n", "srt")
+    items, _ = st.items_of(srt)
+    assert items[0].prefix == "" and items[0].raw_prefix == "{\\i1}" and items[0].inner_tags
+    st.apply(srt, items, {items[0].source: "Titanic is a film."}, 42, False)
+    assert "<i>" not in srt.to_string("srt")
+    ass = st.parse_text("[Script Info]\nScriptType: v4.00+\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, "
+                        "MarginR, MarginV, Effect, Text\nDialogue: 0,0:00:01.00,0:00:02.00,Default,,0,0,0,,"
+                        "{\\an8\\i1}Hola {\\b1}mundo{\\b0}{\\i0}\nDialogue: 0,0:00:03.00,0:00:04.00,Default,,0,0,0,,"
+                        "{\\pos(10,20)\\i1}Uno {\\r}dos\n", "ass")
+    items, _ = st.items_of(ass)
+    assert (items[0].prefix, items[0].suffix) == ("{\\an8\\i1}", "{\\i0}")  # solo cambia la negrita: la cursiva sigue
+    assert items[1].prefix == "{\\pos(10,20)}"  # un \r dentro de la línea anula todo el estilo del principio
+    # La versión bilingüe deja la línea original tal cual, con sus etiquetas.
+    st.apply(ass, items, {i.source: "Hello world" for i in items}, 42, True)
+    assert ass.events[0].text == "{\\an8\\i1}Hola {\\b1}mundo{\\b0}{\\i0}\\N{\\r}{\\an8\\i1}Hello world{\\i0}"
+    assert ass.events[1].text == "{\\pos(10,20)\\i1}Uno {\\r}dos\\N{\\r}{\\pos(10,20)}Hello world"
+    srt = st.parse_text("1\n00:00:01,000 --> 00:00:02,000\n<i>Titanic</i> es una película.\n", "srt")
+    items, _ = st.items_of(srt)
+    st.apply(srt, items, {items[0].source: "Titanic is a film."}, 42, True)
+    assert "<i>Titanic</i> es una película.\nTitanic is a film.\n" in srt.to_string("srt")
+    # Las etiquetas se recorren en tiempo lineal, también con miles de llaves sin cerrar o vacías.
+    # (como libass, un bloque acaba en la primera «}»: aquí todo es etiqueta, y una «{» sin cerrar es texto).
+    nasty = "{" * 200_000 + "a" + "{}" * 100_000
+    assert st.split_markup(nasty) == (nasty, "", "") and st.strip_tags("{}" * 100_000 + "x") == "x"
+    assert st.split_markup("{" * 200_000 + "a") == ("", "{" * 200_000 + "a", "")
+    assert st.split_markup("x" + "}" * 200_000) == ("", "x" + "}" * 200_000, "")
+    assert st.split_markup("{\\an8}Hola {mundo") == ("{\\an8}", "Hola {mundo", "")
+    assert st.tag_names("{nota\\an8\\t(0,500,\\fs20)\\fscx120}") == [("an", "\\an8"), ("t", "\\t(0,500,\\fs20)"), ("fscx", "\\fscx120")]
+    # Un subtítulo con más texto del razonable no se manda al modelo.
+    monkeypatch.setattr(st, "MAX_CUE_CHARS", 10)
+    with pytest.raises(ToolError) as exc:
+        st.items_of(st.parse_text("1\n00:00:01,000 --> 00:00:02,000\nUna línea demasiado larga\n", "srt"))
+    assert exc.value.code == ErrorCode.LIMIT_EXCEEDED and "subs_cue" in str(exc.value.detail)
+    # WebVTT: los ajustes de posición y las voces se avisan.
+    assert st.vtt_extras("WEBVTT\n\n00:01.000 --> 00:02.000 align:start line:0\nHola\n")
+    assert st.vtt_extras("WEBVTT\n\n00:01.000 --> 00:02.000\n<v Ana>Hola\n")
+    assert not st.vtt_extras("WEBVTT\n\n00:01.000 --> 00:02.000\n<i>Hola</i>\n")
+
+
 def test_wrap_balances_two_lines_and_never_cuts_text():
     assert st.wrap("Hola", 42) == ["Hola"]
     two = st.wrap("Hoy vamos a hablar del presupuesto y de la nueva página web", 42)
@@ -144,7 +189,7 @@ def test_translation_keeps_every_time_and_format(subs_dir):
     items, _ = st.items_of(ass)
     st.apply(ass, items, {i.source: "Board room" for i in items}, 42, True)
     out = ass.to_string("ass")
-    assert "Style: Cartel,Georgia,40" in out and "{\\an8}Sala de juntas\\NBoard room" in out
+    assert "Style: Cartel,Georgia,40" in out and "{\\an8}Sala de juntas\\N{\\r}{\\an8}Board room" in out
     assert "Comment: 0,0:00:05.00,0:00:06.00,Default,,0,0,0,,Nota del traductor: no traducir" in out
     assert "{\\p1}m 0 0 l 100 0 100 100 0 100{\\p0}" in out
     srt = st.parse(subs_dir / "reunion.srt", "srt")
@@ -305,7 +350,7 @@ def test_srt_translated_one_item_per_cue_keeping_times_and_cached(api, ai, user_
                  {"destino": "en", "salida": "vtt", "bilingue": True})
     assert again["status"] == "succeeded" and "no ha gastado" in again["outputs"][0]["note"] and len(ai.calls) == 1
     vtt = _out(services, again).read_text(encoding="utf-8")
-    assert vtt.startswith("WEBVTT") and "<i>Buenos días a todos.\n[inglés] Buenos días a todos.</i>" in vtt
+    assert vtt.startswith("WEBVTT") and "<i>Buenos días a todos.</i>\n<i>[inglés] Buenos días a todos.</i>" in vtt
 
 
 @pytest.mark.integration

@@ -18,6 +18,12 @@ const EBML = [0x1a, 0x45, 0xdf, 0xa3];
 export const OLE2_FAMILY = new Set(["doc", "xls", "ppt", "pps", "msg", "pub", "vsd"]);
 export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "srt", "vtt", "ass", "eml", "fb2", "dxf"]);
 const RAW_TIFF = new Set(["cr2", "nef", "arw", "dng"]);
+// Texto en UTF-16 o UTF-32 con BOM: solo para las herramientas que lo leen (los subtítulos, D-179). Va antes de las
+// reglas de MP3 y AAC, porque el BOM FF FE parece una palabra de sincronía MPEG.
+const WIDE_TEXT = new Set(["srt", "vtt", "ass"]);
+const WIDE_BOMS: [number[], number, boolean][] = [
+  [[0xff, 0xfe, 0x00, 0x00], 4, true], [[0x00, 0x00, 0xfe, 0xff], 4, false], [[0xff, 0xfe], 2, true], [[0xfe, 0xff], 2, false],
+];
 const EXT_ALIASES: Record<string, string> = { jpeg: "jpg", tif: "tiff", htm: "html", markdown: "md", oga: "ogg", aif: "aiff", ssa: "ass" };
 const ODF: Record<string, string> = {
   "application/vnd.oasis.opendocument.text": "odt",
@@ -113,6 +119,25 @@ function looksText(head: Uint8Array): boolean {
   }
 }
 
+/** UTF-16 o UTF-32 con BOM: sin controles (salvo tabulador y saltos de línea) y con al menos un 30 % de caracteres
+ * ASCII (los tiempos y los números de unos subtítulos). Unos bytes al azar leídos así casi nunca dan ASCII. */
+function wideText(head: Uint8Array): boolean {
+  for (const [bom, unit, little] of WIDE_BOMS) {
+    if (!startsWith(head, bom)) continue;
+    const v = new DataView(head.buffer, head.byteOffset, head.byteLength);
+    let total = 0;
+    let asciiCount = 0;
+    for (let i = bom.length; i + unit <= head.length; i += unit) {
+      const u = unit === 4 ? v.getUint32(i, little) : v.getUint16(i, little);
+      if ((u < 0x20 && u !== 9 && u !== 10 && u !== 13) || (u >= 0x7f && u < 0xa0) || (unit === 4 && (u > 0x10ffff || (u >= 0xd800 && u < 0xe000)))) return false;
+      if (u < 0x7f) asciiCount += 1;
+      total += 1;
+    }
+    return total > 0 && asciiCount / total >= 0.3;
+  }
+  return false;
+}
+
 /** Nombres de las entradas de un ZIP leyendo el directorio central (y el contenido de «mimetype», si está). */
 export async function zipEntries(read: Reader, size: number): Promise<{ names: string[]; mimetype: string | null } | null> {
   const tailStart = Math.max(0, size - 65_557);
@@ -188,6 +213,7 @@ async function zipKind(read: Reader, size: number): Promise<string> {
 export function detectHead(head: Uint8Array, declaredExt = ""): Detected | null {
   const declared = normalizeExt(declaredExt);
   if (!head.length) return null;
+  if (wideText(head)) return WIDE_TEXT.has(declared) ? { ext: declared, family: "wide-text" } : null;
   if (indexOf(head, "%PDF-", 0, 1024) >= 0) return { ext: "pdf", family: "pdf" };
   if (startsWith(head, [0xff, 0xd8, 0xff])) return { ext: "jpg", family: "image" };
   if (startsWith(head, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return { ext: "png", family: "image" };

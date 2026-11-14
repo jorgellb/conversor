@@ -6,6 +6,7 @@ tienen que dar los dos detectores. Uso: python scripts/fixtures/filetype_cases.p
 from __future__ import annotations
 
 import base64
+import codecs
 import io
 import json
 import struct
@@ -114,6 +115,13 @@ def cases() -> list[dict]:
         ("vtt", "vtt", b"WEBVTT\n\n00:00.000 --> 00:01.000\nHola\n", "vtt"),
         ("ass", "ass", b"[Script Info]\nScriptType: v4.00+\n\n[Events]\n", "ass"),
         ("ssa-es-ass", "ssa", b"[Script Info]\nScriptType: v4.00\n\n[Events]\n", "ass"),
+        # UTF-16 y UTF-32 con BOM (D-179): el BOM FF FE no es una cabecera de MP3; solo valen para los subtítulos.
+        ("srt-utf16le", "srt", "1\r\n00:00:01,000 --> 00:00:02,000\r\nCanción\r\n".encode("utf-16"), "srt"),
+        ("srt-utf16be", "srt", codecs.BOM_UTF16_BE + "1\n00:00:01,000 --> 00:00:02,000\nAño\n".encode("utf-16-be"), "srt"),
+        ("vtt-utf32le", "vtt", codecs.BOM_UTF32_LE + "WEBVTT\n\n00:01.000 --> 00:02.000\nHola\n".encode("utf-32-le"), "vtt"),
+        ("ass-utf16-chino", "ass", codecs.BOM_UTF16_LE + "[Events]\nDialogue: 0,0:00:01.00,0:00:02.00,Default,,0,0,0,,你好\n".encode("utf-16-le"), "ass"),
+        ("txt-utf16-no-admitido", "txt", "Hola, esto es texto.\n".encode("utf-16"), None),
+        ("mp3-capa1-ff-fe", "mp3", b"\xff\xfe\x90\x00" + bytes(range(1, 31)), "mp3"),
         ("texto-con-extension-rara", "exe", "Hola, esto es texto plano.\n".encode(), "txt"),
         ("latin1", "txt", "Año y canción en Latin-1, sin UTF-8.\n".encode("latin-1"), "txt"),
         ("binario", "bin", bytes(range(256)) * 4, None),
