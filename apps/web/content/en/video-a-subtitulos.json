@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Video to subtitles listens to what is said in a video and creates the subtitle file with its timings, ready to upload to a video platform, load in a player such as VLC or import into your editing software. It accepts MP4, MOV, MKV, WebM and AVI videos.",
+    "Only the audio track is read: the video is neither re-encoded nor modified, and the subtitles are not burned into the picture but come out as a separate file. Recognition is done by faster-whisper on our server, with no external AI services or AI requests, and it detects the language among twenty or uses the one you choose.",
+    "Each subtitle has at most two lines, with a maximum of 42 characters per line that you can change between 30 and 60 under more options, and lasts at most 7 seconds. Breaks are made at pauses and at the end of sentences, and the two lines are balanced so they are comfortable to read.",
+    "Choose SRT, the most compatible format, WebVTT (VTT), the one used by HTML5 web players, or both. High accuracy uses a larger, slower model if it is installed on the server; if not, the normal one is used and you are told."
+  ],
+  "steps": [
+    "Upload one or more videos.",
+    "Choose the video's language or let it be detected, and the format: SRT, VTT or both.",
+    "Download the subtitles and load them alongside the video in your player or platform."
+  ],
+  "faq": [
+    {
+      "q": "What duration does it accept?",
+      "a": "Since only the audio is processed, the limit is your plan's audio duration: 10 minutes without an account, 30 with a free account and 4 hours on Pro. It counts as a heavy task: 2 a day without an account, 10 with one and 200 on Pro."
+    },
+    {
+      "q": "Does it translate the subtitles?",
+      "a": "No: the subtitles come out in the language spoken in the video. They do not show who is speaking at each moment either."
+    },
+    {
+      "q": "Can I upload several videos?",
+      "a": "Yes, up to your plan's number of files per task: 5 without an account, 20 with a free account and 100 on Pro. Each file can be up to 50 MB without an account, 100 MB with one and 1 GB on Pro. When several files come out, you can also download them together as a ZIP."
+    },
+    {
+      "q": "Where is the video processed?",
+      "a": "On our server in the European Union, without sending it to third parties. The video and the subtitles are deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

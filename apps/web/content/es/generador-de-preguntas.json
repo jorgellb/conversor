@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "El generador de preguntas prepara con IA un examen o una batería de repaso a partir de un PDF: temas de clase, manuales, normativa o cualquier texto que quieras estudiar o evaluar. Elige entre 3 y 40 preguntas y si las quieres de test, de verdadero o falso, de respuesta corta o una mezcla de las tres.",
+    "En las de test decides cuántas opciones lleva cada pregunta, de 3 a 5, con una sola correcta y distractores creíbles. La dificultad puede ser fácil, con datos que aparecen tal cual en el texto, media o difícil, con preguntas que obligan a relacionar ideas. Cada pregunta trae una explicación breve y la página de la que sale, y se escribe en el idioma del documento o en el que elijas entre siete.",
+    "El formato Word da un examen listo para imprimir, con una línea para el nombre y las soluciones al final, en un archivo aparte o sin ellas. El formato GIFT se importa directamente en el banco de preguntas de Moodle, con las respuestas y las explicaciones incluidas. También puedes descargarlo en texto plano, con las mismas opciones para las soluciones que el Word.",
+    "Es una herramienta beta, sujeta a la disponibilidad diaria de la IA. Antes de la primera tarea aceptas un aviso: el texto del PDF se envía a un proveedor de IA externo a través de OpenRouter, posiblemente fuera de la Unión Europea. Revisa siempre las preguntas antes de ponerlas en un examen."
+  ],
+  "steps": [
+    "Sube el PDF con el temario y elige las páginas si no quieres usarlo entero.",
+    "Indica el número de preguntas, el tipo, la dificultad, el idioma y el formato.",
+    "Acepta el aviso de IA y descarga el examen, las soluciones o el archivo para Moodle."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántas peticiones gasta?",
+      "a": "Normalmente una. Si el documento no cabe de una vez en el modelo, o si pides tantas preguntas que no caben en una sola respuesta, se reparten en varias peticiones, que se reservan antes de empezar. Si superan lo que permite tu plan por tarea, se detiene sin gastar y puedes reducir el rango de páginas o el número de preguntas."
+    },
+    {
+      "q": "¿Qué límites hay?",
+      "a": "Necesitas cuenta. La gratuita incluye 3 peticiones de IA al día, 5 por tarea y 30 páginas; Pro, 30 al día, 20 por tarea y 150 páginas. Si alguna página está escaneada, el OCR cuenta además como tarea pesada."
+    },
+    {
+      "q": "¿Cambiar de formato gasta otra vez?",
+      "a": "No. Con el mismo documento, páginas y opciones de preguntas, el resultado se reutiliza: puedes descargar primero el Word y después el GIFT sin gastar más peticiones."
+    },
+    {
+      "q": "¿Las preguntas pueden tener errores?",
+      "a": "Sí. Las instrucciones piden usar solo lo que dice el documento y se descartan las preguntas mal formadas, pero una respuesta marcada como correcta puede ser discutible. La página indicada en cada solución te ayuda a comprobarla."
+    }
+  ]
+}

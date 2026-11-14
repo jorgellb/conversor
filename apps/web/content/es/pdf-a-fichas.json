@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a fichas convierte unos apuntes, un tema o un manual en tarjetas de estudio hechas con IA, listas para repasar con repetición espaciada. Elige cuántas quieres, de 5 a 100, y el tipo: término y definición, para vocabulario y conceptos, o pregunta y respuesta, para datos y razonamientos.",
+    "Las fichas tratan lo más importante del documento sin repetir ideas, con un reverso breve de una o dos frases y la página de la que sale cada una. Se escriben en el idioma del documento o en español, inglés, francés, alemán, italiano, portugués o catalán, lo que también sirve para estudiar un texto en otra lengua.",
+    "El formato para Anki o Quizlet es un TXT con una ficha por línea y el anverso separado del reverso por un tabulador, que ambos importan directamente. El CSV va separado por punto y coma, con una columna para la página de origen, y se abre en Excel con las tildes bien. El Word trae una tabla de dos columnas con bordes para imprimir y recortar.",
+    "Es una herramienta beta, sujeta al cupo diario de IA. Antes de la primera tarea aceptas un aviso: el texto del PDF se envía a un proveedor externo a través de OpenRouter, que puede estar fuera de la Unión Europea, así que no la uses con material confidencial ni con datos personales de terceros."
+  ],
+  "steps": [
+    "Sube el PDF que quieres estudiar y, si hace falta, limita las páginas.",
+    "Elige el número de fichas, el tipo, el idioma y el formato de salida.",
+    "Acepta el aviso de IA, descarga las fichas e impórtalas en tu aplicación."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo importo las fichas en Anki o Quizlet?",
+      "a": "En Anki, usa Archivo > Importar, elige el TXT y comprueba que el separador es el tabulador: el primer campo va al anverso y el segundo al reverso. En Quizlet, pega el contenido en la importación de un set nuevo con el tabulador como separador entre término y definición."
+    },
+    {
+      "q": "¿Cuántas peticiones de IA usa?",
+      "a": "Una si el documento cabe en el modelo; si es largo o pides muchas fichas, varias, que se reservan antes de empezar. Con cuenta gratuita tienes 3 peticiones al día, hasta 5 por tarea y 30 páginas; con Pro, 30 al día, 20 por tarea y 150 páginas."
+    },
+    {
+      "q": "¿Funciona con apuntes escaneados?",
+      "a": "Sí, si el escaneo es legible: las páginas sin texto se leen con OCR antes de crear las fichas, y eso cuenta como tarea pesada. Si el documento no está en español ni en inglés, indica su idioma en las opciones adicionales."
+    },
+    {
+      "q": "¿Y si después quiero otro formato?",
+      "a": "Repite la tarea con el mismo documento y las mismas opciones de fichas y elige otro formato: el resultado queda guardado durante 24 horas y no gasta más peticiones."
+    }
+  ]
+}

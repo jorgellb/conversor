@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to flashcards turns notes, a unit or a manual into AI-made study cards, ready for spaced repetition. Choose how many you want, from 5 to 100, and the type: term and definition, for vocabulary and concepts, or question and answer, for facts and reasoning.",
+    "The cards cover the most important points of the document without repeating ideas, with a short back of one or two sentences and the page each one comes from. They are written in the document's language or in Spanish, English, French, German, Italian, Portuguese or Catalan, which also helps when studying a text in another language.",
+    "The Anki or Quizlet format is a TXT file with one card per line and the front separated from the back by a tab, which both apps import directly. The CSV uses semicolons as separators, has a column for the source page and opens in Excel with accented letters intact. The Word file has a two-column table with borders to print and cut out.",
+    "This is a beta tool, subject to the daily AI allowance. Before the first task you accept a notice: the PDF's text is sent to an external provider through OpenRouter, which may be outside the European Union, so do not use it with confidential material or other people's personal data."
+  ],
+  "steps": [
+    "Upload the PDF you want to study and, if needed, limit the pages.",
+    "Choose the number of cards, the type, the language and the output format.",
+    "Accept the AI notice, download the cards and import them into your app."
+  ],
+  "faq": [
+    {
+      "q": "How do I import the cards into Anki or Quizlet?",
+      "a": "In Anki, use File > Import, pick the TXT file and check that the separator is a tab: the first field goes to the front and the second to the back. In Quizlet, paste the content into the import box of a new set with tab as the separator between term and definition."
+    },
+    {
+      "q": "How many AI requests does it use?",
+      "a": "One if the document fits into the model; if it is long or you ask for many cards, several, which are reserved before starting. With a free account you get 3 requests a day, up to 5 per task and 30 pages; with Pro, 30 a day, 20 per task and 150 pages."
+    },
+    {
+      "q": "Does it work with scanned notes?",
+      "a": "Yes, if the scan is legible: pages without text are read with OCR before the cards are made, and that counts as a heavy task. If the document is in neither Spanish nor English, set its language under more options."
+    },
+    {
+      "q": "What if I want another format later?",
+      "a": "Repeat the task with the same document and the same card options and choose another format: the result stays saved for 24 hours and uses no more requests."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Traducir PDF pasa el texto de un documento a otro idioma con IA y te lo devuelve en Word, en PDF o en los dos. Puedes traducir al español, inglés, francés, alemán, italiano, portugués, catalán, neerlandés, polaco, rumano, gallego o euskera; el idioma del original se detecta solo o lo eliges en las opciones adicionales.",
+    "La maquetación es sencilla: se reconstruyen los títulos y los párrafos de cada página, se unen las líneas cortadas y las palabras partidas con guion, y cada página del original empieza una página nueva con su número para que puedas cotejar. No se conservan las imágenes, las tablas ni la posición exacta de los elementos; si necesitas acercarte al diseño original, retoca el Word.",
+    "En «Términos que no se traducen» escribe, uno por línea, los nombres de marcas, productos o tecnicismos que deben quedar tal cual, hasta 1.000 caracteres. Los párrafos se envían al modelo por lotes y se piden alineados uno a uno, así que el orden del texto se respeta. El PDF se genera en nuestro servidor a partir del texto traducido.",
+    "Es una herramienta beta, sujeta al cupo diario de IA. Antes de la primera tarea aceptas un aviso: el texto del documento se envía a un proveedor externo a través de OpenRouter, posiblemente fuera de la Unión Europea. No la uses con documentos confidenciales y revisa la traducción antes de usarla en algo importante."
+  ],
+  "steps": [
+    "Sube el PDF y, si es largo, elige el rango de páginas que quieres traducir.",
+    "Elige el idioma de destino, el formato y, si hace falta, los términos que no se traducen.",
+    "Acepta el aviso de IA y descarga el Word, el PDF o los dos."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántas peticiones de IA gasta?",
+      "a": "Una por cada lote de párrafos que cabe en la respuesta del modelo: un documento corto suele ir en una sola, y uno largo necesita varias. Se reservan antes de empezar; si superan lo que permite tu plan por tarea, la tarea se detiene sin gastar y puedes traducir el documento por rangos de páginas."
+    },
+    {
+      "q": "¿Qué límites hay?",
+      "a": "Necesitas cuenta. Con la gratuita, 3 peticiones de IA al día, 5 por tarea y 30 páginas por tarea; con Pro, 30 al día, 20 por tarea y 150 páginas. Repetir la misma traducción en otro formato no gasta, porque el resultado se guarda 24 horas con tus archivos."
+    },
+    {
+      "q": "¿Traduce PDF escaneados?",
+      "a": "Sí: las páginas sin texto se leen antes con OCR, que cuenta como tarea pesada. El OCR reconoce por defecto español e inglés; si el original está en otro idioma, elígelo en «Idioma del documento (para el OCR)»."
+    },
+    {
+      "q": "¿Es una traducción profesional?",
+      "a": "No. Es una traducción automática que puede tener errores de sentido o de terminología, y el documento lo indica con una nota que dice qué modelo se ha usado. Para textos legales, médicos u oficiales, haz que la revise un traductor."
+    }
+  ]
+}

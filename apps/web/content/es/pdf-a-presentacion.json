@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a presentación crea con IA una presentación de PowerPoint a partir de un informe, un trabajo o un artículo, para que no tengas que empezar desde una diapositiva en blanco. Indica cuántas diapositivas quieres, de 4 a 30 contando la portada.",
+    "Se hace en dos pasos: la IA saca primero el esquema del documento, con sus secciones e ideas clave, y después lo convierte en diapositivas que lo cuentan de principio a fin. Cada una lleva un título corto, de 3 a 6 puntos breves y, abajo, las páginas del PDF en las que se basa y su número. La portada lleva título, subtítulo y el nombre del documento de origen.",
+    "Las notas del orador, activadas por defecto, añaden a cada diapositiva lo que podrías decir en voz alta, en dos a cuatro frases. El estilo puede ser claro, oscuro o cálido, y la presentación se escribe en el idioma del documento o en otro de los siete disponibles. El archivo es un PPTX panorámico (16:9) con cuadros de texto normales, que se ve igual en PowerPoint, LibreOffice Impress y Keynote y se edita como cualquier otro.",
+    "Es una herramienta beta que depende del cupo diario de IA. Antes de la primera tarea aceptas un aviso: el texto del documento se envía a un proveedor externo a través de OpenRouter, que puede estar fuera de la Unión Europea. Revisa el contenido de las diapositivas antes de presentarlo."
+  ],
+  "steps": [
+    "Sube el PDF y, si quieres, elige las páginas que debe cubrir la presentación.",
+    "Indica el número de diapositivas, el estilo, el idioma y si quieres notas del orador.",
+    "Acepta el aviso de IA y descarga el PPTX para abrirlo y retocarlo."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántas peticiones gasta?",
+      "a": "Dos: una para el esquema y otra para las diapositivas. Si el documento no cabe de una vez en el modelo, el esquema se hace por bloques, con una petición por bloque. Todas se reservan antes de empezar y, si no caben en tu plan, la tarea se detiene sin gastar."
+    },
+    {
+      "q": "¿Qué límites tiene?",
+      "a": "Hace falta cuenta. La gratuita permite 3 peticiones de IA al día (una presentación de un documento corto gasta 2), 5 por tarea y 30 páginas; Pro, 30 al día, 20 por tarea y 150 páginas."
+    },
+    {
+      "q": "¿Incluye las imágenes del PDF?",
+      "a": "No. La IA trabaja con el texto, así que las diapositivas llevan títulos y puntos, no las figuras ni las tablas del original. Puedes añadirlas después en tu programa de presentaciones."
+    },
+    {
+      "q": "¿Puedo cambiar el estilo sin gastar?",
+      "a": "Sí. Con el mismo documento, número de diapositivas, notas e idioma, el contenido se reutiliza y solo cambia el diseño: elegir oscuro en lugar de claro no gasta peticiones."
+    }
+  ]
+}

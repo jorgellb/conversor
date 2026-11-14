@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Vídeo a subtítulos escucha lo que se dice en un vídeo y crea el archivo de subtítulos con sus tiempos, listo para subirlo a una plataforma de vídeo, cargarlo en un reproductor como VLC o importarlo en tu programa de edición. Admite vídeos MP4, MOV, MKV, WebM y AVI.",
+    "Solo se lee la pista de audio: el vídeo no se recodifica ni se modifica, y los subtítulos no se queman en la imagen, sino que salen como un archivo aparte. El reconocimiento lo hace faster-whisper en nuestro servidor, sin servicios de IA externos ni peticiones de IA, y detecta el idioma entre veinte o usa el que elijas.",
+    "Cada subtítulo tiene como mucho dos líneas, con un máximo de 42 caracteres por línea que puedes cambiar entre 30 y 60 en las opciones adicionales, y dura como mucho 7 segundos. Los cortes se hacen en las pausas y al final de las frases, y las dos líneas quedan equilibradas para que se lean con comodidad.",
+    "Elige SRT, el formato más compatible, WebVTT (VTT), el que usan los reproductores web en HTML5, o los dos. La precisión alta usa un modelo más grande y más lento si está instalado en el servidor; si no, se usa el normal y se te avisa."
+  ],
+  "steps": [
+    "Sube uno o varios vídeos.",
+    "Elige el idioma del vídeo o deja que se detecte, y el formato: SRT, VTT o los dos.",
+    "Descarga los subtítulos y cárgalos junto al vídeo en tu reproductor o plataforma."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué duración admite?",
+      "a": "Como solo se procesa el audio, el límite es el de duración de audio de tu plan: 10 minutos sin cuenta, 30 con cuenta gratuita y 4 horas en Pro. Cuenta como tarea pesada: 2 al día sin cuenta, 10 con cuenta y 200 en Pro."
+    },
+    {
+      "q": "¿Traduce los subtítulos?",
+      "a": "No: los subtítulos salen en el idioma en que se habla en el vídeo. Tampoco indican quién habla en cada momento."
+    },
+    {
+      "q": "¿Puedo subir varios vídeos?",
+      "a": "Sí, hasta el número de archivos por tarea de tu plan: 5 sin cuenta, 20 con cuenta gratuita y 100 en Pro. Cada archivo puede pesar hasta 50 MB sin cuenta, 100 MB con cuenta y 1 GB en Pro. Si salen varios archivos, también puedes bajarlos juntos en un ZIP."
+    },
+    {
+      "q": "¿Dónde se procesa el vídeo?",
+      "a": "En nuestro servidor de la Unión Europea, sin enviarlo a terceros. El vídeo y los subtítulos se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

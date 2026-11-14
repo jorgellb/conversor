@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Summarize PDF reads the text of a document and gives you an AI-made summary: the essentials of a report, a contract, lecture notes or an article without reading the whole thing. You can summarize the entire document or just a page range, such as “1-10” or “3, 7-9”.",
+    "The length can be short (a few lines with the essentials), medium or detailed, which follows the structure of the document with a heading for each section. The style can be key points, each on its own line, or prose paragraphs. The summary is written in the document's language or in Spanish, English, French, German, Italian, Portuguese or Catalan, and you download it as Word (DOCX), plain text (TXT) or Markdown.",
+    "The text is extracted from the PDF on our server. If there are scanned pages, they are first read with OCR (Tesseract), which also counts as a heavy task; under more options you can turn this off or set the document's language so recognition is more accurate. The instructions tell the model to summarize only what the text says, without inventing figures or conclusions, but it is worth checking the result against the original: the file reminds you with a note naming the model that was used.",
+    "This is a beta tool, subject to the daily availability of free models. Before the first task of each session you will see a notice you must accept: the document's text is sent to an external provider through OpenRouter, possibly outside the European Union, so do not use it with confidential documents or with other people's personal data."
+  ],
+  "steps": [
+    "Upload the PDF and, if you only need part of it, enter the pages.",
+    "Choose the length, the style, the summary language and the format.",
+    "Accept the AI notice, wait for it to finish and download the summary."
+  ],
+  "faq": [
+    {
+      "q": "How many AI requests does it use?",
+      "a": "One if the document fits into the model in one go. If it is longer, it is split into blocks: one request per block plus one more to merge the partial summaries. All of them are reserved before starting; if they do not fit your plan, the task stops without using any and you can pick a shorter page range."
+    },
+    {
+      "q": "What are the limits?",
+      "a": "You need an account: the free one gives you 3 AI requests a day, up to 5 per task and 30 pages per summary; Pro gives 30 a day, 20 per task and 150 pages. These are maximums that also depend on the day's overall allowance; the page shows how many you have left and when they renew."
+    },
+    {
+      "q": "Does asking for another format use requests again?",
+      "a": "No. The summary is kept with your files: if you repeat the task with the same length, style, language and pages, even with a different output format, it is reused without using any requests."
+    },
+    {
+      "q": "How long is it kept?",
+      "a": "The PDF, its text and the summary are deleted after 24 hours, like the rest of your files. The providers we use state that they do not train on the data, although they may keep it for a while under their own policy."
+    }
+  ]
+}

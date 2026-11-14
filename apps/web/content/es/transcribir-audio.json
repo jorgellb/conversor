@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Transcribir audio pasa a texto lo que se dice en una entrevista, una clase, una reunión, un pódcast o una nota de voz. Admite MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA y AMR, y también el audio de vídeos MP4 y WebM. Puedes subir varios archivos a la vez: recibes cada transcripción y un ZIP con todas.",
+    "La transcripción se hace con faster-whisper, un modelo de reconocimiento de voz que funciona en nuestro servidor, sin servicios de IA externos: no gasta peticiones de IA ni envía tu audio a terceros. Detecta el idioma entre veinte, entre ellos español, catalán, euskera, gallego, inglés, francés y portugués, y el resultado te dice cuál ha reconocido y con qué seguridad; si lo sabes, elígelo para evitar errores.",
+    "El texto puede salir en TXT, en Word (DOCX) con un título, el idioma y la duración, en subtítulos SRT o en los tres a la vez. En TXT y Word se separa en párrafos tras cada pausa larga, y puedes añadir el minuto en que empieza cada uno para encontrar luego ese momento en la grabación. El SRT lleva los tiempos de cada frase, útil como subtítulo o para revisar el texto junto al audio.",
+    "La precisión normal usa el modelo small. La alta, en las opciones adicionales, usa el modelo medium, más lento y que acierta más con audio difícil; si este servidor no lo tiene instalado, se usa el normal y el resultado te lo avisa."
+  ],
+  "steps": [
+    "Sube uno o varios archivos de audio, o vídeos MP4 o WebM.",
+    "Elige el idioma o déjalo en detección automática, y el formato de salida.",
+    "Espera a que termine la transcripción y descarga el texto o los subtítulos."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuánto audio puedo transcribir?",
+      "a": "Cada archivo puede durar hasta 10 minutos sin cuenta, 30 minutos con cuenta gratuita y 4 horas en Pro. La transcripción cuenta como tarea pesada: 2 al día sin cuenta, 10 con cuenta gratuita y 200 en Pro."
+    },
+    {
+      "q": "¿Cuánto tarda?",
+      "a": "Depende de la duración y de la precisión elegida. En nuestras mediciones, la precisión normal tarda algo menos de lo que dura el audio, y la alta es más lenta. Las grabaciones largas se procesan por tramos y puedes seguir el avance en la página."
+    },
+    {
+      "q": "¿Distingue quién habla?",
+      "a": "No. La transcripción no identifica a los hablantes ni traduce: da el texto en el idioma en que se habla. Si no encuentra voz, porque el archivo es solo música o silencio, la tarea te lo dice."
+    },
+    {
+      "q": "¿Dónde se transcribe y cuánto se guarda?",
+      "a": "En nuestro servidor de la Unión Europea, sin enviar el audio fuera. Los archivos y las transcripciones se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

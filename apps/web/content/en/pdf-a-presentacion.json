@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to presentation uses AI to create a PowerPoint presentation from a report, a paper or an article, so you do not have to start from a blank slide. Say how many slides you want, from 4 to 30 including the cover.",
+    "It works in two steps: the AI first extracts the document's outline, with its sections and key ideas, and then turns it into slides that tell the document from start to finish. Each one has a short title, 3 to 6 brief points and, at the bottom, the PDF pages it is based on and its number. The cover has a title, a subtitle and the name of the source document.",
+    "Speaker notes, on by default, add to each slide what you could say out loud, in two to four sentences. The style can be light, dark or warm, and the presentation is written in the document's language or in another of the seven available. The file is a widescreen (16:9) PPTX with ordinary text boxes, which looks the same in PowerPoint, LibreOffice Impress and Keynote and can be edited like any other.",
+    "This is a beta tool that depends on the daily AI allowance. Before the first task you accept a notice: the document's text is sent to an external provider through OpenRouter, which may be outside the European Union. Review the content of the slides before presenting them."
+  ],
+  "steps": [
+    "Upload the PDF and, if you like, choose the pages the presentation should cover.",
+    "Set the number of slides, the style, the language and whether you want speaker notes.",
+    "Accept the AI notice and download the PPTX to open and polish it."
+  ],
+  "faq": [
+    {
+      "q": "How many requests does it use?",
+      "a": "Two: one for the outline and another for the slides. If the document does not fit into the model in one go, the outline is made in blocks, with one request per block. All of them are reserved before starting and, if they do not fit your plan, the task stops without using any."
+    },
+    {
+      "q": "What are the limits?",
+      "a": "You need an account. The free one allows 3 AI requests a day (a presentation of a short document uses 2), 5 per task and 30 pages; Pro, 30 a day, 20 per task and 150 pages."
+    },
+    {
+      "q": "Does it include the PDF's images?",
+      "a": "No. The AI works with the text, so the slides contain titles and points, not the figures or tables of the original. You can add them afterwards in your presentation software."
+    },
+    {
+      "q": "Can I change the style without using requests?",
+      "a": "Yes. With the same document, number of slides, notes and language, the content is reused and only the design changes: choosing dark instead of light uses no requests."
+    }
+  ]
+}

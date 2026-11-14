@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "The question generator uses AI to prepare an exam or a set of review questions from a PDF: course units, manuals, regulations or any text you want to study or assess. Choose between 3 and 40 questions and whether you want multiple choice, true or false, short answer or a mix of the three.",
+    "For multiple choice you decide how many options each question has, from 3 to 5, with a single correct one and believable distractors. The difficulty can be easy, with facts that appear word for word in the text, medium or hard, with questions that require connecting ideas. Each question comes with a short explanation and the page it comes from, and is written in the document's language or in one of seven others you choose.",
+    "The Word format gives you a printable exam, with a line for the name and the answers at the end, in a separate file or left out. The GIFT format imports straight into the Moodle question bank, with the answers and explanations included. You can also download it as plain text, with the same answer options as Word.",
+    "This is a beta tool, subject to daily AI availability. Before the first task you accept a notice: the PDF's text is sent to an external AI provider through OpenRouter, possibly outside the European Union. Always review the questions before putting them in an exam."
+  ],
+  "steps": [
+    "Upload the PDF with the material and choose the pages if you do not want all of it.",
+    "Set the number of questions, the type, the difficulty, the language and the format.",
+    "Accept the AI notice and download the exam, the answers or the Moodle file."
+  ],
+  "faq": [
+    {
+      "q": "How many requests does it use?",
+      "a": "Usually one. If the document does not fit into the model in one go, or you ask for so many questions that they do not fit in a single response, they are spread over several requests, which are reserved before starting. If they exceed what your plan allows per task, it stops without using any and you can reduce the page range or the number of questions."
+    },
+    {
+      "q": "What are the limits?",
+      "a": "You need an account. The free one includes 3 AI requests a day, 5 per task and 30 pages; Pro, 30 a day, 20 per task and 150 pages. If any page is scanned, OCR also counts as a heavy task."
+    },
+    {
+      "q": "Does changing the format use requests again?",
+      "a": "No. With the same document, pages and question options, the result is reused: you can download the Word file first and then the GIFT file without using more requests."
+    },
+    {
+      "q": "Can the questions contain mistakes?",
+      "a": "Yes. The instructions say to use only what the document says and badly formed questions are discarded, but an answer marked as correct may be debatable. The page given in each answer helps you check it."
+    }
+  ]
+}

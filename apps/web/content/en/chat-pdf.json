@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Chat with PDF lets you ask questions about a document and get answers based only on what it says, with the pages each answer relies on so you can check them. Use it to find a clause in a contract, clarify a figure in a report or review a topic in your notes without reading everything.",
+    "First the document is prepared: the text of the pages you choose is extracted and, if any page is scanned, it is read with OCR, which counts as a heavy task. Preparing uses no AI requests. If the document is short, each question is answered with the whole text; if it is long, it is split into passages that are indexed on our server with a local model, and each question first looks for the passages closest to it.",
+    "Each question uses one request, and the model also receives the latest turns of the conversation, so you can ask it to expand on or clarify an earlier answer. If something is not in the document, the answer says so instead of making it up. It replies in the language you ask in, and the conversation is only kept in your browser.",
+    "This is a beta tool that depends on the daily allowance of free models. Before you start you accept a notice: the document's text, or the relevant passages, is sent to an external AI provider through OpenRouter, which may be outside the European Union. Avoid confidential documents and other people's personal data."
+  ],
+  "steps": [
+    "Choose a PDF and, if it is long, the page range you are interested in.",
+    "Accept the AI notice and press “Prepare the document”.",
+    "Type your question and check the answer against the cited pages."
+  ],
+  "faq": [
+    {
+      "q": "How many questions can I ask?",
+      "a": "Each question is one AI request. With a free account you get 3 a day and with Pro, 30; it cannot be used without an account. The allowance also depends on overall availability that day, and the page tells you how many you have left."
+    },
+    {
+      "q": "How many pages does it accept?",
+      "a": "Up to 30 pages per document with a free account and 150 with Pro. If your PDF is longer, choose the range you want under “Pages” and prepare another range when you need it."
+    },
+    {
+      "q": "Can I trust the answers?",
+      "a": "They are based on the document and cite the pages, but an AI model can make mistakes or misread a paragraph. Before relying on an important fact, open the cited page and check it."
+    },
+    {
+      "q": "What happens to my document afterwards?",
+      "a": "The text and the indexed passages are kept with your files and deleted with them, after 24 hours. If you delete your account, they are removed as well."
+    }
+  ]
+}

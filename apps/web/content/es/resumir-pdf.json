@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Resumir PDF lee el texto de un documento y te devuelve un resumen hecho con IA: lo esencial de un informe, un contrato, unos apuntes o un artículo sin tener que leerlo entero. Puedes resumir todo el documento o solo un rango de páginas, por ejemplo «1-10» o «3, 7-9».",
+    "La extensión puede ser breve (unas líneas con lo esencial), media o detallada, que sigue la estructura del documento con un título por apartado. El estilo puede ser de puntos clave, cada uno en su línea, o de párrafos de prosa. El resumen se escribe en el idioma del documento o en español, inglés, francés, alemán, italiano, portugués o catalán, y se descarga en Word (DOCX), texto (TXT) o Markdown.",
+    "El texto se saca del PDF en nuestro servidor. Si hay páginas escaneadas, antes se leen con OCR (Tesseract), lo que cuenta además como tarea pesada; en las opciones adicionales puedes desactivarlo o indicar el idioma del documento para que el reconocimiento acierte más. Las instrucciones piden al modelo que resuma solo lo que dice el texto, sin inventar cifras ni conclusiones, pero conviene contrastar el resultado con el original: el archivo lo recuerda con una nota que dice qué modelo se ha usado.",
+    "Es una herramienta beta, sujeta a la disponibilidad diaria de los modelos gratuitos. Antes de la primera tarea de cada sesión verás un aviso que debes aceptar: el texto del documento se envía a un proveedor externo a través de OpenRouter, posiblemente fuera de la Unión Europea, así que no la uses con documentos confidenciales ni con datos personales de otras personas."
+  ],
+  "steps": [
+    "Sube el PDF y, si solo te interesa una parte, indica las páginas.",
+    "Elige la extensión, el estilo, el idioma del resumen y el formato.",
+    "Acepta el aviso de IA, espera a que termine y descarga el resumen."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántas peticiones de IA gasta?",
+      "a": "Una si el documento cabe de una vez en el modelo. Si es más largo, se divide en bloques: una petición por bloque y otra más para unir los resúmenes parciales. Todas se reservan antes de empezar; si no caben en tu plan, la tarea se detiene sin gastar ninguna y puedes elegir un rango de páginas más corto."
+    },
+    {
+      "q": "¿Qué límites tiene?",
+      "a": "Hace falta una cuenta: con la gratuita tienes 3 peticiones de IA al día, hasta 5 por tarea y 30 páginas por resumen; con Pro, 30 al día, 20 por tarea y 150 páginas. Son máximos que dependen también del cupo global del día; la página muestra cuántas te quedan y a qué hora se renuevan."
+    },
+    {
+      "q": "¿Pedirlo en otro formato vuelve a gastar?",
+      "a": "No. El resumen se guarda con tus archivos: si repites la tarea con la misma extensión, estilo, idioma y páginas, aunque cambies el formato de salida, se reutiliza sin gastar peticiones."
+    },
+    {
+      "q": "¿Cuánto tiempo se guarda?",
+      "a": "El PDF, su texto y el resumen se borran a las 24 horas, como el resto de tus archivos. Los proveedores que usamos declaran no entrenar con los datos, aunque pueden conservarlos un tiempo según su política."
+    }
+  ]
+}

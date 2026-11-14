@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Transcribe audio turns what is said in an interview, a lecture, a meeting, a podcast or a voice note into text. It accepts MP3, WAV, OGG, OPUS, M4A, AAC, FLAC, AIFF, WMA and AMR, as well as the audio of MP4 and WebM videos. You can upload several files at once: you get each transcript and a ZIP with all of them.",
+    "Transcription is done with faster-whisper, a speech recognition model that runs on our server, with no external AI services: it uses no AI requests and does not send your audio to third parties. It detects the language among twenty, including Spanish, Catalan, Basque, Galician, English, French and Portuguese, and the result tells you which one it recognised and how confident it is; if you know the language, choose it to avoid mistakes.",
+    "The text can come out as TXT, as Word (DOCX) with a title, the language and the duration, as SRT subtitles or as all three at once. In TXT and Word it is split into paragraphs after each long pause, and you can add the minute at which each one starts to find that moment in the recording later. The SRT file carries the timing of each phrase, useful as subtitles or to review the text alongside the audio.",
+    "Normal accuracy uses the small model. High accuracy, under more options, uses the medium model, which is slower and does better with difficult audio; if this server does not have it installed, the normal one is used and the result tells you so."
+  ],
+  "steps": [
+    "Upload one or more audio files, or MP4 or WebM videos.",
+    "Choose the language or leave it on automatic detection, and the output format.",
+    "Wait for the transcription to finish and download the text or the subtitles."
+  ],
+  "faq": [
+    {
+      "q": "How much audio can I transcribe?",
+      "a": "Each file can be up to 10 minutes long without an account, 30 minutes with a free account and 4 hours on Pro. Transcription counts as a heavy task: 2 a day without an account, 10 with a free account and 200 on Pro."
+    },
+    {
+      "q": "How long does it take?",
+      "a": "It depends on the duration and the accuracy chosen. In our measurements, normal accuracy takes a little less time than the audio lasts, and high accuracy is slower. Long recordings are processed in sections and you can follow the progress on the page."
+    },
+    {
+      "q": "Does it tell who is speaking?",
+      "a": "No. The transcription does not identify speakers or translate: it gives the text in the language being spoken. If it finds no speech, because the file is only music or silence, the task tells you."
+    },
+    {
+      "q": "Where is it transcribed and how long is it kept?",
+      "a": "On our server in the European Union, without sending the audio anywhere else. Files and transcripts are deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Chat con PDF te deja hacer preguntas sobre un documento y recibir respuestas basadas solo en lo que dice, con las páginas en las que se apoya cada una para que puedas comprobarlas. Sirve para encontrar una cláusula en un contrato, aclarar un dato de un informe o repasar un tema de unos apuntes sin leerlo todo.",
+    "Primero se prepara el documento: se saca el texto de las páginas que elijas y, si alguna está escaneada, se lee con OCR, que cuenta como tarea pesada. Preparar no gasta peticiones de IA. Si el documento es corto, cada pregunta se responde con el texto entero; si es largo, se divide en fragmentos que se indexan en nuestro servidor con un modelo local, y cada pregunta busca primero los que más se le parecen.",
+    "Cada pregunta gasta una petición, y el modelo recibe también los últimos turnos de la conversación, así que puedes pedirle que amplíe o aclare una respuesta anterior. Si algo no aparece en el documento, la respuesta lo dice en lugar de inventarlo. Contesta en el idioma en que preguntas, y la conversación solo se guarda en tu navegador.",
+    "Es una herramienta beta que depende del cupo diario de los modelos gratuitos. Antes de empezar aceptas un aviso: el texto del documento, o los fragmentos relevantes, se envía a un proveedor de IA externo a través de OpenRouter, que puede estar fuera de la Unión Europea. Evita los documentos confidenciales y los datos personales de terceros."
+  ],
+  "steps": [
+    "Elige un PDF y, si es largo, el rango de páginas que te interesa.",
+    "Acepta el aviso de IA y pulsa «Preparar el documento».",
+    "Escribe tu pregunta y revisa la respuesta junto a las páginas citadas."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántas preguntas puedo hacer?",
+      "a": "Cada pregunta es una petición de IA. Con una cuenta gratuita tienes 3 al día y con Pro, 30; sin cuenta no se puede usar. El cupo depende además de la disponibilidad global del día, y la página te dice cuántas te quedan."
+    },
+    {
+      "q": "¿Cuántas páginas admite?",
+      "a": "Hasta 30 páginas por documento con la cuenta gratuita y 150 con Pro. Si tu PDF es más largo, elige en «Páginas» el rango que te interese y prepara otro rango cuando lo necesites."
+    },
+    {
+      "q": "¿Puedo fiarme de las respuestas?",
+      "a": "Se basan en el documento y citan las páginas, pero un modelo de IA puede equivocarse o malinterpretar un párrafo. Antes de usar un dato importante, abre la página citada y compruébalo."
+    },
+    {
+      "q": "¿Qué pasa con mi documento después?",
+      "a": "El texto y los fragmentos indexados se guardan con tus archivos y se borran con ellos, a las 24 horas. Si borras tu cuenta, desaparecen también."
+    }
+  ]
+}
