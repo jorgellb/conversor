@@ -81,6 +81,78 @@ def test_el_script_usa_el_escenario_y_falla_con_el_limitador():
     assert 'res.status === 503 && code === "QUEUE_FULL"' in SCRIPT
     assert 'rate_limited: ["count==0"]' in SCRIPT
     assert 'dropped_iterations: ["count==0"]' in SCRIPT
+    # QUOTA_EXCEEDED se cuenta aparte del limitador, para saber qué límite faltó subir.
+    assert 'errorCode(res) === "QUOTA_EXCEEDED"' in SCRIPT
+    assert 'cuota_superada: ["count==0"]' in SCRIPT
+
+
+def test_cada_trabajo_es_nuevo():
+    """Mismo propietario, herramienta, opciones y archivo = el mismo trabajo (idempotencia, 5.2): no llega a la cola."""
+    body = SCRIPT.split("function runJob(", 1)[1].split("\n}\n", 1)[0]
+    assert body.lstrip().split("\n")[2].strip() == "if (!newAnonSession()) return;"
+    session = SCRIPT.split("function newAnonSession()", 1)[1].split("\n}\n", 1)[0]
+    assert "token = null;" in session and "if (token) return token" not in session
+    # Y si vuelve a aparecer un id ya visto, la prueba falla.
+    assert "seenJobs.has(job.id)" in body
+    assert 'trabajos_reutilizados: ["count==0"]' in SCRIPT
+
+
+def _duration_s(value: str) -> int:
+    m = re.fullmatch(r"(\d+)(s|m)", value)
+    assert m, value
+    return int(m[1]) * (60 if m[2] == "m" else 1)
+
+
+def test_ninguna_espera_se_pierde_al_cortar_la_iteracion():
+    """La espera que pasa del umbral se anota durante el sondeo, y cada escenario deja terminar al trabajo más lento."""
+    loop = SCRIPT.split("function waitForJob(", 1)[1].split("\n}\n", 1)[0]
+    assert "elapsed > limitMs" in loop and "queueWait.add(elapsed" in loop
+    assert 'fail("tiempo")' in loop and 'fail("sondeo")' in loop and "E.sondeos_fallidos_max" in loop
+    assert "gracefulStop: `${deadlineMs(E.pico.herramienta) / 1000 + 60}s`" in SCRIPT
+    specs = _registry()
+    for scenario in ("comprimir", "audio", "pico"):
+        group = specs[E[scenario]["herramienta"]].worker_group
+        deadline = E["umbrales"]["espera_cola_s"][group] + E["proceso_max_s"]
+        if scenario != "pico":  # per-vu-iterations: maxDuration
+            assert deadline < _duration_s(E["duracion_maxima"]), scenario
+    assert E["sondeos_fallidos_max"] >= 2
+
+
+def test_limites_documentados_cubren_el_escenario_desde_una_ip():
+    """Desde una IP: sesiones anónimas, tareas del plan anon por IP (9.3) y peticiones por minuto."""
+    from core.jobs import validate_options
+    from core.plans import load_plans_file
+    from core.settings import Settings
+
+    limits = E["limites_durante_la_prueba"]
+    specs = _registry()
+    jobs = {"light": 0, "heavy": 0}
+    for scenario, count in (("comprimir", E["comprimir"]["trabajos_simultaneos"]),
+                            ("audio", E["audio"]["trabajos_simultaneos"]), ("pico", E["pico"]["trabajos"])):
+        spec = specs[E[scenario]["herramienta"]]
+        options, _ = validate_options(spec, E[scenario]["opciones"])
+        jobs[spec.cost_for(options)] += count
+    total = jobs["light"] + jobs["heavy"]
+    assert total == 360
+    # Una sesión por trabajo.
+    assert limits["ANON_TOKENS_PER_IP_DAY"] >= total > Settings().ANON_TOKENS_PER_IP_DAY
+    anon = load_plans_file(ROOT / "config" / "plans.yaml")["anon"]
+    assert limits["anon.light_tasks_day"] >= jobs["light"] > anon.light_tasks_day
+    assert jobs["heavy"] <= anon.heavy_tasks_day
+    # Peticiones por minuto: cada VU a la vez sondea cada `sondeo_s` (más sesión, subida y creación).
+    vus = E["comprimir"]["trabajos_simultaneos"] + E["audio"]["trabajos_simultaneos"] + E["pico"]["clientes"]
+    assert limits["RATE_LIMIT_PER_MINUTE"] >= vus * (60 / E["sondeo_s"] + 10)
+
+    # Y los pasos de OPERATIONS.md y DEPLOY-CHECKLIST ponen esos valores y devuelven después los de producción.
+    ops = (ROOT / "docs" / "OPERATIONS.md").read_text(encoding="utf-8")
+    section = ops.split("## Prueba de carga", 1)[1].split("\n## ", 1)[0]
+    assert f"RATE_LIMIT_PER_MINUTE={limits['RATE_LIMIT_PER_MINUTE']}" in section
+    assert f"ANON_TOKENS_PER_IP_DAY={limits['ANON_TOKENS_PER_IP_DAY']}" in section
+    raise_sql = f"jsonb_set(limits, '{{light_tasks_day}}', '{limits['anon.light_tasks_day']}') WHERE id = 'anon'"
+    restore_sql = f"jsonb_set(limits, '{{light_tasks_day}}', '{anon.light_tasks_day}') WHERE id = 'anon'"
+    assert raise_sql in section and restore_sql in section
+    checklist = (ROOT / "docs" / "DEPLOY-CHECKLIST.md").read_text(encoding="utf-8")
+    assert f"`light_tasks_day` del plan `anon` ({anon.light_tasks_day})" in checklist
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="sin Node para comprobar la sintaxis del script")

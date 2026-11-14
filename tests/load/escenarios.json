@@ -1,10 +1,13 @@
 {
-  "_comentario": "Prueba de carga de 16.1. La leen tests/load/k6.js y tests/test_carga_k6.py (que comprueba que sigue a 16.1, al registro y a los umbrales de espera de 4.5). Las muestras salen de scripts/fixtures/generate.py.",
+  "_comentario": "Prueba de carga de 16.1. La leen tests/load/k6.js y tests/test_carga_k6.py (que comprueba que sigue a 16.1, al registro y a los umbrales de espera de 4.5). Las muestras salen de scripts/fixtures/generate.py. Cada trabajo usa una sesión anónima nueva; todas salen de una IP, así que los límites por IP de limites_durante_la_prueba se ponen solo durante la prueba (docs/OPERATIONS.md). proceso_max_s es lo que puede tardar un trabajo después de salir de la cola antes de contarlo como fallido.",
   "comprimir": { "herramienta": "comprimir-pdf", "muestra": "fotos.pdf", "opciones": { "nivel": "equilibrado" }, "trabajos_simultaneos": 50 },
   "audio": { "herramienta": "ogg-a-mp3", "muestra": "voz.ogg", "opciones": { "calidad": "192" }, "trabajos_simultaneos": 10 },
   "pico": { "herramienta": "comprimir-pdf", "muestra": "texto.pdf", "opciones": { "nivel": "sin_perdida" }, "trabajos": 300, "minutos": 5, "clientes": 100, "empieza": "30s" },
   "paginas": { "rutas": ["/es", "/es/comprimir-pdf", "/en/compress-pdf", "/es/ogg-a-mp3"], "clientes": 5, "minutos": 6 },
   "umbrales": { "pagina_ms": 1000, "espera_cola_s": { "pdf": 120, "av": 300 } },
   "sondeo_s": 2,
-  "duracion_maxima": "15m"
+  "proceso_max_s": 300,
+  "sondeos_fallidos_max": 5,
+  "duracion_maxima": "15m",
+  "limites_durante_la_prueba": { "RATE_LIMIT_PER_MINUTE": 100000, "ANON_TOKENS_PER_IP_DAY": 1000, "anon.light_tasks_day": 1000 }
 }

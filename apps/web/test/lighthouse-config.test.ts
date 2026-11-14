@@ -6,7 +6,8 @@ import { describe, expect, it } from "vitest";
 import { TOOLS } from "../src/lib/registry";
 
 // Lighthouse CI del cierre técnico (1.3 y 8.3): perfil móvil, mediana de 3 ejecuciones y 90 o más en rendimiento y
-// accesibilidad en la portada y en una página de herramienta por cada fase del registro (D-145).
+// accesibilidad en la portada y en una página de herramienta por cada fase con herramientas activas, más la misma
+// plantilla en inglés (D-145 y D-148).
 const ROOT = path.join(import.meta.dirname, "..", "..", "..");
 const RC = JSON.parse(readFileSync(path.join(ROOT, "tests", "lighthouse", "lighthouserc.json"), "utf-8"));
 const CI = readFileSync(path.join(ROOT, ".github", "workflows", "ci.yml"), "utf-8");
@@ -23,15 +24,20 @@ describe("Lighthouse CI (1.3)", () => {
     }
   });
 
-  it("la portada y una página activa por cada fase del registro", () => {
+  it("la portada y una página activa por cada fase con herramientas activas, y una en inglés", () => {
     const urls: string[] = RC.ci.collect.url;
     const paths = urls.map((u) => new URL(u).pathname);
     expect(paths).toContain("/es");
-    const phases = [...new Set(TOOLS.map((t) => t.phase))].sort();
+    // Una fase cuyas herramientas siguen apagadas tras su bandera (aún sin pasar 16.5/16.6) no tiene página que medir.
+    const active = TOOLS.filter((t) => t.default_enabled && t.launch && !t.canonical_of);
+    const phases = [...new Set(active.map((t) => t.phase))].sort();
     for (const phase of phases) {
-      const pages = paths.filter((p) => TOOLS.some((t) => t.phase === phase && p === `/es/${t.slug_es}` && t.default_enabled && t.launch && !t.canonical_of));
+      const pages = paths.filter((p) => active.some((t) => t.phase === phase && p === `/es/${t.slug_es}`));
       expect(pages, `página de ${phase}`).toHaveLength(1);
     }
+    const english = paths.filter((p) => active.some((t) => p === `/en/${t.slug_en}`));
+    expect(english).toHaveLength(1);
+    expect(paths).toHaveLength(1 + phases.length + english.length);
     // Contra el `next start` que arranca el job web para Playwright (D-141).
     for (const u of urls) expect(new URL(u).origin).toBe("http://127.0.0.1:3100");
   });

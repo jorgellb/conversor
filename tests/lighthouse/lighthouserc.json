@@ -6,7 +6,8 @@
         "http://127.0.0.1:3100/es/comprimir-pdf",
         "http://127.0.0.1:3100/es/pdf-a-word",
         "http://127.0.0.1:3100/es/resumir-pdf",
-        "http://127.0.0.1:3100/es/ogg-a-mp3"
+        "http://127.0.0.1:3100/es/ogg-a-mp3",
+        "http://127.0.0.1:3100/en/compress-pdf"
       ],
       "numberOfRuns": 3,
       "settings": {
