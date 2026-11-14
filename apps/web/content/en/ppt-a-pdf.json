@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PowerPoint to PDF converts PPT, PPTX and PPS presentations into a PDF with one slide per page. It is the easiest way to send slides to a client, publish the ones from a lecture or print them, without depending on which PowerPoint version each person has or on fonts changing when the file is opened on another computer.",
+    "LibreOffice Impress does the conversion on our server, with no internet access. The text, shapes, tables, charts and images of every slide go into the PDF; animations, transitions and videos do not, because a PDF is static, so you see the final state of each slide.",
+    "Under more options you decide whether hidden slides, which are skipped by default, are included, and whether the speaker notes pages are added, handy as a script or as handouts. You also choose PDF, PDF/A-2b or PDF/UA, the JPEG quality and maximum resolution of photos (lower the resolution if the deck has many pictures and you want a light PDF) and the opening password if the file is protected.",
+    "The Pages field is applied to the finished PDF: type \"1-10\" to keep the first ten slides or \"odd\" for every other one. Several presentations at once give one PDF per file and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more PPT, PPTX or PPS presentations.",
+    "Say whether you want hidden slides or the speaker notes.",
+    "Download the PDF or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Are effects and animations shown?",
+      "a": "No. The PDF shows each slide once, with all its elements visible, as if the animations had already played."
+    },
+    {
+      "q": "Can I print several slides per sheet?",
+      "a": "Convert the presentation first and then run the PDF through Multiple pages per sheet, which puts 2, 4 or more slides on each sheet."
+    },
+    {
+      "q": "What about LibreOffice presentations?",
+      "a": "For ODP files there is ODP to PDF, with the same options."
+    }
+  ]
+}

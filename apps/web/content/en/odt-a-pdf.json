@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODT to PDF converts OpenDocument Text files, the format of LibreOffice Writer, Apache OpenOffice and many public administrations, into a PDF ready to send, print or submit online. The recipient will see it just as you do, even without any word processor installed.",
+    "Because ODT is the native format of LibreOffice, the engine we use on the server, the conversion is especially faithful: styles, tables, footnotes, tables of contents, headers and footers are kept. The document's headings become PDF bookmarks so readers can jump between chapters, and form fields remain fillable; you can turn both off under more options.",
+    "If the document has review comments and you want them visible, turn on \"Word: comments in margin\": it works the same way with the comments in an ODT. For documents that have to be preserved or handed in to a public body, choose PDF/A-2b; to make them work well with screen readers, tagged PDF/UA.",
+    "You can limit the result to some pages, lower the image resolution to make it lighter and type the password of an encrypted ODT, which is not stored. Several files can be converted together, each with its own PDF."
+  ],
+  "faq": [
+    {
+      "q": "Which PDF format do public bodies ask for?",
+      "a": "Many online submission portals require or recommend PDF/A, because it guarantees the document will open the same way many years from now. Pick it under Format."
+    },
+    {
+      "q": "Are links and the table of contents kept?",
+      "a": "Yes. Links still work in the PDF and the table of contents is preserved; headings also create bookmarks in the reader's side panel."
+    },
+    {
+      "q": "I have a DOCX, not an ODT. What should I use?",
+      "a": "Word to PDF, which accepts DOC and DOCX with the same options."
+    }
+  ]
+}

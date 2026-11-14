@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PowerPoint a PDF convierte presentaciones PPT, PPTX y PPS en un PDF con una diapositiva por página. Es la forma más cómoda de mandar unas transparencias a un cliente, colgar las de una clase o imprimirlas, sin depender de la versión de PowerPoint que tenga cada uno ni de que las fuentes cambien al abrirlas en otro ordenador.",
+    "LibreOffice Impress hace la conversión en nuestro servidor, sin acceso a internet. Los textos, las formas, las tablas, los gráficos y las imágenes de cada diapositiva pasan al PDF; las animaciones, las transiciones y los vídeos no, porque un PDF es estático, así que se ve el estado final de cada diapositiva.",
+    "En las opciones adicionales decides si se incluyen las diapositivas ocultas, que por defecto se omiten, y si se añaden las páginas de notas del orador, útiles como guion o material para repartir. También eliges PDF, PDF/A-2b o PDF/UA, la calidad JPEG y la resolución máxima de las fotos (baja la resolución si la presentación lleva muchas imágenes y quieres un PDF ligero) y la contraseña de apertura si el archivo está protegido.",
+    "El campo «Páginas» se aplica al PDF terminado: escribe «1-10» para quedarte con las diez primeras diapositivas o «impares» para una de cada dos. Varias presentaciones a la vez dan un PDF por archivo y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube una o varias presentaciones PPT, PPTX o PPS.",
+    "Indica si quieres las diapositivas ocultas o las notas del orador.",
+    "Descarga el PDF o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Se ven los efectos y las animaciones?",
+      "a": "No. El PDF muestra cada diapositiva una vez, con todos sus elementos visibles, como si las animaciones ya se hubieran reproducido."
+    },
+    {
+      "q": "¿Puedo imprimir varias diapositivas por hoja?",
+      "a": "Convierte primero la presentación y pasa el PDF por Varias páginas por hoja, que coloca 2, 4 o más diapositivas en cada hoja."
+    },
+    {
+      "q": "¿Y las presentaciones de LibreOffice?",
+      "a": "Para archivos ODP tienes ODP a PDF, con las mismas opciones."
+    }
+  ]
+}

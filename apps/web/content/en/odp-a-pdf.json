@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODP to PDF converts OpenDocument presentations, the format of LibreOffice Impress and Apache OpenOffice, into a PDF with one slide on each page. That lets you share a talk with people who use PowerPoint, Keynote or just a browser, and be sure the fonts and layout will not change.",
+    "We use LibreOffice Impress, the native program for ODP, on our server and with no internet connection, so backgrounds, master slides, tables and charts come out as you designed them. Anything that moves has no place in a PDF: transitions and animations are left out and each slide appears with all its elements already visible.",
+    "Under more options, \"PowerPoint: hidden slides\" and \"PowerPoint: notes pages\" work the same way with an ODP: the first includes the slides you marked as hidden and the second adds the pages with your speaker notes, very handy as handouts. You can produce PDF/A-2b or PDF/UA, reduce the image resolution so the file weighs less and type the password of an encrypted presentation.",
+    "With Pages you choose which slides to keep from the final PDF, for example \"2-12\" to drop the title slide and the credits. Several presentations can go in the same conversion."
+  ],
+  "faq": [
+    {
+      "q": "Are the speaker notes included?",
+      "a": "Only if you turn on \"notes pages\" under more options; by default the PDF contains just the slides."
+    },
+    {
+      "q": "Is the PDF too big?",
+      "a": "That depends on the photos. Lower the maximum resolution to 150 dpi or the image quality, or run the result through Compress PDF afterwards."
+    },
+    {
+      "q": "What if the presentation is a PPTX?",
+      "a": "Use PowerPoint to PDF, which accepts PPT, PPTX and PPS."
+    }
+  ]
+}

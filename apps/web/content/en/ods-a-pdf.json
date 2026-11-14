@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODS to PDF converts OpenDocument spreadsheets, the ones created with LibreOffice Calc or Apache OpenOffice, into a PDF that opens on any device. It is useful for sending lists, balance sheets, timetables or grades to someone who only needs to read them, without being able to change a single cell.",
+    "The conversion is done by LibreOffice Calc, the format's native program, on our server and with no internet connection. The workbook's page styles are applied: print areas, orientation, scaling, headers, footers and manual page breaks. Sheets appear in the PDF in the same order as in the workbook.",
+    "If a sheet has more columns than fit on the paper, turn on \"Excel: each sheet on a single page\" under more options: despite mentioning Excel, it applies to ODS files too and makes every sheet take a single PDF page, as large as necessary. That way you avoid tables chopped into pieces that are hard to follow.",
+    "You can also choose PDF/A-2b for archiving or tagged PDF/UA, keep only a range of pages from the result, adjust the quality and resolution of charts and images, and open a protected workbook with its password. Several files at once give one PDF per workbook and a ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Do formulas show up in the PDF?",
+      "a": "No: you see the results in the cells, just as when you print the sheet."
+    },
+    {
+      "q": "Can I convert just one sheet?",
+      "a": "Convert the workbook and enter under Pages the ones that belong to that sheet, or move the sheet to a separate workbook before uploading it."
+    },
+    {
+      "q": "Does it work for Excel files too?",
+      "a": "For XLS and XLSX there is Excel to PDF, with the same engine and the same options."
+    }
+  ]
+}

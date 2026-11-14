@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV a PDF convierte un archivo de valores separados por comas en una tabla dentro de un PDF. Los CSV son la forma más común de exportar datos desde bancos, tiendas en línea, programas de contabilidad o bases de datos, pero abiertos tal cual son difíciles de leer; en PDF se pueden revisar, imprimir o adjuntar a un correo sin abrir ninguna hoja de cálculo.",
+    "El archivo lo abre LibreOffice Calc en nuestro servidor, sin acceso a internet, como si fuera una hoja de cálculo, y lo exporta a PDF con sus filas y columnas. Un CSV no guarda formato, así que la tabla sale con un estilo sencillo y el tamaño de papel predeterminado; las columnas que no caben en el ancho de la página continúan en páginas siguientes.",
+    "Para tablas anchas con pocas filas, activa «Excel: cada hoja en una sola página» en las opciones adicionales: todo el CSV se coloca en una sola página del tamaño necesario, que se puede leer de un vistazo en pantalla. Con tablas muy largas es mejor dejarla desactivada, porque esa única página se haría enorme.",
+    "También puedes generar PDF/A-2b o PDF/UA y quedarte solo con algunas páginas del resultado, por ejemplo «1» para la primera. El número máximo de páginas depende de tu plan. Puedes subir varios CSV a la vez y descargar cada PDF por separado o todos en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos CSV.",
+    "Si la tabla es ancha y corta, activa «cada hoja en una sola página».",
+    "Descarga el PDF de cada archivo o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "Las columnas no salen como esperaba. ¿Qué hago?",
+      "a": "Abre el CSV en tu hoja de cálculo, ajusta los anchos, el separador y el formato de los números, guárdalo como XLSX u ODS y conviértelo con Excel a PDF u ODS a PDF."
+    },
+    {
+      "q": "¿Se puede elegir la orientación horizontal?",
+      "a": "Un CSV no guarda ajustes de página. Si necesitas una orientación concreta, defínela en la hoja de cálculo, guarda el libro y conviértelo con Excel a PDF."
+    },
+    {
+      "q": "¿Y al revés, de PDF a CSV?",
+      "a": "PDF a CSV extrae las tablas de un PDF a archivos CSV."
+    }
+  ]
+}

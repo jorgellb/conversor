@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODT a PDF convierte documentos de texto OpenDocument, el formato de LibreOffice Writer, Apache OpenOffice y muchas administraciones públicas, en un PDF listo para enviar, imprimir o presentar por registro electrónico. El destinatario lo verá igual que tú, aunque no tenga instalado ningún procesador de textos.",
+    "Como ODT es el formato nativo de LibreOffice, que es el motor que usamos en el servidor, la conversión es especialmente fiel: estilos, tablas, notas al pie, índices, encabezados y pies de página se mantienen. Los títulos del documento se convierten en marcadores del PDF para que se pueda saltar entre capítulos, y los campos de formulario siguen siendo rellenables; puedes desactivar ambas cosas en las opciones adicionales.",
+    "Si el documento tiene comentarios de revisión y quieres que se vean, activa «Word: comentarios en el margen»: funciona igual con los comentarios de un ODT. Para documentos que se tienen que conservar o entregar a la Administración, elige PDF/A-2b; para que los lectores de pantalla lo recorran bien, PDF/UA con etiquetas.",
+    "Puedes limitar el resultado a algunas páginas, bajar la resolución de las imágenes para aligerarlo y escribir la contraseña de un ODT cifrado, que no se guarda. Se admiten varios archivos por conversión, cada uno con su PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué formato de PDF pide la Administración?",
+      "a": "Muchas sedes electrónicas piden o recomiendan PDF/A, porque garantiza que el documento se podrá abrir igual dentro de muchos años. Elígelo en «Formato»."
+    },
+    {
+      "q": "¿Se conservan los enlaces y el índice?",
+      "a": "Sí. Los enlaces siguen funcionando en el PDF y el índice se mantiene; además, los títulos generan marcadores en el panel lateral del lector."
+    },
+    {
+      "q": "Tengo un DOCX, no un ODT. ¿Qué uso?",
+      "a": "Word a PDF, que acepta DOC y DOCX con las mismas opciones."
+    }
+  ]
+}

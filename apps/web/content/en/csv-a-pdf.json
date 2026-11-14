@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV to PDF turns a comma-separated values file into a table inside a PDF. CSV is the most common way to export data from banks, online shops, accounting software or databases, but opened as is it is hard to read; as a PDF it can be reviewed, printed or attached to an email without opening any spreadsheet.",
+    "LibreOffice Calc opens the file on our server, with no internet access, as if it were a spreadsheet, and exports it to PDF with its rows and columns. A CSV stores no formatting, so the table comes out with a plain style and the default paper size; columns that do not fit across the page continue on later pages.",
+    "For wide tables with few rows, turn on \"Excel: each sheet on a single page\" under more options: the whole CSV is placed on a single page of the required size, readable at a glance on screen. With very long tables it is better to leave it off, because that single page would become huge.",
+    "You can also produce PDF/A-2b or PDF/UA and keep only some pages of the result, for example \"1\" for the first one. The maximum number of pages depends on your plan. You can upload several CSV files at once and download each PDF separately or all of them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more CSV files.",
+    "If the table is wide and short, turn on \"each sheet on a single page\".",
+    "Download the PDF for each file or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "The columns do not come out as expected. What can I do?",
+      "a": "Open the CSV in your spreadsheet program, adjust the widths, the separator and the number format, save it as XLSX or ODS and convert it with Excel to PDF or ODS to PDF."
+    },
+    {
+      "q": "Can I choose landscape orientation?",
+      "a": "A CSV stores no page settings. If you need a particular orientation, set it in the spreadsheet, save the workbook and convert it with Excel to PDF."
+    },
+    {
+      "q": "And the other way round, from PDF to CSV?",
+      "a": "PDF to CSV extracts the tables of a PDF into CSV files."
+    }
+  ]
+}

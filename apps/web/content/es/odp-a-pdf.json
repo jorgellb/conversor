@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODP a PDF convierte presentaciones OpenDocument, el formato de LibreOffice Impress y Apache OpenOffice, en un PDF con una diapositiva en cada página. Así puedes compartir una exposición con quien use PowerPoint, Keynote o solo un navegador, y estar seguro de que las fuentes y la maquetación no cambiarán.",
+    "Usamos LibreOffice Impress, el programa nativo de ODP, en nuestro servidor y sin conexión a internet, de modo que los fondos, los patrones de diapositiva, las tablas y los gráficos salen tal como los diseñaste. Lo que se mueve no tiene cabida en un PDF: las transiciones y las animaciones se omiten y cada diapositiva aparece con todos sus elementos ya visibles.",
+    "En las opciones adicionales, «PowerPoint: diapositivas ocultas» y «PowerPoint: páginas de notas» funcionan igual con un ODP: la primera incluye las diapositivas que marcaste como ocultas y la segunda añade las páginas con tus notas de orador, muy prácticas como apuntes. Puedes generar PDF/A-2b o PDF/UA, reducir la resolución de las imágenes para que el archivo pese menos y escribir la contraseña de una presentación cifrada.",
+    "Con «Páginas» eliges qué diapositivas conservar del PDF final, por ejemplo «2-12» para quitar la portada y los créditos. Se admiten varias presentaciones en una misma conversión."
+  ],
+  "faq": [
+    {
+      "q": "¿Se incluyen las notas del orador?",
+      "a": "Solo si activas «páginas de notas» en las opciones adicionales; por defecto el PDF contiene únicamente las diapositivas."
+    },
+    {
+      "q": "¿El PDF pesa mucho?",
+      "a": "Depende de las fotos. Baja la resolución máxima a 150 ppp o la calidad de imagen, o pasa después el resultado por Comprimir PDF."
+    },
+    {
+      "q": "¿Y si la presentación es un PPTX?",
+      "a": "Usa PowerPoint a PDF, que acepta PPT, PPTX y PPS."
+    }
+  ]
+}

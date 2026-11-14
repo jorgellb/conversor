@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Convert to PDF is the page to use when you do not want to work out which tool you need: it accepts Word documents (DOC, DOCX), RTF and plain text, Excel, ODS and CSV spreadsheets, PowerPoint (PPT, PPTX, PPS) and ODP presentations, ODG drawings, JPG, PNG, GIF, BMP, TIFF and WebP images, and HTML pages. You can mix them in a single upload and each one comes out as its own PDF.",
+    "The engine is chosen from the real type of each file. Office documents go through LibreOffice; HTML pages are printed by Chromium on A4, backgrounds included and without loading anything from the internet; and every image is placed whole on an A4 page, portrait or landscape to match its shape. JPG, PNG, TIFF and GIF images are inserted with no loss of quality, while BMP and WebP are first turned into PNG, which loses nothing either.",
+    "The options match Word to PDF: a standard PDF, PDF/A-2b for archiving or tagged PDF/UA for accessibility (for documents and HTML), and a page range such as \"1-3, 5\", \"8-\", \"odd\" or \"even\". Under more options you control bookmarks, form fields, image quality and maximum resolution, the password of a protected document and the settings specific to Excel, PowerPoint and Word.",
+    "If you upload several files you get one PDF for each plus a ZIP with all of them. How many pages a conversion may have depends on your plan, and files are removed from the server when their retention period ends."
+  ],
+  "steps": [
+    "Upload one or more files of any of the supported types.",
+    "Choose the PDF format and, if you like, the pages to keep.",
+    "Download each PDF or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Can I put all the files into a single PDF?",
+      "a": "Here each file gives its own PDF. Once you have them, use Merge PDF to combine them in the order you want."
+    },
+    {
+      "q": "How is this different from Word to PDF or Excel to PDF?",
+      "a": "For an Office document the result is the same, because LibreOffice is the engine in both cases. The specific pages only accept their own format; this one accepts all of them, plus images and HTML."
+    },
+    {
+      "q": "Do images lose quality?",
+      "a": "No. JPG photos go into the PDF as they are, without being compressed again, and the rest are stored with lossless compression, so the pixels are the same as in the original."
+    },
+    {
+      "q": "Why are the images of my HTML page missing?",
+      "a": "The server that prints the HTML has no internet access, so it does not download remote resources. For a page with its images and styles, use HTML to PDF with a ZIP."
+    }
+  ]
+}

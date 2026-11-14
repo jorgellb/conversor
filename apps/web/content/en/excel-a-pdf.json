@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Excel to PDF turns XLS and XLSX workbooks into a PDF that anyone can open without Excel: a quote for a client, an invoice, a shift rota or a report with charts. The PDF shows the values exactly as they appear in the sheet, with no formulas that someone could change by mistake.",
+    "The conversion runs on our server with LibreOffice Calc, with no internet connection. The page setup saved in the workbook is respected, such as the print area, the orientation or fitting to one page wide, and each sheet follows the previous one in the PDF.",
+    "When a table is too wide and its columns spill over several pages, turn on \"Excel: each sheet on a single page\" under more options: each sheet then takes a single PDF page, as large as it needs, so it can be read at a glance. You can also choose PDF/A-2b or PDF/UA, keep a page range, adjust the quality and resolution of images and charts, and type the password if the workbook is protected; it is only used to open it during the conversion.",
+    "You can upload several workbooks at once and download them one by one or in a ZIP. The maximum number of pages per conversion depends on your plan."
+  ],
+  "steps": [
+    "Upload one or more XLS or XLSX files.",
+    "If a table is wide, turn on \"each sheet on a single page\" under more options.",
+    "Download the PDF for each workbook or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Are all the sheets of the workbook converted?",
+      "a": "Yes, the PDF contains the sheets one after another. If you only need part of it, enter the pages of the result you want to keep, for example \"1-2\"."
+    },
+    {
+      "q": "Why is my table split across several pages?",
+      "a": "Because the workbook has no page setting that makes it fit. Turn on the one-sheet-per-page option or set a print area in Excel before uploading it."
+    },
+    {
+      "q": "What if my sheet is an ODS or a CSV file?",
+      "a": "Use ODS to PDF or CSV to PDF, which work with the same engine and the same options."
+    }
+  ]
+}

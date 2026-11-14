@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Excel a PDF convierte libros XLS y XLSX en un PDF que cualquiera puede abrir sin tener Excel: un presupuesto para un cliente, una factura, un cuadrante de turnos o un informe con gráficos. El PDF muestra los valores tal como están en la hoja, sin fórmulas que se puedan tocar por error.",
+    "La conversión se hace en nuestro servidor con LibreOffice Calc, sin conexión a internet. Se respeta la configuración de página que hayas guardado en el libro, como el área de impresión, la orientación o el ajuste a una página de ancho, y cada hoja continúa en el PDF a partir de la anterior.",
+    "Cuando una tabla es demasiado ancha y las columnas se reparten en varias páginas, activa «Excel: cada hoja en una sola página» en las opciones adicionales: cada hoja ocupa una única página del PDF, con el tamaño que necesite, para que se lea de un vistazo. También puedes elegir PDF/A-2b o PDF/UA, quedarte con un rango de páginas, ajustar la calidad y la resolución de las imágenes y los gráficos, y escribir la contraseña si el libro está protegido; solo se usa para abrirlo durante la conversión.",
+    "Puedes subir varios libros a la vez y descargarlos uno a uno o en un ZIP. El número máximo de páginas por conversión depende de tu plan."
+  ],
+  "steps": [
+    "Sube uno o varios archivos XLS o XLSX.",
+    "Si alguna tabla es ancha, activa «cada hoja en una sola página» en las opciones adicionales.",
+    "Descarga el PDF de cada libro o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Se convierten todas las hojas del libro?",
+      "a": "Sí, el PDF incluye las hojas una detrás de otra. Si solo necesitas una parte, indica las páginas del resultado que quieres conservar, por ejemplo «1-2»."
+    },
+    {
+      "q": "¿Por qué mi tabla sale cortada en varias páginas?",
+      "a": "Porque el libro no tiene un ajuste de página que la haga caber. Activa la opción de una hoja por página o define un área de impresión en Excel antes de subirlo."
+    },
+    {
+      "q": "¿Y si mi hoja está en formato ODS o CSV?",
+      "a": "Usa ODS a PDF o CSV a PDF, que trabajan con el mismo motor y las mismas opciones."
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "RTF to PDF converts Rich Text Format documents into PDF. RTF is an old but widespread format: WordPad and TextEdit produce it, many business programs use it when exporting letters or reports, and so do some note-taking apps. Turning it into a PDF stops each program from displaying it differently.",
+    "The conversion runs with LibreOffice Writer on our server, with no internet connection, and keeps everything RTF can store: fonts, bold and italics, colours, tables, embedded images, headers and footers. If the document uses heading styles, they become bookmarks for navigating the PDF.",
+    "You can pick PDF/A-2b, the format designed to preserve documents for years, or tagged PDF/UA for screen readers. If the RTF contains comments and you want them visible next to the text, turn on \"Word: comments in margin\" under more options. That is also where you set the quality and maximum resolution of images.",
+    "Use Pages to choose which parts of the result to keep, for example \"1-4\" or \"even\". Several RTF files can be converted at once; each gives its own PDF and, when there is more than one, a ZIP too. The maximum number of pages per document depends on your plan."
+  ],
+  "faq": [
+    {
+      "q": "Why does my RTF look different in another program?",
+      "a": "Every word processor interprets RTF in its own way, especially tables and margins. The PDF fixes the result so everyone sees the same thing."
+    },
+    {
+      "q": "What happens to fonts that are not on the server?",
+      "a": "They are replaced with ones of equivalent metrics, so the text takes up the same space and the pagination does not shift."
+    },
+    {
+      "q": "What if the file is plain text?",
+      "a": "For a TXT file use TXT to PDF, which detects the encoding and lets you choose the font and margins."
+    }
+  ]
+}

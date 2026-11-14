@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TXT to PDF converts plain text files into a neatly laid out PDF: notes, program logs, exported lists, song lyrics or any .txt file you want to print or attach looking tidy. Line breaks and spaces are preserved, and lines that are too long are wrapped so they do not run off the paper.",
+    "The classic problem with TXT files is accented letters turning into strange symbols. To avoid it, the encoding is detected automatically: first we check whether the file carries a UTF-8 or UTF-16 marker, then whether it is valid UTF-8 and, if not, the content is analysed. When several encodings fit equally well, Western European ones (Windows-1252, ISO-8859-15 and Latin-1) are preferred, as they are the usual ones for files in English and Spanish.",
+    "There are three options. The font can be monospaced at 9.5 points, ideal for code, tables aligned with spaces or logs, or proportional at 11 points, more pleasant for reading prose. The paper can be A3, A4, A5, Letter or Legal, and margins range from 0 to 50 mm, 20 mm by default. Tabs are kept and form-feed characters in the text are removed.",
+    "The PDF is generated with Chromium on our server, with no internet access. Each file can hold up to 10 MB of text; if you upload several, you get one PDF per file and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more TXT files.",
+    "Choose the font, the paper and the margins.",
+    "Download the PDF or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Do I have to specify the file's encoding?",
+      "a": "No, it is detected automatically. If a very short file comes out with a wrong character, save it as UTF-8 in your editor and convert it again."
+    },
+    {
+      "q": "Which font should I pick for a list with columns?",
+      "a": "Monospaced: every character has the same width, so columns aligned with spaces stay aligned in the PDF."
+    },
+    {
+      "q": "Can I convert a Markdown file?",
+      "a": "Yes, with Markdown to PDF, which renders headings, lists, tables and code blocks instead of showing them as plain text."
+    }
+  ]
+}

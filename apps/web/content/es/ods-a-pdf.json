@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODS a PDF convierte hojas de cálculo OpenDocument, las que se crean con LibreOffice Calc o Apache OpenOffice, en un PDF que se abre en cualquier dispositivo. Es útil para enviar listados, balances, horarios o calificaciones a alguien que solo necesita leerlos, sin que pueda modificar ninguna celda.",
+    "La conversión la hace LibreOffice Calc, el programa nativo del formato, en nuestro servidor y sin conexión a internet. Se aplican los estilos de página del libro: áreas de impresión, orientación, escala, encabezados, pies y saltos de página manuales. Las hojas aparecen en el PDF en el mismo orden que en el libro.",
+    "Si una hoja tiene más columnas de las que caben en el papel, activa «Excel: cada hoja en una sola página» en las opciones adicionales: aunque el nombre hable de Excel, se aplica igual a los archivos ODS y hace que cada hoja ocupe una sola página del PDF, del tamaño necesario. Así evitas tablas partidas en trozos difíciles de seguir.",
+    "Además puedes elegir PDF/A-2b para archivar o PDF/UA etiquetado, conservar solo un rango de páginas del resultado, ajustar la calidad y la resolución de los gráficos e imágenes y abrir un libro protegido con su contraseña. Varios archivos a la vez dan un PDF por libro y un ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Aparecen las fórmulas en el PDF?",
+      "a": "No: se ven los resultados de las celdas, igual que al imprimir la hoja."
+    },
+    {
+      "q": "¿Puedo convertir solo una hoja?",
+      "a": "Convierte el libro y escribe en «Páginas» las que corresponden a esa hoja, o mueve la hoja a un libro aparte antes de subirlo."
+    },
+    {
+      "q": "¿Sirve también para archivos de Excel?",
+      "a": "Para XLS y XLSX tienes Excel a PDF, con el mismo motor y las mismas opciones."
+    }
+  ]
+}

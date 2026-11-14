@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "RTF a PDF convierte documentos en formato de texto enriquecido (Rich Text Format) en PDF. El RTF es un formato antiguo pero muy extendido: lo generan WordPad y TextEdit, muchos programas de gestión al exportar cartas o informes y algunas aplicaciones de notas. Pasarlo a PDF evita que cada programa lo muestre de una manera distinta.",
+    "La conversión se hace con LibreOffice Writer en nuestro servidor, sin conexión a internet, y conserva lo que el RTF sabe guardar: tipos de letra, negritas y cursivas, colores, tablas, imágenes incrustadas, encabezados y pies de página. Si el documento usa estilos de título, estos se convierten en marcadores para navegar por el PDF.",
+    "Puedes elegir PDF/A-2b, el formato pensado para conservar documentos durante años, o PDF/UA con etiquetas para lectores de pantalla. Si el RTF lleva comentarios y quieres que queden visibles junto al texto, activa «Word: comentarios en el margen» en las opciones adicionales. Desde ahí también ajustas la calidad y la resolución máxima de las imágenes.",
+    "Escribe en «Páginas» qué partes quieres conservar del resultado, por ejemplo «1-4» o «pares». Se pueden convertir varios RTF de una vez; cada uno da su PDF y, si hay más de uno, también un ZIP. El máximo de páginas por documento depende de tu plan."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué mi RTF se ve distinto en otro programa?",
+      "a": "Cada procesador de textos interpreta el RTF a su manera, sobre todo las tablas y los márgenes. El PDF fija el resultado para que todos vean lo mismo."
+    },
+    {
+      "q": "¿Qué pasa con las fuentes que no están en el servidor?",
+      "a": "Se sustituyen por otras de medidas equivalentes, para que el texto ocupe el mismo espacio y no se descuadre la paginación."
+    },
+    {
+      "q": "¿Y si el archivo es texto sin formato?",
+      "a": "Para un TXT usa TXT a PDF, que detecta la codificación y te deja elegir la fuente y los márgenes."
+    }
+  ]
+}

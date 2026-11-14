@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TXT a PDF convierte archivos de texto plano en un PDF bien maquetado: notas, registros de un programa, listados exportados, letras de canciones o cualquier archivo .txt que quieras imprimir o adjuntar con un aspecto cuidado. Se respetan los saltos de línea y los espacios, y las líneas demasiado largas se parten para que no se salgan del papel.",
+    "El problema clásico de los TXT son las tildes y las eñes que aparecen como símbolos raros. Para evitarlo, detectamos la codificación automáticamente: primero se mira si el archivo lleva marca de UTF-8 o UTF-16, luego si es UTF-8 válido y, si no, se analiza el contenido. Cuando hay dudas entre varias codificaciones, se da preferencia a las de Europa occidental (Windows-1252, ISO-8859-15 y Latin-1), que son las habituales en archivos en español e inglés.",
+    "Tienes tres opciones. La fuente puede ser monoespaciada, de 9,5 puntos, ideal para código, tablas alineadas con espacios o registros, o proporcional, de 11 puntos, más agradable para leer prosa. El papel puede ser A3, A4, A5, Carta o Legal, y los márgenes van de 0 a 50 mm, con 20 mm por defecto. Las tabulaciones se mantienen y los saltos de página del texto se eliminan.",
+    "El PDF se genera con Chromium en nuestro servidor, sin acceso a internet. Cada archivo puede tener hasta 10 MB de texto; si subes varios, recibes un PDF por archivo y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos TXT.",
+    "Elige la fuente, el papel y los márgenes.",
+    "Descarga el PDF o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Tengo que indicar la codificación del archivo?",
+      "a": "No, se detecta sola. Si un archivo muy corto sale con algún carácter mal, guárdalo en UTF-8 con tu editor y vuelve a convertirlo."
+    },
+    {
+      "q": "¿Qué fuente elijo para un listado con columnas?",
+      "a": "La monoespaciada: todos los caracteres miden lo mismo, así que las columnas alineadas con espacios siguen alineadas en el PDF."
+    },
+    {
+      "q": "¿Puedo convertir un archivo Markdown?",
+      "a": "Sí, con Markdown a PDF, que interpreta títulos, listas, tablas y bloques de código en lugar de mostrarlos como texto."
+    }
+  ]
+}

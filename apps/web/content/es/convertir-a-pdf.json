@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Convertir a PDF es la página para cuando no quieres pensar qué herramienta toca: aceptamos documentos de Word (DOC, DOCX), RTF y texto, hojas de cálculo de Excel, ODS y CSV, presentaciones de PowerPoint (PPT, PPTX, PPS) y ODP, dibujos ODG, imágenes JPG, PNG, GIF, BMP, TIFF y WebP, y páginas HTML. Puedes mezclarlos en una misma subida y cada uno sale convertido en su propio PDF.",
+    "El motor se elige según el tipo real de cada archivo. Los documentos de oficina pasan por LibreOffice; las páginas HTML se imprimen con Chromium en A4, con los fondos incluidos y sin cargar nada de internet; y cada imagen se coloca entera en una página A4, en vertical u horizontal según su forma. Las JPG, PNG, TIFF y GIF se insertan sin pérdida de calidad y las BMP y WebP se pasan antes a PNG, que tampoco pierde información.",
+    "Las opciones son las mismas que en Word a PDF: PDF normal, PDF/A-2b para archivar o PDF/UA etiquetado para accesibilidad (en documentos y HTML), y un rango de páginas como «1-3, 5», «8-», «impares» o «pares». En las opciones adicionales controlas los marcadores, los campos de formulario, la calidad y la resolución máxima de las imágenes, la contraseña de un documento protegido y los ajustes propios de Excel, PowerPoint y Word.",
+    "Si subes varios archivos recibes un PDF por cada uno y un ZIP con todos. El número de páginas que admite cada conversión depende de tu plan, y los archivos se eliminan del servidor cuando vence su plazo de conservación."
+  ],
+  "steps": [
+    "Sube uno o varios archivos, del tipo que sean entre los admitidos.",
+    "Elige el formato del PDF y, si quieres, las páginas que conservar.",
+    "Descarga cada PDF o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo juntar todos los archivos en un único PDF?",
+      "a": "Aquí cada archivo da su propio PDF. Cuando los tengas, usa Unir PDF para combinarlos en el orden que quieras."
+    },
+    {
+      "q": "¿Qué diferencia hay con Word a PDF o Excel a PDF?",
+      "a": "El resultado de un documento de oficina es el mismo, porque el motor es LibreOffice en los dos casos. Las páginas específicas solo aceptan su formato; esta acepta todos y además imágenes y HTML."
+    },
+    {
+      "q": "¿Las imágenes pierden calidad?",
+      "a": "No. Las fotos JPG entran en el PDF tal cual, sin volver a comprimirlas, y el resto se guarda con compresión sin pérdida, así que los píxeles son los mismos que en el original."
+    },
+    {
+      "q": "¿Por qué no aparecen las imágenes de mi página HTML?",
+      "a": "El servidor que imprime el HTML no tiene acceso a internet, así que no descarga recursos remotos. Para una página con sus imágenes y estilos, usa HTML a PDF con un ZIP."
+    }
+  ]
+}

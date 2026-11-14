@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODG to PDF converts OpenDocument drawings, the format of LibreOffice Draw, into PDF. Draw is used for diagrams, org charts, simple floor plans, posters and leaflets, and a PDF is the easiest way for someone else to view or print them without having LibreOffice.",
+    "LibreOffice does the conversion on our server, with no internet access. Every page of the drawing becomes a PDF page of the same size, and lines, shapes, connectors and text are exported as vector elements: they can be zoomed without becoming pixelated and the text can be selected and searched. Any images inside the drawing are stored with the JPEG quality and maximum resolution you set under more options.",
+    "Choose a standard PDF, PDF/A-2b if the drawing belongs to a file that must be preserved, or PDF/UA with accessibility tags. If the file has several pages and you only need some of them, enter them under Pages, for example \"1, 3\" or \"2-\". A password-protected ODG is opened with the password you type, which is only used during the conversion.",
+    "The Excel, PowerPoint and Word options shown in the extra block do not affect drawings. You can convert several ODG files at once and download them together in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Does the PDF keep vector quality?",
+      "a": "Yes. Shapes and text drawn in Draw remain vectors in the PDF; only inserted photos are pixel images."
+    },
+    {
+      "q": "Can I convert a Visio diagram?",
+      "a": "For VSD and VSDX files there is Visio to PDF. Bear in mind that LibreOffice only partially imports Visio files."
+    },
+    {
+      "q": "What about an SVG?",
+      "a": "SVG to PDF turns it into a vector PDF at the SVG's own size or fitted in A4."
+    }
+  ]
+}
