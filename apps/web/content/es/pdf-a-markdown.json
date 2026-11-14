@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a Markdown convierte un PDF en texto Markdown con su estructura: títulos con su nivel, párrafos, listas y tablas en formato GFM, el que entienden GitHub, GitLab y la mayoría de editores. Es la forma más limpia de llevar un documento a una wiki, a un generador de sitios estáticos, a tus notas de Obsidian o a un modelo de lenguaje.",
+    "Docling analiza cada página para distinguir el cuerpo del texto de lo que se repite en todas, como los encabezados, los pies y los números de página. Con «Quitar encabezados y pies de página repetidos», activada por defecto, esas líneas no se cuelan entre los párrafos; si las necesitas, desactívala.",
+    "Con «Imágenes» decides qué hacer con las figuras. Incluidas, en un ZIP, guarda cada imagen en una carpeta junto al archivo .md, que las enlaza con rutas relativas para que se vean al abrirlo; si el PDF no tiene imágenes, recibes solo el .md. Sin imágenes da un único archivo de texto, sin huecos donde iban.",
+    "Markdown no guarda el diseño, solo la estructura: no hay modo fiel al diseño. Si quieres que se vea como el original, usa PDF a HTML con diseño fijo. Los escaneos pasan por OCR automático y puedes convertir solo un rango de páginas. Se procesa en nuestro servidor, sin internet."
+  ],
+  "steps": [
+    "Sube el PDF o los PDF.",
+    "Elige si quieres las imágenes y si se quitan los encabezados y pies repetidos.",
+    "Descarga el .md o el ZIP con el texto y sus imágenes."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan las tablas?",
+      "a": "Sí, como tablas de Markdown con barras verticales. Markdown no admite celdas combinadas, así que esas tablas quedan con una cuadrícula simple."
+    },
+    {
+      "q": "¿Sirve para dárselo a una IA?",
+      "a": "Sí: Markdown conserva la jerarquía de títulos y las tablas con muy poco ruido, y sin los encabezados repetidos el texto queda más limpio para resumirlo o hacer preguntas."
+    },
+    {
+      "q": "¿Se conservan las negritas y los enlaces?",
+      "a": "La conversión se centra en la estructura: títulos, párrafos, listas y tablas. El formato dentro de las frases puede no trasladarse, así que conviene repasarlo si es importante."
+    },
+    {
+      "q": "¿Funciona con un PDF escaneado?",
+      "a": "Sí, el OCR automático reconoce el texto antes de convertir. Elige los idiomas del documento en las opciones adicionales para mejorar el resultado."
+    }
+  ]
+}

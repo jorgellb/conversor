@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to CSV extracts the tables of a PDF into CSV files, the simplest data format, which spreadsheets, databases, Python, R and almost any analysis tool can import. Docling detects each table and rebuilds its rows and columns; if the table has a header, it goes in the first row.",
+    "Every table is saved in its own file, named after its number and the page it comes from, for example report-tabla-2-p7.csv. If the PDF has several tables, you receive them together in a ZIP. Values are copied as text, exactly as they appear in the PDF, without changing the format of numbers or dates.",
+    "Choose the delimiter according to where you will open it: comma, the standard; semicolon, which Excel expects when it uses a Spanish or other European regional setting; or tab. The default encoding is UTF-8 with BOM, so Excel displays accented letters correctly; if you will read the file with your own program, you can choose UTF-8 without BOM under additional options.",
+    "If the PDF contains no tables, we tell you so instead of handing over an empty file. Scanned tables are recognised with automatic OCR, and you can narrow down the pages that are analysed. Extraction runs on our server, offline."
+  ],
+  "steps": [
+    "Upload the PDF with the tables.",
+    "Choose the delimiter and, if needed, the encoding and pages.",
+    "Download the CSV or the ZIP with one CSV per table."
+  ],
+  "faq": [
+    {
+      "q": "When I open it in Excel everything is in one column. Why?",
+      "a": "Your Excel probably uses a regional setting that expects semicolons. Convert again with Semicolon, or import the file and state that the delimiter is a comma."
+    },
+    {
+      "q": "What if my PDF has no tables?",
+      "a": "No CSV is produced and you get a notice. If you want the text in a spreadsheet, PDF to Excel puts the paragraphs one per row; if it is a scan, check that OCR is switched on."
+    },
+    {
+      "q": "Why are numbers not converted?",
+      "a": "A CSV has no data types: each program interprets numbers when it imports them. That is why they are left as in the PDF. If you want numbers ready to add up, use PDF to Excel."
+    },
+    {
+      "q": "Can I get the tables as JSON?",
+      "a": "Yes, PDF to JSON delivers the same tables with their page, header and rows in a single JSON file."
+    }
+  ]
+}

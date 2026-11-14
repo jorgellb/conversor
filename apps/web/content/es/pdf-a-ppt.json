@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a PowerPoint convierte cada página de un PDF en una diapositiva de un archivo PPTX, para que puedas retocar una presentación de la que solo tienes el PDF o reutilizar sus páginas en otra. Las diapositivas tienen el tamaño de la primera página del documento, de modo que la proporción se mantiene.",
+    "En el modo Editable, Docling localiza los textos, las tablas y las imágenes de cada página y los coloca en su sitio: los textos en cuadros con el tamaño de letra medido en el PDF y los títulos en negrita, las tablas como tablas de PowerPoint y las imágenes como imágenes. El tipo de letra exacto no se conserva, así que algún cuadro puede necesitar un retoque.",
+    "Editable con la página sin texto de fondo pone en cada diapositiva una imagen de la página con el texto quitado y, encima, el texto editable. Así se mantienen los fondos, degradados, iconos y gráficos tal como se ven, aunque esos elementos ya no se pueden mover por separado. Fiel al diseño, en cambio, usa la importación de PDF de LibreOffice Impress, que convierte el dibujo en formas; se parece mucho al original, pero se edita peor.",
+    "Los modos editables aplican OCR automático a las páginas escaneadas, en los idiomas que elijas en las opciones adicionales. Puedes convertir solo un rango de páginas. La conversión se hace en nuestro servidor, sin internet, y el archivo se borra al acabar el plazo de tu plan."
+  ],
+  "steps": [
+    "Sube el PDF de la presentación.",
+    "Elige el modo: Editable, Editable con la página sin texto de fondo o Fiel al diseño.",
+    "Descarga el PPTX y ábrelo en PowerPoint, Keynote o LibreOffice Impress."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué modo da el resultado más parecido?",
+      "a": "Para que se vea igual y poder cambiar el texto, Editable con la página sin texto de fondo. Fiel al diseño también se parece mucho, pero sus formas son más incómodas de editar."
+    },
+    {
+      "q": "¿Las animaciones vuelven?",
+      "a": "No. Un PDF no guarda animaciones, transiciones ni notas del orador, solo el aspecto final de cada página, así que el PPTX tampoco las tiene."
+    },
+    {
+      "q": "¿Puedo editar las tablas?",
+      "a": "En el modo Editable, sí: son tablas de PowerPoint. Con la página de fondo, el texto de cada celda va en un cuadro independiente sobre la imagen de la tabla."
+    },
+    {
+      "q": "¿Sirve para un PDF que no es una presentación?",
+      "a": "Sí, cada página será una diapositiva. Para documentos de texto largos, PDF a Word suele ser más práctico."
+    }
+  ]
+}

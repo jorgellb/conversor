@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to Excel pulls the tables out of a PDF into an Excel workbook (XLSX) so you can sort, filter, add up or chart the data without copying it cell by cell. Docling detects the tables on each page and rebuilds their rows and columns; the first row of every table is set in bold and column widths are adjusted to their content.",
+    "The Sheets option decides how they are laid out. One sheet per table, the default, creates a tab for each table named after its number and the PDF page it comes from, for example Table 2 (p. 5). All tables in one sheet stacks them one below another, with that same title above each, which is handy for reviewing them at a glance.",
+    "Numbers written with separators become real numbers, so formulas work straight away. On the English page they are read as 1,234.56; on the Spanish page, as 1.234,56. If the tables contain codes that must stay as text, such as values with leading zeros, switch that option off under additional options.",
+    "If the PDF has no tables at all, you still get a sheet with the document's paragraphs, one per row, together with a notice. Automatic OCR handles scanned pages, and you can limit the conversion to a page range. Everything is processed on our server, offline, and deleted when your plan's retention period ends."
+  ],
+  "steps": [
+    "Upload the PDF with the tables.",
+    "Choose one sheet per table or all tables in one sheet.",
+    "Download the XLSX and open it in Excel, LibreOffice Calc or Google Sheets."
+  ],
+  "faq": [
+    {
+      "q": "Are formulas preserved?",
+      "a": "A PDF does not store formulas, only their results. What you get are the values, already as numbers, so you can write your own formulas on top."
+    },
+    {
+      "q": "Does it work with scanned tables?",
+      "a": "Yes, with automatic OCR, which is on by default. Quality depends on how sharp the scan is; small or blurry tables may need a few cells corrected."
+    },
+    {
+      "q": "Why does a code like 00123 show up as 123?",
+      "a": "Because it was read as a number. Turn off Turn numbers (1,234.56) into real numbers and those cells will stay as text, exactly as they appear in the PDF."
+    },
+    {
+      "q": "What if I only want the raw data?",
+      "a": "PDF to CSV saves each table as a CSV file, the simplest format to import into databases or analysis tools."
+    }
+  ]
+}

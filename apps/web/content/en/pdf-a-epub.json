@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to EPUB turns a PDF into an EPUB 3 e-book so you can read it comfortably on a phone, a tablet or an e-ink reader. Unlike a PDF, which forces you to zoom and scroll on small screens, a flowing EPUB fits the text to the screen size and to the font size you choose.",
+    "With the Flowing layout, Docling rebuilds headings, paragraphs, lists, tables and images, and the book is split into a chapter for each main heading, with a table of contents to jump between them. Images are stored inside the book, and repeated headers and footers are removed so they do not interrupt your reading.",
+    "With the Fixed layout, each PDF page becomes a page of the book, drawn exactly as it looks with a selectable text layer on top. It is the equivalent of the Faithful layout mode: it suits comics, magazines, illustrated books or sheet music, where the design matters more than resizing the text. Automatic picks flowing if at least half the pages contain text and fixed if they are mostly images, and tells you which one it used.",
+    "Automatic OCR applies to scanned pages in the flowing layout. You can choose which pages to convert. The book is generated on our server, with no internet connection, and deleted when your plan's retention period is over."
+  ],
+  "steps": [
+    "Upload the PDF of the book or document.",
+    "Choose the layout: Automatic, Fixed or Flowing.",
+    "Download the EPUB and open it in your e-book app or reader."
+  ],
+  "faq": [
+    {
+      "q": "Which readers open it?",
+      "a": "Apps and devices that support EPUB 3, such as Apple Books, Kobo, Calibre or Thorium. Fixed-layout books need a reader that supports pre-paginated pages."
+    },
+    {
+      "q": "How are chapters made?",
+      "a": "In the flowing layout, each first- or second-level heading that Docling detects starts a new chapter and appears in the contents. In the fixed layout, the contents list the pages."
+    },
+    {
+      "q": "What title does the book get?",
+      "a": "The name of the PDF file, without the extension. If you want a different one, rename the PDF before uploading it or edit the metadata afterwards in your e-book manager."
+    },
+    {
+      "q": "Will a scanned PDF work?",
+      "a": "Yes. With the flowing layout and automatic OCR, the recognised text forms the book; with the fixed layout you will see the pages as they are, without recognised text."
+    }
+  ]
+}

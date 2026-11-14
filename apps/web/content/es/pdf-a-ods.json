@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a ODS pasa las tablas de un PDF a una hoja de cálculo OpenDocument, el formato nativo de LibreOffice Calc, que también abren Excel y Google Sheets. Sirve para recuperar listados, presupuestos, extractos o estadísticas publicados en PDF y seguir trabajando con ellos en formato abierto.",
+    "Docling localiza cada tabla y reconstruye su cuadrícula de filas y columnas. Por defecto, cada tabla va a su propia hoja, con un nombre que indica su número y la página de origen, como «Tabla 1 (p. 3)». Si prefieres tenerlas juntas, elige «Todas las tablas en una hoja»: aparecen seguidas, cada una con su título y separadas por una fila vacía.",
+    "Las cifras se convierten en valores numéricos para que puedas sumarlas o hacer gráficos: la página en español entiende el formato «1.234,56» y la página en inglés, «1,234.56». Cuando una columna contiene referencias o códigos postales que no deben tratarse como números, desactiva la conversión en las opciones adicionales y todo quedará como texto.",
+    "Un PDF sin tablas no da error: recibes una hoja con su texto, un párrafo por fila, y un aviso que lo explica. Los escaneos pasan por OCR automático en los idiomas que elijas. El libro se genera en nuestro servidor, se guarda como ODS con LibreOffice y se borra cuando acaba el plazo de tu plan."
+  ],
+  "steps": [
+    "Sube uno o varios PDF.",
+    "Indica si quieres una hoja por tabla o todas juntas y, si hace falta, qué páginas.",
+    "Descarga el ODS de cada PDF o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿ODS o Excel?",
+      "a": "Si usas LibreOffice o necesitas un formato abierto, ODS. Si trabajas con Microsoft Excel, PDF a Excel genera un XLSX con las mismas opciones."
+    },
+    {
+      "q": "¿Se conserva el formato de las celdas?",
+      "a": "Se conservan los datos y la estructura de la tabla; la primera fila va en negrita y las columnas se ajustan al contenido. Los colores, bordes y tipos de letra del PDF no se copian."
+    },
+    {
+      "q": "¿Por qué la hoja se llama «Texto»?",
+      "a": "Porque no se ha encontrado ninguna tabla en el PDF: en lugar de un libro vacío, recibes los párrafos del documento, uno por fila. Si es un escaneo, comprueba que el OCR automático está activado."
+    },
+    {
+      "q": "¿Puedo sacar solo la tabla de una página?",
+      "a": "Sí: escribe esa página en «Páginas», por ejemplo «4». El nombre de la hoja seguirá indicando la página original del PDF."
+    }
+  ]
+}

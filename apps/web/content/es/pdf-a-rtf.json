@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a RTF convierte un PDF en un documento en formato de texto enriquecido (RTF), un formato veterano que abre prácticamente cualquier programa: Word, LibreOffice, Google Docs, TextEdit en Mac y muchos editores sencillos. Es la opción cuando no sabes con qué lo va a abrir quien lo recibe o cuando un programa antiguo solo acepta RTF.",
+    "El texto se recupera con los mismos tres modos que PDF a Word. Editable reconstruye con Docling los títulos, los párrafos, las listas, las tablas y las imágenes en un texto que fluye y se modifica con comodidad. Editable con gráficos vectoriales como imágenes recorta además las figuras al doble de resolución para que los diagramas se vean nítidos. Fiel al diseño importa el PDF con LibreOffice y coloca cada bloque en su posición: el resultado se parece más al original, pero se edita peor.",
+    "Si el PDF es un escaneo, el OCR automático de los modos editables reconoce el texto antes de convertir; los idiomas del reconocimiento, hasta tres, están en las opciones adicionales. También puedes convertir solo algunas páginas escribiendo un rango como «2-5» o «8-».",
+    "En los modos editables, Docling crea primero el documento y después LibreOffice lo guarda como RTF; en Fiel al diseño, LibreOffice hace todo el trabajo. Ocurre en nuestro servidor, sin conexión a internet, y tus archivos se borran al terminar el plazo de conservación de tu plan."
+  ],
+  "steps": [
+    "Sube el PDF o los PDF que quieras convertir.",
+    "Elige el modo y, si hace falta, el rango de páginas.",
+    "Descarga el archivo RTF, o el ZIP si has subido varios."
+  ],
+  "faq": [
+    {
+      "q": "¿Para qué sirve RTF hoy?",
+      "a": "Para compatibilidad: lo abre casi cualquier procesador de textos, incluidos programas antiguos y editores básicos que no entienden DOCX ni ODT."
+    },
+    {
+      "q": "¿Pierdo algo respecto a Word?",
+      "a": "RTF guarda bien el texto con formato, las tablas sencillas y las imágenes, pero admite menos cosas que DOCX. Si vas a seguir trabajando en Word, usa PDF a Word."
+    },
+    {
+      "q": "¿Qué modo elijo?",
+      "a": "Editable si vas a cambiar el texto; Fiel al diseño si lo que necesitas es que cada página se parezca al PDF, sabiendo que modificarla será más incómodo."
+    },
+    {
+      "q": "¿Los escaneos funcionan en Fiel al diseño?",
+      "a": "No reconoce texto en ese modo, porque importa el PDF tal cual. Con un escaneo, elige un modo editable con el OCR automático activado."
+    }
+  ]
+}

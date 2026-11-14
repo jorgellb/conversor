@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a HTML convierte un PDF en una página web que se abre en cualquier navegador, para publicarlo en tu sitio, enlazarlo o leerlo en el móvil sin un visor de PDF. El resultado es un único archivo HTML con todo dentro, imágenes incluidas, así que no hay carpetas que subir aparte.",
+    "La opción «Diseño» marca el tipo de página. Fijo dibuja cada página tal cual, como imagen vectorial, y pone encima una capa de texto invisible: se ve idéntica al PDF y el texto se puede seleccionar, copiar y buscar. Fluido reconstruye el documento con Docling como HTML normal, con títulos, párrafos, listas, tablas e imágenes, que se adapta al ancho de la pantalla y quita los encabezados y pies repetidos.",
+    "Automático, el modo predeterminado, elige por ti: fluido si al menos la mitad de las páginas tienen texto y fijo si casi todo son imágenes, como en un escaneo o un cartel. Te indicamos cuál se ha usado. El diseño fijo es el equivalente al modo Fiel al diseño de otras conversiones: prima el aspecto sobre la edición.",
+    "En el diseño fluido, el OCR automático reconoce el texto de las páginas escaneadas; el diseño fijo usa el texto que ya tiene el PDF. Puedes convertir solo algunas páginas. La conversión se hace en nuestro servidor, sin acceso a internet, y el archivo se borra al vencer el plazo de tu plan."
+  ],
+  "steps": [
+    "Sube el PDF.",
+    "Elige el diseño: Automático, Fijo o Fluido.",
+    "Descarga el archivo HTML y ábrelo en el navegador o súbelo a tu web."
+  ],
+  "faq": [
+    {
+      "q": "¿Fijo o fluido?",
+      "a": "Fijo si debe verse exactamente como el PDF, por ejemplo un folleto o un plano. Fluido si lo importante es leer cómodamente en cualquier pantalla y que los buscadores entiendan el texto."
+    },
+    {
+      "q": "¿Puedo editar el HTML?",
+      "a": "El fluido sí, es HTML sencillo con títulos, párrafos y tablas. El fijo está pensado para mostrarse: cada página es un dibujo con el texto superpuesto."
+    },
+    {
+      "q": "¿Por qué el archivo pesa tanto?",
+      "a": "Porque lleva las imágenes dentro del propio HTML, para que funcione sin archivos auxiliares. En diseño fijo, cada página entera va dibujada, lo que ocupa más con documentos largos."
+    },
+    {
+      "q": "¿Un escaneo se puede leer como texto?",
+      "a": "Elige diseño Fluido con el OCR automático activado y el texto reconocido formará la página. En Fijo verías la imagen, pero sin texto que seleccionar."
+    }
+  ]
+}

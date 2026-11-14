@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to RTF turns a PDF into a Rich Text Format document, a long-established format that practically any program can open: Word, LibreOffice, Google Docs, TextEdit on a Mac and many simple editors. It is the choice when you do not know what the recipient will open it with, or when an older program only accepts RTF.",
+    "The text is recovered with the same three modes as PDF to Word. Editable uses Docling to rebuild headings, paragraphs, lists, tables and images as flowing text that is easy to change. Editable with vector graphics as images also crops figures at twice the resolution so diagrams stay sharp. Faithful layout imports the PDF with LibreOffice and places each block in its position: the result looks closer to the original but is harder to edit.",
+    "If the PDF is a scan, the automatic OCR of the editable modes recognises the text before converting; the recognition languages, up to three, are under additional options. You can also convert only some pages by typing a range such as 2-5 or 8-.",
+    "In the editable modes, Docling builds the document first and LibreOffice then saves it as RTF; in Faithful layout, LibreOffice does all the work. It happens on our server, without internet access, and your files are deleted when your plan's retention period is over."
+  ],
+  "steps": [
+    "Upload the PDF or PDFs you want to convert.",
+    "Choose the mode and, if needed, the page range.",
+    "Download the RTF file, or the ZIP if you uploaded several."
+  ],
+  "faq": [
+    {
+      "q": "What is RTF good for today?",
+      "a": "Compatibility: almost every word processor opens it, including older programs and basic editors that do not understand DOCX or ODT."
+    },
+    {
+      "q": "Do I lose anything compared with Word?",
+      "a": "RTF keeps formatted text, simple tables and images well, but it supports fewer features than DOCX. If you will keep working in Word, use PDF to Word instead."
+    },
+    {
+      "q": "Which mode should I pick?",
+      "a": "Editable if you are going to change the text; Faithful layout if you need each page to resemble the PDF, accepting that editing it will be more awkward."
+    },
+    {
+      "q": "Do scans work in Faithful layout?",
+      "a": "That mode does not recognise text, because it imports the PDF as it is. For a scan, choose an editable mode with automatic OCR switched on."
+    }
+  ]
+}

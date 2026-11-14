@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a EPUB convierte un PDF en un libro electrónico EPUB 3 para leerlo cómodamente en el móvil, en una tableta o en un lector de tinta electrónica. A diferencia del PDF, que obliga a ampliar y desplazarse en pantallas pequeñas, un EPUB fluido ajusta el texto al tamaño de la pantalla y a la letra que elijas.",
+    "Con diseño Fluido, Docling reconstruye títulos, párrafos, listas, tablas e imágenes, y el libro se divide en un capítulo por cada título principal, con su índice para saltar entre ellos. Las imágenes van dentro del libro y los encabezados y pies de página repetidos se quitan para que no interrumpan la lectura.",
+    "Con diseño Fijo, cada página del PDF se convierte en una página del libro, dibujada tal cual y con una capa de texto seleccionable encima. Es el equivalente al modo Fiel al diseño: conviene para cómics, revistas, libros ilustrados o partituras, donde la maqueta importa más que poder cambiar el tamaño de letra. Automático elige fluido si al menos la mitad de las páginas tienen texto y fijo si son sobre todo imágenes, y te dice cuál ha usado.",
+    "El OCR automático se aplica en el diseño fluido a las páginas escaneadas. Puedes elegir qué páginas convertir. El libro se genera en nuestro servidor, sin conexión a internet, y se borra al terminar el plazo de tu plan."
+  ],
+  "steps": [
+    "Sube el PDF del libro o documento.",
+    "Elige el diseño: Automático, Fijo o Fluido.",
+    "Descarga el EPUB y ábrelo en tu aplicación o lector de libros electrónicos."
+  ],
+  "faq": [
+    {
+      "q": "¿En qué lectores se abre?",
+      "a": "En las aplicaciones y lectores compatibles con EPUB 3, como Apple Books, Kobo, Calibre o Thorium. Los libros de diseño fijo necesitan un lector que admita páginas fijas."
+    },
+    {
+      "q": "¿Cómo se forman los capítulos?",
+      "a": "En diseño fluido, cada título de primer o segundo nivel que detecta Docling abre un capítulo nuevo y aparece en el índice. En diseño fijo, el índice enumera las páginas."
+    },
+    {
+      "q": "¿Qué título lleva el libro?",
+      "a": "El nombre del archivo PDF, sin la extensión. Si quieres otro, cambia el nombre del PDF antes de subirlo o edita los metadatos después con tu gestor de libros."
+    },
+    {
+      "q": "¿Sirve un PDF escaneado?",
+      "a": "Sí. Con diseño fluido y el OCR automático, el texto reconocido forma el libro; en diseño fijo verás las páginas tal cual, sin texto reconocido."
+    }
+  ]
+}

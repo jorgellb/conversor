@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to HTML turns a PDF into a web page that opens in any browser, so you can publish it on your site, link to it or read it on a phone without a PDF viewer. The result is a single HTML file with everything inside, images included, so there are no extra folders to upload.",
+    "The Layout option sets the kind of page. Fixed draws each page as it looks, as a vector image, with an invisible text layer on top: it looks identical to the PDF and the text can be selected, copied and searched. Flowing rebuilds the document with Docling as ordinary HTML, with headings, paragraphs, lists, tables and images, which adapts to the screen width and drops repeated headers and footers.",
+    "Automatic, the default, chooses for you: flowing if at least half the pages contain text and fixed if they are mostly images, as with a scan or a poster. We tell you which one was used. The fixed layout is the equivalent of the Faithful layout mode in other conversions: appearance comes before editing.",
+    "In the flowing layout, automatic OCR recognises the text of scanned pages; the fixed layout uses the text the PDF already has. You can convert only some pages. Conversion takes place on our server, without internet access, and the file is deleted when your plan's retention period ends."
+  ],
+  "steps": [
+    "Upload the PDF.",
+    "Choose the layout: Automatic, Fixed or Flowing.",
+    "Download the HTML file and open it in your browser or upload it to your website."
+  ],
+  "faq": [
+    {
+      "q": "Fixed or flowing?",
+      "a": "Fixed if it must look exactly like the PDF, such as a brochure or a floor plan. Flowing if what matters is comfortable reading on any screen and text that search engines can understand."
+    },
+    {
+      "q": "Can I edit the HTML?",
+      "a": "The flowing one, yes: it is plain HTML with headings, paragraphs and tables. The fixed one is meant for display: each page is a drawing with the text laid over it."
+    },
+    {
+      "q": "Why is the file so large?",
+      "a": "Because the images are stored inside the HTML itself, so it works without auxiliary files. In the fixed layout each whole page is drawn, which takes more space in long documents."
+    },
+    {
+      "q": "Can a scan be read as text?",
+      "a": "Choose the Flowing layout with automatic OCR switched on and the recognised text will make up the page. In Fixed you would see the image, but with no text to select."
+    }
+  ]
+}

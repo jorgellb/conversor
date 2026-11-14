@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a CSV extrae las tablas de un PDF a archivos CSV, el formato de datos más sencillo, que importan hojas de cálculo, bases de datos, Python, R y casi cualquier herramienta de análisis. Docling detecta cada tabla y reconstruye sus filas y columnas; si la tabla tiene cabecera, va en la primera fila.",
+    "Cada tabla se guarda en su propio archivo, con un nombre que indica su número y la página de la que sale, por ejemplo «informe-tabla-2-p7.csv». Si el PDF tiene varias tablas, las recibes juntas en un ZIP. Los valores se copian como texto, tal como aparecen en el PDF, sin cambiar el formato de los números ni las fechas.",
+    "Elige el separador según dónde vayas a abrirlo: coma, el estándar; punto y coma, que es el que espera Excel configurado en español; o tabulador. La codificación predeterminada es UTF-8 con BOM, para que Excel muestre bien las tildes y las eñes; si vas a leer el archivo con un programa propio, puedes elegir UTF-8 sin BOM en las opciones adicionales.",
+    "Si el PDF no contiene ninguna tabla, te lo decimos en lugar de entregar un archivo vacío. Las tablas escaneadas se reconocen con OCR automático y puedes acotar las páginas que se analizan. La extracción se hace en nuestro servidor, sin internet."
+  ],
+  "steps": [
+    "Sube el PDF con las tablas.",
+    "Elige el separador y, si hace falta, la codificación y las páginas.",
+    "Descarga el CSV o el ZIP con un CSV por tabla."
+  ],
+  "faq": [
+    {
+      "q": "Al abrirlo en Excel todo sale en una columna, ¿por qué?",
+      "a": "Excel en español espera punto y coma como separador. Vuelve a convertir con «Punto y coma» o importa el archivo indicando que el separador es la coma."
+    },
+    {
+      "q": "¿Y si mi PDF no tiene tablas?",
+      "a": "No se genera ningún CSV y recibes un aviso. Si quieres el texto en una hoja de cálculo, PDF a Excel coloca los párrafos uno por fila; si es un escaneo, revisa que el OCR esté activado."
+    },
+    {
+      "q": "¿Por qué no se convierten los números?",
+      "a": "Un CSV no distingue tipos: cada programa interpreta los números al importarlos. Por eso se dejan como en el PDF. Si quieres números listos para sumar, usa PDF a Excel."
+    },
+    {
+      "q": "¿Puedo obtener las tablas en JSON?",
+      "a": "Sí, PDF a JSON entrega las mismas tablas con su página, su cabecera y sus filas en un único archivo JSON."
+    }
+  ]
+}

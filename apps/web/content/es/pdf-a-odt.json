@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a ODT convierte un PDF en un documento de texto OpenDocument, el formato propio de LibreOffice Writer, para que puedas corregirlo, ampliarlo o reutilizar sus párrafos sin copiarlos a mano. El ODT es un formato abierto y normalizado que también se abre en Word, en Google Docs y en casi cualquier procesador de textos.",
+    "Hay tres modos. Editable usa Docling para reconocer títulos, párrafos, listas, tablas e imágenes y los reconstruye como texto que fluye: si añades una frase, el resto se recoloca solo. Editable con gráficos vectoriales como imágenes sigue el mismo camino, pero recorta las figuras al doble de resolución, lo que viene bien cuando el PDF tiene diagramas o gráficas dibujados. Fiel al diseño usa la importación de PDF de LibreOffice: cada bloque queda en un marco colocado en su sitio, así que la página se parece mucho al original, aunque reescribirla cuesta más.",
+    "En los modos editables, el OCR automático reconoce el texto de las zonas que no lo tienen, como las páginas escaneadas, antes de montar el documento. En las opciones adicionales eliges hasta tres idiomas para el reconocimiento; por defecto, español. Con «Páginas» conviertes solo una parte, por ejemplo «1-3, 7» o «impares».",
+    "El archivo se procesa en nuestro servidor, sin acceso a internet, y se borra cuando vence el plazo de tu plan: una hora sin cuenta y 24 horas con cuenta."
+  ],
+  "steps": [
+    "Sube uno o varios PDF.",
+    "Elige el modo: Editable para corregir el texto o Fiel al diseño para que se parezca al original.",
+    "Descarga el ODT de cada PDF o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿ODT o Word?",
+      "a": "Si trabajas con LibreOffice o te piden un formato abierto, ODT. Si quien lo va a recibir usa Microsoft Word, PDF a Word te da un DOCX con las mismas opciones."
+    },
+    {
+      "q": "¿Por qué el modo Fiel al diseño se edita peor?",
+      "a": "Porque cada línea o bloque queda en un marco con una posición fija en la página. Si escribes más texto, no empuja lo de abajo como en un documento normal. Úsalo cuando importa más el aspecto que poder reescribir."
+    },
+    {
+      "q": "¿Reconoce el texto de un escaneo?",
+      "a": "Sí en los dos modos editables, con el OCR automático, que viene activado. Fiel al diseño importa el PDF tal cual y no hace OCR: si tu PDF es solo imagen, pásalo antes por OCR PDF o usa un modo editable."
+    },
+    {
+      "q": "¿Puedo convertir varios PDF a la vez?",
+      "a": "Sí. Recibes un ODT por cada PDF y, además, un ZIP con todos para descargarlos de una vez."
+    }
+  ]
+}

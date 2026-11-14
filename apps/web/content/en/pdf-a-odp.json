@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to ODP transforms each page of a PDF into a LibreOffice Impress slide in OpenDocument format. It is useful for recovering a presentation you only kept as a PDF, changing figures or dates before giving it again, or reusing a few pages in another deck, all in an open format that PowerPoint can open too.",
+    "With Editable mode, Docling recognises text blocks, tables and images and spreads them over the slide in the same position they had. Each text keeps its font size and headings are bold; tables are tables you can edit. The specific typeface is not carried over.",
+    "If the design matters, there are two alternatives. Editable with the text-free page as background puts the whole page without its text behind each slide as an image, with the editable text on top: backgrounds and graphics look just as they did. Faithful layout opens the PDF with LibreOffice Impress's import and turns it into positioned shapes, very close to the original but more laborious to change.",
+    "Scanned pages are recognised with automatic OCR in the editable modes. You can choose which pages to convert and upload several PDFs at once. Processing takes place on our server, which has no internet access, and files are deleted at the end of your plan's retention period."
+  ],
+  "steps": [
+    "Upload one or more PDFs.",
+    "Choose the conversion mode and, if you like, a page range.",
+    "Download the ODP for each PDF or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "ODP or PowerPoint?",
+      "a": "ODP if you work with LibreOffice Impress or prefer an open format; if you will present with PowerPoint, PDF to PowerPoint gives you a PPTX with the same modes."
+    },
+    {
+      "q": "Why has the typeface changed?",
+      "a": "The conversion keeps position, size and bold headings, but not the exact font of the PDF. Select the boxes and apply whichever typeface you want."
+    },
+    {
+      "q": "What if the PDF is a scan?",
+      "a": "Use an editable mode with automatic OCR switched on. Faithful layout does not recognise text: it would bring the page in as an image."
+    },
+    {
+      "q": "How many slides will I get?",
+      "a": "One for each page you convert. If you only need some, enter them in Pages, for example 1, 4-6."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to PowerPoint turns each page of a PDF into a slide in a PPTX file, so you can touch up a presentation you only have as a PDF or reuse its pages in another one. Slides take the size of the document's first page, so the proportions are kept.",
+    "In Editable mode, Docling locates the text, tables and images on each page and puts them in place: text in boxes with the font size measured from the PDF and headings in bold, tables as PowerPoint tables and pictures as pictures. The exact typeface is not kept, so the odd box may need a tweak.",
+    "Editable with the text-free page as background puts an image of the page with its text removed on each slide and the editable text on top. Backgrounds, gradients, icons and charts look exactly as they did, although those elements can no longer be moved separately. Faithful layout, by contrast, uses LibreOffice Impress's PDF import, which turns the drawing into shapes; it looks very close to the original but is harder to edit.",
+    "The editable modes apply automatic OCR to scanned pages, in the languages you choose under additional options. You can convert just a range of pages. Conversion runs on our server, without internet, and the file is deleted when your plan's retention period ends."
+  ],
+  "steps": [
+    "Upload the presentation PDF.",
+    "Pick the mode: Editable, Editable with the text-free page as background, or Faithful layout.",
+    "Download the PPTX and open it in PowerPoint, Keynote or LibreOffice Impress."
+  ],
+  "faq": [
+    {
+      "q": "Which mode gives the closest result?",
+      "a": "To keep the look and still change the text, Editable with the text-free page as background. Faithful layout also looks very similar, but its shapes are more awkward to edit."
+    },
+    {
+      "q": "Do animations come back?",
+      "a": "No. A PDF stores no animations, transitions or speaker notes, only the final look of each page, so the PPTX does not have them either."
+    },
+    {
+      "q": "Can I edit the tables?",
+      "a": "In Editable mode, yes: they are PowerPoint tables. With the page as background, the text of each cell sits in its own box over the image of the table."
+    },
+    {
+      "q": "Does it work for a PDF that is not a presentation?",
+      "a": "Yes, each page becomes a slide. For long text documents, PDF to Word is usually more practical."
+    }
+  ]
+}

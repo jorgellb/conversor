@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to ODS moves the tables of a PDF into an OpenDocument spreadsheet, the native format of LibreOffice Calc, which Excel and Google Sheets can also open. It is a way to recover listings, budgets, statements or statistics published as PDF and keep working on them in an open format.",
+    "Docling finds each table and rebuilds its grid of rows and columns. By default every table goes to its own sheet, named after its number and source page, such as Table 1 (p. 3). If you would rather keep them together, choose All tables in one sheet: they appear in sequence, each with its title and separated by an empty row.",
+    "Figures are turned into numeric values so you can add them up or chart them: the English page understands the 1,234.56 format and the Spanish page, 1.234,56. When a column holds references or postcodes that should not be treated as numbers, switch the conversion off under additional options and everything will stay as text.",
+    "A PDF without tables does not cause an error: you receive a sheet with its text, one paragraph per row, and a notice explaining why. Scans go through automatic OCR in the languages you choose. The workbook is built on our server, saved as ODS with LibreOffice and deleted when your plan's retention period runs out."
+  ],
+  "steps": [
+    "Upload one or more PDFs.",
+    "Say whether you want one sheet per table or all together and, if needed, which pages.",
+    "Download the ODS for each PDF or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "ODS or Excel?",
+      "a": "If you use LibreOffice or need an open format, ODS. If you work with Microsoft Excel, PDF to Excel produces an XLSX with the same options."
+    },
+    {
+      "q": "Is cell formatting kept?",
+      "a": "The data and the table structure are kept; the first row is bold and columns fit their content. Colours, borders and typefaces from the PDF are not copied."
+    },
+    {
+      "q": "Why is the sheet called Text?",
+      "a": "Because no table was found in the PDF: instead of an empty workbook, you get the document's paragraphs, one per row. If it is a scan, check that automatic OCR is switched on."
+    },
+    {
+      "q": "Can I extract just the table on one page?",
+      "a": "Yes: type that page in Pages, for example 4. The sheet name will still show the original page number of the PDF."
+    }
+  ]
+}

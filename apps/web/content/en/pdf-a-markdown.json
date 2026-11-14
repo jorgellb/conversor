@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to Markdown turns a PDF into Markdown text with its structure intact: headings with their level, paragraphs, lists and tables in GFM format, the flavour understood by GitHub, GitLab and most editors. It is the cleanest way to move a document into a wiki, a static site generator, your Obsidian notes or a language model.",
+    "Docling analyses each page to tell the body text apart from what repeats on every page, such as headers, footers and page numbers. With Remove repeated headers and footers, on by default, those lines do not creep in between paragraphs; switch it off if you need them.",
+    "The Images option decides what happens to figures. Included, in a ZIP stores each image in a folder next to the .md file, which links to them with relative paths so they show up when you open it; if the PDF has no images, you just get the .md. Without images gives a single text file, with no gaps where they used to be.",
+    "Markdown keeps structure, not layout, so there is no faithful layout mode here. If you want it to look like the original, use PDF to HTML with the fixed layout. Scans go through automatic OCR and you can convert just a page range. Processing happens on our server, offline."
+  ],
+  "steps": [
+    "Upload the PDF or PDFs.",
+    "Choose whether you want the images and whether repeated headers and footers are removed.",
+    "Download the .md file or the ZIP with the text and its images."
+  ],
+  "faq": [
+    {
+      "q": "Are tables kept?",
+      "a": "Yes, as Markdown pipe tables. Markdown has no merged cells, so those tables end up with a simple grid."
+    },
+    {
+      "q": "Is it good for feeding to an AI?",
+      "a": "Yes: Markdown keeps the heading hierarchy and the tables with very little noise, and without repeated headers the text is cleaner for summarising or asking questions."
+    },
+    {
+      "q": "Are bold text and links kept?",
+      "a": "The conversion focuses on structure: headings, paragraphs, lists and tables. Formatting inside sentences may not carry over, so review it if it matters."
+    },
+    {
+      "q": "Does it work with a scanned PDF?",
+      "a": "Yes, automatic OCR recognises the text before converting. Choose the document's languages under additional options for a better result; Spanish is the default."
+    }
+  ]
+}

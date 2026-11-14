@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a Excel saca las tablas de un PDF a un libro de Excel (XLSX) para que puedas ordenar, filtrar, sumar o hacer gráficos con los datos sin copiarlos celda a celda. Docling detecta las tablas de cada página y reconstruye sus filas y columnas; la primera fila de cada tabla va en negrita y el ancho de las columnas se ajusta a su contenido.",
+    "Con «Hojas» decides cómo se reparten. Una hoja por tabla, la opción predeterminada, crea una pestaña por tabla con su número y la página del PDF de donde sale, por ejemplo «Tabla 2 (p. 5)». Todas las tablas en una hoja las pone una debajo de otra, con ese mismo título encima de cada una, lo que es cómodo para revisarlas de un vistazo.",
+    "Los números escritos con separadores se convierten en números de verdad, así que las fórmulas funcionan desde el primer momento. En la página en español se interpretan como «1.234,56»; en la página en inglés, como «1,234.56». Si las tablas tienen códigos que deben quedar como texto, por ejemplo con ceros a la izquierda, desactiva esa opción en las opciones adicionales.",
+    "Si el PDF no tiene ninguna tabla, recibes igualmente una hoja con los párrafos del documento, uno por fila, y un aviso. El OCR automático reconoce las páginas escaneadas, y puedes limitar la conversión a un rango de páginas. Todo se procesa en nuestro servidor, sin internet, y se borra al vencer el plazo de tu plan."
+  ],
+  "steps": [
+    "Sube el PDF con las tablas.",
+    "Elige si quieres una hoja por tabla o todas en una.",
+    "Descarga el XLSX y ábrelo en Excel, LibreOffice Calc o Google Sheets."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan las fórmulas?",
+      "a": "Un PDF no guarda fórmulas, solo los resultados. Lo que recibes son los valores, ya como números, para que puedas escribir tus propias fórmulas encima."
+    },
+    {
+      "q": "¿Funciona con tablas escaneadas?",
+      "a": "Sí, con el OCR automático, que está activado de serie. La calidad depende de la nitidez del escaneo; en tablas pequeñas o borrosas puede haber que corregir alguna celda."
+    },
+    {
+      "q": "¿Por qué un código como 00123 aparece como 123?",
+      "a": "Porque se ha interpretado como número. Desactiva «Convertir los números (1.234,56) en números de verdad» y esas celdas quedarán como texto, tal cual están en el PDF."
+    },
+    {
+      "q": "¿Y si solo quiero los datos en bruto?",
+      "a": "PDF a CSV saca cada tabla a un archivo CSV, el formato más sencillo para importarlo en bases de datos o programas de análisis."
+    }
+  ]
+}

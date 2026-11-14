@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a ODP transforma cada página de un PDF en una diapositiva de LibreOffice Impress, en formato OpenDocument. Es útil para recuperar una presentación de la que solo conservas el PDF, cambiar cifras o fechas antes de volver a exponerla, o aprovechar algunas páginas en otra presentación, todo con un formato abierto que también abre PowerPoint.",
+    "Con el modo Editable, Docling reconoce los bloques de texto, las tablas y las imágenes y los reparte por la diapositiva en la misma posición que tenían. Cada texto conserva su tamaño de letra y los títulos van en negrita; las tablas son tablas que puedes editar. La fuente tipográfica concreta no se traslada.",
+    "Si el diseño importa, tienes dos alternativas. Editable con la página sin texto de fondo coloca detrás de cada diapositiva la página entera sin su texto, como imagen, y el texto editable encima: fondos y gráficos se ven tal cual. Fiel al diseño abre el PDF con la importación de LibreOffice Impress y lo convierte en formas colocadas, muy parecido al original pero más trabajoso de modificar.",
+    "Las páginas escaneadas se reconocen con OCR automático en los modos editables. Puedes elegir qué páginas convertir y subir varios PDF a la vez. Se procesa en nuestro servidor, que no tiene salida a internet, y los archivos se borran al terminar el plazo de tu plan."
+  ],
+  "steps": [
+    "Sube uno o varios PDF.",
+    "Elige el modo de conversión y, si quieres, un rango de páginas.",
+    "Descarga el ODP de cada PDF o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿ODP o PowerPoint?",
+      "a": "ODP si trabajas con LibreOffice Impress o prefieres un formato abierto; si vas a presentarlo con PowerPoint, PDF a PowerPoint te da un PPTX con los mismos modos."
+    },
+    {
+      "q": "¿Por qué ha cambiado el tipo de letra?",
+      "a": "La conversión conserva la posición, el tamaño y la negrita de los títulos, pero no la fuente exacta del PDF. Selecciona los cuadros y aplica la tipografía que quieras."
+    },
+    {
+      "q": "¿Y si el PDF es un escaneo?",
+      "a": "Usa un modo editable con el OCR automático activado. Fiel al diseño no reconoce texto: importaría la página como imagen."
+    },
+    {
+      "q": "¿Cuántas diapositivas salen?",
+      "a": "Una por cada página que conviertas. Si solo necesitas algunas, escríbelas en «Páginas», por ejemplo «1, 4-6»."
+    }
+  ]
+}
