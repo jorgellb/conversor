@@ -8,7 +8,7 @@ D1 y D2 (crear-collage), E (transcripción) y F (convertir-archivo). **F3 (IA) e
 resumir-pdf), A2 (chat-pdf) y B (preguntas, fichas, presentación y traducción) hechos. **Goal de trabajo continuo**
 (`docs/GOAL.md`): lote transversal G0-A (infraestructura de proceso) hecho (D-134 a D-143) y G0-B (Lighthouse CI, regresión visual, Playwright
 de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F2 y F5 y fallos de la primera CI) hecho
-(D-150 a D-156).
+(D-150 a D-158).
 
 ## Cierre técnico
 
@@ -282,6 +282,11 @@ texto o de contenido; el aviso de «eliminar» dice cuándo parte del texto de a
 las imágenes de más de 50 MP (o si el WebAssembly se queda sin memoria) se codifican con el lienzo.
 Segunda revisión (D-158): redactar-pdf quita también los archivos adjuntos (el DOCX, ZIP o PDF original, el XML de una
 factura) y las miniaturas de las páginas, y con «rasterizar» quita de `/AcroForm` los campos que tocan un área.
+Cierre del lote: `export_registry.py`, `gen_coolify_compose.py` y `gen_docs.py` regenerados sin cambios y sus
+`--check` en verde; Vitest (292 de client-tools y 34 de web), `tsc` sin errores y pytest completo (1511 en verde, 9
+omitidas por modelos o programas que no hay aquí: embeddings, u2net, faster-whisper y ctranslate2, veraPDF y un DOCX de
+prueba; y las 4 de LibreOffice sin el filtro de importación de PDF de siempre). No hay PostgreSQL ni Docker en esta
+máquina.
 
 Verificado aquí: Vitest (282 de client-tools y 34 de web), `tsc`, `next build`, licencias de npm (0 problemas) y pytest sin
 la marca `integration` (1441 en verde, 8 omitidas y las 4 de LibreOffice sin el filtro de importación de PDF de siempre;
