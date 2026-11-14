@@ -333,7 +333,7 @@
     "sig_clear": "Clear",
     "sig_use": "Use signature",
     "tool_redact": "Area to redact",
-    "redactHint": "Mark the areas or search for them. When saving, pages with areas are turned into 300 dpi images: whatever is covered is removed from the file.",
+    "redactHint": "Mark the areas or search for them. When saving, whatever is covered is removed from the file: with “rasterise”, pages with areas are turned into 300 dpi images; with “remove”, only what lies under the areas is deleted and the rest of the text can still be selected.",
     "redactPanel": "Redaction",
     "searchText": "Search text",
     "search": "Search",
@@ -351,6 +351,7 @@
     "boxTextNone": "None",
     "method": "Method",
     "methodRaster": "rasterise affected pages at 300 dpi",
+    "methodRemove": "remove only the content under the area",
     "areas": "Marked areas",
     "removeArea": "Remove area",
     "termsChecked": "{count, plural, one {We will check that # text no longer appears} other {We will check that # texts no longer appear}}",
@@ -396,7 +397,9 @@
     "panel": "Side panel",
     "thumbnails": "Thumbnails",
     "outline": "Bookmarks",
-    "noOutline": "This PDF has no bookmarks."
+    "noOutline": "This PDF has no bookmarks.",
+    "linkToPage": "Go to page {n}",
+    "externalLink": "Open {url} in a new tab"
   },
   "createPdf": {
     "title": "Create a PDF",

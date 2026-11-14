@@ -140,6 +140,10 @@ def _ffprobe(path: str) -> dict:
     return json.loads(res.stdout)
 
 
+needs_ffmpeg = pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="FFmpeg no instalado")
+
+
+@needs_ffmpeg
 @pytest.mark.parametrize("tool,name", [("ogg-a-mp3", "voz.ogg"), ("opus-a-mp3", "voz.opus"), ("m4a-a-mp3", "audio.m4a"), ("mp4-a-mp3", "video.mp4")])
 def test_audio_to_mp3(make_ctx, fixtures_dir, tool, name):
     src = fixtures_dir / name
@@ -150,6 +154,7 @@ def test_audio_to_mp3(make_ctx, fixtures_dir, tool, name):
     assert abs(float(info["format"]["duration"]) - expected) < 0.1
 
 
+@needs_ffmpeg
 def test_audio_duration_limit(make_ctx, fixtures_dir):
     from core.errors import ToolError
 

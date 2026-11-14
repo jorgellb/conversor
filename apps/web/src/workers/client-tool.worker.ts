@@ -251,6 +251,8 @@ async function viewerRequest(id: number, slug: string, files: InFile[], options:
     const pages = [];
     for (let page = from; page < to; page += 1) pages.push({ page, chars: doc.text(page) });
     self.postMessage({ id, type: "done", data: { pages } });
+  } else if (slug === "__page_links") {
+    self.postMessage({ id, type: "done", data: { links: viewDoc(options).links(Number(options.index)) } });
   } else if (slug === "__outline") {
     self.postMessage({ id, type: "done", data: { items: viewDoc(options).outline() } });
   } else if (slug === "__close") {

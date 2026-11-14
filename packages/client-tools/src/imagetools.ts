@@ -1,4 +1,5 @@
-// png-a-jpg, webp-a-jpg, comprimir-imagen y redimensionar-imagen (A.10), con un códec de lienzo en el navegador.
+// png-a-jpg, webp-a-jpg, comprimir-imagen y redimensionar-imagen (A.10). El lienzo del navegador decodifica y dibuja;
+// JPEG, PNG y WebP se codifican en WebAssembly (MozJPEG, oxipng y libwebp de jSquash) con `wasmEncoding` (D-150).
 import {
   MIME,
   ToolError,
@@ -12,7 +13,8 @@ import {
 } from "./common";
 import { extractExif, insertExif, resetOrientation, stripJpegMetadata } from "./exif";
 
-import type { Rgba } from "./rasters";
+import { flatten, type Rgba } from "./rasters";
+import { encodeJpeg, encodePng, encodeWebp, type WasmLoader } from "./wasmcodecs";
 
 export type ImageFormat = "jpg" | "png" | "webp";
 
@@ -45,6 +47,29 @@ export interface ImageCodec {
   /** Envuelve píxeles decodificados fuera del navegador (TIFF, SVG, o AVIF y WebP en WebAssembly). */
   fromRgba?(pixels: Rgba): Promise<Decoded>;
   close?(img: Decoded): void;
+}
+
+/**
+ * Envuelve un códec para que JPEG, PNG y WebP salgan de MozJPEG, oxipng y libwebp en lugar del codificador del lienzo:
+ * archivos más pequeños con la misma calidad e iguales en todos los navegadores (D-04, D-79 y D-150). El lienzo solo
+ * decodifica y dibuja (tamaño, ajuste, fondo y margen). Sin `rgba` en el códec, se deja como está.
+ */
+export function wasmEncoding(codec: ImageCodec, load: WasmLoader): ImageCodec {
+  const pixels = codec.rgba?.bind(codec);
+  if (!pixels) return codec;
+  return {
+    ...codec,
+    async encode(img, target) {
+      if (target.format === "jpg") {
+        const background = target.background ?? "#FFFFFF";
+        return encodeJpeg(load, flatten(await pixels(img, { ...target, background }), background), target.quality * 100);
+      }
+      // El destino completo (con formato y calidad) llega también a `rgba`: lo usan los registros de las pruebas.
+      const px = await pixels(img, target);
+      if (target.format === "png") return encodePng(load, px);
+      return encodeWebp(load, px, { quality: Math.min(100, Math.max(1, Math.round(target.quality * 100))), lossless: false });
+    },
+  };
 }
 
 export interface ImagenAJpgOptions {
@@ -137,7 +162,13 @@ export async function imagenAJpg(files: InFile[], o: ImagenAJpgOptions, codec: I
   return { outputs: withBatchZip(outputs, "imagenes-jpg.zip"), notes: [] };
 }
 
-export async function comprimirImagen(files: InFile[], o: ComprimirImagenOptions, codec: ImageCodec, progress?: Progress): Promise<ToolResult> {
+const NOT_SMALLER_NOTE = {
+  es: (f: string) => `${f}: ya estaba optimizada; se devuelve sin cambios.`,
+  en: (f: string) => `${f}: it was already optimised; it is returned unchanged.`,
+};
+
+export async function comprimirImagen(files: InFile[], o: ComprimirImagenOptions, codec: ImageCodec, progress?: Progress,
+                                      locale: "es" | "en" = "es"): Promise<ToolResult> {
   const outputs: OutFile[] = [];
   const notes: string[] = [];
   for (const [i, file] of files.entries()) {
@@ -160,7 +191,7 @@ export async function comprimirImagen(files: InFile[], o: ComprimirImagenOptions
       // Nunca se entrega un archivo mayor que el original (NOT_SMALLER).
       bytes = o.quitar_metadatos && src === "jpg" ? stripJpegMetadata(file.bytes) : file.bytes;
       note = "NOT_SMALLER";
-      notes.push(`${file.name}: ya estaba optimizada; se devuelve sin cambios.`);
+      notes.push(NOT_SMALLER_NOTE[locale === "en" ? "en" : "es"](file.name));
     }
     outputs.push({ name: derivedName(file.name, "-comprimida", format), bytes, mime: MIME[format], note });
     progress?.((i + 1) / files.length);

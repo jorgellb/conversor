@@ -17,6 +17,8 @@
     "@cantoo/fontkit": "2.0.12",
     "@cantoo/pdf-lib": "2.11.1",
     "@jsquash/avif": "2.1.1",
+    "@jsquash/jpeg": "1.6.0",
+    "@jsquash/oxipng": "2.3.0",
     "@jsquash/webp": "1.5.0",
     "@resvg/resvg-wasm": "2.6.2",
     "diff-match-patch": "1.0.5",
@@ -28,7 +30,6 @@
   },
   "devDependencies": {
     "@embedpdf/pdfium": "2.15.1",
-    "@jsquash/jpeg": "1.6.0",
     "@jsquash/png": "3.1.1",
     "@techstark/opencv-js": "5.0.0-release.1",
     "@types/diff-match-patch": "1.0.36",

@@ -26,6 +26,7 @@ import {
 
 import { MM_TO_PT, PAPER_MM, ToolError, derivedName, hexColor, loadPdf, pdfOut, savePdf, type InFile, type ToolResult } from "./common";
 import { embedFont, encodable, type FontKind, type FontLoader, type FontStyle } from "./pdfutil";
+import { notesFor, type Locale } from "./notes";
 
 type Color = string;
 
@@ -510,7 +511,8 @@ function setPageOrder(doc: PDFDocument, pages: PDFPage[]): void {
 }
 
 /** Aplica el modelo y devuelve el PDF editado. Sin archivo, empieza con un documento vacío. */
-export async function applyEdits(file: InFile | null, model: EditModel, loader?: FontLoader, password?: string): Promise<{ bytes: Uint8Array; notes: string[] }> {
+export async function applyEdits(file: InFile | null, model: EditModel, loader?: FontLoader, password?: string,
+                                 locale?: Locale): Promise<{ bytes: Uint8Array; notes: string[] }> {
   const doc = file ? await loadPdf(file, password, { preserveXFA: true }) : await PDFDocument.create();
   const notes: string[] = [];
   const original = doc.getPages();
@@ -521,10 +523,10 @@ export async function applyEdits(file: InFile | null, model: EditModel, loader?:
     if (form.hasXFA()) {
       // Sin XFA, los lectores muestran los valores de AcroForm que acabamos de escribir.
       form.deleteXFA();
-      notes.push("El formulario tenía una capa XFA, que no es compatible: se han rellenado sus campos AcroForm.");
+      notes.push(notesFor(locale).xfaRemoved);
     }
     const unknown = fillFields(doc, model.fields);
-    if (unknown.length) notes.push(`Campos que no existen en el PDF: ${unknown.join(", ")}`);
+    if (unknown.length) notes.push(notesFor(locale).unknownFields(unknown));
     const font = await embedFont(doc, "sans", loader);
     form.updateFieldAppearances(font);
   }
@@ -532,7 +534,7 @@ export async function applyEdits(file: InFile | null, model: EditModel, loader?:
     try {
       doc.getForm().flatten();
     } catch {
-      notes.push("Algunos campos no se han podido aplanar y siguen siendo editables.");
+      notes.push(notesFor(locale).notFlattened);
     }
   }
 
@@ -557,17 +559,19 @@ export async function applyEdits(file: InFile | null, model: EditModel, loader?:
   return { bytes: await savePdf(doc), notes };
 }
 
-export async function editarPdf(files: InFile[], options: EditarOptions, loader?: FontLoader, passwords: Record<string, string> = {}): Promise<ToolResult> {
+export async function editarPdf(files: InFile[], options: EditarOptions, loader?: FontLoader, passwords: Record<string, string> = {},
+                                locale?: Locale): Promise<ToolResult> {
   const file = files[0] ?? null;
   const model = options.model ?? {};
   if (!file && !model.pages?.length) {
     model.pages = [{ source: null, size: newPageSize(options.tamano_pagina_nueva, options.orientacion_nueva) }];
   }
-  const res = await applyEdits(file, model, loader, file ? passwords[file.name] : undefined);
+  const res = await applyEdits(file, model, loader, file ? passwords[file.name] : undefined, locale);
   return { outputs: [pdfOut(file ? derivedName(file.name, "-editado", "pdf") : "documento.pdf", res.bytes)], notes: res.notes };
 }
 
-export async function rellenarPdf(files: InFile[], options: RellenarOptions, loader?: FontLoader, passwords: Record<string, string> = {}): Promise<ToolResult> {
+export async function rellenarPdf(files: InFile[], options: RellenarOptions, loader?: FontLoader, passwords: Record<string, string> = {},
+                                  locale?: Locale): Promise<ToolResult> {
   const file = files[0];
   if (!file) throw new ToolError("TOO_MANY_FILES", "Hace falta un PDF");
   const model: EditModel = { ...(options.model ?? {}), flatten: options.guardar === "aplanado" };
@@ -578,7 +582,7 @@ export async function rellenarPdf(files: InFile[], options: RellenarOptions, loa
     const doc = await loadPdf(file, passwords[file.name], { preserveXFA: true });
     model.pages = doc.getPages().map((_, i) => ({ source: i, objects: objects.find((p) => p.source === i)?.objects ?? [] }));
   }
-  const res = await applyEdits(file, model, loader, passwords[file.name]);
+  const res = await applyEdits(file, model, loader, passwords[file.name], locale);
   return { outputs: [pdfOut(derivedName(file.name, "-relleno", "pdf"), res.bytes)], notes: res.notes };
 }
 

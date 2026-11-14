@@ -118,8 +118,9 @@ def test_filetype_detection(fixtures_dir):
     assert detect(fixtures_dir / "texto.pdf").ext == "pdf"
     assert detect(fixtures_dir / "foto.jpg").ext == "jpg"
     assert detect(fixtures_dir / "imagen.webp").ext == "webp"
-    assert detect(fixtures_dir / "voz.opus").ext == "opus"
-    assert detect(fixtures_dir / "voz.ogg").ext == "ogg"
+    if (fixtures_dir / "voz.ogg").exists():  # solo con FFmpeg (scripts/fixtures/generate.py)
+        assert detect(fixtures_dir / "voz.opus").ext == "opus"
+        assert detect(fixtures_dir / "voz.ogg").ext == "ogg"
     assert detect(fixtures_dir / "multipagina.tiff").ext == "tiff"
     fake = detect(fixtures_dir / "falso.pdf", ".pdf")
     assert not matches(fake, ".pdf", ("pdf",))

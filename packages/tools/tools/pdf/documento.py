@@ -12,6 +12,14 @@ from tools.pdf.common import open_pdf, with_batch_zip
 
 LABELS = {"/Title": "Título", "/Author": "Autor", "/Subject": "Asunto", "/Keywords": "Palabras clave", "/Creator": "Creador",
           "/Producer": "Productor", "/CreationDate": "Fecha de creación", "/ModDate": "Fecha de modificación"}
+LABELS_EN = {"/Title": "Title", "/Author": "Author", "/Subject": "Subject", "/Keywords": "Keywords", "/Creator": "Creator",
+             "/Producer": "Producer", "/CreationDate": "Creation date", "/ModDate": "Modification date"}
+
+# Avisos del resultado en el idioma de la página (D-42, D-54 y D-151).
+NOTES = {
+    "es": {"removed": "Quitado: {items}.", "none": "No tenía metadatos."},
+    "en": {"removed": "Removed: {items}.", "none": "It had no metadata."},
+}
 
 
 def parse_date(value: str) -> datetime:
@@ -55,10 +63,12 @@ def run_remove(ctx: ToolContext) -> list[dict]:
         name = derived_name(inp.name, "-sin-metadatos", "pdf")
         dst = ctx.output(name)
         removed: list[str] = []
+        labels = LABELS_EN if ctx.locale == "en" else LABELS
+        notes = NOTES.get(ctx.locale, NOTES["es"])
         with open_pdf(inp.path, None, ctx.plan.pdf_pages) as pdf:
             info = pdf.trailer.get("/Info")
             if isinstance(info, pikepdf.Dictionary):
-                removed += [LABELS.get(str(k), str(k).lstrip("/")) for k in info.keys()]
+                removed += [labels.get(str(k), str(k).lstrip("/")) for k in info.keys()]
                 del pdf.trailer["/Info"]
             for holder in [pdf.Root, *[p.obj for p in pdf.pages]]:
                 for key in ("/Metadata", "/PieceInfo"):
@@ -67,7 +77,7 @@ def run_remove(ctx: ToolContext) -> list[dict]:
                             removed.append("XMP")
                         del holder[key]
             pdf.save(dst, fix_metadata_version=False)
-        note = "Quitado: " + ", ".join(removed) + "." if removed else "No tenía metadatos."
+        note = notes["removed"].format(items=", ".join(removed)) if removed else notes["none"]
         outputs.append({"path": str(dst), "name": name, "note": note})
     return with_batch_zip(ctx, outputs, "pdf-sin-metadatos.zip")
 

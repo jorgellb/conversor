@@ -3,7 +3,7 @@
 // lector-pdf (A.7): visor propio sobre PDFium (de EmbedPDF) en el Web Worker. Los PDF no salen del navegador;
 // el resto de documentos se convierte antes en el servidor con el motor de convertir-a-pdf.
 import { findMatches, textRuns, type Match, type PageText, type TextRun } from "@conversor/client-tools/textsearch";
-import type { OutlineItem } from "@conversor/client-tools";
+import type { OutlineItem, PageLink } from "@conversor/client-tools";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -44,15 +44,27 @@ function extOf(name: string): string {
   return e === "jpeg" ? "jpg" : e === "tif" ? "tiff" : e;
 }
 
-function ViewerPage({ docId, index, width, height, zoom, highlights, active, label }: {
+function ViewerPage({ docId, index, width, height, zoom, highlights, active, label, onGoTo }: {
   docId: string; index: number; width: number; height: number; zoom: number;
-  highlights: Match["areas"]; active: Match["areas"]; label: string;
+  highlights: Match["areas"]; active: Match["areas"]; label: string; onGoTo: (page: number) => void;
 }) {
+  const t = useTranslations("viewer");
   const box = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [visible, setVisible] = useState(false);
   const [runs, setRuns] = useState<TextRun[] | null>(null);
+  const [links, setLinks] = useState<PageLink[] | null>(null);
   const k = zoom * PX_PER_PT;
+
+  // Enlaces del PDF (D-23 y D-152): internos a su página y externos (http, https y mailto) en una pestaña nueva.
+  useEffect(() => {
+    if (!visible || links) return;
+    let cancelled = false;
+    askViewer<{ links: PageLink[] }>("__page_links", { docId, index })
+      .then((data) => { if (!cancelled) setLinks(data.links); })
+      .catch(() => { if (!cancelled) setLinks([]); });
+    return () => { cancelled = true; };
+  }, [visible, links, docId, index]);
 
   useEffect(() => {
     if (!visible || runs) return;
@@ -108,6 +120,17 @@ function ViewerPage({ docId, index, width, height, zoom, highlights, active, lab
       className="relative mx-auto shrink-0 bg-white shadow" style={{ width: width * k, height: height * k }}>
       <canvas ref={canvas} className="pointer-events-none absolute inset-0 h-full w-full" />
       {visible && runs && <TextLayer runs={runs} k={k} />}
+      {visible && links?.map((l, i) => {
+        const style = { left: l.x * k, top: l.y * k, width: l.width * k, height: l.height * k };
+        return l.page !== null ? (
+          <a key={`l${i}`} href={`#vista-pagina-${l.page + 1}`} data-pdf-link="internal" className="pdf-link absolute" style={style}
+            aria-label={t("linkToPage", { n: l.page + 1 })} title={t("linkToPage", { n: l.page + 1 })}
+            onClick={(e) => { e.preventDefault(); onGoTo(l.page! + 1); }} />
+        ) : (
+          <a key={`l${i}`} href={l.uri!} target="_blank" rel="noopener noreferrer nofollow" data-pdf-link="external"
+            className="pdf-link absolute" style={style} aria-label={t("externalLink", { url: l.uri! })} title={l.uri!} />
+        );
+      })}
       {highlights.map((a, i) => (
         <span key={`h${i}`} className="pointer-events-none absolute" style={{ left: a.x * k, top: a.y * k, width: a.width * k, height: a.height * k, background: "rgba(255, 213, 0, 0.4)" }} />
       ))}
@@ -550,7 +573,7 @@ export function PdfViewer({ spec, nextTools }: { spec: ClientSpec; nextTools: Ne
         {doc.pages.map((p, i) => (
           <ViewerPage key={`${doc.id}-${i}`} docId={doc.id} index={i} width={p.width} height={p.height} zoom={zoom}
             label={t("pageLabel", { n: i + 1, total: doc.pages.length })}
-            highlights={byPage.get(i) ?? []} active={activeMatch && activeMatch.page === i ? activeMatch.areas : []} />
+            highlights={byPage.get(i) ?? []} active={activeMatch && activeMatch.page === i ? activeMatch.areas : []} onGoTo={goTo} />
         ))}
       </div>
       </div>

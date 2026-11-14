@@ -95,7 +95,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | --- | --- | --- |
 | G0-A. Infraestructura de proceso | Prueba de contrato 16.6 genérica y tabla del Anexo A, `default_enabled`, paridad de flags web y API, `gen_docs` con estado, motivos, 7.24 y paridad con PDF24, Playwright con f4, f6 y f7, `EXCLUDED_WORDS` con «firmas», FFmpeg fijado por fecha y SHA-256, diff-match-patch sin `^`, `${MEM_<NOMBRE>}` y perfil de 16 vCPU; URL simuladas de Playwright en la CI; `TOOLS.md` generado desde el índice de git | Hecho (D-134 a D-143) |
 | G0-B. CI de calidad | Lighthouse CI (móvil, mediana de 3, portada y una página por fase), regresión visual de 16.1 (plantilla en móvil y escritorio y cuatro PDF con pypdfium2), Playwright de 16.1 con el servidor simulado y `servidor.spec.ts` revisado, k6 revisado con su escenario comprobado; contraste y cabecera móvil corregidos; el aviso tardío de progreso de Uppy ya no borra el resultado | Hecho (D-144 a D-149); k6 y Lighthouse oficial en el VPS; referencias visuales y `servidor.spec.ts` se confirman en la CI |
-| G1-A. Huecos | redactar-pdf (eliminar bajo el área, D-25), lector-pdf (enlaces, D-23), MozJPEG y oxipng (D-04 y D-79), notas en inglés (D-42 y D-54) | Pendiente |
+| G1-A. Huecos | redactar-pdf (eliminar bajo el área, D-25), lector-pdf (enlaces, D-23), MozJPEG y oxipng (D-04 y D-79), notas en inglés (D-42 y D-54); fallos de la primera CI (perfil FOGRA39, Smokescreen y muestras sin FFmpeg) | Hecho (D-150 a D-156) |
 | G2-C01 a G2-C15. Contenido 8.2 | Contenido propio es/en de las 145 páginas que no lo tienen, en lotes de unas 10 | En curso (ver `PROGRESS.md`) |
 
 ## F4: firma, formularios, facturas y accesibilidad (pendiente)

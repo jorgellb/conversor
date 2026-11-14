@@ -30,8 +30,8 @@ tipo real. Calibre usa una configuración y una caché dentro del directorio del
 `internal` (sin salida) para todo lo demás; `edge` solo para `web`, `api`, `apiint`, `beat` y `egressweb`. `gotenberg`
 solo en `internal` y con todos los filtros de salida activados. `webrender` (sin salida) une `workeroffice`,
 `gotenbergweb` y `egressweb`: `gotenbergweb` y `egressweb` no están en `internal`, porque cualquier servicio de esa red
-podría usarlos para salir a internet (D-34). `egressweb` (Smokescreen) niega las IP privadas, de enlace local, CGNAT y
-de Docker; la API solo admite URL `http` o `https` con puerto 80 o 443 hacia nombres públicos, y el worker vuelve a
+podría usarlos para salir a internet (D-34). `egressweb` (Smokescreen, compilado desde su etiqueta v0.1.0 en una imagen `scratch` sin
+usuario root, D-155) niega las IP privadas, de enlace local, CGNAT y de Docker; la API solo admite URL `http` o `https` con puerto 80 o 443 hacia nombres públicos, y el worker vuelve a
 comprobar cada redirección. Prueba de humo en el VPS: una conexión a internet desde cada worker y desde `gotenberg`
 debe fallar, y desde `workeroffice` solo sale por `egressweb` (DEPLOY-CHECKLIST).
 
@@ -74,4 +74,12 @@ plan y por clase de coste, IPv6 agrupada por /64 y `CF-Connecting-IP` solo desde
   Caddy pregunta a `apiint` antes de servirlo. Nunca se adjunta el archivo.
 - Google Drive y Dropbox: el navegador habla directamente con ellos (ámbito `drive.file`); ninguna credencial pasa por
   el servidor. Sus dominios solo entran en la CSP de las páginas de herramientas cuando su flag está activo y hay claves.
+
+## Redacción y enlaces de PDF en el navegador (G1-A)
+
+- redactar-pdf, con los dos métodos, borra del archivo los objetos a los que ya no llega nada (el contenido sustituido
+  seguiría dentro del PDF aunque no se viera) y comprueba el resultado antes de entregarlo; con «eliminar», además, que
+  bajo cada área no se dibuja nada antes de pintar los recuadros (D-153).
+- lector-pdf solo hace pulsables los enlaces `http`, `https` y `mailto`, en una pestaña nueva con
+  `noopener noreferrer`; `javascript:`, `file:` y las acciones de lanzar programas se ignoran (D-152).
 

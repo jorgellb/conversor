@@ -5,7 +5,7 @@
     "JPG to PNG turns your JPG photos into PNG, a lossless format required by some design programs, print platforms or editors where you will keep working on the image. From then on, saving the PNG again will not add further compression artefacts, which does happen when a JPG is saved over and over.",
     "Your photos never leave your computer or phone: the browser opens them, converts them to PNG and hands them back. If the JPG comes from a camera and its orientation is stored in the EXIF data, the image is rotated before saving, so it does not appear sideways in programs that ignore that tag.",
     "There is no quality setting, because PNG stores every pixel exactly. The only option, under the advanced section, is to keep the EXIF metadata (date, camera, location…); it is off by default so you do not accidentally share where the photo was taken.",
-    "You can convert many photos in one go. Download them one by one or all together in the ZIP that is created when there is more than one."
+    "You can convert many photos in one go. Download them one by one or all together in the ZIP that is created when there is more than one. The PNG goes through oxipng, which picks the most compact palette and filters without changing a single pixel."
   ],
   "faq": [
     {

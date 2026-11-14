@@ -15,7 +15,7 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] **Propietario:** decidir si se añaden equivalentes de «Print PDF as poster» y «OFD to PDF» de PDF24, que no están
       en la especificación (tabla de paridad de `docs/TOOLS.md`, D-139).
 - [ ] Revisar la ficha de licencia de los modelos que descarga `docling-tools` en `worker-convert`.
-- [ ] Confirmar que `ghcr.io/stripe/smokescreen:v0.1.0` está publicada y fijar su digest (`@sha256:…`) en `scripts/gen_coolify_compose.py` y `docker-compose.yml` (D-30).
+- [ ] Smokescreen ya no viene de `ghcr.io/stripe/smokescreen` (esa imagen no existe): `images.yml` compila `infra/smokescreen/Dockerfile` desde la etiqueta v0.1.0 y publica `ghcr.io/<propietario>/conversor-smokescreen` (D-155). Comprobar en el primer despliegue que `egressweb` y `egressai` arrancan con esa imagen y que web-a-pdf sale a internet y no llega a una IP privada (D-30).
 - [ ] Contenido propio de cada página revisado por muestreo y marcado con `reviewed: true` en `apps/web/content/` (7.22).
 - [ ] Textos de las páginas índice revisados (título, descripción e introducción de conversor-pdf, crear-pdf y
       convertir-archivo, en `apps/web/messages/`): se indexan y están en el sitemap sin pasar por `reviewed` (D-117 y D-118).
@@ -97,6 +97,9 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Lote C de F5 con la pila completa: raw-a-jpg de un CR2, un NEF y un ARW reales (LibRaw), psd-a-png de un PSD de
       Photoshop con capas y efectos, png-a-svg de un logotipo y quitar-fondo de una foto de producto y de un retrato con
       «Refinar los bordes»; `workermedia` (1,5 GB) sin reinicios por memoria y sin intentos de descarga del modelo.
+- [ ] G1-A con la pila completa: la imagen `worker-pdf` construye con el perfil FOGRA39 de `infra/icc` (D-154) y
+  pdf-a-jpg en CMYK lo incrusta; `egressweb` y `egressai` arrancan con `conversor-smokescreen` (D-155); en la web en
+  inglés, las notas de reparar-pdf, comprimir-pdf y proteger-pdf salen en inglés (D-151).
 - [ ] Lote C de F2 con la pila completa: un EPUB a PDF (índice al principio), un CBR en RAR, un DjVu, un EML con
       adjuntos, un MSG de Outlook real, un DXF de un programa de CAD y un .pages; `workermedia` y `workerofficeheavy`
       sin reinicios por memoria (`docker stats`).

@@ -121,11 +121,16 @@ def generate(out: Path) -> dict[str, Path]:
         "foto.jpg": photo(out / "foto.jpg", size=(1200, 900)),
         "imagen.png": photo(out / "imagen.png", size=(800, 600), fmt="PNG"),
         "imagen.webp": photo(out / "imagen.webp", size=(640, 480), fmt="WEBP", quality=80),
-        "voz.ogg": audio(out / "voz.ogg", ["-c:a", "libvorbis"]),
-        "voz.opus": audio(out / "voz.opus", ["-c:a", "libopus"]),
-        "audio.m4a": audio(out / "audio.m4a", ["-c:a", "aac"]),
-        "video.mp4": video_with_audio(out / "video.mp4"),
     }
+    # Audio y vídeo solo con FFmpeg: el trabajo docling de la CI no lo instala y sus pruebas no los usan; las que sí,
+    # se saltan sin FFmpeg (D-156).
+    if shutil.which("ffmpeg"):
+        files.update({
+            "voz.ogg": audio(out / "voz.ogg", ["-c:a", "libvorbis"]),
+            "voz.opus": audio(out / "voz.opus", ["-c:a", "libopus"]),
+            "audio.m4a": audio(out / "audio.m4a", ["-c:a", "aac"]),
+            "video.mp4": video_with_audio(out / "video.mp4"),
+        })
     files["cifrado.pdf"] = encrypted_pdf(out / "cifrado.pdf", files["texto.pdf"])
     tiff = out / "multipagina.tiff"
     frames = [Image.new("RGB", (400, 300), c) for c in ("red", "green", "blue")]

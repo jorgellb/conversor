@@ -5,7 +5,7 @@
     "Resize image changes the width and height in pixels of your JPG, PNG and WEBP photos. Use it to bring a camera photo down to a sensible size before sending it, match an image to what a form or online shop asks for, prepare thumbnails for a website or enlarge a small icon. It runs in your browser, without uploading the images to any server.",
     "There are four modes. Percentage scales the whole image, from the default 50 % up to 1000 %. Fixed width gives the image the number of pixels across you enter, 1920 to start with, and works out the height so it is not distorted; Fixed height does the same with the height, 1080 to start with. Bounding box fits the photo inside a width and a height without distorting it and never enlarges it: if it was already smaller, it stays as it was. No side can exceed 20000 pixels.",
     "In the additional options you choose the output format (the same as the original, JPG, PNG or WEBP) and the quality for JPG and WEBP, 90 % by default so the reduction adds no visible artefacts. If you turn an image with transparency into JPG, the background is filled with white. The photo is saved the right way up, even if the phone stored it rotated, and without the camera metadata.",
-    "Each file carries its new dimensions in the name, for example photo-1920x1280.jpg, and you can process many images at once and download them together in a ZIP."
+    "Each file carries its new dimensions in the name, for example photo-1920x1280.jpg, and you can process many images at once and download them together in a ZIP. After resizing, JPG photos are recompressed with MozJPEG and PNGs losslessly with oxipng."
   ],
   "faq": [
     {

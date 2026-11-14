@@ -19,13 +19,14 @@ import {
   svgAImagen,
   type ImageEnv,
 } from "./imageconvert";
-import { comprimirImagen, imagenAJpg, redimensionarImagen, type ImageCodec } from "./imagetools";
+import { comprimirImagen, imagenAJpg, redimensionarImagen, wasmEncoding, type ImageCodec } from "./imagetools";
 import { exportarQr, leerCodigoQr } from "./qrtools";
 import { unir } from "./merge";
 import { dividir, eliminar, extraer, girar, organizar } from "./pages";
 import { generarContrasena } from "./password";
 import type { FontLoader } from "./pdfutil";
 import type { WasmLoader } from "./wasmcodecs";
+import { notesFor } from "./notes";
 import { pdfAImagenes, type Encoder, type PdfRenderer } from "./render";
 import { marcaDeAgua, numerar, type Rasterizer } from "./stamp";
 
@@ -33,7 +34,7 @@ export * from "./common";
 export { parsePageRanges, isValidRangeSyntax } from "./ranges";
 export { organizedOrder } from "./pages";
 export { formatNumber, tilePositions } from "./stamp";
-export { targetSize } from "./imagetools";
+export { targetSize, wasmEncoding } from "./imagetools";
 export { applyEdits, inspectForm, newPageSize, readMetadata, wrapText } from "./edit";
 export { exportXfdf, importXfdf, writeAnnotations } from "./annotate";
 export { cortarMitad, halves, imprimir, montar, printAllowed } from "./f2pages";
@@ -48,7 +49,9 @@ export { bestGrid, bookletOrder, contentBounds, flattenAnnotations, marginsToUse
 export { createPdfiumRenderer } from "./pdfium";
 export { PATTERNS, boxesToAreas, findMatches, findPattern, foldChar, textRuns } from "./textsearch";
 export type { Area, Match, PageText, PatternName, TextRun } from "./textsearch";
-export type { OutlineItem, PdfiumDoc, PdfiumModule, PdfiumRenderer, TextChar } from "./pdfium";
+export type { OutlineItem, PageLink, PdfiumDoc, PdfiumModule, PdfiumRenderer, TextChar, ViewRect } from "./pdfium";
+export { safeUri } from "./pdfium";
+export { NOTES, notesFor } from "./notes";
 export type { PdfMetadata } from "./edit";
 export type { EditModel, EditObject, PageEdit, FormFieldInfo, FormInfo, FieldType } from "./edit";
 export { renderScale, toGray, stack } from "./render";
@@ -122,7 +125,9 @@ export async function unlockInputs(files: InFile[], passwords: Record<string, st
 export async function runClientTool(slug: string, inputs: InFile[], options: AnyOptions, env: ClientEnv = {}): Promise<ToolResult> {
   const p = env.progress;
   const files = await unlockInputs(inputs, env.passwords);
-  const images: ImageEnv = { codec: env.codec, wasm: env.wasm, fonts: env.fonts, progress: p, locale: env.locale };
+  // JPEG, PNG y WebP de las herramientas de imagen con MozJPEG, oxipng y libwebp (D-150).
+  const codec = env.codec && env.wasm ? wasmEncoding(env.codec, env.wasm) : env.codec;
+  const images: ImageEnv = { codec, wasm: env.wasm, fonts: env.fonts, progress: p, locale: env.locale };
   if (Object.hasOwn(FIXED_FORMAT, slug)) return convertirImagen(files, { ...options, formato: FIXED_FORMAT[slug] }, images);
   switch (slug) {
     case "convertir-imagen":
@@ -145,7 +150,7 @@ export async function runClientTool(slug: string, inputs: InFile[], options: Any
     case "unir-pdf":
       return unir(files, options, env.fonts, p);
     case "dividir-pdf":
-      return dividir(files, options, p);
+      return dividir(files, options, p, env.locale);
     case "girar-pdf":
       return girar(files, options, p);
     case "eliminar-paginas-pdf":
@@ -157,14 +162,14 @@ export async function runClientTool(slug: string, inputs: InFile[], options: Any
     case "numerar-paginas-pdf":
       return numerar(files, options, env.fonts, p);
     case "marca-de-agua-pdf":
-      return marcaDeAgua(files, options, env.fonts, env.rasterize, p);
+      return marcaDeAgua(files, options, env.fonts, env.rasterize, p, env.locale);
     case "imagenes-a-pdf":
     case "jpg-a-pdf":
     case "png-a-pdf":
     case "webp-a-pdf":
     case "gif-a-pdf":
     case "bmp-a-pdf":
-      return imagenesAPdf(files, options, env.toPng, p);
+      return imagenesAPdf(files, options, env.toPng, p, env.locale);
     case "pdf-a-jpg":
     case "pdf-a-png":
     case "pdf-a-webp":
@@ -179,36 +184,36 @@ export async function runClientTool(slug: string, inputs: InFile[], options: Any
       return generarContrasena(options);
     case "png-a-jpg":
     case "webp-a-jpg":
-      return imagenAJpg(files, options, need(env.codec, "códec"), p);
+      return imagenAJpg(files, options, need(codec, "códec"), p);
     case "comprimir-imagen":
-      return comprimirImagen(files, options, need(env.codec, "códec"), p);
+      return comprimirImagen(files, options, need(codec, "códec"), p, env.locale);
     case "redimensionar-imagen":
-      return redimensionarImagen(files, options, need(env.codec, "códec"), p);
+      return redimensionarImagen(files, options, need(codec, "códec"), p);
     case "editar-pdf":
-      return editarPdf(files, options, env.fonts);
+      return editarPdf(files, options, env.fonts, {}, env.locale);
     case "recortar-pdf":
-      return recortar(files, options, env.renderer, p);
+      return recortar(files, options, env.renderer, p, env.locale);
     case "cambiar-tamano-pagina-pdf":
-      return cambiarTamano(files, options, p);
+      return cambiarTamano(files, options, p, env.locale);
     case "varias-paginas-por-hoja":
       return variasPorHoja(files, options, p);
     case "folleto-pdf":
-      return folleto(files, options, p);
+      return folleto(files, options, p, env.locale);
     case "aplanar-pdf":
-      return aplanar(files, options, p);
+      return aplanar(files, options, p, env.locale);
     case "redactar-pdf": {
       const renderer = env.renderer as PdfiumRenderer | undefined;
       if (!renderer || !("open" in renderer)) throw new ToolError("INTERNAL", "Falta PDFium");
-      return redactarPdf(files, options, renderer, env.fonts);
+      return redactarPdf(files, options, renderer, env.fonts, env.locale);
     }
     case "rellenar-pdf":
-      return rellenarPdf(files, options, env.fonts);
+      return rellenarPdf(files, options, env.fonts, {}, env.locale);
     case "anotar-pdf":
-      return anotarPdf(files, options, env.fonts);
+      return anotarPdf(files, options, env.fonts, {}, env.locale);
     case "cortar-paginas-por-la-mitad":
       return cortarMitad(files, options, p);
     case "imprimir-pdf":
-      return imprimir(files, options, { renderer: env.renderer, encoder: env.encoder }, p);
+      return imprimir(files, options, { renderer: env.renderer, encoder: env.encoder, locale: env.locale }, p);
     case "montar-pdf":
       return montar(files, options, env.toPng, p);
     case "marcadores-pdf":
@@ -225,14 +230,14 @@ export async function runClientTool(slug: string, inputs: InFile[], options: Any
           doc.close();
         }
       };
-      if (slug === "comparar-pdf") return comparar(files, options, textOf, env.fonts);
+      if (slug === "comparar-pdf") return comparar(files, options, textOf, env.fonts, env.locale);
       // buscar-en-pdf: la página muestra los resultados; aquí, la exportación a CSV de todos los archivos.
       const rows = [];
       for (const file of files) for (const hit of searchText(await textOf(file), String(options.texto ?? ""), {
         caseSensitive: Boolean(options.mayusculas), wholeWord: Boolean(options.palabra_completa), regex: Boolean(options.expresion_regular),
       })) rows.push({ file: file.name, hit });
       return { outputs: [{ name: "busqueda.csv", bytes: new TextEncoder().encode(hitsToCsv(rows)), mime: "text/csv" }],
-        notes: [`${rows.length} resultados.`] };
+        notes: [notesFor(env.locale).results(rows.length)] };
     }
     default:
       throw new ToolError("NOT_FOUND", slug);

@@ -105,7 +105,7 @@ export interface CambiarTamanoOptions {
   contenido: "escalar" | "centrar";
 }
 
-export async function cambiarTamano(files: InFile[], o: CambiarTamanoOptions, progress?: Progress): Promise<ToolResult> {
+export async function cambiarTamano(files: InFile[], o: CambiarTamanoOptions, progress?: Progress, locale?: Locale): Promise<ToolResult> {
   const outputs: OutFile[] = [];
   for (const [n, file] of files.entries()) {
     const src = await loadPdf(file);
@@ -128,7 +128,7 @@ export async function cambiarTamano(files: InFile[], o: CambiarTamanoOptions, pr
     outputs.push(pdfOut(derivedName(file.name, "", "pdf"), await savePdf(out)));
     progress?.((n + 1) / files.length);
   }
-  return { outputs: withBatchZip(outputs, "pdf-tamano.zip"), notes: ["Los enlaces y los campos de formulario no se conservan al cambiar el tamaño."] };
+  return { outputs: withBatchZip(outputs, "pdf-tamano.zip"), notes: [notesFor(locale).resizeLosesLinks] };
 }
 
 // ---------------------------------------------------------------- varias-paginas-por-hoja
@@ -212,6 +212,7 @@ export interface FolletoOptions {
 
 export { bookletOrder, padToFour } from "./booklet-order";
 import { bookletOrder, padToFour } from "./booklet-order";
+import { notesFor, type Locale } from "./notes";
 
 const BOOKLET_SHEETS: Record<FolletoOptions["papel"], string | [number, number]> = {
   a4_a5: "A4",
@@ -219,7 +220,7 @@ const BOOKLET_SHEETS: Record<FolletoOptions["papel"], string | [number, number]>
   letter_media_carta: "Letter",
 };
 
-export async function folleto(files: InFile[], o: FolletoOptions, progress?: Progress): Promise<ToolResult> {
+export async function folleto(files: InFile[], o: FolletoOptions, progress?: Progress, locale?: Locale): Promise<ToolResult> {
   const outputs: OutFile[] = [];
   for (const [n, file] of files.entries()) {
     const src = await loadPdf(file);
@@ -262,9 +263,7 @@ export async function folleto(files: InFile[], o: FolletoOptions, progress?: Pro
     }
     progress?.((n + 1) / files.length);
   }
-  const notes = o.salida === "pdf"
-    ? ["Imprime a doble cara volteando por el borde corto y dobla las hojas por la mitad."]
-    : ["Imprime primero los anversos, da la vuelta al montón sin girarlo e imprime los reversos; después dobla las hojas por la mitad."];
+  const notes = [o.salida === "pdf" ? notesFor(locale).bookletPdf : notesFor(locale).bookletManual];
   return { outputs, notes };
 }
 
@@ -326,7 +325,7 @@ export function contentBounds(img: { width: number; height: number; data: Uint8C
   return maxX < 0 ? null : { minX, minY, maxX, maxY };
 }
 
-export async function recortar(files: InFile[], o: RecortarOptions, renderer?: PdfRenderer, progress?: Progress): Promise<ToolResult> {
+export async function recortar(files: InFile[], o: RecortarOptions, renderer?: PdfRenderer, progress?: Progress, locale?: Locale): Promise<ToolResult> {
   if (o.automatico && !renderer) throw new ToolError("INTERNAL", "Falta el renderizador para el recorte automático");
   const outputs: OutFile[] = [];
   const notes: string[] = [];
@@ -346,7 +345,7 @@ export async function recortar(files: InFile[], o: RecortarOptions, renderer?: P
           const img = await rendered.render(i, 1);
           const bounds = contentBounds(img);
           if (!bounds) {
-            notes.push(`Página ${i + 1}: en blanco, no se recorta.`);
+            notes.push(notesFor(locale).blankNotCropped(i));
             continue;
           }
           const safety = Math.max(0, o.margen_seguridad) * MM_TO_PT;
@@ -457,7 +456,7 @@ export function flattenAnnotations(doc: PDFDocument): number {
   return count;
 }
 
-export async function aplanar(files: InFile[], o: AplanarOptions, progress?: Progress): Promise<ToolResult> {
+export async function aplanar(files: InFile[], o: AplanarOptions, progress?: Progress, locale?: Locale): Promise<ToolResult> {
   const outputs: OutFile[] = [];
   const notes: string[] = [];
   for (const [n, file] of files.entries()) {
@@ -468,7 +467,7 @@ export async function aplanar(files: InFile[], o: AplanarOptions, progress?: Pro
     }
     if (o.aplanar !== "formularios") {
       const count = flattenAnnotations(doc);
-      if (!count) notes.push(`${file.name}: no tenía anotaciones que aplanar.`);
+      if (!count) notes.push(notesFor(locale).noAnnotations(file.name));
     }
     outputs.push(pdfOut(derivedName(file.name, "-aplanado", "pdf"), await savePdf(doc)));
     progress?.((n + 1) / files.length);

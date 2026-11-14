@@ -62,7 +62,7 @@ export async function askWorker<T>(kind: "__render" | "__inspect" | "__text" | "
 }
 
 /** Peticiones del lector al documento ya abierto en el worker (`__page`, `__page_text`, `__close`): no envían el archivo. */
-export function askViewer<T>(kind: "__page" | "__page_text" | "__outline" | "__close", options: Record<string, unknown>): Promise<T> {
+export function askViewer<T>(kind: "__page" | "__page_text" | "__page_links" | "__outline" | "__close", options: Record<string, unknown>): Promise<T> {
   const w = getWorker();
   const id = ++seq;
   return new Promise((resolve, reject) => {

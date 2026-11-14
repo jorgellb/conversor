@@ -3390,11 +3390,18 @@
             }
           },
           "metodo": {
-            "const": "rasterizar",
             "default": "rasterizar",
+            "enum": [
+              "rasterizar",
+              "eliminar"
+            ],
             "title": "Método",
             "type": "string",
             "x-labels": {
+              "eliminar": {
+                "en": "Remove only the content under the area",
+                "es": "Eliminar solo el contenido bajo el área"
+              },
               "rasterizar": {
                 "en": "Rasterise affected pages (300 dpi)",
                 "es": "Rasterizar las páginas afectadas (300 ppp)"

@@ -214,8 +214,11 @@ class AplanarOptions(BaseModel):
 class RedactarOptions(BaseModel):
     color: str = opt("#000000", "Color del recuadro", "Box colour", pattern=COLOR_PATTERN)
     texto: str = opt("", "Texto en el recuadro", "Text in the box", max_length=40)
-    metodo: Literal["rasterizar"] = opt("rasterizar", "Método", "Method",
-                                        labels={"rasterizar": ("Rasterizar las páginas afectadas (300 ppp)", "Rasterise affected pages (300 dpi)")})
+    # «Eliminar solo el contenido bajo el área» pasa las pruebas de redacción de 16.4 con texto, imágenes y vectores (D-153).
+    metodo: Literal["rasterizar", "eliminar"] = opt(
+        "rasterizar", "Método", "Method",
+        labels={"rasterizar": ("Rasterizar las páginas afectadas (300 ppp)", "Rasterise affected pages (300 dpi)"),
+                "eliminar": ("Eliminar solo el contenido bajo el área", "Remove only the content under the area")})
 
 
 class AnotarOptions(BaseModel):

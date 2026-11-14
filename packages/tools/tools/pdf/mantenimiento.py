@@ -19,6 +19,31 @@ from tools.pdf.common import open_pdf, with_batch_zip
 # --- reparar-pdf -------------------------------------------------------------------------------------------------
 
 
+# Avisos del resultado en el idioma de la página (D-42, D-54 y D-151).
+NOTES = {
+    "es": {
+        "qpdf": "Reconstruido con qpdf y pikepdf: {pages} páginas recuperadas.",
+        "pdfium": "Guardado de nuevo con PDFium: {pages} páginas recuperadas.",
+        "raster": "Rasterizado: {done} de {total} páginas recuperadas como imagen (sin texto seleccionable).",
+        "lost": " Páginas perdidas: {pages}.",
+        "images": "{count} imágenes extraídas.",
+        "skipped": " {count} no se han podido leer (códecs no compatibles).",
+    },
+    "en": {
+        "qpdf": "Rebuilt with qpdf and pikepdf: {pages} pages recovered.",
+        "pdfium": "Saved again with PDFium: {pages} pages recovered.",
+        "raster": "Rasterised: {done} of {total} pages recovered as images (no selectable text).",
+        "lost": " Lost pages: {pages}.",
+        "images": "{count} images extracted.",
+        "skipped": " {count} could not be read (unsupported codecs).",
+    },
+}
+
+
+def _notes(ctx: ToolContext) -> dict[str, str]:
+    return NOTES.get(ctx.locale, NOTES["es"])
+
+
 def _repair_one(ctx: ToolContext, src: Path, dst: Path) -> str:
     """Orden de intentos de A.5: qpdf y pikepdf, PDFium, y por último rasterizar las páginas legibles."""
     try:
@@ -29,7 +54,7 @@ def _repair_one(ctx: ToolContext, src: Path, dst: Path) -> str:
             pdf.save(dst)
         with pikepdf.open(dst, attempt_recovery=False):
             pass
-        return f"Reconstruido con qpdf y pikepdf: {pages} páginas recuperadas."
+        return _notes(ctx)["qpdf"].format(pages=pages)
     except pikepdf.PasswordError as exc:
         raise ToolError(ErrorCode.PASSWORD_REQUIRED) from exc
     except ToolError:
@@ -48,7 +73,7 @@ def _repair_one(ctx: ToolContext, src: Path, dst: Path) -> str:
             doc.save(str(dst))
             with pikepdf.open(dst, attempt_recovery=False):
                 pass
-            return f"Guardado de nuevo con PDFium: {total} páginas recuperadas."
+            return _notes(ctx)["pdfium"].format(pages=total)
         except Exception:  # noqa: BLE001 - último recurso
             pass
         images, lost = [], []
@@ -66,9 +91,9 @@ def _repair_one(ctx: ToolContext, src: Path, dst: Path) -> str:
         if not images:
             raise ToolError(ErrorCode.CORRUPT_FILE, "Ninguna página legible")
         dst.write_bytes(img2pdf.convert(images, layout_fun=img2pdf.get_fixed_dpi_layout_fun((150, 150))))
-        note = f"Rasterizado: {len(images)} de {total} páginas recuperadas como imagen (sin texto seleccionable)."
+        note = _notes(ctx)["raster"].format(done=len(images), total=total)
         if lost:
-            note += f" Páginas perdidas: {', '.join(map(str, lost))}."
+            note += _notes(ctx)["lost"].format(pages=", ".join(map(str, lost)))
         return note
     finally:
         doc.close()
@@ -180,9 +205,9 @@ def run_extract_images(ctx: ToolContext) -> list[dict]:
     with zipfile.ZipFile(dst, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for arc, data in entries:
             zf.writestr(arc, data)
-    note = f"{len(entries)} imágenes extraídas."
+    note = _notes(ctx)["images"].format(count=len(entries))
     if skipped:
-        note += f" {skipped} no se han podido leer (códecs no compatibles)."
+        note += _notes(ctx)["skipped"].format(count=skipped)
     return [{"path": str(dst), "name": zip_name, "note": note}]
 
 

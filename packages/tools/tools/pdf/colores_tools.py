@@ -18,6 +18,25 @@ def _pages_list(indexes: list[int]) -> str:
     return ", ".join(str(i + 1) for i in indexes)
 
 
+# Avisos del resultado en el idioma de la página (D-42, D-54 y D-151).
+NOTES = {
+    "es": {
+        "gray_raster": "Páginas rasterizadas en gris porque no se podían convertir con seguridad: {pages}.",
+        "dark_skipped": "Páginas que ya eran oscuras y no se han tocado: {pages}.",
+        "dark_partial": "Páginas con elementos que se han dejado con sus colores: {pages}.",
+    },
+    "en": {
+        "gray_raster": "Pages rasterised in grey because they could not be converted safely: {pages}.",
+        "dark_skipped": "Pages that were already dark and were left untouched: {pages}.",
+        "dark_partial": "Pages with elements that were left with their colours: {pages}.",
+    },
+}
+
+
+def _notes(ctx: ToolContext) -> dict[str, str]:
+    return NOTES.get(ctx.locale, NOTES["es"])
+
+
 def _acroform_da(pdf: pikepdf.Pdf, rw: Rewriter) -> None:
     form = pdf.Root.get("/AcroForm")
     if isinstance(form, pikepdf.Dictionary) and "/DA" in form:
@@ -52,7 +71,7 @@ def run_gray(ctx: ToolContext) -> list[dict]:
             pdf.save(dst)
         note = None
         if o.metodo == "vectorial" and raster_pages:
-            note = f"Páginas rasterizadas en gris porque no se podían convertir con seguridad: {_pages_list(raster_pages)}."
+            note = _notes(ctx)["gray_raster"].format(pages=_pages_list(raster_pages))
         outputs.append({"path": str(dst), "name": name, "note": note})
     return with_batch_zip(ctx, outputs, "pdf-gris.zip")
 
@@ -89,8 +108,8 @@ def run_dark(ctx: ToolContext) -> list[dict]:
             pdf.save(dst)
         notes = []
         if skipped:
-            notes.append(f"Páginas que ya eran oscuras y no se han tocado: {_pages_list(skipped)}.")
+            notes.append(_notes(ctx)["dark_skipped"].format(pages=_pages_list(skipped)))
         if partial:
-            notes.append(f"Páginas con elementos que se han dejado con sus colores: {_pages_list(partial)}.")
+            notes.append(_notes(ctx)["dark_partial"].format(pages=_pages_list(partial)))
         outputs.append({"path": str(dst), "name": name, "note": " ".join(notes) or None})
     return with_batch_zip(ctx, outputs, "pdf-oscuro.zip")

@@ -38,7 +38,9 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | rembg, onnxruntime y PyMatting | MIT | quitar-fondo |
 | numba y llvmlite; scikit-image; imageio y tifffile | BSD-2-Clause (llvmlite con LLVM, Apache-2.0 con excepción LLVM); BSD-3-Clause; BSD | Dependencias de rembg y psd-tools |
 | Modelo u2net de rembg | Apache-2.0 (repositorio U-2-Net) | quitar-fondo; descargado al construir con su SHA-256 (D-96) |
-| `@jsquash/jpeg` y `@jsquash/png` | Apache-2.0 | Solo en las pruebas (decodificar y codificar en Node) |
+| `@jsquash/jpeg` 1.6.0 (MozJPEG de Squoosh en WebAssembly) | Apache-2.0; dentro, MozJPEG/libjpeg-turbo con las licencias IJG, BSD-3-Clause y Zlib | JPEG de las herramientas de imagen en el navegador (solo el codificador; D-150). En las pruebas, también el decodificador |
+| `@jsquash/oxipng` 2.3.0 (oxipng de Squoosh en WebAssembly, versión de un hilo) | Apache-2.0; dentro, oxipng MIT | PNG sin pérdida de las herramientas de imagen en el navegador (D-150) |
+| `@jsquash/png` | Apache-2.0 | Solo en las pruebas (decodificar y codificar en Node) |
 | Next.js, React, next-intl, Better Auth | MIT | Web |
 | pikepdf | MPL-2.0 | PDF en servidor |
 | pypdfium2 | Apache-2.0 / BSD-3-Clause | Renderizado en servidor |
@@ -51,7 +53,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | psycopg | LGPL-3.0 | Controlador de PostgreSQL |
 | LibreOffice | MPL-2.0 | Programa externo en `workeroffice`, `workerconvert` y dentro de Gotenberg |
 | Gotenberg | MIT | Servicio externo (`gotenberg` sin red y `gotenbergweb` para web-a-pdf) |
-| Smokescreen | MIT | Proxy de salida `egressweb` |
+| Smokescreen v0.1.0 (compilado desde su etiqueta con `golang:1.25.14-bookworm`, D-155) | MIT (el binario lleva `LICENSE.txt`; sus dependencias en `vendor/` son MIT, BSD y Apache-2.0) | Proxies de salida `egressweb` y `egressai` |
 | markdown-it-py, mdit-py-plugins | MIT | markdown-a-pdf |
 | Pygments | BSD-2-Clause | Código resaltado en markdown-a-pdf |
 | charset-normalizer | MIT | Detección de la codificación en txt-a-pdf y markdown-a-pdf |
@@ -72,7 +74,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | OpenJDK 17 (paquete de Debian) | GPL-2.0 con excepción de enlace (Classpath) | Para ejecutar veraPDF |
 | poppler-utils (`pdftocairo`) | GPL-2.0/GPL-3.0 | Programa externo en `workerpdf`: pdf-a-svg |
 | libtiff-tools (`tiffcp`) | libtiff (permisiva, tipo BSD) | pdf-a-tiff |
-| Perfil `FOGRA39L_coated.icc` (colord-data) | CC0-1.0 | CMYK en pdf-a-jpg y pdf-a-tiff |
+| Perfil `FOGRA39L_coated.icc` (colord, copiado en `infra/icc` con su SHA-256, D-154) | CC0-1.0 | CMYK en pdf-a-jpg y pdf-a-tiff |
 
 Prohibidos y comprobados por la CI: Ghostscript, MuPDF, PyMuPDF, pdf2docx, extract-msg, pillow-heif y el resto de la
 lista de 11. Las imágenes son privadas porque llevan programas GPL (Calibre, DjVuLibre) como procesos externos (3.3).

@@ -232,6 +232,17 @@ def compress_one(src: Path, dst: Path, o, password: str | None, max_pages: int) 
     return stats
 
 
+def _size(n: int, locale: str) -> str:
+    """Tamaño legible con la coma o el punto decimal del idioma."""
+    value, unit = (n / 1024 / 1024, "MB") if n >= 1024 * 1024 else (n / 1024, "KB") if n >= 1024 else (float(n), "B")
+    text = f"{value:.1f}" if unit != "B" else f"{n}"
+    return f"{text.replace('.', ',') if locale != 'en' else text} {unit}"
+
+
+# Aviso del resultado en el idioma de la página (D-42, D-54 y D-151).
+NOTES = {"es": "De {before} a {after} ({saved} % menos).", "en": "From {before} to {after} ({saved}% smaller)."}
+
+
 def run(ctx: ToolContext) -> list[dict]:
     o = ctx.options
     password = ctx.secrets.get("contrasena")
@@ -245,6 +256,7 @@ def run(ctx: ToolContext) -> list[dict]:
             shutil.copyfile(inp.path, dst)
             note = ErrorCode.NOT_SMALLER
         before, after = inp.size, dst.stat().st_size
-        outputs.append({"path": str(dst), "name": derived_name(inp.name, "-comprimido", "pdf"),
-                        "note": note or f"{before}->{after}"})
+        saved = round(100 * (before - after) / before) if before else 0
+        text = NOTES.get(ctx.locale, NOTES["es"]).format(before=_size(before, ctx.locale), after=_size(after, ctx.locale), saved=saved)
+        outputs.append({"path": str(dst), "name": derived_name(inp.name, "-comprimido", "pdf"), "note": note or text})
     return with_batch_zip(ctx, outputs, "comprimidos.zip")

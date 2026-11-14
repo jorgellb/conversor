@@ -16,6 +16,7 @@ import {
 } from "./common";
 import { isBlankPage, readTopLevelOutline } from "./pdfutil";
 import { parsePageRanges } from "./ranges";
+import { notesFor, type Locale } from "./notes";
 
 export interface GirarOptions {
   angulo: 90 | -90 | 180;
@@ -159,7 +160,7 @@ async function groupsBySize(doc: PDFDocument, limitBytes: number): Promise<numbe
   return groups;
 }
 
-export async function dividir(files: InFile[], o: DividirOptions, progress?: Progress): Promise<ToolResult> {
+export async function dividir(files: InFile[], o: DividirOptions, progress?: Progress, locale?: Locale): Promise<ToolResult> {
   const outputs: OutFile[] = [];
   const notes: string[] = [];
   for (const [fileIndex, file] of files.entries()) {
@@ -202,7 +203,7 @@ export async function dividir(files: InFile[], o: DividirOptions, progress?: Pro
       }
       case "tamano":
         groups = await groupsBySize(doc, o.tamano_mb * 1024 * 1024);
-        if (groups.some((g) => g.length === 1)) notes.push("Alguna página supera por sí sola el tamaño máximo.");
+        if (groups.some((g) => g.length === 1)) notes.push(notesFor(locale).pageOverSize);
         break;
       case "en_blanco": {
         let current: number[] = [];

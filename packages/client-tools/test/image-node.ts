@@ -16,7 +16,8 @@ import { nodeWasm, wasmFile } from "./wasm-node";
 
 let ready: Promise<void> | null = null;
 
-function init(): Promise<void> {
+/** Carga el WebAssembly de jSquash para JPEG y PNG (también lo usan las pruebas que generan muestras). */
+export function init(): Promise<void> {
   ready ??= (async () => {
     await initJpegDec(await WebAssembly.compile(wasmFile("@jsquash/jpeg/codec/dec/mozjpeg_dec.wasm")));
     await initJpegEnc(await WebAssembly.compile(wasmFile("@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm")));
@@ -95,6 +96,8 @@ export function nodeCodec(log: NodeCodecLog = { encodes: [] }): ImageCodec {
       return new Uint8Array(await encodeJpeg(flat as unknown as ImageData, { quality: Math.round(target.quality * 100) }));
     },
     async rgba(img, target) {
+      // Con `wasmEncoding`, la codificación pasa por aquí con el formato y la calidad en el destino.
+      if ("format" in target) log.encodes.push({ ...(target as DrawTarget & { format: string; quality: number }) });
       return draw(img.source as Rgba, target);
     },
     async fromRgba(px) {

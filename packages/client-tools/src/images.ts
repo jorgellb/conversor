@@ -18,6 +18,7 @@ import {
 } from "./common";
 import { exifOrientation, extractExif } from "./exif";
 import { addOutline } from "./pdfutil";
+import { notesFor, type Locale } from "./notes";
 
 export interface ImagenesAPdfOptions {
   tamano_pagina: string;
@@ -128,7 +129,7 @@ async function addImagePage(doc: PDFDocument, file: InFile, o: ImagenesAPdfOptio
   }
 }
 
-export async function imagenesAPdf(files: InFile[], o: ImagenesAPdfOptions, toPng?: ToPng, progress?: Progress): Promise<ToolResult> {
+export async function imagenesAPdf(files: InFile[], o: ImagenesAPdfOptions, toPng?: ToPng, progress?: Progress, locale?: Locale): Promise<ToolResult> {
   if (!files.length) throw new ToolError("TOO_MANY_FILES", "Hacen falta imágenes");
   const outputs: OutFile[] = [];
   if (o.unir) {
@@ -148,6 +149,6 @@ export async function imagenesAPdf(files: InFile[], o: ImagenesAPdfOptions, toPn
       progress?.((i + 1) / files.length);
     }
   }
-  const notes = files.some((f) => !NATIVE.has(extOf(f.name))) ? ["Las imágenes WEBP, GIF y BMP se han convertido a PNG sin pérdida."] : [];
+  const notes = files.some((f) => !NATIVE.has(extOf(f.name))) ? [notesFor(locale).imagesToPng] : [];
   return { outputs: withBatchZip(outputs, "imagenes-pdf.zip"), notes };
 }

@@ -276,7 +276,9 @@ services:
 
   # Smokescreen (12.2): cualquier host público; niega IP privadas, de enlace local, CGNAT y de las redes de Docker.
   egressweb:
-    image: ghcr.io/stripe/smokescreen:v0.1.0
+    # Compilado desde la etiqueta v0.1.0 de Stripe: no hay imagen publicada (D-155).
+    build: { context: ., dockerfile: infra/smokescreen/Dockerfile }
+    image: conversor/smokescreen:dev
     logging: *logging
     restart: unless-stopped
     command:
@@ -299,7 +301,9 @@ services:
   # IA (6 y 12.2): la única con OPENROUTER_API_KEY; sale solo hacia OpenRouter por egressai. Sin clave y en
   # desarrollo usa el proveedor falso determinista (6.6).
   egressai:
-    image: ghcr.io/stripe/smokescreen:v0.1.0
+    # Compilado desde la etiqueta v0.1.0 de Stripe: no hay imagen publicada (D-155).
+    build: { context: ., dockerfile: infra/smokescreen/Dockerfile }
+    image: conversor/smokescreen:dev
     logging: *logging
     restart: unless-stopped
     command:

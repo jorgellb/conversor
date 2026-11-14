@@ -94,6 +94,7 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
   // Redacción (A.6): color del recuadro, texto opcional, términos que deben desaparecer y texto de PDFium para buscar.
   const [redactColor, setRedactColor] = useState("#000000");
   const [redactLabel, setRedactLabel] = useState("");
+  const [redactMethod, setRedactMethod] = useState<"rasterizar" | "eliminar">("rasterizar");
   const [terms, setTerms] = useState<string[]>([]);
   const [textPages, setTextPages] = useState<PageText[] | null>(null);
   const [query, setQuery] = useState("");
@@ -455,7 +456,7 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
     const options = mode === "editar"
       ? { tamano_pagina_nueva: paper.size, orientacion_nueva: paper.orientation, model }
       : mode === "redactar"
-        ? { color: redactColor, texto: redactLabel, metodo: "rasterizar", model: { areas, terminos: terms } }
+        ? { color: redactColor, texto: redactLabel, metodo: redactMethod, model: { areas, terminos: terms } }
         : mode === "anotar"
           ? { guardar: annotMode, autor: author, model }
           : { guardar: saveMode, model };
@@ -784,7 +785,15 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
             <label className="flex flex-col gap-1 text-sm">{t("boxText")}
               <input className="field" value={redactLabel} maxLength={40} placeholder={t("boxTextNone")} onChange={(e) => setRedactLabel(e.target.value)} />
             </label>
-            <p className="text-sm"><strong>{t("method")}:</strong> {t("methodRaster")}</p>
+            <fieldset className="flex flex-col gap-1 text-sm">
+              <legend className="font-medium">{t("method")}</legend>
+              {(["rasterizar", "eliminar"] as const).map((m) => (
+                <label key={m} className="flex items-center gap-2">
+                  <input type="radio" name="metodo-redaccion" value={m} checked={redactMethod === m} onChange={() => setRedactMethod(m)} />
+                  {t(m === "rasterizar" ? "methodRaster" : "methodRemove")}
+                </label>
+              ))}
+            </fieldset>
             <h3 className="font-medium">{t("areas")}</h3>
             <ul className="flex flex-col gap-1 text-sm">
               {pages.flatMap((p, pi) => p.objects.filter((o) => o.type === "whiteout").map((o) => (

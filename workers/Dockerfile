@@ -51,11 +51,14 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--proxy-
 
 # --- Workers ---
 FROM base AS worker-pdf
-# tiffcp (pdf-a-tiff), pdftocairo (pdf-a-svg; GPL, solo como proceso externo) y el perfil CMYK FOGRA39 de colord-data (CC0).
+# tiffcp (pdf-a-tiff), pdftocairo (pdf-a-svg; GPL, solo como proceso externo) y el perfil CMYK FOGRA39 de colord (CC0).
+# El colord-data de bookworm (1.4.6) ya no trae los perfiles de impresión: el perfil va en infra/icc con su SHA-256 (D-154).
+ARG FOGRA39_SHA256=b62f5c72561c15ae2e0072b92ce9df42662f76915d75fac8ca2f6be033ac74fe
+COPY infra/icc/FOGRA39L_coated.icc /usr/share/color/icc/colord/FOGRA39L_coated.icc
 RUN apt-get update \
- && apt-get install -y --no-install-recommends libtiff-tools poppler-utils colord-data \
+ && apt-get install -y --no-install-recommends libtiff-tools poppler-utils \
  && rm -rf /var/lib/apt/lists/* \
- && test -f /usr/share/color/icc/colord/FOGRA39L_coated.icc
+ && echo "${FOGRA39_SHA256}  /usr/share/color/icc/colord/FOGRA39L_coated.icc" | sha256sum -c -
 RUN uv pip install -r pyproject.toml --extra pdf
 COPY --from=code /app /app
 USER app

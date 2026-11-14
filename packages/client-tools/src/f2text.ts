@@ -8,6 +8,7 @@ import { ToolError, derivedName, loadPdf, pdfOut, savePdf, stem, type InFile, ty
 import { embedFont, encodable, type FontLoader } from "./pdfutil";
 import { compareTexts, type Change, type CompareOptions } from "./compare";
 import type { PageText } from "./textsearch";
+import { notesFor, type Locale } from "./notes";
 
 // ---------------------------------------------------------------- marcadores-pdf
 
@@ -208,11 +209,11 @@ export async function compareReport(changes: Change[], nameA: string, nameB: str
 }
 
 export async function comparar(files: InFile[], o: CompareOptions & { textos?: [PageText[], PageText[]] },
-  textOf: (file: InFile) => Promise<PageText[]>, fonts?: FontLoader): Promise<ToolResult> {
+  textOf: (file: InFile) => Promise<PageText[]>, fonts?: FontLoader, locale?: Locale): Promise<ToolResult> {
   if (files.length !== 2) throw new ToolError("INVALID_OPTIONS", "Hacen falta dos archivos: A y B");
   const [pa, pb] = await Promise.all(files.map(textOf));
   const changes = compareTexts(pa, pb, o);
   const report = await compareReport(changes, files[0].name, files[1].name, fonts);
   return { outputs: [pdfOut(`comparacion-${stem(files[0].name)}-${stem(files[1].name)}.pdf`, report)],
-    notes: [`${changes.length} cambios entre los dos documentos.`] };
+    notes: [notesFor(locale).changes(changes.length)] };
 }

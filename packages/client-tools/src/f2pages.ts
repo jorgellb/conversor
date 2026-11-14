@@ -9,6 +9,7 @@ import {
 import { aplanar, cambiarTamano, variasPorHoja } from "./layout";
 import { parsePageRanges } from "./ranges";
 import type { Encoder, PdfRenderer } from "./render";
+import { notesFor, type Locale } from "./notes";
 
 type Box = [number, number, number, number];
 
@@ -168,7 +169,8 @@ async function grayRaster(bytes: Uint8Array, renderer: PdfRenderer, encoder: Enc
   return savePdf(out);
 }
 
-export async function imprimir(files: InFile[], o: ImprimirOptions, env: { renderer?: PdfRenderer; encoder?: Encoder }, progress?: Progress): Promise<ToolResult> {
+export async function imprimir(files: InFile[], o: ImprimirOptions, env: { renderer?: PdfRenderer; encoder?: Encoder; locale?: Locale },
+                               progress?: Progress): Promise<ToolResult> {
   if (files.length !== 1) throw new ToolError("TOO_MANY_FILES", "Se imprime un PDF cada vez");
   const file = files[0];
   if (!(await printAllowed(file))) throw new ToolError("PRINT_RESTRICTED", file.name);
@@ -199,7 +201,7 @@ export async function imprimir(files: InFile[], o: ImprimirOptions, env: { rende
     bytes = await grayRaster(bytes, env.renderer, env.encoder);
   }
   const name = `${stem(file.name)}-impresion.pdf`;
-  if (o.doble_cara !== "manual") return { outputs: [pdfOut(name, bytes)], notes: ["Al imprimir, elige «Tamaño real» en el diálogo."] };
+  if (o.doble_cara !== "manual") return { outputs: [pdfOut(name, bytes)], notes: [notesFor(env.locale).printActualSize] };
   const all = await PDFDocument.load(bytes);
   const fronts = await PDFDocument.create();
   const backs = await PDFDocument.create();
@@ -213,7 +215,7 @@ export async function imprimir(files: InFile[], o: ImprimirOptions, env: { rende
   for (const p of await backs.copyPages(all, backIdx)) backs.addPage(p);
   const parts = [pdfOut(`${stem(file.name)}-anversos.pdf`, await savePdf(fronts)), pdfOut(`${stem(file.name)}-reversos.pdf`, await savePdf(backs))];
   return { outputs: [...parts, zipOutputs(parts, `${stem(file.name)}-doble-cara.zip`)],
-    notes: ["Imprime los anversos, da la vuelta al montón sin girarlo e imprime los reversos. Elige «Tamaño real»."] };
+    notes: [notesFor(env.locale).printManualDuplex] };
 }
 
 // ---------------------------------------------------------------- montar-pdf

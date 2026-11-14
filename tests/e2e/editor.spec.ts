@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 
-import { PDFDict, PDFDocument, PDFName, StandardFonts, extractPageContents } from "@cantoo/pdf-lib";
+import { PDFDict, PDFDocument, PDFName, PDFString, StandardFonts, extractPageContents } from "@cantoo/pdf-lib";
 import { expect, test, type Page, type Request } from "@playwright/test";
 
 function watchUploads(page: Page): Request[] {
@@ -162,6 +162,29 @@ test("redactar-pdf: buscar, redactar todas las coincidencias y comprobar el resu
   expect(sent).toEqual([]);
 });
 
+test("redactar-pdf: «eliminar solo el contenido bajo el área» conserva el resto del texto (D-153)", async ({ page }) => {
+  await page.setViewportSize({ width: 1400, height: 1400 });
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  doc.addPage([400, 400]).drawText("Cliente: Juan Pérez García", { x: 40, y: 330, size: 14, font });
+  const sent = watchUploads(page);
+  await page.goto("/es/redactar-pdf");
+  await page.locator('input[type="file"][accept=".pdf"]').setInputFiles({ name: "cliente.pdf", mimeType: "application/pdf", buffer: Buffer.from(await doc.save()) });
+  await expect(page.getByRole("heading", { name: "Redacción" })).toBeVisible({ timeout: 30_000 });
+  // Por defecto, rasterizar (A.6).
+  await expect(page.getByLabel("rasterizar las páginas afectadas a 300 ppp")).toBeChecked();
+  await page.getByLabel("eliminar solo el contenido bajo el área").check();
+  await page.getByLabel("Buscar texto").fill("juan perez");
+  await page.getByRole("button", { name: "Buscar", exact: true }).click();
+  await page.getByRole("button", { name: "Redactar todas las coincidencias" }).click();
+  const bytes = await saveAndDownload(page);
+  const text = await pdfText(bytes);
+  expect(text[0]).not.toContain("Juan");
+  expect(text[0]).toContain("Cliente:");
+  await expect(page.getByText(/^Se ha eliminado el contenido bajo las áreas en las páginas 1/)).toBeVisible();
+  expect(sent).toEqual([]);
+});
+
 test("varias-paginas-por-hoja y recortar en el navegador", async ({ page }) => {
   await page.goto("/es/varias-paginas-por-hoja");
   await page.locator('input[type="file"]').setInputFiles({ name: "cuatro.pdf", mimeType: "application/pdf", buffer: await samplePdf(4) });
@@ -272,6 +295,33 @@ test("lector-pdf: miniaturas, marcadores y texto seleccionable", async ({ page }
   await expect(page.getByLabel("Página", { exact: true })).toHaveValue("3");
   await page.getByRole("tab", { name: "Marcadores" }).click();
   await expect(page.getByText("Este PDF no tiene marcadores.")).toBeVisible();
+});
+
+test("lector-pdf: los enlaces del PDF se pueden pulsar (D-23 y D-152)", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 1000 });
+  const sent = watchUploads(page);
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const pages = [doc.addPage([400, 500]), doc.addPage([400, 500]), doc.addPage([400, 500])];
+  pages.forEach((p, i) => p.drawText(`Hoja ${i + 1}`, { x: 40, y: 450, size: 20, font }));
+  const link = (dict: Record<string, unknown>) => pages[0].node.addAnnot(doc.context.register(doc.context.obj({ Type: "Annot", Subtype: "Link", ...dict })));
+  link({ Rect: [40, 380, 200, 400], Dest: [pages[2].ref, PDFName.of("Fit")] });
+  link({ Rect: [40, 330, 200, 350], A: { S: "URI", URI: PDFString.of("https://example.com/informe") } });
+  link({ Rect: [40, 280, 200, 300], A: { S: "URI", URI: PDFString.of("javascript:alert(1)") } });
+  await page.goto("/es/lector-pdf");
+  await page.locator('input[type="file"]').first().setInputFiles({ name: "enlaces.pdf", mimeType: "application/pdf", buffer: Buffer.from(await doc.save()) });
+  const internal = page.locator('[data-page="1"] [data-pdf-link="internal"]');
+  await expect(internal).toHaveCount(1, { timeout: 30_000 });
+  const external = page.locator('[data-page="1"] [data-pdf-link="external"]');
+  // El de javascript: no se ofrece.
+  await expect(external).toHaveCount(1);
+  await expect(external).toHaveAttribute("href", "https://example.com/informe");
+  await expect(external).toHaveAttribute("target", "_blank");
+  await expect(external).toHaveAttribute("rel", /noopener/);
+  await expect(page.getByRole("link", { name: "Ir a la página 3" })).toBeVisible();
+  await internal.click();
+  await expect(page.getByLabel("Página", { exact: true })).toHaveValue("3");
+  expect(sent).toEqual([]);
 });
 
 test("recortar-pdf en modo visual y folleto con vista previa, hojeado e impresión", async ({ page }) => {

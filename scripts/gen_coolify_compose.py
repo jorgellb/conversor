@@ -67,8 +67,8 @@ AI = {
 
 
 GOTENBERG = "gotenberg/gotenberg:8.39.0"
-# Última versión publicada de Smokescreen (proxy de módulos de Go, 18-09-2026); confirmar la imagen y su digest (DEPLOY-CHECKLIST).
-SMOKESCREEN = "ghcr.io/stripe/smokescreen:v0.1.0"
+# Smokescreen v0.1.0 (18-09-2026) compilado por images.yml desde infra/smokescreen/Dockerfile: Stripe no publica imagen (D-155).
+SMOKESCREEN = "ghcr.io/${GHCR_OWNER:?Propietario del registro}/conversor-smokescreen:${IMAGE_TAG:?Etiqueta de imagen}"
 # 12.2: egressweb niega IP privadas, de enlace local, CGNAT y de las redes de Docker.
 DENY_RANGES = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "100.64.0.0/10", "169.254.0.0/16", "fc00::/7", "fe80::/10"]
 

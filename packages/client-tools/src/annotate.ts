@@ -39,6 +39,7 @@ import {
 import { ToolError, derivedName, hexColor, loadPdf, pdfOut, savePdf, type InFile, type ToolResult } from "./common";
 import { applyEdits, displayedSize, drawObjectsOnPage, toUser, viewMatrix, wrapText, type EditModel, type EditObject, type PageEdit } from "./edit";
 import { embedFont, type FontLoader } from "./pdfutil";
+import { notesFor, type Locale } from "./notes";
 
 export interface AnotarOptions {
   guardar: "anotaciones" | "aplanadas";
@@ -244,7 +245,8 @@ function textOps(encoded: PDFHexString, font: string, size: number, x: number, y
   return [beginText(), setFontAndSize(font, size), moveText(x, y), showText(encoded), endText()];
 }
 
-export async function anotarPdf(files: InFile[], o: AnotarOptions, fonts?: FontLoader, passwords: Record<string, string> = {}): Promise<ToolResult> {
+export async function anotarPdf(files: InFile[], o: AnotarOptions, fonts?: FontLoader, passwords: Record<string, string> = {},
+                                locale?: Locale): Promise<ToolResult> {
   const file = files[0];
   if (!file) throw new ToolError("TOO_MANY_FILES", "Hace falta un PDF");
   const pages = o.model?.pages ?? [];
@@ -252,7 +254,7 @@ export async function anotarPdf(files: InFile[], o: AnotarOptions, fonts?: FontL
     const model: EditModel = {};
     const doc = await loadPdf(file, passwords[file.name]);
     model.pages = doc.getPages().map((_, i) => ({ source: i, objects: pages.find((p) => p.source === i)?.objects ?? [] }));
-    const res = await applyEdits(file, model, fonts, passwords[file.name]);
+    const res = await applyEdits(file, model, fonts, passwords[file.name], locale);
     return { outputs: [pdfOut(derivedName(file.name, "-anotado", "pdf"), res.bytes)], notes: res.notes };
   }
   const doc = await loadPdf(file, passwords[file.name]);
@@ -262,7 +264,7 @@ export async function anotarPdf(files: InFile[], o: AnotarOptions, fonts?: FontL
     if (spec.source === null || !all[spec.source]) continue;
     count += await writeAnnotations(doc, all[spec.source], spec.objects ?? [], o.autor?.trim() || "Anotación", fonts);
   }
-  return { outputs: [pdfOut(derivedName(file.name, "-anotado", "pdf"), await savePdf(doc))], notes: [`${count} anotaciones estándar, editables en otros lectores.`] };
+  return { outputs: [pdfOut(derivedName(file.name, "-anotado", "pdf"), await savePdf(doc))], notes: [notesFor(locale).annotations(count)] };
 }
 
 // ------------------------------------------------------------------------------------------------ XFDF

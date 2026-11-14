@@ -5,7 +5,7 @@
     "PNG a JPG convierte capturas de pantalla, gráficos o fotos guardadas en PNG al formato JPG, el que aceptan sin rechistar los formularios web, las tiendas online, el correo y casi cualquier programa. Una foto en PNG puede ocupar varias veces más que en JPG, así que el cambio suele reducir mucho el peso del archivo.",
     "La conversión se hace en tu navegador, dentro de esta misma pestaña: tus PNG no se envían a ningún servidor y el resultado se genera en tu equipo. Puedes soltar varios a la vez; cada uno se descarga por separado y, si hay más de uno, también tienes un ZIP con todos.",
     "El control de calidad va de 1 a 100 y empieza en 90, un punto en el que la diferencia con el original apenas se nota. Bájalo si buscas archivos más ligeros. Como JPG no tiene transparencia, las zonas transparentes del PNG se rellenan con el color de fondo que elijas, blanco si no tocas nada.",
-    "En las opciones avanzadas puedes conservar los metadatos EXIF del original, si los tiene. Por defecto el JPG sale limpio, sin datos de cámara ni ubicación."
+    "En las opciones avanzadas puedes conservar los metadatos EXIF del original, si los tiene. Por defecto el JPG sale limpio, sin datos de cámara ni ubicación. El JPG se guarda en modo progresivo con MozJPEG, que a igual calidad pesa menos que el que genera el navegador."
   ],
   "faq": [
     {

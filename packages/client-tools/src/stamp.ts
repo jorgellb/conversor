@@ -20,6 +20,7 @@ import {
 } from "./common";
 import { embedFont, encodable, visibleBox, type FontKind, type FontLoader } from "./pdfutil";
 import { parsePageRanges } from "./ranges";
+import { notesFor, type Locale } from "./notes";
 
 export interface NumerarOptions {
   patron: string;
@@ -241,7 +242,7 @@ async function stampPage(doc: PDFDocument, page: PDFPage, o: MarcaAguaOptions, f
 }
 
 export async function marcaDeAgua(files: InFile[], o: MarcaAguaOptions, fonts?: FontLoader, rasterize?: Rasterizer,
-                                  progress?: Progress): Promise<ToolResult> {
+                                  progress?: Progress, locale?: Locale): Promise<ToolResult> {
   const pdfs = files.filter((f) => extOf(f.name) === "pdf");
   const imageFile = files.find((f) => ["png", "jpg"].includes(extOf(f.name)));
   if (!pdfs.length) throw new ToolError("UNSUPPORTED_FORMAT", "Hace falta al menos un PDF");
@@ -260,7 +261,7 @@ export async function marcaDeAgua(files: InFile[], o: MarcaAguaOptions, fonts?: 
     let bytes = await savePdf(doc);
     if (o.aplanar) {
       if (rasterize) bytes = await rasterize(bytes);
-      else notes.push("No se ha podido aplanar en este navegador; la marca de agua se ha añadido sin aplanar.");
+      else notes.push(notesFor(locale).watermarkNotFlattened);
     }
     outputs.push(pdfOut(derivedName(file.name, "", "pdf"), bytes));
     progress?.((fileIndex + 1) / pdfs.length);

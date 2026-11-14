@@ -333,7 +333,7 @@
     "sig_clear": "Borrar",
     "sig_use": "Usar la firma",
     "tool_redact": "Área para redactar",
-    "redactHint": "Marca las zonas o búscalas. Al guardar, las páginas con áreas se convierten en imagen a 300 ppp: lo tapado desaparece del archivo.",
+    "redactHint": "Marca las zonas o búscalas. Al guardar, lo tapado desaparece del archivo: con «rasterizar», las páginas con áreas se convierten en imagen a 300 ppp; con «eliminar», solo se borra lo que hay bajo las áreas y el resto del texto sigue siendo seleccionable.",
     "redactPanel": "Redacción",
     "searchText": "Buscar texto",
     "search": "Buscar",
@@ -351,6 +351,7 @@
     "boxTextNone": "Ninguno",
     "method": "Método",
     "methodRaster": "rasterizar las páginas afectadas a 300 ppp",
+    "methodRemove": "eliminar solo el contenido bajo el área",
     "areas": "Áreas marcadas",
     "removeArea": "Quitar el área",
     "termsChecked": "{count, plural, one {Se comprobará que # texto ya no aparece} other {Se comprobará que # textos ya no aparecen}}",
@@ -396,7 +397,9 @@
     "panel": "Panel lateral",
     "thumbnails": "Miniaturas",
     "outline": "Marcadores",
-    "noOutline": "Este PDF no tiene marcadores."
+    "noOutline": "Este PDF no tiene marcadores.",
+    "linkToPage": "Ir a la página {n}",
+    "externalLink": "Abrir {url} en una pestaña nueva"
   },
   "createPdf": {
     "title": "Crear un PDF",

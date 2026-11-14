@@ -220,7 +220,7 @@ MINIMOS: dict[str, dict[str, Opt]] = {
         "cifrado": E("aes256", "aes256", "aes128"),
     },
     "desbloquear-pdf": {"contrasena": S},
-    "redactar-pdf": {"color": D("#000000"), "texto": D(""), "metodo": E("rasterizar", "rasterizar")},
+    "redactar-pdf": {"color": D("#000000"), "texto": D(""), "metodo": E("rasterizar", "rasterizar", "eliminar")},
     "eliminar-metadatos-pdf": {},
     "generar-contrasena": {
         "longitud": R(16, 8, 64), "mayusculas": D(True), "minusculas": D(True), "numeros": D(True), "simbolos": D(False),
@@ -289,8 +289,6 @@ MINIMOS: dict[str, dict[str, Opt]] = {
 
 # Lo que el Anexo A pide y el esquema todavía no tiene: (herramienta, opción o valor) -> lote que lo resuelve.
 PENDIENTES: dict[tuple[str, str], str] = {
-    # A.6: «Eliminar solo el contenido bajo el área» (D-25), solo cuando pase las pruebas de redacción de 16.4.
-    ("redactar-pdf", "metodo=eliminar"): "G1-A",
     # A.4 Extra: autoorientar con la detección de orientación de Tesseract, en servidor (docs/goal/huecos.json).
     ("girar-pdf", "autoorientar"): "hueco de A.4, sin lote asignado",
     # A.9: el Modo (Editable | con imágenes | Fiel) también para XLSX, ODS y TXT (D-61 y D-72 no lo ofrecen).

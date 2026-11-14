@@ -9,6 +9,8 @@ const require = createRequire(import.meta.url);
 
 export const WASM_SOURCES = {
   pdfium: "@embedpdf/pdfium/pdfium.wasm",
+  mozjpeg_enc: "@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm",
+  oxipng: "@jsquash/oxipng/codec/pkg/squoosh_oxipng_bg.wasm",
   avif_enc: "@jsquash/avif/codec/enc/avif_enc.wasm",
   avif_dec: "@jsquash/avif/codec/dec/avif_dec.wasm",
   webp_enc: "@jsquash/webp/codec/enc/webp_enc.wasm",

@@ -1,4 +1,4 @@
-// Códecs en WebAssembly: AVIF y WebP de jSquash (Squoosh) y SVG con resvg.
+// Códecs en WebAssembly: MozJPEG, oxipng, AVIF y WebP de jSquash (Squoosh) y SVG con resvg.
 // El código JS va en el paquete; el .wasm lo entrega quien llama (WasmLoader): el worker lo descarga del propio
 // origen (/codecs/) y las pruebas lo leen de node_modules. Se usan siempre las versiones de un solo hilo.
 import { simd } from "wasm-feature-detect";
@@ -7,7 +7,8 @@ import { checkPixels, rgba, unpremultiply, type Rgba } from "./rasters";
 import { normalizeSvgRefs } from "./svgrefs";
 import { ToolError } from "./tool-error";
 
-export type WasmName = "avif_enc" | "avif_dec" | "webp_enc" | "webp_enc_simd" | "webp_dec" | "resvg" | "zxing_reader";
+export type WasmName = "mozjpeg_enc" | "oxipng" | "avif_enc" | "avif_dec" | "webp_enc" | "webp_enc_simd" | "webp_dec" | "resvg"
+  | "zxing_reader";
 export type WasmLoader = (name: WasmName) => Promise<WebAssembly.Module>;
 
 type Bytes = Uint8Array | Uint8ClampedArray;
@@ -48,6 +49,49 @@ function emscripten<T>(load: WasmLoader, name: WasmName, glue: () => Promise<{ d
 
 function bytesOf(img: Rgba): Uint8Array {
   return new Uint8Array(img.data.buffer, img.data.byteOffset, img.data.byteLength);
+}
+
+// Valores por defecto de MozJPEG tal como los publica @jsquash/jpeg (meta.js): progresivo, Huffman optimizado y
+// tablas de cuantización de ImageMagick (quant_table 3), con submuestreo de croma 4:2:0 automático.
+const MOZJPEG_DEFAULTS = {
+  quality: 75, baseline: false, arithmetic: false, progressive: true, optimize_coding: true, smoothing: 0, color_space: 3,
+  quant_table: 3, trellis_multipass: false, trellis_opt_zero: false, trellis_opt_table: false, trellis_loops: 1,
+  auto_subsample: true, chroma_subsample: 2, separate_chroma_quality: false, chroma_quality: 75,
+};
+
+/** JPEG con MozJPEG (D-04 y D-150). La imagen tiene que llegar ya sin transparencia (sobre su fondo). */
+export async function encodeJpeg(load: WasmLoader, img: Rgba, quality: number): Promise<Uint8Array> {
+  const mod = await emscripten<EncoderModule>(load, "mozjpeg_enc", () => import("@jsquash/jpeg/codec/enc/mozjpeg_enc.js"));
+  const q = Math.min(100, Math.max(1, Math.round(quality)));
+  const out = mod.encode(img.data, img.width, img.height, { ...MOZJPEG_DEFAULTS, quality: q, chroma_quality: q });
+  if (!out) throw new ToolError("INTERNAL", "Codificador JPEG");
+  return new Uint8Array(out);
+}
+
+interface Oxipng {
+  optimise_raw(data: Uint8ClampedArray, width: number, height: number, level: number, interlace: boolean, optimizeAlpha: boolean): Uint8Array;
+}
+
+/**
+ * Nivel de oxipng según el tamaño: el 2 (el de Squoosh) hasta 8 MP; por encima, el 1, y desde 24 MP el 0, que solo
+ * elige filtros y reduce la paleta sin tantas pruebas. Siempre sin pérdida (D-150).
+ */
+export function oxipngLevel(width: number, height: number): number {
+  const mp = (width * height) / 1_000_000;
+  return mp <= 8 ? 2 : mp <= 24 ? 1 : 0;
+}
+
+/** PNG sin pérdida con oxipng (D-79 y D-150), desde los píxeles RGBA: elige la profundidad, la paleta y los filtros. */
+export async function encodePng(load: WasmLoader, img: Rgba): Promise<Uint8Array> {
+  const mod = await once("oxipng", async () => {
+    // Siempre la versión de un hilo (la de varios necesita aislamiento entre orígenes).
+    const [lib, wasm] = await Promise.all([import("@jsquash/oxipng/codec/pkg/squoosh_oxipng.js"), load("oxipng")]);
+    await lib.default(wasm);
+    return lib as unknown as Oxipng;
+  });
+  const out = mod.optimise_raw(img.data, img.width, img.height, oxipngLevel(img.width, img.height), false, false);
+  if (!out?.length) throw new ToolError("INTERNAL", "Codificador PNG");
+  return new Uint8Array(out);
 }
 
 export interface WebpOptions {

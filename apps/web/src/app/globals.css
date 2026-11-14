@@ -212,3 +212,15 @@ body {
 .text-layer ::selection {
   background: rgb(37 99 235 / 0.35);
 }
+
+/* Enlaces del PDF en el lector, encima de la capa de texto (D-152). */
+.pdf-link {
+  z-index: 3;
+  cursor: pointer;
+}
+
+.pdf-link:hover,
+.pdf-link:focus-visible {
+  background: rgb(37 99 235 / 0.12);
+  outline: 2px solid rgb(37 99 235 / 0.6);
+}

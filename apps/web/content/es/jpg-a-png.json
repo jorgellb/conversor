@@ -5,7 +5,7 @@
     "JPG a PNG convierte tus fotos JPG en PNG, un formato sin pérdida que piden algunos programas de diseño, plataformas de impresión o editores donde vas a seguir trabajando la imagen. A partir de aquí, cada vez que guardes de nuevo el PNG no se añadirán más artefactos de compresión, algo que sí ocurre al reguardar un JPG una y otra vez.",
     "Las fotos no salen de tu ordenador ni de tu móvil: el navegador las abre, las pasa a PNG y te las entrega. Si el JPG viene de una cámara y tiene la orientación indicada en el EXIF, la imagen se gira antes de guardarla, para que no aparezca tumbada en programas que ignoran ese dato.",
     "No hay que ajustar calidad, porque PNG guarda cada píxel exactamente. La única opción, en el apartado avanzado, es conservar los metadatos EXIF (fecha, cámara, ubicación…); viene desactivada para que no compartas sin querer dónde se hizo la foto.",
-    "Puedes convertir muchas fotos de una vez. Descárgalas una a una o todas juntas en el ZIP que se crea cuando hay más de una."
+    "Puedes convertir muchas fotos de una vez. Descárgalas una a una o todas juntas en el ZIP que se crea cuando hay más de una. El PNG pasa por oxipng, que elige la paleta y los filtros más compactos sin cambiar ni un píxel."
   ],
   "faq": [
     {

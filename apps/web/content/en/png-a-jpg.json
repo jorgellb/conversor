@@ -5,7 +5,7 @@
     "PNG to JPG turns screenshots, graphics or photos saved as PNG into JPG, the format that web forms, online shops, email and almost every program accept without complaint. A photo stored as PNG can be several times larger than the same photo as JPG, so the switch usually cuts the file size a lot.",
     "The conversion runs in your browser, inside this very tab: your PNG files are not sent to any server and the result is produced on your device. You can drop several at once; each one downloads separately and, when there is more than one, you also get a ZIP with all of them.",
     "The quality control goes from 1 to 100 and starts at 90, a point where the difference from the original is hard to see. Lower it if you want lighter files. Since JPG has no transparency, transparent areas of the PNG are filled with the background colour you choose, white if you leave it alone.",
-    "In the advanced options you can keep the original EXIF metadata, if there is any. By default the JPG comes out clean, with no camera or location data."
+    "In the advanced options you can keep the original EXIF metadata, if there is any. By default the JPG comes out clean, with no camera or location data. The JPG is saved in progressive mode with MozJPEG, which at the same quality weighs less than the one the browser produces."
   ],
   "faq": [
     {

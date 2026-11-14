@@ -7,14 +7,15 @@ con programas externos), D1 (6 desde PDF sin Docling), D2 (12 desde PDF con Docl
 D1 y D2 (crear-collage), E (transcripción) y F (convertir-archivo). **F3 (IA) en curso**: lotes A1 (núcleo de IA y
 resumir-pdf), A2 (chat-pdf) y B (preguntas, fichas, presentación y traducción) hechos. **Goal de trabajo continuo**
 (`docs/GOAL.md`): lote transversal G0-A (infraestructura de proceso) hecho (D-134 a D-143) y G0-B (Lighthouse CI, regresión visual, Playwright
-de 16.1 y prueba de carga revisada) hecho (D-144 a D-149).
+de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F2 y F5 y fallos de la primera CI) hecho
+(D-150 a D-156).
 
 ## Cierre técnico
 
 | Comprobación | Resultado |
 | --- | --- |
 | `pytest` (núcleo, API con PostgreSQL y Valkey reales, herramientas de servidor, HTML/Markdown/TXT/web a PDF con Gotenberg simulado, envío por correo, lote C con Calibre, DjVuLibre, libheif, libarchive y ezdxf reales, lote D1 con tiffcp, pdftocairo, OCRmyPDF y Tesseract reales, lote D2 con Docling 2.145, LibreOffice y Tesseract reales, audio de F5 con FFmpeg real, imágenes de F5 en el servidor con libheif, LibRaw, psd-tools, vtracer y rembg (modelo u2net) reales, transcripción con faster-whisper real (modelo tiny, y small comprobado a mano) y FFmpeg, detección por bytes con los 70 casos compartidos con el navegador, IA con el proveedor falso y transportes simulados (petición 951, reserva Pro, límite por minuto y del chat, 429 resuelto por el siguiente candidato, `data_collection` en todas las peticiones, descubrimiento, reconciliación, sin modelos, sin consentimiento, herramientas excluidas, caché por propietario y resumir-pdf de extremo a extremo con bloques y un escaneo que pasa por la cola de OCR; chat-pdf con eventos, documento entero o búsqueda con vectores reales en pgvector, conversación, errores sin gasto, streaming de OpenRouter simulado con reintento y fallo a mitad, y borrado de cuenta; preguntas en Word y Moodle, fichas en tres formatos, presentación de 2 peticiones con notas y tema, traducción alineada por lotes con glosario y PDF por Gotenberg, párrafos rehechos, GIFT escapado y límites por tarea), operación y seguridad) | 1501 en verde (con la prueba de contrato de 16.6 de las 157 herramientas, D-135, la de `gen_docs.py` con el índice de git, D-143, la regresión visual de los PDF de folleto, varias por hoja, numerar y marca de agua con pypdfium2, D-144, y el escenario de k6, D-146), 9 omitidas (veraPDF, modelos de rembg, embeddings y faster-whisper, ctranslate2 y la muestra DOCX no disponibles en el entorno de trabajo) y 4 que fallan solo aquí porque este LibreOffice no tiene Writer ni Impress (pdf-a-word, pdf-a-odt y pdf-a-rtf fieles, pdf-a-ppt y pdf-a-odp, pdf-a-ods; la CI instala `libreoffice-writer-nogui`); la CI ejecuta todas |
-| Vitest de `packages/client-tools` (organizar, editar, formularios, recortar, tamaño de página, varias por hoja, folleto, aplanar, redactar con PDFium real, anotar y XFDF, marcadores, capa de texto, metadatos, cortar por la mitad, imprimir, montar, comparar, buscar, escáner con OpenCV.js y las imágenes de F5: BMP, ICO, TIFF y GIF propios comprobados con UTIF, conversiones con jSquash y resvg reales, metadatos y favicon, códigos QR con zxing-cpp, conversor SVG → PDF comparado con resvg, crear-collage: plantillas, encuadre, orientación EXIF comparada con el giro de los códecs, PDF con las fotos sin recomprimir y una sola copia por foto y fuente, imágenes a la resolución pedida, operaciones del editor, tamaño real medido en el PDF renderizado, marcas de corte, resolución en PNG y JPG, fecha EXIF y pies, encabezado y números de página leídos del PDF, detección por bytes con los casos del servidor y un ZIP de 20 MB leído por tramos, y los PDF de la regresión visual…) | 268 en verde |
+| Vitest de `packages/client-tools` (organizar, editar, formularios, recortar, tamaño de página, varias por hoja, folleto, aplanar, redactar con PDFium real, anotar y XFDF, marcadores, capa de texto, metadatos, cortar por la mitad, imprimir, montar, comparar, buscar, escáner con OpenCV.js y las imágenes de F5: BMP, ICO, TIFF y GIF propios comprobados con UTIF, conversiones con jSquash y resvg reales, metadatos y favicon, códigos QR con zxing-cpp, conversor SVG → PDF comparado con resvg, crear-collage: plantillas, encuadre, orientación EXIF comparada con el giro de los códecs, PDF con las fotos sin recomprimir y una sola copia por foto y fuente, imágenes a la resolución pedida, operaciones del editor, tamaño real medido en el PDF renderizado, marcas de corte, resolución en PNG y JPG, fecha EXIF y pies, encabezado y números de página leídos del PDF, detección por bytes con los casos del servidor y un ZIP de 20 MB leído por tramos, y los PDF de la regresión visual, MozJPEG y oxipng sobre los bytes de salida, redactar con el método «eliminar» (texto, imagen, trazado, grupo, página girada, campos y enlaces, objetos huérfanos) y enlaces del lector…) | 282 en verde |
 | Vitest de `apps/web` (contenido propio, slugs, mensajes, CSP con y sin Google Drive y Dropbox, papeles de la solicitud, alias y formatos de copiar-de-pdf, rutas de convertir-archivo, aviso de IA literal con la versión del servidor, paridad de flags con `flags.py` (también el recorte de espacios de `envFlag`), versiones exactas de npm, proyectos de Playwright con las URL simuladas en la CI, referencias de la regresión visual y configuración de Lighthouse CI) | 34 en verde |
 | Playwright en navegador (69 pruebas: regresión visual de la plantilla en móvil y escritorio (D-144), flujos de servidor de comprimir-pdf, word-a-pdf, pdf-a-word y ogg-a-mp3 con tus, eventos y descarga firmada simulados y pago con FakePaymentProvider (D-147), formularios de preguntas, fichas, presentación y traducción con sus opciones dependientes, chat-pdf con el servidor simulado (preparar, respuesta por trozos con las páginas, conversación que viaja con la siguiente pregunta y presupuesto agotado), resumir-pdf con el servidor simulado (cuenta necesaria, aviso obligatorio que viaja con el trabajo, peticiones que quedan, «no disponible temporalmente» y sin peticiones), convertir-archivo (un PNG llamado .jpg detectado y convertido a ICO en la misma página sin subir nada, enlace compartido con `noindex` y sin canonical, sitemap, audio con salidas de servidor, tipos mezclados y desconocidos), conversor-pdf por los bytes, páginas de transcribir-audio y video-a-subtitulos, crear-collage (intercambio de celdas arrastrando comprobado en el PNG exportado, PDF con la foto sin recomprimir, texto y sticker, foto con la cámara simulada, cabecera de permisos, hoja de carné a tamaño real con 20 copias de una sola foto y documentación fotográfica con la fecha EXIF leída en el navegador), páginas de las imágenes en el servidor (ayuda HEIC con el flag apagado, RAW admitidos y opciones), generar-codigo-qr y leer-codigo-qr (logotipo con corrección H leído por zxing-cpp, WiFi en SVG, SEPA en PDF vectorial, Kanji y UTF-8, degradado y borde, aviso si no se lee, configuración en JSON, QR dentro de un PDF), imágenes de F5 en Chromium (convertir-imagen a AVIF, WEBP, GIF, BMP, TIFF e ICO, TIFF por páginas, GIF animado, SVG con texto, favicon, metadatos y Base64), escaner-pdf con cámara simulada, copiar-de-pdf con el servidor simulado y el portapapeles real, formulario de convertir-desde-pdf, pdf-a-webp en el navegador, lote C de F2 (alias canónico, ayuda HEIC y papeles de la solicitud), lote B de F2, metadatos leídos en el navegador, unir, pdf-a-jpg, numerar, editar, rellenar, contraseña, redactar, varias por hoja y recortar, recorte visual, folleto con vista previa e impresión, anotar, lector con miniaturas y texto seleccionable, crear-pdf y web-a-pdf, «Seguir con otra herramienta», Drive y Dropbox apagados, hreflang y cabeceras) | 69 en verde (también 12 de 12 repeticiones de chat-f3 tras el arreglo de D-147) |
 | TypeScript 7 (`tsc --noEmit`) en las dos áreas | Sin errores |
@@ -44,7 +45,11 @@ de 16.1 y prueba de carga revisada) hecho (D-144 a D-149).
 - **Imagen `worker-media`**: la compilación de libheif solo para decodificar (D-49) no se ha podido probar sin Docker; en
   el entorno de trabajo, heic-a-pdf se ha probado con el libheif del sistema. Los flags de `gotenbergweb` (`--chromium-proxy-server`, `--libreoffice-disable-routes`) se comprueban
   en el arranque de humo.
-- **Smokescreen**: la etiqueta `v0.1.0` sale del proxy de módulos de Go; no se pudo consultar GHCR (D-30).
+- **Smokescreen**: la imagen se compila desde la etiqueta v0.1.0 (D-155); su compilación y el arranque de `egressweb` y
+  `egressai` solo se comprueban en la CI de imágenes y en `e2e-compose` (sin Docker aquí).
+- **G1-A**: la imagen `worker-pdf` con el perfil FOGRA39 de `infra/icc` (D-154) y el job `docling` sin FFmpeg (D-156),
+  solo en la CI. `test_pdf_to_word_faithful_with_libreoffice` falla aquí porque el LibreOffice local no tiene el filtro de
+  importación de PDF (`libreoffice-pdfimport`); la CI lo instala.
 - **Playwright del proyecto `servidor`**, la parte de servidor de `lector-pdf` y el formulario «Enviar por correo» en la
   web: pendientes de la ejecución con la pila completa (la API del envío sí tiene pruebas con PostgreSQL real).
 - **Google Drive y Dropbox** contra los servicios reales: hacen falta las claves del propietario (D-36).
@@ -254,16 +259,36 @@ valor por defecto del campo. Las dos observaciones de la última revisión de k6
 verificar aquí: la prueba k6 (solo en el VPS con la pila completa), Lighthouse y la regresión visual de referencia en
 la CI de GitHub, y `servidor.spec.ts` en `e2e-compose`.
 
+## G1-A (huecos de F1, F2 y F5)
+
+redactar-pdf ofrece el método «Eliminar solo el contenido bajo el área» de A.6: EmbedPDF quita los caracteres que tocan
+cada área y los trazados, imágenes, sombreados y grupos que la cruzan pasan a imagen de sí mismos con el área vacía, sin
+tocar el resto de la página; se quitan las anotaciones y campos afectados, se comprueba antes de pintar los recuadros que
+bajo las áreas no queda nada y, en los dos métodos, se borran del archivo los objetos huérfanos (rasterizar dejaba el
+contenido original sin usar dentro del PDF). lector-pdf tiene enlaces pulsables: internos a su página y externos solo
+`http`, `https` y `mailto` en una pestaña nueva. Las herramientas de imagen del navegador codifican JPEG con MozJPEG, PNG
+con oxipng y WebP con libwebp en WebAssembly en lugar del lienzo. Las notas de resultado de las herramientas de F1 y F2
+(navegador y servidor) salen en el idioma de la página. Fallos de la primera CI en GitHub: el perfil FOGRA39 va en
+`infra/icc` porque el `colord-data` de bookworm ya no lo trae, Smokescreen se compila desde su etiqueta porque Stripe no
+publica imagen y las muestras de audio y vídeo solo se generan con FFmpeg (el job `docling` no lo tiene); los Playwright
+del servidor simulado ya estaban en verde desde G0-B. Contenido 8.2 de las siete páginas puesto al día. Salvedades en
+D-150 a D-156.
+
+Verificado aquí: Vitest (282 de client-tools y 34 de web), `tsc`, `next build`, licencias de npm (0 problemas) y pytest sin
+la marca `integration` (1441 en verde, 8 omitidas y las 4 de LibreOffice sin el filtro de importación de PDF de siempre;
+las de `integration` necesitan PostgreSQL y Valkey, que no hay en esta máquina). Playwright del proyecto `navegador`
+contra `next start` en el puerto 3117 (el 3100 lo ocupaba otro servidor): 61 de 71 en verde, con las dos nuevas (redactar con
+«eliminar» y enlaces del lector) y todas las del editor y de las imágenes de F5 (marcadores-pdf falló una vez por la
+carrera de escritura de siempre y pasó al repetirla); las 10 que simulan la API (chat-pdf, resumir-pdf,
+copiar-de-pdf y los flujos de 16.1) fijan el origen `http://127.0.0.1:3100` en sus cabeceras CORS y no se pudieron
+ejecutar en otro puerto: quedan para la CI.
+
 ## Pendiente
 
-- Huecos documentados: método «eliminar bajo el área» de redactar (D-25, A.6 solo lo permite si pasa sus pruebas) y
-  enlaces pulsables en el lector (D-23).
 - F3: lotes C, D y E (`PLAN.md`); después F4, F6, vídeo de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).
 - Cierre técnico de F3 (17): uso real de peticiones registrado, con la clave de OpenRouter del propietario.
-- JPG y PNG siguen con el codificador del lienzo (D-04 y D-79): MozJPEG y oxipng no se han añadido.
-- Notas de las herramientas de los lotes anteriores en inglés (D-42 y D-54).
 
 ## Cierre operativo de F1
 

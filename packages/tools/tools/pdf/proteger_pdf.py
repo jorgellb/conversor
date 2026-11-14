@@ -10,6 +10,14 @@ from core.errors import ErrorCode, ToolError
 from tools.base import ToolContext, derived_name
 from tools.pdf.common import open_pdf, with_batch_zip
 
+# Aviso del resultado en el idioma de la página (D-42, D-54 y D-151).
+NOTES = {
+    "es": {"owner_generated": "Sin contraseña de propietario: se ha generado una al azar que no se guarda en ningún sitio, "
+                              "así que los permisos no se podrán cambiar después."},
+    "en": {"owner_generated": "No owner password: a random one was generated and is not stored anywhere, "
+                              "so the permissions cannot be changed later."},
+}
+
 
 def _random_password(length: int = 24) -> str:
     alphabet = string.ascii_letters + string.digits
@@ -26,11 +34,11 @@ def run(ctx: ToolContext) -> list[dict]:
         raise ToolError(ErrorCode.INVALID_OPTIONS, "Pon una contraseña o restringe algún permiso")
     generated_note = None
     if not owner_pw:
-        # La web genera la contraseña de propietario en el navegador y la muestra una sola vez (A.6).
-        # Si llega vacía (por ejemplo, desde la API), se genera aquí y no se guarda en ningún sitio.
+        # Sin contraseña de propietario se genera una al azar que no se guarda en ningún sitio; si hay permisos
+        # restringidos, el aviso del resultado lo explica.
         owner_pw = _random_password()
         if restricted:
-            generated_note = "owner_password_not_kept"
+            generated_note = NOTES.get(ctx.locale, NOTES["es"])["owner_generated"]
     allow = pikepdf.Permissions(
         accessibility=o.permitir_copiar_accesibilidad,
         extract=o.permitir_copiar,

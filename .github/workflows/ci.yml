@@ -41,7 +41,10 @@ jobs:
       # x265 solo en la CI, para crear la muestra HEIC de la prueba; nunca en las imágenes (D-49).
       - name: Herramientas del lote D (tiffcp, pdftocairo, perfil CMYK) y veraPDF fijado por SHA-256
         run: |
-          sudo apt-get install -y --no-install-recommends libtiff-tools poppler-utils colord-data
+          sudo apt-get install -y --no-install-recommends libtiff-tools poppler-utils
+          # El mismo perfil FOGRA39 que copia workers/Dockerfile (infra/icc, CC0, D-154).
+          echo "b62f5c72561c15ae2e0072b92ce9df42662f76915d75fac8ca2f6be033ac74fe  infra/icc/FOGRA39L_coated.icc" | sha256sum -c -
+          sudo install -D -m 644 infra/icc/FOGRA39L_coated.icc /usr/share/color/icc/colord/FOGRA39L_coated.icc
           curl -fsSL -o /tmp/verapdf.zip https://software.verapdf.org/rel/1.30/verapdf-greenfield-1.30.3-installer.zip
           echo "b512bf24945503a33fc10738ecffc1f2dccaaf8593a448e94ee9ac86a9559a59  /tmp/verapdf.zip" | sha256sum -c -
           unzip -q /tmp/verapdf.zip -d /tmp/verapdf
