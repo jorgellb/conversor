@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Keynote a PDF convierte presentaciones de Apple Keynote en PDF, con una diapositiva por página. Sirve para compartir una presentación hecha en Mac o iPad con quien usa Windows, Android o Linux, para enviarla como material de apoyo después de una charla o para imprimirla sin tener Keynote a mano.",
+    "LibreOffice abre el archivo .key en nuestro servidor, sin acceso a internet, y lo exporta como lo haría con una presentación propia. La importación de Keynote es parcial: los textos, las formas y las imágenes de cada diapositiva suelen conservarse, pero las fuentes de Apple se sustituyen por otras y algunos efectos, sombras o estilos del tema pueden verse distintos. Junto a cada PDF aparece un aviso para que lo revises antes de compartirlo.",
+    "Elige PDF, PDF/A-2b o PDF/UA y, si solo necesitas parte de la presentación, escribe en «Páginas» qué diapositivas quieres, por ejemplo «1-10» o «5-». En las opciones adicionales, «PowerPoint: diapositivas ocultas» y «PowerPoint: páginas de notas» actúan sobre la presentación tal como la importa LibreOffice: si conserva las notas del presentador, puedes añadir también sus páginas. La calidad y la resolución máxima de las imágenes controlan cuánto pesa el PDF.",
+    "Cuando necesites un resultado idéntico al original, expórtalo desde Keynote con Archivo > Exportar a > PDF, o pásalo a PowerPoint y usa PowerPoint a PDF. Puedes convertir varias presentaciones a la vez y descargarlas juntas en un ZIP; el máximo de páginas por presentación depende de tu plan."
+  ],
+  "faq": [
+    {
+      "q": "¿Se mantienen las animaciones y los vídeos?",
+      "a": "No. Un PDF es estático: cada diapositiva se exporta con todos sus elementos visibles, sin transiciones ni animaciones, y los vídeos o sonidos incrustados no se reproducen."
+    },
+    {
+      "q": "¿Por qué cambian algunas fuentes o colores?",
+      "a": "Keynote usa tipografías y efectos propios de Apple. Si no están en el servidor o LibreOffice no sabe reproducirlos, los sustituye por otros disponibles."
+    },
+    {
+      "q": "Tengo la presentación en PowerPoint, ¿qué uso?",
+      "a": "PowerPoint a PDF convierte PPTX, PPT y PPS, y suele dar un resultado más fiel porque LibreOffice conoce mejor el formato de Microsoft."
+    }
+  ]
+}

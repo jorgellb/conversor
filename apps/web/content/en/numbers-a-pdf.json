@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Numbers to PDF converts Apple Numbers spreadsheets into PDF so anyone can see your tables without a Mac, iPhone or iPad. It is handy for sending a budget, an inventory or an expense sheet made in Numbers to someone who works on Windows, or for printing it from another computer.",
+    "LibreOffice imports the file on our server, with no internet connection, and exports it as a spreadsheet. The import is partial: Numbers places tables, charts, images and text boxes freely on a canvas, whereas a classic spreadsheet is a grid, so tables usually arrive with their values, but the layout, charts and styles may change or be lost. Each PDF comes with a notice so you can check it.",
+    "If a wide table is split across several pages, turn on \"Excel: each sheet on a single page\" under more options: each sheet will take up a single PDF page, sized to its content. You can also choose PDF/A-2b or PDF/UA, limit the result with the Pages field, for example \"1, 4-6\", and set the quality and maximum resolution of images.",
+    "For an exact result, the best option is to export from Numbers with File > Export To > PDF; if you would rather keep working with the data, export to Excel and use Excel to PDF. Several files can be uploaded at once: each gives its own PDF and, when there is more than one, a ZIP too. The page limit depends on your plan."
+  ],
+  "faq": [
+    {
+      "q": "Why is a chart missing from the PDF?",
+      "a": "Numbers charts are not always imported. If you need it, export the PDF from the app itself or paste the chart as an image before converting."
+    },
+    {
+      "q": "Can I convert an Excel file?",
+      "a": "Yes, with Excel to PDF, which accepts XLSX and XLS and usually gives a more faithful result because LibreOffice knows Microsoft's format better."
+    },
+    {
+      "q": "What about Pages or Keynote documents?",
+      "a": "There are Pages to PDF and Keynote to PDF, which use the same LibreOffice import and give the same quality notice."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Markdown a PDF convierte archivos .md en documentos PDF bien maquetados. Es la forma rápida de compartir un README, unos apuntes, la documentación de un proyecto o un informe escrito en Markdown con alguien que no usa un editor de código, o de imprimirlo con un aspecto cuidado.",
+    "Se admite el Markdown con sabor GitHub: títulos, listas, citas, enlaces, tablas, texto tachado y listas de tareas con sus casillas marcadas o vacías. Los bloques de código que indican el lenguaje, como ```python o ```js, salen con resaltado de sintaxis; los que no lo indican se muestran en letra monoespaciada sin colores. También se respeta el HTML que escribas dentro del Markdown.",
+    "Hay dos temas. «Claro» recuerda al aspecto de GitHub, con letra sin serifa, tablas con bordes, fondo gris en el código y enlaces en azul. «Sobrio» usa letra con serifa, todo en negro y líneas finas, y resalta el código en blanco y negro, pensado para imprimir. Eliges también el papel: A3, A4, A5, Letter o Legal, siempre en vertical y con márgenes de 20 mm. Los títulos no se quedan solos al final de una página y se procura no partir tablas, imágenes ni bloques de código.",
+    "La codificación del archivo se detecta automáticamente, así que los acentos y la ñ se ven bien aunque no esté guardado en UTF-8. La conversión se hace con Chromium en nuestro servidor, sin internet: las imágenes enlazadas desde la web o desde otros archivos no se cargan, solo las incrustadas en el propio Markdown como datos. Cada archivo puede tener hasta 10 MB de texto y, con varios, recibes un PDF por archivo y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos Markdown (.md).",
+    "Elige el tema y el papel.",
+    "Descarga el PDF de cada archivo o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Se admiten las notas al pie o las fórmulas matemáticas?",
+      "a": "No se interpretan: las notas al pie y las fórmulas en LaTeX aparecen como texto, tal como las escribiste."
+    },
+    {
+      "q": "¿Qué lenguajes se resaltan?",
+      "a": "Los que reconoce Pygments, que son varios cientos, entre ellos Python, JavaScript, Java, C, SQL, Bash, HTML y YAML. Escribe el nombre del lenguaje justo después de las tres comillas invertidas que abren el bloque."
+    },
+    {
+      "q": "¿Y si mi archivo es texto sin formato?",
+      "a": "TXT a PDF lo convierte respetando los saltos de línea, con letra monoespaciada o proporcional y los márgenes que elijas."
+    }
+  ]
+}

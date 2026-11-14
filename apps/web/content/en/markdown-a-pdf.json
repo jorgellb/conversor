@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Markdown to PDF turns .md files into neatly laid-out PDF documents. It is the quick way to share a README, study notes, project documentation or a report written in Markdown with someone who does not use a code editor, or to print it with a polished look.",
+    "GitHub Flavored Markdown is supported: headings, lists, quotes, links, tables, strikethrough text and task lists with their boxes ticked or empty. Code blocks that state their language, such as ```python or ```js, get syntax highlighting; those that do not are shown in a monospaced font without colours. Any HTML you write inside the Markdown is kept as well.",
+    "There are two themes. \"Light\" resembles the look of GitHub, with a sans-serif font, bordered tables, a grey background for code and blue links. \"Sober\" uses a serif font, all in black with thin rules, and highlights code in black and white, designed for printing. You also choose the paper: A3, A4, A5, Letter or Legal, always in portrait with 20 mm margins. Headings are not left alone at the bottom of a page, and tables, images and code blocks are kept from splitting where possible.",
+    "The file's encoding is detected automatically, so accented letters display correctly even if it was not saved as UTF-8. The conversion runs with Chromium on our server, with no internet: images linked from the web or from other files are not loaded, only those embedded in the Markdown itself as data. Each file can hold up to 10 MB of text and, with several, you get one PDF per file and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more Markdown (.md) files.",
+    "Choose the theme and the paper.",
+    "Download the PDF of each file or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Are footnotes or maths formulas supported?",
+      "a": "They are not interpreted: footnotes and LaTeX formulas appear as plain text, exactly as you wrote them."
+    },
+    {
+      "q": "Which languages are highlighted?",
+      "a": "Those recognised by Pygments, several hundred of them, including Python, JavaScript, Java, C, SQL, Bash, HTML and YAML. Write the language name right after the three backticks that open the block."
+    },
+    {
+      "q": "What if my file is plain text?",
+      "a": "TXT to PDF converts it keeping the line breaks, with a monospaced or proportional font and the margins you choose."
+    }
+  ]
+}

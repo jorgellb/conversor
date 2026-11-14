@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Web to PDF saves a page from the internet as a PDF from its address. Type or paste the URL of an article, a recipe, some terms of service or a receipt you want to keep, and you will get a PDF that looks the way the page does when printed, with selectable text and working links. If you leave out https:// at the start, it is added for you.",
+    "If the address is not a page but a document, it is downloaded and converted as if you had uploaded it: a PDF is delivered as it is; a JPG, PNG, GIF, WEBP, BMP or TIFF image is fitted onto an A4 page; and a Word, Excel, PowerPoint, OpenDocument or RTF document is turned into PDF with LibreOffice. The linked document cannot exceed your plan's maximum file size, and the resulting PDF cannot exceed its maximum number of pages.",
+    "The page is opened with Chromium on an isolated server that only reaches the internet through a filter. Public http and https addresses on ports 80 and 443, with no user name or password in the URL, are accepted, and up to five redirects are followed; addresses on private networks or on your own computer are rejected. Because the page opens without your cookies, anything that requires signing in will not be visible, and cookie banners or paywalls may appear.",
+    "Under more options you choose the paper, orientation and margins; whether backgrounds are printed; whether everything fits on one long page; whether the print or the screen styles are used; how many seconds to wait before capturing, from 0 to 10, so images and dynamic content can finish loading; and whether the page is shown in its light or dark colour scheme, on sites that support it."
+  ],
+  "steps": [
+    "Type or paste the address of the page or document.",
+    "If you like, adjust the paper, margins and the rest of the extra options.",
+    "Download the PDF."
+  ],
+  "faq": [
+    {
+      "q": "Why does the PDF not look like what I see in the browser?",
+      "a": "Many sites have print styles that hide menus, ads or colours. Change the media type to \"Screen\" to capture the page as it looks on screen."
+    },
+    {
+      "q": "Images or part of the content are missing. What can I do?",
+      "a": "Some sites load their content gradually. Increase the wait before capture; if something is still missing, save the complete page from your browser, compress the HTML and its folder into a ZIP and convert it with HTML to PDF."
+    },
+    {
+      "q": "Can I convert several addresses at once?",
+      "a": "No, each conversion takes a single address. Repeat the process for each page and, if you like, combine them afterwards with Merge PDF."
+    }
+  ]
+}

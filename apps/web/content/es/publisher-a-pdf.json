@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Publisher a PDF convierte publicaciones de Microsoft Publisher, archivos PUB, en PDF. Publisher se ha usado mucho para folletos, boletines, invitaciones, tarjetas y carteles, y Microsoft ha anunciado su retirada, así que pasar esos archivos a PDF es una buena forma de poder seguir viéndolos, imprimiéndolos o enviándolos sin el programa.",
+    "LibreOffice lee la publicación en nuestro servidor, sin acceso a internet, y la exporta página a página. La importación de Publisher es parcial: los cuadros de texto, las imágenes y las formas suelen conservar su sitio, pero las fuentes que no están en el servidor se sustituyen por otras, y algunos efectos, bordes decorativos, textos que continúan en otro cuadro o elementos de la página maestra pueden variar. Cada PDF llega con un aviso para que lo revises antes de imprimirlo o enviarlo.",
+    "Puedes elegir PDF normal, PDF/A-2b para archivarlo o PDF/UA, y quedarte con unas páginas concretas escribiéndolas en «Páginas», por ejemplo «1» o «2-4». Las publicaciones suelen llevar muchas fotografías: en las opciones adicionales ajustas su calidad JPEG y su resolución máxima, que por defecto es de 300 ppp, para equilibrar nitidez y peso del archivo. Si lo vas a llevar a una imprenta, no la bajes.",
+    "Si todavía tienes Publisher, exportar desde el propio programa con Archivo > Exportar > Crear documento PDF/XPS da el resultado más fiel. Se pueden convertir varios archivos PUB a la vez; cada uno da su PDF y, si hay más de uno, también un ZIP. El número máximo de páginas depende de tu plan."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué ha cambiado la tipografía?",
+      "a": "Las publicaciones suelen usar fuentes decorativas que no están en el servidor. LibreOffice las sustituye por otras disponibles y el texto puede ocupar algo más o menos espacio que en el original."
+    },
+    {
+      "q": "¿Puedo editar la publicación sin Publisher?",
+      "a": "LibreOffice Draw abre archivos PUB en tu ordenador, con la misma importación parcial, y te deja retocarlos y exportarlos de nuevo."
+    },
+    {
+      "q": "¿Y si el folleto está hecho en Word?",
+      "a": "Para documentos DOCX o DOC usa Word a PDF, que conserva mejor el diseño de un archivo de Microsoft Word."
+    }
+  ]
+}

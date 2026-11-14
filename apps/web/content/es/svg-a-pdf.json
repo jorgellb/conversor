@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SVG a PDF convierte gráficos vectoriales SVG en PDF sin pasarlos a píxeles. Logotipos, iconos, ilustraciones, gráficos exportados desde una hoja de cálculo o dibujos hechos en Inkscape o Illustrator siguen siendo vectores en el PDF: se pueden ampliar tanto como quieras sin que pierdan nitidez y se imprimen con toda la calidad.",
+    "Hay dos modos. Con «El del SVG (vectorial)», el predeterminado, la página del PDF mide exactamente lo que indica el SVG en sus atributos width y height, ya sea en milímetros, centímetros, pulgadas, puntos, picas o píxeles; si solo tiene viewBox, el tamaño se calcula a 96 píxeles por pulgada, y si no indica ninguno se usa el de un A4. Con «Encajado en A4», el dibujo se escala para ocupar una página A4 con 10 mm de margen, en vertical u horizontal según sea más alto o más ancho.",
+    "Chromium hace la conversión en nuestro servidor, sin conexión a internet, y dibuja el SVG como una imagen: no se ejecutan sus scripts ni se cargan imágenes, fuentes u hojas de estilo externas. Las imágenes incrustadas dentro del propio SVG sí aparecen. Si el dibujo usa una tipografía que no está en el servidor, el texto se mostrará con otra; para conservarla, convierte los textos en trazados antes de exportar el SVG.",
+    "El archivo se lee de forma segura, sin resolver entidades externas, y cada lado de la página queda limitado a 5000 mm. Puedes convertir varios SVG a la vez: recibirás un PDF por archivo y un ZIP con todos, y si los quieres en un solo documento, júntalos después con Unir PDF."
+  ],
+  "steps": [
+    "Sube uno o varios archivos SVG.",
+    "Elige si la página tiene el tamaño del SVG o un A4.",
+    "Descarga el PDF de cada dibujo o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué mi SVG sale con un tamaño extraño?",
+      "a": "Suele pasar cuando el archivo no indica width y height, o los da en porcentaje. Elige «Encajado en A4» o fija el tamaño en tu editor antes de exportar."
+    },
+    {
+      "q": "¿Puedo convertir imágenes PNG o JPG?",
+      "a": "Para imágenes de píxeles usa Imágenes a PDF, que acepta JPG, PNG, WEBP, GIF, BMP y TIFF."
+    },
+    {
+      "q": "¿Y un plano de AutoCAD?",
+      "a": "Para dibujos en formato DXF tienes DXF a PDF, que también genera un PDF vectorial."
+    }
+  ]
+}

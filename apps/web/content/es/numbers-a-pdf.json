@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Numbers a PDF convierte hojas de cálculo de Apple Numbers en PDF para que cualquiera pueda ver tus tablas sin un Mac, un iPhone o un iPad. Es práctico para enviar un presupuesto, un inventario o un cuadro de gastos hecho en Numbers a alguien que trabaja con Windows, o para imprimirlo desde otro equipo.",
+    "LibreOffice importa el archivo en nuestro servidor, sin conexión a internet, y lo exporta como una hoja de cálculo. La importación es parcial: Numbers coloca tablas, gráficos, imágenes y cuadros de texto libremente sobre un lienzo, mientras que una hoja de cálculo clásica es una cuadrícula, así que las tablas suelen llegar con sus valores, pero la disposición, los gráficos y los estilos pueden cambiar o perderse. Cada PDF va acompañado de un aviso para que lo compruebes.",
+    "Si una tabla ancha se corta en varias páginas, activa «Excel: cada hoja en una sola página» en las opciones adicionales: cada hoja ocupará una única página del PDF, a la medida de su contenido. También puedes elegir PDF/A-2b o PDF/UA, limitar el resultado con «Páginas», por ejemplo «1, 4-6», y ajustar la calidad y la resolución máxima de las imágenes.",
+    "Para un resultado exacto, la mejor opción es exportar desde Numbers con Archivo > Exportar a > PDF; si prefieres seguir trabajando con los datos, exporta a Excel y usa Excel a PDF. Se pueden subir varios archivos a la vez: cada uno da su PDF y, con más de uno, también un ZIP. El límite de páginas depende de tu plan."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué falta un gráfico en el PDF?",
+      "a": "Los gráficos de Numbers no siempre se importan. Si lo necesitas, exporta el PDF desde la propia aplicación o pega el gráfico como imagen antes de convertir."
+    },
+    {
+      "q": "¿Puedo convertir un archivo de Excel?",
+      "a": "Sí, con Excel a PDF, que acepta XLSX y XLS y suele dar un resultado más fiel porque LibreOffice conoce mejor el formato de Microsoft."
+    },
+    {
+      "q": "¿Y documentos de Pages o Keynote?",
+      "a": "Tienes Pages a PDF y Keynote a PDF, que usan la misma importación de LibreOffice y avisan igual de la calidad."
+    }
+  ]
+}

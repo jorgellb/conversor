@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Visio a PDF convierte diagramas de Microsoft Visio en PDF. Acepta tanto el formato actual VSDX como el antiguo VSD, así que puedes ver organigramas, diagramas de flujo, esquemas de red o mapas de procesos que te han enviado sin tener Visio instalado, y compartirlos con quien los necesite.",
+    "LibreOffice importa el diagrama en nuestro servidor, sin conexión a internet, y lo exporta como un dibujo: cada página del diagrama da una página del PDF, y las formas, los conectores y los textos se guardan como elementos vectoriales que se pueden ampliar sin perder nitidez. La importación de Visio es parcial, de modo que algunas formas de galería, degradados, sombras o fuentes pueden verse distintos; por eso el PDF llega con un aviso para que lo revises.",
+    "Elige PDF, PDF/A-2b si el diagrama forma parte de documentación que hay que conservar, o PDF/UA. Con «Páginas» te quedas solo con las que te interesan, por ejemplo «2» o «1-3». Si el diagrama lleva fotografías o capturas, en las opciones adicionales puedes ajustar su calidad y su resolución máxima; las opciones de Excel, PowerPoint y Word que aparecen ahí no afectan a los diagramas.",
+    "Puedes convertir varios archivos de Visio a la vez y descargarlos juntos en un ZIP. El número máximo de páginas depende de tu plan. Si necesitas una copia exacta del diseño original, lo más fiable es exportarlo a PDF desde el propio Visio."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diferencia hay entre VSD y VSDX?",
+      "a": "VSD es el formato binario de las versiones de Visio anteriores a 2013; VSDX es el formato basado en XML que usa desde entonces. Los dos se convierten igual."
+    },
+    {
+      "q": "¿Puedo editar el diagrama sin Visio?",
+      "a": "El PDF no se edita como un diagrama. Para seguir trabajando con él, LibreOffice Draw abre archivos VSD y VSDX en tu ordenador, con la misma importación parcial."
+    },
+    {
+      "q": "¿Se aceptan galerías o plantillas de Visio?",
+      "a": "No, solo diagramas VSD y VSDX. Las galerías de formas (VSS y VSSX) y las plantillas (VST y VSTX) no se admiten."
+    }
+  ]
+}

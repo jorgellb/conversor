@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Keynote to PDF converts Apple Keynote presentations into PDF, with one slide per page. Use it to share a presentation made on a Mac or iPad with people on Windows, Android or Linux, to send it as handout material after a talk, or to print it without Keynote at hand.",
+    "LibreOffice opens the .key file on our server, with no internet access, and exports it as it would one of its own presentations. The Keynote import is partial: the text, shapes and images on each slide are usually kept, but Apple fonts are replaced with others and some effects, shadows or theme styles may look different. Each PDF comes with a notice asking you to check it before sharing it.",
+    "Choose PDF, PDF/A-2b or PDF/UA and, if you only need part of the presentation, type the slides you want in the Pages field, for example \"1-10\" or \"5-\". Under more options, \"PowerPoint: hidden slides\" and \"PowerPoint: notes pages\" act on the presentation as LibreOffice imports it: if it keeps the speaker notes, you can add their pages too. Image quality and maximum resolution control how large the PDF is.",
+    "When you need a result identical to the original, export it from Keynote with File > Export To > PDF, or save it as PowerPoint and use PowerPoint to PDF. You can convert several presentations at once and download them together in a ZIP; the maximum number of pages per presentation depends on your plan."
+  ],
+  "faq": [
+    {
+      "q": "Are animations and videos kept?",
+      "a": "No. A PDF is static: each slide is exported with all its elements visible, without transitions or animations, and embedded videos or sounds do not play."
+    },
+    {
+      "q": "Why do some fonts or colours change?",
+      "a": "Keynote uses Apple's own typefaces and effects. If they are not on the server or LibreOffice cannot reproduce them, it replaces them with available alternatives."
+    },
+    {
+      "q": "My presentation is in PowerPoint. What should I use?",
+      "a": "PowerPoint to PDF converts PPTX, PPT and PPS, and usually gives a more faithful result because LibreOffice knows Microsoft's format better."
+    }
+  ]
+}

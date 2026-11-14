@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Web a PDF guarda una página de internet como PDF a partir de su dirección. Escribe o pega la URL de un artículo, una receta, unas condiciones de servicio o un justificante que quieras conservar, y obtendrás un PDF con el aspecto que tiene la página al imprimirla, con su texto seleccionable y sus enlaces. Si no escribes https:// delante, se añade solo.",
+    "Si la dirección no es una página sino un documento, se descarga y se convierte como si lo hubieras subido: un PDF se entrega tal cual; una imagen JPG, PNG, GIF, WEBP, BMP o TIFF se coloca encajada en una página A4; y un documento de Word, Excel, PowerPoint, OpenDocument o RTF se pasa a PDF con LibreOffice. El documento enlazado no puede superar el tamaño máximo de archivo de tu plan, y el PDF resultante, su número máximo de páginas.",
+    "La página se abre con Chromium en un servidor aislado que solo sale a internet a través de un filtro. Se admiten direcciones http y https públicas, en los puertos 80 y 443 y sin usuario ni contraseña en la URL, y se siguen hasta cinco redirecciones; las direcciones de redes privadas o de tu propio equipo se rechazan. Como la página se abre sin tus cookies, lo que exija iniciar sesión no se verá, y pueden aparecer avisos de cookies o muros de pago.",
+    "En las opciones adicionales eliges el papel, la orientación y los márgenes; si se imprimen los fondos; si todo cabe en una sola página larga; si se usan los estilos de impresión o los de pantalla; cuántos segundos esperar antes de capturar, de 0 a 10, para que terminen de cargar las imágenes y el contenido dinámico; y si la página se muestra con su esquema de color claro u oscuro, en las webs que lo admiten."
+  ],
+  "steps": [
+    "Escribe o pega la dirección de la página o del documento.",
+    "Si quieres, ajusta el papel, los márgenes y el resto de opciones adicionales.",
+    "Descarga el PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el PDF no se parece a lo que veo en el navegador?",
+      "a": "Muchas webs tienen estilos de impresión que ocultan menús, anuncios o colores. Cambia el tipo de medio a «Pantalla (screen)» para capturarla tal como se ve en pantalla."
+    },
+    {
+      "q": "Faltan imágenes o parte del contenido, ¿qué hago?",
+      "a": "Algunas webs cargan el contenido poco a poco. Aumenta la espera antes de capturar; si aun así falta, guarda la página completa desde tu navegador, comprime el HTML y su carpeta en un ZIP y conviértelo con HTML a PDF."
+    },
+    {
+      "q": "¿Puedo convertir varias direcciones a la vez?",
+      "a": "No, cada conversión toma una sola dirección. Repite el proceso con cada página y, si quieres, júntalas después con Unir PDF."
+    }
+  ]
+}

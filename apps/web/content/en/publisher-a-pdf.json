@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Publisher to PDF converts Microsoft Publisher publications, PUB files, into PDF. Publisher has been widely used for leaflets, newsletters, invitations, cards and posters, and Microsoft has announced its retirement, so turning those files into PDF is a good way to keep viewing, printing or sending them without the program.",
+    "LibreOffice reads the publication on our server, with no internet access, and exports it page by page. The Publisher import is partial: text boxes, images and shapes usually stay in place, but fonts that are not on the server are replaced with others, and some effects, decorative borders, text that continues in another box or master page elements may differ. Each PDF comes with a notice asking you to check it before printing or sending it.",
+    "You can choose plain PDF, PDF/A-2b for archiving or PDF/UA, and keep specific pages by typing them in the Pages field, for example \"1\" or \"2-4\". Publications often contain many photos: under more options you set their JPEG quality and maximum resolution, 300 dpi by default, to balance sharpness against file size. If it is going to a print shop, do not lower it.",
+    "If you still have Publisher, exporting from the program itself with File > Export > Create PDF/XPS Document gives the most faithful result. Several PUB files can be converted at once; each gives its own PDF and, when there is more than one, a ZIP too. The maximum number of pages depends on your plan."
+  ],
+  "faq": [
+    {
+      "q": "Why has the typeface changed?",
+      "a": "Publications often use decorative fonts that are not on the server. LibreOffice replaces them with other available fonts, and the text may take up slightly more or less space than in the original."
+    },
+    {
+      "q": "Can I edit the publication without Publisher?",
+      "a": "LibreOffice Draw opens PUB files on your computer, with the same partial import, and lets you touch them up and export them again."
+    },
+    {
+      "q": "What if the leaflet was made in Word?",
+      "a": "For DOCX or DOC documents use Word to PDF, which better preserves the layout of a Microsoft Word file."
+    }
+  ]
+}

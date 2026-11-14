@@ -1,0 +1,24 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Pages to PDF converts Apple Pages documents, from the word processor on Mac, iPhone and iPad, into PDF. It helps when someone sends you a .pages file and you have no Apple device to open it, or when you need to turn it into a PDF from Windows or Linux to sign it, print it or attach it to an application.",
+    "The conversion runs on our server with LibreOffice, with no internet connection. LibreOffice understands the Pages format only in part: text, paragraphs, simple tables and images usually come through well, but Apple's own fonts are replaced with others, and effects, objects placed freely on the page and some template designs may change or be lost. That is why every PDF comes with a notice asking you to check the result before using it.",
+    "You can choose plain PDF, PDF/A-2b to preserve the document for the long term, or PDF/UA with tags for screen readers, and keep only some pages by typing them in the Pages field, for example \"1-3\" or \"odd\". Under more options you decide whether headings become bookmarks and set the quality and maximum resolution of images; the Excel and PowerPoint options do not affect a text document.",
+    "If the result is not close enough to the original, the most faithful route is to export it from the app itself, under File > Export To > PDF, or to export it to Word and then convert it with Word to PDF. Several Pages files can be uploaded at once; you will get one PDF per document and a ZIP with all of them. The maximum number of pages depends on your plan."
+  ],
+  "faq": [
+    {
+      "q": "Why is the PDF not identical to my Pages document?",
+      "a": "Pages stores documents in an Apple format with no public documentation. LibreOffice reads it thanks to reverse engineering that does not cover every feature, so part of the layout may differ."
+    },
+    {
+      "q": "What happens to Apple fonts?",
+      "a": "Those that are not on the server, such as the macOS system typefaces, are replaced with other available fonts. If the text shifts, export the PDF from Pages."
+    },
+    {
+      "q": "Can I convert Apple presentations or spreadsheets?",
+      "a": "Yes: Keynote to PDF for presentations and Numbers to PDF for spreadsheets. Both use the same partial LibreOffice import and show the same notice."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HTML a PDF convierte una página web que tienes en tu equipo en un documento PDF. Sirve para guardar un informe generado por una aplicación, una factura o un correo exportados en HTML, la documentación de un proyecto o una página que has diseñado tú, y obtener un archivo que se ve y se imprime igual en cualquier sitio.",
+    "Puedes subir un archivo HTML suelto o un ZIP con la página y sus recursos: hojas de estilo, imágenes, fuentes y SVG. Del ZIP se toma como página principal el index.html, o el HTML menos profundo si no hay ninguno con ese nombre, y las rutas relativas a otros archivos del ZIP se resuelven aunque estén en subcarpetas. Los archivos ocultos y la carpeta __MACOSX que añade el Mac se ignoran. Cada ZIP da el PDF de una sola página principal.",
+    "La conversión la hace Chromium en nuestro servidor, en un entorno sin conexión a internet. Las imágenes, hojas de estilo, fuentes o scripts que la página pide a otros sitios no se cargan, así que lo que no venga en el ZIP o incrustado en el propio HTML no aparecerá en el PDF. Los scripts incluidos en la página o en el ZIP sí se ejecutan. Para guardar una página publicada en internet a partir de su dirección, usa Web a PDF.",
+    "Elige el papel (A3, A4, A5, Letter o Legal), la orientación y los márgenes, de 0 a 50 mm. En las opciones adicionales decides si se imprimen los colores e imágenes de fondo, si todo el contenido va en una sola página larga, si se aplican los estilos de impresión (print) o los de pantalla (screen) y si se respeta el tamaño de página que fija el CSS con @page. Con varios archivos recibes un PDF por cada uno y un ZIP con todos; el número máximo de páginas depende de tu plan."
+  ],
+  "steps": [
+    "Sube un archivo HTML o un ZIP con la página y sus recursos.",
+    "Elige el papel, la orientación y los márgenes.",
+    "Descarga el PDF de cada página o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué no salen algunas imágenes o la tipografía de la página?",
+      "a": "Seguramente se cargan desde internet, y la conversión no tiene conexión. Descarga esos archivos, ponlos en un ZIP junto al HTML con rutas relativas y vuelve a convertirlo."
+    },
+    {
+      "q": "¿Qué diferencia hay entre los medios print y screen?",
+      "a": "Muchas páginas tienen estilos propios para imprimir, que ocultan menús o cambian los colores. Con «print» se usan esos estilos; con «screen», la página se ve como en el navegador."
+    },
+    {
+      "q": "¿Puedo convertir varias páginas HTML enlazadas entre sí?",
+      "a": "Cada ZIP produce el PDF de su página principal. Sube cada página en su propio ZIP o como archivo suelto y júntalas después con Unir PDF."
+    }
+  ]
+}
