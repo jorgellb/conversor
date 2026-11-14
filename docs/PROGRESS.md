@@ -6,7 +6,7 @@ con programas externos), D1 (6 desde PDF sin Docling), D2 (12 desde PDF con Docl
 `PLAN.md`. **F5 sin vídeo cerrado**: lotes A (audio), B1 (imágenes en el navegador), B2 (códigos QR), C (imágenes en el servidor),
 D1 y D2 (crear-collage), E (transcripción) y F (convertir-archivo). **F3 (IA) en curso**: lotes A1 (núcleo de IA y
 resumir-pdf), A2 (chat-pdf), B (preguntas, fichas, presentación y traducción) y C (imagen a texto, imagen a Excel y
-ticket a Excel; D-159 a D-164) hechos. **Goal de trabajo continuo**
+ticket a Excel; D-159 a D-165) hechos. **Goal de trabajo continuo**
 (`docs/GOAL.md`): lote transversal G0-A (infraestructura de proceso) hecho (D-134 a D-143) y G0-B (Lighthouse CI, regresión visual, Playwright
 de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F2 y F5 y fallos de la primera CI) hecho
 (D-150 a D-158).
@@ -228,7 +228,13 @@ usa y, con la IA apagada, no hace falta cuenta ni consentimiento) y ticket-a-exc
 por ticket en `workerai`, con la API reservando una por archivo, JSON con esquema, comprobación de que los conceptos y el
 desglose de IVA suman el total, y XLSX con hojas de tickets y conceptos o CSV). Muestras generadas con Pillow y las
 fuentes Noto en `scripts/fixtures/imagenes_ocr.py`; celdas protegidas contra la inyección de fórmulas. Salvedades en
-D-159 a D-164.
+D-159 a D-165 (D-165, de la revisión: una sola regla para los números de las celdas en `tools/numeros.py`).
+Cierre del lote: `export_registry.py`, `gen_coolify_compose.py` y `gen_docs.py` regenerados sin cambios y sus
+`--check` en verde; Vitest (292 de client-tools y 35 de web), `tsc` sin errores y pytest completo con PostgreSQL 17 y
+Redis locales (1571 en verde, 9 omitidas por modelos o programas que no hay aquí: embeddings, u2net, faster-whisper y
+ctranslate2, veraPDF y un DOCX de prueba; y las 4 de LibreOffice sin el filtro de importación de PDF de siempre,
+`libreoffice-pdfimport`). Sin verificar aquí: imágenes `worker-ocr`, `worker-convert` y `worker-ai` (sin Docker), las
+8 pruebas de Playwright que fijan el origen 3100 y la calidad con modelos reales de OpenRouter (sin clave).
 
 ## F3, lote B (generar a partir de un PDF)
 
