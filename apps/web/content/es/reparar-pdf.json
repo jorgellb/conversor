@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Reparar PDF intenta recuperar documentos que no se abren, que muestran páginas en blanco o que el lector da por dañados. Suele pasar con descargas interrumpidas, adjuntos de correo cortados o archivos generados por programas que escriben mal la estructura interna del PDF.",
+    "La herramienta prueba tres métodos en orden y se queda con el primero que funciona. Primero reconstruye la tabla de referencias y los objetos con qpdf y pikepdf, lo que resuelve la mayoría de los casos sin tocar el contenido. Si no basta, vuelve a guardar el documento con PDFium, el motor de PDF de Chrome, que tolera muchos errores. Como último recurso, dibuja como imagen a 150 ppp cada página que todavía se puede leer y monta un PDF nuevo con ellas.",
+    "Junto a cada archivo reparado verás un informe breve: qué método ha funcionado, cuántas páginas se han recuperado y, si se ha llegado a rasterizar, qué páginas se han perdido. En ese último caso el texto deja de ser seleccionable; si lo necesitas, pasa el resultado por OCR de PDF.",
+    "No tiene opciones: sube el archivo y pulsa el botón. Si ningún método puede leerlo, te avisamos de que está demasiado dañado en lugar de entregarte un PDF vacío."
+  ],
+  "faq": [
+    {
+      "q": "¿Se puede reparar cualquier PDF?",
+      "a": "No siempre. Si al archivo le falta casi todo el contenido, por ejemplo porque la descarga se cortó al principio, no queda nada que recuperar. Las páginas ilegibles se indican en el informe."
+    },
+    {
+      "q": "¿Repara PDF con contraseña?",
+      "a": "Si el archivo pide contraseña para abrirse, esta herramienta no puede reconstruirlo. Quítala primero con Desbloquear PDF y repara la copia desbloqueada."
+    },
+    {
+      "q": "¿Cambia el contenido del documento?",
+      "a": "Con los dos primeros métodos, no: se reescribe la estructura y las páginas quedan igual. Solo el último recurso convierte las páginas en imágenes, y el informe lo dice."
+    },
+    {
+      "q": "¿Hay límite de páginas?",
+      "a": "Sí, el de tu plan: 100 páginas por PDF sin cuenta, 300 con cuenta gratuita y 2.000 en Pro. El archivo se procesa en nuestro servidor de la UE y se borra cuando vence el plazo de tu plan."
+    }
+  ]
+}

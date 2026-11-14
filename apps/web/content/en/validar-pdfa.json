@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Validate PDF/A uses veraPDF to check whether a document truly meets the PDF/A standard or the PDF/UA accessibility standard. Many programs claim to export PDF/A but leave errors that make an e-government portal or an archive reject the document; with this tool you find out before you submit it.",
+    "In automatic mode it checks the level the file itself declares in its metadata. If it declares none, it is checked as PDF/A-2b and the result is not compliant, because a PDF/A must always identify itself. You can also choose a specific profile: PDF/A-1a, 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4, 4e or 4f, or PDF/UA-1 or PDF/UA-2.",
+    "The result is an HTML report you can download and keep. At the top you see whether it is compliant and how many rules and checks failed. Below, each failed rule appears with its clause in the ISO standard, a plain-language explanation (fonts not embedded, metadata that does not match, colours without an output profile, transparency, JavaScript…), how many times it fails and on which pages. veraPDF's technical detail is folded away for whoever has to fix the file.",
+    "This tool does not modify your PDF. If it is not compliant, convert it with PDF to PDF/A and validate it again, or fix the source in the program you created it with."
+  ],
+  "faq": [
+    {
+      "q": "What is veraPDF?",
+      "a": "The reference open-source validator for PDF/A, backed by the PDF Association and the Open Preservation Foundation. Here it runs on our server as a separate program with no network access."
+    },
+    {
+      "q": "Can I validate several files?",
+      "a": "Yes. You get one report per file, named after the document, plus a ZIP with all of them if you upload more than one."
+    },
+    {
+      "q": "Does it check accessibility?",
+      "a": "With the PDF/UA-1 and PDF/UA-2 profiles it checks the rules that can be verified automatically, such as the tagged structure or the language. Others, such as whether alternative text describes the image well, need a human review."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "It is a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro. The file is deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

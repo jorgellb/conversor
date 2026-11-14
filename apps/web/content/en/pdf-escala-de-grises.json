@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Grayscale PDF turns every colour in a document into shades of grey without making it a picture. The text is still text: you can search it and copy it, and it prints sharp. Use it to send a file to a black-and-white printer without surprises, to hand in work that must be in grey, or to see how a design looks without colour.",
+    "The vector method, the default, rewrites the colours of text, lines, fills, gradients, images, annotations and form fields. Each colour becomes grey according to its lightness, so a dark blue does not end up the same shade as a light yellow. Links, bookmarks and forms are kept.",
+    "Some elements cannot be converted safely, such as certain complex shadings or spot colours. Rather than leaving them in colour, the tool rasterises only those pages in grey, at 150 dpi, and tells you which ones in the result. If you prefer the whole document to look uniform, choose “Rasterise everything” under more options: every page becomes a grey image and the text is no longer selectable."
+  ],
+  "faq": [
+    {
+      "q": "Does it make the file smaller?",
+      "a": "Sometimes, because grey images take less space than colour ones, but that is not its purpose. To save space, run Compress PDF afterwards."
+    },
+    {
+      "q": "Is print quality kept?",
+      "a": "With the vector method, yes: text and graphics stay vector and print at the printer's resolution. Only rasterised pages end up at 150 dpi."
+    },
+    {
+      "q": "How is it different from dark mode?",
+      "a": "Grayscale removes colour and keeps the white background. Dark mode PDF inverts lightness for reading at night, with a dark background and light text."
+    },
+    {
+      "q": "Does it work with scanned PDFs?",
+      "a": "Yes. A scan is an image inside the PDF and images are turned grey too. You can upload several files at once and you will get each one with the suffix “-gris” plus a ZIP with all of them."
+    }
+  ]
+}

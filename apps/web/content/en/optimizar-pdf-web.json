@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Optimize PDF for web linearises the document: it reorders its objects so that everything needed to display the first page sits at the start of the file. When someone opens the PDF from a link, the browser can show the cover while the rest is still downloading, instead of waiting for the whole file. Some readers call this “fast web view”.",
+    "It is useful for catalogues, annual reports, restaurant menus or manuals you publish on your site and that weigh several megabytes. Linearisation is done with qpdf and changes nothing you can see: text, images, links and bookmarks stay the same.",
+    "Linearising does not reduce the size; it may even add a few kilobytes for the extra tables. If you also want the file lighter, turn on “Compress first” under more options: the balanced level of Compress PDF is applied and that version is only used if it is smaller than the original.",
+    "For progressive loading to work, the server that hosts the PDF has to support range requests, which almost every current web server and content delivery network does."
+  ],
+  "faq": [
+    {
+      "q": "How do I know whether a PDF is already linearised?",
+      "a": "Many readers show it in the document properties, for example as “Fast Web View: Yes”. Linearising it again does no harm."
+    },
+    {
+      "q": "Does it help for email?",
+      "a": "Not for an attachment, because the whole file is downloaded before it opens. For that, Compress PDF is the better choice."
+    },
+    {
+      "q": "Can I optimise several PDFs at once?",
+      "a": "Yes. Each one comes out with the suffix “-web” and, if you upload more than one, you also get a ZIP with all of them."
+    },
+    {
+      "q": "What if the PDF has a password?",
+      "a": "This tool does not ask for a password. If the file needs one to open, unlock it first with Unlock PDF and, if needed, protect it again once it is optimised."
+    }
+  ]
+}

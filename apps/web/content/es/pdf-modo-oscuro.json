@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF en modo oscuro pone el documento con fondo oscuro y letra clara para leer de noche o en pantallas OLED sin deslumbrarte. No es una captura invertida: el texto sigue siendo texto, así que puedes seleccionarlo, buscarlo y copiarlo como en el original.",
+    "Hay dos modos. «Oscuro conservando tonos», el predeterminado, invierte la luminosidad de cada color pero mantiene su tono: el texto negro pasa a claro, un título rojo sigue siendo rojo y las fotos no cambian. «Negativo» lo invierte todo, imágenes incluidas, como el negativo de una fotografía. El fondo puede ser gris oscuro, más suave para la vista, o negro puro.",
+    "La opción «No tocar las páginas que ya son oscuras», activada por defecto, mide la luminosidad media de cada página y deja como están las que ya tienen fondo oscuro, como portadas o diapositivas negras, para que no acaben claras. En el resultado verás qué páginas se han saltado y, si algún elemento no se ha podido convertir con seguridad, en qué páginas se ha dejado con sus colores originales."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo imprimir el PDF oscuro?",
+      "a": "Puedes, pero gastarías mucha tinta en el fondo. Esta versión está pensada para la pantalla; para imprimir usa el original o PDF a escala de grises."
+    },
+    {
+      "q": "¿Se conservan los enlaces y los formularios?",
+      "a": "Sí. Solo cambian los colores, también los de las anotaciones y los campos de formulario; los enlaces, los marcadores y la estructura del documento siguen igual."
+    },
+    {
+      "q": "¿Por qué hay fotos que no cambian?",
+      "a": "En el modo que conserva tonos las imágenes se dejan como están a propósito, para que no parezcan un negativo. Si quieres invertirlas también, elige el modo Negativo."
+    },
+    {
+      "q": "¿Funciona con escaneos?",
+      "a": "Un escaneo es una imagen, así que solo se oscurece en el modo Negativo. Con el otro modo la página se queda como estaba porque no hay texto vectorial que convertir; pasarla antes por OCR de PDF tampoco cambia eso, porque el texto reconocido es invisible."
+    }
+  ]
+}

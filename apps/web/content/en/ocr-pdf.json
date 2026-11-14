@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OCR PDF recognises the text in scanned or photographed documents and adds it as an invisible layer beneath the image of each page. The look does not change, but from then on you can search for words, select and copy paragraphs or index the file in your document management system. Recognition is done by Tesseract through OCRmyPDF, on our server.",
+    "Choose up to three languages for the document; Spanish is the default. Picking the right language makes a big difference, especially with accents and letters specific to each language. The “Deskew” option, on by default, straightens slightly crooked scanned pages before recognising them.",
+    "Under more options you can auto-rotate pages that are upside down or sideways, remove the background and clean pages to help recognition, merge all files into a single PDF and fill in the title, author, subject and keywords of the result. Pages that already contain text are left alone; if that text comes from an earlier, poor OCR, choose “Force OCR” to recognise them again.",
+    "The output can be a PDF with a text layer, a PDF/A-2b for long-term archiving or, if you only want the text, a TXT file. PDF/A is produced without Ghostscript; if a file cannot be converted that way, the task explains why and you can turn on “If PDF/A is not possible, rasterize pages”."
+  ],
+  "steps": [
+    "Upload one or more scanned PDFs.",
+    "Choose the document's languages and the output type: PDF with a text layer, PDF/A-2b or TXT.",
+    "Wait for recognition to finish and download the result."
+  ],
+  "faq": [
+    {
+      "q": "How long does it take?",
+      "a": "It depends on the number of pages, their resolution and the languages chosen, because OCR is one of the heaviest tasks. A short document is done quickly; one with hundreds of pages can take considerably longer."
+    },
+    {
+      "q": "How many OCR tasks can I run a day?",
+      "a": "OCR counts as a heavy task: 2 a day without an account, 10 with a free account and 200 on Pro. Pages per PDF also depend on the plan: 100, 300 and 2,000."
+    },
+    {
+      "q": "Does it read handwriting?",
+      "a": "Tesseract is designed for printed text. With very neat handwriting it may get some words right, but do not expect a reliable result."
+    },
+    {
+      "q": "Where is it processed?",
+      "a": "On our server in the European Union, without sending anything to third-party services. The file and the result are deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

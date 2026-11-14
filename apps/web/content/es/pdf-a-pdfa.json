@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a PDF/A convierte un documento al formato pensado para conservarse durante décadas, el que piden muchas administraciones, juzgados y archivos. Un PDF/A lleva incrustado lo que necesita para verse igual en el futuro, como las fuentes y el perfil de color, y no admite elementos que dependan de algo externo, como JavaScript o el cifrado.",
+    "El nivel predeterminado es PDF/A-2b, el más aceptado. También puedes elegir PDF/A-1b para sistemas antiguos, PDF/A-2u, que además garantiza que el texto se puede extraer como Unicode, o PDF/A-3b, que admite adjuntos de cualquier tipo. Los niveles 2a y 3a exigen un PDF etiquetado con estructura accesible; si el tuyo no lo está, se hace el nivel b equivalente y te lo indicamos.",
+    "La conversión se hace con OCRmyPDF y sin Ghostscript. Las páginas escaneadas sin texto reciben una capa de texto OCR en los idiomas que elijas en las opciones adicionales; las que ya tienen texto no se tocan. Después, el resultado se valida con veraPDF, el validador de referencia, y junto al PDF recibes un informe HTML con el veredicto.",
+    "Algunos archivos no se pueden convertir sin Ghostscript, por ejemplo cuando usan fuentes sin incrustar. En ese caso recibes el informe de veraPDF del original con los motivos. Si activas «Si no se puede, rasterizar las páginas con capa de texto OCR», las páginas se convierten en imágenes con el texto reconocido encima y el archivo cumple la norma, aunque pierde el texto vectorial."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué nivel me piden?",
+      "a": "Si la sede o el organismo no dice nada, PDF/A-2b es la opción segura. Algunos sistemas antiguos solo aceptan PDF/A-1b; consulta sus instrucciones antes de convertir."
+    },
+    {
+      "q": "¿Cómo compruebo después que es válido?",
+      "a": "El informe que acompaña al PDF ya lo dice. Si más adelante editas el archivo, vuelve a comprobarlo con Validar PDF/A."
+    },
+    {
+      "q": "¿Por qué el resultado pesa más?",
+      "a": "Suele pesar algo más porque incrusta el perfil de color y los metadatos que exige la norma, y las páginas escaneadas llevan además la capa de texto. Es el precio de que se vea igual dentro de muchos años."
+    },
+    {
+      "q": "¿Cuenta como tarea pesada?",
+      "a": "Sí, igual que el OCR: 2 conversiones al día sin cuenta, 10 con cuenta gratuita y 200 en Pro. Se procesa en nuestro servidor de la UE."
+    }
+  ]
+}

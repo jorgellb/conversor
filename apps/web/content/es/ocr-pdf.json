@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OCR de PDF reconoce el texto de documentos escaneados o fotografiados y lo añade como una capa invisible bajo la imagen de cada página. El aspecto no cambia, pero a partir de ahí puedes buscar palabras, seleccionar y copiar párrafos o indexar el archivo en tu gestor documental. El reconocimiento lo hace Tesseract a través de OCRmyPDF, en nuestro servidor.",
+    "Elige hasta tres idiomas del documento; por defecto, español. Indicar bien el idioma mejora mucho el resultado, sobre todo con tildes, eñes y otras letras propias de cada lengua. La opción «Enderezar», activada por defecto, corrige las páginas escaneadas algo torcidas antes de reconocerlas.",
+    "En las opciones adicionales puedes autorrotar las páginas que están del revés o de lado, quitar el fondo y limpiar las páginas para ayudar al reconocimiento, unir todos los archivos en un único PDF y rellenar el título, el autor, el asunto y las palabras clave del resultado. Las páginas que ya tienen texto se dejan como están; si ese texto viene de un OCR anterior de mala calidad, elige «Forzar OCR» para reconocerlas de nuevo.",
+    "La salida puede ser un PDF con capa de texto, un PDF/A-2b para archivo a largo plazo o, si solo quieres el texto, un archivo TXT. El PDF/A se genera sin Ghostscript; si un archivo no se puede convertir así, la tarea te lo explica y puedes activar «Si no se puede hacer PDF/A, rasterizar las páginas»."
+  ],
+  "steps": [
+    "Sube uno o varios PDF escaneados.",
+    "Elige los idiomas del documento y el tipo de salida: PDF con capa de texto, PDF/A-2b o TXT.",
+    "Espera a que termine el reconocimiento y descarga el resultado."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuánto tarda?",
+      "a": "Depende del número de páginas, de su resolución y de los idiomas elegidos, porque el OCR es de las tareas más pesadas. Un documento corto termina enseguida; uno de cientos de páginas puede tardar bastante más."
+    },
+    {
+      "q": "¿Cuántos OCR puedo hacer al día?",
+      "a": "El OCR cuenta como tarea pesada: 2 al día sin cuenta, 10 con cuenta gratuita y 200 en Pro. Las páginas por PDF también dependen del plan: 100, 300 y 2.000."
+    },
+    {
+      "q": "¿Reconoce letra manuscrita?",
+      "a": "Tesseract está pensado para texto impreso. Con letra a mano muy clara puede acertar algunas palabras, pero no esperes un resultado fiable."
+    },
+    {
+      "q": "¿Dónde se procesa?",
+      "a": "En nuestro servidor de la Unión Europea, sin enviar nada a servicios de terceros. El archivo y el resultado se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

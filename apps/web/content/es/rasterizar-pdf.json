@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Rasterizar PDF convierte cada página en una imagen y vuelve a montar el documento con ellas. El resultado se ve igual en cualquier lector y en cualquier impresora, porque ya no depende de fuentes, transparencias ni capas que cada programa interpreta a su manera. También sirve para entregar un archivo cuyo texto no se pueda seleccionar ni editar con facilidad.",
+    "Eliges la resolución en puntos por pulgada: 144 ppp por defecto, de 10 a 300 sin cuenta o con cuenta gratuita y hasta 600 en Pro. La calidad, del 1 al 100 %, controla la compresión JPEG de cada página; con el 75 % predeterminado el archivo queda equilibrado, y si subes la resolución o la calidad ganas nitidez a costa de peso.",
+    "En color puedes dejar las páginas sin cambios, pasarlas a gris o convertirlas a blanco y negro de 1 bit. Este último guarda las páginas en PNG sin pérdida y funciona muy bien con documentos de solo texto, contratos o planos de líneas, pero convierte las fotos en una trama de puntos.",
+    "Ten en cuenta lo que se pierde: el texto deja de ser buscable y seleccionable, y los enlaces, los marcadores y los campos de formulario dejan de funcionar porque cada página es una sola imagen. Los comentarios visibles quedan dibujados en ella. Si después necesitas buscar texto, pasa el resultado por OCR de PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Rasterizar protege el documento?",
+      "a": "Dificulta copiar el texto, pero no es una protección: cualquiera puede pasar las imágenes por un OCR. Para controlar quién abre el archivo, usa Proteger PDF con contraseña."
+    },
+    {
+      "q": "¿Qué resolución elijo?",
+      "a": "Para leer en pantalla bastan entre 96 y 150 ppp; para imprimir con buena calidad, 300. Por encima de 300 solo compensa en planos o letra muy pequeña, y está disponible en Pro."
+    },
+    {
+      "q": "¿Por qué pesa más que el original?",
+      "a": "Un PDF con texto vectorial es muy ligero y una imagen por página casi siempre ocupa más. Baja la resolución o la calidad, o prueba el blanco y negro de 1 bit si el documento es solo texto."
+    },
+    {
+      "q": "¿Qué diferencia hay con aplanar?",
+      "a": "Aplanar PDF integra en la página los formularios y las anotaciones, pero mantiene el texto vectorial. Rasterizar lo convierte todo en imagen."
+    }
+  ]
+}

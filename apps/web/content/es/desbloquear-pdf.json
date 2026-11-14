@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Desbloquear PDF quita la contraseña de apertura y las restricciones de un documento del que conoces la clave. Es práctico cuando recibes extractos bancarios, nóminas o facturas protegidos y no quieres escribir la contraseña cada vez que los abres, o cuando necesitas imprimirlos, unirlos con otros o pasarlos por otra herramienta.",
+    "Escribe la contraseña actual y la herramienta guarda una copia nueva del PDF sin cifrado y sin limitaciones de impresión, copia o edición. El contenido no cambia: las páginas, el texto, las imágenes, los enlaces y los formularios quedan exactamente como estaban.",
+    "No adivinamos ni forzamos contraseñas. Si la que escribes no es correcta, la tarea termina con un aviso y puedes volver a intentarlo; si el archivo necesita contraseña y no has puesto ninguna, también te lo decimos. Usa esta herramienta solo con documentos que tengas derecho a abrir.",
+    "Puedes subir varios PDF a la vez si comparten la misma contraseña: recibes cada uno desbloqueado y un ZIP con todos. El nombre del resultado lleva el sufijo «-desbloqueado» para que no lo confundas con el original."
+  ],
+  "steps": [
+    "Sube el PDF protegido.",
+    "Escribe la contraseña que te pide al abrirlo.",
+    "Descarga la copia desbloqueada, lista para imprimir, editar o combinar."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo desbloquear un PDF sin saber la contraseña?",
+      "a": "No. La herramienta solo abre el archivo con la contraseña correcta; no prueba combinaciones ni usa diccionarios de claves."
+    },
+    {
+      "q": "¿Se guarda la contraseña que escribo?",
+      "a": "Se envía sellada con la tarea, se usa una vez para abrir el PDF y nunca se almacena en claro. El navegador tampoco la recuerda entre visitas."
+    },
+    {
+      "q": "¿Y si mis archivos tienen contraseñas distintas?",
+      "a": "Haz una tarea por cada contraseña. Dentro de una misma tarea se prueba la misma clave con todos los archivos."
+    },
+    {
+      "q": "¿Cuántos archivos puedo desbloquear?",
+      "a": "Sin cuenta, hasta 5 por tarea y 20 tareas ligeras al día; con cuenta gratuita, 20 archivos por tarea y 50 tareas; en Pro, 100 archivos por tarea. Cada archivo se borra a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

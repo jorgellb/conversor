@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Repair PDF tries to recover documents that will not open, show blank pages or that your reader reports as damaged. This usually happens with interrupted downloads, truncated email attachments or files produced by programs that write the internal structure of the PDF badly.",
+    "The tool tries three methods in order and keeps the first one that works. First it rebuilds the cross-reference table and objects with qpdf and pikepdf, which fixes most cases without touching the content. If that is not enough, it saves the document again with PDFium, the PDF engine in Chrome, which tolerates many errors. As a last resort, it draws every page that can still be read as an image at 150 dpi and builds a new PDF from them.",
+    "Next to each repaired file you will see a short report: which method worked, how many pages were recovered and, if it had to rasterise, which pages were lost. In that last case the text is no longer selectable; if you need it, run the result through OCR PDF.",
+    "There are no options: upload the file and press the button. If no method can read it, we tell you it is too badly damaged instead of handing you an empty PDF."
+  ],
+  "faq": [
+    {
+      "q": "Can any PDF be repaired?",
+      "a": "Not always. If the file is missing almost all of its content, for example because the download stopped near the start, there is nothing left to recover. Unreadable pages are listed in the report."
+    },
+    {
+      "q": "Does it repair password-protected PDFs?",
+      "a": "If the file asks for a password to open, this tool cannot rebuild it. Remove the password first with Unlock PDF and repair the unlocked copy."
+    },
+    {
+      "q": "Does it change the content of the document?",
+      "a": "With the first two methods, no: the structure is rewritten and the pages stay the same. Only the last resort turns pages into images, and the report says so."
+    },
+    {
+      "q": "Is there a page limit?",
+      "a": "Yes, your plan's: 100 pages per PDF without an account, 300 with a free account and 2,000 on Pro. The file is processed on our EU server and deleted when your plan's time limit runs out."
+    }
+  ]
+}

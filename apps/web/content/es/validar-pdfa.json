@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Validar PDF/A comprueba con veraPDF si un documento cumple de verdad la norma PDF/A o la de accesibilidad PDF/UA. Muchos programas dicen exportar a PDF/A pero dejan fallos por los que una sede electrónica o un archivo rechaza el documento; con esta herramienta sabes si va a pasar antes de entregarlo.",
+    "En modo automático se comprueba el nivel que el propio archivo declara en sus metadatos. Si no declara ninguno, se comprueba como PDF/A-2b y el resultado sale como no conforme, porque un PDF/A siempre debe identificarse. También puedes elegir un perfil concreto: PDF/A-1a, 1b, 2a, 2b, 2u, 3a, 3b, 3u, 4, 4e o 4f, o bien PDF/UA-1 o PDF/UA-2.",
+    "El resultado es un informe HTML que puedes descargar y guardar. Arriba verás si cumple o no y cuántas reglas y comprobaciones han fallado. Debajo aparece cada regla incumplida con su cláusula de la norma ISO, una explicación en lenguaje sencillo (fuentes sin incrustar, metadatos que no coinciden, colores sin perfil de salida, transparencias, JavaScript…), las veces que falla y en qué páginas. El detalle técnico de veraPDF queda plegado para quien tenga que corregir el archivo.",
+    "Esta herramienta no modifica tu PDF. Si no cumple, conviértelo con PDF a PDF/A y vuelve a validarlo, o corrige el origen en el programa con el que lo creaste."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué es veraPDF?",
+      "a": "El validador de código abierto de referencia para PDF/A, impulsado por la PDF Association y la Open Preservation Foundation. Aquí se ejecuta en nuestro servidor como un programa aparte y sin acceso a la red."
+    },
+    {
+      "q": "¿Puedo validar varios archivos?",
+      "a": "Sí. Recibes un informe por archivo, con el nombre del documento, y un ZIP con todos si subes más de uno."
+    },
+    {
+      "q": "¿Comprueba la accesibilidad?",
+      "a": "Con los perfiles PDF/UA-1 y PDF/UA-2 comprueba las reglas que se pueden verificar de forma automática, como la estructura etiquetada o el idioma. Otras, como si el texto alternativo describe bien la imagen, necesitan una revisión humana."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Es una tarea ligera: 20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro. El archivo se borra a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to PDF/A converts a document to the format designed to be preserved for decades, the one many public administrations, courts and archives require. A PDF/A carries embedded everything it needs to look the same in the future, such as fonts and the colour profile, and does not allow anything that depends on something external, such as JavaScript or encryption.",
+    "The default level is PDF/A-2b, the most widely accepted. You can also choose PDF/A-1b for older systems, PDF/A-2u, which also guarantees the text can be extracted as Unicode, or PDF/A-3b, which allows attachments of any kind. Levels 2a and 3a require a tagged PDF with an accessible structure; if yours is not tagged, the equivalent b level is produced and we tell you.",
+    "Conversion is done with OCRmyPDF and without Ghostscript. Scanned pages with no text get an OCR text layer in the languages you choose under more options; pages that already have text are left alone. The result is then validated with veraPDF, the reference validator, and alongside the PDF you get an HTML report with the verdict.",
+    "Some files cannot be converted without Ghostscript, for example when they use fonts that are not embedded. In that case you get the veraPDF report of the original with the reasons. If you turn on “If it fails, rasterize the pages with an OCR text layer”, pages become images with the recognised text on top and the file meets the standard, although it loses its vector text."
+  ],
+  "faq": [
+    {
+      "q": "Which level do I need?",
+      "a": "If the portal or the organisation does not say, PDF/A-2b is the safe choice. Some older systems only accept PDF/A-1b; check their instructions before converting."
+    },
+    {
+      "q": "How do I check afterwards that it is valid?",
+      "a": "The report that comes with the PDF already tells you. If you edit the file later, check it again with Validate PDF/A."
+    },
+    {
+      "q": "Why is the result bigger?",
+      "a": "It is usually a little bigger because it embeds the colour profile and the metadata the standard requires, and scanned pages also carry the text layer. That is the price of looking the same many years from now."
+    },
+    {
+      "q": "Does it count as a heavy task?",
+      "a": "Yes, just like OCR: 2 conversions a day without an account, 10 with a free account and 200 on Pro. It is processed on our EU server."
+    }
+  ]
+}

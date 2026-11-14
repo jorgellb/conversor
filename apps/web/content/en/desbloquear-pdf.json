@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Unlock PDF removes the password to open and the restrictions from a document whose password you know. It is practical when you receive protected bank statements, payslips or invoices and do not want to type the password every time you open them, or when you need to print them, merge them with others or run them through another tool.",
+    "Type the current password and the tool saves a new copy of the PDF with no encryption and no limits on printing, copying or editing. The content does not change: pages, text, images, links and forms stay exactly as they were.",
+    "We do not guess or crack passwords. If the one you type is wrong, the task ends with a message and you can try again; if the file needs a password and you have not entered one, we tell you as well. Only use this tool with documents you are entitled to open.",
+    "You can upload several PDFs at once if they share the same password: you get each one unlocked plus a ZIP with all of them. The result's name carries the suffix “-desbloqueado” so you do not mix it up with the original."
+  ],
+  "steps": [
+    "Upload the protected PDF.",
+    "Type the password it asks for when you open it.",
+    "Download the unlocked copy, ready to print, edit or combine."
+  ],
+  "faq": [
+    {
+      "q": "Can I unlock a PDF without knowing the password?",
+      "a": "No. The tool only opens the file with the correct password; it does not try combinations or use password dictionaries."
+    },
+    {
+      "q": "Is the password I type stored?",
+      "a": "It is sent sealed with the task, used once to open the PDF and never stored in plain text. Your browser does not remember it between visits either."
+    },
+    {
+      "q": "What if my files have different passwords?",
+      "a": "Run one task per password. Within a single task the same password is tried on every file."
+    },
+    {
+      "q": "How many files can I unlock?",
+      "a": "Without an account, up to 5 per task and 20 light tasks a day; with a free account, 20 files per task and 50 tasks; on Pro, 100 files per task. Each file is deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

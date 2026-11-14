@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Rasterize PDF turns every page into an image and rebuilds the document from them. The result looks the same in any reader and on any printer, because it no longer depends on fonts, transparencies or layers that each program interprets in its own way. It is also a way to deliver a file whose text cannot easily be selected or edited.",
+    "You choose the resolution in dots per inch: 144 dpi by default, from 10 to 300 without an account or with a free account, and up to 600 on Pro. Quality, from 1 to 100%, controls the JPEG compression of each page; the default 75% gives a balanced file, and raising resolution or quality buys sharpness at the cost of size.",
+    "For colour you can leave pages unchanged, turn them grey or convert them to 1-bit black and white. The latter stores pages as lossless PNG and works very well for text-only documents, contracts or line drawings, but it turns photos into a pattern of dots.",
+    "Bear in mind what is lost: the text is no longer searchable or selectable, and links, bookmarks and form fields stop working because each page is a single image. Visible comments are drawn into it. If you later need to search the text, run the result through OCR PDF."
+  ],
+  "faq": [
+    {
+      "q": "Does rasterising protect the document?",
+      "a": "It makes copying the text harder, but it is not protection: anyone can run the images through OCR. To control who opens the file, use Password protect PDF."
+    },
+    {
+      "q": "Which resolution should I pick?",
+      "a": "For reading on screen, 96 to 150 dpi is enough; for good-quality printing, 300. Going above 300 only pays off for drawings or very small print, and it is available on Pro."
+    },
+    {
+      "q": "Why is it bigger than the original?",
+      "a": "A PDF with vector text is very light, and one image per page almost always takes more space. Lower the resolution or quality, or try 1-bit black and white if the document is text only."
+    },
+    {
+      "q": "How is it different from flattening?",
+      "a": "Flatten PDF merges forms and annotations into the page but keeps vector text. Rasterising turns everything into an image."
+    }
+  ]
+}

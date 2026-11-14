@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Dark mode PDF gives the document a dark background and light lettering so you can read at night or on OLED screens without being dazzled. It is not an inverted screenshot: the text stays text, so you can select it, search it and copy it just like in the original.",
+    "There are two modes. “Dark keeping hues”, the default, inverts the lightness of each colour but keeps its hue: black text turns light, a red heading stays red and photos are left unchanged. “Negative” inverts everything, images included, like a photographic negative. The background can be dark grey, gentler on the eyes, or pure black.",
+    "The option “Leave pages that are already dark”, on by default, measures the average lightness of each page and leaves alone those that already have a dark background, such as covers or black slides, so they do not end up light. The result tells you which pages were skipped and, if any element could not be converted safely, on which pages it was left in its original colours."
+  ],
+  "faq": [
+    {
+      "q": "Can I print the dark PDF?",
+      "a": "You can, but you would use a lot of ink on the background. This version is meant for screens; to print, use the original or Grayscale PDF."
+    },
+    {
+      "q": "Are links and forms kept?",
+      "a": "Yes. Only the colours change, including those of annotations and form fields; links, bookmarks and the document structure stay the same."
+    },
+    {
+      "q": "Why do some photos not change?",
+      "a": "In the mode that keeps hues, images are left as they are on purpose so they do not look like a negative. If you want them inverted too, choose Negative mode."
+    },
+    {
+      "q": "Does it work with scans?",
+      "a": "A scan is an image, so it only gets darker in Negative mode. In the other mode the page stays as it was because there is no vector text to convert; running it through OCR PDF first does not change that, since recognised text is invisible."
+    }
+  ]
+}

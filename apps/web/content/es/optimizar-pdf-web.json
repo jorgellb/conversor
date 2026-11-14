@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Optimizar PDF para la web linealiza el documento: reordena sus objetos para que lo necesario para mostrar la primera página esté al principio del archivo. Así, cuando alguien abre el PDF desde un enlace, el navegador puede enseñar la portada mientras sigue descargando el resto, en lugar de esperar a tenerlo entero. Algunos lectores lo llaman «vista rápida en la Web».",
+    "Es útil para catálogos, memorias anuales, cartas de restaurante o manuales que publicas en tu sitio y que pesan varios megas. La linealización se hace con qpdf y no cambia nada de lo que se ve: el texto, las imágenes, los enlaces y los marcadores quedan igual.",
+    "Linealizar no reduce el tamaño; incluso puede añadir unos pocos kilobytes por las tablas extra. Si además quieres que pese menos, activa «Comprimir antes» en las opciones adicionales: se aplica el nivel equilibrado de Comprimir PDF y solo se usa esa versión si es más pequeña que el original.",
+    "Para que la carga progresiva funcione, el servidor donde alojas el PDF tiene que admitir peticiones por rangos, algo que hacen casi todos los servidores web y redes de distribución actuales."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo sé si un PDF ya está linealizado?",
+      "a": "Muchos lectores lo muestran en las propiedades del documento, por ejemplo como «Vista rápida en la Web: Sí». Volver a linealizarlo no lo estropea."
+    },
+    {
+      "q": "¿Sirve para enviar por correo?",
+      "a": "En un adjunto no aporta nada, porque el archivo se descarga entero antes de abrirse. Para eso es mejor Comprimir PDF."
+    },
+    {
+      "q": "¿Puedo optimizar varios PDF a la vez?",
+      "a": "Sí. Cada uno sale con el sufijo «-web» y, si subes más de uno, también recibes un ZIP con todos."
+    },
+    {
+      "q": "¿Qué pasa si el PDF tiene contraseña?",
+      "a": "Esta herramienta no pide contraseña. Si el archivo la necesita para abrirse, desbloquéalo antes con Desbloquear PDF y, si hace falta, vuelve a protegerlo cuando esté optimizado."
+    }
+  ]
+}

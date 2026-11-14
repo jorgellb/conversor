@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Proteger PDF con contraseña cifra el documento para que solo pueda abrirlo quien conozca la clave. Viene bien antes de mandar por correo una nómina, un contrato o un informe médico, o de dejar un archivo con datos personales en una carpeta compartida. Por defecto se usa AES-256, el cifrado más fuerte que admite el formato PDF.",
+    "La contraseña para abrir es la que pedirá el lector cada vez que alguien abra el archivo. En las opciones adicionales puedes añadir una contraseña de propietario y decidir qué permisos conserva el documento: modificar, comentar, imprimir, imprimir en alta calidad, ensamblar páginas, rellenar formularios, copiar y copiar por accesibilidad. Todos vienen permitidos, así que solo tienes que desmarcar los que quieras bloquear.",
+    "Si dejas vacía la contraseña de propietario y restringes algún permiso, se genera una aleatoria que no se te muestra ni se guarda: las restricciones quedan fijadas, así que conserva tu original sin proteger por si luego necesitas cambiarlas. Hace falta al menos una contraseña de apertura o un permiso desmarcado; si no, no habría nada que proteger y la herramienta te lo indica.",
+    "El cifrado AES-128 sigue disponible para lectores antiguos que no abren AES-256. Si subes varios PDF, todos reciben la misma contraseña y los mismos permisos, y además de cada archivo protegido recibes un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios PDF.",
+    "Escribe la contraseña para abrir y, si quieres, ajusta en las opciones adicionales la contraseña de propietario, los permisos y el cifrado.",
+    "Pulsa el botón y descarga el PDF protegido o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Los permisos impiden de verdad copiar o imprimir?",
+      "a": "Depende del lector. La mayoría de los visores conocidos los respetan, pero hay programas que los ignoran. La contraseña para abrir, en cambio, es cifrado real: sin ella el contenido no se puede leer."
+    },
+    {
+      "q": "¿Guardáis mi contraseña?",
+      "a": "No. Viaja sellada junto a la tarea, se usa solo para cifrar y nunca se guarda en claro. El formulario tampoco la recuerda en tu próxima visita, aunque sí recuerda el resto de opciones."
+    },
+    {
+      "q": "¿Qué pasa si olvido la contraseña?",
+      "a": "No podemos recuperarla ni quitarla por ti. Guárdala en un gestor de contraseñas y conserva una copia del original antes de protegerlo."
+    },
+    {
+      "q": "¿Cómo la quito más adelante?",
+      "a": "Con Desbloquear PDF, escribiendo la contraseña actual. Las dos herramientas funcionan en nuestro servidor de la Unión Europea y los archivos se borran a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

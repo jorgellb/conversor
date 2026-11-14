@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Password protect PDF encrypts the document so only someone who knows the password can open it. It is handy before emailing a payslip, a contract or a medical report, or before leaving a file with personal data in a shared folder. AES-256 is used by default, the strongest encryption the PDF format supports.",
+    "The password to open is the one the reader will ask for every time someone opens the file. Under more options you can add an owner password and decide which permissions the document keeps: modifying, commenting, printing, high-quality printing, assembling pages, filling forms, copying and copying for accessibility. All of them are allowed by default, so you only untick the ones you want to block.",
+    "If you leave the owner password empty and restrict any permission, a random one is generated that is never shown to you or stored: the restrictions are then fixed, so keep your unprotected original in case you need to change them later. You need at least a password to open or one unticked permission; otherwise there would be nothing to protect and the tool tells you so.",
+    "AES-128 encryption is still available for old readers that cannot open AES-256. If you upload several PDFs, they all get the same password and permissions, and besides each protected file you get a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more PDFs.",
+    "Type the password to open and, if you like, set the owner password, permissions and encryption under more options.",
+    "Press the button and download the protected PDF or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Do permissions really stop copying or printing?",
+      "a": "It depends on the reader. Most well-known viewers respect them, but some programs ignore them. The password to open, on the other hand, is real encryption: without it the content cannot be read."
+    },
+    {
+      "q": "Do you keep my password?",
+      "a": "No. It travels sealed with the task, is used only to encrypt and is never stored in plain text. The form does not remember it on your next visit either, although it does remember the other options."
+    },
+    {
+      "q": "What if I forget the password?",
+      "a": "We cannot recover it or remove it for you. Save it in a password manager and keep a copy of the original before protecting it."
+    },
+    {
+      "q": "How do I remove it later?",
+      "a": "With Unlock PDF, by typing the current password. Both tools run on our server in the European Union and files are deleted after one hour without an account or after 24 hours with one."
+    }
+  ]
+}

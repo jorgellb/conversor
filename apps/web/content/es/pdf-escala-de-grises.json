@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a escala de grises convierte todos los colores de un documento a tonos de gris sin transformarlo en una foto. El texto sigue siendo texto: puedes buscarlo y copiarlo, y se imprime nítido. Sirve para mandar a una impresora en blanco y negro sin sorpresas, para entregar trabajos que deben ir en gris o para ver cómo queda un diseño sin color.",
+    "El método vectorial, el predeterminado, reescribe los colores del texto, las líneas, los rellenos, los degradados, las imágenes, las anotaciones y los campos de formulario. Cada color se pasa a gris según su luminosidad, de modo que un azul oscuro no acaba con el mismo tono que un amarillo claro. Los enlaces, los marcadores y los formularios se conservan.",
+    "Hay elementos que no se pueden convertir con seguridad, como ciertos sombreados complejos o las tintas planas. En lugar de dejarlos en color, la herramienta rasteriza en gris solo esas páginas, a 150 ppp, y te dice cuáles son en el resultado. Si prefieres que todo el documento quede homogéneo, elige «Rasterizar todo» en las opciones adicionales: cada página se convierte en una imagen gris y el texto deja de ser seleccionable."
+  ],
+  "faq": [
+    {
+      "q": "¿Reduce el tamaño del archivo?",
+      "a": "A veces, porque las imágenes en gris ocupan menos que en color, pero no es su objetivo. Para ahorrar espacio, usa después Comprimir PDF."
+    },
+    {
+      "q": "¿Se mantiene la calidad de impresión?",
+      "a": "Con el método vectorial, sí: el texto y los gráficos siguen siendo vectoriales y se imprimen a la resolución de la impresora. Solo las páginas rasterizadas quedan a 150 ppp."
+    },
+    {
+      "q": "¿Qué diferencia hay con el modo oscuro?",
+      "a": "Escala de grises quita el color y mantiene el fondo blanco. PDF en modo oscuro invierte la luminosidad para leer de noche, con fondo oscuro y texto claro."
+    },
+    {
+      "q": "¿Funciona con PDF escaneados?",
+      "a": "Sí. Un escaneo es una imagen dentro del PDF y las imágenes también se pasan a gris. Puedes subir varios archivos a la vez y recibirás cada uno con el sufijo «-gris» y un ZIP con todos."
+    }
+  ]
+}
