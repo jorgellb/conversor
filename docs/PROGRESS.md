@@ -280,6 +280,8 @@ D-150 a D-156. Tras la revisión (D-157): redactar-pdf quita también las etique
 los términos en todas las cadenas del archivo y comprueba antes de entregar que no siguen en ninguna cadena ni flujo de
 texto o de contenido; el aviso de «eliminar» dice cuándo parte del texto de alrededor ha pasado a imagen con un grupo, y
 las imágenes de más de 50 MP (o si el WebAssembly se queda sin memoria) se codifican con el lienzo.
+Segunda revisión (D-158): redactar-pdf quita también los archivos adjuntos (el DOCX, ZIP o PDF original, el XML de una
+factura) y las miniaturas de las páginas, y con «rasterizar» quita de `/AcroForm` los campos que tocan un área.
 
 Verificado aquí: Vitest (282 de client-tools y 34 de web), `tsc`, `next build`, licencias de npm (0 problemas) y pytest sin
 la marca `integration` (1441 en verde, 8 omitidas y las 4 de LibreOffice sin el filtro de importación de PDF de siempre;

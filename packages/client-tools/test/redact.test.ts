@@ -1,5 +1,5 @@
 import { PDFArray, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFRawStream, PDFString, StandardFonts, degrees, rgb } from "@cantoo/pdf-lib";
-import { unzlibSync } from "fflate";
+import { strToU8, unzlibSync, zipSync } from "fflate";
 import { describe, expect, it } from "vitest";
 
 import { addOutline } from "../src/pdfutil";
@@ -392,6 +392,91 @@ describe("redactar-pdf eliminando solo lo que hay bajo el área (A.6, 16.4 y 16.
     const out = res.outputs[0].bytes;
     expect(leaks(rawText(out, await PDFDocument.load(out)), "Juan P")).toBe(false);
   });
+});
+
+describe("redactar-pdf: adjuntos, campos y miniaturas (A.6)", () => {
+  /** Página con el término, un DOCX (ZIP) y un PDF adjuntos que lo repiten comprimido, el XML de una factura con él y
+   *  una anotación FileAttachment fuera del área. */
+  async function withAttachments(): Promise<Uint8Array> {
+    const doc = await PDFDocument.create();
+    const font = await doc.embedFont(StandardFonts.Helvetica);
+    const page = doc.addPage([400, 400]);
+    page.drawText("IBAN 776655", { x: 50, y: 300, size: 14, font });
+    page.drawText("Texto que se queda", { x: 50, y: 100, size: 14, font });
+    await doc.attach(zipSync({ "word/document.xml": strToU8("<w>cuenta 776655</w>") }), "original.docx");
+    const inner = await PDFDocument.create();
+    inner.addPage([200, 200]).drawText("Secreto 776655", { x: 20, y: 100, size: 12, font: await inner.embedFont(StandardFonts.Helvetica) });
+    await doc.attach(await inner.save(), "anexo.pdf");
+    await doc.attach(strToU8("<inv><iban>776655</iban></inv>"), "factur-x.xml", { mimeType: "text/xml" });
+    const ctx = doc.context;
+    const payload = ctx.register(ctx.flateStream("nota 776655", { Type: "EmbeddedFile" }));
+    const fs = ctx.obj({ Type: "Filespec", F: PDFString.of("nota.txt"), EF: { F: payload } });
+    page.node.addAnnot(ctx.register(ctx.obj({ Type: "Annot", Subtype: "FileAttachment", Rect: [300, 20, 320, 40], FS: fs })));
+    doc.catalog.set(PDFName.of("AF"), ctx.obj([ctx.register(ctx.obj({ Type: "Filespec", F: PDFString.of("af.txt"), EF: { F: payload } }))]));
+    return doc.save();
+  }
+
+  for (const metodo of ["eliminar", "rasterizar"] as const) {
+    it(`«${metodo}» quita los adjuntos (comprimidos o de texto) y termina bien`, async () => {
+      const bytes = await withAttachments();
+      const areas = findMatches(await pagesText(bytes), "776655").flatMap((m) => m.areas);
+      const res = await runClientTool("redactar-pdf", [{ name: "factura.pdf", bytes }], {
+        color: "#000000", texto: "", metodo, model: { areas, terminos: ["776655"] },
+      }, { renderer: nodeRenderer });
+      const out = res.outputs[0].bytes;
+      const pdf = await PDFDocument.load(out);
+      const embedded = [...pdf.context.enumerateIndirectObjects()].filter(([, obj]) =>
+        obj instanceof PDFRawStream && obj.dict.get(PDFName.of("Type")) === PDFName.of("EmbeddedFile"));
+      expect(embedded).toHaveLength(0);
+      expect(pdf.catalog.lookupMaybe(PDFName.of("Names"), PDFDict)?.get(PDFName.of("EmbeddedFiles"))).toBeUndefined();
+      expect(pdf.catalog.get(PDFName.of("AF"))).toBeUndefined();
+      const annots = pdf.getPages()[0].node.Annots();
+      for (let i = 0; annots && i < annots.size(); i += 1) {
+        expect(annots.lookupMaybe(i, PDFDict)?.get(PDFName.of("Subtype"))).not.toBe(PDFName.of("FileAttachment"));
+      }
+      expect(leaks(rawText(out, pdf), "776655")).toBe(false);
+      expect(res.notes.join(" ")).toMatch(/archivo\(s\) adjunto\(s\)/);
+    });
+  }
+
+  it("«rasterizar» quita del formulario el campo relleno bajo un área dibujada a mano", async () => {
+    const doc = await PDFDocument.create();
+    const page = doc.addPage([400, 400]);
+    const field = doc.getForm().createTextField("dni");
+    field.setText("DNI99887766X");
+    field.addToPage(page, { x: 50, y: 300, width: 200, height: 30 });
+    const bytes = await doc.save();
+    const res = await runClientTool("redactar-pdf", [{ name: "formulario.pdf", bytes }], {
+      color: "#000000", texto: "", metodo: "rasterizar", model: { areas: [{ page: 0, x: 40, y: 60, width: 230, height: 50 }], terminos: [] },
+    }, { renderer: nodeRenderer, locale: "en" });
+    const out = res.outputs[0].bytes;
+    const pdf = await PDFDocument.load(out);
+    expect(pdf.getForm().getFields()).toHaveLength(0);
+    expect(leaks(rawText(out, pdf), "DNI99887766X")).toBe(false);
+    expect(res.notes.join(" ")).toMatch(/field\(s\) touching an area were removed/);
+  });
+
+  for (const metodo of ["eliminar", "rasterizar"] as const) {
+    it(`«${metodo}» quita la miniatura de la página`, async () => {
+      const doc = await PDFDocument.create();
+      const font = await doc.embedFont(StandardFonts.Helvetica);
+      const page = doc.addPage([400, 400]);
+      page.drawText("Secreto 776655", { x: 50, y: 300, size: 14, font });
+      const ctx = doc.context;
+      const thumb = ctx.register(ctx.flateStream(new Uint8Array(4 * 4 * 3), {
+        Type: "XObject", Subtype: "Image", Width: 4, Height: 4, ColorSpace: "DeviceRGB", BitsPerComponent: 8,
+      }));
+      page.node.set(PDFName.of("Thumb"), thumb);
+      doc.addPage([400, 400]).node.set(PDFName.of("Thumb"), thumb);
+      const bytes = await doc.save();
+      const areas = findMatches(await pagesText(bytes), "776655").flatMap((m) => m.areas);
+      const res = await runClientTool("redactar-pdf", [{ name: "miniatura.pdf", bytes }], {
+        color: "#000000", texto: "", metodo, model: { areas, terminos: ["776655"] },
+      }, { renderer: nodeRenderer });
+      const pdf = await PDFDocument.load(res.outputs[0].bytes);
+      for (const p of pdf.getPages()) expect(p.node.get(PDFName.of("Thumb"))).toBeUndefined();
+    });
+  }
 });
 
 describe("cadenas de un flujo de contenido (comprobación de redactar-pdf)", () => {

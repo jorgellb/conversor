@@ -1,8 +1,8 @@
 // redactar-pdf (A.6) con sus dos métodos. «Rasterizar»: las páginas con áreas pasan a imagen a 300 ppp con los recuadros
 // pintados. «Eliminar»: EmbedPDF y PDFium quitan solo lo que hay bajo las áreas (caracteres, y los trazados, imágenes,
 // sombreados y grupos que las tocan pasan a imagen con el área vacía) y el resto del texto sigue seleccionable (D-153).
-// En los dos se quitan los metadatos, la estructura de etiquetas, la capa XFA, las anotaciones afectadas y los objetos
-// huérfanos, se tapan los términos en cualquier cadena del archivo y se comprueba el resultado antes de entregarlo (el
+// En los dos se quitan los metadatos, la estructura de etiquetas, la capa XFA, los adjuntos, las miniaturas, las
+// anotaciones y los campos afectados y los objetos huérfanos, se tapan los términos en cualquier cadena del archivo y se comprueba el resultado antes de entregarlo (el
 // texto de las páginas y también las cadenas y flujos del archivo): si algo falla, REDACTION_FAILED (D-157).
 import {
   PDFArray,
@@ -175,7 +175,8 @@ function stripStructure(doc: PDFDocument): boolean {
   }
   if (catalog.has(PDFName.of("MarkInfo"))) catalog.set(PDFName.of("MarkInfo"), doc.context.obj({ Marked: false }));
   for (const page of doc.getPages()) {
-    page.node.delete(PDFName.of("StructParents"));
+    // La miniatura es una imagen de la página original y /PieceInfo guarda datos privados de la aplicación que la creó.
+    for (const key of ["StructParents", "Thumb", "PieceInfo"]) page.node.delete(PDFName.of(key));
     const annots = page.node.Annots();
     for (let i = 0; annots && i < annots.size(); i += 1) annots.lookupMaybe(i, PDFDict)?.delete(PDFName.of("StructParent"));
   }
@@ -183,6 +184,54 @@ function stripStructure(doc: PDFDocument): boolean {
   if (acroForm?.has(PDFName.of("XFA"))) {
     acroForm.delete(PDFName.of("XFA"));
     removed = true;
+  }
+  return removed;
+}
+
+/**
+ * Quita los archivos adjuntos: el árbol /Names /EmbeddedFiles, /Collection, las anotaciones FileAttachment, cada /EF
+ * de una especificación de archivo y cada /AF (catálogo, páginas, anotaciones, grupos). Un adjunto (el DOCX original,
+ * un PDF, un ZIP, el XML de una factura) puede repetir lo tapado comprimido o en binario, donde no se puede buscar ni
+ * limpiar. Devuelve cuántos archivos incrustados se han quitado.
+ */
+function stripAttachments(doc: PDFDocument): number {
+  const ctx = doc.context;
+  const catalog = doc.catalog;
+  let removed = 0;
+  // Primero todo lo alcanzable (el árbol de nombres, las anotaciones, /AF y acciones GoToE, Launch o RichMedia).
+  const seen = new Set<string>();
+  const stack: (PDFObject | undefined)[] = [ctx.trailerInfo.Root];
+  while (stack.length) {
+    const obj = stack.pop();
+    if (!obj) continue;
+    if (obj instanceof PDFRef) {
+      if (seen.has(obj.tag)) continue;
+      seen.add(obj.tag);
+      stack.push(ctx.lookup(obj));
+    } else if (obj instanceof PDFDict) {
+      for (const [, value] of obj.entries()) stack.push(value);
+      if (obj.has(PDFName.of("EF"))) {
+        obj.delete(PDFName.of("EF"));
+        removed += 1;
+      }
+      obj.delete(PDFName.of("AF"));
+    } else if (obj instanceof PDFArray) {
+      stack.push(...obj.asArray());
+    } else if (obj instanceof PDFStream) {
+      stack.push(obj.dict);
+    }
+  }
+  const names = catalog.lookupMaybe(PDFName.of("Names"), PDFDict);
+  if (names?.has(PDFName.of("EmbeddedFiles"))) {
+    names.delete(PDFName.of("EmbeddedFiles"));
+    if (!names.keys().length) catalog.delete(PDFName.of("Names"));
+  }
+  catalog.delete(PDFName.of("Collection"));
+  for (const page of doc.getPages()) {
+    const annots = page.node.Annots();
+    for (let i = (annots?.size() ?? 0) - 1; annots && i >= 0; i -= 1) {
+      if (annots.lookupMaybe(i, PDFDict)?.lookup(PDFName.of("Subtype")) === PDFName.of("FileAttachment")) annots.remove(i);
+    }
   }
   return removed;
 }
@@ -454,7 +503,7 @@ export function contentStrings(b: Uint8Array): Uint8Array[] {
 /**
  * Comprobación de todo el archivo (A.6): ningún término redactado queda en una cadena (marcadores, anotaciones,
  * etiquetas, campos), en las cadenas de un flujo de contenido (texto, /ActualText en línea) ni en un flujo de texto
- * (XMP, XFA, JavaScript, adjuntos). Las imágenes y las fuentes no se leen.
+ * (XMP, XFA, JavaScript; los adjuntos ya se han quitado). Las imágenes y las fuentes no se leen.
  */
 async function verifyFile(bytes: Uint8Array, terms: string[]) {
   const folded = terms.map(fold).filter(Boolean);
@@ -474,8 +523,13 @@ async function verifyFile(bytes: Uint8Array, terms: string[]) {
       const dict = stream.dict;
       const type = dict.get(PDFName.of("Type"));
       const subtype = dict.get(PDFName.of("Subtype"));
+      if (type === PDFName.of("EmbeddedFile")) {
+        // stripAttachments los quita todos: si queda uno, su contenido (quizá comprimido) no se puede comprobar.
+        where = "adjunto";
+        return;
+      }
       if (subtype === PDFName.of("Image") || (key && BINARY_STREAM_KEYS.has(key))) return;
-      const asText = type === PDFName.of("Metadata") || type === PDFName.of("EmbeddedFile") || subtype === PDFName.of("XML")
+      const asText = type === PDFName.of("Metadata") || subtype === PDFName.of("XML")
         || key === "JS" || key === "XFA";
       const asContent = key === "Contents" || subtype === PDFName.of("Form") || dict.has(PDFName.of("PatternType"))
         || parentKey === "CharProcs";
@@ -572,6 +626,10 @@ export async function redactarPdf(files: InFile[], o: RedactarOptions, renderer?
     if (removedAnnots) notes.push(t.annotationsRemoved(removedAnnots));
   } else {
     doc = await loadPdf(file);
+    // Antes de sustituir las páginas (que pierden /Annots): los campos con un widget bajo un área salen de /AcroForm,
+    // que si no seguiría guardando su valor y su apariencia.
+    const removedAnnots = removeAnnotationsUnder(doc, areas);
+    if (removedAnnots) notes.push(t.annotationsRemoved(removedAnnots));
     const color = hexColor(o.color);
     const rendered = await renderer.open(file.bytes);
     const pages = doc.getPages();
@@ -599,9 +657,10 @@ export async function redactarPdf(files: InFile[], o: RedactarOptions, renderer?
     } finally {
       rendered.close();
     }
-    notes.push(t.rasterized(affected));
+    notes.unshift(t.rasterized(affected));
   }
   const structure = stripStructure(doc);
+  const attachments = stripAttachments(doc);
   const scrubbed = scrubDocument(doc, terms);
   removeMetadata(doc);
   pruneUnreachable(doc);
@@ -610,6 +669,7 @@ export async function redactarPdf(files: InFile[], o: RedactarOptions, renderer?
   await verifyFile(bytes, terms);
   notes.push(t.metadataRemoved);
   if (structure) notes.push(t.structureRemoved);
+  if (attachments) notes.push(t.attachmentsRemoved(attachments));
   if (scrubbed) notes.push(t.scrubbed(scrubbed));
   return { outputs: [pdfOut(derivedName(file.name, "-redactado", "pdf"), bytes)], notes };
 }
