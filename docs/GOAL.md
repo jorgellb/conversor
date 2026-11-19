@@ -152,7 +152,7 @@ Archivos comunes que se fusionan en la integración y no impiden el paralelismo:
 | F3-D | F3 | pdf-a-audio. **Hecho** (D-166 a D-173) | av.heavy (Kokoro en ONNX y espeak-ng externo) | G0-A | XL |
 | F3-E | F3 (7.10) | traducir-subtitulos, resumir-reunion | av.heavy y ai (faster-whisper y LLM, pysubs2) | F3-D | M |
 | F3-Z | Cierre de F3 | — | — | F3-C, F3-D, F3-E, G2-C10, G0-B | S |
-| F4-A | F4 | verificar-firmas-pdf, firmar-pdf (servidor) | sign y sign.verify (pyHanko, SoftHSM2, LOTL, certomancer; migración 0006) | F3-Z | XL |
+| F4-A | F4 | verificar-firmas-pdf, firmar-pdf (servidor). verificar-firmas-pdf **hecho** (F4-A1, D-185) | sign y sign.verify (pyHanko, SoftHSM2, LOTL, certomancer; migración 0006) | F3-Z | XL |
 | F4-B | F4 | firmar-pdf (navegador), hacer-pdf-rellenable, crear-formulario-pdf | navegador (pdf-lib, PKI.js) y pdf (campos con pyHanko) | F4-A | XL |
 | F4-C | F4 | compartir-pdf, solicitar-firmas | api, apiint y beat; sign (B-LT); Mailpit | F4-A | XL |
 | F4-D | F4 (+4 de F6) | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf, cii-a-pdf | utils, el nuevo workerutils (KoSIT daemon, XSD, signxml, Gotenberg, PDF/A-3) | F3-Z | XL |

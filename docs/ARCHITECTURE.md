@@ -11,7 +11,8 @@ Celery (Valkey) ─▶ workerpdf · workerocr · workeroffice(+heavy) · workerm
 workeroffice ─(webrender)─▶ gotenbergweb (web-a-pdf) ─▶ egressweb (Smokescreen) ─▶ internet público
 workerai ─(airelay)─▶ egressai (Smokescreen) ─▶ openrouter.ai (solo ese dominio)
 workeraiembed (cola ai.embed, embeddings locales, sin salida) ─▶ PostgreSQL (pgvector)
-PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files) · volumen backups (/srv/backups)
+workersignverify (cola sign.verify, sin token ni PIN) ─(webrender)─▶ egressweb ─▶ lista de confianza de la UE, OCSP y CRL
+PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files) · volumen backups (/srv/backups) · volumen eutl (/srv/eutl)
 ```
 
 ## Dónde se procesa (5.1)

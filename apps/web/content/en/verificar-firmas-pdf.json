@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Verify PDF signatures checks every digital signature and time stamp in a document and explains it in plain words: who signed and which organisation issued their certificate, when it was signed and whether that date comes from a trusted time stamp, whether the content is still intact and whether anyone changed it afterwards. Use it to review a contract, an official decision or a signed invoice before accepting it.",
+    "pyHanko does the checking on our server, in a process separate from the one that holds the key of the platform seal. To know whether a provider is trusted, it uses the European Union trusted list: the Commission's list of lists and each country's national list, downloaded daily and validated from the certificate published in the Official Journal of the EU. If the signature comes from a qualified service, the report shows its name and country.",
+    "For each signature you will also see later changes (filling in forms, adding comments or modifying the content) and whether the signature allowed them; if the document was certified, which changes it accepted. The level is shown as simple, advanced, advanced with a qualified certificate or qualified, together with its PAdES level (B-B, B-T, B-LT or B-LTA), which tells you whether it includes a time stamp and the information needed to validate it many years from now.",
+    "Revocation is checked with the data included in the document itself. If you turn on the option, the issuer's OCSP and CRL services are also queried online; if they do not answer, the report says so. The result is an HTML report you can print or save as PDF from your browser. You can verify several documents at once and you will get one report per document and a ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Is the report legally binding?",
+      "a": "It is not a legal opinion. Levels are a technical indication from what the file contains; the legal value of a signature under the eIDAS regulation also depends on circumstances that are not in the PDF. For formal use, ask a specialist."
+    },
+    {
+      "q": "Why does my signature show as simple?",
+      "a": "Because its certificate does not lead to any provider on the EU trusted list, as happens with self-made certificates or those of some companies. The signature can be intact and still not be trusted."
+    },
+    {
+      "q": "Is my PDF modified?",
+      "a": "No. It is only read to check it; the document is not changed or saved again."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "It is a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro, with a maximum of 100, 300 and 2,000 pages per document. The file is deleted after an hour without an account or after 24 hours with one."
+    }
+  ]
+}

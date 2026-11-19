@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 164 herramientas (F1 43, F2 60, F3 10, F4 1, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 165 herramientas (F1 43, F2 60, F3 10, F4 2, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -170,6 +170,7 @@ Catálogo publicado en esta entrega: 164 herramientas (F1 43, F2 60, F3 10, F4 1
 | `ticket-a-excel` / `receipt-to-excel` | servidor | ocr | ai | F3 | activa | jpg, png, webp, tiff, bmp, gif → xlsx, csv | redactado, sin revisar |
 | `traducir-subtitulos` / `translate-subtitles` | servidor | ai | ai | F5 | activa | srt, vtt, ass, mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → srt, vtt, ass | redactado, sin revisar |
 | `resumir-reunion` / `summarize-meeting` | servidor | av | ai | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → docx, txt, md | redactado, sin revisar |
+| `verificar-firmas-pdf` / `verify-pdf-signatures` | servidor | sign | light | F4 | activa | pdf → html, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 
@@ -261,7 +262,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | Compare PDFs (`/en/compare-pdf`) | `comparar-pdf` | disponible |  |
 | Search in PDFs (`/en/search-pdf`) | `buscar-en-pdf` | disponible |  |
 | Check PDF/A (`/en/validate-pdfa`) | `validar-pdfa` | disponible |  |
-| Verify PDF signatures (`/en/verify-pdf-signatures`) | `verificar-firmas-pdf` | pendiente (F4) |  |
+| Verify PDF signatures (`/en/verify-pdf-signatures`) | `verificar-firmas-pdf` | disponible |  |
 | Set PDF viewer preferences (`/en/set-pdf-viewer-preferences`) | `preferencias-visor-pdf` | disponible |  |
 | Convert to PDF (`/en/convert-to-pdf`) | `convertir-a-pdf` | disponible |  |
 | Word to PDF (`/en/word-to-pdf`) | `word-a-pdf` | disponible |  |
@@ -322,7 +323,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Printer (`/en/pdf-printer`) | — | sin equivalente | No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3). |
 | PDF Reader (`/en/pdf-reader`) | — | sin equivalente | No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf. |
 
-Resumen: 105 disponibles, 13 pendientes de su fase y 6 sin equivalente (con su explicación).
+Resumen: 106 disponibles, 12 pendientes de su fase y 6 sin equivalente (con su explicación).
 
 ## Mejoras posteriores
 

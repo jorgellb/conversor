@@ -26154,6 +26154,55 @@
         "title": "ResumirReunionOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "verificar-firmas-pdf",
+      "slug_en": "verify-pdf-signatures",
+      "name_es": "Verificar firmas de PDF",
+      "name_en": "Verify PDF signatures",
+      "summary_es": "Comprueba cada firma de un PDF: firmante, fecha, integridad, cambios posteriores, nivel y lista de confianza de la UE.",
+      "summary_en": "Check every signature in a PDF: signer, date, integrity, later changes, level and the EU trusted list.",
+      "category": "sign",
+      "where": "server",
+      "worker_group": "sign",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pdf"
+      ],
+      "outputs": [
+        "html",
+        "zip"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "validar-pdfa",
+        "proteger-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "verificar-firmas-pdf (A.7): la revocación en línea solo a petición, por `egressweb`.",
+        "properties": {
+          "revocacion": {
+            "default": false,
+            "title": "Comprobar la revocación en línea (OCSP y CRL)",
+            "type": "boolean",
+            "x-title": {
+              "en": "Check revocation online (OCSP and CRL)",
+              "es": "Comprobar la revocación en línea (OCSP y CRL)"
+            }
+          }
+        },
+        "title": "VerificarOptions",
+        "type": "object"
+      }
     }
   ]
 }

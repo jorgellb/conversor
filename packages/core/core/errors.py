@@ -127,6 +127,9 @@ DETAILS: dict[str, dict[str, str]] = {
     "tts_count": {"es": "Este PDF tiene demasiado texto o es demasiado complejo para preparar su lectura a tiempo: divídelo antes con «Dividir PDF».",
                   "en": "This PDF has too much text or is too complex to prepare for reading in time: split it first with “Split PDF”."},
     "tts_empty": {"es": "No hay texto que leer en las páginas elegidas.", "en": "There is no text to read in the selected pages."},
+    # verificar-firmas-pdf (D-186): «sig_count:60>50» son las firmas y sellos del documento y el máximo.
+    "sig_count": {"es": "El documento tiene {need} firmas y sellos de tiempo; se pueden verificar {max} como máximo.",
+                  "en": "The document has {need} signatures and time stamps; at most {max} can be verified."},
     # PDF/A y PDF/UA desde Office o HTML (D-182): el rango lo aplica el motor, en el orden del documento.
     "range_order": {"es": "Con PDF/A o PDF/UA las páginas salen en el orden del documento: escribe el rango de menor a mayor "
                           "y, si necesitas otro orden, usa después «Organizar PDF».",

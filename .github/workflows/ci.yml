@@ -37,7 +37,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng tesseract-ocr-osd ffmpeg libreoffice-writer-nogui fonts-dejavu postgresql-client restic \
-            djvulibre-bin libarchive13 calibre libheif-examples libheif-plugin-libde265 libheif-plugin-x265 espeak-ng
+            djvulibre-bin libarchive13 calibre libheif-examples libheif-plugin-libde265 libheif-plugin-x265 espeak-ng softhsm2
       # x265 solo en la CI, para crear la muestra HEIC de la prueba; nunca en las imágenes (D-49).
       - name: Herramientas del lote D (tiffcp, pdftocairo, perfil CMYK) y veraPDF fijado por SHA-256
         run: |
@@ -79,7 +79,7 @@ jobs:
         run: |
           uv venv .venv
           # El extra av va sin PyAV (D-111): infra/uv-overrides.txt lo quita.
-          uv pip install --python .venv -r pyproject.toml --extra pdf --extra ocr --extra dev --extra office --extra media --extra av --extra ai \
+          uv pip install --python .venv -r pyproject.toml --extra pdf --extra ocr --extra dev --extra office --extra media --extra av --extra ai --extra sign \
             --override infra/uv-overrides.txt
       - name: Registro al día y Compose de Coolify válido
         run: |

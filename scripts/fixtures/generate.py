@@ -139,10 +139,14 @@ def generate(out: Path) -> dict[str, Path]:
     docx = docx_with_libreoffice(out / "carta.docx", work)
     if docx:
         files["carta.docx"] = docx
-    # F4, lote F: DOCX accesible y sin texto alternativo, y un PDF etiquetado, para word-a-pdf-accesible.
-    from accesible import generate as accessible_docs
-
-    files.update(accessible_docs(out))
+    # F4, lote F: DOCX accesible y sin texto alternativo, y un PDF etiquetado, para word-a-pdf-accesible. Solo con
+    # python-docx (extra ocr): el paso de muestras de e2e-compose instala pdf y dev, y no las usa (como FFmpeg, D-156).
+    try:
+        from accesible import generate as accessible_docs
+    except ImportError:
+        accessible_docs = None
+    if accessible_docs is not None:
+        files.update(accessible_docs(out))
     # F3, lote C: imágenes con texto, tablas y tickets para imagen-a-texto, imagen-a-excel y ticket-a-excel.
     from imagenes_ocr import generate as ocr_images
 

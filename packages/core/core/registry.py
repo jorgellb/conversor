@@ -66,7 +66,7 @@ class ToolSpec:
     phase: str = "F1"
     worker_group: str | None = None
     cost_class: CostClass = "light"
-    queue_kind: Literal["light", "heavy", "embed"] | None = None
+    queue_kind: Literal["light", "heavy", "embed", "verify"] | None = None
     secret_fields: tuple[str, ...] = ()
     impl: str | None = None
     launch: bool = False
@@ -187,6 +187,7 @@ SPEC_MODULES = (
     "tools.av.specs",
     "tools.media.specs",
     "tools.ai.specs",
+    "tools.sign.specs",
 )
 
 

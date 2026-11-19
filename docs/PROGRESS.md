@@ -424,9 +424,29 @@ de web), `tsc`, `next build`, licencias de npm (0 problemas), los `--check` de r
 `filetype`, y Playwright del proyecto navegador (78 en verde; marcadores-pdf, al repetirla). Sin verificar aquí: el
 PDF/UA real de LibreOffice (aquí no tiene Writer) y veraPDF real (Java), que corren en e2e-compose y en la CI.
 
+## F4-A1 (verificar-firmas-pdf y lista de confianza de la UE)
+
+verificar-firmas-pdf valida con pyHanko cada firma y cada sello de tiempo: firmante y emisor, fecha (declarada, de un
+sello de tiempo de confianza o de uno cualificado), integridad, cambios posteriores con el análisis de diferencias y la
+certificación (DocMDP), nivel (no válida, revocada, simple, sello de la plataforma, avanzada, avanzada con certificado
+cualificado o cualificada) con el prestador y el país, y nivel PAdES (B-B a B-LTA). La revocación usa el DSS del
+documento y, a petición, OCSP y CRL por `egressweb`. Corre en `workersignverify` (cola `sign.verify`, imagen nueva
+`worker-sign` sin el token ni el PIN). La lista de confianza de la UE la descarga beat cada 24 h desde el ancla del DOUE,
+validando la LOTL y cada lista nacional, en versiones con puntero atómico (comprobado con la lista real: 31 países).
+PKI de pruebas con certomancer (`scripts/fixtures/pki.py`). Contenido 8.2 es/en y Playwright de la página. Salvedades
+en D-185.
+Verificado aquí: pytest de la herramienta (18 pruebas, OCSP y CRL con el «illusionist» de certomancer), Compose y
+contrato, la descarga y la carga reales de la lista de la UE, Vitest, `next build` y Playwright del proyecto navegador
+(79 en verde; marcadores-pdf, al repetirla). Sin verificar aquí: la imagen `worker-sign` (Docker) y una firma
+cualificada real contra la lista de la UE (DEPLOY-CHECKLIST). Tras la revisión (D-186): validación en la fecha del sello de tiempo (un certificado
+caducado o revocado después sigue valiendo), respaldo sin red también con el tiempo agotado, límites de la revocación en
+línea, lectura estricta, PAdES más exigente, países que conservan su última lista y reintento cada hora. Segunda revisión
+(D-187): tope de tamaño en la lectura, PDF con contraseña de propietario, revocado después del sello también con
+OCSP, causa neutra para el B-LT corriente, presupuesto por documento y listas arrastradas como mucho 7 días.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4: F4-F hecho; siguen F4-A y F4-D, después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4: F4-F y F4-A1 hechos; siguen F4-A2 (sello de firmar-pdf) y F4-D, después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

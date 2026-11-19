@@ -10,6 +10,7 @@
 | `find_orphans` | diaria 04:17 | Directorios sin fila y filas vivas sin directorio |
 | `core.ai.tasks.refresh_models` | al arrancar `workerai` y cada `LLM_MODELS_REFRESH_HOURS` (6 h) | `GET /models` de OpenRouter: guarda los modelos de precio 0 en `llm_models` y recalcula la tasa de éxito de 7 días |
 | `core.ai.tasks.reconcile` | 10 min | `GET /key`: si OpenRouter cuenta más peticiones gratuitas que el contador propio, este sube; si le quedan menos de 20, solo Pro usa IA |
+| `tools.sign.tasks.refresh_eutl` | al arrancar `workersignverify` y cada hora; solo descarga si no hay copia, está dañada o tiene más de `EUTL_REFRESH_HOURS` (24 h) | Descarga la lista de confianza de la UE por `egressweb`, valida la LOTL desde el ancla del DOUE y cada lista nacional, y la deja como versión actual en el volumen `eutl` (D-185 y D-186); un país que falla conserva su última lista validada y, si falla todo, se conserva la versión anterior y queda en el log |
 
 `cleanup_expired` también borra el texto extraído y la caché de IA caducados, y las filas de `ai_requests` de más de 90 días.
 

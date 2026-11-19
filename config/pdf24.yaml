@@ -205,7 +205,7 @@ herramientas:
     equivalentes: [validar-pdfa]
   - pdf24: "Verify PDF signatures"
     ruta: /en/verify-pdf-signatures
-    equivalentes: [verificar-firmas-pdf:F4]
+    equivalentes: [verificar-firmas-pdf]
   - pdf24: "Set PDF viewer preferences"
     ruta: /en/set-pdf-viewer-preferences
     equivalentes: [preferencias-visor-pdf]

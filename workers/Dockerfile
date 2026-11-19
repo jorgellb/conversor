@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 # Imagen base común de Python (3.3) y una imagen por grupo encima. Se construye en GitHub Actions:
-#   docker build -f workers/Dockerfile --target <api|worker-pdf|worker-ocr|worker-office|worker-media|worker-convert|worker-av> .
+#   docker build -f workers/Dockerfile --target <api|worker-pdf|worker-ocr|worker-office|worker-media|worker-convert|worker-av|worker-ai|worker-sign> .
 ARG PYTHON_IMAGE=python:3.12.16-slim-bookworm
 ARG UV_IMAGE=ghcr.io/astral-sh/uv:0.13.6
 
@@ -231,3 +231,29 @@ COPY --from=code /app /app
 USER app
 ENV SERVICE_ROLE=worker-ai EMBEDDINGS_HOME=/opt/models/embeddings HF_HUB_OFFLINE=1
 CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "ai", "-n", "ai@%h", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+
+# --- Firma (F4): pyHanko con SoftHSM2 (BSD-2, solo la biblioteca PKCS#11 y su utilidad). La misma imagen sirve a
+# workersign (cola sign, con el volumen del token y SIGN_PKCS11_PIN; 10 y 12.1) y a workersignverify (cola sign.verify,
+# sin token ni PIN, con la caché de la lista de confianza de la UE en /srv/eutl; D-185) ---
+FROM base AS worker-sign
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends softhsm2 \
+ && rm -rf /var/lib/apt/lists/* \
+ && mkdir -p /var/lib/softhsm/tokens /srv/eutl \
+ && chown -R app:app /var/lib/softhsm /srv/eutl \
+ && test -f /usr/lib/softhsm/libsofthsm2.so
+RUN uv pip install -r pyproject.toml --extra sign
+COPY --from=code /app /app
+USER app
+ENV SERVICE_ROLE=worker-sign SOFTHSM2_CONF=/etc/softhsm/softhsm2.conf
+CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "sign", "-n", "sign@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+
+# --- Solo desarrollo y CI (0.1): la PKI de pruebas de certomancer (CA, TSA, OCSP y CRL) con claves nuevas al arrancar.
+# Nunca va a Coolify ni a images.yml ---
+FROM base AS certomancer
+RUN uv pip install "certomancer[web-api]==0.16.0" "pyHanko==0.38.1"
+COPY scripts/fixtures/pki.py /app/pki.py
+USER app
+WORKDIR /home/app
+EXPOSE 9000
+CMD ["python", "/app/pki.py", "serve", "/home/app/pki", "9000"]

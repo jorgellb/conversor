@@ -120,6 +120,7 @@ PROFILE_16 = {
     "CONCURRENCY_CONVERT": "1", "MEM_CONVERT": "8g", "CPUS_CONVERT": "2",
     "CONCURRENCY_AV_LIGHT": "2", "MEM_AV_LIGHT": "3g", "CPUS_AV_LIGHT": "4",
     "CONCURRENCY_AV_HEAVY": "1", "MEM_AV_HEAVY": "3g", "CPUS_AV_HEAVY": "2",
+    "CONCURRENCY_SIGN_VERIFY": "1", "MEM_SIGN_VERIFY": "1g", "CPUS_SIGN_VERIFY": "1",
 }
 
 
@@ -128,7 +129,8 @@ def svc(image: str, **kw) -> dict:
 
 
 def worker(target: str, role: str, name: str, queue: str, conc: int, threads: int, mem: str, cpus: int,
-           extra_env: dict | None = None, secrets: bool = False, networks: list[str] | None = None) -> dict:
+           extra_env: dict | None = None, secrets: bool = False, networks: list[str] | None = None,
+           volumes: list[str] | None = None) -> dict:
     env = {
         "SERVICE_ROLE": role, "WORKER_NAME": name, "APP_ENV": "production", "VALKEY_URL": VK, "DATABASE_URL_WORKER": WDB,
         "THREADS": str(threads), "OMP_THREAD_LIMIT": str(threads), "OMP_NUM_THREADS": str(threads),
@@ -143,7 +145,7 @@ def worker(target: str, role: str, name: str, queue: str, conc: int, threads: in
            "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
     ping = 'celery -A core.celeryapp inspect ping -d "$${WORKER_NAME}@$${HOSTNAME}" --timeout 10 >/dev/null'
     return svc(
-        img(target), command=cmd, environment=env, volumes=FS, networks=networks or ["internal"], user="10001:10001",
+        img(target), command=cmd, environment=env, volumes=FS + (volumes or []), networks=networks or ["internal"], user="10001:10001",
         read_only=True, tmpfs=["/tmp:size=64m"], cap_drop=["ALL"], security_opt=["no-new-privileges:true"],
         pids_limit=256, **memory(name, mem), cpus=f"${{CPUS_{env_name(name)}:-{cpus}}}", oom_score_adj=500,
         stop_grace_period="10m",
@@ -314,6 +316,16 @@ def build() -> dict:
                            networks=["internal", "airelay"]),
         # chat-pdf (6.4): embeddings locales en su cola; el modelo ocupa unos 0,7 GB por proceso (D-128). Sin clave ni salida.
         "workeraiembed": worker("worker-ai", "worker-ai", "ai-embed", "ai.embed", 1, 1, "1280m", 1),
+        # verificar-firmas-pdf (7.23, D-185): imagen worker-sign sin el token ni el PIN del sello; sale por egressweb
+        # para la lista de confianza de la UE (beat) y OCSP y CRL a petición, y la guarda en el volumen eutl.
+        # 768 MB en el perfil de 8 vCPU: el registro de la UE ocupa unos 245 MB por proceso (31 listas, medido) y la
+        # descarga diaria otro tanto en el mismo proceso (D-185 y D-186).
+        "workersignverify": worker("worker-sign", "worker-sign-verify", "sign-verify", "sign.verify", 1, 1, "768m", 1,
+                                   {"EGRESS_WEB_URL": "http://egressweb:4750", "EUTL_CACHE_PATH": "/srv/eutl",
+                                    "EUTL_LOTL_URL": "${EUTL_LOTL_URL:-https://ec.europa.eu/tools/lotl/eu-lotl.xml}",
+                                    "EUTL_REFRESH_HOURS": "${EUTL_REFRESH_HOURS:-24}",
+                                    "SIGN_VERIFY_EXTRA_ROOTS": "${SIGN_VERIFY_EXTRA_ROOTS:-}"},
+                                   networks=["internal", "webrender"], volumes=["eutl:/srv/eutl"]),
         "workerpdf": worker("worker-pdf", "worker-pdf", "pdf", "pdf", 3, 1, "3g", 3, secrets=True),
         "workerocr": worker("worker-ocr", "worker-ocr", "ocr", "ocr", 1, 2, "3g", 2),
         "workeroffice": worker("worker-office", "worker-office", "office-light", "office.light", 1, 1, "1536m", 1,
@@ -323,7 +335,8 @@ def build() -> dict:
                                     {"GOTENBERG_URL": "http://gotenberg:3000"}, secrets=True),
         "workermedia": worker("worker-media", "worker-media", "media", "media", 1, 1, "1536m", 1, {"GOTENBERG_URL": "http://gotenberg:3000"}),
         "workerconvert": worker("worker-convert", "worker-convert", "convert", "convert", 1, 2, "5g", 2, {"HF_HUB_OFFLINE": "1"}),
-        "workerav": worker("worker-av", "worker-av", "av-light", "av.light", 1, 2, "3g", 2),
+        # Audio ligero con FFmpeg (2,25 GB en el perfil de 8 vCPU; 3 GB en el de 16, D-186).
+        "workerav": worker("worker-av", "worker-av", "av-light", "av.light", 1, 2, "2304m", 2),
         # Transcripciones (cola pesada, 5.4): un trabajo a la vez con 2 hilos; el modelo va dentro de la imagen.
         "workeravheavy": worker("worker-av", "worker-av", "av-heavy", "av.heavy", 1, 2, "3g", 2,
                                 {"WHISPER_MODEL": "${WHISPER_MODEL:-small}", "WHISPER_DEVICE": "${WHISPER_DEVICE:-cpu}",
@@ -332,14 +345,14 @@ def build() -> dict:
     return {
         "services": services,
         "networks": {"internal": {"internal": True}, "edge": {}, "webrender": {"internal": True}, "airelay": {"internal": True}},
-        "volumes": {"pgdata": {}, "valkeydata": {}, "filestore": {}, "backups": {}},
+        "volumes": {"pgdata": {}, "valkeydata": {}, "filestore": {}, "backups": {}, "eutl": {}},
     }
 
 
 HEADER = """# Producción en Coolify v4 (13.2): solo `image:` con etiquetas fijas, dominios por variables mágicas y sin `ports:`.
 # Generado por scripts/gen_coolify_compose.py: edita el generador, no este archivo.
 # Los servicios de fases posteriores (workersign, workerutils, workermesh, workercad y umami) se añaden con su
-# fase; `workersign` se unirá también a `webrender`.
+# fase; `workersign` irá también en `webrender`, como `workersignverify`.
 # Memoria y CPU (5.4): `MEM_<NOMBRE>` cambia `mem_limit` y `memswap_limit` de postgres, gotenberg, gotenbergweb y cada
 # worker, y `CPUS_<NOMBRE>` y `CONCURRENCY_<NOMBRE>`, los de cada worker. Por defecto, el perfil de 8 vCPU; el de
 # 16 vCPU lo imprime `python scripts/gen_coolify_compose.py --profile 16` (docs/OPERATIONS.md).

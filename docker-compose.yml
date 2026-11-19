@@ -370,6 +370,31 @@ services:
     memswap_limit: 1280m
     cpus: 1
 
+  # verificar-firmas-pdf (7.23 y D-185): pyHanko en la cola sign.verify, sin el volumen del token ni SIGN_PKCS11_PIN, para
+  # que un PDF hostil no conviva con la clave del sello. Sale por egressweb (lista de la UE, OCSP y CRL a petición).
+  workersignverify:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-sign }
+    image: conversor/worker-sign:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "sign.verify", "-n", "sign-verify@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-sign-verify
+      WORKER_NAME: sign-verify
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      EGRESS_WEB_URL: http://egressweb:4750
+      EUTL_CACHE_PATH: /srv/eutl
+      EUTL_REFRESH_HOURS: ${EUTL_REFRESH_HOURS:-24}
+      THREADS: "1"
+    volumes:
+      - filestore:/srv/files
+      - eutl:/srv/eutl
+    networks: [internal, webrender]
+    mem_limit: 768m
+    memswap_limit: 768m
+    cpus: 1
+
   workerpdf:
     <<: *worker
     build: { context: ., dockerfile: workers/Dockerfile, target: worker-pdf }
@@ -536,3 +561,4 @@ volumes:
   pgdata: {}
   filestore: {}
   backups: {}
+  eutl: {}

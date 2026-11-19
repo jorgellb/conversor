@@ -123,3 +123,15 @@ def test_maintenance_runs_in_beat_with_the_main_database_user():
         assert consumers == {"beat"}, path.name
         cmd = services["beat"]["command"]
         assert cmd[3:5] == ["worker", "-B"] and "/tmp/beat.pid" in cmd
+
+
+def test_signature_verification_worker_has_no_seal_secrets():
+    """D-185 y 12.1: workersignverify (PDF de los usuarios) no ve el PIN ni el token del sello y solo sale por egressweb."""
+    dev = yaml.safe_load((ROOT / "docker-compose.yml").read_text(encoding="utf-8"))["services"]["workersignverify"]
+    for service in (dev, _doc()["services"]["workersignverify"]):
+        env = service["environment"]
+        assert not any(k.startswith("SIGN_PKCS11") for k in env) and "JOB_SECRETS_KEY" not in env
+        assert env["SERVICE_ROLE"] == "worker-sign-verify" and env["EGRESS_WEB_URL"] == "http://egressweb:4750"
+        assert sorted(service["networks"]) == ["internal", "webrender"]
+        assert not any("softhsm" in v for v in service.get("volumes", [])) and any(v.startswith("eutl:") for v in service["volumes"])
+

@@ -77,6 +77,11 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] `gotenbergweb` no responde desde `api` ni desde los workers que no son `workeroffice` (solo está en `webrender`).
 - [ ] `GET https://api.{{DOMINIO}}/readyz` responde 200 con `secrets: ok` en `api` y `apiint`.
 - [ ] Una descarga con el token cambiado devuelve 403 y `files.` envía las cabeceras de 4.4.
+- [ ] `workersignverify` descarga la lista de confianza de la UE al arrancar: en su log, «lista de confianza de la UE
+      actualizada» con unos 30 países, y `/srv/eutl/actual.json` existe; verificar-firmas-pdf con un PDF firmado con un
+      certificado cualificado (por ejemplo, del DNIe o de la FNMT) sale «Cualificada» con el prestador y el país (D-185).
+- [ ] Con «Comprobar la revocación en línea», un PDF firmado con un certificado de la FNMT consulta su OCSP por `egressweb`
+      (en el log de Smokescreen) y el informe dice «Comprobada en línea».
 - [ ] `upload.` y `files.` responden a través del proxy de Coolify (los dos servicios solo están en `internal` más la red que
       añade Coolify; D-181) y una subida de prueba llega a tusd.
 - [ ] Los logs de `beat` muestran `beat: Starting...` y `cleanup_expired ... succeeded` cada 5 minutos, sin

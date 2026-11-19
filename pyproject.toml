@@ -81,8 +81,14 @@ av = ["faster-whisper==1.2.1", "ctranslate2==4.8.5", "python-docx==1.2.0", "onnx
 # los SRT, VTT y ASS de traducir-subtitulos (F3, lote E); se adelanta de F6 (7.13), donde también lo usará utils.
 ai = ["pikepdf==10.17.0", "pypdfium2==5.14.0", "python-docx==1.2.0", "python-pptx==1.0.2", "pillow==13.0.0", "fastembed==0.9.1",
       "onnxruntime==1.31.0", "openpyxl==3.1.5", "pysubs2==1.9.1"]
-# fpdf2 (LGPL-3.0) solo genera muestras de prueba en scripts/fixtures (1.8); nunca llega a una imagen.
-dev = ["pytest==9.2.0", "respx==0.23.1", "pip-licenses==5.0.0", "fpdf2==2.9.0"]
+# Firma (F4, lote A): pyHanko y pyhanko-certvalidator (MIT) con PKCS#11 (python-pkcs11, MIT; el extra de pyHanko pide la
+# 0.9.x), imágenes y fuentes OpenType para la firma visible y `etsi` (xsdata y signxml, MIT y Apache-2.0) para leer la
+# lista de confianza de la UE. Nunca xmlsig (AGPL, 11).
+sign = ["pyHanko[pkcs11,image-support,opentype,etsi]==0.38.1", "pyhanko-certvalidator==0.33.0", "python-pkcs11==0.9.5",
+        "pikepdf==10.17.0", "pypdfium2==5.14.0", "pillow==13.0.0"]
+# fpdf2 (LGPL-3.0) solo genera muestras de prueba en scripts/fixtures (1.8); nunca llega a una imagen. certomancer (MIT)
+# hace la PKI de pruebas de F4 (CA, TSA, OCSP y CRL, dobles de 0.1) en las pruebas y en el Compose de desarrollo.
+dev = ["pytest==9.2.0", "respx==0.23.1", "pip-licenses==5.0.0", "fpdf2==2.9.0", "certomancer[web-api]==0.16.0"]
 
 [tool.pytest.ini_options]
 pythonpath = ["packages/core", "packages/tools", "apps/api"]

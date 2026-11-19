@@ -29,3 +29,13 @@ Borrador para revisar con un especialista en protección de datos antes de anunc
 | Conservación propia | Texto extraído y resultados: lo que duren los archivos (1 h o 24 h); registro de peticiones sin contenido: 90 días |
 | Riesgos | Documento con datos de terceros enviado sin base adecuada (mitigación: aviso que lo desaconseja); retención del proveedor; cambio de las condiciones de OpenRouter o de un proveedor (mitigación: `data_collection` en cada petición y modelos que se apartan solos si no la cumplen) |
 | Pendiente | Revisión por el especialista; decidir si hace falta un contrato de encargado con OpenRouter; revisar la transferencia internacional |
+
+## Firma y verificación de firmas (10 y 7.23, F4)
+
+- verificar-firmas-pdf muestra un nivel técnico (simple, avanzada, avanzada con certificado cualificado o cualificada) a
+  partir de lo que contiene el archivo y de la lista de confianza de la UE. No es un dictamen: el valor jurídico según el
+  Reglamento eIDAS depende de circunstancias que el PDF no recoge, y la página y el informe lo dicen. Los niveles que se
+  prometan en la interfaz o en el marketing deben revisarse con un especialista antes de anunciarlos (10).
+- La lista de confianza se descarga de la Comisión Europea y de los Estados miembros; el informe indica la fecha de la
+  copia usada y avisa si está desactualizada.
+- El sello de la plataforma (F4-A2) no es cualificado con un token software y no se anuncia como tal (10).

@@ -14,6 +14,7 @@ toca; un worker en esa situación no arranca (código 78).
 | `migrate` | `DATABASE_URL` (y `WORKER_DB_PASSWORD` para crear el rol de los workers) |
 | `workerpdf`, `workeroffice` | `JOB_SECRETS_KEY` (y `DATABASE_URL_WORKER`, rol limitado) |
 | `workerocr`, `workerconvert`, `workerav`, `workermedia` | solo `DATABASE_URL_WORKER` y `VALKEY_URL` |
+| `workersignverify` (verificar-firmas-pdf, F4) | solo `DATABASE_URL_WORKER` y `VALKEY_URL`: ni `SIGN_PKCS11_PIN` ni el volumen del token del sello (D-185) |
 
 ## Workers
 
@@ -40,6 +41,16 @@ podría usarlos para salir a internet (D-34). `egressweb` (Smokescreen, compilad
 usuario root, D-155) niega las IP privadas, de enlace local, CGNAT y de Docker; la API solo admite URL `http` o `https` con puerto 80 o 443 hacia nombres públicos, y el worker vuelve a
 comprobar cada redirección. Prueba de humo en el VPS: una conexión a internet desde cada worker y desde `gotenberg`
 debe fallar, y desde `workeroffice` solo sale por `egressweb` (DEPLOY-CHECKLIST).
+
+Verificación de firmas (F4, D-185): `workersignverify` está en `internal` y `webrender` y sale solo por `egressweb`, a la
+lista de confianza de la UE (beat, cada `EUTL_REFRESH_HOURS`) y, si el usuario lo pide, a los OCSP y CRL que nombran los
+certificados del documento (URL que pone quien firmó: por eso van por `egressweb`, que niega las IP privadas). Las listas
+se guardan en el volumen `eutl` solo si su firma valida, desde el ancla del DOUE que trae pyHanko; una descarga a medias
+nunca sustituye a la versión buena (puntero `actual.json` atómico), y cada lista tiene un tope de 25 MB. El XML lo lee
+pyHanko con su manejador restringido de lxml (sin entidades externas). Los PDF se abren con pyHanko en modo estricto (rechaza
+las tablas de referencias híbridas que muestran contenidos distintos); solo si hay errores de estructura, en modo tolerante
+y con un aviso destacado en el informe. Cada firma mal formada se informa sin detener las demás, la revocación en línea
+tiene límites de peticiones, tamaño y tiempo por documento (D-186) y el informe HTML escapa todo lo que viene del archivo.
 
 ## Entradas
 

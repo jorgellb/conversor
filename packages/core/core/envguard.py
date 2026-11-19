@@ -28,6 +28,8 @@ ALLOWED: dict[str, set[str]] = {
     "worker-utils": set(),
     "worker-ai": {"OPENROUTER_API_KEY"},
     "worker-sign": {"SIGN_PKCS11_PIN"},
+    # Verificación de firmas (7.23): misma imagen que workersign, sin el PIN ni el token del sello (D-185).
+    "worker-sign-verify": set(),
     "test": SENSITIVE,
 }
 

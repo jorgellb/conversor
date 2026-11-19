@@ -58,6 +58,11 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | python-docx, openpyxl, python-pptx, lxml | MIT; MIT; MIT; BSD-3-Clause | DOCX, XLSX, PPTX y EPUB fluido |
 | openpyxl 3.1.5 (y su dependencia et-xmlfile) en el extra `ai`; python-docx 1.2.0 e img2pdf 0.6.3 en el extra `ocr` | MIT; MIT; MIT y LGPL-3.0 | XLSX de imagen-a-excel y ticket-a-excel en `workerai`; DOCX e imágenes a PDF de imagen-a-texto en `workerocr` (F3, lote C; las mismas versiones que en los otros extras) |
 | pysubs2 1.9.1 (Python puro, sin dependencias) en el extra `ai`; se adelanta de F6 (7.13, D-177) | MIT | Leer y escribir los SRT, WebVTT y ASS de traducir-subtitulos en `workerai` |
+| pyHanko 0.38.1 (extras `pkcs11`, `image-support`, `opentype` y `etsi`) y pyhanko-certvalidator 0.33.0, en el extra `sign` (F4) | MIT | Validación PAdES y AdES, análisis de diferencias, lista de confianza de la UE y, en F4-A2, el sello de la plataforma |
+| Dependencias de pyHanko: aiohttp (y multidict, yarl, frozenlist, aiosignal, propcache), asn1crypto, oscrypto, uritools, tzlocal, certifi, xsdata, signxml, uharfbuzz, fontTools, python-barcode, python-pkcs11 0.9.5 | Apache-2.0; MIT; MIT; MIT; MIT; MPL-2.0; MIT; Apache-2.0; Apache-2.0; MIT; MIT; MIT | Descargas por `egressweb`, X.509 y CMS, XML firmado de las listas de confianza (nunca xmlsig, AGPL), firma visible y PKCS#11 |
+| SoftHSM2 (paquete `softhsm2` de Debian) en la imagen worker-sign | BSD-2-Clause | Token PKCS#11 del sello de la plataforma (10); biblioteca cargada por python-pkcs11 |
+| certomancer 0.16.0 (extra `dev` y la imagen `certomancer` de desarrollo; nunca en producción) | MIT | PKI de pruebas: CA, TSA, OCSP y CRL (dobles de 0.1) |
+| Lista de confianza de la UE (LOTL y listas nacionales) | Datos públicos de la Comisión Europea y de cada Estado; se descargan al ejecutar y no se redistribuyen | Confianza y cualificación al verificar firmas (7.23) |
 | psycopg | LGPL-3.0 | Controlador de PostgreSQL |
 | LibreOffice | MPL-2.0 | Programa externo en `workeroffice`, `workerconvert` y dentro de Gotenberg |
 | Gotenberg | MIT | Servicio externo (`gotenberg` sin red y `gotenbergweb` para web-a-pdf) |

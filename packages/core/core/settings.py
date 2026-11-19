@@ -75,6 +75,24 @@ class Settings(BaseSettings):
     GOTENBERG_WEB_URL: str = "http://gotenbergweb:3000"
     EGRESS_WEB_URL: str = "http://egressweb:4750"
     OCR_MAX_LANGUAGES: int = 3
+    # Firma (10 y 14, F4). El sello de la plataforma va por PKCS#11 (SoftHSM2) y solo `workersign` conoce el PIN y monta
+    # el token; la verificación (`sign.verify`) corre en otro contenedor sin token ni PIN.
+    SIGN_PKCS11_MODULE: str = "/usr/lib/softhsm/libsofthsm2.so"
+    SIGN_PKCS11_TOKEN_LABEL: str = "conversor-sello"
+    SIGN_PKCS11_KEY_LABEL: str = "sello"
+    SIGN_PKCS11_PIN: str = ""
+    SIGN_CERT_PATH: str = ""
+    TSA_URL: str = ""
+    SEAL_ENABLED: bool = True
+    SEAL_DAILY_LIMIT: int = 500
+    # Lista de confianza de la UE (7.23): la descarga beat por `egressweb` y la guarda en EUTL_CACHE_PATH (volumen de
+    # `workersignverify`). La firma de la LOTL se comprueba desde el ancla del DOUE que trae pyHanko.
+    EUTL_LOTL_URL: str = "https://ec.europa.eu/tools/lotl/eu-lotl.xml"
+    EUTL_REFRESH_HOURS: int = 24
+    EUTL_CACHE_PATH: Path = Path("/srv/eutl")
+    # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
+    # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
+    SIGN_VERIFY_EXTRA_ROOTS: str = ""
     # quitar-fondo (6.4): modelo de rembg ya descargado en la imagen; nunca bria-rmbg (licencia de pago, D-96).
     REMBG_MODEL: str = "u2net"
     REMBG_HOME: Path = Path("/opt/rembg")

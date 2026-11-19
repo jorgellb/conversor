@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Verificar firmas de PDF comprueba cada firma digital y cada sello de tiempo de un documento y te lo explica sin tecnicismos: quién firmó y qué entidad emitió su certificado, cuándo se firmó y si esa fecha procede de un sello de tiempo de confianza, si el contenido sigue intacto y si alguien lo cambió después. Sirve para revisar un contrato, una resolución administrativa o una factura firmada antes de darlo por bueno.",
+    "La comprobación la hace pyHanko en nuestro servidor, en un proceso separado del que guarda la clave del sello de la plataforma. Para saber si un prestador es de confianza se usa la lista de confianza de la Unión Europea: la lista de listas de la Comisión y las listas nacionales de cada país, descargadas a diario y validadas a partir del certificado publicado en el Diario Oficial de la UE. Si la firma procede de un servicio cualificado, el informe muestra su nombre y el país.",
+    "Para cada firma verás también los cambios posteriores (rellenar formularios, añadir comentarios o modificar el contenido) y si la firma los permitía; si el documento estaba certificado, qué cambios aceptaba. El nivel aparece como firma simple, avanzada, avanzada con certificado cualificado o cualificada, junto con su nivel PAdES (B-B, B-T, B-LT o B-LTA), que indica si incluye sello de tiempo y la información necesaria para validarla dentro de muchos años.",
+    "La revocación se comprueba con los datos que trae el propio documento. Si activas la opción, además se consulta en línea a los servicios OCSP y CRL de quien emitió el certificado; si no responden, el informe lo dice. El resultado es un informe HTML que puedes imprimir o guardar como PDF desde el navegador. Puedes verificar varios documentos a la vez y recibirás un informe por documento y un ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿El informe tiene validez legal?",
+      "a": "No es un dictamen. Los niveles son una indicación técnica a partir de lo que contiene el archivo; el valor jurídico de una firma según el reglamento eIDAS depende también de circunstancias que no están en el PDF. Para un uso formal, consulta con un especialista."
+    },
+    {
+      "q": "¿Por qué mi firma sale como simple?",
+      "a": "Porque su certificado no lleva a ningún prestador de la lista de confianza de la UE, como pasa con los certificados que genera uno mismo o con los de algunas empresas. La firma puede estar intacta y aun así no ser de confianza."
+    },
+    {
+      "q": "¿Se modifica mi PDF?",
+      "a": "No. Solo se lee para comprobarlo; el documento no se cambia ni se vuelve a guardar."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Es una tarea ligera: 20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro, con un máximo de 100, 300 y 2.000 páginas por documento. El archivo se borra a la hora sin cuenta o a las 24 horas con cuenta."
+    }
+  ]
+}

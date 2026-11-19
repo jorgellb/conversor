@@ -1,7 +1,7 @@
 # Producción en Coolify v4 (13.2): solo `image:` con etiquetas fijas, dominios por variables mágicas y sin `ports:`.
 # Generado por scripts/gen_coolify_compose.py: edita el generador, no este archivo.
 # Los servicios de fases posteriores (workersign, workerutils, workermesh, workercad y umami) se añaden con su
-# fase; `workersign` se unirá también a `webrender`.
+# fase; `workersign` irá también en `webrender`, como `workersignverify`.
 # Memoria y CPU (5.4): `MEM_<NOMBRE>` cambia `mem_limit` y `memswap_limit` de postgres, gotenberg, gotenbergweb y cada
 # worker, y `CPUS_<NOMBRE>` y `CONCURRENCY_<NOMBRE>`, los de cada worker. Por defecto, el perfil de 8 vCPU; el de
 # 16 vCPU lo imprime `python scripts/gen_coolify_compose.py --profile 16` (docs/OPERATIONS.md).
@@ -674,7 +674,8 @@ services:
       OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}
       EGRESS_AI_URL: http://egressai:4750
       GOTENBERG_URL: http://gotenberg:3000
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     - airelay
@@ -739,7 +740,8 @@ services:
       IMAGE_MAX_PIXELS: ${IMAGE_MAX_PIXELS:-100000000}
       RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     user: 10001:10001
@@ -754,6 +756,78 @@ services:
     mem_limit: ${MEM_AI_EMBED:-1280m}
     memswap_limit: ${MEM_AI_EMBED:-1280m}
     cpus: ${CPUS_AI_EMBED:-1}
+    oom_score_adj: 500
+    stop_grace_period: 10m
+    runtime: ${WORKER_RUNTIME:-runc}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      valkey:
+        condition: service_healthy
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - celery -A core.celeryapp inspect ping -d "$${WORKER_NAME}@$${HOSTNAME}" --timeout 10 >/dev/null
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+  workersignverify:
+    image: ghcr.io/${GHCR_OWNER:?Propietario del registro}/conversor-worker-sign:${IMAGE_TAG:?Etiqueta de imagen}
+    restart: unless-stopped
+    logging: *id001
+    command:
+    - celery
+    - -A
+    - core.celeryapp
+    - worker
+    - -Q
+    - sign.verify
+    - -n
+    - sign-verify@%h
+    - -c
+    - ${CONCURRENCY_SIGN_VERIFY:-1}
+    - --prefetch-multiplier
+    - '1'
+    - -O
+    - fair
+    - --without-gossip
+    - --without-mingle
+    environment:
+      SERVICE_ROLE: worker-sign-verify
+      WORKER_NAME: sign-verify
+      APP_ENV: production
+      VALKEY_URL: redis://default:${SERVICE_PASSWORD_VALKEY}@valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:${SERVICE_PASSWORD_WORKERDB}@postgres:5432/conversor
+      THREADS: '1'
+      OMP_THREAD_LIMIT: '1'
+      OMP_NUM_THREADS: '1'
+      IMAGE_MAX_PIXELS: ${IMAGE_MAX_PIXELS:-100000000}
+      RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      EGRESS_WEB_URL: http://egressweb:4750
+      EUTL_CACHE_PATH: /srv/eutl
+      EUTL_LOTL_URL: ${EUTL_LOTL_URL:-https://ec.europa.eu/tools/lotl/eu-lotl.xml}
+      EUTL_REFRESH_HOURS: ${EUTL_REFRESH_HOURS:-24}
+      SIGN_VERIFY_EXTRA_ROOTS: ${SIGN_VERIFY_EXTRA_ROOTS:-}
+    volumes:
+    - filestore:/srv/files
+    - eutl:/srv/eutl
+    networks:
+    - internal
+    - webrender
+    user: 10001:10001
+    read_only: true
+    tmpfs:
+    - /tmp:size=64m
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: ${MEM_SIGN_VERIFY:-768m}
+    memswap_limit: ${MEM_SIGN_VERIFY:-768m}
+    cpus: ${CPUS_SIGN_VERIFY:-1}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -804,7 +878,8 @@ services:
       RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       JOB_SECRETS_KEY: ${SERVICE_PASSWORD_64_JOBSECRETS}
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     user: 10001:10001
@@ -868,7 +943,8 @@ services:
       IMAGE_MAX_PIXELS: ${IMAGE_MAX_PIXELS:-100000000}
       RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     user: 10001:10001
@@ -936,7 +1012,8 @@ services:
       GOTENBERG_URL: http://gotenberg:3000
       GOTENBERG_WEB_URL: http://gotenbergweb:3000
       EGRESS_WEB_URL: http://egressweb:4750
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     - webrender
@@ -1003,7 +1080,8 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       JOB_SECRETS_KEY: ${SERVICE_PASSWORD_64_JOBSECRETS}
       GOTENBERG_URL: http://gotenberg:3000
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     user: 10001:10001
@@ -1068,7 +1146,8 @@ services:
       RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       GOTENBERG_URL: http://gotenberg:3000
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     user: 10001:10001
@@ -1133,7 +1212,8 @@ services:
       RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       HF_HUB_OFFLINE: '1'
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     user: 10001:10001
@@ -1197,7 +1277,8 @@ services:
       IMAGE_MAX_PIXELS: ${IMAGE_MAX_PIXELS:-100000000}
       RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     user: 10001:10001
@@ -1209,8 +1290,8 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: ${MEM_AV_LIGHT:-3g}
-    memswap_limit: ${MEM_AV_LIGHT:-3g}
+    mem_limit: ${MEM_AV_LIGHT:-2304m}
+    memswap_limit: ${MEM_AV_LIGHT:-2304m}
     cpus: ${CPUS_AV_LIGHT:-2}
     oom_score_adj: 500
     stop_grace_period: 10m
@@ -1277,7 +1358,8 @@ services:
       AI_REQUIRE_CONSENT: 'true'
       AI_CHAT_RPM_SHARE: ${AI_CHAT_RPM_SHARE:-0.5}
       AI_TASK_MAX_REQUESTS: ${AI_TASK_MAX_REQUESTS:-20}
-    volumes: *id003
+    volumes:
+    - filestore:/srv/files
     networks:
     - internal
     user: 10001:10001
@@ -1321,3 +1403,4 @@ volumes:
   valkeydata: {}
   filestore: {}
   backups: {}
+  eutl: {}
