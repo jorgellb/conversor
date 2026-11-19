@@ -127,6 +127,12 @@ DETAILS: dict[str, dict[str, str]] = {
     "tts_count": {"es": "Este PDF tiene demasiado texto o es demasiado complejo para preparar su lectura a tiempo: divídelo antes con «Dividir PDF».",
                   "en": "This PDF has too much text or is too complex to prepare for reading in time: split it first with “Split PDF”."},
     "tts_empty": {"es": "No hay texto que leer en las páginas elegidas.", "en": "There is no text to read in the selected pages."},
+    # Facturas electrónicas (F4-D2): «invoice_syntax:ubl>facturae» es la sintaxis del archivo y la de la página.
+    "invoice_syntax": {"es": "Esta página convierte otra sintaxis de factura: usa «Factura electrónica a PDF», que admite UBL, CII y Facturae.",
+                       "en": "This page converts another invoice syntax: use “E-invoice to PDF”, which accepts UBL, CII and Facturae."},
+    "facturae_xsd_invalid": {"es": "La factura Facturae no cumple su esquema oficial: compruébala antes con «Validar factura electrónica».",
+                             "en": "The Facturae invoice does not meet its official schema: check it first with “Validate e-invoice”."},
+    "not_invoice": {"es": "El archivo no es una factura UBL, CII ni Facturae.", "en": "The file is not a UBL, CII or Facturae invoice."},
     # Sello de la plataforma (firmar-pdf, 10 y D-188).
     "seal_account": {"es": "El sello de la plataforma necesita una cuenta: inicia sesión o regístrate gratis.",
                      "en": "The platform seal needs an account: sign in or sign up for free."},

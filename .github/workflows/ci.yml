@@ -79,7 +79,7 @@ jobs:
         run: |
           uv venv .venv
           # El extra av va sin PyAV (D-111): infra/uv-overrides.txt lo quita.
-          uv pip install --python .venv -r pyproject.toml --extra pdf --extra ocr --extra dev --extra office --extra media --extra av --extra ai --extra sign \
+          uv pip install --python .venv -r pyproject.toml --extra pdf --extra ocr --extra dev --extra office --extra media --extra av --extra ai --extra sign --extra utils \
             --override infra/uv-overrides.txt
       - name: Registro al día y Compose de Coolify válido
         run: |
@@ -87,6 +87,17 @@ jobs:
           .venv/bin/python scripts/gen_coolify_compose.py --check
           .venv/bin/python scripts/gen_coolify_compose.py --validate
           docker compose -f docker-compose.yml config --quiet
+      - name: KoSIT en modo servicio para validar-factura-electronica (F4-D, SHA-256 fijados)
+        run: |
+          FX=$(.venv/bin/python -c 'import facturx, pathlib; print(pathlib.Path(facturx.__file__).parent / "xsd_and_schematron")')
+          sh infra/kosit/fetch.sh "$RUNNER_TEMP/kosit" "$FX" infra/kosit/scenarios.xml
+          K="$RUNNER_TEMP/kosit"
+          # Mismas opciones que kosit-start en la imagen (D-191).
+          nohup java -Xmx1g -XX:+UseSerialGC -XX:+ExitOnOutOfMemoryError -cp "$K/validator/validator-1.6.3.jar:$K/validator/libs/*" de.kosit.validationtool.cmd.CommandLineApplication \
+            -s "$K/xrechnung/scenarios.xml" -r "$K/xrechnung" -s "$K/bis/scenarios.xml" -r "$K/bis" -s "$K/conversor/scenarios.xml" -r "$K" \
+            -D -G -H 127.0.0.1 -P 8081 > "$RUNNER_TEMP/kosit.log" 2>&1 &
+          for i in $(seq 1 120); do curl -sf -o /dev/null http://127.0.0.1:8081/server/health && break; sleep 1; done
+          curl -sf http://127.0.0.1:8081/server/health > /dev/null || { cat "$RUNNER_TEMP/kosit.log"; exit 1; }
       - name: Pruebas
         run: .venv/bin/pytest -q
       - name: Licencias de Python

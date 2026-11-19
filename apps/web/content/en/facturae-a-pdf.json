@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Facturae to PDF turns invoices in the Facturae format, used by the Spanish public administrations and the FACe entry point, into an easy-to-read PDF. It accepts versions 3.2, 3.2.1 and 3.2.2, signed or unsigned, and shows the seller, customer, items, the taxable amounts and taxes of each rate, the totals and the due date with its IBAN.",
+    "Before converting, the invoice is checked against its official schema from facturae.gob.es: if the XML does not meet it, the page tells you and suggests checking it with “Validate e-invoice” instead of drawing an invoice that might be incomplete. The representation language is the one the Facturae itself declares, unless you choose another.",
+    "The result is a PDF/A-3 with the original XML, signature included if it had one, embedded unchanged, so the signature can still be checked in the XML inside. If you prefer a PDF without attachments for printing, choose “Plain PDF”.",
+    "You can upload several Facturae files at once; you get one PDF per invoice and a ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Is the Facturae signature kept?",
+      "a": "Yes, inside the embedded XML, which is left untouched. The PDF itself is not signed: to check the signature use the XML or “Validate e-invoice”."
+    },
+    {
+      "q": "Does a Facturae batch with several invoices work?",
+      "a": "The first invoice in the file is represented; Facturae batches with several invoices are uncommon and the representation of each one will come later."
+    },
+    {
+      "q": "Can I use it to submit to FACe?",
+      "a": "No: FACe receives the signed XML. The PDF is a readable copy for filing or review."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "Yes, as a light task: without an account you get 20 a day; with a free account, 50; and on Pro, 1,000, with at most 100 Facturae files per task."
+    }
+  ]
+}

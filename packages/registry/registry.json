@@ -26427,6 +26427,412 @@
         "title": "VerificarOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "validar-factura-electronica",
+      "slug_en": "validate-e-invoice",
+      "name_es": "Validar factura electrónica",
+      "name_en": "Validate e-invoice",
+      "summary_es": "Comprueba facturas UBL, CII, Factur-X, XRechnung, Peppol y Facturae con las reglas oficiales y explica cada fallo.",
+      "summary_en": "Check UBL, CII, Factur-X, XRechnung, Peppol and Facturae invoices against the official rules and explain each failure.",
+      "category": "invoice",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xml",
+        "pdf",
+        "zip"
+      ],
+      "outputs": [
+        "html",
+        "csv",
+        "zip"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "factura-electronica-a-pdf",
+        "validar-pdfa"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "factura-electronica-a-pdf",
+      "slug_en": "e-invoice-to-pdf",
+      "name_es": "Factura electrónica a PDF",
+      "name_en": "E-invoice to PDF",
+      "summary_es": "Convierte facturas UBL, CII y Facturae en un PDF legible, con el XML original incrustado en PDF/A-3.",
+      "summary_en": "Turn UBL, CII and Facturae invoices into a readable PDF, with the original XML embedded in PDF/A-3.",
+      "category": "invoice",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xml"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 100,
+      "secret_fields": [],
+      "related": [
+        "validar-factura-electronica",
+        "facturae-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "factura-electronica-a-pdf (A.2): salida [PDF/A-3 con el XML original incrustado byte a byte] | PDF simple e idioma de\nla representación [el de la factura].",
+        "properties": {
+          "salida": {
+            "default": "pdfa3",
+            "enum": [
+              "pdfa3",
+              "pdf"
+            ],
+            "title": "Salida",
+            "type": "string",
+            "x-labels": {
+              "pdf": {
+                "en": "Plain PDF",
+                "es": "PDF simple"
+              },
+              "pdfa3": {
+                "en": "PDF/A-3 with the original XML embedded",
+                "es": "PDF/A-3 con el XML original incrustado"
+              }
+            },
+            "x-title": {
+              "en": "Output",
+              "es": "Salida"
+            }
+          },
+          "idioma": {
+            "default": "factura",
+            "enum": [
+              "factura",
+              "es",
+              "en"
+            ],
+            "title": "Idioma de la representación",
+            "type": "string",
+            "x-labels": {
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "factura": {
+                "en": "The invoice's",
+                "es": "El de la factura"
+              }
+            },
+            "x-title": {
+              "en": "Representation language",
+              "es": "Idioma de la representación"
+            }
+          }
+        },
+        "title": "APdfOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "facturae-a-pdf",
+      "slug_en": "facturae-to-pdf",
+      "name_es": "Facturae a PDF",
+      "name_en": "Facturae to PDF",
+      "summary_es": "Convierte facturas Facturae 3.2.x en un PDF legible, con el XML original incrustado en PDF/A-3.",
+      "summary_en": "Turn Facturae 3.2.x invoices into a readable PDF, with the original XML embedded in PDF/A-3.",
+      "category": "invoice",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xml"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 100,
+      "secret_fields": [],
+      "related": [
+        "factura-electronica-a-pdf",
+        "validar-factura-electronica"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "factura-electronica-a-pdf (A.2): salida [PDF/A-3 con el XML original incrustado byte a byte] | PDF simple e idioma de\nla representación [el de la factura].",
+        "properties": {
+          "salida": {
+            "default": "pdfa3",
+            "enum": [
+              "pdfa3",
+              "pdf"
+            ],
+            "title": "Salida",
+            "type": "string",
+            "x-labels": {
+              "pdf": {
+                "en": "Plain PDF",
+                "es": "PDF simple"
+              },
+              "pdfa3": {
+                "en": "PDF/A-3 with the original XML embedded",
+                "es": "PDF/A-3 con el XML original incrustado"
+              }
+            },
+            "x-title": {
+              "en": "Output",
+              "es": "Salida"
+            }
+          },
+          "idioma": {
+            "default": "factura",
+            "enum": [
+              "factura",
+              "es",
+              "en"
+            ],
+            "title": "Idioma de la representación",
+            "type": "string",
+            "x-labels": {
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "factura": {
+                "en": "The invoice's",
+                "es": "El de la factura"
+              }
+            },
+            "x-title": {
+              "en": "Representation language",
+              "es": "Idioma de la representación"
+            }
+          }
+        },
+        "title": "APdfOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "ubl-a-pdf",
+      "slug_en": "ubl-to-pdf",
+      "name_es": "UBL a PDF",
+      "name_en": "UBL to PDF",
+      "summary_es": "Convierte facturas UBL 2.1 (también Peppol y XRechnung) en un PDF legible, con el XML incrustado en PDF/A-3.",
+      "summary_en": "Turn UBL 2.1 invoices (also Peppol and XRechnung) into a readable PDF, with the XML embedded in PDF/A-3.",
+      "category": "invoice",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xml"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 100,
+      "secret_fields": [],
+      "related": [
+        "factura-electronica-a-pdf",
+        "validar-factura-electronica"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "factura-electronica-a-pdf (A.2): salida [PDF/A-3 con el XML original incrustado byte a byte] | PDF simple e idioma de\nla representación [el de la factura].",
+        "properties": {
+          "salida": {
+            "default": "pdfa3",
+            "enum": [
+              "pdfa3",
+              "pdf"
+            ],
+            "title": "Salida",
+            "type": "string",
+            "x-labels": {
+              "pdf": {
+                "en": "Plain PDF",
+                "es": "PDF simple"
+              },
+              "pdfa3": {
+                "en": "PDF/A-3 with the original XML embedded",
+                "es": "PDF/A-3 con el XML original incrustado"
+              }
+            },
+            "x-title": {
+              "en": "Output",
+              "es": "Salida"
+            }
+          },
+          "idioma": {
+            "default": "factura",
+            "enum": [
+              "factura",
+              "es",
+              "en"
+            ],
+            "title": "Idioma de la representación",
+            "type": "string",
+            "x-labels": {
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "factura": {
+                "en": "The invoice's",
+                "es": "El de la factura"
+              }
+            },
+            "x-title": {
+              "en": "Representation language",
+              "es": "Idioma de la representación"
+            }
+          }
+        },
+        "title": "APdfOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "cii-a-pdf",
+      "slug_en": "cii-to-pdf",
+      "name_es": "CII a PDF",
+      "name_en": "CII to PDF",
+      "summary_es": "Convierte facturas CII de UN/CEFACT (también XRechnung CII) en un PDF legible, con el XML incrustado en PDF/A-3.",
+      "summary_en": "Turn UN/CEFACT CII invoices (also XRechnung CII) into a readable PDF, with the XML embedded in PDF/A-3.",
+      "category": "invoice",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xml"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 100,
+      "secret_fields": [],
+      "related": [
+        "factura-electronica-a-pdf",
+        "validar-factura-electronica"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "factura-electronica-a-pdf (A.2): salida [PDF/A-3 con el XML original incrustado byte a byte] | PDF simple e idioma de\nla representación [el de la factura].",
+        "properties": {
+          "salida": {
+            "default": "pdfa3",
+            "enum": [
+              "pdfa3",
+              "pdf"
+            ],
+            "title": "Salida",
+            "type": "string",
+            "x-labels": {
+              "pdf": {
+                "en": "Plain PDF",
+                "es": "PDF simple"
+              },
+              "pdfa3": {
+                "en": "PDF/A-3 with the original XML embedded",
+                "es": "PDF/A-3 con el XML original incrustado"
+              }
+            },
+            "x-title": {
+              "en": "Output",
+              "es": "Salida"
+            }
+          },
+          "idioma": {
+            "default": "factura",
+            "enum": [
+              "factura",
+              "es",
+              "en"
+            ],
+            "title": "Idioma de la representación",
+            "type": "string",
+            "x-labels": {
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "factura": {
+                "en": "The invoice's",
+                "es": "El de la factura"
+              }
+            },
+            "x-title": {
+              "en": "Representation language",
+              "es": "Idioma de la representación"
+            }
+          }
+        },
+        "title": "APdfOptions",
+        "type": "object"
+      }
     }
   ]
 }

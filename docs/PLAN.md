@@ -84,7 +84,7 @@ Se hace por lotes, cada uno con sus pruebas (D-119):
 | C (F3-C). Imagen y datos | imagen-a-texto (Tesseract en `ocr`, sin IA), imagen-a-excel (Docling en `convert` y, si no reconoce la tabla, LLM con esquema en `ai`; IA opcional) y ticket-a-excel (OCR en `ocr` y LLM con esquema en `ai`, 1 petición por ticket, comprobación de la suma) | Hecho (D-159 a D-165) |
 | D (F3-D). Voz | pdf-a-audio (Kokoro-82M en ONNX con fonemas de espeak-ng como proceso externo, en `av.heavy`; caracteres por tarea comprobados en la API antes de encolar; voz española apagada hasta la escucha del propietario) | Hecho (D-166 a D-173) |
 | E (F3-E). IA de audio (de F5) | traducir-subtitulos (SRT, VTT y ASS con pysubs2, un elemento JSON por subtítulo y tiempos intactos; audio y vídeo transcritos antes en `av.heavy`) y resumir-reunion (faster-whisper en `av.heavy` y acta con esquema en `ai`, por bloques si no cabe); peticiones estimadas y reservadas antes de transcribir | Hecho (D-174 a D-179) |
-| F3-Z. Cierre de F3 | 16.3 y uso real de peticiones (clave de OpenRouter del propietario) | En curso: rendimiento, e2e-compose y mantenimiento de beat (D-181); token de descarga canónico y Next.js 16.4.6 (D-183); faltan la CI entera en verde, la revisión externa y el uso real con la clave |
+| F3-Z. Cierre de F3 | 16.3 y uso real de peticiones (clave de OpenRouter del propietario) | En curso: rendimiento, e2e-compose y mantenimiento de beat (D-181); token de descarga canónico y Next.js 16.4.6 (D-183); CI entera en verde por primera vez con dc0e262 (D-190), también e2e-compose y Lighthouse; faltan la revisión externa y el uso real con la clave |
 
 ## Goal de trabajo continuo: lotes transversales (`docs/GOAL.md`, D-134 en adelante)
 
@@ -105,7 +105,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F4-A | verificar-firmas-pdf y firmar-pdf en servidor (`workersign` y `sign.verify`, pyHanko, SoftHSM2, LOTL; migración 0006) | Hecho: verificar-firmas-pdf y la lista de la UE (F4-A1, D-185 a D-187) y el sello de firmar-pdf en `workersign` con la migración 0006 (F4-A2, D-188); firmar-pdf sigue apagada hasta F4-B |
 | F4-B | firmar-pdf en el navegador, hacer-pdf-rellenable y crear-formulario-pdf | Pendiente (F4-A) |
 | F4-C | compartir-pdf y solicitar-firmas (B-LT, Mailpit) | Pendiente (F4-A) |
-| F4-D | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf (`workerutils`, KoSIT) | Pendiente (F3-Z) |
+| F4-D | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf (`workerutils`, KoSIT) | Hecho: validar-factura-electronica y `workerutils` con KoSIT (F4-D1, D-191) y la representación en PDF/A-3 con el XML incrustado (F4-D2, D-192) |
 | F4-E | crear-factura, crear-factura-electronica y pdf-a-factura-electronica (detrás de `INVOICING_ES_ENABLED`) | Pendiente (F4-D y F4-B) |
 | F4-F | word-a-pdf-accesible (office → ocr, veraPDF) | Hecho (D-182 y D-184); veraPDF y el PDF/UA de LibreOffice reales, en la CI |
 | F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | Pendiente (F4-A a F4-F) |

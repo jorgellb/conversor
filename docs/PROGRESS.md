@@ -462,9 +462,39 @@ cuenta, comprobación de clave y resultado y errores comprensibles.
 Rendimiento (F3-Z): Uppy se carga al subir; la primera ejecución completa de e2e-compose pasó con F4-A1 (commit
 2561369) y Lighthouse quedó entre 0,87 y 0,89 en tres páginas de servidor en el runner, lo que motivó el cambio.
 
+## F4-D1 (validar-factura-electronica y workerutils con KoSIT)
+
+validar-factura-electronica comprueba UBL 2.1, CII, Factur-X y ZUGFeRD (también dentro de un PDF), XRechnung, Peppol
+BIS 3.0 y Facturae 3.2.x. KoSIT corre en modo servicio dentro de `workerutils` con las configuraciones públicas de
+XRechnung y Peppol y escenarios propios para los perfiles de Factur-X; Facturae, con sus XSD oficiales y la integridad
+de la firma XAdES. Informe con la representación de la factura, la parte afectada resaltada y una explicación propia y
+qué hacer por regla; anexos aparte; resumen CSV en lote; las entradas se borran al terminar. Salvedades en D-191.
+Verificado aquí: pytest con KoSIT real en local (todas las muestras: EN 16931 UBL y CII, XRechnung, Peppol, Factur-X
+BASIC y MINIMUM, errores BR-07 y BR-CO-16, Factur-X en PDF, lotes, XXE y zip-slip) y Facturae firmada y manipulada.
+Sin verificar aquí: la imagen `worker-utils` y el arranque de KoSIT dentro de ella (CI).
+
+## Revisión de F4-D1 (D-193)
+
+Corregido lo que encontró la revisión adversarial: Facturae 3.2 y 3.2.1 (espacios de nombres), veredicto de KoSIT con
+los `customLevel` del escenario, ZIP y adjuntos de PDF con topes de memoria, KoSIT con 1 GB de heap, salida en
+OutOfMemoryError, facturas grandes de una en una y supervisión en `kosit-start`, errores por archivo en los lotes, firma
+de Facturae (SHA-1, cobertura del documento, XAdES antiguos), ZUGFeRD 2.0, anexos de CII, Facturae y PDF, y textos.
+Verificado aquí: pytest con KoSIT real (35 pruebas de facturas), medida de memoria de KoSIT y `kosit-start` con una JVM
+simulada. Sin verificar aquí: la imagen worker-utils y una Facturae firmada real.
+
+## F4-D2 (factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf)
+
+Las cuatro convierten una factura UBL, CII o Facturae en un PDF legible (partes, líneas, impuestos, totales y pago),
+impreso con el Chromium de `gotenberg` en PDF/A-3b con el XML original incrustado como archivo asociado, comprobado byte
+a byte y validado con veraPDF en `ocr`; o PDF simple. Idioma el de la factura (Facturae) o el elegido. Las páginas de
+7.14 solo admiten su sintaxis. Contenido 8.2 es/en de las cuatro. Salvedades en D-192.
+Verificado aquí: pytest con Gotenberg y veraPDF simulados (petición PDF/A-3b, XML idéntico, `/AF` y relación
+`Source`, escapado, idioma y errores). Sin verificar aquí: el PDF/A-3b real de Gotenberg con el XML incrustado y su
+validación con veraPDF (e2e-compose y el VPS).
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4: F4-F y F4-A hechos; siguen F4-D, después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4: F4-F, F4-A y F4-D hechos; siguen después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

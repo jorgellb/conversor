@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 166 herramientas (F1 43, F2 60, F3 10, F4 3, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 171 herramientas (F1 43, F2 60, F3 10, F4 8, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -172,6 +172,11 @@ Catálogo publicado en esta entrega: 166 herramientas (F1 43, F2 60, F3 10, F4 3
 | `resumir-reunion` / `summarize-meeting` | servidor | av | ai | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → docx, txt, md | redactado, sin revisar |
 | `firmar-pdf` / `sign-pdf` | servidor | sign | light | F4 | apagada | pdf → pdf, zip | pendiente |
 | `verificar-firmas-pdf` / `verify-pdf-signatures` | servidor | sign | light | F4 | activa | pdf → html, zip | redactado, sin revisar |
+| `validar-factura-electronica` / `validate-e-invoice` | servidor | utils | light | F4 | activa | xml, pdf, zip → html, csv, zip | redactado, sin revisar |
+| `factura-electronica-a-pdf` / `e-invoice-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |
+| `facturae-a-pdf` / `facturae-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |
+| `ubl-a-pdf` / `ubl-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |
+| `cii-a-pdf` / `cii-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 
@@ -222,8 +227,8 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | Create invoice visually (`/en/create-invoice-visually`) | `crear-factura` | pendiente (F4) | Diseñador visual de crear-factura (7.23). |
 | Create electronic invoice (`/en/create-electronic-invoice`) | `crear-factura-electronica` | pendiente (F4) |  |
 | PDF invoice to e-invoice (`/en/pdf-to-e-invoice`) | `pdf-a-factura-electronica` | pendiente (F4) |  |
-| XML e-invoice to PDF (`/en/xml-invoice-to-pdf`) | `factura-electronica-a-pdf` | pendiente (F6) |  |
-| Validate e-invoice (`/en/validate-e-invoice`) | `validar-factura-electronica` | pendiente (F4) |  |
+| XML e-invoice to PDF (`/en/xml-invoice-to-pdf`) | `factura-electronica-a-pdf` | disponible |  |
+| Validate e-invoice (`/en/validate-e-invoice`) | `validar-factura-electronica` | disponible |  |
 | Annotate PDF (`/en/annotate-pdf`) | `anotar-pdf` | disponible |  |
 | Fill out PDF (`/en/fill-out-pdf`) | `rellenar-pdf` | disponible |  |
 | Make PDF fillable (`/en/make-pdf-fillable`) | `hacer-pdf-rellenable` | pendiente (F4) |  |
@@ -325,7 +330,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Printer (`/en/pdf-printer`) | — | sin equivalente | No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3). |
 | PDF Reader (`/en/pdf-reader`) | — | sin equivalente | No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf. |
 
-Resumen: 107 disponibles, 11 pendientes de su fase y 6 sin equivalente (con su explicación).
+Resumen: 109 disponibles, 9 pendientes de su fase y 6 sin equivalente (con su explicación).
 
 ## Mejoras posteriores
 

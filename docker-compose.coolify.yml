@@ -756,8 +756,8 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: ${MEM_AI_EMBED:-1280m}
-    memswap_limit: ${MEM_AI_EMBED:-1280m}
+    mem_limit: ${MEM_AI_EMBED:-1g}
+    memswap_limit: ${MEM_AI_EMBED:-1g}
     cpus: ${CPUS_AI_EMBED:-1}
     oom_score_adj: 500
     stop_grace_period: 10m
@@ -1174,8 +1174,8 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: ${MEM_OFFICE_HEAVY:-2g}
-    memswap_limit: ${MEM_OFFICE_HEAVY:-2g}
+    mem_limit: ${MEM_OFFICE_HEAVY:-1536m}
+    memswap_limit: ${MEM_OFFICE_HEAVY:-1536m}
     cpus: ${CPUS_OFFICE_HEAVY:-1}
     oom_score_adj: 500
     stop_grace_period: 10m
@@ -1189,6 +1189,72 @@ services:
       test:
       - CMD-SHELL
       - celery -A core.celeryapp inspect ping -d "$${WORKER_NAME}@$${HOSTNAME}" --timeout 10 >/dev/null
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+  workerutils:
+    image: ghcr.io/${GHCR_OWNER:?Propietario del registro}/conversor-worker-utils:${IMAGE_TAG:?Etiqueta de imagen}
+    restart: unless-stopped
+    logging: *id001
+    command:
+    - celery
+    - -A
+    - core.celeryapp
+    - worker
+    - -Q
+    - utils.light
+    - -n
+    - utils@%h
+    - -c
+    - ${CONCURRENCY_UTILS:-2}
+    - --prefetch-multiplier
+    - '1'
+    - -O
+    - fair
+    - --without-gossip
+    - --without-mingle
+    environment:
+      SERVICE_ROLE: worker-utils
+      WORKER_NAME: utils
+      APP_ENV: production
+      VALKEY_URL: redis://default:${SERVICE_PASSWORD_VALKEY}@valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:${SERVICE_PASSWORD_WORKERDB}@postgres:5432/conversor
+      THREADS: '1'
+      OMP_THREAD_LIMIT: '1'
+      OMP_NUM_THREADS: '1'
+      IMAGE_MAX_PIXELS: ${IMAGE_MAX_PIXELS:-100000000}
+      RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      GOTENBERG_URL: http://gotenberg:3000
+    volumes:
+    - filestore:/srv/files
+    networks:
+    - internal
+    user: 10001:10001
+    read_only: true
+    tmpfs:
+    - /tmp:size=64m
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: ${MEM_UTILS:-2g}
+    memswap_limit: ${MEM_UTILS:-2g}
+    cpus: ${CPUS_UTILS:-2}
+    oom_score_adj: 500
+    stop_grace_period: 10m
+    runtime: ${WORKER_RUNTIME:-runc}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      valkey:
+        condition: service_healthy
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - celery -A core.celeryapp inspect ping -d "$${WORKER_NAME}@$${HOSTNAME}" --timeout 10 >/dev/null && curl -sf --max-time 5 http://127.0.0.1:8081/server/health >/dev/null
       interval: 60s
       timeout: 10s
       retries: 3
@@ -1371,8 +1437,8 @@ services:
     security_opt:
     - no-new-privileges:true
     pids_limit: 256
-    mem_limit: ${MEM_AV_LIGHT:-2304m}
-    memswap_limit: ${MEM_AV_LIGHT:-2304m}
+    mem_limit: ${MEM_AV_LIGHT:-1g}
+    memswap_limit: ${MEM_AV_LIGHT:-1g}
     cpus: ${CPUS_AV_LIGHT:-2}
     oom_score_adj: 500
     stop_grace_period: 10m

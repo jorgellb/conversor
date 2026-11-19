@@ -15,6 +15,7 @@ toca; un worker en esa situación no arranca (código 78).
 | `workerpdf`, `workeroffice` | `JOB_SECRETS_KEY` (y `DATABASE_URL_WORKER`, rol limitado) |
 | `workerocr`, `workerconvert`, `workerav`, `workermedia` | solo `DATABASE_URL_WORKER` y `VALKEY_URL` |
 | `workersign` (sello de la plataforma, F4) | `SIGN_PKCS11_PIN` y el volumen `softhsm` del token; ningún otro contenedor los ve (comprobado en `tests/test_compose.py`, D-188). El PDF del usuario se lee con pyHanko antes de abrir el token y con la sesión abierta solo se firma (D-189) |
+| `workerutils` (facturas electrónicas, F4) | solo `DATABASE_URL_WORKER` y `VALKEY_URL`; KoSIT escucha en 127.0.0.1 dentro del contenedor y no hay salida a internet (D-191) |
 | `workersignverify` (verificar-firmas-pdf, F4) | solo `DATABASE_URL_WORKER` y `VALKEY_URL`: ni `SIGN_PKCS11_PIN` ni el volumen del token del sello (D-185) |
 
 ## Workers
@@ -100,4 +101,12 @@ plan y por clase de coste, IPv6 agrupada por /64 y `CF-Connecting-IP` solo desde
   bajo cada área no se dibuja nada antes de pintar los recuadros (D-153).
 - lector-pdf solo hace pulsables los enlaces `http`, `https` y `mailto`, en una pestaña nueva con
   `noopener noreferrer`; `javascript:`, `file:` y las acciones de lanzar programas se ignoran (D-152).
+
+## Facturas electrónicas (F4-D)
+
+El XML del usuario se lee sin DTD ni entidades (defusedxml y lxml sin red) antes de llegar a KoSIT: un DOCTYPE o una
+entidad se rechazan y KoSIT no se llama (pruebas de XXE y de bomba de entidades en `tests/test_facturas.py`). Tope de
+20 MB por XML y 100 facturas por tarea; los ZIP pasan por zipguard (zip-slip, bombas). Los XSD de Facturae son
+archivos de la imagen y se cargan sin red. El CSV del resumen protege las celdas que empiezan por `=`, `+`, `-`, `@`.
+Las entradas se borran al terminar la validación (A.2).
 

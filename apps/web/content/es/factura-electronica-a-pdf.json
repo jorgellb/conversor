@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Factura electrónica a PDF convierte una factura en XML (UBL 2.1, CII de UN/CEFACT o Facturae 3.2.x) en un PDF que cualquiera puede leer e imprimir: emisor y cliente con sus direcciones y NIF, número y fechas, cada línea con su cantidad, precio e IVA, el desglose de impuestos, los totales y los datos de pago. Es útil cuando recibes una factura electrónica y necesitas archivarla, enviarla a tu gestoría o revisarla sin un programa de facturación.",
+    "Por defecto el resultado es PDF/A-3, el formato pensado para conservar documentos durante años, con el XML original incrustado dentro del PDF tal cual llegó, sin cambiar un solo byte. Así el PDF sirve a la vez para leer la factura y para conservar el documento con validez, que es el XML. Antes de entregarlo se comprueba que el adjunto es idéntico al original y el PDF/A-3 se valida con veraPDF; el resultado de esa validación aparece en la nota de cada archivo.",
+    "Si solo quieres verla o imprimirla, elige «PDF simple», que no lleva el XML. El idioma de la representación es por defecto el de la factura cuando lo declara (Facturae lo hace) y, si no, el de la página; también puedes elegir español o inglés.",
+    "Puedes convertir muchas facturas a la vez y descargarlas en un ZIP. La representación la genera nuestro servidor con un navegador sin acceso a internet, así que nada de la factura sale fuera para dibujarla."
+  ],
+  "faq": [
+    {
+      "q": "¿El PDF sustituye a la factura electrónica?",
+      "a": "No. El documento con validez fiscal es el XML. El PDF/A-3 lo lleva incrustado sin cambios para que puedas conservar los dos juntos, pero quien te pida la factura electrónica necesita el XML."
+    },
+    {
+      "q": "¿Comprueba si la factura es correcta?",
+      "a": "Solo lo justo para poder leerla. Para comprobar las reglas de EN 16931, XRechnung, Peppol o Facturae usa «Validar factura electrónica»."
+    },
+    {
+      "q": "¿Qué formatos admite?",
+      "a": "UBL 2.1 (también Peppol BIS y XRechnung UBL), CII (también XRechnung CII y el XML de Factur-X) y Facturae 3.2, 3.2.1 y 3.2.2."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Cuenta como una tarea ligera: 20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro. En cada tarea caben hasta 100 facturas y los PDF se borran a la hora sin cuenta o al día con cuenta."
+    }
+  ]
+}

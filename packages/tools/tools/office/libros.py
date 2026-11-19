@@ -166,7 +166,8 @@ def run(ctx: ToolContext) -> list[dict]:
         env = {"QT_QPA_PLATFORM": "offscreen", "CALIBRE_CONFIG_DIRECTORY": str(work / "config"), "CALIBRE_TEMP_DIR": str(work),
                "CALIBRE_CACHE_DIRECTORY": str(work / "cache"), "QTWEBENGINE_CHROMIUM_FLAGS": "--no-sandbox --disable-gpu"}
         # Memoria de datos y no virtual: QtWebEngine reserva mucho espacio de direcciones y con RLIMIT_AS no arranca (D-52).
-        run_engine(args, cwd=work, timeout=900, mem_mb=1536, extra_env=env, limit_data=True)
+        # 1200 MB: por debajo de los 1536 MB del contenedor (D-191), para que salte este tope y no el OOM del cgroup.
+        run_engine(args, cwd=work, timeout=900, mem_mb=1200, extra_env=env, limit_data=True)
         if not tmp.exists():
             raise ToolError(ErrorCode.ENGINE_FAILED, "Calibre no generó el PDF")
         with pikepdf.open(tmp) as pdf:

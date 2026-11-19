@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Validate e-invoice checks whether an invoice meets the official rules of its format and explains every failure in plain words, with what to do to fix it. It accepts UBL 2.1 (invoice and credit note), UN/CEFACT CII, Factur-X and ZUGFeRD 2 (inside a PDF or as XML), XRechnung 3, Peppol BIS Billing 3.0 and Facturae 3.2, 3.2.1 and 3.2.2, the format of the Spanish public administrations.",
+    "The format is detected automatically from the specification identifier the invoice carries (CustomizationID in UBL and the guideline identifier in CII). The rules are applied by KoSIT, the open-source validator of Germany's Coordination Office for IT Standards, with the public XRechnung and Peppol configurations, which include the European Commission's EN 16931 rules, and with the official Factur-X schemas and rules. Facturae is checked against its official schema from facturae.gob.es and, if it is signed, the signature is checked to be intact and to cover the whole invoice. ZUGFeRD 1.0, XRechnung 2.x and other Peppol processes cannot be validated here, and the report says so.",
+    "The result is a report you can view, print or save as PDF. At the top it says whether the invoice is valid; then comes a representation with the number, seller, customer, lines and totals, where the part affected by each failure is highlighted, and the list of failed rules with their identifier (for example BR-CO-16), severity, explanation and what to do. Attachments carried by the invoice (in UBL, CII, Facturae or next to the XML inside the PDF) are delivered as separate files.",
+    "You can validate several invoices at once or a ZIP with many: besides one report per invoice, you get a CSV summary with the number, seller, date, total and result of each. The Factur-X MINIMUM and BASIC WL profiles are validated, but the report reminds you they are not complete EN 16931 invoices. The invoices you upload are deleted as soon as the validation finishes; the report, which includes the XML, and the attachments are deleted with the rest of the results, after an hour without an account or after 24 hours with one."
+  ],
+  "faq": [
+    {
+      "q": "Does it tell me whether my invoice complies with the law?",
+      "a": "It checks the format and the rules of the European standard EN 16931 and of each specification. It does not check tax obligations such as Veri*factu registration or whether the invoice was sent through the right platform: ask your adviser for that."
+    },
+    {
+      "q": "Does it check the certificate of a signed Facturae?",
+      "a": "Here it checks that the signature is intact, that is, that the invoice has not changed since it was signed. Who signed and whether their certificate is trusted is not checked yet: that will come with the XML signature verification tool. Signatures with XAdES older than 1.3.2 are checked as XML signatures, without their XAdES properties."
+    },
+    {
+      "q": "What if my invoice uses another specification?",
+      "a": "If it is an EN 16931 CIUS without a public configuration, it is validated against the EN 16931 rules and the report says so. If the file is not a UBL, CII or Facturae invoice, the report explains why it could not be validated."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "It is a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro, with up to 100 invoices per task."
+    }
+  ]
+}

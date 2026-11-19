@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Validar factura electrónica comprueba si una factura cumple las reglas oficiales de su formato y te explica cada fallo con palabras normales y qué hacer para corregirlo. Admite UBL 2.1 (factura y abono), CII de UN/CEFACT, Factur-X y ZUGFeRD 2 (dentro de un PDF o como XML), XRechnung 3, Peppol BIS Billing 3.0 y Facturae 3.2, 3.2.1 y 3.2.2, la de las Administraciones públicas españolas.",
+    "El formato se detecta solo, por el identificador de especificación que lleva la factura (CustomizationID en UBL y el identificador de la guía en CII). Las reglas las aplica KoSIT, el validador de código abierto de la Coordinación de Estándares de TI de Alemania, con las configuraciones públicas de XRechnung y de Peppol, que incluyen las reglas EN 16931 de la Comisión Europea, y con los esquemas y reglas oficiales de Factur-X. Facturae se comprueba con su esquema oficial de facturae.gob.es y, si viene firmada, se comprueba que la firma está íntegra y cubre la factura entera. ZUGFeRD 1.0, las versiones 2.x de XRechnung y otros procesos de Peppol no se pueden validar aquí, y el informe lo dice.",
+    "El resultado es un informe que puedes ver, imprimir o guardar como PDF. Arriba aparece si la factura es válida; después, una representación con el número, el emisor, el cliente, las líneas y los totales, en la que se resalta la parte afectada por cada fallo, y la lista de reglas incumplidas con su identificador (por ejemplo BR-CO-16), su gravedad, la explicación y qué hacer. Los anexos que trae la factura (en UBL, en CII, en Facturae o junto al XML dentro del PDF) se entregan como archivos aparte.",
+    "Puedes validar varias facturas a la vez o un ZIP con muchas: además de un informe por factura, recibes un resumen en CSV con el número, el emisor, la fecha, el total y el resultado de cada una. Los perfiles MINIMUM y BASIC WL de Factur-X se validan, pero el informe recuerda que no son facturas EN 16931 completas. Las facturas que subes se borran en cuanto termina la validación; el informe, que incluye el XML, y los anexos se borran con el resto de resultados, a la hora sin cuenta o a las 24 horas con cuenta."
+  ],
+  "faq": [
+    {
+      "q": "¿Sirve para saber si mi factura cumple la ley?",
+      "a": "Comprueba el formato y las reglas de la norma europea EN 16931 y de cada especificación. No comprueba obligaciones fiscales como el registro en Veri*factu ni si el envío se ha hecho por la plataforma que corresponde: para eso consulta con tu asesor."
+    },
+    {
+      "q": "¿Comprueba el certificado de una Facturae firmada?",
+      "a": "Aquí se comprueba que la firma está íntegra, es decir, que la factura no ha cambiado después de firmarla. Quién firmó y si su certificado es de confianza no se comprueba todavía: llegará con la herramienta de verificar firmas de XML. Las firmas con XAdES anterior a 1.3.2 se comprueban como firma XML, sin sus propiedades XAdES."
+    },
+    {
+      "q": "¿Qué pasa si mi factura usa otra especificación?",
+      "a": "Si es una CIUS de EN 16931 sin configuración pública, se valida con las reglas EN 16931 y el informe lo indica. Si el archivo no es una factura UBL, CII ni Facturae, el informe explica por qué no se ha podido validar."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Es una tarea ligera: 20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro, con hasta 100 facturas por tarea."
+    }
+  ]
+}

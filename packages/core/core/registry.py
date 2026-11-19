@@ -188,6 +188,7 @@ SPEC_MODULES = (
     "tools.media.specs",
     "tools.ai.specs",
     "tools.sign.specs",
+    "tools.utils.specs",
 )
 
 

@@ -76,10 +76,10 @@ herramientas:
     equivalentes: [pdf-a-factura-electronica:F4]
   - pdf24: "XML e-invoice to PDF"
     ruta: /en/xml-invoice-to-pdf
-    equivalentes: [factura-electronica-a-pdf:F6]
+    equivalentes: [factura-electronica-a-pdf]
   - pdf24: "Validate e-invoice"
     ruta: /en/validate-e-invoice
-    equivalentes: [validar-factura-electronica:F4]
+    equivalentes: [validar-factura-electronica]
   - pdf24: "Annotate PDF"
     ruta: /en/annotate-pdf
     equivalentes: [anotar-pdf]

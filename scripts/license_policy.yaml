@@ -4,7 +4,7 @@ frontend:
 backend:
   allowed: [MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD, MPL-2.0, Zlib, Unlicense, CC0-1.0, BlueOak-1.0.0, PSF-2.0,
             Python-2.0, HPND, MIT-CMU, LGPL-2.1, LGPL-3.0, EPL-2.0, EUPL-1.2, LicenseRef-TOST-1.0, MIT-0, BSL-1.0, CNRI-Python,
-            "Apache-2.0 WITH LLVM-exception"]
+            "Apache-2.0 WITH LLVM-exception", LicenseRef-Public-Domain]
 # Prohibidos siempre como paquete instalado (GPL solo como programa externo en servidor).
 forbidden_patterns: ["AGPL", "GPL-2.0-only", "GPL-3.0-only", "GPL-2.0-or-later", "GPL-3.0-or-later", "GPLv2", "GPLv3", "GNU General Public"]
 # `av` (PyAV) declara BSD-3-Clause, pero sus ruedas traen libx264 y libx265 (GPL) dentro de libavcodec (D-111).
@@ -74,5 +74,7 @@ overrides:
   combine-errors: MIT  # sin campo license; License.md es MIT (dependencia de tus-js-client)
   py-rust-stemmers: MIT  # sin campo License en los metadatos; el README y LICENSE de la rueda dicen MIT (dependencia de fastembed)
   py_rust_stemmers: MIT
+  python-stdnum: LGPL-2.1  # declara «LGPL»; su clasificador es LGPLv2+ (dependencia de factur-x, F4-D)
+  iso4217: LicenseRef-Public-Domain  # declara «Public Domain» (tablas de monedas ISO 4217; dependencia de factur-x)
 # Paquetes que solo se usan en desarrollo y pruebas y nunca llegan a una imagen.
 dev_only: [pytest, respx, pip-licenses, prettytable, wcwidth, iniconfig, pluggy, pygments, fpdf2]

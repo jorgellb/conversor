@@ -230,6 +230,11 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     "comparar-pdf": {"ignorar_mayusculas_espacios": D(False)},
     "buscar-en-pdf": {"texto": X, "mayusculas": D(False), "palabra_completa": D(False), "expresion_regular": D(False)},
     "validar-pdfa": {"perfil": E("auto", "auto", "1a", "1b", "2a", "2b", "2u", "3a", "3b", "3u", "4", "4e", "4f", "ua1", "ua2")},
+    # A.2 (F4-D): validar-factura-electronica no tiene opciones (detecta sintaxis y especificación).
+    "validar-factura-electronica": {},
+    # A.2 (F4-D2): salida [PDF/A-3 con el XML incrustado] | PDF simple e idioma [el de la factura]; las páginas de 7.14 igual.
+    **{slug: {"salida": E("pdfa3", "pdfa3", "pdf"), "idioma": E("factura", "factura", "es", "en")}
+       for slug in ("factura-electronica-a-pdf", "facturae-a-pdf", "ubl-a-pdf", "cii-a-pdf")},
     # A.6 (F4-A2): la firma digital con el sello de la plataforma; el modo «Insertar firma», el origen de la firma y el
     # certificado propio llegan con F4-B (D-188).
     "firmar-pdf": {"certificado": E("plataforma", "plataforma"), "visible": D(True), "nivel": E("B-T", "B-T", "B-LT", "B-LTA"),

@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Facturae a PDF convierte facturas en el formato Facturae, el de las Administraciones públicas españolas y del punto general de entrada FACe, en un PDF fácil de leer. Admite las versiones 3.2, 3.2.1 y 3.2.2, firmadas o sin firmar, y muestra el emisor, el cliente, los conceptos, las bases y cuotas de cada impuesto, los totales y el vencimiento con su IBAN.",
+    "Antes de convertirla se comprueba la factura con su esquema oficial de facturae.gob.es: si el XML no lo cumple, la página te lo dice y te propone revisarla con «Validar factura electrónica», en lugar de dibujar una factura que podría estar incompleta. El idioma de la representación es el que declara la propia Facturae, salvo que elijas otro.",
+    "El resultado es un PDF/A-3 con el XML original, firma incluida si la tenía, incrustado sin modificar, de modo que la firma sigue siendo comprobable en el XML que va dentro. Si prefieres un PDF sin adjuntos para imprimir, elige «PDF simple».",
+    "Puedes subir varias Facturae a la vez; recibirás un PDF por factura y un ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conserva la firma de la Facturae?",
+      "a": "Sí, dentro del XML incrustado, que no se toca. El PDF en sí no está firmado: para comprobar la firma usa el XML o «Validar factura electrónica»."
+    },
+    {
+      "q": "¿Sirve una Facturae con varias facturas en un lote?",
+      "a": "Se representa la primera factura del archivo; los lotes de Facturae con varias facturas son poco habituales y la representación de cada una llegará más adelante."
+    },
+    {
+      "q": "¿Puedo usarla para presentar en FACe?",
+      "a": "No: a FACe se envía el XML firmado. El PDF es una copia legible para archivar o revisar."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Sí, como tarea ligera: sin cuenta tienes 20 al día; con cuenta gratuita, 50; y en Pro, 1.000, con un máximo de 100 Facturae por tarea."
+    }
+  ]
+}

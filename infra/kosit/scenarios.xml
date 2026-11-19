@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Escenarios propios de KoSIT (7.23 y D-191): perfiles de Factur-X (y sus equivalentes de ZUGFeRD 2.0, `urn:zugferd.de:2p0:*`) con el XSD y el Schematron oficiales 1.09 que
+     redistribuye factur-x (BSD), y una reserva EN 16931 para UBL y CII con una CIUS sin configuración pública (solo las
+     reglas EN 16931 de la Comisión, que trae la configuración de XRechnung). KoSIT no elige ningún escenario si coincide
+     más de uno, así que la reserva excluye las CIUS que ya tienen el suyo (XRechnung, Peppol y Factur-X) y el EN 16931
+     puro, que está en la configuración de XRechnung. Rutas relativas a /opt/kosit. -->
+<scenarios xmlns="http://www.xoev.de/de/validator/framework/1/scenarios" frameworkVersion="1.0.0">
+  <name>Conversor: Factur-X y EN16931 con otra CIUS</name>
+  <author>Conversor</author>
+  <date>2026-11-19</date>
+  <description><p>Escenarios propios del portal (D-191).</p></description>
+  <scenario>
+    <name>Factur-X MINIMUM (CII)</name>
+    <description><p>Factur-X MINIMUM (CII)</p></description>
+    <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
+    <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
+    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+    <match>exists(/rsm:CrossIndustryInvoice[(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:factur-x.eu:1p0:minimum' or rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:zugferd.de:2p0:minimum')])</match>
+    <validateWithXmlSchema><resource><name>XSD Factur-X MINIMUM (CII)</name><location>facturx/facturx-minimum/Factur-X_MINIMUM.xsd</location></resource></validateWithXmlSchema>
+    <validateWithSchematron><resource><name>Schematron Factur-X MINIMUM (CII)</name><location>facturx/facturx-minimum/Factur-X_1.09_MINIMUM.xsl</location></resource></validateWithSchematron>
+    <createReport><resource><name>Informe</name><location>xrechnung/resources/xrechnung-report.xsl</location></resource></createReport>
+    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+  </scenario>
+  <scenario>
+    <name>Factur-X BASIC WL (CII)</name>
+    <description><p>Factur-X BASIC WL (CII)</p></description>
+    <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
+    <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
+    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+    <match>exists(/rsm:CrossIndustryInvoice[(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:factur-x.eu:1p0:basicwl' or rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:zugferd.de:2p0:basicwl')])</match>
+    <validateWithXmlSchema><resource><name>XSD Factur-X BASIC WL (CII)</name><location>facturx/facturx-basicwl/Factur-X_BASICWL.xsd</location></resource></validateWithXmlSchema>
+    <validateWithSchematron><resource><name>Schematron Factur-X BASIC WL (CII)</name><location>facturx/facturx-basicwl/FACTUR-X_BASIC-WL.xslt</location></resource></validateWithSchematron>
+    <createReport><resource><name>Informe</name><location>xrechnung/resources/xrechnung-report.xsl</location></resource></createReport>
+    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+  </scenario>
+  <scenario>
+    <name>Factur-X BASIC (CII)</name>
+    <description><p>Factur-X BASIC (CII)</p></description>
+    <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
+    <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
+    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+    <match>exists(/rsm:CrossIndustryInvoice[(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:factur-x.eu:1p0:basic' or rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#compliant#urn:zugferd.de:2p0:basic')])</match>
+    <validateWithXmlSchema><resource><name>XSD Factur-X BASIC (CII)</name><location>facturx/facturx-basic/Factur-X_BASIC.xsd</location></resource></validateWithXmlSchema>
+    <validateWithSchematron><resource><name>Schematron Factur-X BASIC (CII)</name><location>facturx/facturx-basic/Factur-X_1.09_BASIC.xsl</location></resource></validateWithSchematron>
+    <createReport><resource><name>Informe</name><location>xrechnung/resources/xrechnung-report.xsl</location></resource></createReport>
+    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+  </scenario>
+  <scenario>
+    <name>Factur-X EXTENDED (CII)</name>
+    <description><p>Factur-X EXTENDED (CII)</p></description>
+    <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
+    <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
+    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+    <match>exists(/rsm:CrossIndustryInvoice[(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#conformant#urn:factur-x.eu:1p0:extended' or rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text() = 'urn:cen.eu:en16931:2017#conformant#urn:zugferd.de:2p0:extended')])</match>
+    <validateWithXmlSchema><resource><name>XSD Factur-X EXTENDED (CII)</name><location>facturx/facturx-extended/Factur-X_EXTENDED.xsd</location></resource></validateWithXmlSchema>
+    <validateWithSchematron><resource><name>Schematron Factur-X EXTENDED (CII)</name><location>facturx/facturx-extended/FACTUR-X_EXTENDED.xslt</location></resource></validateWithSchematron>
+    <createReport><resource><name>Informe</name><location>xrechnung/resources/xrechnung-report.xsl</location></resource></createReport>
+    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+  </scenario>
+  <scenario>
+    <name>EN16931 con otra CIUS (CII)</name>
+    <description><p>EN16931 con otra CIUS (CII)</p></description>
+    <namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</namespace>
+    <namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</namespace>
+    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+    <match>exists(/rsm:CrossIndustryInvoice[starts-with(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text(), 'urn:cen.eu:en16931:2017#') and not(contains(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text(), 'xeinkauf.de')) and not(contains(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text(), 'peppol.eu')) and not(contains(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text(), 'factur-x.eu')) and not(contains(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID/text(), 'zugferd.de'))])</match>
+    <validateWithXmlSchema><resource><name>XSD EN16931 con otra CIUS (CII)</name><location>xrechnung/resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd</location></resource></validateWithXmlSchema>
+    <validateWithSchematron><resource><name>Schematron EN16931 con otra CIUS (CII)</name><location>xrechnung/resources/cii/16b/xsl/EN16931-CII-validation.xsl</location></resource></validateWithSchematron>
+    <createReport><resource><name>Informe</name><location>xrechnung/resources/xrechnung-report.xsl</location></resource></createReport>
+    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+  </scenario>
+  <scenario>
+    <name>EN16931 con otra CIUS (UBL Invoice)</name>
+    <description><p>EN16931 con otra CIUS (UBL Invoice)</p></description>
+    <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
+    <namespace prefix="doc">urn:oasis:names:specification:ubl:schema:xsd:Invoice-2</namespace>
+    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+    <match>exists(/doc:Invoice[starts-with(cbc:CustomizationID/text(), 'urn:cen.eu:en16931:2017#') and not(contains(cbc:CustomizationID/text(), 'xeinkauf.de')) and not(contains(cbc:CustomizationID/text(), 'peppol.eu')) and not(contains(cbc:CustomizationID/text(), 'factur-x.eu'))])</match>
+    <validateWithXmlSchema><resource><name>XSD UBL 2.1 Invoice</name><location>xrechnung/resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd</location></resource></validateWithXmlSchema>
+    <validateWithSchematron><resource><name>Schematron EN16931 (UBL)</name><location>xrechnung/resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location></resource></validateWithSchematron>
+    <createReport><resource><name>Informe</name><location>xrechnung/resources/xrechnung-report.xsl</location></resource></createReport>
+    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+  </scenario>
+  <scenario>
+    <name>EN16931 con otra CIUS (UBL CreditNote)</name>
+    <description><p>EN16931 con otra CIUS (UBL CreditNote)</p></description>
+    <namespace prefix="cbc">urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2</namespace>
+    <namespace prefix="doc">urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2</namespace>
+    <namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</namespace>
+    <match>exists(/doc:CreditNote[starts-with(cbc:CustomizationID/text(), 'urn:cen.eu:en16931:2017#') and not(contains(cbc:CustomizationID/text(), 'xeinkauf.de')) and not(contains(cbc:CustomizationID/text(), 'peppol.eu')) and not(contains(cbc:CustomizationID/text(), 'factur-x.eu'))])</match>
+    <validateWithXmlSchema><resource><name>XSD UBL 2.1 CreditNote</name><location>xrechnung/resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd</location></resource></validateWithXmlSchema>
+    <validateWithSchematron><resource><name>Schematron EN16931 (UBL)</name><location>xrechnung/resources/ubl/2.1/xsl/EN16931-UBL-validation.xsl</location></resource></validateWithSchematron>
+    <createReport><resource><name>Informe</name><location>xrechnung/resources/xrechnung-report.xsl</location></resource></createReport>
+    <acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</acceptMatch>
+  </scenario>
+  <noScenarioReport><resource><name>Informe sin escenario</name><location>xrechnung/resources/default-report.xsl</location></resource></noScenarioReport>
+</scenarios>

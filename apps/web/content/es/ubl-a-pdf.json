@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "UBL a PDF convierte facturas y abonos en UBL 2.1, la sintaxis de la red Peppol, de XRechnung en UBL y de la solución pública española de factura electrónica entre empresas, en un PDF claro con todos sus datos: partes, líneas, impuestos, totales, condiciones de pago, notas y la referencia del comprador.",
+    "La página reconoce la especificación por su CustomizationID y la muestra en la cabecera del PDF (por ejemplo, Peppol BIS Billing 3.0 o XRechnung), para que sepas qué tipo de factura tienes delante. El documento se imprime en A4 con un navegador del servidor que no tiene acceso a internet.",
+    "En la salida PDF/A-3, el XML UBL va dentro del PDF tal cual, como archivo asociado, y se comprueba con veraPDF que el resultado cumple la norma. Con «PDF simple» obtienes solo la representación, más ligera.",
+    "Si no sabes si tu archivo es UBL o CII, usa «Factura electrónica a PDF», que admite las dos sintaxis y Facturae."
+  ],
+  "faq": [
+    {
+      "q": "¿Admite abonos?",
+      "a": "Sí. Un CreditNote de UBL se representa como factura rectificativa, con sus líneas y totales."
+    },
+    {
+      "q": "¿Se ven los anexos de la factura?",
+      "a": "No en el PDF. Los documentos que la factura lleva incrustados siguen dentro del XML; «Validar factura electrónica» los entrega como archivos aparte."
+    },
+    {
+      "q": "¿El total del PDF puede no coincidir con el del XML?",
+      "a": "No: se copian los importes del XML sin recalcularlos. Si sospechas que no cuadran, valida la factura."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Cada conversión es una tarea ligera del plan (20 diarias sin cuenta, 50 con la cuenta gratuita y 1.000 en Pro), con hasta 100 archivos UBL de una vez."
+    }
+  ]
+}

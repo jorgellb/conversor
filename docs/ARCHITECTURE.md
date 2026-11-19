@@ -11,6 +11,7 @@ Celery (Valkey) ─▶ workerpdf · workerocr · workeroffice(+heavy) · workerm
 workeroffice ─(webrender)─▶ gotenbergweb (web-a-pdf) ─▶ egressweb (Smokescreen) ─▶ internet público
 workerai ─(airelay)─▶ egressai (Smokescreen) ─▶ openrouter.ai (solo ese dominio)
 workeraiembed (cola ai.embed, embeddings locales, sin salida) ─▶ PostgreSQL (pgvector)
+workerutils (cola utils.light, KoSIT en 127.0.0.1:8081 dentro del contenedor, sin salida)
 workersign (cola sign, token SoftHSM2 y PIN) ─(webrender)─▶ egressweb ─▶ TSA, OCSP y CRL del sello
 workersignverify (cola sign.verify, sin token ni PIN) ─(webrender)─▶ egressweb ─▶ lista de confianza de la UE, OCSP y CRL
 PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files) · volumen backups (/srv/backups) · volumen eutl (/srv/eutl) · volumen softhsm (solo workersign)

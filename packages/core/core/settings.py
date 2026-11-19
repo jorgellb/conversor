@@ -95,6 +95,10 @@ class Settings(BaseSettings):
     EUTL_LOTL_URL: str = "https://ec.europa.eu/tools/lotl/eu-lotl.xml"
     EUTL_REFRESH_HOURS: int = 24
     EUTL_CACHE_PATH: Path = Path("/srv/eutl")
+    # Facturas electrónicas (7.23, F4-D): KoSIT en modo servicio dentro de workerutils (5.4) y los XSD de Facturae.
+    KOSIT_URL: str = "http://127.0.0.1:8081/"
+    KOSIT_TIMEOUT: float = 120
+    FACTURAE_XSD_DIR: Path = Path("/opt/facturae")
     # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
     # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
     SIGN_VERIFY_EXTRA_ROOTS: str = ""

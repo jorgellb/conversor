@@ -155,7 +155,7 @@ Archivos comunes que se fusionan en la integración y no impiden el paralelismo:
 | F4-A | F4 | verificar-firmas-pdf, firmar-pdf (servidor). **Hecho** (F4-A1 y F4-A2, D-185 a D-188); firmar-pdf, apagada hasta F4-B | sign y sign.verify (pyHanko, SoftHSM2, LOTL, certomancer; migración 0006) | F3-Z | XL |
 | F4-B | F4 | firmar-pdf (navegador), hacer-pdf-rellenable, crear-formulario-pdf | navegador (pdf-lib, PKI.js) y pdf (campos con pyHanko) | F4-A | XL |
 | F4-C | F4 | compartir-pdf, solicitar-firmas | api, apiint y beat; sign (B-LT); Mailpit | F4-A | XL |
-| F4-D | F4 (+4 de F6) | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf, cii-a-pdf | utils, el nuevo workerutils (KoSIT daemon, XSD, signxml, Gotenberg, PDF/A-3) | F3-Z | XL |
+| F4-D | F4 (+4 de F6) | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf, cii-a-pdf. **Hecho** (D-191 y D-192) | utils, el nuevo workerutils (KoSIT daemon, XSD, signxml, Gotenberg, PDF/A-3) | F3-Z | XL |
 | F4-E | F4 | crear-factura, crear-factura-electronica, pdf-a-factura-electronica | navegador y utils (drafthorse, factur-x, xadesjs; detrás de `INVOICING_ES_ENABLED`) | F4-D, F4-B | XL |
 | F4-F | F4 | word-a-pdf-accesible. **Hecho** (D-182 y D-184) | office → ocr (pdfua y veraPDF) | F3-Z | S |
 | F4-Z | Cierre de F4 | — | — | F4-A a F4-F | S |

@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "E-invoice to PDF turns an XML invoice (UBL 2.1, UN/CEFACT CII or Facturae 3.2.x) into a PDF anyone can read and print: seller and customer with their addresses and VAT IDs, number and dates, every line with quantity, price and VAT, the tax breakdown, totals and payment details. It helps when you receive an e-invoice and need to file it, send it to your accountant or review it without invoicing software.",
+    "By default the result is PDF/A-3, the format designed to keep documents for years, with the original XML embedded inside the PDF exactly as it arrived, without changing a single byte. The PDF therefore works both for reading the invoice and for keeping the legally valid document, which is the XML. Before it is delivered, the attachment is checked to be identical to the original and the PDF/A-3 is validated with veraPDF; the result appears in each file's note.",
+    "If you only want to view or print it, choose “Plain PDF”, which does not carry the XML. The representation language is by default the invoice's when it declares one (Facturae does) and otherwise the page's; you can also choose Spanish or English.",
+    "You can convert many invoices at once and download them in a ZIP. Our server draws the representation with a browser that has no internet access, so nothing from the invoice leaves to render it."
+  ],
+  "faq": [
+    {
+      "q": "Does the PDF replace the e-invoice?",
+      "a": "No. The legally valid document is the XML. The PDF/A-3 carries it unchanged so you can keep both together, but whoever asks for the e-invoice needs the XML."
+    },
+    {
+      "q": "Does it check whether the invoice is correct?",
+      "a": "Only what is needed to read it. To check the EN 16931, XRechnung, Peppol or Facturae rules, use “Validate e-invoice”."
+    },
+    {
+      "q": "Which formats does it accept?",
+      "a": "UBL 2.1 (also Peppol BIS and XRechnung UBL), CII (also XRechnung CII and the Factur-X XML) and Facturae 3.2, 3.2.1 and 3.2.2."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "It counts as a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro. Each task takes up to 100 invoices and the PDFs are deleted after an hour without an account or after a day with one."
+    }
+  ]
+}

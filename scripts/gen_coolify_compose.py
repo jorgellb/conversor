@@ -122,6 +122,7 @@ PROFILE_16 = {
     "CONCURRENCY_AV_HEAVY": "1", "MEM_AV_HEAVY": "3g", "CPUS_AV_HEAVY": "2",
     "CONCURRENCY_SIGN_VERIFY": "1", "MEM_SIGN_VERIFY": "1g", "CPUS_SIGN_VERIFY": "1",
     "CONCURRENCY_SIGN": "1", "MEM_SIGN": "1g", "CPUS_SIGN": "1",
+    "CONCURRENCY_UTILS": "2", "MEM_UTILS": "4g", "CPUS_UTILS": "2",
 }
 
 
@@ -131,7 +132,7 @@ def svc(image: str, **kw) -> dict:
 
 def worker(target: str, role: str, name: str, queue: str, conc: int, threads: int, mem: str, cpus: int,
            extra_env: dict | None = None, secrets: bool = False, networks: list[str] | None = None,
-           volumes: list[str] | None = None) -> dict:
+           volumes: list[str] | None = None, health: str = "") -> dict:
     env = {
         "SERVICE_ROLE": role, "WORKER_NAME": name, "APP_ENV": "production", "VALKEY_URL": VK, "DATABASE_URL_WORKER": WDB,
         "THREADS": str(threads), "OMP_THREAD_LIMIT": str(threads), "OMP_NUM_THREADS": str(threads),
@@ -152,7 +153,7 @@ def worker(target: str, role: str, name: str, queue: str, conc: int, threads: in
         stop_grace_period="10m",
         runtime="${WORKER_RUNTIME:-runc}",
         depends_on={"migrate": {"condition": "service_completed_successfully"}, "valkey": {"condition": "service_healthy"}},
-        healthcheck=hc(["CMD-SHELL", ping], "60s", "90s"),
+        healthcheck=hc(["CMD-SHELL", f"{ping} && {health}" if health else ping], "60s", "90s"),
     )
 
 
@@ -316,7 +317,7 @@ def build() -> dict:
                             "GOTENBERG_URL": "http://gotenberg:3000"},
                            networks=["internal", "airelay"]),
         # chat-pdf (6.4): embeddings locales en su cola; el modelo ocupa unos 0,7 GB por proceso (D-128). Sin clave ni salida.
-        "workeraiembed": worker("worker-ai", "worker-ai", "ai-embed", "ai.embed", 1, 1, "1280m", 1),
+        "workeraiembed": worker("worker-ai", "worker-ai", "ai-embed", "ai.embed", 1, 1, "1g", 1),
         # Sello de la plataforma (10, D-188): el único con el token (volumen softhsm) y SIGN_PKCS11_PIN; sale por
         # egressweb a la TSA y a los OCSP y CRL del sello. El token y SIGN_CERT_PATH los prepara el propietario.
         "workersign": worker("worker-sign", "worker-sign", "sign", "sign", 1, 1, "512m", 1,
@@ -342,12 +343,19 @@ def build() -> dict:
         "workeroffice": worker("worker-office", "worker-office", "office-light", "office.light", 1, 1, "1536m", 1,
                                {"GOTENBERG_URL": "http://gotenberg:3000", "GOTENBERG_WEB_URL": "http://gotenbergweb:3000",
                                 "EGRESS_WEB_URL": "http://egressweb:4750"}, secrets=True, networks=["internal", "webrender"]),
-        "workerofficeheavy": worker("worker-office", "worker-office", "office-heavy", "office.heavy", 1, 1, "2g", 1,
+        "workerofficeheavy": worker("worker-office", "worker-office", "office-heavy", "office.heavy", 1, 1, "1536m", 1,
                                     {"GOTENBERG_URL": "http://gotenberg:3000"}, secrets=True),
+        # Facturas electrónicas (F4-D, 5.4): KoSIT en modo servicio dentro del contenedor (kosit-start) y Facturae con sus
+        # XSD; sin salida a internet. 2 GB en el perfil de 8 vCPU (JVM con 1 GB de heap: una factura de 20 MB llega a
+        # 1,2 GB de RSS; las de más de 2 MB pasan de una en una, D-191) y 4 GB en el de 16 (5.4). El healthcheck mira
+        # también KoSIT, y kosit-start para el contenedor si la JVM termina.
+        "workerutils": worker("worker-utils", "worker-utils", "utils", "utils.light", 2, 1, "2g", 2,
+                              {"GOTENBERG_URL": "http://gotenberg:3000"},
+                              health="curl -sf --max-time 5 http://127.0.0.1:8081/server/health >/dev/null"),
         "workermedia": worker("worker-media", "worker-media", "media", "media", 1, 1, "1536m", 1, {"GOTENBERG_URL": "http://gotenberg:3000"}),
         "workerconvert": worker("worker-convert", "worker-convert", "convert", "convert", 1, 2, "5g", 2, {"HF_HUB_OFFLINE": "1"}),
-        # Audio ligero con FFmpeg (2,25 GB en el perfil de 8 vCPU; 3 GB en el de 16, D-186).
-        "workerav": worker("worker-av", "worker-av", "av-light", "av.light", 1, 2, "2304m", 2),
+        # Audio ligero con FFmpeg (1 GB en el perfil de 8 vCPU; 3 GB en el de 16, D-191).
+        "workerav": worker("worker-av", "worker-av", "av-light", "av.light", 1, 2, "1g", 2),
         # Transcripciones (cola pesada, 5.4): un trabajo a la vez con 2 hilos; el modelo va dentro de la imagen.
         "workeravheavy": worker("worker-av", "worker-av", "av-heavy", "av.heavy", 1, 2, "3g", 2,
                                 {"WHISPER_MODEL": "${WHISPER_MODEL:-small}", "WHISPER_DEVICE": "${WHISPER_DEVICE:-cpu}",

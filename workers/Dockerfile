@@ -264,3 +264,25 @@ USER app
 WORKDIR /home/app
 EXPOSE 9000
 CMD ["python", "/app/pki.py", "serve", "/home/app/pki", "9000"]
+
+# --- Facturas electrónicas (F4-D, grupo utils): KoSIT Validator en modo servicio dentro de workerutils (5.4), con las
+# configuraciones públicas de XRechnung y Peppol BIS y los escenarios propios (D-191); Facturae con sus XSD oficiales
+# (infra/facturae, SHA256SUMS). JRE 17 de Debian; KoSIT y las configuraciones, con SHA-256 fijados ---
+FROM base AS worker-utils
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends openjdk-17-jre-headless curl \
+ && rm -rf /var/lib/apt/lists/* && java -version
+RUN uv pip install -r pyproject.toml --extra utils
+COPY infra/kosit/fetch.sh infra/kosit/scenarios.xml /tmp/kosit/
+RUN sh /tmp/kosit/fetch.sh /opt/kosit "$(python -c 'import facturx, pathlib; print(pathlib.Path(facturx.__file__).parent / "xsd_and_schematron")')" \
+      /tmp/kosit/scenarios.xml \
+ && rm -rf /tmp/kosit
+COPY infra/facturae /opt/facturae
+RUN cd /opt/facturae && sha256sum -c SHA256SUMS
+COPY infra/kosit/start.sh /usr/local/bin/kosit-start
+COPY --from=code /app /app
+USER app
+ENV SERVICE_ROLE=worker-utils FACTURAE_XSD_DIR=/opt/facturae KOSIT_URL=http://127.0.0.1:8081/
+ENTRYPOINT ["/usr/bin/tini", "--", "/usr/local/bin/kosit-start"]
+CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "utils.light", "-n", "utils@%h", "-c", "2", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+
