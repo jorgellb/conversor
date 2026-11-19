@@ -10,7 +10,7 @@ from PIL import Image
 from core.errors import ErrorCode, ToolError
 from tools.base import ToolContext, derived_name, open_image
 from tools.office import gotenberg
-from tools.office.office_a_pdf import convert_office, select_pages
+from tools.office.office_a_pdf import check_native_spec, convert_office, native_range, page_count, select_pages
 from tools.pdf.common import with_batch_zip
 
 IMAGES = {"jpg", "png", "gif", "bmp", "tiff", "webp"}
@@ -40,10 +40,18 @@ def _html(ctx: ToolContext, path: Path, name: str) -> Path:
     elif o.formato == "pdfua":
         fields["pdfua"] = "true"
         fields["generateTaggedPdf"] = "true"
+    if o.formato != "pdf":
+        check_native_spec(o.paginas)
     data = gotenberg.chromium_html(ctx.settings.GOTENBERG_URL, path, fields)
     dst = ctx.output(derived_name(name, "", "pdf"))
     dst.write_bytes(data)
-    select_pages(dst, o.paginas, ctx.plan.pdf_pages)
+    if o.formato == "pdf":
+        select_pages(dst, o.paginas, ctx.plan.pdf_pages)
+        return dst
+    # PDF/A y PDF/UA: el rango lo aplica Chromium para no perder las etiquetas ni los metadatos (D-182).
+    ranges = native_range(o.paginas, page_count(dst, ctx.plan.pdf_pages))
+    if ranges:
+        dst.write_bytes(gotenberg.chromium_html(ctx.settings.GOTENBERG_URL, path, {**fields, "nativePageRanges": ranges}))
     return dst
 
 

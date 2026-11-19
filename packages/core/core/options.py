@@ -30,6 +30,7 @@ class Orientation(StrEnum):
 
 
 _RANGE_RE = re.compile(r"^\s*(\d+)?\s*(-)?\s*(\d+)?\s*$")
+RANGE_RE = _RANGE_RE  # un tramo de A.0 («3», «3-7», «8-», «-4»)
 
 
 def parse_page_ranges(spec: str | None, total: int) -> list[int]:

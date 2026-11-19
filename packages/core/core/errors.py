@@ -127,6 +127,15 @@ DETAILS: dict[str, dict[str, str]] = {
     "tts_count": {"es": "Este PDF tiene demasiado texto o es demasiado complejo para preparar su lectura a tiempo: divídelo antes con «Dividir PDF».",
                   "en": "This PDF has too much text or is too complex to prepare for reading in time: split it first with “Split PDF”."},
     "tts_empty": {"es": "No hay texto que leer en las páginas elegidas.", "en": "There is no text to read in the selected pages."},
+    # PDF/A y PDF/UA desde Office o HTML (D-182): el rango lo aplica el motor, en el orden del documento.
+    "range_order": {"es": "Con PDF/A o PDF/UA las páginas salen en el orden del documento: escribe el rango de menor a mayor "
+                          "y, si necesitas otro orden, usa después «Organizar PDF».",
+                    "en": "With PDF/A or PDF/UA the pages come out in document order: write the range from lowest to highest "
+                          "and, if you need another order, use “Organize PDF” afterwards."},
+    "range_slides": {"es": "Con PDF/A o PDF/UA, el rango de páginas no se puede combinar con las páginas de notas ni con las "
+                           "diapositivas ocultas: convierte todas las páginas o quita esas opciones.",
+                     "en": "With PDF/A or PDF/UA, a page range cannot be combined with notes pages or hidden slides: convert "
+                           "all pages or turn those options off."},
     "ai_scanned": {"es": "Las páginas {pages} son imágenes sin texto: activa «Leer las páginas escaneadas» o pasa antes OCR PDF.",
                    "en": "Pages {pages} are images without text: turn on “Read scanned pages” or run OCR PDF first."},
 }

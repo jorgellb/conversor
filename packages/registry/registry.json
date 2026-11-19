@@ -12661,6 +12661,7 @@
       ],
       "related": [
         "pdf-a-word",
+        "word-a-pdf-accesible",
         "comprimir-pdf"
       ],
       "canonical_of": null,
@@ -16533,6 +16534,218 @@
       }
     },
     {
+      "slug_es": "word-a-pdf-accesible",
+      "slug_en": "accessible-word-to-pdf",
+      "name_es": "Word a PDF accesible",
+      "name_en": "Accessible Word to PDF",
+      "summary_es": "Convierte Word a PDF/UA etiquetado, para lectores de pantalla, y comprueba con veraPDF qué falta y cómo arreglarlo.",
+      "summary_en": "Convert Word to tagged PDF/UA for screen readers, and check with veraPDF what is missing and how to fix it.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "doc",
+        "docx",
+        "odt",
+        "rtf"
+      ],
+      "outputs": [
+        "pdf",
+        "html",
+        "zip"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [
+        "contrasena"
+      ],
+      "related": [
+        "word-a-pdf",
+        "validar-pdfa",
+        "pdf-a-pdfa"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "word-a-pdf-accesible (7.5): las de A.8 Office para Word con el formato fijado a PDF/UA (D-182).",
+        "properties": {
+          "paginas": {
+            "default": "todas",
+            "title": "Páginas",
+            "type": "string",
+            "x-title": {
+              "en": "Pages",
+              "es": "Páginas"
+            }
+          },
+          "titulo": {
+            "default": "",
+            "maxLength": 300,
+            "title": "Título del documento (si el archivo no tiene)",
+            "type": "string",
+            "x-title": {
+              "en": "Document title (if the file has none)",
+              "es": "Título del documento (si el archivo no tiene)"
+            }
+          },
+          "idioma": {
+            "default": "documento",
+            "enum": [
+              "documento",
+              "es-ES",
+              "en-GB",
+              "en-US",
+              "ca-ES",
+              "eu-ES",
+              "gl-ES",
+              "fr-FR",
+              "de-DE",
+              "it-IT",
+              "pt-PT"
+            ],
+            "title": "Idioma principal del texto",
+            "type": "string",
+            "x-labels": {
+              "ca-ES": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de-DE": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "documento": {
+                "en": "The one the document declares",
+                "es": "El que declara el documento"
+              },
+              "en-GB": {
+                "en": "English (UK)",
+                "es": "Inglés (Reino Unido)"
+              },
+              "en-US": {
+                "en": "English (US)",
+                "es": "Inglés (Estados Unidos)"
+              },
+              "es-ES": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu-ES": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr-FR": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl-ES": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it-IT": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "pt-PT": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              }
+            },
+            "x-title": {
+              "en": "Main text language",
+              "es": "Idioma principal del texto"
+            }
+          },
+          "marcadores": {
+            "default": true,
+            "title": "Marcadores desde los títulos",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Bookmarks from headings",
+              "es": "Marcadores desde los títulos"
+            }
+          },
+          "campos_formulario": {
+            "default": true,
+            "title": "Exportar campos de formulario",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Export form fields",
+              "es": "Exportar campos de formulario"
+            }
+          },
+          "calidad_imagenes": {
+            "default": 90,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Calidad de imágenes (%)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Image quality (%)",
+              "es": "Calidad de imágenes (%)"
+            }
+          },
+          "resolucion_maxima": {
+            "default": 300,
+            "enum": [
+              75,
+              150,
+              300,
+              600,
+              1200
+            ],
+            "title": "Resolución máxima (ppp)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Maximum resolution (dpi)",
+              "es": "Resolución máxima (ppp)"
+            }
+          },
+          "contrasena": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contraseña del documento",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Document password",
+              "es": "Contraseña del documento"
+            },
+            "writeOnly": true,
+            "format": "password"
+          },
+          "comentarios_margen": {
+            "default": false,
+            "title": "Word: comentarios en el margen",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Word: comments in margin",
+              "es": "Word: comentarios en el margen"
+            }
+          }
+        },
+        "title": "AccesibleOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "csv-a-pdf",
       "slug_en": "csv-to-pdf",
       "name_es": "CSV a PDF",
@@ -17069,7 +17282,8 @@
       "max_files": null,
       "secret_fields": [],
       "related": [
-        "pdf-a-pdfa"
+        "pdf-a-pdfa",
+        "word-a-pdf-accesible"
       ],
       "canonical_of": null,
       "ai": false,

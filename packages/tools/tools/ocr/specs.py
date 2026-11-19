@@ -123,7 +123,7 @@ SPECS: list[ToolSpec] = [
         cost_class="light", impl="tools.ocr.pdfa:run_validate", launch=True, phase="F2", time_limit=1800,
         summary_es="Comprueba con veraPDF si un PDF cumple PDF/A o PDF/UA y explica cada fallo en lenguaje sencillo.",
         summary_en="Check with veraPDF whether a PDF meets PDF/A or PDF/UA and explain each failure in plain language.",
-        related=("pdf-a-pdfa",),
+        related=("pdf-a-pdfa", "word-a-pdf-accesible"),
     ),
     # 6.3: 0 peticiones (OCR local). Categoría ai en la web (7.6), pero sin IA externa: ni cuenta ni consentimiento.
     ToolSpec(

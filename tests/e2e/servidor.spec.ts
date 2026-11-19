@@ -9,6 +9,8 @@ import { expect, test, type Page } from "@playwright/test";
 // genera antes el job e2e-compose (E2E_FIXTURES); si no, se usa el Python de .venv, que tiene esas dependencias.
 const FIXTURES = process.env.E2E_FIXTURES ?? path.join(tmpdir(), "conversor-e2e");
 const PYTHON = process.env.PYTHON ?? (existsSync(".venv/bin/python") ? ".venv/bin/python" : "python3");
+// La primera conversión arranca LibreOffice en frío en Gotenberg: el tiempo de la prueba cubre la espera del enlace (180 s).
+test.describe.configure({ timeout: 240_000 });
 test.beforeAll(() => {
   if (!existsSync(path.join(FIXTURES, "texto.pdf"))) {
     execFileSync(PYTHON, ["-c", `import sys; sys.path.insert(0, "scripts/fixtures"); from generate import generate; from pathlib import Path; generate(Path(${JSON.stringify(FIXTURES)}))`], { stdio: "inherit" });

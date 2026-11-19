@@ -80,6 +80,27 @@ class WebAPdfOptions(BaseModel):
                                               labels={"claro": ("Claro", "Light"), "oscuro": ("Oscuro", "Dark")})
 
 
+LANGS_UA = {"documento": ("El que declara el documento", "The one the document declares"), "es-ES": ("Español", "Spanish"),
+            "en-GB": ("Inglés (Reino Unido)", "English (UK)"), "en-US": ("Inglés (Estados Unidos)", "English (US)"),
+            "ca-ES": ("Catalán", "Catalan"), "eu-ES": ("Euskera", "Basque"), "gl-ES": ("Gallego", "Galician"),
+            "fr-FR": ("Francés", "French"), "de-DE": ("Alemán", "German"), "it-IT": ("Italiano", "Italian"),
+            "pt-PT": ("Portugués", "Portuguese")}
+
+
+class AccesibleOptions(BaseModel):
+    """word-a-pdf-accesible (7.5): las de A.8 Office para Word con el formato fijado a PDF/UA (D-182)."""
+
+    paginas: str = opt("todas", "Páginas", "Pages")
+    titulo: str = opt("", "Título del documento (si el archivo no tiene)", "Document title (if the file has none)", max_length=300)
+    idioma: Literal[tuple(LANGS_UA)] = opt("documento", "Idioma principal del texto", "Main text language", labels=LANGS_UA)
+    marcadores: bool = opt(True, "Marcadores desde los títulos", "Bookmarks from headings", advanced=True)
+    campos_formulario: bool = opt(True, "Exportar campos de formulario", "Export form fields", advanced=True)
+    calidad_imagenes: int = opt(90, "Calidad de imágenes (%)", "Image quality (%)", ge=1, le=100, advanced=True)
+    resolucion_maxima: Literal[75, 150, 300, 600, 1200] = opt(300, "Resolución máxima (ppp)", "Maximum resolution (dpi)", advanced=True)
+    contrasena: str | None = opt(None, "Contraseña del documento", "Document password", advanced=True)
+    comentarios_margen: bool = opt(False, "Word: comentarios en el margen", "Word: comments in margin", advanced=True)
+
+
 class SuperponerOptions(BaseModel):
     """superponer-pdf (A.3): el primer archivo es la superposición y los demás, los documentos."""
 
@@ -136,7 +157,7 @@ SPECS: list[ToolSpec] = [
            launch=True, impl="tools.office.convertir_a_pdf:run", related=("word-a-pdf", "imagenes-a-pdf", "comprimir-pdf")),
     office("word-a-pdf", "word-to-pdf", "Word a PDF", "Word to PDF", ("doc", "docx"),
            "Convierte documentos DOC y DOCX a PDF conservando el formato.", "Convert DOC and DOCX documents to PDF keeping the layout.",
-           launch=True, related=("pdf-a-word", "comprimir-pdf")),
+           launch=True, related=("pdf-a-word", "word-a-pdf-accesible", "comprimir-pdf")),
     office("excel-a-pdf", "excel-to-pdf", "Excel a PDF", "Excel to PDF", ("xls", "xlsx"),
            "Convierte hojas de cálculo XLS y XLSX a PDF.", "Convert XLS and XLSX spreadsheets to PDF.", launch=True, related=("word-a-pdf",)),
     office("ppt-a-pdf", "powerpoint-to-pdf", "PowerPoint a PDF", "PowerPoint to PDF", ("ppt", "pptx", "pps"),
@@ -207,6 +228,13 @@ SPECS: list[ToolSpec] = [
            "Save a web page as PDF from its address. If the address is a document, it is converted.",
            options=WebAPdfOptions, impl="tools.office.web_a_pdf:run", secret_fields=(), outputs=("pdf",),
            time_limit=300, related=("html-a-pdf", "convertir-a-pdf")),
+    # 7.5 (F4): LibreOffice de Gotenberg con `pdfua` en `office` y, después, veraPDF (solo en la imagen worker-ocr) en `ocr`.
+    office("word-a-pdf-accesible", "accessible-word-to-pdf", "Word a PDF accesible", "Accessible Word to PDF",
+           ("doc", "docx", "odt", "rtf"),
+           "Convierte Word a PDF/UA etiquetado, para lectores de pantalla, y comprueba con veraPDF qué falta y cómo arreglarlo.",
+           "Convert Word to tagged PDF/UA for screen readers, and check with veraPDF what is missing and how to fix it.",
+           options=AccesibleOptions, impl="tools.office.accesible:run", outputs=("pdf", "html", "zip"), phase="F4",
+           launch=True, time_limit=1800, related=("word-a-pdf", "validar-pdfa", "pdf-a-pdfa")),
     office("csv-a-pdf", "csv-to-pdf", "CSV a PDF", "CSV to PDF", ("csv",),
            "Convierte archivos CSV a una tabla en PDF.", "Convert CSV files to a PDF table.", related=("excel-a-pdf",)),
 ]

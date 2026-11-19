@@ -179,8 +179,10 @@ def test_office_via_gotenberg_fields_and_ranges(make_ctx, fixtures_dir):
     body = route.calls.last.request.content.decode("latin-1")
     assert 'name="pdfa"' in body and "PDF/A-2b" in body
     assert 'name="password"' in body
-    with pikepdf.open(out[0]["path"]) as pdf:
-        assert len(pdf.pages) == 2
+    # PDF/A con rango: lo aplica LibreOffice en una segunda conversión, para no perder el XMP ni el OutputIntent (D-182).
+    assert route.call_count == 2 and 'name="nativePageRanges"\r\n\r\n2-3' in body
+    # El resultado es la segunda conversión tal cual (sin pasar por pikepdf), con las 3 páginas que devuelve el simulado.
+    assert Path(out[0]["path"]).read_bytes() == pdf_bytes
 
 
 @respx.mock

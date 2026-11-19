@@ -215,8 +215,104 @@ def category(rule: Rule) -> str:
     return "other"
 
 
+# PDF/UA-1 (ISO 14289-1): cláusulas del perfil de veraPDF con su explicación y cómo se arregla en el documento de
+# origen (Word o Writer). La cláusula más larga que encaja gana: «7.18.5» antes que «7.18».
+UA_EXPLANATIONS: dict[str, dict[str, str]] = {
+    "es": {
+        "5": "Los metadatos no declaran que el archivo es PDF/UA-1 (identificador pdfuaid).",
+        "6.2": "El documento no está marcado como etiquetado (MarkInfo), así que los lectores de pantalla no usan su estructura.",
+        "7.1": "Hay contenido sin etiquetar o etiquetas mal usadas, o el documento no tiene título visible. En Word, pon el "
+               "título en Archivo → Información → Propiedades → Título y marca como decorativos los elementos que no aportan información.",
+        "7.2": "Una tabla, lista o índice tiene la estructura mal anidada (por ejemplo, filas con distinto número de columnas "
+               "por celdas combinadas). En Word, evita combinar celdas en tablas de datos y usa los botones de listas e índice.",
+        "7.2-lang": "Falta el idioma del texto o un fragmento no lo declara. En Word: Revisar → Idioma → Establecer idioma de corrección.",
+        "7.3": "Una imagen, gráfico o forma no tiene texto alternativo. En Word: clic derecho en la imagen → «Ver texto alternativo», "
+               "o márcala como decorativa.",
+        "7.4": "Los títulos no están bien etiquetados. Usa los estilos Título 1, Título 2 y Título 3 de Word.",
+        "7.4.2": "Los títulos no siguen un orden (por ejemplo, de Título 1 se pasa a Título 3). Usa los estilos Título 1, "
+                 "Título 2 y Título 3 en orden, sin saltar niveles.",
+        "7.4.4": "Los títulos mezclan las etiquetas H y H1–H6, o hay más de un título H en una sección. Usa solo los estilos "
+                 "Título 1 a Título 6.",
+        "7.5": "Una tabla no tiene bien marcadas sus celdas de encabezado. En Word: selecciona la primera fila → Presentación "
+               "(de la tabla) → «Repetir filas de título».",
+        "7.6": "Una lista no está bien etiquetada. Usa los botones de viñetas o numeración en lugar de escribir guiones a mano.",
+        "7.7": "Una fórmula matemática no tiene texto alternativo.",
+        "7.9": "Una nota al pie o al final no está bien etiquetada o le falta su identificador.",
+        "7.10": "Las capas opcionales del archivo no tienen nombre.",
+        "7.11": "Un archivo adjunto no tiene nombre o descripción.",
+        "7.15": "El archivo usa formularios XFA dinámicos, que PDF/UA no admite.",
+        "7.16": "El cifrado del archivo impide que los lectores de pantalla accedan al texto.",
+        "7.18": "Un enlace, comentario o campo de formulario no está etiquetado o no tiene descripción.",
+        "7.18.1": "Una anotación (comentario, enlace o campo) no está etiquetada o no tiene descripción (Contents o texto "
+                  "alternativo); un campo de formulario necesita además un nombre que lean los lectores de pantalla.",
+        "7.18.3": "Las páginas con enlaces o campos no fijan el orden de tabulación según la estructura.",
+        "7.18.4": "Un campo de formulario no está dentro de su elemento Form en la estructura. En Word, usa los controles "
+                  "de contenido de la ficha Programador en lugar de campos antiguos.",
+        "7.18.5": "Un enlace no tiene descripción. En Word: clic derecho en el enlace → Editar hipervínculo → «Texto que se mostrará» claro.",
+        "7.20": "Un objeto gráfico reutilizado (XObject) no está bien etiquetado.",
+        "7.21": "Una fuente no está incrustada o le faltan datos (anchos o correspondencia con Unicode), así que el texto no se "
+                "puede leer bien. Cambia esa fuente por otra o activa «Incrustar fuentes» en las opciones de Word.",
+    },
+    "en": {
+        "5": "The metadata does not declare the file as PDF/UA-1 (pdfuaid identifier).",
+        "6.2": "The document is not marked as tagged (MarkInfo), so screen readers do not use its structure.",
+        "7.1": "Some content is untagged or tags are misused, or the document has no visible title. In Word, set the title in "
+               "File → Info → Properties → Title and mark items that carry no information as decorative.",
+        "7.2": "A table, list or table of contents has a badly nested structure (for example, rows with different numbers "
+               "of columns because of merged cells). In Word, avoid merging cells in data tables and use the list and table of "
+               "contents buttons.",
+        "7.2-lang": "The text language is missing or a passage does not declare it. In Word: Review → Language → Set Proofing Language.",
+        "7.3": "An image, chart or shape has no alternative text. In Word: right-click the image → “View Alt Text”, or mark it "
+               "as decorative.",
+        "7.4": "Headings are not tagged properly. Use Word's Heading 1, Heading 2 and Heading 3 styles.",
+        "7.4.2": "Headings are out of order (for example, Heading 1 jumps to Heading 3). Use the Heading 1, Heading 2 and "
+                 "Heading 3 styles in order, without skipping levels.",
+        "7.4.4": "Headings mix the H and H1–H6 tags, or a section has more than one H heading. Use only the Heading 1 to "
+                 "Heading 6 styles.",
+        "7.5": "A table's header cells are not marked properly. In Word: select the first row → (Table) Layout → “Repeat Header Rows”.",
+        "7.6": "A list is not tagged properly. Use the bullets or numbering buttons instead of typing dashes by hand.",
+        "7.7": "A mathematical formula has no alternative text.",
+        "7.9": "A footnote or endnote is not tagged properly or lacks its identifier.",
+        "7.10": "The file's optional content layers have no name.",
+        "7.11": "An attached file has no name or description.",
+        "7.15": "The file uses dynamic XFA forms, which PDF/UA does not allow.",
+        "7.16": "The file's encryption stops screen readers from reaching the text.",
+        "7.18": "A link, comment or form field is not tagged or has no description.",
+        "7.18.1": "An annotation (comment, link or field) is not tagged or has no description (Contents or alternative "
+                  "text); a form field also needs a name that screen readers can read.",
+        "7.18.3": "Pages with links or fields do not set the tab order to follow the structure.",
+        "7.18.4": "A form field is not inside its Form element in the structure. In Word, use the content controls on the "
+                  "Developer tab instead of legacy fields.",
+        "7.18.5": "A link has no description. In Word: right-click the link → Edit Hyperlink → a clear “Text to display”.",
+        "7.20": "A reused graphic object (XObject) is not tagged properly.",
+        "7.21": "A font is not embedded or lacks data (widths or Unicode mapping), so the text cannot be read reliably. Change "
+                "that font or turn on “Embed fonts” in Word's options.",
+    },
+}
+
+
+# Reglas de la cláusula 7.2 del perfil PDF/UA-1 de veraPDF que tratan del idioma (`Lang`); el resto de 7.2 son de
+# anidamiento de tablas, listas e índices.
+UA_LANG_TESTS = {"21", "22", "23", "24", "25", "29", "30", "31", "32", "33", "34"}
+
+
+def ua_explanation(rule: Rule, locale: str) -> str | None:
+    """Solo PDF/UA-1: PDF/UA-2 (ISO 14289-2) numera sus cláusulas de otra forma y sigue con la explicación por categoría."""
+    if not rule.specification.upper().replace(" ", "").startswith("ISO14289-1"):
+        return None
+    table = UA_EXPLANATIONS.get(locale, UA_EXPLANATIONS["es"])
+    if rule.clause == "7.2" and (rule.test in UA_LANG_TESTS or re.search(r"\blang\b|natural language", rule.description, re.I)):
+        return table["7.2-lang"]
+    parts = rule.clause.split(".")
+    for n in range(len(parts), 0, -1):
+        text = table.get(".".join(parts[:n]))
+        if text:
+            return text
+    return None
+
+
 def explain(rule: Rule, locale: str) -> str:
-    return EXPLANATIONS.get(locale, EXPLANATIONS["es"])[category(rule)]
+    return ua_explanation(rule, locale) or EXPLANATIONS.get(locale, EXPLANATIONS["es"])[category(rule)]
 
 
 # --- Informe HTML ---------------------------------------------------------------------------------------------------

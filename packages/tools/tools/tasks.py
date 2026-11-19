@@ -115,7 +115,8 @@ def execute(job_id: str, attempt: int, sealed: str = "") -> str:
             s.query(Job).filter(Job.id == job_id, Job.status == "running").update({
                 "status": "queued", "attempts": 0, "queue": step.queue, "worker_group": step.group, "stage": step.stage,
                 "message": step.message}, synchronize_session=False)
-        celery_app.send_task("tools.tasks.run_job", args=[job_id, 1, sealed], queue=step.queue, priority=priority,
+        celery_app.send_task("tools.tasks.run_job", args=[job_id, 1, sealed if step.keep_secrets else ""], queue=step.queue,
+                             priority=priority,
                              soft_time_limit=spec.time_limit, time_limit=spec.time_limit + 60)
         queueguard.on_enqueue(r, step.queue)
         result = "etapa"

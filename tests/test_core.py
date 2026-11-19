@@ -52,6 +52,10 @@ def test_download_tokens():
     assert not tokens.verify_download("s", "j", "f.pdf", t, now=2000)
     assert not tokens.verify_download("otro", "j", "f.pdf", t, now=1001)
     assert not tokens.verify_download("s", "j", "f.pdf", t.replace(".", "x", 1), now=1001)
+    # Misma caducidad escrita de otra forma: con la misma firma no vale (la manipulación de e2e-compose, «t=0…»).
+    exp, rest = t.split(".", 1)
+    for variant in ("0" + t, "+" + t, " " + t, f"{exp[:-1]}_{exp[-1]}.{rest}", f"{exp}.0.{rest}"[: len(t) + 2]):
+        assert not tokens.verify_download("s", "j", "f.pdf", variant, now=1001)
 
 
 def test_anon_tokens():

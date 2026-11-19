@@ -139,6 +139,10 @@ def generate(out: Path) -> dict[str, Path]:
     docx = docx_with_libreoffice(out / "carta.docx", work)
     if docx:
         files["carta.docx"] = docx
+    # F4, lote F: DOCX accesible y sin texto alternativo, y un PDF etiquetado, para word-a-pdf-accesible.
+    from accesible import generate as accessible_docs
+
+    files.update(accessible_docs(out))
     # F3, lote C: imágenes con texto, tablas y tickets para imagen-a-texto, imagen-a-excel y ticket-a-excel.
     from imagenes_ocr import generate as ocr_images
 

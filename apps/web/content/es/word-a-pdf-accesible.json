@@ -1,0 +1,32 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Word a PDF accesible convierte documentos DOC, DOCX, ODT y RTF en PDF/UA-1, la norma ISO 14289 de PDF accesible. El resultado es un PDF etiquetado: cada título, párrafo, lista, tabla e imagen queda marcado en la estructura del archivo, con su orden de lectura, para que un lector de pantalla como NVDA, JAWS o VoiceOver lo pueda recorrer igual que el documento original. Es lo que piden muchas administraciones y universidades para publicar documentos en sus webs.",
+    "La conversión se hace en dos pasos en nuestro servidor, sin acceso a internet. Primero, LibreOffice crea el PDF/UA con las etiquetas que salen de los estilos de tu documento. Después, veraPDF, el validador de código abierto respaldado por la PDF Association y la Open Preservation Foundation, lo comprueba con el perfil PDF/UA-1. Recibes el PDF y un informe HTML que dice si cumple y, si no, qué regla falla, en qué páginas y cómo se arregla en Word: poner texto alternativo a una imagen, marcar la fila de encabezado de una tabla, usar los estilos de título en orden o declarar el idioma.",
+    "Hay arreglos que se hacen solos porque no cambian el contenido: si el documento no tiene título, se pone el que escribas en las opciones o, si lo dejas vacío, el nombre del archivo, y se pide al lector que lo muestre en la barra de la ventana; también se declara el archivo como PDF/UA-1 en sus metadatos. Si eliges un idioma principal, se escribe en el PDF aunque el documento declare otro.",
+    "El rango de páginas lo aplica LibreOffice al convertir, de modo que las páginas que te quedas conservan sus etiquetas. Las opciones de marcadores, campos de formulario, calidad y resolución de las imágenes, comentarios en el margen y contraseña son las mismas de Word a PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué no puede comprobar la validación automática?",
+      "a": "veraPDF comprueba lo que una máquina puede verificar: que haya etiquetas, texto alternativo, idioma, título, encabezados de tabla o fuentes incrustadas. Si el texto alternativo describe bien la imagen o si el orden de lectura tiene sentido lo tiene que revisar una persona; el Protocolo Matterhorn de la PDF Association detalla esas comprobaciones."
+    },
+    {
+      "q": "Mi documento no cumple. ¿Qué hago?",
+      "a": "Abre el informe: cada fallo trae la forma de corregirlo en Word. Corrige el documento de origen, vuelve a convertirlo y el informe nuevo te dirá si queda algo. Arreglar el DOCX es mejor que retocar el PDF, porque la próxima versión saldrá bien desde el principio."
+    },
+    {
+      "q": "¿En qué se diferencia de Word a PDF con el formato PDF/UA?",
+      "a": "Word a PDF crea el PDF/UA pero no lo valida. Esta herramienta añade la comprobación con veraPDF, el informe con los arreglos y los ajustes de título e idioma."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Es una tarea ligera: 20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro, con un máximo de 100, 300 y 2.000 páginas por documento. El archivo se borra a la hora sin cuenta o a las 24 horas con cuenta."
+    },
+    {
+      "q": "¿Se guarda la contraseña del documento?",
+      "a": "No. Solo se usa para abrir el archivo durante la conversión y no pasa al paso de validación."
+    }
+  ]
+}

@@ -38,12 +38,14 @@ class InputFile:
 class Handoff(Exception):
     """El trabajo sigue en otra cola (F3: el OCR de un escaneo en `ocr` y la IA en `ai`). Lo trata `tools.tasks`."""
 
-    def __init__(self, group: str, queue: str, stage: str, message: str | None = None):
+    def __init__(self, group: str, queue: str, stage: str, message: str | None = None, keep_secrets: bool = True):
         super().__init__(f"{group}/{stage}")
         self.group = group
         self.queue = queue
         self.stage = stage
         self.message = message
+        # False si la etapa siguiente no los necesita: el sobre cifrado no viaja a una cola sin JOB_SECRETS_KEY (12.1).
+        self.keep_secrets = keep_secrets
 
 
 @dataclass
@@ -81,8 +83,15 @@ class ToolContext:
     def now(self) -> datetime:
         return datetime.now(timezone.utc)
 
-    def handoff(self, group: str, stage: str, message: str | None = None, queue: str | None = None) -> None:
-        raise Handoff(group, queue or group, stage, message)
+    def handoff(self, group: str, stage: str, message: str | None = None, queue: str | None = None,
+                keep_secrets: bool = True) -> None:
+        raise Handoff(group, queue or group, stage, message, keep_secrets)
+
+    def stage_dir(self) -> Path:
+        """Carpeta del trabajo que sobrevive al cambio de cola (`work/` se borra al acabar cada etapa)."""
+        path = self.store.job_dir(self.job_id) / "stage"
+        path.mkdir(parents=True, exist_ok=True)
+        return path
 
 
 def sha256_file(path: Path) -> str:

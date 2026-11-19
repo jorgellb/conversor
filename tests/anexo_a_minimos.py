@@ -245,6 +245,9 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     # --- A.8 Convertir a PDF ---
     **{slug: OFFICE_A_PDF for slug in ("convertir-a-pdf", "word-a-pdf", "excel-a-pdf", "ppt-a-pdf", "odt-a-pdf", "ods-a-pdf",
                                        "odp-a-pdf", "odg-a-pdf", "rtf-a-pdf", "csv-a-pdf", "publisher-a-pdf", "pub-a-pdf")},
+    # 7.5 (F4): A.8 Office con el formato fijado a PDF/UA y sin las opciones de Excel y PowerPoint (D-182).
+    "word-a-pdf-accesible": {"paginas": D("todas"), "marcadores": D(True), "campos_formulario": D(True), "calidad_imagenes": D(90),
+                             "resolucion_maxima": D(300), "contrasena": S, "comentarios_margen": D(False)},
     "txt-a-pdf": {"fuente": E("monoespaciada", "monoespaciada", "proporcional"), "papel": D("A4"), "margenes_mm": D(20)},
     "markdown-a-pdf": {"tema": E("claro", "claro", "sobrio"), "papel": D("A4")},
     **{slug: LIBROS_A_PDF for slug in ("epub-a-pdf", "mobi-a-pdf", "azw3-a-pdf", "fb2-a-pdf")},

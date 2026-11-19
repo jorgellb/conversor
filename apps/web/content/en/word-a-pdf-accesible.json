@@ -1,0 +1,32 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Accessible Word to PDF converts DOC, DOCX, ODT and RTF documents into PDF/UA-1, the ISO 14289 standard for accessible PDF. The result is a tagged PDF: every heading, paragraph, list, table and image is marked in the file's structure, with its reading order, so a screen reader such as NVDA, JAWS or VoiceOver can move through it just like the original document. Many public bodies and universities require it to publish documents on their websites.",
+    "The conversion runs in two steps on our server, with no internet access. First, LibreOffice creates the PDF/UA with tags taken from your document's styles. Then veraPDF, the open-source validator backed by the PDF Association and the Open Preservation Foundation, checks it against the PDF/UA-1 profile. You get the PDF and an HTML report that tells you whether it complies and, if not, which rule fails, on which pages and how to fix it in Word: adding alternative text to an image, marking a table's header row, using heading styles in order or declaring the language.",
+    "Some fixes are made automatically because they do not change the content: if the document has no title, the one you type in the options is set or, if you leave it empty, the file name, and the reader is asked to show it in the window's title bar; the file is also declared as PDF/UA-1 in its metadata. If you choose a main language, it is written into the PDF even when the document declares another.",
+    "LibreOffice applies the page range while converting, so the pages you keep retain their tags. The options for bookmarks, form fields, image quality and resolution, comments in the margin and password are the same as in Word to PDF."
+  ],
+  "faq": [
+    {
+      "q": "What can the automatic check not verify?",
+      "a": "veraPDF checks what a machine can verify: that there are tags, alternative text, a language, a title, table headers and embedded fonts. Whether the alternative text describes the image well or the reading order makes sense has to be reviewed by a person; the PDF Association's Matterhorn Protocol lists those checks."
+    },
+    {
+      "q": "My document does not comply. What should I do?",
+      "a": "Open the report: every failure comes with how to fix it in Word. Correct the source document, convert it again and the new report will tell you whether anything is left. Fixing the DOCX is better than patching the PDF, because the next version will come out right from the start."
+    },
+    {
+      "q": "How is it different from Word to PDF with the PDF/UA format?",
+      "a": "Word to PDF creates the PDF/UA but does not validate it. This tool adds the veraPDF check, the report with the fixes and the title and language settings."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "It is a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro, with a maximum of 100, 300 and 2,000 pages per document. The file is deleted after an hour without an account or after 24 hours with one."
+    },
+    {
+      "q": "Is the document password stored?",
+      "a": "No. It is only used to open the file during the conversion and is not passed on to the validation step."
+    }
+  ]
+}

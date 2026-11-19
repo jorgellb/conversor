@@ -398,9 +398,36 @@ Verificado aquí: Vitest (301 de client-tools y 35 de web), `tsc`, `next build`,
 verde, también las que simulan la API en el puerto 3100) y `tests/test_compose.py` y `tests/test_operations.py`. Sin
 verificar aquí: e2e-compose (Docker, solo en la CI) y Lighthouse en el runner de GitHub.
 
+## F3-Z (cierre de F3), segundo lote
+
+La primera ejecución de e2e-compose que llega a los trabajos (con D-181) pasa 5 de 6: subida por tus, comprimir-pdf,
+ogg-a-mp3, word-a-pdf con Gotenberg, pdf-a-word, pago con el proveedor falso y chat-pdf con el LLM falso. Fallaba
+«descarga con token manipulado»: el token con un 0 delante de la caducidad seguía valiendo porque `verify_download`
+leía la caducidad con `int()`; ahora solo vale la forma que se firma (D-183). Las pruebas del proyecto servidor tienen
+240 s por el arranque en frío de LibreOffice. Next.js sube a 16.4.6 por dos avisos de seguridad y `npm audit` queda sin
+avisos. Sin verificar aquí: la nueva ejecución de e2e-compose y Lighthouse en la CI.
+
+## F4-F (word-a-pdf-accesible)
+
+Word (DOC, DOCX, ODT y RTF) a PDF/UA-1 con la ruta LibreOffice de Gotenberg en `office.light` y, después, veraPDF con el
+perfil PDF/UA-1 en `ocr`, con el informe de validar-pdfa y explicaciones propias de las cláusulas de ISO 14289-1 que
+dicen cómo arreglar cada fallo en Word (también en validar-pdfa con los perfiles PDF/UA). El PDF pasa de etapa en
+`jobs/<id>/stage/` y la contraseña no viaja a `ocr` (`keep_secrets=False`). Si falta el título se pone el de la opción o
+el nombre del archivo, con `DisplayDocTitle`, `pdfuaid:part` y el idioma elegido. De paso, word-a-pdf y el resto de
+Office a PDF (y el HTML de convertir-a-pdf) aplican el rango de páginas de PDF/A y PDF/UA con `nativePageRanges`, porque
+copiar páginas con pikepdf perdía las etiquetas, el XMP y el OutputIntent. Contenido 8.2 es/en, Playwright de la página
+y una página de F4 en Lighthouse CI. Salvedades en D-182. Tras la revisión (D-184): explicaciones de PDF/UA-1 contrastadas
+con el perfil de veraPDF, rangos de PDF/A y PDF/UA comprobados antes de convertir (en orden creciente y sin páginas de
+notas), título de `/Info` copiado al XMP y una prueba con veraPDF real del PDF/UA de LibreOffice en la CI.
+Verificado aquí: pytest completo (1.666 en verde, 18 omitidas y las 4 de LibreOffice sin Writer de siempre), Vitest (35
+de web), `tsc`, `next build`, licencias de npm (0 problemas), los `--check` de registro, documentos, Compose y
+`filetype`, y Playwright del proyecto navegador (78 en verde; marcadores-pdf, al repetirla). Sin verificar aquí: el
+PDF/UA real de LibreOffice (aquí no tiene Writer) y veraPDF real (Java), que corren en e2e-compose y en la CI.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`); después F4, F6, vídeo de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
+- F3: cierre (F3-Z, `PLAN.md`). F4: F4-F hecho; siguen F4-A y F4-D, después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo
+  de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).
 - Cierre técnico de F3 (17): uso real de peticiones registrado, con la clave de OpenRouter del propietario.

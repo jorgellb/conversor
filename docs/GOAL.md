@@ -157,7 +157,7 @@ Archivos comunes que se fusionan en la integración y no impiden el paralelismo:
 | F4-C | F4 | compartir-pdf, solicitar-firmas | api, apiint y beat; sign (B-LT); Mailpit | F4-A | XL |
 | F4-D | F4 (+4 de F6) | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf, cii-a-pdf | utils, el nuevo workerutils (KoSIT daemon, XSD, signxml, Gotenberg, PDF/A-3) | F3-Z | XL |
 | F4-E | F4 | crear-factura, crear-factura-electronica, pdf-a-factura-electronica | navegador y utils (drafthorse, factur-x, xadesjs; detrás de `INVOICING_ES_ENABLED`) | F4-D, F4-B | XL |
-| F4-F | F4 | word-a-pdf-accesible | office → ocr (pdfua y veraPDF) | F3-Z | S |
+| F4-F | F4 | word-a-pdf-accesible. **Hecho** (D-182 y D-184) | office → ocr (pdfua y veraPDF) | F3-Z | S |
 | F4-Z | Cierre de F4 | — | — | F4-A a F4-F | S |
 | F6-A | F6 | docx-a-odt, odt-a-docx, docx-a-markdown, markdown-a-docx, docx-a-html, html-a-docx | utils (pandoc estático `--sandbox`) | F4-Z | M |
 | F6-B1 | F6 | xlsx-a-csv, csv-a-xlsx, ods-a-xlsx, xlsx-a-ods, excel-a-json, arreglar-codificacion-csv | utils y office (openpyxl, LibreOffice para ODS, charset-normalizer) | F4-Z | M |

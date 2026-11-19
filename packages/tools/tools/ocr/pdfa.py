@@ -63,7 +63,7 @@ def _convert(ctx: ToolContext, src: Path, dst: Path, part: str, force: bool) -> 
         raise ToolError(ErrorCode.ENGINE_FAILED, type(exc).__name__) from exc
 
 
-def _report(ctx: ToolContext, pdf: Path, flavour: str, name: str, stem: str, **kw) -> tuple[dict, verapdf.Report]:
+def write_report(ctx: ToolContext, pdf: Path, flavour: str, name: str, stem: str, **kw) -> tuple[dict, verapdf.Report]:
     work = ctx.work / f"verapdf-{stem}"
     work.mkdir(parents=True, exist_ok=True)
     report = verapdf.parse_report(verapdf.run_verapdf(pdf, flavour, work))
@@ -102,7 +102,7 @@ def run_pdfa(ctx: ToolContext) -> list[dict]:
             if err.code != ErrorCode.PDFA_NEEDS_GHOSTSCRIPT:
                 raise
             if not o.rasterizar_si_falla:
-                report_out, _ = _report(ctx, inp.path, level, inp.name, stem)
+                report_out, _ = write_report(ctx, inp.path, level, inp.name, stem)
                 report_out["note"] = " ".join([*notes, notes_t["failed"].format(asked=verapdf.flavour_label(level))])
                 outputs.append(report_out)
                 continue
@@ -113,7 +113,7 @@ def run_pdfa(ctx: ToolContext) -> list[dict]:
         name = derived_name(inp.name, "-pdfa", "pdf")
         dst = ctx.output(name)
         shutil.copyfile(converted, dst)
-        report_out, report = _report(ctx, dst, level, name, stem)
+        report_out, report = write_report(ctx, dst, level, name, stem)
         notes.append(verapdf.verdict(report, level, ctx.locale))
         outputs.append({"path": str(dst), "name": name, "note": " ".join(notes)})
         outputs.append(report_out)
@@ -132,7 +132,7 @@ def run_validate(ctx: ToolContext) -> list[dict]:
         declared = verapdf.declared_flavour(inp.path)
         flavour = o.perfil if o.perfil != "auto" else (declared or "2b")
         declared_ok = o.perfil != "auto" or declared is not None
-        out, report = _report(ctx, inp.path, flavour, inp.name, stem, declared=declared, declared_ok=declared_ok)
+        out, report = write_report(ctx, inp.path, flavour, inp.name, stem, declared=declared, declared_ok=declared_ok)
         notes = [] if declared_ok else [notes_t["undeclared"].format(flavour=verapdf.flavour_label(flavour))]
         notes.append(verapdf.verdict(report, flavour, ctx.locale, declared_ok))
         out["note"] = " ".join(notes)

@@ -37,12 +37,14 @@ def sign_download(secret: str, job_id: str, filename: str, owner: str, ttl_secon
 def verify_download(secret: str, job_id: str, filename: str, token: str, now: float | None = None) -> bool:
     try:
         exp_s, owner, sig = token.split(".", 2)
-        exp = int(exp_s)
     except ValueError:
         return False
-    if exp < (now or time.time()):
+    # Solo la forma que firma `sign_download`: `int()` aceptaría también «0…», «+…», « …» o «1_000» con la misma firma.
+    if not (exp_s.isascii() and exp_s.isdigit()) or exp_s != str(int(exp_s)):
         return False
-    expected = _mac(secret, f"d|{job_id}|{filename}|{exp}|{owner}")
+    if int(exp_s) < (now or time.time()):
+        return False
+    expected = _mac(secret, f"d|{job_id}|{filename}|{exp_s}|{owner}")
     return hmac.compare_digest(expected, sig)
 
 
