@@ -121,6 +121,7 @@ PROFILE_16 = {
     "CONCURRENCY_AV_LIGHT": "2", "MEM_AV_LIGHT": "3g", "CPUS_AV_LIGHT": "4",
     "CONCURRENCY_AV_HEAVY": "1", "MEM_AV_HEAVY": "3g", "CPUS_AV_HEAVY": "2",
     "CONCURRENCY_SIGN_VERIFY": "1", "MEM_SIGN_VERIFY": "1g", "CPUS_SIGN_VERIFY": "1",
+    "CONCURRENCY_SIGN": "1", "MEM_SIGN": "1g", "CPUS_SIGN": "1",
 }
 
 
@@ -157,7 +158,7 @@ def worker(target: str, role: str, name: str, queue: str, conc: int, threads: in
 
 def build() -> dict:
     api_env = {
-        **PUBLIC, **LIMITS, **MAIL, **AI, **TTS, "SERVICE_URL_API_8000": "", "SERVICE_ROLE": "api", "DATABASE_URL": DB, "VALKEY_URL": VK,
+        **PUBLIC, **LIMITS, **MAIL, **AI, **TTS, "SEAL_ENABLED": "${SEAL_ENABLED:-true}", "SERVICE_URL_API_8000": "", "SERVICE_ROLE": "api", "DATABASE_URL": DB, "VALKEY_URL": VK,
         "AUTH_JWKS_URL": "http://web:3000/api/auth/jwks", "FILE_TOKEN_SECRET": "${SERVICE_PASSWORD_64_FILES}",
         "ANON_TOKEN_SECRET": "${SERVICE_PASSWORD_64_ANON}", "JOB_SECRETS_KEY": "${SERVICE_PASSWORD_64_JOBSECRETS}",
         "TURNSTILE_SECRET_KEY": "${TURNSTILE_SECRET_KEY:?Clave secreta de Turnstile}",
@@ -286,7 +287,7 @@ def build() -> dict:
                      "--chromium-proxy-server=http://egressweb:4750", "--libreoffice-disable-routes=true",
                      "--api-download-from-deny-public-ips=true", "--api-download-from-deny-private-ips=true",
                      "--webhook-deny-public-ips=true", "--webhook-deny-private-ips=true"],
-            networks=["webrender"], **memory("gotenbergweb", "2g"), cpus=1, oom_score_adj=500,
+            networks=["webrender"], **memory("gotenbergweb", "1536m"), cpus=1, oom_score_adj=500,
             depends_on={"egressweb": {"condition": "service_started"}},
             healthcheck=hc(["CMD", "curl", "-fsS", "http://127.0.0.1:3000/health"]),
         ),
@@ -316,6 +317,16 @@ def build() -> dict:
                            networks=["internal", "airelay"]),
         # chat-pdf (6.4): embeddings locales en su cola; el modelo ocupa unos 0,7 GB por proceso (D-128). Sin clave ni salida.
         "workeraiembed": worker("worker-ai", "worker-ai", "ai-embed", "ai.embed", 1, 1, "1280m", 1),
+        # Sello de la plataforma (10, D-188): el único con el token (volumen softhsm) y SIGN_PKCS11_PIN; sale por
+        # egressweb a la TSA y a los OCSP y CRL del sello. El token y SIGN_CERT_PATH los prepara el propietario.
+        "workersign": worker("worker-sign", "worker-sign", "sign", "sign", 1, 1, "512m", 1,
+                             {"EGRESS_WEB_URL": "http://egressweb:4750", "SIGN_PKCS11_MODULE": "/usr/lib/softhsm/libsofthsm2.so",
+                              "SIGN_PKCS11_TOKEN_LABEL": "${SIGN_PKCS11_TOKEN_LABEL:-conversor-sello}",
+                              "SIGN_PKCS11_KEY_LABEL": "${SIGN_PKCS11_KEY_LABEL:-sello}", "SIGN_PKCS11_PIN": "${SIGN_PKCS11_PIN:-}",
+                              "SIGN_CERT_PATH": "${SIGN_CERT_PATH:-/var/lib/softhsm/sello.pem}", "TSA_URL": "${TSA_URL:-}",
+                              "SEAL_ENABLED": "${SEAL_ENABLED:-true}", "SEAL_DAILY_LIMIT": "${SEAL_DAILY_LIMIT:-500}",
+                              "SEAL_ACCOUNT_DAILY_LIMIT": "${SEAL_ACCOUNT_DAILY_LIMIT:-20}", "TSA_TRUST_ROOTS": "${TSA_TRUST_ROOTS:-}"},
+                             networks=["internal", "webrender"], volumes=["softhsm:/var/lib/softhsm"]),
         # verificar-firmas-pdf (7.23, D-185): imagen worker-sign sin el token ni el PIN del sello; sale por egressweb
         # para la lista de confianza de la UE (beat) y OCSP y CRL a petición, y la guarda en el volumen eutl.
         # 768 MB en el perfil de 8 vCPU: el registro de la UE ocupa unos 245 MB por proceso (31 listas, medido) y la
@@ -345,14 +356,14 @@ def build() -> dict:
     return {
         "services": services,
         "networks": {"internal": {"internal": True}, "edge": {}, "webrender": {"internal": True}, "airelay": {"internal": True}},
-        "volumes": {"pgdata": {}, "valkeydata": {}, "filestore": {}, "backups": {}, "eutl": {}},
+        "volumes": {"pgdata": {}, "valkeydata": {}, "filestore": {}, "backups": {}, "eutl": {}, "softhsm": {}},
     }
 
 
 HEADER = """# Producción en Coolify v4 (13.2): solo `image:` con etiquetas fijas, dominios por variables mágicas y sin `ports:`.
 # Generado por scripts/gen_coolify_compose.py: edita el generador, no este archivo.
-# Los servicios de fases posteriores (workersign, workerutils, workermesh, workercad y umami) se añaden con su
-# fase; `workersign` irá también en `webrender`, como `workersignverify`.
+# Los servicios de fases posteriores (workerutils, workermesh, workercad y umami) se añaden con su
+# fase.
 # Memoria y CPU (5.4): `MEM_<NOMBRE>` cambia `mem_limit` y `memswap_limit` de postgres, gotenberg, gotenbergweb y cada
 # worker, y `CPUS_<NOMBRE>` y `CONCURRENCY_<NOMBRE>`, los de cada worker. Por defecto, el perfil de 8 vCPU; el de
 # 16 vCPU lo imprime `python scripts/gen_coolify_compose.py --profile 16` (docs/OPERATIONS.md).

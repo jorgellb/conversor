@@ -85,6 +85,11 @@ class Settings(BaseSettings):
     TSA_URL: str = ""
     SEAL_ENABLED: bool = True
     SEAL_DAILY_LIMIT: int = 500
+    # Sellos por cuenta y día (D-189), para que una cuenta no gaste el límite de todos.
+    SEAL_ACCOUNT_DAILY_LIMIT: int = 20
+    # Raíces de la TSA (PEM en un archivo o en la variable) para validar su certificado al incrustar los datos de B-LT;
+    # vacía: las autofirmadas que devuelve la propia TSA.
+    TSA_TRUST_ROOTS: str = ""
     # Lista de confianza de la UE (7.23): la descarga beat por `egressweb` y la guarda en EUTL_CACHE_PATH (volumen de
     # `workersignverify`). La firma de la LOTL se comprueba desde el ancla del DOUE que trae pyHanko.
     EUTL_LOTL_URL: str = "https://ec.europa.eu/tools/lotl/eu-lotl.xml"

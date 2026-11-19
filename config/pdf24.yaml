@@ -20,7 +20,7 @@ herramientas:
     equivalentes: [editar-pdf]
   - pdf24: "Sign PDF"
     ruta: /en/sign-pdf
-    equivalentes: [firmar-pdf:F4]
+    equivalentes: [firmar-pdf]
   - pdf24: "Create PDF"
     ruta: /en/create-pdf
     paginas: [crear-pdf]

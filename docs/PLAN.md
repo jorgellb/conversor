@@ -102,7 +102,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 
 | Lote | Herramientas | Estado |
 | --- | --- | --- |
-| F4-A | verificar-firmas-pdf y firmar-pdf en servidor (`workersign` y `sign.verify`, pyHanko, SoftHSM2, LOTL; migración 0006) | En curso: verificar-firmas-pdf, `workersignverify` y la lista de la UE hechos (F4-A1, D-185); falta el sello de firmar-pdf en `workersign` (F4-A2) |
+| F4-A | verificar-firmas-pdf y firmar-pdf en servidor (`workersign` y `sign.verify`, pyHanko, SoftHSM2, LOTL; migración 0006) | Hecho: verificar-firmas-pdf y la lista de la UE (F4-A1, D-185 a D-187) y el sello de firmar-pdf en `workersign` con la migración 0006 (F4-A2, D-188); firmar-pdf sigue apagada hasta F4-B |
 | F4-B | firmar-pdf en el navegador, hacer-pdf-rellenable y crear-formulario-pdf | Pendiente (F4-A) |
 | F4-C | compartir-pdf y solicitar-firmas (B-LT, Mailpit) | Pendiente (F4-A) |
 | F4-D | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf (`workerutils`, KoSIT) | Pendiente (F3-Z) |

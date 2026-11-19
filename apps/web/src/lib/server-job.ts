@@ -1,8 +1,5 @@
 "use client";
 
-import Tus from "@uppy/tus";
-import Uppy from "@uppy/core";
-
 import { api, ApiError } from "./api-client";
 import { getConfig } from "./runtime";
 
@@ -31,7 +28,9 @@ export type Phase = { kind: "upload"; percent: number } | { kind: "queued" } | {
 
 /** Subida reanudable por tus con Uppy (2): devuelve los upload_id que asigna el gancho pre-create. */
 export async function uploadFiles(files: File[], tool: string, token: string, onPercent: (p: number) => void, signal: AbortSignal): Promise<string[]> {
-  const { uploadUrl, uploadChunkBytes } = await getConfig();
+  // Uppy y tus-js-client (unos 30 KB comprimidos) se cargan al subir, no al abrir la página (1.3, D-189).
+  const [{ uploadUrl, uploadChunkBytes }, { default: Uppy }, { default: Tus }] = await Promise.all([
+    getConfig(), import("@uppy/core"), import("@uppy/tus")]);
   const uppy = new Uppy({ autoProceed: false, allowMultipleUploadBatches: false });
   uppy.use(Tus, {
     endpoint: uploadUrl,

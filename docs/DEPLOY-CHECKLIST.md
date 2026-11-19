@@ -67,6 +67,12 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       IzPack incluidos) y `verapdf --version` responde; el paso de la CI que lo instala pasa y
       `test_real_verapdf_accepts_the_pdfa_we_produce` no se omite (D-63).
 
+- [ ] Sello de la plataforma (10, D-188): el propietario elige el certificado del sello y la TSA (0.1), inicializa el
+      token en el volumen `softhsm` de `workersign` (`softhsm2-util --init-token --free --label conversor-sello`),
+      importa la clave con la etiqueta `sello` y deja la cadena en PEM en `/var/lib/softhsm/sello.pem`
+      (`SIGN_CERT_PATH`, del sello a la raíz, que tiene que estar); fija `SIGN_PKCS11_PIN`, `TSA_URL` (y `TSA_TRUST_ROOTS` si la TSA no envía su raíz) y `SEAL_ACCOUNT_DAILY_LIMIT` en Coolify y pone la misma cadena en
+      `SIGN_VERIFY_EXTRA_ROOTS` de `workersignverify` (el PEM en la propia variable). Nunca el token de desarrollo.
+
 ## Tras el despliegue
 
 - [ ] Todos los healthchecks en verde en Coolify.
@@ -80,6 +86,9 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] `workersignverify` descarga la lista de confianza de la UE al arrancar: en su log, «lista de confianza de la UE
       actualizada» con unos 30 países, y `/srv/eutl/actual.json` existe; verificar-firmas-pdf con un PDF firmado con un
       certificado cualificado (por ejemplo, del DNIe o de la FNMT) sale «Cualificada» con el prestador y el país (D-185).
+- [ ] Con `TOOL_FIRMAR_PDF_ENABLED=true` (hasta F4-B), firmar-pdf con una cuenta devuelve el PDF sellado en B-T y
+      verificar-firmas-pdf lo da como «Sello de la plataforma (no cualificado)» con la fecha de la TSA; con B-LT, nivel
+      B-LT; y `seal_signatures` tiene una fila por sello.
 - [ ] Con «Comprobar la revocación en línea», un PDF firmado con un certificado de la FNMT consulta su OCSP por `egressweb`
       (en el log de Smokescreen) y el informe dice «Comprobada en línea».
 - [ ] `upload.` y `files.` responden a través del proxy de Coolify (los dos servicios solo están en `internal` más la red que

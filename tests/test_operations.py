@@ -321,4 +321,15 @@ def test_worker_role_has_only_its_tables(services, monkeypatch):
             conn.rollback()
         with pytest.raises(ProgrammingError):
             conn.execute(text("UPDATE plans SET name = name"))
+        conn.rollback()
+        # F4 (D-188): el registro del sello solo se lee y se añade; las solicitudes de firma son de la API.
+        conn.execute(text("INSERT INTO seal_signatures (job_id, document_sha256, level) "
+                          "VALUES ('00000000-0000-0000-0000-000000000001', 'x', 'B-B')"))
+        conn.execute(text("SELECT count(*) FROM seal_signatures")).scalar()
+        for statement in ("UPDATE seal_signatures SET level = level", "DELETE FROM seal_signatures",
+                          "SELECT 1 FROM signature_requests", "SELECT 1 FROM signers", "SELECT 1 FROM audit_events"):
+            conn.rollback()
+            with pytest.raises(ProgrammingError):
+                conn.execute(text(statement))
+        conn.rollback()
     engine.dispose()

@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 165 herramientas (F1 43, F2 60, F3 10, F4 2, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 166 herramientas (F1 43, F2 60, F3 10, F4 3, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -170,12 +170,14 @@ Catálogo publicado en esta entrega: 165 herramientas (F1 43, F2 60, F3 10, F4 2
 | `ticket-a-excel` / `receipt-to-excel` | servidor | ocr | ai | F3 | activa | jpg, png, webp, tiff, bmp, gif → xlsx, csv | redactado, sin revisar |
 | `traducir-subtitulos` / `translate-subtitles` | servidor | ai | ai | F5 | activa | srt, vtt, ass, mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → srt, vtt, ass | redactado, sin revisar |
 | `resumir-reunion` / `summarize-meeting` | servidor | av | ai | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → docx, txt, md | redactado, sin revisar |
+| `firmar-pdf` / `sign-pdf` | servidor | sign | light | F4 | apagada | pdf → pdf, zip | pendiente |
 | `verificar-firmas-pdf` / `verify-pdf-signatures` | servidor | sign | light | F4 | activa | pdf → html, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 
 | Herramienta | Motivo |
 | --- | --- |
+| `firmar-pdf` | Apagada por defecto; se enciende con `TOOL_FIRMAR_PDF_ENABLED=true`. Apagada hasta F4-B: el sello de la plataforma en servidor (PAdES B-T a B-LTA, DocMDP, firma visible) ya funciona en `workersign` (F4-A2, D-188), pero A.6 pide además la firma dibujada, escrita, subida o con la cámara en el navegador y la firma interrumpida con certificado propio, que llegan en F4-B. Para probar el sello antes: TOOL_FIRMAR_PDF_ENABLED=true, con el token, SIGN_CERT_PATH y TSA_URL configurados (DEPLOY-CHECKLIST). |
 | `heic-a-jpg` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-pdf` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-png` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
@@ -202,7 +204,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | Split PDF (`/en/split-pdf`) | `dividir-pdf` | disponible |  |
 | Compress PDF (`/en/compress-pdf`) | `comprimir-pdf` | disponible |  |
 | Edit PDF (`/en/edit-pdf`) | `editar-pdf` | disponible |  |
-| Sign PDF (`/en/sign-pdf`) | `firmar-pdf` | pendiente (F4) |  |
+| Sign PDF (`/en/sign-pdf`) | `firmar-pdf` | disponible, apagada (ver «Desactivadas») |  |
 | Create PDF (`/en/create-pdf`) | `crear-pdf` (página fija) | disponible |  |
 | PDF Converter (`/en/pdf-converter`) | `conversor-pdf` (página fija) | disponible |  |
 | Images to PDF (`/en/images-to-pdf`) | `imagenes-a-pdf` | disponible |  |
@@ -323,7 +325,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Printer (`/en/pdf-printer`) | — | sin equivalente | No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3). |
 | PDF Reader (`/en/pdf-reader`) | — | sin equivalente | No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf. |
 
-Resumen: 106 disponibles, 12 pendientes de su fase y 6 sin equivalente (con su explicación).
+Resumen: 107 disponibles, 11 pendientes de su fase y 6 sin equivalente (con su explicación).
 
 ## Mejoras posteriores
 

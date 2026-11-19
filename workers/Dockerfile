@@ -237,15 +237,22 @@ CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "ai", "-n", "ai@%h", "--p
 # sin token ni PIN, con la caché de la lista de confianza de la UE en /srv/eutl; D-185) ---
 FROM base AS worker-sign
 RUN apt-get update \
- && apt-get install -y --no-install-recommends softhsm2 \
+ && apt-get install -y --no-install-recommends softhsm2 fonts-dejavu-core \
  && rm -rf /var/lib/apt/lists/* \
  && mkdir -p /var/lib/softhsm/tokens /srv/eutl \
  && chown -R app:app /var/lib/softhsm /srv/eutl \
- && test -f /usr/lib/softhsm/libsofthsm2.so
+ && test -f /usr/lib/softhsm/libsofthsm2.so && test -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf \
+ && printf 'directories.tokendir = /var/lib/softhsm/tokens/\nobjectstore.backend = file\nlog.level = ERROR\nslots.removable = false\n' \
+      > /etc/softhsm2-app.conf && chmod 644 /etc/softhsm2-app.conf
 RUN uv pip install -r pyproject.toml --extra sign
 COPY --from=code /app /app
+# Token de desarrollo del sello (10): solo lo ejecuta el Compose de desarrollo; en Coolify no se llama.
+COPY infra/sign/dev_token.py /app/infra/sign/dev_token.py
 USER app
-ENV SERVICE_ROLE=worker-sign SOFTHSM2_CONF=/etc/softhsm/softhsm2.conf
+# El /etc/softhsm/softhsm2.conf de Debian es root:softhsm 0640 y el usuario app no lo puede leer (D-189): una
+# configuración propia, con los tokens en el volumen. Se comprueba como app al construir la imagen.
+ENV SERVICE_ROLE=worker-sign SOFTHSM2_CONF=/etc/softhsm2-app.conf
+RUN softhsm2-util --show-slots > /dev/null
 CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "sign", "-n", "sign@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
 
 # --- Solo desarrollo y CI (0.1): la PKI de pruebas de certomancer (CA, TSA, OCSP y CRL) con claves nuevas al arrancar.

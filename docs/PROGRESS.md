@@ -444,9 +444,27 @@ línea, lectura estricta, PAdES más exigente, países que conservan su última 
 (D-187): tope de tamaño en la lectura, PDF con contraseña de propietario, revocado después del sello también con
 OCSP, causa neutra para el B-LT corriente, presupuesto por documento y listas arrastradas como mucho 7 días.
 
+## F4-A2 (sello de la plataforma en firmar-pdf)
+
+firmar-pdf firma en el servidor con el sello de la plataforma por PKCS#11 (SoftHSM2) en `workersign`, el único
+contenedor con el token y el PIN: PAdES B-T, B-LT o B-LTA con la TSA de `TSA_URL`, certificación DocMDP y firma visible
+(página y esquina, nombre, motivo y lugar) o invisible. Solo con cuenta; `SEAL_ENABLED` y `SEAL_DAILY_LIMIT` lo
+controlan y cada uso queda en `seal_signatures` (migración 0006, con `signature_requests`, `signers` y `audit_events`
+para F4-C). Token de desarrollo con certificado autofirmado (`infra/sign/dev_token.py`) y `certomancer` como TSA, OCSP y
+CRL en el Compose de desarrollo. Sigue apagada por defecto hasta F4-B (la parte del navegador). Salvedades en D-188.
+Verificado aquí: pytest del sello (B-T, B-LT y B-LTA comprobados con verificar-firmas-pdf, firma visible e invisible,
+certificación, segundo sello y el registro en `seal_signatures` contra PostgreSQL), Compose y contrato. Sin verificar
+aquí: SoftHSM2 (`test_dev_token_and_pkcs11_signer`, en la CI), la imagen `worker-sign` y el arranque de `workersign`
+y `certomancer` en e2e-compose. Tras la revisión (D-189): B-LT con una TSA de otra raíz, configuración de SoftHSM2
+legible por `app`, el PDF leído antes de abrir el token, «Sellado por» siempre el titular del certificado, límite por
+cuenta, comprobación de clave y resultado y errores comprensibles.
+
+Rendimiento (F3-Z): Uppy se carga al subir; la primera ejecución completa de e2e-compose pasó con F4-A1 (commit
+2561369) y Lighthouse quedó entre 0,87 y 0,89 en tres páginas de servidor en el runner, lo que motivó el cambio.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4: F4-F y F4-A1 hechos; siguen F4-A2 (sello de firmar-pdf) y F4-D, después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4: F4-F y F4-A hechos; siguen F4-D, después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

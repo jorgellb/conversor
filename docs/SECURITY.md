@@ -14,6 +14,7 @@ toca; un worker en esa situación no arranca (código 78).
 | `migrate` | `DATABASE_URL` (y `WORKER_DB_PASSWORD` para crear el rol de los workers) |
 | `workerpdf`, `workeroffice` | `JOB_SECRETS_KEY` (y `DATABASE_URL_WORKER`, rol limitado) |
 | `workerocr`, `workerconvert`, `workerav`, `workermedia` | solo `DATABASE_URL_WORKER` y `VALKEY_URL` |
+| `workersign` (sello de la plataforma, F4) | `SIGN_PKCS11_PIN` y el volumen `softhsm` del token; ningún otro contenedor los ve (comprobado en `tests/test_compose.py`, D-188). El PDF del usuario se lee con pyHanko antes de abrir el token y con la sesión abierta solo se firma (D-189) |
 | `workersignverify` (verificar-firmas-pdf, F4) | solo `DATABASE_URL_WORKER` y `VALKEY_URL`: ni `SIGN_PKCS11_PIN` ni el volumen del token del sello (D-185) |
 
 ## Workers

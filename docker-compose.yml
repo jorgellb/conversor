@@ -144,6 +144,7 @@ services:
       TTS_ENGINE: kokoro
       TTS_VOICE_ES: "${TTS_VOICE_ES:-}"
       TTS_VOICE_EN: "${TTS_VOICE_EN:-af_heart}"
+      SEAL_ENABLED: "${SEAL_ENABLED:-true}"
     ports: ["127.0.0.1:8000:8000"]
     networks: [internal, edge]
     depends_on:
@@ -370,6 +371,51 @@ services:
     memswap_limit: 1280m
     cpus: 1
 
+  # Sello de la plataforma (firmar-pdf, 10 y D-188): el único contenedor con el token (volumen softhsm) y el PIN. En
+  # desarrollo, infra/sign/dev_token.py crea el token y un certificado autofirmado al arrancar, y la TSA, el OCSP y la
+  # CRL son los de `certomancer`, en la red interna (sin egressweb, que niega las IP privadas).
+  workersign:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-sign }
+    image: conversor/worker-sign:dev
+    command: ["sh", "-c", "python /app/infra/sign/dev_token.py /var/lib/softhsm/sello.pem && exec celery -A core.celeryapp worker -Q sign -n sign@%h -c 1 --prefetch-multiplier 1 -O fair --without-gossip --without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-sign
+      WORKER_NAME: sign
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      SIGN_PKCS11_PIN: ${SIGN_PKCS11_PIN:-1234-desarrollo}
+      SIGN_CERT_PATH: /var/lib/softhsm/sello.pem
+      TSA_URL: http://certomancer:9000/conversor-pruebas/tsa/tsa
+      SEAL_ENABLED: "${SEAL_ENABLED:-true}"
+      SEAL_DAILY_LIMIT: "${SEAL_DAILY_LIMIT:-500}"
+      SEAL_ACCOUNT_DAILY_LIMIT: "${SEAL_ACCOUNT_DAILY_LIMIT:-20}"
+      EGRESS_WEB_URL: ""
+      THREADS: "1"
+    volumes:
+      - filestore:/srv/files
+      - softhsm:/var/lib/softhsm
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      valkey: { condition: service_healthy }
+      certomancer: { condition: service_started }
+    mem_limit: 1g
+    memswap_limit: 1g
+    cpus: 1
+
+  # Solo desarrollo y CI (0.1): CA, TSA, OCSP y CRL de pruebas (scripts/fixtures/pki.py); nunca va a Coolify.
+  certomancer:
+    build: { context: ., dockerfile: workers/Dockerfile, target: certomancer }
+    image: conversor/certomancer:dev
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ["/tmp:size=16m", "/home/app/pki:size=4m,uid=10001,gid=10001"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    networks: [internal]
+    mem_limit: 256m
+
   # verificar-firmas-pdf (7.23 y D-185): pyHanko en la cola sign.verify, sin el volumen del token ni SIGN_PKCS11_PIN, para
   # que un PDF hostil no conviva con la clave del sello. Sale por egressweb (lista de la UE, OCSP y CRL a petición).
   workersignverify:
@@ -562,3 +608,4 @@ volumes:
   filestore: {}
   backups: {}
   eutl: {}
+  softhsm: {}

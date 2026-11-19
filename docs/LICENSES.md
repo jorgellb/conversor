@@ -61,6 +61,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | pyHanko 0.38.1 (extras `pkcs11`, `image-support`, `opentype` y `etsi`) y pyhanko-certvalidator 0.33.0, en el extra `sign` (F4) | MIT | Validación PAdES y AdES, análisis de diferencias, lista de confianza de la UE y, en F4-A2, el sello de la plataforma |
 | Dependencias de pyHanko: aiohttp (y multidict, yarl, frozenlist, aiosignal, propcache), asn1crypto, oscrypto, uritools, tzlocal, certifi, xsdata, signxml, uharfbuzz, fontTools, python-barcode, python-pkcs11 0.9.5 | Apache-2.0; MIT; MIT; MIT; MIT; MPL-2.0; MIT; Apache-2.0; Apache-2.0; MIT; MIT; MIT | Descargas por `egressweb`, X.509 y CMS, XML firmado de las listas de confianza (nunca xmlsig, AGPL), firma visible y PKCS#11 |
 | SoftHSM2 (paquete `softhsm2` de Debian) en la imagen worker-sign | BSD-2-Clause | Token PKCS#11 del sello de la plataforma (10); biblioteca cargada por python-pkcs11 |
+| fonts-dejavu-core (Debian) en la imagen worker-sign | Licencia de Bitstream Vera (permisiva) y dominio público | Texto de la firma visible del sello (D-188) |
 | certomancer 0.16.0 (extra `dev` y la imagen `certomancer` de desarrollo; nunca en producción) | MIT | PKI de pruebas: CA, TSA, OCSP y CRL (dobles de 0.1) |
 | Lista de confianza de la UE (LOTL y listas nacionales) | Datos públicos de la Comisión Europea y de cada Estado; se descargan al ejecutar y no se redistribuyen | Confianza y cualificación al verificar firmas (7.23) |
 | psycopg | LGPL-3.0 | Controlador de PostgreSQL |

@@ -1,7 +1,7 @@
 # Producción en Coolify v4 (13.2): solo `image:` con etiquetas fijas, dominios por variables mágicas y sin `ports:`.
 # Generado por scripts/gen_coolify_compose.py: edita el generador, no este archivo.
-# Los servicios de fases posteriores (workersign, workerutils, workermesh, workercad y umami) se añaden con su
-# fase; `workersign` irá también en `webrender`, como `workersignverify`.
+# Los servicios de fases posteriores (workerutils, workermesh, workercad y umami) se añaden con su
+# fase.
 # Memoria y CPU (5.4): `MEM_<NOMBRE>` cambia `mem_limit` y `memswap_limit` de postgres, gotenberg, gotenbergweb y cada
 # worker, y `CPUS_<NOMBRE>` y `CONCURRENCY_<NOMBRE>`, los de cada worker. Por defecto, el perfil de 8 vCPU; el de
 # 16 vCPU lo imprime `python scripts/gen_coolify_compose.py --profile 16` (docs/OPERATIONS.md).
@@ -222,6 +222,7 @@ services:
       TTS_ENGINE: ${TTS_ENGINE:-kokoro}
       TTS_VOICE_ES: ${TTS_VOICE_ES:-}
       TTS_VOICE_EN: ${TTS_VOICE_EN:-af_heart}
+      SEAL_ENABLED: ${SEAL_ENABLED:-true}
       SERVICE_URL_API_8000: ''
       SERVICE_ROLE: api
       DATABASE_URL: postgresql+psycopg://${SERVICE_USER_POSTGRES}:${SERVICE_PASSWORD_POSTGRES}@postgres:5432/conversor
@@ -552,8 +553,8 @@ services:
     - --webhook-deny-private-ips=true
     networks:
     - webrender
-    mem_limit: ${MEM_GOTENBERGWEB:-2g}
-    memswap_limit: ${MEM_GOTENBERGWEB:-2g}
+    mem_limit: ${MEM_GOTENBERGWEB:-1536m}
+    memswap_limit: ${MEM_GOTENBERGWEB:-1536m}
     cpus: 1
     oom_score_adj: 500
     depends_on:
@@ -756,6 +757,84 @@ services:
     mem_limit: ${MEM_AI_EMBED:-1280m}
     memswap_limit: ${MEM_AI_EMBED:-1280m}
     cpus: ${CPUS_AI_EMBED:-1}
+    oom_score_adj: 500
+    stop_grace_period: 10m
+    runtime: ${WORKER_RUNTIME:-runc}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      valkey:
+        condition: service_healthy
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - celery -A core.celeryapp inspect ping -d "$${WORKER_NAME}@$${HOSTNAME}" --timeout 10 >/dev/null
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+  workersign:
+    image: ghcr.io/${GHCR_OWNER:?Propietario del registro}/conversor-worker-sign:${IMAGE_TAG:?Etiqueta de imagen}
+    restart: unless-stopped
+    logging: *id001
+    command:
+    - celery
+    - -A
+    - core.celeryapp
+    - worker
+    - -Q
+    - sign
+    - -n
+    - sign@%h
+    - -c
+    - ${CONCURRENCY_SIGN:-1}
+    - --prefetch-multiplier
+    - '1'
+    - -O
+    - fair
+    - --without-gossip
+    - --without-mingle
+    environment:
+      SERVICE_ROLE: worker-sign
+      WORKER_NAME: sign
+      APP_ENV: production
+      VALKEY_URL: redis://default:${SERVICE_PASSWORD_VALKEY}@valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:${SERVICE_PASSWORD_WORKERDB}@postgres:5432/conversor
+      THREADS: '1'
+      OMP_THREAD_LIMIT: '1'
+      OMP_NUM_THREADS: '1'
+      IMAGE_MAX_PIXELS: ${IMAGE_MAX_PIXELS:-100000000}
+      RENDER_MAX_PIXELS: ${RENDER_MAX_PIXELS:-50000000}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      EGRESS_WEB_URL: http://egressweb:4750
+      SIGN_PKCS11_MODULE: /usr/lib/softhsm/libsofthsm2.so
+      SIGN_PKCS11_TOKEN_LABEL: ${SIGN_PKCS11_TOKEN_LABEL:-conversor-sello}
+      SIGN_PKCS11_KEY_LABEL: ${SIGN_PKCS11_KEY_LABEL:-sello}
+      SIGN_PKCS11_PIN: ${SIGN_PKCS11_PIN:-}
+      SIGN_CERT_PATH: ${SIGN_CERT_PATH:-/var/lib/softhsm/sello.pem}
+      TSA_URL: ${TSA_URL:-}
+      SEAL_ENABLED: ${SEAL_ENABLED:-true}
+      SEAL_DAILY_LIMIT: ${SEAL_DAILY_LIMIT:-500}
+      SEAL_ACCOUNT_DAILY_LIMIT: ${SEAL_ACCOUNT_DAILY_LIMIT:-20}
+      TSA_TRUST_ROOTS: ${TSA_TRUST_ROOTS:-}
+    volumes:
+    - filestore:/srv/files
+    - softhsm:/var/lib/softhsm
+    networks:
+    - internal
+    - webrender
+    user: 10001:10001
+    read_only: true
+    tmpfs:
+    - /tmp:size=64m
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: ${MEM_SIGN:-512m}
+    memswap_limit: ${MEM_SIGN:-512m}
+    cpus: ${CPUS_SIGN:-1}
     oom_score_adj: 500
     stop_grace_period: 10m
     runtime: ${WORKER_RUNTIME:-runc}
@@ -1404,3 +1483,4 @@ volumes:
   filestore: {}
   backups: {}
   eutl: {}
+  softhsm: {}

@@ -230,6 +230,11 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     "comparar-pdf": {"ignorar_mayusculas_espacios": D(False)},
     "buscar-en-pdf": {"texto": X, "mayusculas": D(False), "palabra_completa": D(False), "expresion_regular": D(False)},
     "validar-pdfa": {"perfil": E("auto", "auto", "1a", "1b", "2a", "2b", "2u", "3a", "3b", "3u", "4", "4e", "4f", "ua1", "ua2")},
+    # A.6 (F4-A2): la firma digital con el sello de la plataforma; el modo «Insertar firma», el origen de la firma y el
+    # certificado propio llegan con F4-B (D-188).
+    "firmar-pdf": {"certificado": E("plataforma", "plataforma"), "visible": D(True), "nivel": E("B-T", "B-T", "B-LT", "B-LTA"),
+                   "certificacion": E("no", "no", "sin_cambios", "formularios", "formularios_anotaciones"),
+                   "sello_tiempo": D(True), "nombre": X, "motivo": X, "lugar": X},
     # A.7 (F4): revocación OCSP y CRL «bajo petición» (apagada por defecto).
     "verificar-firmas-pdf": {"revocacion": D(False)},
     "preferencias-visor-pdf": {

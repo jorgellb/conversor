@@ -26156,6 +26156,230 @@
       }
     },
     {
+      "slug_es": "firmar-pdf",
+      "slug_en": "sign-pdf",
+      "name_es": "Firmar PDF",
+      "name_en": "Sign PDF",
+      "summary_es": "Firma un PDF con el sello de la plataforma (PAdES con sello de tiempo), visible o invisible.",
+      "summary_en": "Sign a PDF with the platform seal (PAdES with a time stamp), visible or invisible.",
+      "category": "sign",
+      "where": "server",
+      "worker_group": "sign",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pdf"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": false,
+      "indexable": true,
+      "max_files": 10,
+      "secret_fields": [],
+      "related": [
+        "verificar-firmas-pdf",
+        "proteger-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "firmar-pdf, firma digital (A.6) con el sello de la plataforma; la firma en el navegador y el certificado propio\nllegan en F4-B (D-188).",
+        "properties": {
+          "certificado": {
+            "const": "plataforma",
+            "default": "plataforma",
+            "title": "Certificado",
+            "type": "string",
+            "x-labels": {
+              "plataforma": {
+                "en": "Platform seal",
+                "es": "Sello de la plataforma"
+              }
+            },
+            "x-title": {
+              "en": "Certificate",
+              "es": "Certificado"
+            }
+          },
+          "visible": {
+            "default": true,
+            "title": "Firma visible",
+            "type": "boolean",
+            "x-title": {
+              "en": "Visible signature",
+              "es": "Firma visible"
+            }
+          },
+          "pagina": {
+            "default": "ultima",
+            "maxLength": 10,
+            "title": "Página de la firma (última, primera o un número)",
+            "type": "string",
+            "x-show-if": {
+              "visible": [
+                true
+              ]
+            },
+            "x-title": {
+              "en": "Signature page (last, first or a number)",
+              "es": "Página de la firma (última, primera o un número)"
+            }
+          },
+          "posicion": {
+            "default": "abajo_derecha",
+            "enum": [
+              "abajo_derecha",
+              "abajo_izquierda",
+              "arriba_derecha",
+              "arriba_izquierda"
+            ],
+            "title": "Posición",
+            "type": "string",
+            "x-labels": {
+              "abajo_derecha": {
+                "en": "Bottom right",
+                "es": "Abajo a la derecha"
+              },
+              "abajo_izquierda": {
+                "en": "Bottom left",
+                "es": "Abajo a la izquierda"
+              },
+              "arriba_derecha": {
+                "en": "Top right",
+                "es": "Arriba a la derecha"
+              },
+              "arriba_izquierda": {
+                "en": "Top left",
+                "es": "Arriba a la izquierda"
+              }
+            },
+            "x-show-if": {
+              "visible": [
+                true
+              ]
+            },
+            "x-title": {
+              "en": "Position",
+              "es": "Posición"
+            }
+          },
+          "nombre": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Nombre que aparece",
+            "type": "string",
+            "x-title": {
+              "en": "Name shown",
+              "es": "Nombre que aparece"
+            }
+          },
+          "motivo": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Motivo",
+            "type": "string",
+            "x-title": {
+              "en": "Reason",
+              "es": "Motivo"
+            }
+          },
+          "lugar": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Lugar",
+            "type": "string",
+            "x-title": {
+              "en": "Location",
+              "es": "Lugar"
+            }
+          },
+          "sello_tiempo": {
+            "default": true,
+            "title": "Sello de tiempo",
+            "type": "boolean",
+            "x-title": {
+              "en": "Time stamp",
+              "es": "Sello de tiempo"
+            }
+          },
+          "nivel": {
+            "default": "B-T",
+            "enum": [
+              "B-T",
+              "B-LT",
+              "B-LTA"
+            ],
+            "title": "Nivel PAdES",
+            "type": "string",
+            "x-labels": {
+              "B-LT": {
+                "en": "PAdES B-LT (and long-term validation data)",
+                "es": "PAdES B-LT (y datos de validación a largo plazo)"
+              },
+              "B-LTA": {
+                "en": "PAdES B-LTA (and document time stamp)",
+                "es": "PAdES B-LTA (y sello de tiempo del documento)"
+              },
+              "B-T": {
+                "en": "PAdES B-T (with time stamp)",
+                "es": "PAdES B-T (con sello de tiempo)"
+              }
+            },
+            "x-show-if": {
+              "sello_tiempo": [
+                true
+              ]
+            },
+            "x-title": {
+              "en": "PAdES level",
+              "es": "Nivel PAdES"
+            }
+          },
+          "certificacion": {
+            "default": "no",
+            "enum": [
+              "no",
+              "sin_cambios",
+              "formularios",
+              "formularios_anotaciones"
+            ],
+            "title": "Certificación (DocMDP)",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "formularios": {
+                "en": "Allow form filling",
+                "es": "Permitir rellenar formularios"
+              },
+              "formularios_anotaciones": {
+                "en": "Allow forms and comments",
+                "es": "Permitir formularios y comentarios"
+              },
+              "no": {
+                "en": "No",
+                "es": "No"
+              },
+              "sin_cambios": {
+                "en": "No changes",
+                "es": "Sin cambios"
+              }
+            },
+            "x-title": {
+              "en": "Certification (DocMDP)",
+              "es": "Certificación (DocMDP)"
+            }
+          }
+        },
+        "title": "FirmarOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "verificar-firmas-pdf",
       "slug_en": "verify-pdf-signatures",
       "name_es": "Verificar firmas de PDF",
@@ -26181,8 +26405,8 @@
       "max_files": null,
       "secret_fields": [],
       "related": [
-        "validar-pdfa",
-        "proteger-pdf"
+        "firmar-pdf",
+        "validar-pdfa"
       ],
       "canonical_of": null,
       "ai": false,

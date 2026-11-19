@@ -135,3 +135,20 @@ def test_signature_verification_worker_has_no_seal_secrets():
         assert sorted(service["networks"]) == ["internal", "webrender"]
         assert not any("softhsm" in v for v in service.get("volumes", [])) and any(v.startswith("eutl:") for v in service["volumes"])
 
+
+
+def test_only_workersign_has_the_seal_pin_and_token():
+    """10 y 12.1: SIGN_PKCS11_PIN y el volumen softhsm solo en workersign; certomancer solo en desarrollo."""
+    dev = yaml.safe_load((ROOT / "docker-compose.yml").read_text(encoding="utf-8"))["services"]
+    prod = _doc()["services"]
+    for services in (dev, prod):
+        for name, service in services.items():
+            env = service.get("environment") or {}
+            mounts = " ".join(service.get("volumes") or [])
+            has = "SIGN_PKCS11_PIN" in env or "softhsm" in mounts
+            assert has == (name == "workersign"), name
+        assert services["workersign"]["environment"]["SERVICE_ROLE"] == "worker-sign"
+    # En producción sale por egressweb (TSA, OCSP y CRL); en desarrollo, la TSA de pruebas está en la red interna.
+    assert sorted(prod["workersign"]["networks"]) == ["internal", "webrender"]
+    assert dev["workersign"]["networks"] == ["internal"] if "networks" in dev["workersign"] else True
+    assert "certomancer" in dev and "certomancer" not in prod

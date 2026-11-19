@@ -10,7 +10,7 @@
 #   (F3-Z, F4-Z...), igual que docs/PLAN.md.
 fases:
   cerradas: [F1, F2, F5 sin vídeo]
-  en_curso: [F3]
+  en_curso: [F3, F4]
 temas:
   HEVC_DECODE_ENABLED: >-
     Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube
@@ -20,7 +20,12 @@ temas:
     Las herramientas que generan facturas son un sistema informático de facturación (Veri*factu, RD 1007/2023) y
     tocan la factura electrónica obligatoria (RD 238/2026). Apagado hasta la revisión con un asesor anotada en
     docs/LEGAL.md (7.23). Las que validan o muestran facturas no dependen de este flag.
-herramientas: {}
+herramientas:
+  firmar-pdf: >-
+    Apagada hasta F4-B: el sello de la plataforma en servidor (PAdES B-T a B-LTA, DocMDP, firma visible) ya funciona
+    en `workersign` (F4-A2, D-188), pero A.6 pide además la firma dibujada, escrita, subida o con la cámara en el
+    navegador y la firma interrumpida con certificado propio, que llegan en F4-B. Para probar el sello antes:
+    TOOL_FIRMAR_PDF_ENABLED=true, con el token, SIGN_CERT_PATH y TSA_URL configurados (DEPLOY-CHECKLIST).
 fuera_de_alcance:
   - formato: XPS, PostScript/EPS y PDF/X
     motivo: Dependen de Ghostscript o MuPDF (AGPL, 11).

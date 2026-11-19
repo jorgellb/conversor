@@ -294,3 +294,56 @@ class AiCache(Base):
     owner_id: Mapped[str] = mapped_column(String(64))
     result: Mapped[dict] = mapped_column(JSONB)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+# --- Firma (F4, 9.4 y 10) -------------------------------------------------------------------------------------------
+
+
+class SignatureRequest(Base):
+    """solicitar-firmas (F4-C): el documento se guarda aparte, en /srv/files/requests/<id> (desviación de 4.1)."""
+
+    __tablename__ = "signature_requests"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    owner_id: Mapped[str] = mapped_column(String(64), index=True)
+    job_output_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("job_outputs.id", ondelete="SET NULL"))
+    status: Mapped[str] = mapped_column(String(16))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class Signer(Base):
+    __tablename__ = "signers"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    request_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("signature_requests.id", ondelete="CASCADE"), index=True)
+    email: Mapped[str] = mapped_column(String(320))
+    name: Mapped[str] = mapped_column(String(200))
+    sign_order: Mapped[int] = mapped_column(Integer, default=0)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)  # solo el hash del token (12.6)
+    code_hash: Mapped[str | None] = mapped_column(String(128))
+    status: Mapped[str] = mapped_column(String(16))
+    signed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class AuditEvent(Base):
+    """Eventos de una solicitud de firmas; alimentan su certificado de auditoría."""
+
+    __tablename__ = "audit_events"
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    request_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("signature_requests.id", ondelete="CASCADE"), index=True)
+    event: Mapped[str] = mapped_column(String(40))
+    actor: Mapped[str] = mapped_column(String(320))
+    ip_hash: Mapped[str | None] = mapped_column(String(64))
+    user_agent: Mapped[str | None] = mapped_column(Text)
+    document_sha256: Mapped[str | None] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class SealSignature(Base):
+    """Cada uso del sello de la plataforma (10): sin clave ajena al trabajo, para que sobreviva al borrado de este."""
+
+    __tablename__ = "seal_signatures"
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    job_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    document_sha256: Mapped[str] = mapped_column(String(64))
+    level: Mapped[str] = mapped_column(String(8))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), index=True)
