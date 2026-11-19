@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 import { BoardEditor, BookmarksEditor, ChatPdfView, CollageView, CompareView, CopyView, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
   SearchView } from "@/components/LazyViews";
@@ -198,13 +199,16 @@ export default async function SlugPage({ params, searchParams }: Params) {
         ) : EDITORS[tool.slug_es] && !disabledByEnv(tool.slug_es) ? (
           <PdfEditor mode={EDITORS[tool.slug_es]} spec={clientSpec(tool, locale)} nextTools={nextTools} />
         ) : (
-          <ToolRunner
-            spec={{ ...clientSpec(tool, locale), maxFiles: tool.max_files ?? 100 }}
-            retentionHours={Number(PLANS.anon.retention_hours)}
-            nextTools={nextTools}
-            enabled={!disabledByEnv(tool.slug_es)}
-            pdfaHref={tool.slug_es === "validar-pdfa" ? toolPath(locale, toolBySlugEs("pdf-a-pdfa")!) : undefined}
-          />
+          // Suspense: React hidrata esta isla aparte del resto de la página, en varias tareas cortas (D-190).
+          <Suspense>
+            <ToolRunner
+              spec={{ ...clientSpec(tool, locale), maxFiles: tool.max_files ?? 100 }}
+              retentionHours={Number(PLANS.anon.retention_hours)}
+              nextTools={nextTools}
+              enabled={!disabledByEnv(tool.slug_es)}
+              pdfaHref={tool.slug_es === "validar-pdfa" ? toolPath(locale, toolBySlugEs("pdf-a-pdfa")!) : undefined}
+            />
+          </Suspense>
         )}
         {HEVC_TOOLS.includes(tool.slug_es) && disabledByEnv(tool.slug_es) && (
           <HeicHelp locale={locale} jpgHref={toolPath(locale, toolBySlugEs("jpg-a-pdf")!)} />
@@ -256,7 +260,9 @@ export default async function SlugPage({ params, searchParams }: Params) {
           </section>
         )}
       </article>
-      <Feedback tool={tool.slug_es} />
+      <Suspense>
+        <Feedback tool={tool.slug_es} />
+      </Suspense>
     </div>
   );
 }

@@ -578,6 +578,7 @@ services:
     - --listen-ip=0.0.0.0
     - --listen-port=4750
     - --egress-acl-file=/etc/smokescreen/acl.yaml
+    - --allow-missing-role
     - --deny-range=10.0.0.0/8
     - --deny-range=172.16.0.0/12
     - --deny-range=192.168.0.0/16
@@ -607,6 +608,7 @@ services:
     - --listen-ip=0.0.0.0
     - --listen-port=4750
     - --egress-acl-file=/etc/smokescreen/acl.yaml
+    - --allow-missing-role
     - --deny-range=10.0.0.0/8
     - --deny-range=172.16.0.0/12
     - --deny-range=192.168.0.0/16

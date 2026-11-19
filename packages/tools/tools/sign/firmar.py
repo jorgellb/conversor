@@ -121,8 +121,10 @@ def seal_signer(settings):
         if public is None or keys.PublicKeyInfo.load(public).dump() != chain[0].public_key.dump():
             log.error("la clave del token no es la del certificado de SIGN_CERT_PATH")
             raise ToolError(ErrorCode.TOOL_DISABLED, "seal_config")
+        # use_raw_mechanism: el resumen lo calcula pyHanko y el token solo firma (CKM_ECDSA o CKM_RSA_PKCS); SoftHSM2 y
+        # muchos HSM no implementan los mecanismos combinados como CKM_ECDSA_SHA256 (D-190).
         yield pkcs11.PKCS11Signer(session, key_label=settings.SIGN_PKCS11_KEY_LABEL, signing_cert=chain[0],
-                                  ca_chain=chain[1:], embed_roots=True), chain
+                                  ca_chain=chain[1:], embed_roots=True, use_raw_mechanism=True), chain
     finally:
         session.close()
 

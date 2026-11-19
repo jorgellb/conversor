@@ -15,15 +15,22 @@ import { printPdf } from "@/lib/print";
 import { getConfig } from "@/lib/runtime";
 import { runServerJob, type Phase } from "@/lib/server-job";
 
-import { AiPanel, type AiReady } from "./AiPanel";
-import { BookletPreview } from "./extras/BookletPreview";
-import { CloudOpen, CloudSave } from "./extras/CloudButtons";
-import { CropPicker } from "./extras/CropPicker";
-import { MailShare } from "./extras/MailShare";
-import { MetadataPanel } from "./extras/MetadataPanel";
-import { PrintExtras } from "./extras/PrintExtras";
+import dynamic from "next/dynamic";
+
+import type { AiReady } from "./AiPanel";
+import { CloudOpen } from "./extras/CloudButtons";
 import { defaultsOf, OptionsForm, visible } from "./OptionsForm";
 import { solveTurnstile } from "./turnstile";
+
+// Extras de unas pocas herramientas o que solo salen con el resultado: se cargan al mostrarse, no al abrir la página,
+// para que la hidratación de ToolRunner no sea una tarea larga en móvil (Lighthouse, 1.3; D-190).
+const AiPanel = dynamic(() => import("./AiPanel").then((m) => m.AiPanel), { loading: () => null });
+const BookletPreview = dynamic(() => import("./extras/BookletPreview").then((m) => m.BookletPreview), { loading: () => null });
+const CloudSave = dynamic(() => import("./extras/CloudButtons").then((m) => m.CloudSave), { loading: () => null });
+const CropPicker = dynamic(() => import("./extras/CropPicker").then((m) => m.CropPicker), { loading: () => null });
+const MailShare = dynamic(() => import("./extras/MailShare").then((m) => m.MailShare), { loading: () => null });
+const MetadataPanel = dynamic(() => import("./extras/MetadataPanel").then((m) => m.MetadataPanel), { loading: () => null });
+const PrintExtras = dynamic(() => import("./extras/PrintExtras").then((m) => m.PrintExtras), { loading: () => null });
 
 interface ResultFile {
   name: string;

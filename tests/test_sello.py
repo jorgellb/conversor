@@ -216,8 +216,10 @@ def test_dev_token_and_pkcs11_signer(tmp_path, monkeypatch):
     env = {**os.environ, "SOFTHSM2_CONF": str(conf), "SIGN_PKCS11_MODULE": module, "SIGN_PKCS11_PIN": "1234-dev"}
     cert = tmp_path / "sello.pem"
     root = Path(__file__).resolve().parents[1]
-    subprocess.run([sys.executable, str(root / "infra" / "sign" / "dev_token.py"), str(cert)], env=env, check=True)
-    subprocess.run([sys.executable, str(root / "infra" / "sign" / "dev_token.py"), str(cert)], env=env, check=True)  # idempotente
+    for _ in range(2):  # la segunda vez no cambia nada (idempotente)
+        proc = subprocess.run([sys.executable, str(root / "infra" / "sign" / "dev_token.py"), str(cert)], env=env,
+                              capture_output=True, text=True)
+        assert proc.returncode == 0, proc.stderr[-2000:]
     monkeypatch.setenv("SOFTHSM2_CONF", str(conf))
     settings = SimpleNamespace(SIGN_PKCS11_MODULE=module, SIGN_PKCS11_TOKEN_LABEL="conversor-sello", SIGN_PKCS11_KEY_LABEL="sello",
                                SIGN_PKCS11_PIN="1234-dev", SIGN_CERT_PATH=str(cert))
@@ -231,9 +233,12 @@ def test_dev_token_and_pkcs11_signer(tmp_path, monkeypatch):
                                 signer=signer).getvalue()
     [s] = analyse(data, roots=chain)
     assert s.intact and s.valid and s.level == "plataforma" and s.signer == "Sello de desarrollo (autofirmado)"
-    with pytest.raises(Exception):
+    from core.errors import ToolError
+
+    with pytest.raises(ToolError) as err:
         with firmar.seal_signer(SimpleNamespace(**{**vars(settings), "SIGN_PKCS11_PIN": "mal"})):
             pass
+    assert err.value.detail == "seal_config"
 
 
 def test_tsa_under_another_root_still_gets_b_lt(arch, make_ctx, tmp_path, tmp_path_factory):

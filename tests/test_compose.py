@@ -152,3 +152,11 @@ def test_only_workersign_has_the_seal_pin_and_token():
     assert sorted(prod["workersign"]["networks"]) == ["internal", "webrender"]
     assert dev["workersign"]["networks"] == ["internal"] if "networks" in dev["workersign"] else True
     assert "certomancer" in dev and "certomancer" not in prod
+
+
+def test_egress_proxies_apply_the_default_acl_without_client_tls():
+    """Smokescreen sin --allow-missing-role responde 407 a todo cliente sin certificado TLS (e2e-compose, D-190)."""
+    dev = yaml.safe_load((ROOT / "docker-compose.yml").read_text(encoding="utf-8"))["services"]
+    for services in (dev, _doc()["services"]):
+        for name in ("egressweb", "egressai"):
+            assert "--allow-missing-role" in services[name]["command"], name

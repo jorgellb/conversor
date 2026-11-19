@@ -10,6 +10,7 @@ no se guarda: el token de desarrollo se rehace borrando el volumen.
 """
 from __future__ import annotations
 
+import hashlib
 import os
 import secrets
 import subprocess
@@ -49,7 +50,8 @@ def _self_signed(session, key_label: str, common_name: str) -> bytes:
             {"extn_id": "key_identifier", "critical": False, "extn_value": spki.sha1},
         ],
     })
-    signature = private.sign(tbs.dump(), mechanism=Mechanism.ECDSA_SHA256)
+    # SoftHSM2 no implementa CKM_ECDSA_SHA256: se firma el resumen SHA-256 con CKM_ECDSA (en bruto).
+    signature = private.sign(hashlib.sha256(tbs.dump()).digest(), mechanism=Mechanism.ECDSA)
     cert = x509.Certificate({"tbs_certificate": tbs, "signature_algorithm": algos.SignedDigestAlgorithm({"algorithm": "sha256_ecdsa"}),
                              "signature_value": encode_ecdsa_signature(signature)})
     return pem.armor("CERTIFICATE", cert.dump())
