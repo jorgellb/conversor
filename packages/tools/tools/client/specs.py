@@ -155,6 +155,23 @@ class HacerRellenableOptions(BaseModel):
     firmas: list[CampoFirma] = opt([], "Campos de firma", "Signature fields", advanced=True, max_length=50)
 
 
+class CrearFacturaOptions(BaseModel):
+    """crear-factura (A.2, F4-E1): el diseñador manda además la factura (`invoice`) y el logotipo (`logo`), que no pasan
+    por el formulario de opciones; estas son las preferencias por defecto de las líneas nuevas y de la plantilla."""
+
+    plantilla: Literal["clasica", "moderna", "minima"] = opt("clasica", "Plantilla", "Template", labels={
+        "clasica": ("Clásica", "Classic"), "moderna": ("Moderna", "Modern"), "minima": ("Mínima", "Minimal")})
+    iva: Literal["21", "10", "4", "0"] = opt("21", "IVA de cada concepto", "VAT of each item",
+                                             labels={v: (f"{v} %", f"{v} %") for v in ("21", "10", "4", "0")})
+    recargo: bool = opt(False, "Recargo de equivalencia", "Equivalence surcharge")
+    irpf: Literal["0", "7", "15", "personalizada"] = opt("0", "Retención de IRPF", "Income tax withholding", labels={
+        "0": ("No", "No"), "7": ("7 %", "7 %"), "15": ("15 %", "15 %"), "personalizada": ("Personalizada", "Custom")})
+    irpf_personalizada: float = opt(19, "Retención personalizada (%)", "Custom withholding (%)", ge=0, le=50,
+                                    show_if={"irpf": ("personalizada",)})
+    moneda: str = opt("EUR", "Moneda (ISO 4217)", "Currency (ISO 4217)", pattern=r"^[A-Z]{3}$", max_length=3)
+    idioma: Literal["es", "en"] = opt("es", "Idioma de la factura", "Invoice language", labels={"es": ("Español", "Spanish"), "en": ("Inglés", "English")})
+
+
 class RecortarOptions(BaseModel):
     izquierda: float = opt(0, "Izquierda (mm)", "Left (mm)", ge=0, le=1000, show_if={"automatico": (False,)})
     superior: float = opt(0, "Superior (mm)", "Top (mm)", ge=0, le=1000, show_if={"automatico": (False,)})
@@ -702,6 +719,11 @@ SPECS: list[ToolSpec] = [
            "Design a fillable PDF form from a blank page or from a PDF you already have.",
            where="hybrid", worker_group="pdf", impl="tools.pdf.campos_firma:run", cost_class="light", phase="F4", time_limit=300,
            max_files=1, related=("hacer-pdf-rellenable", "rellenar-pdf", "firmar-pdf")),
+    # A.2 (F4-E1, D-204): diseñador de facturas en el navegador; apagada por INVOICING_ES_ENABLED y por defecto (7.23).
+    client("crear-factura", "create-invoice", "Crear factura", "Create invoice", CrearFacturaOptions, (), PDF,
+           "Haz una factura en PDF con tu logotipo, IVA, recargo de equivalencia e IRPF, con los totales calculados al momento.",
+           "Make a PDF invoice with your logo, VAT, equivalence surcharge and withholding, with totals worked out as you type.",
+           category="invoice", phase="F4", default_enabled=False, related=("crear-factura-electronica", "validar-factura-electronica")),
     client("anotar-pdf", "annotate-pdf", "Anotar PDF", "Annotate PDF", AnotarOptions, PDF, PDF,
            "Resalta, subraya, tacha y añade notas, flechas y dibujos; se guardan como comentarios estándar.",
            "Highlight, underline, strike out and add notes, arrows and drawings, saved as standard comments.",

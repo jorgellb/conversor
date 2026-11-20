@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 175 herramientas (F1 43, F2 60, F3 10, F4 12, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 176 herramientas (F1 43, F2 60, F3 10, F4 13, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -23,6 +23,7 @@ Catálogo publicado en esta entrega: 175 herramientas (F1 43, F2 60, F3 10, F4 1
 | `aplanar-pdf` / `flatten-pdf` | navegador | — | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `hacer-pdf-rellenable` / `make-pdf-fillable` | híbrida | pdf | light | F4 | activa | pdf → pdf | redactado, sin revisar |
 | `crear-formulario-pdf` / `create-pdf-form` | híbrida | pdf | light | F4 | activa | pdf → pdf | redactado, sin revisar |
+| `crear-factura` / `create-invoice` | navegador | — | light | F4 | apagada | — → pdf | redactado, sin revisar |
 | `anotar-pdf` / `annotate-pdf` | navegador | — | light | F1 | activa | pdf → pdf | redactado, sin revisar |
 | `lector-pdf` / `pdf-reader` | híbrida | office | light | F1 | activa | pdf, doc, docx, rtf, odt, txt, xls, xlsx, ods, csv, ppt, pptx, pps, odp, odg, jpg, png, gif, bmp, tiff, webp → pdf | redactado, sin revisar |
 | `cortar-paginas-por-la-mitad` / `split-pages-in-half` | navegador | — | light | F2 | activa | pdf → pdf, zip | redactado, sin revisar |
@@ -186,11 +187,12 @@ Catálogo publicado en esta entrega: 175 herramientas (F1 43, F2 60, F3 10, F4 1
 
 | Herramienta | Motivo |
 | --- | --- |
+| `crear-factura` | Apagada por defecto; se enciende con `TOOL_CREAR_FACTURA_ENABLED=true`. Genera facturas: además de INVOICING_ES_ENABLED (Veri*factu y factura electrónica, revisión con un asesor en docs/LEGAL.md) necesita TOOL_CREAR_FACTURA_ENABLED=true. La página avisa de que no sustituye a un sistema de facturación verificable. |
 | `heic-a-jpg` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-pdf` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-png` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 
-Además, cuando lleguen a su fase: `crear-factura`, `crear-factura-electronica`, `pdf-a-factura-electronica` (mismo motivo que su flag temático).
+Además, cuando lleguen a su fase: `crear-factura-electronica`, `pdf-a-factura-electronica` (mismo motivo que su flag temático).
 
 ## Fuera de alcance (7.24)
 
@@ -226,8 +228,8 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | Create PDF form (`/en/create-fillable-pdf-form`) | `crear-formulario-pdf`, `hacer-pdf-rellenable` | disponible |  |
 | Create PDF job application (`/en/create-job-application`) | `solicitud-de-empleo-pdf` | disponible |  |
 | Generate QR code (`/en/generate-qr-code`) | `generar-codigo-qr` | disponible |  |
-| Create invoice (`/en/create-invoice`) | `crear-factura` | pendiente (F4) |  |
-| Create invoice visually (`/en/create-invoice-visually`) | `crear-factura` | pendiente (F4) | Diseñador visual de crear-factura (7.23). |
+| Create invoice (`/en/create-invoice`) | `crear-factura` | disponible, apagada (ver «Desactivadas») |  |
+| Create invoice visually (`/en/create-invoice-visually`) | `crear-factura` | disponible, apagada (ver «Desactivadas») | Diseñador visual de crear-factura (7.23). |
 | Create electronic invoice (`/en/create-electronic-invoice`) | `crear-factura-electronica` | pendiente (F4) |  |
 | PDF invoice to e-invoice (`/en/pdf-to-e-invoice`) | `pdf-a-factura-electronica` | pendiente (F4) |  |
 | XML e-invoice to PDF (`/en/xml-invoice-to-pdf`) | `factura-electronica-a-pdf` | disponible |  |
@@ -333,7 +335,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Printer (`/en/pdf-printer`) | — | sin equivalente | No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3). |
 | PDF Reader (`/en/pdf-reader`) | — | sin equivalente | No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf. |
 
-Resumen: 111 disponibles, 7 pendientes de su fase y 6 sin equivalente (con su explicación).
+Resumen: 113 disponibles, 5 pendientes de su fase y 6 sin equivalente (con su explicación).
 
 ## Mejoras posteriores
 

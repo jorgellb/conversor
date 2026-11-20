@@ -63,10 +63,10 @@ herramientas:
     equivalentes: [generar-codigo-qr]
   - pdf24: "Create invoice"
     ruta: /en/create-invoice
-    equivalentes: [crear-factura:F4]
+    equivalentes: [crear-factura]
   - pdf24: "Create invoice visually"
     ruta: /en/create-invoice-visually
-    equivalentes: [crear-factura:F4]
+    equivalentes: [crear-factura]
     nota: "Diseñador visual de crear-factura (7.23)."
   - pdf24: "Create electronic invoice"
     ruta: /en/create-electronic-invoice

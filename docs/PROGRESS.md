@@ -540,6 +540,12 @@ PostgreSQL y Valkey (en orden, en paralelo, límites, códigos, rechazo, recorda
 largo, exportación y borrado de cuenta) y e2e del navegador con la API simulada. Sin verificar aquí: la e2e de servidor con
 Mailpit y SoftHSM2 (escrita en `servidor.spec.ts`, en la CI, que sigue sin arrancar por la facturación de GitHub).
 
+## F4-E1 (crear-factura)
+
+Diseñador de facturas en el navegador con vista previa en vivo, totales EN 16931, NIF/NIE/CIF e IBAN comprobados y PDF
+con pdf-lib; apagada por `INVOICING_ES_ENABLED` y por defecto. Salvedades en D-204.
+Verificado aquí: Vitest del cálculo, los validadores y el texto del PDF, y e2e de la página encendida por entorno.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4: F4-A, F4-B, F4-C, F4-D y F4-F hechos; siguen F4-E y F4-Z; luego F6, vídeo

@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 
 export const VIEW_NAMESPACES = [
   "collage", "editor", "formDesigner", "qr", "scanner", "copy", "signPdf", "viewer", "adminAi", "bookmarks", "chatPdf", "compare",
-  "printjob", "admin", "account", "signRequest", "signerPage",
+  "printjob", "admin", "account", "signRequest", "signerPage", "invoice",
 ] as const;
 
 export type ViewNamespace = (typeof VIEW_NAMESPACES)[number];

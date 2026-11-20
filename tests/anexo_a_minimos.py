@@ -232,6 +232,9 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     "comparar-pdf": {"ignorar_mayusculas_espacios": D(False)},
     "buscar-en-pdf": {"texto": X, "mayusculas": D(False), "palabra_completa": D(False), "expresion_regular": D(False)},
     "validar-pdfa": {"perfil": E("auto", "auto", "1a", "1b", "2a", "2b", "2u", "3a", "3b", "3u", "4", "4e", "4f", "ua1", "ua2")},
+    # A.2 (F4-E1): IVA [21] | 10 | 4 | 0, recargo [no], IRPF [no] | 7 | 15 | personalizada, moneda [EUR], idioma y plantilla.
+    "crear-factura": {"iva": E("21", "21", "10", "4", "0"), "recargo": D(False), "irpf": E("0", "0", "7", "15", "personalizada"),
+                      "moneda": D("EUR"), "idioma": X, "plantilla": X},
     # A.2 (F4-D): validar-factura-electronica no tiene opciones (detecta sintaxis y especificación).
     "validar-factura-electronica": {},
     # A.2 (F4-D2): salida [PDF/A-3 con el XML incrustado] | PDF simple e idioma [el de la factura]; las páginas de 7.14 igual.

@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Create invoice helps you make a professional-looking PDF invoice without installing anything: fill in your details and the customer's, add the items and see the taxable base, the VAT of each rate and the total straight away. Everything happens in your browser: the invoice is not uploaded to any server.",
+    "Each item has its quantity, unit, price, discount and VAT (21, 10, 4 or 0 %). If you sell under the Spanish equivalence surcharge scheme, the surcharge of each rate is added, and if your invoice carries income tax withholding you choose 7 %, 15 % or another percentage. Amounts are rounded as the European e-invoicing standard requires, so the invoice adds up if you convert it later.",
+    "As you type we check that the Spanish tax ID (NIF, NIE or CIF) has the right check letter or digit and that the IBAN is valid. Your details, your customers and the last invoice number are kept in this browser for next time.",
+    "Important: this tool is not a verifiable invoicing system (Spain's Veri*factu) and does not send the invoice to the tax authority. If your business must use compliant invoicing software, issue the invoice there."
+  ],
+  "faq": [
+    {
+      "q": "Are my invoices stored on your server?",
+      "a": "No. The PDF is created in your browser, and only your details, customers and last number are kept, in that same browser, to fill them in next time."
+    },
+    {
+      "q": "Is it valid for Veri*factu?",
+      "a": "No. Veri*factu requires invoicing software that records every invoice and sends or keeps it with guarantees; this tool only generates the PDF."
+    },
+    {
+      "q": "How is VAT worked out?",
+      "a": "The bases of the items of each rate are added up and VAT is calculated on that sum, rounded to cents, as the European standard EN 16931 requires."
+    },
+    {
+      "q": "Can I add my logo?",
+      "a": "Yes, a PNG or JPG of up to 1 MB, in the top corner of the invoice."
+    }
+  ]
+}

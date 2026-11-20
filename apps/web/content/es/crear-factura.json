@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Crear factura te ayuda a hacer una factura en PDF con aspecto profesional sin instalar nada: rellenas tus datos y los del cliente, añades los conceptos y ves al momento la base imponible, el IVA de cada tipo y el total. Todo se hace en tu navegador: la factura no se sube a ningún servidor.",
+    "Cada concepto lleva su cantidad, unidad, precio, descuento e IVA (21, 10, 4 o 0 %). Si vendes en régimen de recargo de equivalencia, se añade el recargo de cada tipo, y si tu factura lleva retención de IRPF eliges el 7 %, el 15 % u otro porcentaje. Los importes se redondean como pide la norma europea de factura electrónica, para que la factura cuadre si luego la conviertes.",
+    "Comprobamos al escribir que el NIF, NIE o CIF tiene la letra o el dígito de control correctos y que el IBAN es válido. Tus datos de emisor, tus clientes y el último número de factura se guardan en este navegador para la próxima vez.",
+    "Importante: esta herramienta no es un sistema de facturación verificable (Veri*factu) ni envía la factura a la Agencia Tributaria. Si tu actividad está obligada a usar un programa de facturación adaptado, emite allí la factura."
+  ],
+  "faq": [
+    {
+      "q": "¿Se guardan mis facturas en vuestro servidor?",
+      "a": "No. El PDF se crea en tu navegador y solo se guardan, en ese mismo navegador, tus datos de emisor, los clientes y el último número para rellenarlos la próxima vez."
+    },
+    {
+      "q": "¿Sirve para Veri*factu?",
+      "a": "No. Veri*factu exige un programa de facturación que registre cada factura y la envíe o la conserve con garantías; esta herramienta solo genera el PDF."
+    },
+    {
+      "q": "¿Cómo se calcula el IVA?",
+      "a": "Se suman las bases de los conceptos de cada tipo y se calcula el IVA sobre esa suma, redondeado a céntimos, como pide la norma europea EN 16931."
+    },
+    {
+      "q": "¿Puedo poner mi logotipo?",
+      "a": "Sí, un PNG o JPG de hasta 1 MB, en la esquina superior de la factura."
+    }
+  ]
+}

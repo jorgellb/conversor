@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { BoardEditor, BookmarksEditor, ChatPdfView, CollageView, CompareView, CopyView, FormDesigner, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
-  SearchView, SignatureRequestView } from "@/components/LazyViews";
+  InvoiceDesigner, SearchView, SignatureRequestView } from "@/components/LazyViews";
 import { Feedback } from "@/components/Feedback";
 import { StaticPage } from "@/components/StaticPage";
 import { ViewMessages, type ViewNamespace } from "@/components/ViewMessages";
@@ -38,8 +38,14 @@ const VIEW_OF: Record<string, readonly ViewNamespace[]> = {
   "generar-codigo-qr": ["qr"], "crear-collage": ["collage"], "chat-pdf": ["chatPdf"], "lector-pdf": ["viewer"], "imprimir-pdf": ["printjob"],
   "hacer-pdf-rellenable": ["formDesigner"], "crear-formulario-pdf": ["formDesigner"],
   "editar-pdf": ["editor"], "rellenar-pdf": ["editor"], "redactar-pdf": ["editor"], "anotar-pdf": ["editor"], "firmar-pdf": ["editor", "signPdf"],
-  "solicitar-firmas": ["signRequest"],
+  "solicitar-firmas": ["signRequest"], "crear-factura": ["invoice"],
 };
+
+/** «Convertir en factura electrónica» (A.2) solo si crear-factura-electronica existe y está encendida. */
+function einvoiceHref(locale: Locale): string | undefined {
+  const target = toolBySlugEs("crear-factura-electronica");
+  return target && !disabledByEnv(target.slug_es) ? toolPath(locale, target) : undefined;
+}
 
 function isIndexable(tool: ToolSpec, locale: Locale): boolean {
   return tool.indexable && tool.launch && !disabledByEnv(tool.slug_es) && contentReady(locale, tool.slug_es);
@@ -210,6 +216,8 @@ export default async function SlugPage({ params, searchParams }: Params) {
           <ChatPdfView spec={clientSpec(tool, locale)} />
         ) : tool.slug_es === "lector-pdf" && !disabledByEnv(tool.slug_es) ? (
           <PdfViewer spec={clientSpec(tool, locale)} nextTools={nextTools} />
+        ) : tool.slug_es === "crear-factura" && !disabledByEnv(tool.slug_es) ? (
+          <InvoiceDesigner spec={clientSpec(tool, locale)} einvoiceHref={einvoiceHref(locale)} />
         ) : tool.slug_es === "solicitar-firmas" && !disabledByEnv(tool.slug_es) ? (
           <SignatureRequestView spec={clientSpec(tool, locale)} />
         ) : FORM_DESIGNERS.includes(tool.slug_es) && !disabledByEnv(tool.slug_es) ? (

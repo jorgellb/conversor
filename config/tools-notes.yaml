@@ -20,7 +20,11 @@ temas:
     Las herramientas que generan facturas son un sistema informático de facturación (Veri*factu, RD 1007/2023) y
     tocan la factura electrónica obligatoria (RD 238/2026). Apagado hasta la revisión con un asesor anotada en
     docs/LEGAL.md (7.23). Las que validan o muestran facturas no dependen de este flag.
-herramientas: {}
+herramientas:
+  crear-factura: >-
+    Genera facturas: además de INVOICING_ES_ENABLED (Veri*factu y factura electrónica, revisión con un asesor en
+    docs/LEGAL.md) necesita TOOL_CREAR_FACTURA_ENABLED=true. La página avisa de que no sustituye a un sistema de
+    facturación verificable.
 fuera_de_alcance:
   - formato: XPS, PostScript/EPS y PDF/X
     motivo: Dependen de Ghostscript o MuPDF (AGPL, 11).

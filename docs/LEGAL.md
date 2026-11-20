@@ -9,7 +9,7 @@ Las anota el propietario con fecha y responsable. Mientras falten, los flags cor
 | Codificación H.264 | Pendiente | `VIDEO_H264_ENCODING_ENABLED=false` |
 | AAC, VP9 y AV1: pools que reclaman licencias | Pendiente | Sin herramientas que los codifiquen en esta entrega |
 | MP3, Opus, Vorbis y FLAC | Riesgo bajo (patentes de MP3 caducadas) | ogg-a-mp3, opus-a-mp3, m4a-a-mp3 y mp4-a-mp3 activas |
-| Factura electrónica (generadores) | Pendiente | `INVOICING_ES_ENABLED=false` |
+| Factura electrónica (generadores): crear-factura (F4-E1) avisa de que no es un sistema de facturación verificable (Veri*factu, RD 1007/2023 y RDL 15/2025) y solo genera el PDF; el asesor confirma ese texto y si basta para publicarla, y revisa los generadores de factura electrónica (RD 238/2026) antes de encenderlos | Pendiente | `INVOICING_ES_ENABLED=false` y `TOOL_<SLUG>_ENABLED` sin definir |
 | IA (OpenRouter, consentimiento, transferencias): un especialista en protección de datos revisa el aviso de 6.6, la política de privacidad (OpenRouter y sus proveedores como destinatarios, transferencia fuera de la UE) y la EIPD de abajo | Pendiente | Herramientas de IA en beta con el aviso y el consentimiento; no anunciarlas hasta la revisión |
 | Pagos: alta en OSS si se vende a consumidores de otros países de la UE, Stripe Tax, precios, desistimiento y reembolsos | Pendiente | Stripe en modo test |
 | Modelos de Docling | Revisar la ficha de licencia de cada modelo descargado en la imagen `worker-convert` | No publicar `pdf-a-word` editable sin la revisión |

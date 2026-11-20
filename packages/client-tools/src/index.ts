@@ -1,4 +1,5 @@
 // Punto de entrada: ejecuta una herramienta de navegador por su slug (se usa dentro de un Web Worker).
+import { crearFactura } from "./invoice";
 import { ToolError, extOf, loadPdf, type InFile, type Progress, type ToolResult } from "./common";
 import { editarPdf, insertarFirma, rellenarPdf } from "./edit";
 import { hacerRellenable } from "./forms";
@@ -37,6 +38,8 @@ export { organizedOrder } from "./pages";
 export { formatNumber, tilePositions } from "./stamp";
 export { targetSize, wasmEncoding } from "./imagetools";
 export { applyEdits, inspectForm, newPageSize, readMetadata, wrapText } from "./edit";
+export { computeTotals, formatMoney, invoiceProblems, lineTotal, round2, SURCHARGE, validateIban, validateTaxId } from "./invoice";
+export type { Invoice, InvoiceLine, InvoiceTemplate, InvoiceTotals, Logo, Party } from "./invoice";
 export { designForm, detectFields, hacerRellenable, userRect, type DesignField, type DesignFieldType, type FieldMove, type FormDesign, type SignatureBox, type Suggestion } from "./forms";
 export { exportXfdf, importXfdf, writeAnnotations } from "./annotate";
 export { cortarMitad, halves, imprimir, montar, printAllowed } from "./f2pages";
@@ -90,7 +93,7 @@ export const CLIENT_TOOLS = [
   "numerar-paginas-pdf", "marca-de-agua-pdf", "imagenes-a-pdf", "jpg-a-pdf", "png-a-pdf", "pdf-a-jpg", "pdf-a-png",
   "pdf-a-webp", "pdf-a-imagenes", "generar-contrasena", "png-a-jpg", "webp-a-jpg", "comprimir-imagen", "redimensionar-imagen",
   "editar-pdf", "rellenar-pdf", "webp-a-pdf", "gif-a-pdf", "bmp-a-pdf", "recortar-pdf", "cambiar-tamano-pagina-pdf",
-  "varias-paginas-por-hoja", "folleto-pdf", "aplanar-pdf", "redactar-pdf", "anotar-pdf", "hacer-pdf-rellenable", "crear-formulario-pdf", "firmar-pdf",
+  "varias-paginas-por-hoja", "folleto-pdf", "aplanar-pdf", "redactar-pdf", "anotar-pdf", "hacer-pdf-rellenable", "crear-formulario-pdf", "firmar-pdf", "crear-factura",
   "cortar-paginas-por-la-mitad", "imprimir-pdf", "montar-pdf", "marcadores-pdf", "comparar-pdf", "buscar-en-pdf",
   "jpg-a-png", "webp-a-png", "gif-a-png", "jpg-a-webp", "png-a-webp", "avif-a-jpg", "bmp-a-jpg", "tiff-a-jpg", "jpg-a-avif",
   "png-a-ico", "convertir-imagen", "svg-a-png", "svg-a-jpg", "crear-favicon", "quitar-metadatos-foto", "imagen-a-base64",
@@ -212,6 +215,8 @@ export async function runClientTool(slug: string, inputs: InFile[], options: Any
       return rellenarPdf(files, options, env.fonts, {}, env.locale);
     case "firmar-pdf":
       return insertarFirma(files, options, env.fonts, {}, env.locale);
+    case "crear-factura":
+      return crearFactura(options, env.fonts);
     case "hacer-pdf-rellenable":
     case "crear-formulario-pdf":
       return hacerRellenable(files, options, env.fonts, {}, env.locale);

@@ -2765,6 +2765,196 @@
       }
     },
     {
+      "slug_es": "crear-factura",
+      "slug_en": "create-invoice",
+      "name_es": "Crear factura",
+      "name_en": "Create invoice",
+      "summary_es": "Haz una factura en PDF con tu logotipo, IVA, recargo de equivalencia e IRPF, con los totales calculados al momento.",
+      "summary_en": "Make a PDF invoice with your logo, VAT, equivalence surcharge and withholding, with totals worked out as you type.",
+      "category": "invoice",
+      "where": "client",
+      "worker_group": null,
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [],
+      "outputs": [
+        "pdf"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": false,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "crear-factura-electronica",
+        "validar-factura-electronica"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "crear-factura (A.2, F4-E1): el diseñador manda además la factura (`invoice`) y el logotipo (`logo`), que no pasan\npor el formulario de opciones; estas son las preferencias por defecto de las líneas nuevas y de la plantilla.",
+        "properties": {
+          "plantilla": {
+            "default": "clasica",
+            "enum": [
+              "clasica",
+              "moderna",
+              "minima"
+            ],
+            "title": "Plantilla",
+            "type": "string",
+            "x-labels": {
+              "clasica": {
+                "en": "Classic",
+                "es": "Clásica"
+              },
+              "minima": {
+                "en": "Minimal",
+                "es": "Mínima"
+              },
+              "moderna": {
+                "en": "Modern",
+                "es": "Moderna"
+              }
+            },
+            "x-title": {
+              "en": "Template",
+              "es": "Plantilla"
+            }
+          },
+          "iva": {
+            "default": "21",
+            "enum": [
+              "21",
+              "10",
+              "4",
+              "0"
+            ],
+            "title": "IVA de cada concepto",
+            "type": "string",
+            "x-labels": {
+              "0": {
+                "en": "0 %",
+                "es": "0 %"
+              },
+              "10": {
+                "en": "10 %",
+                "es": "10 %"
+              },
+              "21": {
+                "en": "21 %",
+                "es": "21 %"
+              },
+              "4": {
+                "en": "4 %",
+                "es": "4 %"
+              }
+            },
+            "x-title": {
+              "en": "VAT of each item",
+              "es": "IVA de cada concepto"
+            }
+          },
+          "recargo": {
+            "default": false,
+            "title": "Recargo de equivalencia",
+            "type": "boolean",
+            "x-title": {
+              "en": "Equivalence surcharge",
+              "es": "Recargo de equivalencia"
+            }
+          },
+          "irpf": {
+            "default": "0",
+            "enum": [
+              "0",
+              "7",
+              "15",
+              "personalizada"
+            ],
+            "title": "Retención de IRPF",
+            "type": "string",
+            "x-labels": {
+              "0": {
+                "en": "No",
+                "es": "No"
+              },
+              "15": {
+                "en": "15 %",
+                "es": "15 %"
+              },
+              "7": {
+                "en": "7 %",
+                "es": "7 %"
+              },
+              "personalizada": {
+                "en": "Custom",
+                "es": "Personalizada"
+              }
+            },
+            "x-title": {
+              "en": "Income tax withholding",
+              "es": "Retención de IRPF"
+            }
+          },
+          "irpf_personalizada": {
+            "default": 19,
+            "maximum": 50,
+            "minimum": 0,
+            "title": "Retención personalizada (%)",
+            "type": "number",
+            "x-show-if": {
+              "irpf": [
+                "personalizada"
+              ]
+            },
+            "x-title": {
+              "en": "Custom withholding (%)",
+              "es": "Retención personalizada (%)"
+            }
+          },
+          "moneda": {
+            "default": "EUR",
+            "maxLength": 3,
+            "pattern": "^[A-Z]{3}$",
+            "title": "Moneda (ISO 4217)",
+            "type": "string",
+            "x-title": {
+              "en": "Currency (ISO 4217)",
+              "es": "Moneda (ISO 4217)"
+            }
+          },
+          "idioma": {
+            "default": "es",
+            "enum": [
+              "es",
+              "en"
+            ],
+            "title": "Idioma de la factura",
+            "type": "string",
+            "x-labels": {
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              }
+            },
+            "x-title": {
+              "en": "Invoice language",
+              "es": "Idioma de la factura"
+            }
+          }
+        },
+        "title": "CrearFacturaOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "anotar-pdf",
       "slug_en": "annotate-pdf",
       "name_es": "Anotar PDF",
