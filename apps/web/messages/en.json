@@ -1323,7 +1323,7 @@
     "price": "Price excl. VAT",
     "discount": "Disc. %",
     "vat": "VAT",
-    "removeLine": "Remove the item",
+    "removeLine": "Remove item {n}",
     "addLine": "Add item",
     "surcharge": "Equivalence surcharge (5.2 %, 1.4 % and 0.5 %)",
     "irpf": "Income tax withholding",
@@ -1362,7 +1362,72 @@
         "price": "The price of item {n} is not valid.",
         "discount": "The discount of item {n} must be between 0 and 100.",
         "vat": "The VAT of item {n} is not valid."
-      }
-    }
+      },
+      "issuerAddress": "Your address (street and city) is missing.",
+      "customerTaxIdRequired": "The customer's tax ID is missing.",
+      "exemption": "Choose the reason for 0 % VAT.",
+      "operationDate": "The date of supply is not valid.",
+      "exchangeRate": "Enter the exchange rate to euros.",
+      "country": "The country must be a two-letter code (ES, FR…).",
+      "negative": "The total cannot be negative: correcting an invoice needs a corrective invoice."
+    },
+    "forgetClients": "Forget saved customers",
+    "needCustomerTaxId": "With withholding, surcharge, intra-Community supply or reverse charge the customer's tax ID is required.",
+    "numberUsed": "You already generated an invoice with this number in this browser: each invoice needs a different number.",
+    "operationDate": "Date of supply (if not the issue date)",
+    "exchangeRate": "Euros per 1 {c} (the VAT amount is also shown in euros)",
+    "lineN": "Item {n}",
+    "exemption": "Reason for 0 % VAT (printed on the invoice)",
+    "chooseExemption": "Choose the reason…",
+    "exemptions": {
+      "art20": "Exempt (art. 20 of the Spanish VAT Law)",
+      "art21": "Export (art. 21)",
+      "art25": "Intra-Community supply (art. 25)",
+      "isp": "Reverse charge (art. 84)",
+      "nosujeta": "Not subject to VAT (art. 7)"
+    },
+    "irpfCustom": "Custom withholding (%)",
+    "glyphs": "The invoice font lacks these characters: {chars}. Write them with Latin letters.",
+    "next": "Prepare the next invoice",
+    "einvoice": "E-invoice",
+    "format": "Format",
+    "formats": {
+      "facturx": "Factur-X / ZUGFeRD (PDF with the XML inside)",
+      "xrechnung_cii": "XRechnung CII (Germany)",
+      "xrechnung_ubl": "XRechnung UBL (Germany)",
+      "peppol": "Peppol BIS Billing 3.0",
+      "ubl": "UBL 2.1 (EN 16931, Spanish public solution)",
+      "facturae": "Facturae 3.2.2 (FACe)"
+    },
+    "profile": "Factur-X profile",
+    "profiles": {
+      "minimum": "MINIMUM",
+      "basicwl": "BASIC WL",
+      "basic": "BASIC",
+      "en16931": "EN 16931 (recommended)",
+      "extended": "EXTENDED",
+      "xrechnung": "XRECHNUNG"
+    },
+    "partialProfile": "MINIMUM and BASIC WL are not complete EN 16931 invoices: they carry no items and in many countries are not valid as an invoice.",
+    "euOnly": "The equivalence surcharge and income tax withholding only exist in Facturae.",
+    "buyerReference": "Buyer reference (Leitweg-ID in XRechnung)",
+    "order": "Order reference",
+    "paymentCode": "Payment means (code)",
+    "paymentCodes": {
+      "58": "SEPA credit transfer",
+      "30": "Credit transfer",
+      "59": "SEPA direct debit",
+      "49": "Direct debit",
+      "48": "Card",
+      "10": "Cash"
+    },
+    "province": "Province",
+    "email": "Email",
+    "contact": "Contact person",
+    "phone": "Phone",
+    "endpointScheme": "Electronic address scheme (EAS)",
+    "endpointId": "Electronic address (Peppol, XRechnung)",
+    "discountText": "Discount",
+    "generateElectronic": "Generate and validate the e-invoice"
   }
 }

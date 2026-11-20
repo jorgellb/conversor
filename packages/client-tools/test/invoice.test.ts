@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
 
-import { computeTotals, crearFactura, invoiceProblems, round2, validateIban, validateTaxId, type Invoice } from "../src/invoice";
+import { computeTotals, crearFactura, invoiceProblems, parseAmount, round2, validateIban, validateTaxId, type Invoice } from "../src/invoice";
 import { runClientTool } from "../src/index";
 import { PNG_30x30, b64 } from "./images.fixture";
 import { nodeRenderer } from "./pdfium-node";
@@ -101,11 +101,13 @@ describe("crear-factura: PDF", () => {
       "Recargo de equivalencia 5,2", "Retención IRPF 15", "677,39", "ES91 2100 0418 4502 0005 1332", "Gracias por su confianza.", "Página 1 de 1"]) {
       expect(text).toContain(s);
     }
-    const en = await crearFactura({ invoice: invoice({ locale: "en", currency: "GBP" }) }, noto);
+    const en = await crearFactura({ invoice: invoice({ locale: "en", currency: "GBP", exchangeRate: 1.15 }) }, noto);
     const enText = await pdfText(en.outputs[0].bytes);
     expect(en.outputs[0].name).toBe("invoice-2026-0042.pdf");
     expect(enText).toContain("INVOICE");
     expect(enText).toContain("£739.72");
+    expect(enText).toContain("VAT amount in euros (1 GBP = 1.15 EUR)");
+    expect(enText).toContain("€141.20"); // 122,78 × 1,15
   });
 
   it("muchas líneas pasan a otra página y una factura incompleta no se genera", async () => {
@@ -115,5 +117,62 @@ describe("crear-factura: PDF", () => {
     expect(text).toContain("Concepto 70");
     expect(text).toMatch(/Página 1 de [2-9]/);
     await expect(crearFactura({ invoice: invoice({ number: " " }) }, noto)).rejects.toMatchObject({ code: "INVALID_OPTIONS" });
+  });
+});
+
+describe("crear-factura: revisión (art. 6 del RD 1619/2012 y maquetación)", () => {
+  it("el IVA 0 % pide su causa, que se imprime; con IRPF o recargo hace falta el NIF del cliente", async () => {
+    const zero = invoice({ lines: [{ description: "Formación", quantity: 1, unit: "h", price: 100, discount: 0, vat: 0 }] });
+    expect(invoiceProblems(zero)).toContain("exemption");
+    expect(invoiceProblems({ ...zero, exemption: "art25", customer: { ...zero.customer, taxId: "" } })).toContain("customerTaxIdRequired");
+    expect(invoiceProblems(invoice({ irpf: 15, customer: { ...invoice().customer, taxId: "" } }))).toContain("customerTaxIdRequired");
+    const res = await crearFactura({ invoice: { ...zero, exemption: "art20", operationDate: "2026-11-15" } }, noto);
+    const text = await pdfText(res.outputs[0].bytes);
+    expect(text).toContain("Operación exenta de IVA (art. 20 de la Ley 37/1992).");
+    expect(text).toContain("Fecha de la operación: 15/11/2026");
+  });
+
+  it("exige el domicilio del emisor, fechas que existen, país ISO y no admite un total negativo", () => {
+    expect(invoiceProblems(invoice({ issuer: { ...invoice().issuer, address: "" } }))).toContain("issuerAddress");
+    expect(invoiceProblems(invoice({ issueDate: "2026-02-31" }))).toContain("issueDate");
+    expect(invoiceProblems(invoice({ customer: { ...invoice().customer, country: "España" } }))).toContain("country");
+    expect(invoiceProblems(invoice({ lines: [{ description: "Abono", quantity: -1, unit: "ud", price: 100, discount: 0, vat: 21 }] }))).toContain("negative");
+    expect(invoiceProblems(invoice({ currency: "USD" }))).toContain("exchangeRate");
+    expect(invoiceProblems(invoice({ currency: "USD", exchangeRate: 0.92 }))).not.toContain("exchangeRate");
+    // Un país vacío no desactiva la comprobación del NIF; 00000000T tampoco vale.
+    expect(validateTaxId("12345678A", "").ok).toBe(false);
+    expect(validateTaxId("00000000T").ok).toBe(false);
+    expect(validateIban("ES9121000418450200051342").ok).toBe(false); // mod 97 puede cuadrar; el CCC no
+  });
+
+  it("lee importes a la española y a la inglesa", () => {
+    expect(parseAmount("1.500")).toBe(1500);
+    expect(parseAmount("1.234,56")).toBe(1234.56);
+    expect(parseAmount("0.125")).toBe(0.125);
+    expect(parseAmount("12,5")).toBe(12.5);
+    expect(parseAmount("1,500.5", "en")).toBe(1500.5);
+    expect(parseAmount("abc")).toBeNaN();
+    expect(round2(-0.004)).toBe(0);
+    expect(Object.is(round2(-0.004), -0)).toBe(false);
+  });
+
+  it("el precio unitario lleva sus decimales y las palabras largas no se salen de la página", async () => {
+    const long = "https://ejemplo.test/" + "a".repeat(300);
+    const res = await crearFactura({ invoice: invoice({ notes: long, lines: [{ description: long, quantity: 1000, unit: "kWh", price: 0.125, discount: 0, vat: 21 }] }) }, noto);
+    const doc = await nodeRenderer.open(res.outputs[0].bytes);
+    try {
+      for (let p = 0; p < doc.pageCount; p += 1) {
+        for (const c of doc.text(p)) if (c.box) expect(c.box[2]).toBeLessThanOrEqual(596);
+      }
+      const all = Array.from({ length: doc.pageCount }, (_, p) => doc.text(p).map((c) => c.ch).join("")).join("");
+      expect(all).toContain("0,125");
+    } finally {
+      doc.close();
+    }
+  });
+
+  it("un carácter que la fuente no tiene se rechaza en vez de salir como un cuadro vacío", async () => {
+    await expect(crearFactura({ invoice: invoice({ customer: { ...invoice().customer, name: "株式会社テスト" } }) }, noto))
+      .rejects.toMatchObject({ code: "UNSUPPORTED_FORMAT" });
   });
 });

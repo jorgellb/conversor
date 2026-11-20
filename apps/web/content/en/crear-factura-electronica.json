@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Create e-invoice generates the invoice in the format your customer or the public administration asks for: Factur-X or ZUGFeRD (a PDF with the XML inside), XRechnung for Germany, Peppol BIS Billing 3.0, UBL 2.1 under the European standard EN 16931 (the syntax of the Spanish public solution) or Facturae 3.2.2 for Spain's FACe.",
+    "You fill in a form with the fields of the European standard: seller and buyer with their tax ID, items, the VAT of each, dates, payment means and IBAN and, if the format requires it, the buyer reference, the Peppol electronic address or the contact person. Amounts are rounded as EN 16931 requires, so the invoice adds up.",
+    "Before delivery, the invoice goes through the same validator as “Validate e-invoice”: the official schemas and the KoSIT rules, or the official Facturae schema. If something fails, it is not delivered and we tell you which rule fails.",
+    "Factur-X comes as a PDF/A-3 with the readable invoice and the XML embedded, checked with veraPDF; the other formats, as XML. Facturae is delivered unsigned: sign it with your certificate before sending it. This tool is not a verifiable invoicing system (Spain's Veri*factu)."
+  ],
+  "faq": [
+    {
+      "q": "Which format should I choose?",
+      "a": "The one the recipient asks for: Facturae for Spanish public administrations (FACe), XRechnung for German ones, Peppol for companies and administrations on that network, and Factur-X when you want an ordinary PDF that also carries the e-invoice."
+    },
+    {
+      "q": "Can I add the equivalence surcharge or income tax withholding?",
+      "a": "Only in Facturae: the European standard EN 16931, on which the other formats are based, does not cover them."
+    },
+    {
+      "q": "Why is my invoice not generated?",
+      "a": "Because the validator found a rule that is not met, or a field the format requires is missing. The message says which; fix it and generate it again."
+    },
+    {
+      "q": "Is the invoice stored on your server?",
+      "a": "Only for your plan's retention time, so you can download it; then it is deleted."
+    }
+  ]
+}

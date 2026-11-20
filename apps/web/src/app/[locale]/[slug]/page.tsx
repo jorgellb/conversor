@@ -38,7 +38,7 @@ const VIEW_OF: Record<string, readonly ViewNamespace[]> = {
   "generar-codigo-qr": ["qr"], "crear-collage": ["collage"], "chat-pdf": ["chatPdf"], "lector-pdf": ["viewer"], "imprimir-pdf": ["printjob"],
   "hacer-pdf-rellenable": ["formDesigner"], "crear-formulario-pdf": ["formDesigner"],
   "editar-pdf": ["editor"], "rellenar-pdf": ["editor"], "redactar-pdf": ["editor"], "anotar-pdf": ["editor"], "firmar-pdf": ["editor", "signPdf"],
-  "solicitar-firmas": ["signRequest"], "crear-factura": ["invoice"],
+  "solicitar-firmas": ["signRequest"], "crear-factura": ["invoice"], "crear-factura-electronica": ["invoice"],
 };
 
 /** «Convertir en factura electrónica» (A.2) solo si crear-factura-electronica existe y está encendida. */
@@ -218,6 +218,8 @@ export default async function SlugPage({ params, searchParams }: Params) {
           <PdfViewer spec={clientSpec(tool, locale)} nextTools={nextTools} />
         ) : tool.slug_es === "crear-factura" && !disabledByEnv(tool.slug_es) ? (
           <InvoiceDesigner spec={clientSpec(tool, locale)} einvoiceHref={einvoiceHref(locale)} />
+        ) : tool.slug_es === "crear-factura-electronica" && !disabledByEnv(tool.slug_es) ? (
+          <InvoiceDesigner spec={clientSpec(tool, locale)} electronic />
         ) : tool.slug_es === "solicitar-firmas" && !disabledByEnv(tool.slug_es) ? (
           <SignatureRequestView spec={clientSpec(tool, locale)} />
         ) : FORM_DESIGNERS.includes(tool.slug_es) && !disabledByEnv(tool.slug_es) ? (

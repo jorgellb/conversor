@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Crear factura electrónica genera la factura en el formato que te pide tu cliente o la Administración: Factur-X o ZUGFeRD (un PDF que lleva dentro el XML), XRechnung para Alemania, Peppol BIS Billing 3.0, UBL 2.1 según la norma europea EN 16931 (la sintaxis de la solución pública española) o Facturae 3.2.2 para FACe.",
+    "Rellenas un formulario con los datos de la norma europea: emisor y cliente con su NIF, conceptos, IVA de cada uno, fechas, forma de pago e IBAN y, si el formato lo pide, la referencia del comprador, la dirección electrónica Peppol o la persona de contacto. Los importes se redondean como pide EN 16931, así que la factura cuadra.",
+    "Antes de entregarla, la factura pasa por el mismo validador que «Validar factura electrónica»: los esquemas oficiales y las reglas de KoSIT, o el esquema oficial de Facturae. Si algo no cumple, no se entrega y te decimos qué regla falla.",
+    "Factur-X sale como PDF/A-3 con la factura legible y el XML incrustado, comprobado con veraPDF; el resto de formatos, como XML. Facturae se entrega sin firmar: fírmala con tu certificado antes de enviarla. Esta herramienta no es un sistema de facturación verificable (Veri*factu)."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué formato elijo?",
+      "a": "El que pida quien recibe la factura: Facturae para las Administraciones españolas (FACe), XRechnung para las alemanas, Peppol para empresas y Administraciones conectadas a esa red, y Factur-X cuando quieras un PDF normal que además lleve la factura electrónica."
+    },
+    {
+      "q": "¿Puedo poner recargo de equivalencia o retención de IRPF?",
+      "a": "Solo en Facturae: la norma europea EN 16931, en la que se basan los demás formatos, no los contempla."
+    },
+    {
+      "q": "¿Por qué no se genera mi factura?",
+      "a": "Porque el validador ha encontrado una regla que no se cumple, o porque falta un dato que el formato exige. El mensaje dice cuál; corrige ese dato y vuelve a generarla."
+    },
+    {
+      "q": "¿Se guarda la factura en vuestro servidor?",
+      "a": "Solo el tiempo de retención de tu plan, para que puedas descargarla; después se borra."
+    }
+  ]
+}

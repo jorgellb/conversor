@@ -1323,7 +1323,7 @@
     "price": "Precio sin IVA",
     "discount": "Dto. %",
     "vat": "IVA",
-    "removeLine": "Quitar el concepto",
+    "removeLine": "Quitar el concepto {n}",
     "addLine": "Añadir concepto",
     "surcharge": "Recargo de equivalencia (5,2 %, 1,4 % y 0,5 %)",
     "irpf": "Retención de IRPF",
@@ -1362,7 +1362,72 @@
         "price": "El precio del concepto {n} no es válido.",
         "discount": "El descuento del concepto {n} tiene que estar entre 0 y 100.",
         "vat": "El IVA del concepto {n} no es válido."
-      }
-    }
+      },
+      "issuerAddress": "Falta tu domicilio (dirección y población).",
+      "customerTaxIdRequired": "Falta el NIF del cliente.",
+      "exemption": "Elige la causa del IVA 0 %.",
+      "operationDate": "La fecha de la operación no es válida.",
+      "exchangeRate": "Indica el tipo de cambio a euros.",
+      "country": "El país tiene que ser un código de dos letras (ES, FR…).",
+      "negative": "El total no puede ser negativo: para corregir una factura hace falta una factura rectificativa."
+    },
+    "forgetClients": "Olvidar los clientes guardados",
+    "needCustomerTaxId": "Con retención, recargo, entrega intracomunitaria o inversión del sujeto pasivo hace falta el NIF del cliente.",
+    "numberUsed": "Ya has generado una factura con este número en este navegador: cada factura necesita un número distinto.",
+    "operationDate": "Fecha de la operación (si no es la de expedición)",
+    "exchangeRate": "Euros por 1 {c} (la cuota de IVA va también en euros)",
+    "lineN": "Concepto {n}",
+    "exemption": "Causa del IVA 0 % (se imprime en la factura)",
+    "chooseExemption": "Elegir la causa…",
+    "exemptions": {
+      "art20": "Exenta (art. 20 de la Ley del IVA)",
+      "art21": "Exportación (art. 21)",
+      "art25": "Entrega intracomunitaria (art. 25)",
+      "isp": "Inversión del sujeto pasivo (art. 84)",
+      "nosujeta": "No sujeta (art. 7)"
+    },
+    "irpfCustom": "Retención personalizada (%)",
+    "glyphs": "La fuente de la factura no tiene estos caracteres: {chars}. Escríbelos con letras latinas.",
+    "next": "Preparar la siguiente factura",
+    "einvoice": "Factura electrónica",
+    "format": "Formato",
+    "formats": {
+      "facturx": "Factur-X / ZUGFeRD (PDF con el XML dentro)",
+      "xrechnung_cii": "XRechnung CII (Alemania)",
+      "xrechnung_ubl": "XRechnung UBL (Alemania)",
+      "peppol": "Peppol BIS Billing 3.0",
+      "ubl": "UBL 2.1 (EN 16931, solución pública española)",
+      "facturae": "Facturae 3.2.2 (FACe)"
+    },
+    "profile": "Perfil Factur-X",
+    "profiles": {
+      "minimum": "MINIMUM",
+      "basicwl": "BASIC WL",
+      "basic": "BASIC",
+      "en16931": "EN 16931 (recomendado)",
+      "extended": "EXTENDED",
+      "xrechnung": "XRECHNUNG"
+    },
+    "partialProfile": "MINIMUM y BASIC WL no son facturas EN 16931 completas: no llevan los conceptos y en muchos países no sirven como factura.",
+    "euOnly": "El recargo de equivalencia y la retención de IRPF solo existen en Facturae.",
+    "buyerReference": "Referencia del comprador (Leitweg-ID en XRechnung)",
+    "order": "Referencia del pedido",
+    "paymentCode": "Forma de pago (código)",
+    "paymentCodes": {
+      "58": "Transferencia SEPA",
+      "30": "Transferencia",
+      "59": "Adeudo SEPA",
+      "49": "Domiciliación",
+      "48": "Tarjeta",
+      "10": "Efectivo"
+    },
+    "province": "Provincia",
+    "email": "Correo",
+    "contact": "Persona de contacto",
+    "phone": "Teléfono",
+    "endpointScheme": "Esquema de la dirección electrónica (EAS)",
+    "endpointId": "Dirección electrónica (Peppol, XRechnung)",
+    "discountText": "Descuento",
+    "generateElectronic": "Generar y validar la factura electrónica"
   }
 }

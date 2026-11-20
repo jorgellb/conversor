@@ -70,7 +70,7 @@ herramientas:
     nota: "Diseñador visual de crear-factura (7.23)."
   - pdf24: "Create electronic invoice"
     ruta: /en/create-electronic-invoice
-    equivalentes: [crear-factura-electronica:F4]
+    equivalentes: [crear-factura-electronica]
   - pdf24: "PDF invoice to e-invoice"
     ruta: /en/pdf-to-e-invoice
     equivalentes: [pdf-a-factura-electronica:F4]

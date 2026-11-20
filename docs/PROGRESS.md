@@ -546,6 +546,14 @@ Diseñador de facturas en el navegador con vista previa en vivo, totales EN 1693
 con pdf-lib; apagada por `INVOICING_ES_ENABLED` y por defecto. Salvedades en D-204.
 Verificado aquí: Vitest del cálculo, los validadores y el texto del PDF, y e2e de la página encendida por entorno.
 
+## F4-E2 (crear-factura-electronica)
+
+Factur-X por perfil, XRechnung CII y UBL, Peppol BIS 3.0, UBL 2.1 y Facturae 3.2.2 desde el diseñador de crear-factura,
+validados con KoSIT y los XSD antes de entregarse; Factur-X en PDF/A-3b con su XMP. Revisión de F4-E1 corregida (D-206).
+Salvedades en D-205.
+Verificado aquí: pytest de los once formatos con el KoSIT local, de los requisitos de cada formato y del PDF Factur-X, Vitest
+y e2e de las dos páginas. Sin verificar aquí: la firma de Facturae (F4-E2b) y la pila completa.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4: F4-A, F4-B, F4-C, F4-D y F4-F hechos; siguen F4-E y F4-Z; luego F6, vídeo

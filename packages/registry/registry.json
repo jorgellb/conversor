@@ -2794,7 +2794,7 @@
       "ai": false,
       "ai_option": null,
       "options_schema": {
-        "description": "crear-factura (A.2, F4-E1): el diseñador manda además la factura (`invoice`) y el logotipo (`logo`), que no pasan\npor el formulario de opciones; estas son las preferencias por defecto de las líneas nuevas y de la plantilla.",
+        "description": "crear-factura (A.2, F4-E1): esquema de lo que ofrece el diseñador propio de la página (plantilla, IVA de cada\nconcepto, recargo, IRPF, moneda e idioma), que tiene su formulario y manda la factura entera (`invoice`) y el logotipo\n(`logo`); estas opciones no se leen por separado.",
         "properties": {
           "plantilla": {
             "default": "clasica",
@@ -27364,6 +27364,655 @@
           }
         },
         "title": "VerificarOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "crear-factura-electronica",
+      "slug_en": "create-e-invoice",
+      "name_es": "Crear factura electrónica",
+      "name_en": "Create e-invoice",
+      "summary_es": "Crea facturas Factur-X, XRechnung, Peppol, UBL y Facturae desde un formulario y las valida antes de entregarlas.",
+      "summary_en": "Create Factur-X, XRechnung, Peppol, UBL and Facturae invoices from a form and validate them before delivery.",
+      "category": "invoice",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [],
+      "outputs": [
+        "pdf",
+        "xml"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": false,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "crear-factura",
+        "validar-factura-electronica"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "$defs": {
+          "FacturaE": {
+            "properties": {
+              "numero": {
+                "default": "",
+                "maxLength": 60,
+                "title": "Número",
+                "type": "string",
+                "x-title": {
+                  "en": "Number",
+                  "es": "Número"
+                }
+              },
+              "fecha": {
+                "default": "2026-01-01",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "title": "Fecha de expedición",
+                "type": "string",
+                "x-title": {
+                  "en": "Issue date",
+                  "es": "Fecha de expedición"
+                }
+              },
+              "vencimiento": {
+                "default": "",
+                "pattern": "^(\\d{4}-\\d{2}-\\d{2})?$",
+                "title": "Vencimiento",
+                "type": "string",
+                "x-title": {
+                  "en": "Due date",
+                  "es": "Vencimiento"
+                }
+              },
+              "fecha_operacion": {
+                "default": "",
+                "pattern": "^(\\d{4}-\\d{2}-\\d{2})?$",
+                "title": "Fecha de la operación, si no es la de expedición",
+                "type": "string",
+                "x-title": {
+                  "en": "Date of supply, if not the issue date",
+                  "es": "Fecha de la operación, si no es la de expedición"
+                }
+              },
+              "moneda": {
+                "default": "EUR",
+                "pattern": "^[A-Z]{3}$",
+                "title": "Moneda",
+                "type": "string",
+                "x-title": {
+                  "en": "Currency",
+                  "es": "Moneda"
+                }
+              },
+              "idioma": {
+                "default": "es",
+                "enum": [
+                  "es",
+                  "en"
+                ],
+                "title": "Idioma",
+                "type": "string",
+                "x-title": {
+                  "en": "Language",
+                  "es": "Idioma"
+                }
+              },
+              "referencia_comprador": {
+                "default": "",
+                "maxLength": 200,
+                "title": "Referencia del comprador (Leitweg-ID en XRechnung)",
+                "type": "string",
+                "x-title": {
+                  "en": "Buyer reference (Leitweg-ID in XRechnung)",
+                  "es": "Referencia del comprador (Leitweg-ID en XRechnung)"
+                }
+              },
+              "pedido": {
+                "default": "",
+                "maxLength": 200,
+                "title": "Referencia del pedido",
+                "type": "string",
+                "x-title": {
+                  "en": "Order reference",
+                  "es": "Referencia del pedido"
+                }
+              },
+              "emisor": {
+                "$ref": "#/$defs/Parte",
+                "default": {
+                  "nombre": "",
+                  "nif": "",
+                  "direccion": "",
+                  "cp": "",
+                  "ciudad": "",
+                  "provincia": "",
+                  "pais": "ES",
+                  "correo": "",
+                  "telefono": "",
+                  "contacto": "",
+                  "endpoint_esquema": "9920",
+                  "endpoint_id": ""
+                },
+                "title": "Emisor",
+                "x-title": {
+                  "en": "Seller",
+                  "es": "Emisor"
+                }
+              },
+              "cliente": {
+                "$ref": "#/$defs/Parte",
+                "default": {
+                  "nombre": "",
+                  "nif": "",
+                  "direccion": "",
+                  "cp": "",
+                  "ciudad": "",
+                  "provincia": "",
+                  "pais": "ES",
+                  "correo": "",
+                  "telefono": "",
+                  "contacto": "",
+                  "endpoint_esquema": "9920",
+                  "endpoint_id": ""
+                },
+                "title": "Cliente",
+                "x-title": {
+                  "en": "Buyer",
+                  "es": "Cliente"
+                }
+              },
+              "lineas": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Linea"
+                },
+                "maxItems": 500,
+                "title": "Conceptos",
+                "type": "array",
+                "x-title": {
+                  "en": "Items",
+                  "es": "Conceptos"
+                }
+              },
+              "recargo": {
+                "default": false,
+                "title": "Recargo de equivalencia (solo Facturae)",
+                "type": "boolean",
+                "x-title": {
+                  "en": "Equivalence surcharge (Facturae only)",
+                  "es": "Recargo de equivalencia (solo Facturae)"
+                }
+              },
+              "irpf": {
+                "default": 0,
+                "maximum": 50,
+                "minimum": 0,
+                "title": "Retención de IRPF (%, solo Facturae)",
+                "type": "number",
+                "x-title": {
+                  "en": "Income tax withholding (%, Facturae only)",
+                  "es": "Retención de IRPF (%, solo Facturae)"
+                }
+              },
+              "forma_pago": {
+                "default": "58",
+                "enum": [
+                  "",
+                  "10",
+                  "30",
+                  "48",
+                  "49",
+                  "58",
+                  "59"
+                ],
+                "title": "Forma de pago (UNTDID 4461)",
+                "type": "string",
+                "x-labels": {
+                  "": {
+                    "en": "Not given",
+                    "es": "Sin indicar"
+                  },
+                  "10": {
+                    "en": "Cash",
+                    "es": "Efectivo"
+                  },
+                  "30": {
+                    "en": "Credit transfer",
+                    "es": "Transferencia"
+                  },
+                  "48": {
+                    "en": "Card",
+                    "es": "Tarjeta"
+                  },
+                  "49": {
+                    "en": "Direct debit",
+                    "es": "Domiciliación"
+                  },
+                  "58": {
+                    "en": "SEPA credit transfer",
+                    "es": "Transferencia SEPA"
+                  },
+                  "59": {
+                    "en": "SEPA direct debit",
+                    "es": "Adeudo SEPA"
+                  }
+                },
+                "x-title": {
+                  "en": "Payment means (UNTDID 4461)",
+                  "es": "Forma de pago (UNTDID 4461)"
+                }
+              },
+              "iban": {
+                "default": "",
+                "maxLength": 40,
+                "title": "IBAN",
+                "type": "string",
+                "x-title": {
+                  "en": "IBAN",
+                  "es": "IBAN"
+                }
+              },
+              "condiciones_pago": {
+                "default": "",
+                "maxLength": 500,
+                "title": "Condiciones de pago",
+                "type": "string",
+                "x-title": {
+                  "en": "Payment terms",
+                  "es": "Condiciones de pago"
+                }
+              },
+              "notas": {
+                "default": "",
+                "maxLength": 2000,
+                "title": "Observaciones",
+                "type": "string",
+                "x-title": {
+                  "en": "Notes",
+                  "es": "Observaciones"
+                }
+              },
+              "motivo_exencion": {
+                "default": "",
+                "maxLength": 500,
+                "title": "Motivo de la exención (IVA 0 %)",
+                "type": "string",
+                "x-title": {
+                  "en": "Exemption reason (0 % VAT)",
+                  "es": "Motivo de la exención (IVA 0 %)"
+                }
+              },
+              "texto_descuento": {
+                "default": "Descuento",
+                "maxLength": 100,
+                "title": "Texto de los descuentos",
+                "type": "string",
+                "x-title": {
+                  "en": "Discount text",
+                  "es": "Texto de los descuentos"
+                }
+              }
+            },
+            "title": "FacturaE",
+            "type": "object"
+          },
+          "Linea": {
+            "properties": {
+              "descripcion": {
+                "default": "",
+                "maxLength": 1000,
+                "title": "Descripción",
+                "type": "string",
+                "x-title": {
+                  "en": "Description",
+                  "es": "Descripción"
+                }
+              },
+              "cantidad": {
+                "default": 1,
+                "exclusiveMinimum": 0,
+                "maximum": 1000000000.0,
+                "title": "Cantidad",
+                "type": "number",
+                "x-title": {
+                  "en": "Quantity",
+                  "es": "Cantidad"
+                }
+              },
+              "unidad": {
+                "default": "ud",
+                "maxLength": 20,
+                "title": "Unidad",
+                "type": "string",
+                "x-title": {
+                  "en": "Unit",
+                  "es": "Unidad"
+                }
+              },
+              "precio": {
+                "default": 0,
+                "maximum": 1000000000000.0,
+                "minimum": 0,
+                "title": "Precio sin IVA",
+                "type": "number",
+                "x-title": {
+                  "en": "Price excl. VAT",
+                  "es": "Precio sin IVA"
+                }
+              },
+              "descuento": {
+                "default": 0,
+                "maximum": 100,
+                "minimum": 0,
+                "title": "Descuento (%)",
+                "type": "number",
+                "x-title": {
+                  "en": "Discount (%)",
+                  "es": "Descuento (%)"
+                }
+              },
+              "iva": {
+                "default": 21,
+                "maximum": 100,
+                "minimum": 0,
+                "title": "IVA (%)",
+                "type": "number",
+                "x-title": {
+                  "en": "VAT (%)",
+                  "es": "IVA (%)"
+                }
+              }
+            },
+            "title": "Linea",
+            "type": "object"
+          },
+          "Parte": {
+            "description": "Emisor o cliente de crear-factura-electronica (EN 16931: BG-4 y BG-7).",
+            "properties": {
+              "nombre": {
+                "default": "",
+                "maxLength": 200,
+                "title": "Nombre o razón social",
+                "type": "string",
+                "x-title": {
+                  "en": "Name or company name",
+                  "es": "Nombre o razón social"
+                }
+              },
+              "nif": {
+                "default": "",
+                "maxLength": 30,
+                "title": "NIF o identificador de IVA",
+                "type": "string",
+                "x-title": {
+                  "en": "Tax or VAT ID",
+                  "es": "NIF o identificador de IVA"
+                }
+              },
+              "direccion": {
+                "default": "",
+                "maxLength": 200,
+                "title": "Dirección",
+                "type": "string",
+                "x-title": {
+                  "en": "Address",
+                  "es": "Dirección"
+                }
+              },
+              "cp": {
+                "default": "",
+                "maxLength": 20,
+                "title": "Código postal",
+                "type": "string",
+                "x-title": {
+                  "en": "Postcode",
+                  "es": "Código postal"
+                }
+              },
+              "ciudad": {
+                "default": "",
+                "maxLength": 100,
+                "title": "Población",
+                "type": "string",
+                "x-title": {
+                  "en": "City",
+                  "es": "Población"
+                }
+              },
+              "provincia": {
+                "default": "",
+                "maxLength": 100,
+                "title": "Provincia",
+                "type": "string",
+                "x-title": {
+                  "en": "Province",
+                  "es": "Provincia"
+                }
+              },
+              "pais": {
+                "default": "ES",
+                "maxLength": 2,
+                "pattern": "^[A-Z]{2}$",
+                "title": "País (ISO 3166-1)",
+                "type": "string",
+                "x-title": {
+                  "en": "Country (ISO 3166-1)",
+                  "es": "País (ISO 3166-1)"
+                }
+              },
+              "correo": {
+                "default": "",
+                "maxLength": 200,
+                "title": "Correo",
+                "type": "string",
+                "x-title": {
+                  "en": "Email",
+                  "es": "Correo"
+                }
+              },
+              "telefono": {
+                "default": "",
+                "maxLength": 40,
+                "title": "Teléfono",
+                "type": "string",
+                "x-title": {
+                  "en": "Phone",
+                  "es": "Teléfono"
+                }
+              },
+              "contacto": {
+                "default": "",
+                "maxLength": 120,
+                "title": "Persona de contacto",
+                "type": "string",
+                "x-title": {
+                  "en": "Contact person",
+                  "es": "Persona de contacto"
+                }
+              },
+              "endpoint_esquema": {
+                "default": "9920",
+                "maxLength": 10,
+                "title": "Esquema de la dirección electrónica (EAS)",
+                "type": "string",
+                "x-title": {
+                  "en": "Electronic address scheme (EAS)",
+                  "es": "Esquema de la dirección electrónica (EAS)"
+                }
+              },
+              "endpoint_id": {
+                "default": "",
+                "maxLength": 200,
+                "title": "Dirección electrónica (Peppol, XRechnung)",
+                "type": "string",
+                "x-title": {
+                  "en": "Electronic address (Peppol, XRechnung)",
+                  "es": "Dirección electrónica (Peppol, XRechnung)"
+                }
+              }
+            },
+            "title": "Parte",
+            "type": "object"
+          }
+        },
+        "description": "crear-factura-electronica (A.2, F4-E2, D-205): la página manda la factura del formulario EN 16931.",
+        "properties": {
+          "formato": {
+            "default": "facturx",
+            "enum": [
+              "facturx",
+              "xrechnung_cii",
+              "xrechnung_ubl",
+              "peppol",
+              "ubl",
+              "facturae"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "facturae": {
+                "en": "Facturae 3.2.2",
+                "es": "Facturae 3.2.2"
+              },
+              "facturx": {
+                "en": "Factur-X / ZUGFeRD (PDF with the XML)",
+                "es": "Factur-X / ZUGFeRD (PDF con el XML)"
+              },
+              "peppol": {
+                "en": "Peppol BIS Billing 3.0",
+                "es": "Peppol BIS Billing 3.0"
+              },
+              "ubl": {
+                "en": "UBL 2.1 (EN 16931, Spanish public solution)",
+                "es": "UBL 2.1 (EN 16931, solución pública española)"
+              },
+              "xrechnung_cii": {
+                "en": "XRechnung CII",
+                "es": "XRechnung CII"
+              },
+              "xrechnung_ubl": {
+                "en": "XRechnung UBL",
+                "es": "XRechnung UBL"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "perfil": {
+            "default": "en16931",
+            "enum": [
+              "minimum",
+              "basicwl",
+              "basic",
+              "en16931",
+              "extended",
+              "xrechnung"
+            ],
+            "title": "Perfil Factur-X",
+            "type": "string",
+            "x-labels": {
+              "basic": {
+                "en": "BASIC",
+                "es": "BASIC"
+              },
+              "basicwl": {
+                "en": "BASIC WL (not a complete EN 16931 invoice)",
+                "es": "BASIC WL (no es una factura EN 16931 completa)"
+              },
+              "en16931": {
+                "en": "EN 16931",
+                "es": "EN 16931"
+              },
+              "extended": {
+                "en": "EXTENDED",
+                "es": "EXTENDED"
+              },
+              "minimum": {
+                "en": "MINIMUM (not a complete EN 16931 invoice)",
+                "es": "MINIMUM (no es una factura EN 16931 completa)"
+              },
+              "xrechnung": {
+                "en": "XRECHNUNG",
+                "es": "XRECHNUNG"
+              }
+            },
+            "x-show-if": {
+              "formato": [
+                "facturx"
+              ]
+            },
+            "x-title": {
+              "en": "Factur-X profile",
+              "es": "Perfil Factur-X"
+            }
+          },
+          "factura": {
+            "$ref": "#/$defs/FacturaE",
+            "default": {
+              "numero": "",
+              "fecha": "2026-01-01",
+              "vencimiento": "",
+              "fecha_operacion": "",
+              "moneda": "EUR",
+              "idioma": "es",
+              "referencia_comprador": "",
+              "pedido": "",
+              "emisor": {
+                "ciudad": "",
+                "contacto": "",
+                "correo": "",
+                "cp": "",
+                "direccion": "",
+                "endpoint_esquema": "9920",
+                "endpoint_id": "",
+                "nif": "",
+                "nombre": "",
+                "pais": "ES",
+                "provincia": "",
+                "telefono": ""
+              },
+              "cliente": {
+                "ciudad": "",
+                "contacto": "",
+                "correo": "",
+                "cp": "",
+                "direccion": "",
+                "endpoint_esquema": "9920",
+                "endpoint_id": "",
+                "nif": "",
+                "nombre": "",
+                "pais": "ES",
+                "provincia": "",
+                "telefono": ""
+              },
+              "lineas": [],
+              "recargo": false,
+              "irpf": 0.0,
+              "forma_pago": "58",
+              "iban": "",
+              "condiciones_pago": "",
+              "notas": "",
+              "motivo_exencion": "",
+              "texto_descuento": "Descuento"
+            },
+            "title": "Factura",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Invoice",
+              "es": "Factura"
+            }
+          }
+        },
+        "title": "CrearFacturaElectronicaOptions",
         "type": "object"
       }
     },

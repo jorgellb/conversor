@@ -25,6 +25,9 @@ herramientas:
     Genera facturas: además de INVOICING_ES_ENABLED (Veri*factu y factura electrónica, revisión con un asesor en
     docs/LEGAL.md) necesita TOOL_CREAR_FACTURA_ENABLED=true. La página avisa de que no sustituye a un sistema de
     facturación verificable.
+  crear-factura-electronica: >-
+    Genera facturas electrónicas (RD 238/2026 y Veri*factu): además de INVOICING_ES_ENABLED necesita
+    TOOL_CREAR_FACTURA_ELECTRONICA_ENABLED=true, tras la revisión con un asesor de docs/LEGAL.md.
 fuera_de_alcance:
   - formato: XPS, PostScript/EPS y PDF/X
     motivo: Dependen de Ghostscript o MuPDF (AGPL, 11).

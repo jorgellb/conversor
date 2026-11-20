@@ -1,27 +1,50 @@
 "use client";
 
-// crear-factura (A.2, F4-E1, D-204): formulario con vista previa en vivo, totales con los redondeos de EN 16931 y
-// validación de NIF/NIE/CIF e IBAN; el emisor, los clientes y el último número se recuerdan en este navegador. El PDF
-// se genera aquí (pdf-lib en el Web Worker): la factura no sale del equipo.
+// crear-factura (A.2, F4-E1, D-204 y D-206): formulario con vista previa en vivo, totales con los redondeos de EN 16931 y
+// validación de NIF/NIE/CIF e IBAN; el emisor, los clientes y la numeración se recuerdan en este navegador. El PDF se
+// genera aquí (pdf-lib en el Web Worker): la factura no sale del equipo.
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { computeTotals, formatMoney, invoiceProblems, type Invoice, type InvoiceLine, type Party } from "@conversor/client-tools/invoice-calc";
+import { computeTotals, EXEMPTION_TEXT, formatMoney, invoiceProblems, parseAmount, type Exemption, type Invoice, type InvoiceLine,
+  type Party } from "@conversor/client-tools/invoice-calc";
 
+import { ApiError } from "@/lib/api-client";
 import { ClientToolError, runInBrowser } from "@/lib/client-runner";
+import { identityToken } from "@/lib/identity";
+import { getConfig } from "@/lib/runtime";
+import { runServerJob, type JobOutput } from "@/lib/server-job";
+
+import { solveTurnstile } from "../turnstile";
 import { recordUse } from "@/lib/prefs";
 import type { ClientSpec } from "@/lib/registry";
 
-const STORE = { issuer: "factura:emisor", clients: "factura:clientes", last: "factura:ultimo", handoff: "factura:electronica" };
+const STORE = { issuer: "factura:emisor", clients: "factura:clientes", series: "factura:series", used: "factura:usados",
+  handoff: "factura:electronica" };
 const VAT = [21, 10, 4, 0];
-const today = () => new Date().toISOString().slice(0, 10);
-const plus30 = () => new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10);
+const FORMATS = ["facturx", "xrechnung_cii", "xrechnung_ubl", "peppol", "ubl", "facturae"] as const;
+const PROFILES = ["minimum", "basicwl", "basic", "en16931", "extended", "xrechnung"] as const;
+const PAYMENT_CODES = ["58", "30", "59", "49", "48", "10"] as const;
+type Format = (typeof FORMATS)[number];
+const EXEMPTIONS: Exemption[] = ["art20", "art21", "art25", "isp", "nosujeta"];
+
+/** Fecha local (no la UTC: a las 00:30 en Madrid sería la del día anterior). */
+function localDate(offsetDays = 0): string {
+  const d = new Date(Date.now() + offsetDays * 86_400_000);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 const emptyParty = (): Party => ({ name: "", taxId: "", address: "", postcode: "", city: "", country: "ES", email: "" });
 
-function read<T>(key: string, fallback: T): T {
+function isParty(v: unknown): v is Party {
+  return Boolean(v) && typeof v === "object" && typeof (v as Party).name === "string" && typeof (v as Party).taxId === "string";
+}
+
+function read<T>(key: string, check: (v: unknown) => v is T, fallback: T): T {
   try {
     const raw = window.localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : fallback;
+    const value = raw ? JSON.parse(raw) : null;
+    return check(value) ? value : fallback;
   } catch {
     return fallback;
   }
@@ -35,45 +58,119 @@ function write(key: string, value: unknown) {
   }
 }
 
-/** El número siguiente: «2026/0042» → «2026/0043»; sin cifras al final, se añade «-2». */
-export function nextNumber(last: string): string {
-  const m = /^(.*?)(\d+)$/.exec(last.trim());
-  if (!m) return last.trim() ? `${last.trim()}-2` : `${new Date().getFullYear()}/0001`;
-  return m[1] + String(Number(m[2]) + 1).padStart(m[2].length, "0");
+const isPartyList = (v: unknown): v is Party[] => Array.isArray(v) && v.every(isParty);
+const isRecord = (v: unknown): v is Record<string, number> => Boolean(v) && typeof v === "object" && !Array.isArray(v);
+const isStrings = (v: unknown): v is string[] => Array.isArray(v) && v.every((x) => typeof x === "string");
+
+/** Serie y número: «2026/0042» → («2026/», 42, 4 cifras). */
+export function splitNumber(value: string): { series: string; n: number; width: number } | null {
+  const m = /^(.*?)(\d+)$/.exec(value.trim());
+  return m ? { series: m[1], n: Number(m[2]), width: m[2].length } : null;
 }
 
-export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einvoiceHref?: string }) {
+/** El número siguiente de la serie: el mayor usado más uno (no el último, que puede ser una reimpresión). */
+export function nextNumber(series: Record<string, number>, prefer: string): string {
+  const p = splitNumber(prefer);
+  if (!p) return prefer.trim() ? `${prefer.trim()}-2` : `${new Date().getFullYear()}/0001`;
+  const top = Math.max(series[p.series] ?? 0, p.n);
+  return p.series + String(top + 1).padStart(p.width, "0");
+}
+
+type Row = InvoiceLine & { uid: number; raw: { quantity: string; price: string; discount: string } };
+let uidSeq = 0;
+const newRow = (vat = 21): Row => ({ uid: ++uidSeq, description: "", quantity: 1, unit: "ud", price: 0, discount: 0, vat,
+  raw: { quantity: "1", price: "", discount: "" } });
+
+/** La factura del formulario en las opciones de crear-factura-electronica (FacturaE de tools/utils/specs.py). */
+export function toFacturaE(inv: Invoice, extra: { buyerReference: string; order: string; paymentCode: string }, discountText: string) {
+  const party = (p: Party) => ({
+    nombre: p.name, nif: p.taxId, direccion: p.address, cp: p.postcode ?? "", ciudad: p.city ?? "", provincia: p.province ?? "",
+    pais: p.country || "ES", correo: p.email ?? "", telefono: p.phone ?? "", contacto: p.contact ?? "",
+    endpoint_esquema: p.endpointScheme || "9920", endpoint_id: p.endpointId ?? "",
+  });
+  return {
+    numero: inv.number, fecha: inv.issueDate, vencimiento: inv.dueDate ?? "", fecha_operacion: inv.operationDate ?? "", moneda: inv.currency,
+    idioma: inv.locale, referencia_comprador: extra.buyerReference, pedido: extra.order, emisor: party(inv.issuer), cliente: party(inv.customer),
+    lineas: inv.lines.map((l) => ({ descripcion: l.description, cantidad: l.quantity, unidad: l.unit, precio: l.price, descuento: l.discount, iva: l.vat })),
+    recargo: inv.surcharge, irpf: inv.irpf, forma_pago: extra.paymentCode, iban: inv.iban ?? "", condiciones_pago: inv.paymentMethod ?? "",
+    notas: inv.notes ?? "", motivo_exencion: inv.exemption ? EXEMPTION_TEXT[inv.exemption][inv.locale] : "", texto_descuento: discountText,
+  };
+}
+
+export function InvoiceDesigner({ spec, einvoiceHref, electronic = false }: { spec: ClientSpec; einvoiceHref?: string; electronic?: boolean }) {
   const t = useTranslations("invoice");
   const te = useTranslations("errors");
-  const locale = useLocale();
-  const [inv, setInv] = useState<Invoice>(() => ({
-    number: `${new Date().getFullYear()}/0001`, issueDate: today(), dueDate: plus30(), issuer: emptyParty(), customer: emptyParty(),
-    lines: [{ description: "", quantity: 1, unit: "ud", price: 0, discount: 0, vat: 21 }], surcharge: false, irpf: 0,
-    currency: "EUR", locale: locale === "en" ? "en" : "es", notes: "", paymentMethod: "", iban: "", template: "clasica",
+  const locale = useLocale() === "en" ? "en" : "es";
+  const [inv, setInv] = useState<Omit<Invoice, "lines">>(() => ({
+    number: `${new Date().getFullYear()}/0001`, issueDate: localDate(), dueDate: localDate(30), issuer: emptyParty(), customer: emptyParty(),
+    surcharge: false, irpf: 0, currency: "EUR", locale, notes: "", paymentMethod: "", iban: "", template: "clasica",
   }));
+  const [rows, setRows] = useState<Row[]>(() => [newRow()]);
   const [irpfMode, setIrpfMode] = useState<"0" | "7" | "15" | "custom">("0");
+  const [irpfRaw, setIrpfRaw] = useState("19");
+  const [rateRaw, setRateRaw] = useState("");
   const [clients, setClients] = useState<Party[]>([]);
+  const [series, setSeries] = useState<Record<string, number>>({});
+  const [used, setUsed] = useState<string[]>([]);
   const [logo, setLogo] = useState<{ data: Uint8Array; format: "png" | "jpg"; url: string } | null>(null);
   const [touched, setTouched] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ url: string; name: string } | null>(null);
+  const resultRef = useRef<HTMLAnchorElement>(null);
+  const turnstileBox = useRef<HTMLDivElement>(null);
+  const [format, setFormat] = useState<Format>("facturx");
+  const [profile, setProfile] = useState<(typeof PROFILES)[number]>("en16931");
+  const [extra, setExtra] = useState({ buyerReference: "", order: "", paymentCode: "58" });
+  const [files, setFiles] = useState<JobOutput[]>([]);
 
   useEffect(() => {
-    const issuer = read<Party | null>(STORE.issuer, null);
-    const last = read<string>(STORE.last, "");
-    setClients(read<Party[]>(STORE.clients, []));
-    setInv((v) => ({ ...v, issuer: issuer ?? v.issuer, number: last ? nextNumber(last) : v.number }));
+    const issuer = read<Party | null>(STORE.issuer, (v): v is Party | null => v === null || isParty(v), null);
+    const s = read(STORE.series, isRecord, {});
+    setClients(read(STORE.clients, isPartyList, []));
+    setSeries(s);
+    setUsed(read(STORE.used, isStrings, []));
+    if (electronic) {
+      // «Convertir en factura electrónica» desde crear-factura: la factura llega en sessionStorage.
+      try {
+        const raw = window.sessionStorage.getItem(STORE.handoff);
+        const handed = raw ? (JSON.parse(raw) as Invoice) : null;
+        if (handed && Array.isArray(handed.lines) && isParty(handed.issuer) && isParty(handed.customer)) {
+          window.sessionStorage.removeItem(STORE.handoff);
+          const { lines, ...rest } = handed;
+          setInv((v) => ({ ...v, ...rest }));
+          setRows(lines.map((l) => ({ ...newRow(l.vat), ...l, raw: { quantity: String(l.quantity), price: String(l.price), discount: l.discount ? String(l.discount) : "" } })));
+          return;
+        }
+      } catch {
+        /* sin sessionStorage o con datos rotos: se empieza vacía */
+      }
+    }
+    setInv((v) => {
+      const p = splitNumber(v.number);
+      return { ...v, issuer: issuer ? { ...emptyParty(), ...issuer } : v.issuer, number: p && s[p.series] !== undefined ? nextNumber(s, v.number) : v.number };
+    });
   }, []);
 
-  const totals = useMemo(() => computeTotals(inv), [inv]);
-  const problems = useMemo(() => invoiceProblems(inv), [inv]);
-  const money = (n: number) => formatMoney(n, /^[A-Z]{3}$/.test(inv.currency) ? inv.currency : "EUR", inv.locale);
+  useEffect(() => () => { if (result) URL.revokeObjectURL(result.url); }, [result]);
+  useEffect(() => () => { if (logo) URL.revokeObjectURL(logo.url); }, [logo]);
+
+  const invoice: Invoice = useMemo(() => ({ ...inv, lines: rows.map(({ uid: _u, raw: _r, ...l }) => l) }), [inv, rows]);
+  const totals = useMemo(() => computeTotals(invoice), [invoice]);
+  const problems = useMemo(() => invoiceProblems(invoice), [invoice]);
+  const currency = /^[A-Z]{3}$/.test(inv.currency) ? inv.currency : "EUR";
+  const money = (n: number) => (Number.isFinite(n) ? formatMoney(n, currency, inv.locale) : "—");
   const set = (patch: Partial<Invoice>) => { setInv((v) => ({ ...v, ...patch })); setResult(null); };
   const setParty = (who: "issuer" | "customer", patch: Partial<Party>) => set({ [who]: { ...inv[who], ...patch } } as Partial<Invoice>);
-  const setLine = (i: number, patch: Partial<InvoiceLine>) => set({ lines: inv.lines.map((l, j) => (j === i ? { ...l, ...patch } : l)) });
+  const setRow = (uid: number, patch: Partial<Row>) => { setRows((rs) => rs.map((r) => (r.uid === uid ? { ...r, ...patch } : r))); setResult(null); };
+  const setRaw = (uid: number, field: "quantity" | "price" | "discount", value: string) => {
+    const r = rows.find((x) => x.uid === uid)!;
+    const n = parseAmount(value, locale);
+    setRow(uid, { raw: { ...r.raw, [field]: value }, [field]: field === "discount" ? (value.trim() ? n : 0) : n });
+  };
   const bad = (key: string) => touched && problems.includes(key);
-  const num = (v: string) => (v.trim() === "" ? NaN : Number(v.replace(",", ".")));
+  const zero = rows.some((r) => r.vat === 0);
+  const reused = used.includes(inv.number.trim());
 
   async function pickLogo(file: File | undefined) {
     if (!file) { setLogo(null); return; }
@@ -83,77 +180,155 @@ export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einv
     setLogo({ data: new Uint8Array(await file.arrayBuffer()), format, url: URL.createObjectURL(file) });
   }
 
-  async function generate() {
+  async function generateElectronic() {
     setTouched(true);
     if (problems.length) { setError(t("fix")); return; }
     setBusy(true);
     setError(null);
+    setFiles([]);
     try {
-      const res = await runInBrowser(spec.slug, [], { invoice: inv, logo: logo ? { data: logo.data, format: logo.format } : undefined }, () => undefined, {}, locale);
-      const out = res.outputs[0];
-      setResult({ url: URL.createObjectURL(new Blob([new Uint8Array(out.bytes)], { type: out.mime })), name: out.name });
+      const config = await getConfig();
+      const token = await identityToken(async () => {
+        if (!turnstileBox.current) throw new ApiError("TURNSTILE_FAILED", "", 403);
+        return solveTurnstile(turnstileBox.current, config.turnstileSiteKey, locale);
+      });
+      const options = { formato: format, perfil: profile, factura: toFacturaE(invoice, extra, t("discountText")) };
+      const job = await runServerJob(spec.slug, [], options, token, () => undefined, new AbortController().signal);
+      if (job.status !== "succeeded") throw new ApiError(job.error?.code ?? "INTERNAL", job.error?.message ?? "", 0);
+      setFiles(job.outputs);
       write(STORE.issuer, inv.issuer);
-      write(STORE.last, inv.number);
-      if (inv.customer.name.trim()) {
-        const rest = clients.filter((c) => !(c.name === inv.customer.name && c.taxId === inv.customer.taxId));
-        const next = [inv.customer, ...rest].slice(0, 50);
-        setClients(next);
-        write(STORE.clients, next);
-      }
       recordUse(spec.slug);
     } catch (err) {
-      const code = err instanceof ClientToolError ? err.code : "INTERNAL";
-      setError(te.has(code) ? te(code) : te("INTERNAL"));
+      const code = err instanceof ApiError || err instanceof ClientToolError ? err.code : "INTERNAL";
+      setError(err instanceof ApiError && err.message ? err.message : te.has(code) ? te(code) : te("INTERNAL"));
     } finally {
       setBusy(false);
     }
   }
 
+  async function generate() {
+    if (electronic) return generateElectronic();
+    setTouched(true);
+    if (problems.length) { setError(t("fix")); return; }
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await runInBrowser(spec.slug, [], { invoice, logo: logo ? { data: logo.data, format: logo.format } : undefined }, () => undefined, {}, locale);
+      const out = res.outputs[0];
+      setResult({ url: URL.createObjectURL(new Blob([new Uint8Array(out.bytes)], { type: out.mime })), name: out.name });
+      write(STORE.issuer, inv.issuer);
+      const p = splitNumber(inv.number);
+      const nextSeries = p ? { ...series, [p.series]: Math.max(series[p.series] ?? 0, p.n) } : series;
+      const nextUsed = [inv.number.trim(), ...used.filter((u) => u !== inv.number.trim())].slice(0, 500);
+      setSeries(nextSeries);
+      setUsed(nextUsed);
+      write(STORE.series, nextSeries);
+      write(STORE.used, nextUsed);
+      if (inv.customer.name.trim()) {
+        const next = [inv.customer, ...clients.filter((c) => !(c.name === inv.customer.name && c.taxId === inv.customer.taxId))].slice(0, 50);
+        setClients(next);
+        write(STORE.clients, next);
+      }
+      recordUse(spec.slug);
+      setTimeout(() => resultRef.current?.focus(), 0);
+    } catch (err) {
+      const code = err instanceof ClientToolError ? err.code : "INTERNAL";
+      const glyphs = err instanceof ClientToolError && err.message.startsWith("glyphs:") ? err.message.slice(7) : null;
+      setError(glyphs ? t("glyphs", { chars: glyphs }) : te.has(code) ? te(code) : te("INTERNAL"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function startNext() {
+    setInv((v) => ({ ...v, number: nextNumber(series, v.number), issueDate: localDate(), dueDate: localDate(30), customer: emptyParty() }));
+    setRows([newRow()]);
+    setResult(null);
+    setTouched(false);
+  }
+
+  function forgetClients() {
+    setClients([]);
+    write(STORE.clients, []);
+  }
+
   function toEinvoice() {
     try {
-      window.sessionStorage.setItem(STORE.handoff, JSON.stringify(inv));
+      window.sessionStorage.setItem(STORE.handoff, JSON.stringify(invoice));
     } catch {
       /* sin sessionStorage: la otra página empieza vacía */
     }
   }
 
+  const described = (key: string, id: string) => (bad(key) ? id : undefined);
   const partyFields = (who: "issuer" | "customer") => {
     const p = inv[who];
     const prefix = who === "issuer" ? "issuer" : "customer";
+    const taxKey = who === "customer" && bad("customerTaxIdRequired") ? "customerTaxIdRequired" : `${prefix}TaxId`;
     return (
       <fieldset className="flex flex-col gap-2" data-party={who}>
         <legend className="mb-1 font-semibold">{t(who)}</legend>
         {who === "customer" && clients.length > 0 && (
-          <label className="flex flex-col gap-1 text-sm">{t("savedClients")}
-            <select className="field" value="" onChange={(e) => { const c = clients[Number(e.target.value)]; if (c) setParty("customer", c); }}>
-              <option value="">{t("chooseClient")}</option>
-              {clients.map((c, i) => <option key={i} value={i}>{c.name}{c.taxId ? ` (${c.taxId})` : ""}</option>)}
-            </select>
-          </label>
+          <div className="flex flex-wrap items-end gap-2">
+            <label className="flex flex-1 flex-col gap-1 text-sm">{t("savedClients")}
+              <select className="field" value="" onChange={(e) => { const c = clients[Number(e.target.value)]; if (c) setParty("customer", { ...emptyParty(), ...c }); }}>
+                <option value="">{t("chooseClient")}</option>
+                {clients.map((c, i) => <option key={i} value={i}>{c.name}{c.taxId ? ` (${c.taxId})` : ""}</option>)}
+              </select>
+            </label>
+            <button type="button" className="btn-secondary btn" onClick={forgetClients}>{t("forgetClients")}</button>
+          </div>
         )}
         <label className="flex flex-col gap-1 text-sm">{t("name")}
           <input className="field" value={p.name} onChange={(e) => setParty(who, { name: e.target.value })} aria-invalid={bad(`${prefix}Name`)} />
         </label>
         <div className="flex flex-col gap-1 text-sm">
           <label className="flex flex-col gap-1">{t(who === "issuer" ? "taxIdRequired" : "taxIdOptional")}
-            <input className="field" value={p.taxId} onChange={(e) => setParty(who, { taxId: e.target.value })} aria-invalid={bad(`${prefix}TaxId`)} />
+            <input className="field" value={p.taxId} onChange={(e) => setParty(who, { taxId: e.target.value })}
+                   aria-invalid={bad(taxKey)} aria-describedby={described(taxKey, `${who}-taxid-error`)} />
           </label>
-          {bad(`${prefix}TaxId`) && <span className="text-red-700">{t("badTaxId")}</span>}
+          {bad(taxKey) && <span id={`${who}-taxid-error`} className="text-red-700">{t(taxKey === "customerTaxIdRequired" ? "needCustomerTaxId" : "badTaxId")}</span>}
         </div>
         <label className="flex flex-col gap-1 text-sm">{t("address")}
-          <input className="field" value={p.address} onChange={(e) => setParty(who, { address: e.target.value })} />
+          <input className="field" value={p.address} onChange={(e) => setParty(who, { address: e.target.value })} aria-invalid={who === "issuer" && bad("issuerAddress")} />
         </label>
         <div className="flex gap-2">
           <label className="flex w-28 flex-col gap-1 text-sm">{t("postcode")}
             <input className="field" value={p.postcode ?? ""} onChange={(e) => setParty(who, { postcode: e.target.value })} />
           </label>
           <label className="flex flex-1 flex-col gap-1 text-sm">{t("city")}
-            <input className="field" value={p.city ?? ""} onChange={(e) => setParty(who, { city: e.target.value })} />
+            <input className="field" value={p.city ?? ""} onChange={(e) => setParty(who, { city: e.target.value })} aria-invalid={who === "issuer" && bad("issuerAddress")} />
           </label>
           <label className="flex w-20 flex-col gap-1 text-sm">{t("country")}
-            <input className="field" value={p.country} maxLength={2} onChange={(e) => setParty(who, { country: e.target.value.toUpperCase() })} />
+            <input className="field" value={p.country} maxLength={2} onChange={(e) => setParty(who, { country: e.target.value.toUpperCase() || "ES" })} />
           </label>
         </div>
+        {electronic && (
+          <div className="grid grid-cols-2 gap-2" data-einvoice-party={who}>
+            <label className="flex flex-col gap-1 text-sm">{t("province")}
+              <input className="field" value={p.province ?? ""} onChange={(e) => setParty(who, { province: e.target.value })} />
+            </label>
+            <label className="flex flex-col gap-1 text-sm">{t("email")}
+              <input className="field" type="email" value={p.email ?? ""} onChange={(e) => setParty(who, { email: e.target.value })} />
+            </label>
+            {who === "issuer" && (
+              <>
+                <label className="flex flex-col gap-1 text-sm">{t("contact")}
+                  <input className="field" value={p.contact ?? ""} onChange={(e) => setParty(who, { contact: e.target.value })} />
+                </label>
+                <label className="flex flex-col gap-1 text-sm">{t("phone")}
+                  <input className="field" value={p.phone ?? ""} onChange={(e) => setParty(who, { phone: e.target.value })} />
+                </label>
+              </>
+            )}
+            <label className="flex flex-col gap-1 text-sm">{t("endpointScheme")}
+              <input className="field" value={p.endpointScheme ?? "9920"} maxLength={10} onChange={(e) => setParty(who, { endpointScheme: e.target.value })} />
+            </label>
+            <label className="flex flex-col gap-1 text-sm">{t("endpointId")}
+              <input className="field" value={p.endpointId ?? ""} onChange={(e) => setParty(who, { endpointId: e.target.value })} />
+            </label>
+          </div>
+        )}
       </fieldset>
     );
   };
@@ -163,23 +338,62 @@ export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einv
       <p className="card p-3 text-sm" role="note">{t("legal")}</p>
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
+          {electronic && (
+            <fieldset className="flex flex-col gap-2" data-einvoice-format>
+              <legend className="mb-1 font-semibold">{t("einvoice")}</legend>
+              <label className="flex flex-col gap-1 text-sm">{t("format")}
+                <select className="field" value={format} onChange={(e) => setFormat(e.target.value as Format)}>
+                  {FORMATS.map((f) => <option key={f} value={f}>{t(`formats.${f}`)}</option>)}
+                </select>
+              </label>
+              {format === "facturx" && (
+                <label className="flex flex-col gap-1 text-sm">{t("profile")}
+                  <select className="field" value={profile} onChange={(e) => setProfile(e.target.value as typeof profile)}>
+                    {PROFILES.map((x) => <option key={x} value={x}>{t(`profiles.${x}`)}</option>)}
+                  </select>
+                </label>
+              )}
+              {format === "facturx" && (profile === "minimum" || profile === "basicwl") && <p className="text-sm text-amber-800" role="note">{t("partialProfile")}</p>}
+              {format !== "facturae" && <p className="muted text-sm">{t("euOnly")}</p>}
+              <div className="grid grid-cols-2 gap-2">
+                <label className="flex flex-col gap-1 text-sm">{t("buyerReference")}
+                  <input className="field" value={extra.buyerReference} onChange={(e) => setExtra({ ...extra, buyerReference: e.target.value })} />
+                </label>
+                <label className="flex flex-col gap-1 text-sm">{t("order")}
+                  <input className="field" value={extra.order} onChange={(e) => setExtra({ ...extra, order: e.target.value })} />
+                </label>
+                <label className="col-span-2 flex flex-col gap-1 text-sm">{t("paymentCode")}
+                  <select className="field" value={extra.paymentCode} onChange={(e) => setExtra({ ...extra, paymentCode: e.target.value })}>
+                    {PAYMENT_CODES.map((c) => <option key={c} value={c}>{t(`paymentCodes.${c}`)}</option>)}
+                  </select>
+                </label>
+              </div>
+            </fieldset>
+          )}
           <div className="grid grid-cols-2 gap-2">
-            <label className="flex flex-col gap-1 text-sm">{t("number")}
-              <input className="field" value={inv.number} onChange={(e) => set({ number: e.target.value })} aria-invalid={bad("number")} />
-            </label>
+            <div className="flex flex-col gap-1 text-sm">
+              <label className="flex flex-col gap-1">{t("number")}
+                <input className="field" value={inv.number} onChange={(e) => set({ number: e.target.value })} aria-invalid={bad("number")}
+                       aria-describedby={reused ? "number-reused" : undefined} />
+              </label>
+              {reused && <span id="number-reused" className="text-amber-800">{t("numberUsed")}</span>}
+            </div>
             <label className="flex flex-col gap-1 text-sm">{t("template")}
               <select className="field" value={inv.template} onChange={(e) => set({ template: e.target.value as Invoice["template"] })}>
                 {(["clasica", "moderna", "minima"] as const).map((k) => <option key={k} value={k}>{t(`templates.${k}`)}</option>)}
               </select>
             </label>
             <label className="flex flex-col gap-1 text-sm">{t("issueDate")}
-              <input className="field" type="date" value={inv.issueDate} onChange={(e) => set({ issueDate: e.target.value })} />
+              <input className="field" type="date" value={inv.issueDate} onChange={(e) => set({ issueDate: e.target.value })} aria-invalid={bad("issueDate")} />
             </label>
             <label className="flex flex-col gap-1 text-sm">{t("dueDate")}
               <input className="field" type="date" value={inv.dueDate ?? ""} onChange={(e) => set({ dueDate: e.target.value || undefined })} aria-invalid={bad("dueDate")} />
             </label>
+            <label className="col-span-2 flex flex-col gap-1 text-sm">{t("operationDate")}
+              <input className="field" type="date" value={inv.operationDate ?? ""} onChange={(e) => set({ operationDate: e.target.value || undefined })} />
+            </label>
             <label className="flex flex-col gap-1 text-sm">{t("currency")}
-              <input className="field" value={inv.currency} maxLength={3} onChange={(e) => set({ currency: e.target.value.toUpperCase() })} />
+              <input className="field" value={inv.currency} maxLength={3} onChange={(e) => set({ currency: e.target.value.toUpperCase() })} aria-invalid={bad("currency")} />
             </label>
             <label className="flex flex-col gap-1 text-sm">{t("language")}
               <select className="field" value={inv.locale} onChange={(e) => set({ locale: e.target.value as "es" | "en" })}>
@@ -187,6 +401,12 @@ export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einv
                 <option value="en">{t("english")}</option>
               </select>
             </label>
+            {inv.currency !== "EUR" && (
+              <label className="col-span-2 flex flex-col gap-1 text-sm">{t("exchangeRate", { c: currency })}
+                <input className="field" inputMode="decimal" value={rateRaw} aria-invalid={bad("exchangeRate")}
+                       onChange={(e) => { setRateRaw(e.target.value); set({ exchangeRate: parseAmount(e.target.value, locale) }); }} />
+              </label>
+            )}
           </div>
           <label className="flex flex-col gap-1 text-sm">{t("logo")}
             <input type="file" accept="image/png,image/jpeg" className="field" onChange={(e) => void pickLogo(e.target.files?.[0])} />
@@ -195,34 +415,43 @@ export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einv
           {partyFields("customer")}
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-1 font-semibold">{t("lines")}</legend>
-            {inv.lines.map((l, i) => (
-              <div key={i} className="flex flex-wrap items-end gap-2 rounded border p-2" data-line={i}>
+            {rows.map((r, i) => (
+              <fieldset key={r.uid} className="flex flex-wrap items-end gap-2 rounded border p-2" data-line={i}>
+                <legend className="sr-only">{t("lineN", { n: i + 1 })}</legend>
                 <label className="flex min-w-48 flex-1 flex-col gap-1 text-sm">{t("description")}
-                  <input className="field" value={l.description} onChange={(e) => setLine(i, { description: e.target.value })} aria-invalid={bad(`line${i}.description`)} />
+                  <input className="field" value={r.description} onChange={(e) => setRow(r.uid, { description: e.target.value })} aria-invalid={bad(`line${i}.description`)} />
                 </label>
                 <label className="flex w-20 flex-col gap-1 text-sm">{t("quantity")}
-                  <input className="field" inputMode="decimal" defaultValue={String(l.quantity)} onChange={(e) => setLine(i, { quantity: num(e.target.value) })} />
+                  <input className="field" inputMode="decimal" value={r.raw.quantity} onChange={(e) => setRaw(r.uid, "quantity", e.target.value)} aria-invalid={bad(`line${i}.quantity`)} />
                 </label>
                 <label className="flex w-20 flex-col gap-1 text-sm">{t("unit")}
-                  <input className="field" value={l.unit} onChange={(e) => setLine(i, { unit: e.target.value })} />
+                  <input className="field" value={r.unit} onChange={(e) => setRow(r.uid, { unit: e.target.value })} />
                 </label>
                 <label className="flex w-24 flex-col gap-1 text-sm">{t("price")}
-                  <input className="field" inputMode="decimal" defaultValue={String(l.price)} onChange={(e) => setLine(i, { price: num(e.target.value) })} />
+                  <input className="field" inputMode="decimal" value={r.raw.price} onChange={(e) => setRaw(r.uid, "price", e.target.value)} aria-invalid={bad(`line${i}.price`)} />
                 </label>
                 <label className="flex w-20 flex-col gap-1 text-sm">{t("discount")}
-                  <input className="field" inputMode="decimal" defaultValue={String(l.discount)} onChange={(e) => setLine(i, { discount: num(e.target.value) || 0 })} />
+                  <input className="field" inputMode="decimal" value={r.raw.discount} onChange={(e) => setRaw(r.uid, "discount", e.target.value)} aria-invalid={bad(`line${i}.discount`)} />
                 </label>
                 <label className="flex w-20 flex-col gap-1 text-sm">{t("vat")}
-                  <select className="field" value={l.vat} onChange={(e) => setLine(i, { vat: Number(e.target.value) })}>
+                  <select className="field" value={r.vat} onChange={(e) => setRow(r.uid, { vat: Number(e.target.value) })}>
                     {VAT.map((v) => <option key={v} value={v}>{v} %</option>)}
                   </select>
                 </label>
-                <button type="button" className="btn-secondary btn px-2" aria-label={t("removeLine")} disabled={inv.lines.length === 1}
-                        onClick={() => set({ lines: inv.lines.filter((_, j) => j !== i) })}>✕</button>
-              </div>
+                <button type="button" className="btn-secondary btn px-2" aria-label={t("removeLine", { n: i + 1 })} disabled={rows.length === 1}
+                        onClick={() => setRows((rs) => rs.filter((x) => x.uid !== r.uid))}>✕</button>
+              </fieldset>
             ))}
-            <div><button type="button" className="btn-secondary btn" onClick={() => set({ lines: [...inv.lines, { description: "", quantity: 1, unit: "ud", price: 0, discount: 0, vat: inv.lines.at(-1)?.vat ?? 21 }] })}>{t("addLine")}</button></div>
+            <div><button type="button" className="btn-secondary btn" onClick={() => setRows((rs) => [...rs, newRow(rs.at(-1)?.vat ?? 21)])}>{t("addLine")}</button></div>
           </fieldset>
+          {zero && (
+            <label className="flex flex-col gap-1 text-sm">{t("exemption")}
+              <select className="field" value={inv.exemption ?? ""} onChange={(e) => set({ exemption: (e.target.value || undefined) as Exemption | undefined })} aria-invalid={bad("exemption")}>
+                <option value="">{t("chooseExemption")}</option>
+                {EXEMPTIONS.map((x) => <option key={x} value={x}>{t(`exemptions.${x}`)}</option>)}
+              </select>
+            </label>
+          )}
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={inv.surcharge} onChange={(e) => set({ surcharge: e.target.checked })} />{t("surcharge")}
           </label>
@@ -231,14 +460,15 @@ export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einv
               <select className="field w-auto" value={irpfMode} onChange={(e) => {
                 const mode = e.target.value as typeof irpfMode;
                 setIrpfMode(mode);
-                set({ irpf: mode === "custom" ? 19 : Number(mode) });
+                set({ irpf: mode === "custom" ? parseAmount(irpfRaw, locale) : Number(mode) });
               }}>
                 <option value="0">{t("no")}</option><option value="7">7 %</option><option value="15">15 %</option><option value="custom">{t("custom")}</option>
               </select>
             </label>
             {irpfMode === "custom" && (
-              <label className="flex w-24 flex-col gap-1 text-sm">%
-                <input className="field" inputMode="decimal" defaultValue="19" onChange={(e) => set({ irpf: num(e.target.value) })} aria-invalid={bad("irpf")} />
+              <label className="flex w-40 flex-col gap-1 text-sm">{t("irpfCustom")}
+                <input className="field" inputMode="decimal" value={irpfRaw} aria-invalid={bad("irpf")}
+                       onChange={(e) => { setIrpfRaw(e.target.value); set({ irpf: parseAmount(e.target.value, locale) }); }} />
               </label>
             )}
           </div>
@@ -247,9 +477,10 @@ export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einv
           </label>
           <div className="flex flex-col gap-1 text-sm">
             <label className="flex flex-col gap-1">IBAN
-              <input className="field" value={inv.iban ?? ""} onChange={(e) => set({ iban: e.target.value })} aria-invalid={bad("iban")} />
+              <input className="field" value={inv.iban ?? ""} onChange={(e) => set({ iban: e.target.value })} aria-invalid={bad("iban")}
+                     aria-describedby={described("iban", "iban-error")} />
             </label>
-            {bad("iban") && <span className="text-red-700">{t("badIban")}</span>}
+            {bad("iban") && <span id="iban-error" className="text-red-700">{t("badIban")}</span>}
           </div>
           <label className="flex flex-col gap-1 text-sm">{t("notes")}
             <textarea className="field" rows={3} value={inv.notes ?? ""} onChange={(e) => set({ notes: e.target.value })} />
@@ -271,16 +502,16 @@ export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einv
           </div>
           <table className="w-full">
             <tbody>
-              {inv.lines.map((l, i) => (
-                <tr key={i} className="border-t" style={{ borderColor: "var(--line)" }}>
-                  <td className="py-1">{l.description || "—"}</td>
-                  <td className="py-1 text-right">{Number.isFinite(totals.lines[i]?.net) ? money(totals.lines[i].net) : "—"}</td>
+              {rows.map((r, i) => (
+                <tr key={r.uid} className="border-t" style={{ borderColor: "var(--line)" }}>
+                  <td className="py-1">{r.description || "—"}</td>
+                  <td className="py-1 text-right">{money(totals.lines[i]?.net ?? NaN)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <dl className="grid grid-cols-[1fr_auto] gap-x-4 gap-y-1">
-            {totals.groups.map((g) => (
+            {totals.groups.filter((g) => Number.isFinite(g.rate)).map((g) => (
               <div key={g.rate} className="contents">
                 <dt>{t("baseAt", { r: g.rate })}</dt><dd className="text-right">{money(g.base)}</dd>
                 <dt>{t("vatAt", { r: g.rate })}</dt><dd className="text-right">{money(g.tax)}</dd>
@@ -294,13 +525,22 @@ export function InvoiceDesigner({ spec, einvoiceHref }: { spec: ClientSpec; einv
         </aside>
       </div>
 
-      {error && <p role="alert" className="text-red-700">{error}</p>}
-      {touched && problems.length > 0 && (
-        <ul className="list-disc pl-6 text-sm text-red-700">{problems.map((p) => <li key={p}>{t.has(`problems.${p.replace(/^line\d+\./, "line.")}`) ? t(`problems.${p.replace(/^line\d+\./, "line.")}`, { n: Number(/^line(\d+)/.exec(p)?.[1] ?? 0) + 1 }) : p}</li>)}</ul>
-      )}
+      {electronic && <div ref={turnstileBox} />}
+      {files.map((f) => f.note && <p key={`n-${f.url}`} className="text-sm" role="status">{f.note}</p>)}
+      <div aria-live="polite" className="flex flex-col gap-2">
+        {error && <p role="alert" className="text-red-700">{error}</p>}
+        {touched && problems.length > 0 && (
+          <ul className="list-disc pl-6 text-sm text-red-700">{problems.map((p) => {
+            const key = `problems.${p.replace(/^line\d+\./, "line.")}`;
+            return <li key={p}>{t.has(key) ? t(key, { n: Number(/^line(\d+)/.exec(p)?.[1] ?? 0) + 1 }) : p}</li>;
+          })}</ul>
+        )}
+      </div>
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" className="btn" disabled={busy} onClick={() => void generate()}>{busy ? t("generating") : t("generate")}</button>
-        {result && <a className="btn-secondary btn" href={result.url} download={result.name}>{t("download", { name: result.name })}</a>}
+        <button type="button" className="btn" disabled={busy} onClick={() => void generate()}>{busy ? t("generating") : t(electronic ? "generateElectronic" : "generate")}</button>
+        {result && <a ref={resultRef} className="btn-secondary btn" href={result.url} download={result.name}>{t("download", { name: result.name })}</a>}
+        {files.map((f) => <a key={f.url} className="btn-secondary btn" href={f.url} download data-einvoice-output>{t("download", { name: f.name })}</a>)}
+        {result && <button type="button" className="btn-secondary btn" onClick={startNext}>{t("next")}</button>}
         {einvoiceHref && <a className="btn-secondary btn" href={einvoiceHref} onClick={toEinvoice}>{t("toEinvoice")}</a>}
       </div>
     </div>

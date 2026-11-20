@@ -156,8 +156,9 @@ class HacerRellenableOptions(BaseModel):
 
 
 class CrearFacturaOptions(BaseModel):
-    """crear-factura (A.2, F4-E1): el diseñador manda además la factura (`invoice`) y el logotipo (`logo`), que no pasan
-    por el formulario de opciones; estas son las preferencias por defecto de las líneas nuevas y de la plantilla."""
+    """crear-factura (A.2, F4-E1): esquema de lo que ofrece el diseñador propio de la página (plantilla, IVA de cada
+    concepto, recargo, IRPF, moneda e idioma), que tiene su formulario y manda la factura entera (`invoice`) y el logotipo
+    (`logo`); estas opciones no se leen por separado."""
 
     plantilla: Literal["clasica", "moderna", "minima"] = opt("clasica", "Plantilla", "Template", labels={
         "clasica": ("Clásica", "Classic"), "moderna": ("Moderna", "Modern"), "minima": ("Mínima", "Minimal")})
