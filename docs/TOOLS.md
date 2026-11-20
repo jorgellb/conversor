@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 268 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 277 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 9). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -274,6 +274,15 @@ Catálogo publicado en esta entrega: 268 herramientas (F1 43, F2 60, F3 10, F4 1
 | `latex-a-pdf` / `latex-to-pdf` | servidor | utils | light | F6 | activa | tex, zip → pdf, zip | redactado, sin revisar |
 | `drawio-a-pdf` / `drawio-to-pdf` | servidor | office | light | F6 | activa | drawio → pdf, zip | redactado, sin revisar |
 | `drawio-a-png` / `drawio-to-png` | servidor | office | light | F6 | activa | drawio → png, zip | redactado, sin revisar |
+| `stl-a-obj` / `stl-to-obj` | servidor | mesh | light | F7 | activa | stl → obj, zip | redactado, sin revisar |
+| `obj-a-stl` / `obj-to-stl` | servidor | mesh | light | F7 | activa | obj → stl, zip | redactado, sin revisar |
+| `stl-a-3mf` / `stl-to-3mf` | servidor | mesh | light | F7 | activa | stl → 3mf, zip | redactado, sin revisar |
+| `3mf-a-stl` / `3mf-to-stl` | servidor | mesh | light | F7 | activa | 3mf → stl, zip | redactado, sin revisar |
+| `obj-a-3mf` / `obj-to-3mf` | servidor | mesh | light | F7 | activa | obj → 3mf, zip | redactado, sin revisar |
+| `3mf-a-obj` / `3mf-to-obj` | servidor | mesh | light | F7 | activa | 3mf → obj, zip | redactado, sin revisar |
+| `stl-a-ply` / `stl-to-ply` | servidor | mesh | light | F7 | activa | stl → ply, zip | redactado, sin revisar |
+| `ply-a-stl` / `ply-to-stl` | servidor | mesh | light | F7 | activa | ply → stl, zip | redactado, sin revisar |
+| `stl-ascii-a-binario` / `stl-ascii-to-binary` | servidor | mesh | light | F7 | activa | stl → stl, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

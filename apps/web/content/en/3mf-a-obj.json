@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "3MF to OBJ converts 3D models from 3MF to OBJ on the server, with nothing to install. It is useful, for example, to open a print plate with several parts and colours in Blender or a viewer. OBJ is the exchange format of Blender, Maya, 3ds Max and almost every viewer: it stores several named parts and, with its MTL file, materials and colours.",
+    "3MF is the modern 3D printing format: a ZIP with the model in XML that stores units, several named parts and the colour of each face, opened directly by PrusaSlicer, Bambu Studio, Cura and Windows. Units are read from the 3MF itself; choose the units you want for the OBJ and the measurements are converted, because OBJ does not store them and almost every program reads it in millimetres. You can also apply a scale, for example 0.5 to print the 3MF at half size.",
+    "If the model has colours, the OBJ comes in a ZIP with its MTL file, one material per colour, so Blender or the viewer shows them. If the 3MF has several parts, you can keep them separate inside the OBJ when the format allows it, merge them into one mesh or get one file per part in a ZIP.",
+    "The geometry is not simplified or repaired: every triangle of the 3MF reaches the OBJ unchanged, with duplicate vertices merged. Up to one million triangles are accepted without an account, two million with a free account and ten million with Pro, checked before the file is processed. Files are deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more 3MF files.",
+    "Choose the units and, optionally, the scale and parts.",
+    "Download the OBJ."
+  ],
+  "faq": [
+    {
+      "q": "Why does my 3MF come out tiny or huge?",
+      "a": "Because the target program assumes other units. Set the units of the original and of the OBJ."
+    },
+    {
+      "q": "Is the mesh repaired?",
+      "a": "No: the OBJ has exactly the same geometry. To close holes or fix normals, use Repair STL."
+    },
+    {
+      "q": "How many files at once?",
+      "a": "Up to ten 3MF files per task, with a ZIP of all the OBJ files at the end."
+    }
+  ]
+}

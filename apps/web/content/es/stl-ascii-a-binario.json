@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL ASCII a binario convierte un STL de texto en un STL binario con exactamente los mismos triángulos. El STL ASCII escribe cada coordenada como texto y ocupa unas cinco veces más que el binario, así que tarda más en subir, en enviarse y en abrirse en el laminador.",
+    "Muchos programas antiguos de CAD, escáneres y scripts exportan STL en ASCII. Pasarlo a binario no cambia la forma ni la precisión que el laminador usa, porque el STL binario guarda cada coordenada como número de coma flotante de 32 bits, que es lo que leen PrusaSlicer, Cura, Bambu Studio y el resto.",
+    "Puedes cambiar a la vez las unidades o aplicar una escala, por ejemplo si el STL se exportó en metros o en pulgadas y el laminador lo abre diminuto. Si el archivo ya era binario, se vuelve a guardar igual y la nota lo indica. Los vértices repetidos se fusionan al leerlo, y los triángulos llegan uno a uno.",
+    "Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea con un ZIP al final. Los archivos se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el STL de texto.",
+    "Elige, si hace falta, las unidades o la escala.",
+    "Descarga el STL binario."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo sé si mi STL es ASCII?",
+      "a": "Si al abrirlo con un editor de texto empieza por «solid» y se leen las palabras «facet normal», es ASCII."
+    },
+    {
+      "q": "¿Pierde precisión?",
+      "a": "No para imprimir: el binario guarda cada coordenada con unos siete dígitos significativos, más de lo que distingue cualquier impresora."
+    },
+    {
+      "q": "¿Y al revés?",
+      "a": "Usa cualquier conversión a STL y elige «ASCII (texto)» en el tipo de STL de las opciones avanzadas."
+    }
+  ]
+}

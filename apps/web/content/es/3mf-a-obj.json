@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "3MF a OBJ convierte modelos 3D de 3MF a OBJ en el servidor, sin instalar nada. Sirve, por ejemplo, para abrir en Blender o en un visor una placa de impresión con varias piezas y colores. OBJ es el formato de intercambio de Blender, Maya, 3ds Max y casi todos los visores: guarda varias piezas con nombre y, con su archivo MTL, los materiales y colores.",
+    "3MF es el formato moderno de impresión 3D: un ZIP con el modelo en XML que guarda las unidades, varias piezas con su nombre y los colores de cada cara, y que abren directamente PrusaSlicer, Bambu Studio, Cura y Windows. Las unidades se leen del propio 3MF; elige en qué unidades quieres el OBJ y las medidas se convierten, porque el OBJ no las guarda y casi todos los programas lo leen en milímetros. También puedes aplicar una escala, por ejemplo 0,5 para imprimir el 3MF a la mitad de tamaño.",
+    "Si el modelo tiene colores, el OBJ sale en un ZIP junto con su archivo MTL, con un material por color, para que Blender o el visor los muestren. Si el 3MF tiene varias piezas, puedes mantenerlas separadas dentro del OBJ cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría no se simplifica ni se repara: cada triángulo del 3MF llega igual al OBJ, con los vértices repetidos fusionados. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y se comprueba antes de procesar el archivo. Los archivos se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos 3MF.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el OBJ."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué mi 3MF sale muy pequeño o muy grande?",
+      "a": "Porque el programa de destino interpreta otras unidades. Indica las unidades del original y las del OBJ."
+    },
+    {
+      "q": "¿Se repara la malla?",
+      "a": "No: el OBJ tiene exactamente la misma geometría. Para cerrar agujeros o corregir normales, usa Reparar STL."
+    },
+    {
+      "q": "¿Cuántos archivos a la vez?",
+      "a": "Hasta diez 3MF por tarea, con un ZIP con todos los OBJ al final."
+    }
+  ]
+}

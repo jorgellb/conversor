@@ -57,9 +57,13 @@ def _total(env: dict[str, str]) -> float:
     return sum(_bytes(_resolve(s["mem_limit"], env)) for s in _doc()["services"].values() if "mem_limit" in s)
 
 
+F7_SERVICES = {"workermesh", "workercad"}
+
+
 def test_memory_within_15_percent_of_ram():
-    """5.4: la suma de mem_limit no supera la RAM en más de un 15 % (32 GB con 8 vCPU y 64 GB con 16 vCPU)."""
-    assert _total({}) <= 32 * 1.15
+    """5.4: la suma de mem_limit no supera la RAM en más de un 15 % (32 GB con 8 vCPU y 64 GB con 16 vCPU). El catálogo
+    completo con F7 necesita el servidor de 16 vCPU y 64 GB (3, D-244): en el de 8 vCPU cuenta todo menos mesh y cad."""
+    assert _total({}) - sum(_bytes(_resolve(s["mem_limit"], {})) for n, s in _doc()["services"].items() if n in F7_SERVICES) <= 32 * 1.15
     assert _total(gen.PROFILE_16) <= 64 * 1.15
     assert _total(gen.PROFILE_16) > _total({})
 

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "3MF a STL convierte modelos 3D de 3MF a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para usar un proyecto de PrusaSlicer o Bambu Studio en una impresora, un laminador o un programa que solo admite STL. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores, en texto (ASCII) o en binario.",
+    "3MF es el formato moderno de impresión 3D: un ZIP con el modelo en XML que guarda las unidades, varias piezas con su nombre y los colores de cada cara, y que abren directamente PrusaSlicer, Bambu Studio, Cura y Windows. Las unidades se leen del propio 3MF; elige en qué unidades quieres el STL y las medidas se convierten, porque el STL no las guarda y casi todos los programas lo leen en milímetros. También puedes aplicar una escala, por ejemplo 0,5 para imprimir el 3MF a la mitad de tamaño.",
+    "El STL no guarda colores: si el original los tiene, el resultado sale sin ellos y la nota lo avisa. Si el 3MF tiene varias piezas, puedes mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría no se simplifica ni se repara: cada triángulo del 3MF llega igual al STL, con los vértices repetidos fusionados. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y se comprueba antes de procesar el archivo. Los archivos se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos 3MF.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué mi 3MF sale muy pequeño o muy grande?",
+      "a": "Porque el programa de destino interpreta otras unidades. Indica las unidades del original y las del STL."
+    },
+    {
+      "q": "¿Se repara la malla?",
+      "a": "No: el STL tiene exactamente la misma geometría. Para cerrar agujeros o corregir normales, usa Reparar STL."
+    },
+    {
+      "q": "¿Cuántos archivos a la vez?",
+      "a": "Hasta diez 3MF por tarea, con un ZIP con todos los STL al final."
+    }
+  ]
+}

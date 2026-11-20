@@ -142,12 +142,14 @@ def test_api_rejects_video_without_a_video_plan(api, user_token, tus_upload, tmp
     from helpers import auth
 
     src = _clip(tmp_path, "corto.mp4", "libx264")
-    token = user_token(user_id="video-gratis")
+    import uuid
+
+    token = user_token(user_id=f"video-gratis-{uuid.uuid4().hex[:8]}")
     api.get("/v1/me", headers=auth(token))
     uid, _ = tus_upload(token, "mp4-a-webm", src)
     res = api.post("/v1/jobs", json={"tool": "mp4-a-webm", "upload_ids": [uid], "options": {}}, headers=auth(token))
     assert res.status_code == 403 and res.json()["error"]["code"] == "LIMIT_EXCEEDED"
-    tools = {t["slug_es"]: t for t in json.loads((Path(__file__).resolve().parents[1] / "packages/registry/registry.json").read_text())["tools"]}
+    tools = {t["slug_es"]: t for t in json.loads((Path(__file__).resolve().parents[1] / "packages/registry/registry.json").read_text(encoding="utf-8"))["tools"]}
     assert tools["mp4-a-webm"]["needs_video"] and tools["pptx-a-video"]["needs_video"] and not tools["srt-a-vtt"]["needs_video"]
 
 

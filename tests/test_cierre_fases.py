@@ -1,21 +1,24 @@
-"""Cierre de F6 (17, D-240): cada herramienta de F6 del catálogo (7) está en el registro con su página en los dos idiomas,
-y la paridad con PDF24 de docs/TOOLS.md no deja nada pendiente ni sin explicación."""
+"""Cierres de fase (17, D-240 y D-244): cada herramienta de F5 y de F6 del catálogo (7) está en el registro con su página
+completa en los dos idiomas; el vídeo de F5 es solo para Pro (`needs_video`) y la paridad con PDF24 de docs/TOOLS.md no
+deja nada pendiente ni sin explicación."""
 from __future__ import annotations
 
 import json
 import re
 from pathlib import Path
 
+import pytest
+
 from core.registry import load_registry
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def f6_catalog() -> set[str]:
+def catalog_of(phase: str) -> set[str]:
     spec = "\n".join(p.read_text(encoding="utf-8") for p in (ROOT / "docs" / "spec").glob("*.md") if "_completo" not in p.name)
     out = set()
     for line in spec.splitlines():
-        if not re.search(r"—\s*F6\b", line):
+        if not re.search(rf"—\s*{phase}\b", line):
             continue
         m = re.match(r"\s*-\s*(.+?)\s+—", line)
         if not m:
@@ -26,11 +29,12 @@ def f6_catalog() -> set[str]:
     return out
 
 
-def test_every_f6_tool_is_registered_with_its_pages():
+@pytest.mark.parametrize("phase,minimum", [("F5", 50), ("F6", 70)])
+def test_every_tool_of_the_phase_is_registered_with_its_pages(phase, minimum):
     registry = load_registry()
     slugs = {t.slug_es: t for t in registry.specs}
-    catalog = f6_catalog()
-    assert len(catalog) >= 70
+    catalog = catalog_of(phase)
+    assert len(catalog) >= minimum
     missing = sorted(s for s in catalog if s not in slugs)
     assert missing == []
     for slug in catalog:
@@ -47,3 +51,11 @@ def test_pdf24_parity_has_nothing_pending():
     for row in section.splitlines():
         if "| sin equivalente |" in row:
             assert row.rstrip(" |").split("|")[-1].strip(), row  # cada una con su explicación
+
+
+def test_f5_video_is_pro_only():
+    """7.9: todo el vídeo (conversores y edición) y pptx-a-video piden un plan con vídeo; los subtítulos, no."""
+    registry = load_registry()
+    video = {"mp4-a-webm", "webm-a-mp4", "mov-a-mp4", "mkv-a-mp4", "avi-a-mp4", "video-a-gif", "gif-a-mp4", "comprimir-video",
+             "recortar-video", "rotar-video", "quitar-audio-video", "pptx-a-video"}
+    assert {t.slug_es for t in registry.specs if t.needs_video} == video

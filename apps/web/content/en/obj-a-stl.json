@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OBJ to STL converts 3D models from OBJ to STL on the server, with nothing to install. It is useful, for example, to print a model exported from Blender, SketchUp or a digital sculpting program. STL is the format every slicer reads (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): it only stores triangles, with no units or colours, as text (ASCII) or binary.",
+    "OBJ is the exchange format of Blender, Maya, 3ds Max and almost every viewer: it stores several named parts and, with its MTL file, materials and colours. OBJ does not store units and is taken as millimetres, the usual case; if your model was drawn in centimetres, metres or inches, say so and the conversion turns it into the units you want for the STL. You can also apply a scale, for example 0.5 to print the OBJ at half size.",
+    "STL does not store colours: if the original has them, the result comes out without them and the note says so. If the OBJ has several parts, you can keep them separate inside the STL when the format allows it, merge them into one mesh or get one file per part in a ZIP.",
+    "The geometry is not simplified or repaired: every triangle of the OBJ reaches the STL unchanged, with duplicate vertices merged. Up to one million triangles are accepted without an account, two million with a free account and ten million with Pro, checked before the file is processed. Files are deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more OBJ files.",
+    "Choose the units and, optionally, the scale and parts.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "Why does my OBJ come out tiny or huge?",
+      "a": "Because the target program assumes other units. Set the units of the original and of the STL."
+    },
+    {
+      "q": "Is the mesh repaired?",
+      "a": "No: the STL has exactly the same geometry. To close holes or fix normals, use Repair STL."
+    },
+    {
+      "q": "How many files at once?",
+      "a": "Up to ten OBJ files per task, with a ZIP of all the STL files at the end."
+    }
+  ]
+}

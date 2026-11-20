@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL to PLY converts 3D models from STL to PLY on the server, with nothing to install. It is useful, for example, to compare a part with a scan in MeshLab or CloudCompare. PLY is the format of 3D scanners and photogrammetry: it stores the mesh with a colour per vertex or face, and MeshLab, CloudCompare and Blender open it.",
+    "STL is the format every slicer reads (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): it only stores triangles, with no units or colours, as text (ASCII) or binary. STL does not store units and is taken as millimetres, the usual case; if your model was drawn in centimetres, metres or inches, say so and the conversion turns it into the units you want for the PLY. You can also apply a scale, for example 0.5 to print the STL at half size.",
+    "The original's colours go into the PLY as one colour per face, and the mesh is saved as binary, which takes much less space than text PLY. If the STL has several parts, you can keep them separate inside the PLY when the format allows it, merge them into one mesh or get one file per part in a ZIP.",
+    "The geometry is not simplified or repaired: every triangle of the STL reaches the PLY unchanged, with duplicate vertices merged. Up to one million triangles are accepted without an account, two million with a free account and ten million with Pro, checked before the file is processed. Files are deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more STL files.",
+    "Choose the units and, optionally, the scale and parts.",
+    "Download the PLY."
+  ],
+  "faq": [
+    {
+      "q": "Why does my STL come out tiny or huge?",
+      "a": "Because the target program assumes other units. Set the units of the original and of the PLY."
+    },
+    {
+      "q": "Is the mesh repaired?",
+      "a": "No: the PLY has exactly the same geometry. To close holes or fix normals, use Repair STL."
+    },
+    {
+      "q": "How many files at once?",
+      "a": "Up to ten STL files per task, with a ZIP of all the PLY files at the end."
+    }
+  ]
+}

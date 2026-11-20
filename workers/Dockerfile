@@ -273,6 +273,14 @@ WORKDIR /home/app
 EXPOSE 9000
 CMD ["python", "/app/pki.py", "serve", "/home/app/pki", "9000"]
 
+# --- Mallas 3D y G-code (F7, grupo mesh, 5.4): solo bibliotecas de Python con ruedas (trimesh, lib3mf); sin red ---
+FROM base AS worker-mesh
+RUN uv pip install -r pyproject.toml --extra mesh
+COPY --from=code /app /app
+USER app
+ENV SERVICE_ROLE=worker-mesh PYTHONUTF8=1
+CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "mesh", "-n", "mesh@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+
 # --- Facturas electrónicas (F4-D, grupo utils): KoSIT Validator en modo servicio dentro de workerutils (5.4), con las
 # configuraciones públicas de XRechnung y Peppol BIS y los escenarios propios (D-191); Facturae con sus XSD oficiales
 # (infra/facturae, SHA256SUMS). JRE 17 de Debian; KoSIT y las configuraciones, con SHA-256 fijados ---

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PLY a STL convierte modelos 3D de PLY a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir un objeto escaneado con un escáner 3D o reconstruido por fotogrametría. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores, en texto (ASCII) o en binario.",
+    "PLY es el formato de los escáneres 3D y de la fotogrametría: guarda la malla con un color por vértice o por cara, y lo abren MeshLab, CloudCompare y Blender. El PLY no guarda unidades y se toma en milímetros, que es lo habitual; si tu modelo se dibujó en centímetros, metros o pulgadas, indícalo y la conversión lo pasa a las unidades que quieras para el STL. También puedes aplicar una escala, por ejemplo 0,5 para imprimir el PLY a la mitad de tamaño.",
+    "El STL no guarda colores: si el original los tiene, el resultado sale sin ellos y la nota lo avisa. Si el PLY tiene varias piezas, puedes mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría no se simplifica ni se repara: cada triángulo del PLY llega igual al STL, con los vértices repetidos fusionados. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y se comprueba antes de procesar el archivo. Los archivos se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos PLY.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué mi PLY sale muy pequeño o muy grande?",
+      "a": "Porque el programa de destino interpreta otras unidades. Indica las unidades del original y las del STL."
+    },
+    {
+      "q": "¿Se repara la malla?",
+      "a": "No: el STL tiene exactamente la misma geometría. Para cerrar agujeros o corregir normales, usa Reparar STL."
+    },
+    {
+      "q": "¿Cuántos archivos a la vez?",
+      "a": "Hasta diez PLY por tarea, con un ZIP con todos los STL al final."
+    }
+  ]
+}

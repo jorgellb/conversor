@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OBJ a STL convierte modelos 3D de OBJ a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir un modelo exportado desde Blender, SketchUp o un programa de escultura digital. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores, en texto (ASCII) o en binario.",
+    "OBJ es el formato de intercambio de Blender, Maya, 3ds Max y casi todos los visores: guarda varias piezas con nombre y, con su archivo MTL, los materiales y colores. El OBJ no guarda unidades y se toma en milímetros, que es lo habitual; si tu modelo se dibujó en centímetros, metros o pulgadas, indícalo y la conversión lo pasa a las unidades que quieras para el STL. También puedes aplicar una escala, por ejemplo 0,5 para imprimir el OBJ a la mitad de tamaño.",
+    "El STL no guarda colores: si el original los tiene, el resultado sale sin ellos y la nota lo avisa. Si el OBJ tiene varias piezas, puedes mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría no se simplifica ni se repara: cada triángulo del OBJ llega igual al STL, con los vértices repetidos fusionados. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y se comprueba antes de procesar el archivo. Los archivos se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos OBJ.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué mi OBJ sale muy pequeño o muy grande?",
+      "a": "Porque el programa de destino interpreta otras unidades. Indica las unidades del original y las del STL."
+    },
+    {
+      "q": "¿Se repara la malla?",
+      "a": "No: el STL tiene exactamente la misma geometría. Para cerrar agujeros o corregir normales, usa Reparar STL."
+    },
+    {
+      "q": "¿Cuántos archivos a la vez?",
+      "a": "Hasta diez OBJ por tarea, con un ZIP con todos los STL al final."
+    }
+  ]
+}

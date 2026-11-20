@@ -192,6 +192,7 @@ SPEC_MODULES = (
     "tools.ai.specs",
     "tools.sign.specs",
     "tools.utils.specs",
+    "tools.mesh.specs",
 )
 
 

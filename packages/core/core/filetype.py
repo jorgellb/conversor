@@ -12,7 +12,9 @@ EBML = bytes.fromhex("1A45DFA3")
 # Formatos que comparten contenedor: se confía en la extensión declarada solo dentro de su familia.
 OLE2_FAMILY = {"doc", "xls", "ppt", "pps", "msg", "pub", "vsd"}
 TEXT_FAMILY = {"txt", "mmd", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
-               "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics", "mbox", "drawio", "tex", "musicxml"}
+               "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics", "mbox", "drawio", "tex", "musicxml",
+               # Mallas de texto (F7-A, D-244): STL ASCII y OBJ.
+               "stl", "obj"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr", "kmz", "mxl", "udf"}  # kmz: un ZIP con doc.kml (F6-H1)
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
@@ -38,6 +40,7 @@ MIME = {
     "ogg": "audio/ogg", "opus": "audio/ogg", "wav": "audio/wav", "flac": "audio/flac", "aac": "audio/aac",
     "mp3": "audio/mpeg", "amr": "audio/amr", "aiff": "audio/aiff", "wma": "audio/x-ms-wma",
     "mkv": "video/x-matroska", "webm": "video/webm", "avi": "video/x-msvideo",
+    "stl": "model/stl", "obj": "model/obj", "3mf": "model/3mf", "ply": "application/octet-stream",
     "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -104,6 +107,8 @@ def _zip_kind(path: Path) -> str:
                     "application/vnd.oasis.opendocument.graphics": "odg",
                     "application/epub+zip": "epub",
                 }.get(mt, "zip")
+            if any(n.lower() == "3d/3dmodel.model" for n in names):
+                return "3mf"  # 3MF (F7-A): el modelo en 3D/3dmodel.model
             if "Index/Document.iwa" in names or "index.apxl" in names or "index.xml" in names:
                 return "iwork"
             if "[Content_Types].xml" in names:
@@ -227,6 +232,11 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
     # Una firma CMS con un PDF dentro lleva «%PDF-» hacia el byte 66: la regla de CMS va antes que la de PDF (D-222).
     if declared in CMS and head[:1] == b"\x30" and len(head) > 2 and head[1] in (0x80, 0x81, 0x82, 0x83, 0x84):
         return Detected(declared, "cms")
+    # STL binario (F7-A, D-244): no tiene firma; cabecera de 80 bytes, número de triángulos y 50 bytes por triángulo.
+    if declared == "stl" and len(head) >= 84 and 84 + 50 * int.from_bytes(head[80:84], "little") == path.stat().st_size:
+        return Detected("stl", "mesh")
+    if head.startswith((b"ply\n", b"ply\r\n")):
+        return Detected("ply", "mesh")
     if b"%PDF-" in head[:1024]:
         return Detected("pdf", "pdf")
     if head.startswith(b"\xff\xd8\xff"):

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL ASCII to binary converts a text STL into a binary STL with exactly the same triangles. ASCII STL writes each coordinate as text and takes about five times more space than binary, so it is slower to upload, to send and to open in the slicer.",
+    "Many old CAD programs, scanners and scripts export STL in ASCII. Turning it into binary does not change the shape or the precision the slicer uses, because binary STL stores each coordinate as a 32-bit floating-point number, which is what PrusaSlicer, Cura, Bambu Studio and the rest read.",
+    "You can change the units or apply a scale at the same time, for example if the STL was exported in metres or inches and the slicer opens it tiny. If the file was already binary, it is saved again unchanged and the note says so. Duplicate vertices are merged when reading, and the triangles are carried over one by one.",
+    "Up to one million triangles are accepted without an account, two million with a free account and ten million with Pro, and up to ten files per task with a ZIP at the end. Files are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the text STL.",
+    "Choose the units or scale if needed.",
+    "Download the binary STL."
+  ],
+  "faq": [
+    {
+      "q": "How do I know if my STL is ASCII?",
+      "a": "If, opened in a text editor, it starts with “solid” and you can read the words “facet normal”, it is ASCII."
+    },
+    {
+      "q": "Does it lose precision?",
+      "a": "Not for printing: binary stores each coordinate with about seven significant digits, more than any printer can tell apart."
+    },
+    {
+      "q": "And the other way round?",
+      "a": "Use any conversion to STL and choose “ASCII (text)” as the STL type in the advanced options."
+    }
+  ]
+}
