@@ -29,6 +29,7 @@ const BookletPreview = dynamic(() => import("./extras/BookletPreview").then((m) 
 const CloudSave = dynamic(() => import("./extras/CloudButtons").then((m) => m.CloudSave), { loading: () => null });
 const CropPicker = dynamic(() => import("./extras/CropPicker").then((m) => m.CropPicker), { loading: () => null });
 const MailShare = dynamic(() => import("./extras/MailShare").then((m) => m.MailShare), { loading: () => null });
+const LinkShare = dynamic(() => import("./extras/LinkShare").then((m) => m.LinkShare), { loading: () => null });
 const MetadataPanel = dynamic(() => import("./extras/MetadataPanel").then((m) => m.MetadataPanel), { loading: () => null });
 const PrintExtras = dynamic(() => import("./extras/PrintExtras").then((m) => m.PrintExtras), { loading: () => null });
 
@@ -391,6 +392,7 @@ export function ToolRunner({ spec, retentionHours, nextTools, enabled, pdfaHref,
                 {f.note && f.note !== "NOT_SMALLER" && f.note !== "zip" && <span className="muted w-full text-sm">{f.note}</span>}
                 <CloudSave url={f.url} name={f.name} local={f.local} />
                 {!f.local && state.jobId && f.position !== undefined && <MailShare jobId={state.jobId} position={f.position} />}
+                {spec.slug === "compartir-pdf" && !f.local && state.jobId && f.position !== undefined && <LinkShare jobId={state.jobId} position={f.position} />}
               </li>
             ))}
           </ul>

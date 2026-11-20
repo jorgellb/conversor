@@ -136,6 +136,9 @@ DETAILS: dict[str, dict[str, str]] = {
                              "en": "The Facturae invoice does not meet its official schema: check it first with “Validate e-invoice”."},
     "not_invoice": {"es": "El archivo no es una factura UBL, CII ni Facturae.", "en": "The file is not a UBL, CII or Facturae invoice."},
     # Sello de la plataforma (firmar-pdf, 10 y D-188).
+    "share_account": {"es": "Para compartir con un enlace hace falta una cuenta: inicia sesión o regístrate gratis.",
+                      "en": "Sharing with a link needs an account: sign in or sign up for free."},
+    "share_hours": {"es": "Con tu plan el enlace puede durar como mucho {max} horas.", "en": "With your plan the link can last at most {max} hours."},
     "seal_account": {"es": "El sello de la plataforma necesita una cuenta: inicia sesión o regístrate gratis.",
                      "en": "The platform seal needs an account: sign in or sign up for free."},
     "seal_disabled": {"es": "El sello de la plataforma está apagado ahora mismo.", "en": "The platform seal is switched off right now."},

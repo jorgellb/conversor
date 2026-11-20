@@ -26735,6 +26735,44 @@
       }
     },
     {
+      "slug_es": "compartir-pdf",
+      "slug_en": "share-pdf",
+      "name_es": "Compartir PDF",
+      "name_en": "Share PDF",
+      "summary_es": "Comparte un PDF con un enlace privado que caduca cuando elijas y que puedes anular en cualquier momento.",
+      "summary_en": "Share a PDF with a private link that expires when you choose and that you can revoke at any time.",
+      "category": "sign",
+      "where": "server",
+      "worker_group": "pdf",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pdf"
+      ],
+      "outputs": [
+        "pdf"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "firmar-pdf",
+        "proteger-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "verificar-firmas-pdf",
       "slug_en": "verify-pdf-signatures",
       "name_es": "Verificar firmas de PDF",

@@ -522,6 +522,13 @@ Verificado aquí: pytest de las dos fases (RSA y P-256, niveles, manipulaciones)
 contraseña, cifrado antiguo) y la prueba cruzada navegador-servidor. Sin verificar aquí: un certificado de la FNMT real,
 la CI (GitHub Actions no arranca los trabajos por la facturación de la cuenta desde dabab57).
 
+## F4-C1 (compartir-pdf)
+
+Enlace privado con caducidad elegible (gratis 24 h; Pro hasta 7 días), Turnstile, cupo diario, contador de descargas
+y anulación inmediata (`/v1/shares`). Contenido 8.2 es/en. Salvedades en D-200.
+Verificado aquí: pytest de integración (límites por plan, anulación, lista, sin cuenta). Sin verificar aquí: la página
+contra la pila completa.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4: F4-F, F4-A y F4-D hechos; siguen después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo

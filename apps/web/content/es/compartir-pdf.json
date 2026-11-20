@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Compartir PDF te da un enlace privado para que otra persona descargue tu PDF sin adjuntarlo a un correo ni subirlo a una nube. Subes el archivo, eliges cuánto tiempo vale el enlace (una hora o un día con la cuenta gratuita, y también tres o siete días en Pro) y lo copias para mandarlo por el medio que quieras.",
+    "El enlace lleva un código secreto que solo se muestra al crearlo: nuestra base de datos guarda únicamente una huella de ese código, así que nadie puede reconstruir el enlace a partir de ella. Quien lo tenga puede descargar el PDF hasta que caduque, y en tu lista de enlaces ves cuántas veces se ha descargado cada uno.",
+    "Si te equivocas de destinatario o ya no quieres que se descargue, anulas el enlace y deja de funcionar al momento, también para quien ya lo tenga. Al caducar o al anularlo, la copia del archivo se borra de nuestro servidor.",
+    "El PDF se comprueba antes de compartirlo (que se abre y que cabe en tu plan) y se sirve siempre como descarga, nunca como página, para que nadie pueda usar el enlace para mostrar contenido engañoso con nuestra dirección."
+  ],
+  "faq": [
+    {
+      "q": "¿Necesito una cuenta?",
+      "a": "Sí. El enlace dura más que el tiempo que guardamos los archivos de quien no tiene cuenta, así que compartir solo está disponible con cuenta, gratuita o Pro."
+    },
+    {
+      "q": "¿Puede alguien adivinar el enlace?",
+      "a": "No en la práctica: el código del enlace es aleatorio y largo. Aun así, trátalo como una contraseña y mándalo solo a quien deba descargar el archivo."
+    },
+    {
+      "q": "¿Puedo cambiar la caducidad de un enlace?",
+      "a": "No: crea otro con la caducidad que quieras y anula el anterior."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Subir el PDF es una tarea ligera (50 al día con cuenta gratuita y 1.000 en Pro), y los enlaces comparten el cupo diario de los envíos por correo."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 173 herramientas (F1 43, F2 60, F3 10, F4 10, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 174 herramientas (F1 43, F2 60, F3 10, F4 11, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -173,6 +173,7 @@ Catálogo publicado en esta entrega: 173 herramientas (F1 43, F2 60, F3 10, F4 1
 | `traducir-subtitulos` / `translate-subtitles` | servidor | ai | ai | F5 | activa | srt, vtt, ass, mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → srt, vtt, ass | redactado, sin revisar |
 | `resumir-reunion` / `summarize-meeting` | servidor | av | ai | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → docx, txt, md | redactado, sin revisar |
 | `firmar-pdf` / `sign-pdf` | híbrida | sign | light | F4 | activa | pdf → pdf, zip | redactado, sin revisar |
+| `compartir-pdf` / `share-pdf` | servidor | pdf | light | F4 | activa | pdf → pdf | redactado, sin revisar |
 | `verificar-firmas-pdf` / `verify-pdf-signatures` | servidor | sign | light | F4 | activa | pdf → html, zip | redactado, sin revisar |
 | `validar-factura-electronica` / `validate-e-invoice` | servidor | utils | light | F4 | activa | xml, pdf, zip → html, csv, zip | redactado, sin revisar |
 | `factura-electronica-a-pdf` / `e-invoice-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |

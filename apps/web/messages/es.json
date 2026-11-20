@@ -1157,5 +1157,26 @@
     "p12_invalid": "No es un archivo .p12 o .pfx válido.",
     "p12_no_key": "El archivo no trae la clave privada junto con su certificado.",
     "p12_key_type": "El certificado usa un tipo de clave que no se admite (solo RSA y EC)."
+  },
+  "linkShare": {
+    "title": "Enlace para compartir",
+    "account": "Para crear un enlace hace falta una cuenta: inicia sesión o regístrate gratis.",
+    "expires": "Caduca en",
+    "h1": "1 hora",
+    "h24": "1 día",
+    "h72": "3 días",
+    "h168": "7 días",
+    "proOnly": "Pro",
+    "create": "Crear el enlace",
+    "creating": "Creando…",
+    "link": "Enlace",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "until": "hasta el {date}",
+    "onlyNow": "Guarda el enlace ahora: por seguridad no se vuelve a mostrar.",
+    "mine": "{n, plural, one {Tu enlace activo} other {Tus # enlaces activos}}",
+    "downloads": "{n, plural, one {# descarga} other {# descargas}}",
+    "revoked": "anulado",
+    "revoke": "Anular"
   }
 }

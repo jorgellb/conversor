@@ -128,7 +128,7 @@ def test_options_and_errors(arch, make_ctx, tmp_path, monkeypatch):
     from tools.sign import firmar
 
     spec = load_registry().require(TOOL)
-    assert spec.queue == "sign" and spec.category == "sign" and spec.default_enabled is False and spec.ai is None
+    assert spec.queue == "sign" and spec.category == "sign" and spec.default_enabled is True and spec.ai is None
     defaults = spec.options().model_dump()
     assert defaults == {"certificado": "plataforma", "visible": True, "pagina": "ultima", "posicion": "abajo_derecha",
                         "fase": "preparar", "cadena": "", "estado": "", "firma": "", "campo": "", "nombre": "", "motivo": "", "lugar": "", "sello_tiempo": True, "nivel": "B-T", "certificacion": "no"}

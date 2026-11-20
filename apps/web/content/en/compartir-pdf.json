@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Share PDF gives you a private link so someone else can download your PDF without attaching it to an email or uploading it to a cloud. You upload the file, choose how long the link is valid (one hour or one day with the free account, and also three or seven days on Pro) and copy it to send it any way you like.",
+    "The link carries a secret code that is only shown when it is created: our database only keeps a fingerprint of that code, so nobody can rebuild the link from it. Anyone with the link can download the PDF until it expires, and in your list of links you see how many times each one has been downloaded.",
+    "If you sent it to the wrong person or no longer want it downloaded, you revoke the link and it stops working at once, also for anyone who already has it. When it expires or is revoked, the copy of the file is deleted from our server.",
+    "The PDF is checked before sharing (that it opens and fits your plan) and is always served as a download, never as a web page, so nobody can use the link to show misleading content under our address."
+  ],
+  "faq": [
+    {
+      "q": "Do I need an account?",
+      "a": "Yes. The link lasts longer than the time we keep files of people without an account, so sharing is only available with an account, free or Pro."
+    },
+    {
+      "q": "Can someone guess the link?",
+      "a": "Not in practice: the link code is random and long. Still, treat it like a password and send it only to whoever should download the file."
+    },
+    {
+      "q": "Can I change the expiry of a link?",
+      "a": "No: create another one with the expiry you want and revoke the old one."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "Uploading the PDF is a light task (50 a day with a free account and 1,000 on Pro), and links share the daily allowance of email sending."
+    }
+  ]
+}

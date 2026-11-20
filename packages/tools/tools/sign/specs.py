@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from core.options import opt
-from core.registry import ToolSpec
+from core.registry import NoOptions, ToolSpec
 
 
 class VerificarOptions(BaseModel):
@@ -69,6 +69,16 @@ SPECS: list[ToolSpec] = [
         summary_es="Firma un PDF a mano en el navegador o digitalmente (PAdES) con tu certificado o el sello de la plataforma.",
         summary_en="Sign a PDF by hand in your browser or digitally (PAdES) with your certificate or the platform seal.",
         related=("verificar-firmas-pdf", "proteger-pdf"),
+    ),
+    # 7.7 (F4-C1, D-200): el trabajo solo comprueba el PDF; el enlace con caducidad lo crea la página con POST /v1/shares.
+    ToolSpec(
+        slug_es="compartir-pdf", slug_en="share-pdf", name_es="Compartir PDF", name_en="Share PDF", category="sign",
+        where="server", inputs=("pdf",), outputs=("pdf",), options=NoOptions, worker_group="pdf", cost_class="light",
+        impl="tools.pdf.compartir:run", precheck="tools.pdf.compartir:precheck", launch=True, phase="F4", time_limit=300,
+        max_files=1,
+        summary_es="Comparte un PDF con un enlace privado que caduca cuando elijas y que puedes anular en cualquier momento.",
+        summary_en="Share a PDF with a private link that expires when you choose and that you can revoke at any time.",
+        related=("firmar-pdf", "proteger-pdf"),
     ),
     # 7.23: en `sign.verify`, un contenedor de la imagen worker-sign sin el volumen del token ni el PIN, para que un PDF
     # hostil no conviva con la clave del sello (D-185). Categoría `sign`: nunca crea cliente de IA (6.6).

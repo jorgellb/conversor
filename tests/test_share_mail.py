@@ -107,3 +107,46 @@ def test_smtp_failure_is_reported_and_leaves_nothing(api, user_token, tus_upload
     resp = api.post(f"/v1/jobs/{job['id']}/outputs/0/mail", json={"to": ["fallo@ejemplo.test"], "turnstile_token": "ok"}, headers=auth(token))
     assert resp.status_code == 502 and resp.json()["error"]["code"] == "MAIL_FAILED"
     assert set((Path(services["files"]) / "shares").glob("*")) == before
+
+
+# --- compartir-pdf (F4-C1, D-200) ---------------------------------------------------------------------------------
+
+
+def _authorized(internal, url: str) -> int:
+    parts = urlsplit(url)
+    return internal.get("/files/authorize", headers={"X-Forwarded-Uri": f"{parts.path}?{parts.query}", "X-Forwarded-Method": "GET"}).status_code
+
+
+def test_share_link_hours_per_plan_revoke_and_list(api, internal, user_token, tus_upload, fixtures_dir, services, outbox):
+    token = user_token(user_id="enlace-libre", email="libre@ejemplo.test")
+    uid, _ = tus_upload(token, "compartir-pdf", fixtures_dir / "fotos.pdf")
+    job = api.post("/v1/jobs", json={"tool": "compartir-pdf", "upload_ids": [uid]}, headers=auth(token)).json()
+    assert job["status"] == "succeeded", job
+    body = {"job_id": job["id"], "position": 0, "turnstile_token": "ok"}
+    week = api.post("/v1/shares", json={**body, "hours": 168}, headers=auth(token))
+    assert week.status_code == 422 and week.json()["error"]["message"] == "Con tu plan el enlace puede durar como mucho 24 horas."
+    assert api.post("/v1/shares", json={**body, "hours": 5}, headers=auth(token)).status_code == 422
+    assert api.post("/v1/shares", json={**body, "hours": 24, "turnstile_token": "malo"}, headers=auth(token)).status_code == 403
+    ok = api.post("/v1/shares", json={**body, "hours": 24}, headers=auth(token))
+    assert ok.status_code == 200, ok.text
+    link = ok.json()
+    assert _authorized(internal, link["url"]) == 200 and _authorized(internal, link["url"] + "x") == 403
+    listed = api.get("/v1/shares", headers=auth(token)).json()["shares"]
+    assert [(s["id"], s["downloads"], "url" in s) for s in listed] == [(link["id"], 1, False)]
+    other = user_token(user_id="enlace-otro", email="otro@ejemplo.test")
+    assert api.delete(f"/v1/shares/{link['id']}", headers=auth(other)).status_code == 404
+    revoked = api.delete(f"/v1/shares/{link['id']}", headers=auth(token))
+    assert revoked.status_code == 200 and revoked.json()["revoked"] is True
+    assert _authorized(internal, link["url"]) == 403
+    from pathlib import Path
+
+    assert not (Path(services["files"]) / "shares" / link["id"]).exists()
+    _set_plan(services, "enlace-libre", "pro")
+    assert api.post("/v1/shares", json={**body, "hours": 168}, headers=auth(token)).status_code == 200
+
+
+def test_share_needs_an_account(api, anon_token, tus_upload, fixtures_dir):
+    token = anon_token()
+    uid, _ = tus_upload(token, "compartir-pdf", fixtures_dir / "fotos.pdf")
+    job = api.post("/v1/jobs", json={"tool": "compartir-pdf", "upload_ids": [uid]}, headers=auth(token))
+    assert job.status_code == 401 and job.json()["error"]["code"] == "UNAUTHORIZED"

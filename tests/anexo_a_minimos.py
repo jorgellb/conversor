@@ -242,6 +242,8 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     "firmar-pdf": {"certificado": E("plataforma", "plataforma", "propio"), "visible": D(True), "nivel": E("B-T", "B-T", "B-LT", "B-LTA"),
                    "certificacion": E("no", "no", "sin_cambios", "formularios", "formularios_anotaciones"),
                    "sello_tiempo": D(True), "nombre": X, "motivo": X, "lugar": X, "campo": X},
+    # 7.7 (F4-C1): la caducidad se elige en la página al crear el enlace (POST /v1/shares).
+    "compartir-pdf": {},
     # A.7 (F4): revocación OCSP y CRL «bajo petición» (apagada por defecto).
     "verificar-firmas-pdf": {"revocacion": D(False)},
     "preferencias-visor-pdf": {

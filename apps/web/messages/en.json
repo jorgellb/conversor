@@ -1157,5 +1157,26 @@
     "p12_invalid": "It is not a valid .p12 or .pfx file.",
     "p12_no_key": "The file does not carry the private key together with its certificate.",
     "p12_key_type": "The certificate uses an unsupported key type (only RSA and EC)."
+  },
+  "linkShare": {
+    "title": "Link to share",
+    "account": "Creating a link needs an account: sign in or sign up for free.",
+    "expires": "Expires in",
+    "h1": "1 hour",
+    "h24": "1 day",
+    "h72": "3 days",
+    "h168": "7 days",
+    "proOnly": "Pro",
+    "create": "Create the link",
+    "creating": "Creating…",
+    "link": "Link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "until": "until {date}",
+    "onlyNow": "Save the link now: for security it is not shown again.",
+    "mine": "{n, plural, one {Your active link} other {Your # active links}}",
+    "downloads": "{n, plural, one {# download} other {# downloads}}",
+    "revoked": "revoked",
+    "revoke": "Revoke"
   }
 }

@@ -133,3 +133,79 @@ def mail_output(job_id: str, position: int, body: MailIn, request: Request, owne
         raise AppError(ErrorCode.MAIL_FAILED, status=502) from exc
     log.info("resultado enviado por correo", extra={"job_id": str(job.id), "recipients": len(body.to)})
     return {"sent": len(body.to), "expires_at": share.expires_at.isoformat()}
+
+
+# --- compartir-pdf (7.7, F4-C1, D-200): enlace firmado con caducidad elegible, revocable y con contador de descargas ---
+
+SHARE_HOURS_CHOICES = (1, 24, 72, 168)
+FREE_MAX_HOURS = 24  # 9: retención de 24 h con cuenta; «compartir hasta 7 días», en Pro (SHARE_MAX_DAYS)
+
+
+class ShareIn(BaseModel):
+    job_id: uuid.UUID
+    position: int = Field(ge=0, le=1000)
+    hours: int = Field(ge=1, le=24 * 30)
+    turnstile_token: str = Field(min_length=1, max_length=4096)
+
+
+def _share_view(share: Share, settings: Settings, token: str | None = None) -> dict:
+    view = {"id": str(share.id), "filename": share.filename, "expires_at": share.expires_at.isoformat(), "downloads": share.downloads,
+            "revoked": share.revoked_at is not None}
+    if token:
+        view["url"] = f"{settings.PUBLIC_FILES_URL.rstrip('/')}/s/{share.id}/{share.filename}?t={token}"
+    return view
+
+
+@router.post("/shares")
+def create_share(body: ShareIn, request: Request, owner: Owner = Depends(current_user), session: Session = Depends(db),
+                 settings: Settings = Depends(settings_dep)):
+    """Enlace para descargar un resultado durante 1 hora, 1, 3 o 7 días (Pro hasta SHARE_MAX_DAYS; gratis, 24 h).
+    Solo con cuenta: el enlace dura más que la retención de un anónimo. El token solo se ve una vez (se guarda su hash)."""
+    if owner.type != "user":
+        raise AppError(ErrorCode.UNAUTHORIZED, status=401, detail="share_account")
+    limit = settings.SHARE_MAX_DAYS * 24 if owner.is_pro else FREE_MAX_HOURS
+    if body.hours not in SHARE_HOURS_CHOICES or body.hours > limit:
+        raise AppError(ErrorCode.INVALID_OPTIONS, status=422, detail=f"share_hours:{body.hours}>{limit}")
+    job = session.get(Job, body.job_id)
+    if job is None or job.owner_type != owner.type or job.owner_id != owner.id:
+        raise AppError(ErrorCode.NOT_FOUND, status=404)
+    output = next((o for o in job.outputs if o.position == body.position), None) if job.status == "succeeded" else None
+    if output is None or not Path(output.path).is_file():
+        raise AppError(ErrorCode.NOT_FOUND, status=404, detail="El resultado no existe o ya se ha borrado")
+    if not VERIFY["fn"](settings.TURNSTILE_SECRET_KEY, body.turnstile_token, client_ip(request, settings)):
+        raise AppError(ErrorCode.TURNSTILE_FAILED, status=403)
+    count_mail_share(session, owner.id, settings.MAIL_SHARE_DAILY_LIMIT)  # el mismo cupo diario que enviar por correo
+    token, token_hash = new_share_token()
+    share = Share(id=uuid.uuid4(), job_output_id=output.id, owner_id=owner.id, filename=output.filename, token_hash=token_hash,
+                  expires_at=datetime.now(timezone.utc) + timedelta(hours=body.hours))
+    store = Store(settings.FILESTORE_PATH)
+    _share_copy(Path(output.path), store.share_dir(str(share.id)), output.filename)
+    session.add(share)
+    session.flush()
+    log.info("enlace para compartir", extra={"job_id": str(job.id), "hours": body.hours})
+    return _share_view(share, settings, token)
+
+
+@router.get("/shares")
+def list_shares(owner: Owner = Depends(current_user), session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+    """Los enlaces del usuario que no han caducado (los caducados los borra el mantenimiento), sin el token."""
+    if owner.type != "user":
+        raise AppError(ErrorCode.UNAUTHORIZED, status=401, detail="share_account")
+    from sqlalchemy import select
+
+    now = datetime.now(timezone.utc)
+    rows = session.scalars(select(Share).where(Share.owner_id == owner.id, Share.expires_at > now).order_by(Share.expires_at.desc()).limit(100))
+    return {"shares": [_share_view(s, settings) for s in rows]}
+
+
+@router.delete("/shares/{share_id}")
+def revoke_share(share_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db),
+                 settings: Settings = Depends(settings_dep)):
+    """Revoca el enlace al momento (files/authorize lo comprueba en la base de datos) y borra su copia."""
+    share = session.get(Share, share_id)
+    if share is None or owner.type != "user" or share.owner_id != owner.id:
+        raise AppError(ErrorCode.NOT_FOUND, status=404)
+    if share.revoked_at is None:
+        share.revoked_at = datetime.now(timezone.utc)
+        shutil.rmtree(Store(settings.FILESTORE_PATH).share_dir(str(share.id)), ignore_errors=True)
+    return _share_view(share, settings)
