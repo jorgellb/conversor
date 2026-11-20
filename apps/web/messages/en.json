@@ -1428,6 +1428,23 @@
     "endpointScheme": "Electronic address scheme (EAS)",
     "endpointId": "Electronic address (Peppol, XRechnung)",
     "discountText": "Discount",
-    "generateElectronic": "Generate and validate the e-invoice"
+    "generateElectronic": "Generate and validate the e-invoice",
+    "sign": {
+      "title": "Sign the Facturae with your certificate",
+      "how": "The XAdES-EPES signature (Facturae 3.1 policy) is made in this browser with your .p12 or .pfx certificate (RSA): neither the file nor the password leaves your device.",
+      "file": "Certificate (.p12 or .pfx)",
+      "password": "Certificate password",
+      "button": "Sign",
+      "xades_rsa_only": "Facturae only accepts RSA certificates; yours is elliptic-curve.",
+      "xades_not_facturae": "The file is not a Facturae.",
+      "xades_already_signed": "This Facturae is already signed.",
+      "xades_failed": "The Facturae could not be signed.",
+      "download": "The Facturae could not be downloaded for signing.",
+      "p12_password": "The certificate password is not correct.",
+      "p12_legacy": "The certificate uses old encryption (3DES or RC2): export it again with AES.",
+      "p12_invalid": "The file is not a .p12 or .pfx certificate.",
+      "p12_no_key": "The file does not contain the certificate's private key.",
+      "p12_key_type": "The certificate uses an unsupported key type."
+    }
   }
 }

@@ -123,6 +123,10 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false }: { sp
   const [profile, setProfile] = useState<(typeof PROFILES)[number]>("en16931");
   const [extra, setExtra] = useState({ buyerReference: "", order: "", paymentCode: "58" });
   const [files, setFiles] = useState<JobOutput[]>([]);
+  const [p12, setP12] = useState<File | null>(null);
+  const [p12Password, setP12Password] = useState("");
+  const [signed, setSigned] = useState<{ url: string; name: string } | null>(null);
+  const [signError, setSignError] = useState<string | null>(null);
 
   useEffect(() => {
     const issuer = read<Party | null>(STORE.issuer, (v): v is Party | null => v === null || isParty(v), null);
@@ -235,6 +239,29 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false }: { sp
       const code = err instanceof ClientToolError ? err.code : "INTERNAL";
       const glyphs = err instanceof ClientToolError && err.message.startsWith("glyphs:") ? err.message.slice(7) : null;
       setError(glyphs ? t("glyphs", { chars: glyphs }) : te.has(code) ? te(code) : te("INTERNAL"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** F4-E2b (D-207): firma XAdES-EPES del Facturae en este navegador; la clave del .p12 no sale del equipo. */
+  async function signXml(out: JobOutput) {
+    if (!p12) return;
+    setSignError(null);
+    setBusy(true);
+    try {
+      const [{ openP12, P12Error }, { signFacturae, XadesError }] = await Promise.all([import("@/lib/p12"), import("@/lib/xades")]);
+      try {
+        const res = await fetch(out.url);
+        if (!res.ok) throw new ApiError("NOT_FOUND", "", res.status);
+        const cert = await openP12(await p12.arrayBuffer(), p12Password);
+        const xml = await signFacturae(await res.text(), cert);
+        const name = out.name.replace(/\.xml$/i, "") + (locale === "en" ? "-signed.xml" : "-firmada.xml");
+        setSigned({ url: URL.createObjectURL(new Blob([xml], { type: "application/xml" })), name });
+      } catch (err) {
+        const code = err instanceof P12Error || err instanceof XadesError ? err.code : err instanceof ApiError ? "download" : "xades_failed";
+        setSignError(t.has(`sign.${code}`) ? t(`sign.${code}`) : t("sign.xades_failed"));
+      }
     } finally {
       setBusy(false);
     }
@@ -526,6 +553,23 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false }: { sp
       </div>
 
       {electronic && <div ref={turnstileBox} />}
+      {electronic && format === "facturae" && files.filter((f) => f.name.toLowerCase().endsWith(".xml")).map((f) => (
+        <section key={`s-${f.url}`} className="card flex flex-col gap-2 p-4 text-sm" aria-label={t("sign.title")} data-facturae-sign>
+          <p className="font-semibold">{t("sign.title")}</p>
+          <p className="muted">{t("sign.how")}</p>
+          <div className="flex flex-wrap items-end gap-2">
+            <label className="flex flex-col gap-1">{t("sign.file")}
+              <input type="file" accept=".p12,.pfx,application/x-pkcs12" className="field" onChange={(e) => setP12(e.target.files?.[0] ?? null)} />
+            </label>
+            <label className="flex flex-col gap-1">{t("sign.password")}
+              <input type="password" className="field" autoComplete="off" value={p12Password} onChange={(e) => setP12Password(e.target.value)} />
+            </label>
+            <button type="button" className="btn" disabled={busy || !p12} onClick={() => void signXml(f)}>{t("sign.button")}</button>
+          </div>
+          {signError && <p role="alert" className="text-red-700">{signError}</p>}
+          {signed && <a className="btn-secondary btn self-start" href={signed.url} download={signed.name} data-facturae-signed>{t("download", { name: signed.name })}</a>}
+        </section>
+      ))}
       {files.map((f) => f.note && <p key={`n-${f.url}`} className="text-sm" role="status">{f.note}</p>)}
       <div aria-live="polite" className="flex flex-col gap-2">
         {error && <p role="alert" className="text-red-700">{error}</p>}

@@ -153,3 +153,21 @@ def test_facturx_pdf_has_the_xml_and_metadata_and_goes_to_verapdf(make_ctx, fake
     out = run(TOOL, ctx)
     assert [o["name"] for o in out] == ["factura-2026-0042.pdf", "factura-2026-0042.xml"]
     assert fake_verapdf[0] == [("factura-2026-0042.pdf", "3b")]
+
+
+def test_facturae_signed_in_the_browser_passes_the_server_check():
+    """F4-E2b (D-207): apps/web/test/xades.test.ts firma facturae.xml con xadesjs y la clave de rsa.p12 (FACTURAE_FIXTURE=1
+    vuelve a escribir facturae-firmada.xml); aquí la comprueba el mismo motor que validar-factura-electronica (XSD y
+    XAdES con signxml), y cualquier cambio posterior la invalida."""
+    from core.settings import get_settings
+    from tools.utils.facturas import lectura, motores
+
+    data = (ROOT / "apps" / "web" / "test" / "fixtures" / "facturae-firmada.xml").read_bytes()
+    root, _inv = lectura.read_invoice(data)
+    result = motores.facturae(get_settings(), root, data, lectura.facturae_version(root), check_signature=True)
+    assert result.accepted and not result.findings
+    assert b"politica_de_firma_formato_facturae_v3_1.pdf" in data and b"<xades:ClaimedRole>emisor</xades:ClaimedRole>" in data
+    tampered = data.replace(b"<InvoiceTotal>", b"<InvoiceTotal>1", 1)
+    root, _inv = lectura.read_invoice(tampered)
+    result = motores.facturae(get_settings(), root, tampered, lectura.facturae_version(root), check_signature=True)
+    assert not result.accepted and [f.code for f in result.findings] == ["FIRMA"]

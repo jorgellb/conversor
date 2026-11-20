@@ -122,3 +122,55 @@ test("crear-factura-electronica: llega desde crear-factura y manda la factura EN
   expect(options.factura.emisor.nif).toBe("B12345674");
   expect(options.factura.lineas).toEqual([{ descripcion: "Consultoría", cantidad: 1, unidad: "ud", precio: 1200, descuento: 0, iva: 21 }]);
 });
+
+// F4-E2b: el Facturae se firma en el navegador con el .p12 (la clave no sale; ni el certificado ni la contraseña se envían).
+test("crear-factura-electronica: Facturae firmado con XAdES-EPES en el navegador", async ({ page }) => {
+  const API = "http://127.0.0.1:8100", FILES = "http://127.0.0.1:8190";
+  const cors = { "Access-Control-Allow-Origin": "http://127.0.0.1:3100", "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Accept-Language" };
+  await page.route("https://challenges.cloudflare.com/**", (route) => route.fulfill({ status: 200, contentType: "text/javascript",
+    body: "window.turnstile={render:function(el,o){setTimeout(function(){o.callback('ok')},0);return 't1'},remove:function(){}};" }));
+  const sent: string[] = [];
+  page.on("request", (r) => { if (r.method() === "POST") sent.push(r.postData() ?? ""); });
+  await page.route(`${FILES}/**`, (route) => route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "application/xml" },
+    body: readFileSync("apps/web/test/fixtures/facturae.xml") }));
+  await page.route(`${API}/**`, (route) => {
+    const req = route.request();
+    const json = (status: number, body: unknown) => route.fulfill({ status, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (req.method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
+    if (req.url().endsWith("/v1/session/anon")) return json(200, { token: "anon.e2e.firma", expires_in: 86400 });
+    if (req.method() === "POST" && req.url().endsWith("/v1/jobs")) {
+      return json(201, { id: "e2", tool: "crear-factura-electronica", status: "succeeded", progress: 1, message: null, error: null, expires_at: null, inputs: [],
+        outputs: [{ name: "factura-0042.xml", size: 3000, mime: "application/xml", note: "Cumple el XSD oficial de Facturae 3.2.2.",
+          url: `${FILES}/d/e2/factura-0042.xml?t=x`, url_expires_in: 900 }] });
+    }
+    return route.fulfill({ status: 404, headers: cors });
+  });
+  await page.goto("/es/crear-factura-electronica");
+  const issuer = page.locator("[data-party='issuer']");
+  await issuer.getByLabel("Nombre o razón social").fill("Estudio Pérez, S.L.");
+  await issuer.getByLabel("NIF, NIE o CIF", { exact: true }).fill("B12345674");
+  await issuer.getByLabel("Dirección", { exact: true }).fill("Calle Mayor 1");
+  await issuer.getByLabel("Población").fill("Madrid");
+  await page.locator("[data-party='customer']").getByLabel("Nombre o razón social").fill("Cliente S.A.");
+  await page.locator("[data-party='customer']").getByLabel(/NIF, NIE o CIF/).fill("A58818501");
+  await page.locator("[data-line='0']").getByLabel("Descripción").fill("Consultoría");
+  await page.locator("[data-line='0']").getByLabel("Precio sin IVA").fill("100");
+  await page.locator("[data-einvoice-format]").getByLabel("Formato").selectOption("facturae");
+  await page.getByRole("button", { name: "Generar y validar la factura electrónica" }).click();
+  const panel = page.locator("[data-facturae-sign]");
+  await expect(panel).toBeVisible();
+  await panel.getByLabel("Certificado (.p12 o .pfx)").setInputFiles("apps/web/test/fixtures/rsa.p12");
+  await panel.getByLabel("Contraseña del certificado").fill("mala");
+  await panel.getByRole("button", { name: "Firmar" }).click();
+  await expect(panel.getByRole("alert")).toHaveText("La contraseña del certificado no es correcta.");
+  await panel.getByLabel("Contraseña del certificado").fill("clave");
+  await panel.getByRole("button", { name: "Firmar" }).click();
+  const link = page.locator("[data-facturae-signed]");
+  await expect(link).toHaveText("Descargar factura-0042-firmada.xml");
+  const [d] = await Promise.all([page.waitForEvent("download"), link.click()]);
+  const xml = readFileSync(await d.path(), "utf8");
+  expect(xml).toContain("politica_de_firma_formato_facturae_v3_1.pdf");
+  expect(xml).toContain("<xades:ClaimedRole>emisor</xades:ClaimedRole>");
+  expect(sent.some((body) => body.includes("clave"))).toBe(false); // la contraseña no viaja
+});

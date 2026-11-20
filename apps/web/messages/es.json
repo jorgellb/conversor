@@ -1428,6 +1428,23 @@
     "endpointScheme": "Esquema de la dirección electrónica (EAS)",
     "endpointId": "Dirección electrónica (Peppol, XRechnung)",
     "discountText": "Descuento",
-    "generateElectronic": "Generar y validar la factura electrónica"
+    "generateElectronic": "Generar y validar la factura electrónica",
+    "sign": {
+      "title": "Firmar el Facturae con tu certificado",
+      "how": "La firma XAdES-EPES (política de Facturae 3.1) se hace en este navegador con tu certificado .p12 o .pfx (RSA): ni el archivo ni la contraseña salen de tu equipo.",
+      "file": "Certificado (.p12 o .pfx)",
+      "password": "Contraseña del certificado",
+      "button": "Firmar",
+      "xades_rsa_only": "Facturae solo admite certificados RSA; el tuyo es de curva elíptica.",
+      "xades_not_facturae": "El archivo no es un Facturae.",
+      "xades_already_signed": "Este Facturae ya está firmado.",
+      "xades_failed": "No se ha podido firmar el Facturae.",
+      "download": "No se ha podido descargar el Facturae para firmarlo.",
+      "p12_password": "La contraseña del certificado no es correcta.",
+      "p12_legacy": "El certificado usa un cifrado antiguo (3DES o RC2): vuelve a exportarlo con AES.",
+      "p12_invalid": "El archivo no es un certificado .p12 o .pfx.",
+      "p12_no_key": "El archivo no trae la clave privada del certificado.",
+      "p12_key_type": "El certificado usa un tipo de clave que no se admite."
+    }
   }
 }

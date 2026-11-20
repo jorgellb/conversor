@@ -100,6 +100,8 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       dominio) sin ir a spam; el firmante firma desde el móvil; el documento final pasa por verificar-firmas-pdf y por
       Adobe Reader con las firmas válidas; beat avanza una solicitud con la página cerrada. Revisar con el asesor el
       consentimiento y la conservación de la auditoría (LEGAL).
+- [ ] crear-factura-electronica con un certificado real (FNMT o de empresa, RSA): el Facturae firmado en el navegador pasa
+      el validador de facturae.gob.es y FACe lo acepta (con los códigos DIR3 que pida la Administración destinataria).
 - [ ] Confirmar con OpenPeppol las condiciones de redistribución del Schematron de Peppol BIS 3.0 dentro de la imagen worker-utils (su repositorio no declara licencia; D-191 y LICENSES).
 - [ ] Con «Comprobar la revocación en línea», un PDF firmado con un certificado de la FNMT consulta su OCSP por `egressweb`
       (en el log de Smokescreen) y el informe dice «Comprobada en línea».
