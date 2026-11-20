@@ -147,6 +147,8 @@ def cases() -> list[dict]:
         ("bz2", "bz2", bz2.compress(b"hola"), "bz2"),
         ("xz", "xz", lzma.compress(b"hola"), "xz"),
         ("tar", "tar", tar_bytes(), "tar"),
+        ("csig-con-pdf-dentro", "csig", b"\x30\x82\x05\x10\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x07\x02\xa0\x82\x05\x01\x30\x82"
+         + bytes(40) + b"%PDF-1.7\n%\xe2\xe3\xcf\xd3\n" + bytes(40), "csig"),
         ("p7m-der", "p7m", b"\x30\x82\x05\x10\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x07\x02" + bytes(30), "p7m"),
         ("csig-ber", "csig", b"\x30\x80\x06\x09\x2a\x86\x48\x86\xf7\x0d\x01\x07\x02" + bytes(30), "csig"),
         ("p7m-pem", "p7m", b"-----BEGIN PKCS7-----\nMIIB\n-----END PKCS7-----\n", "p7m"),

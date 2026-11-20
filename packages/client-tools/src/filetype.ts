@@ -219,6 +219,8 @@ export function detectHead(head: Uint8Array, declaredExt = ""): Detected | null 
   const declared = normalizeExt(declaredExt);
   if (!head.length) return null;
   if (wideText(head)) return WIDE_TEXT.has(declared) ? { ext: declared, family: "wide-text" } : null;
+  // Una firma CMS con un PDF dentro lleva «%PDF-» hacia el byte 66: la regla de CMS va antes que la de PDF (D-222).
+  if (CMS.has(declared) && head[0] === 0x30 && head.length > 2 && head[1] >= 0x80 && head[1] <= 0x84) return { ext: declared, family: "cms" };
   if (indexOf(head, "%PDF-", 0, 1024) >= 0) return { ext: "pdf", family: "pdf" };
   if (startsWith(head, [0xff, 0xd8, 0xff])) return { ext: "jpg", family: "image" };
   if (startsWith(head, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return { ext: "png", family: "image" };
@@ -248,7 +250,6 @@ export function detectHead(head: Uint8Array, declaredExt = ""): Detected | null 
   if (startsWith(head, "ID3") || (head.length > 1 && head[0] === 0xff && (head[1] & 0xe0) === 0xe0 && head[1] !== 0xff)) return { ext: "mp3", family: "audio" };
   if (startsWith(head, [0x50, 0x4b, 0x03, 0x04])) return { ext: "zip", family: "zip" };
   if (startsWith(head, [0x52, 0x61, 0x72, 0x21, 0x1a, 0x07])) return { ext: "rar", family: "archive" };
-  if (CMS.has(declared) && head[0] === 0x30 && head.length > 2 && head[1] >= 0x80 && head[1] <= 0x84) return { ext: declared, family: "cms" };
   // Comprimidos de F6-E (D-217): 7z, gzip, bzip2, xz y tar (la marca «ustar» en el byte 257).
   if (startsWith(head, [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c])) return { ext: "7z", family: "archive" };
   if (startsWith(head, [0x1f, 0x8b, 0x08])) return { ext: "gz", family: "archive" };

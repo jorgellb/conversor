@@ -30,11 +30,13 @@ NOTES = {
     "es": {"signed_by": "Firmado por {who}.", "signers": "{n} firmantes: {who}.", "levels": "Estaba firmado {n} veces (unas dentro de otras).",
            "not_pdf": "El documento firmado no es un PDF sino {ext}: se entrega tal cual; puedes convertirlo después.",
            "unchecked": "La firma no se ha comprobado aquí: para saber si es válida, usa Verificar firma.",
-           "xml_rebuilt": "El XML se entrega sin la firma; puede diferir en espacios del original."},
+           "xml_rebuilt": "El XML se entrega sin la firma, con el resto tal cual.",
+           "unverified": "Ninguna firma de este archivo se ha podido comprobar con su certificado: el documento puede no ser el firmado."},
     "en": {"signed_by": "Signed by {who}.", "signers": "{n} signers: {who}.", "levels": "It was signed {n} times (one inside another).",
            "not_pdf": "The signed document is not a PDF but {ext}: it is delivered as it is; you can convert it afterwards.",
            "unchecked": "The signature was not checked here: to know whether it is valid, use Verify signature.",
-           "xml_rebuilt": "The XML is delivered without the signature; whitespace may differ from the original."},
+           "xml_rebuilt": "The XML is delivered without the signature, with the rest as it was.",
+           "unverified": "No signature in this file could be checked against its certificate: the document may not be the signed one."},
 }
 
 
@@ -118,55 +120,68 @@ def unwrap_cms(raw: bytes) -> tuple[bytes, list[list[str]]]:
 # --- XAdES ------------------------------------------------------------------------------------------------------------
 
 
-def _local(tag: str) -> str:
-    return tag.rsplit("}", 1)[-1]
+def unwrap_xades(raw: bytes) -> tuple[bytes, list[str], bool, int]:
+    """(documento, firmantes comprobados, si se ha rehecho el XML, firmas válidas). El documento es el que cubren las firmas
+    que se verifican (D-222): con Ids repetidos o con firmas válidas que apuntan a documentos distintos, no se extrae
+    nada, porque no se sabría cuál es el firmado."""
+    from tools.utils import xades
 
-
-def unwrap_xades(raw: bytes) -> tuple[bytes, list[str], bool]:
-    """(documento, firmantes, si se ha rehecho el XML). El documento es el nodo al que apunta una referencia de la firma
-    que no es la de las propiedades firmadas ni la de KeyInfo."""
-    import defusedxml.ElementTree as DET
-    from defusedxml import DefusedXmlException
-
-    try:
-        root = DET.fromstring(raw, forbid_dtd=False, forbid_entities=True, forbid_external=True)
-    except (DefusedXmlException, ValueError) as exc:
-        raise ToolError(ErrorCode.INVALID_OPTIONS, "xml_entities") from exc
-    except SyntaxError as exc:
-        raise ToolError(ErrorCode.CORRUPT_FILE, "XML no válido") from exc
-    signatures = list(root.iter(f"{{{DS}}}Signature"))
-    if not signatures:
+    root = xades.parse(raw)
+    if xades.duplicate_ids(root):
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "xades_duplicate_ids")
+    sigs = xades.signatures(root)
+    if not sigs:
         raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "xades_no_signature")
-    by_id = {el.get(attr): el for el in root.iter() for attr in ("Id", "ID", "id") if el.get(attr)}
-    names = [_xades_signer(sig) for sig in signatures]
-    for sig in signatures:
-        for ref in sig.iter(f"{{{DS}}}Reference"):
-            uri = ref.get("URI")
-            if ref.get("Type", "").endswith("#SignedProperties") or uri is None:
-                continue
-            if uri == "":
-                # Firma envuelta: el documento es el propio XML sin las firmas.
-                return _without_signatures(root), names, True
-            if not uri.startswith("#"):
-                continue  # referencia a un archivo de fuera: firma separada
-            node = by_id.get(uri[1:])
-            if node is None or _local(node.tag) in ("KeyInfo", "SignedProperties", "Signature"):
-                continue
-            data, rebuilt = _node_content(node)
-            return data, names, rebuilt
-    raise ToolError(ErrorCode.INVALID_OPTIONS, "xades_detached")
+    index = xades.by_id(root)
+    candidates = []
+    for i, sig in enumerate(sigs):
+        refs = xades.data_references(sig, index)
+        target = _target(root, sig, refs, index)
+        if target is None:
+            continue
+        cert = xades.leaf(xades.certificates(sig))
+        ok = cert is not None and xades.reference_ok(raw, i, cert)[0] and xades.covers_document(root, sig, refs)
+        candidates.append((ok, target, cert))
+    if not candidates:
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "xades_detached")
+    verified = [c for c in candidates if c[0]]
+    chosen = verified or candidates[:1]
+    if len({id(c[1]) if c[1] is not root else "doc" for c in chosen}) > 1:
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "xades_ambiguous")
+    target = chosen[0][1]
+    names = [_cn(c[2]) for c in verified]
+    if target is root:
+        return _without_signatures(root, sigs), names, True, len(verified)
+    data, rebuilt = _node_content(target)
+    return data, names, rebuilt, len(verified)
+
+
+def _target(root, sig, refs, index):
+    """El nodo firmado: la raíz si la referencia es URI="" (firma envuelta), el nodo de su Id o None (separada)."""
+    for ref in refs:
+        uri = ref.get("URI")
+        if uri == "":
+            return root
+        if uri.startswith("#") and uri[1:] in index:
+            return index[uri[1:]]
+    return None
+
+
+def _cn(cert) -> str:
+    subject = cert.subject.native if cert is not None else {}
+    return str(subject.get("common_name") or subject.get("organization_name") or "?")
 
 
 def _node_content(node) -> tuple[bytes, bool]:
-    """Base64 (`Encoding` o texto que solo puede serlo) o el XML hijo (vuelto a escribir: True)."""
-    import xml.etree.ElementTree as ET
+    """Base64 (`Encoding` o texto que solo puede serlo) o el XML de dentro tal cual lo escribe lxml (True)."""
+    from lxml import etree
 
     encoding = (node.get("Encoding") or "").lower()
     text = (node.text or "").strip()
-    children = list(node)
+    children = [c for c in node if isinstance(c.tag, str)]
     if children and not text:
-        return ET.tostring(children[0], encoding="utf-8", xml_declaration=True), True
-    if "base64" in encoding or (text and not children and re.fullmatch(r"[A-Za-z0-9+/=\s]+", text) and len(text) % 4 == 0):
+        return b"".join(etree.tostring(c, with_tail=False, encoding="UTF-8", xml_declaration=i == 0) for i, c in enumerate(children)), True
+    if "base64" in encoding or (text and not children and re.fullmatch(r"[A-Za-z0-9+/=\s]+", text) and len("".join(text.split())) % 4 == 0):
         try:
             return base64.b64decode("".join(text.split()), validate=True), False
         except (binascii.Error, ValueError) as exc:
@@ -174,29 +189,24 @@ def _node_content(node) -> tuple[bytes, bool]:
     return (node.text or "").encode("utf-8"), False
 
 
-def _without_signatures(root) -> bytes:
-    import copy
-    import xml.etree.ElementTree as ET
+def _without_signatures(root, sigs) -> bytes:
+    """El documento sin sus firmas, con lxml: se conservan los prefijos, los comentarios, las instrucciones y las
+    declaraciones de espacios de nombres del original."""
+    from lxml import etree
 
-    tree = copy.deepcopy(root)
-    for parent in tree.iter():
-        for child in list(parent):
-            if child.tag == f"{{{DS}}}Signature":
-                parent.remove(child)
-    return ET.tostring(tree, encoding="utf-8", xml_declaration=True)
-
-
-def _xades_signer(sig) -> str:
-    from asn1crypto import x509
-
-    for el in sig.iter(f"{{{DS}}}X509Certificate"):
-        try:
-            cert = x509.Certificate.load(base64.b64decode("".join((el.text or "").split())))
-            subject = cert.subject.native
-            return str(subject.get("common_name") or subject.get("organization_name") or "?")
-        except Exception:  # noqa: BLE001 - un certificado ilegible no impide sacar el documento
+    for sig in sigs:
+        parent = sig.getparent()
+        if parent is None:
             continue
-    return "?"
+        if sig.tail:
+            prev = sig.getprevious()
+            if prev is not None:
+                prev.tail = (prev.tail or "") + sig.tail
+            else:
+                parent.text = (parent.text or "") + sig.tail
+        parent.remove(sig)
+    tree = root.getroottree()
+    return etree.tostring(tree, xml_declaration=True, encoding=tree.docinfo.encoding or "UTF-8")
 
 
 # --- Herramienta ------------------------------------------------------------------------------------------------------
@@ -231,18 +241,21 @@ def run(ctx: ToolContext) -> list[dict]:
         raw = inp.path.read_bytes()
         notes = []
         if ctx.tool == "xsig-a-pdf":
-            data, names, rebuilt = unwrap_xades(raw)
-            layers = [names]
+            data, names, rebuilt, valid = unwrap_xades(raw)
+            layers = [names] if names else []
+            if not valid:
+                notes.append(t["unverified"])
             if rebuilt and data.lstrip()[:5] == b"<?xml":
                 notes.append(t["xml_rebuilt"])
         else:
             data, layers = unwrap_cms(raw)
         who = [w for layer in layers for w in layer]
-        notes.insert(0, t["signed_by"].format(who=", ".join(who)) if len(who) == 1 else t["signers"].format(n=len(who), who=", ".join(who)))
+        if who:
+            notes.insert(0, t["signed_by"].format(who=", ".join(who)) if len(who) == 1 else t["signers"].format(n=len(who), who=", ".join(who)))
         if len(layers) > 1:
             notes.append(t["levels"].format(n=len(layers)))
         name, ext = output_name(inp.name, data, ctx)
-        if ext != "pdf":
+        if b"%PDF-" not in data[:1024]:
             notes.append(t["not_pdf"].format(ext=ext.upper()))
         notes.append(t["unchecked"])
         dst = ctx.output(name)

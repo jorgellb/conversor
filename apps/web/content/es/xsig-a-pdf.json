@@ -4,8 +4,8 @@
   "intro": [
     "XSIG a PDF saca el documento original de una firma XAdES con extensión .xsig, la que genera AutoFirma cuando se elige el formato XML. La firma XAdES guarda el documento dentro del propio XML, codificado en Base64, y sin un programa de firma no se puede abrir; aquí lo recuperas con su nombre y su formato.",
     "Buscamos en la firma la referencia al documento firmado, ya sea un objeto dentro de la firma (firma «enveloping») o un nodo de contenido junto a ella (la firma «internally detached» de AutoFirma), y lo decodificamos. Si era un PDF, descargas el PDF original; si era otro tipo de archivo, lo recibes tal cual con su extensión.",
-    "También admitimos un XML con la firma dentro, como una factura Facturae firmada: en ese caso el documento es el propio XML sin la firma. Como hay que volver a escribirlo, puede diferir del original en espacios o en el orden de los atributos, aunque el contenido es el mismo. Si la firma apunta a un archivo que no va dentro, te lo indicamos.",
-    "El XML se lee de forma segura: los DTD y las entidades externas se rechazan, para que un archivo preparado no pueda leer otros archivos del servidor. Para comprobar si la firma es válida, usa Verificar firma."
+    "También admitimos un XML con la firma dentro, como una factura Facturae firmada: en ese caso el documento es el propio XML sin la firma. Se entrega tal cual, con sus prefijos y comentarios, salvo la firma, que se quita. Si la firma apunta a un archivo que no va dentro, te lo indicamos.",
+    "El XML se lee de forma segura: los DTD y las entidades externas se rechazan, y el documento se saca de la firma que se comprueba con su certificado; si el XML repite identificadores o sus firmas apuntan a documentos distintos, no se extrae nada, para que un archivo manipulado no te dé un documento que nadie firmó. Para comprobar si la firma es válida, usa Verificar firma."
   ],
   "steps": [
     "Sube uno o varios archivos .xsig o un XML firmado.",

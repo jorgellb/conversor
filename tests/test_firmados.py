@@ -207,3 +207,104 @@ def test_xades_xxe_rejected(make_ctx, tmp_path):
             run(tool, make_ctx(tool, [_write(tmp_path, "x.xsig", xxe)]))
         assert err.value.detail == "xml_entities"
 
+
+
+# --- Revisión de F6-G (D-222) -----------------------------------------------------------------------------------------
+
+
+def _signer_kwargs(arch):
+    from asn1crypto import pem
+    from signxml import SignatureMethod
+
+    key = pem.armor("PRIVATE KEY", arch.key_set.get_private_key("signer1").dump())
+    certs = [pem.armor("CERTIFICATE", arch.get_cert(c).dump()).decode() for c in ("signer1", "interm")]
+    return {"key": key, "cert": certs}, SignatureMethod.ECDSA_SHA256
+
+
+def _afirma(arch, pdf: bytes) -> bytes:
+    """Firma «internally detached» de AutoFirma: el documento en CONTENT y la firma a su lado, válida de verdad."""
+    from lxml import etree
+    from signxml import methods
+    from signxml.xades import XAdESSigner
+
+    kwargs, alg = _signer_kwargs(arch)
+    root = etree.fromstring(f'<AFIRMA><CONTENT Id="CONTENT-1" Encoding="base64">{base64.b64encode(pdf).decode()}</CONTENT></AFIRMA>'.encode())
+    sig = XAdESSigner(method=methods.detached, signature_algorithm=alg).sign(root, reference_uri="#CONTENT-1", **kwargs)
+    root.append(sig)
+    return etree.tostring(root, xml_declaration=True, encoding="UTF-8")
+
+
+def test_real_cms_with_a_pdf_inside_is_detected_as_a_signature(arch, tmp_path):
+    from core.filetype import detect, matches
+
+    path = _write(tmp_path, "contrato.pdf.csig", _cms(arch, _blank()))
+    found = detect(path, "csig")
+    assert found.ext == "csig" and matches(found, "csig", ("csig", "p7m", "p7s"))
+
+
+def test_afirma_extraction_and_verification(make_ctx, arch, tmp_path, own_root):
+    pdf = _blank()
+    xsig = _write(tmp_path, "s.pdf.xsig", _afirma(arch, pdf))
+    out = run("xsig-a-pdf", make_ctx("xsig-a-pdf", [xsig]))
+    assert Path(out[0]["path"]).read_bytes() == pdf and "comprobar" not in out[0]["note"].split(".")[0]
+    assert "1 válida(s)" in run("verificar-firma", make_ctx("verificar-firma", [xsig]))[0]["note"]
+
+
+def test_duplicate_ids_wrapping_is_refused(make_ctx, arch, tmp_path, own_root):
+    evil = base64.b64encode(b"%PDF-1.4 EVIL").decode()
+    raw = _afirma(arch, _blank()).replace(b"</AFIRMA>", f'<CONTENT id="CONTENT-1" Encoding="base64">{evil}</CONTENT></AFIRMA>'.encode())
+    path = _write(tmp_path, "w.xsig", raw)
+    with pytest.raises(ToolError) as err:
+        run("xsig-a-pdf", make_ctx("xsig-a-pdf", [path]))
+    assert err.value.detail == "xades_duplicate_ids"
+    out = run("verificar-firma", make_ctx("verificar-firma", [path]))
+    assert "0 válida(s)" in out[0]["note"] and "repite identificadores" in _report(out)
+
+
+def test_injected_signature_breaks_the_real_one(make_ctx, arch, tmp_path, own_root):
+    signed = _signed_xml(arch, b"<Factura><Importe>100.00</Importe></Factura>")
+    injected = signed.replace(b"<Factura>", b'<Factura><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><Importe>999999.00</Importe></ds:Signature>', 1)
+    out = run("verificar-firma", make_ctx("verificar-firma", [_write(tmp_path, "i.xml", injected)]))
+    assert "0 válida(s)" in out[0]["note"]
+    fake = signed.replace(b"</Factura>", b'<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo>'
+                          b'<ds:Reference URI="#e"/></ds:SignedInfo><ds:Object Id="e" Encoding="base64">JVBERi0xLjQgRVZJTA==</ds:Object>'
+                          b'</ds:Signature></Factura>')
+    out = run("xsig-a-pdf", make_ctx("xsig-a-pdf", [_write(tmp_path, "f.xml", fake)]))
+    assert b"EVIL" not in Path(out[0]["path"]).read_bytes()
+
+
+def test_partial_reference_is_not_valid(make_ctx, arch, tmp_path, own_root):
+    from lxml import etree
+    from signxml import methods
+    from signxml.xades import XAdESSigner
+
+    kwargs, alg = _signer_kwargs(arch)
+    doc = etree.fromstring(b'<Factura><Meta Id="m">v1</Meta><Importe>100.00</Importe></Factura>')
+    signed = etree.tostring(XAdESSigner(method=methods.enveloped, signature_algorithm=alg).sign(doc, reference_uri="#m", **kwargs))
+    out = run("verificar-firma", make_ctx("verificar-firma", [_write(tmp_path, "p.xml", signed.replace(b"100.00", b"999.00"))]))
+    assert "0 válida(s)" in out[0]["note"] and "no cubre el documento entero" in _report(out)
+
+
+def test_nested_cades_checks_every_layer_and_second_file(make_ctx, arch, tmp_path, own_root):
+    from asn1crypto import cms
+
+    inner = cms.ContentInfo.load(_cms(arch, b"contenido", who="signer2"))
+    si = inner["content"]["signer_infos"][0]
+    sig = bytearray(si["signature"].native)
+    sig[-1] ^= 1
+    si["signature"] = bytes(sig)
+    outer = _cms(arch, inner.dump())
+    out = run("verificar-firma", make_ctx("verificar-firma", [_write(tmp_path, "doble.p7m", outer)]))
+    assert "2 firma(s): 1 válida(s)" in out[0]["note"] and "capa 2" in _report(out)
+    attached = _write(tmp_path, "a.txt.p7m", _cms(arch, b"contenido A"))
+    with pytest.raises(ToolError) as err:
+        run("verificar-firma", make_ctx("verificar-firma", [attached, _write(tmp_path, "b.txt", b"documento B")]))
+    assert err.value.detail == "verify_attached_mismatch"
+
+
+def test_deep_xml_is_limited(make_ctx, tmp_path):
+    deep = (b'<?xml version="1.0"?>' + b"<a>" * 300 + b'<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"/>' + b"</a>" * 300)
+    for tool in ("xsig-a-pdf", "verificar-firma"):
+        with pytest.raises(ToolError) as err:
+            run(tool, make_ctx(tool, [_write(tmp_path, "hondo.xsig", deep)]))
+        assert err.value.code == "LIMIT_EXCEEDED"

@@ -13,7 +13,6 @@ la instalación, revocación en línea por `egressweb` solo si se pide) y el mis
 from __future__ import annotations
 
 import asyncio
-import base64
 import time
 from datetime import datetime
 from pathlib import Path
@@ -24,22 +23,13 @@ from tools.pdf.common import with_batch_zip
 from tools.sign import confianza
 from tools.sign.verificar import (DEADLINE_SECONDS, TEXT, SignatureInfo, _name, _qualification, _qualified_tsa, _try, _Validator,
                                   make_session, render, summary)
-from tools.utils.firmados import DS, MAX_BYTES, load_signed_data
+from tools.utils import xades
+from tools.utils.firmados import MAX_BYTES, load_signed_data
 
 CMS_EXTS = ("csig", "p7m", "p7s")
-XADES_132 = "http://uri.etsi.org/01903/v1.3.2#"
-
-
-def _config(xades: bool):
-    """Los algoritmos de signxml más SHA-1, que siguen usando muchas firmas españolas (la misma regla que la firma de
-    Facturae en validar-factura-electronica); nunca HMAC, que no prueba quién firma."""
-    from signxml import DigestAlgorithm, SignatureConfiguration, SignatureMethod
-    from signxml.xades import XAdESSignatureConfiguration
-
-    methods = frozenset(m for m in SignatureMethod if not m.name.startswith("HMAC"))
-    cls = XAdESSignatureConfiguration if xades else SignatureConfiguration
-    return cls(signature_methods=methods, digest_algorithms=frozenset(DigestAlgorithm), expect_references=True)
 XML_EXTS = ("xsig", "xml")
+DS_MARK = b"http://www.w3.org/2000/09/xmldsig#"
+
 
 
 def _ext(inp) -> str:
@@ -84,14 +74,40 @@ def _single(signed, signer_info):
 async def _cades(raw: bytes, original: bytes | None, validator: _Validator, state, root_prints, online: bool) -> list[SignatureInfo]:
     from pyhanko.sign.validation import generic_cms
 
-    signed = load_signed_data(raw)
-    content = signed["encap_content_info"]["content"].native
-    data = content if content is not None else original
-    if data is None:
-        raise ToolError(ErrorCode.INVALID_OPTIONS, "cms_detached_needs_original")
+    infos: list[SignatureInfo] = []
+    layer, current = 1, raw
+    while True:
+        signed = load_signed_data(current)
+        content = signed["encap_content_info"]["content"].native
+        if content is not None and original is not None and layer == 1 and content != original:
+            # Firma con el documento dentro y otro archivo subido: se dice en lugar de ignorarlo (el usuario creería que
+            # se ha comprobado el segundo).
+            raise ToolError(ErrorCode.INVALID_OPTIONS, "verify_attached_mismatch")
+        data = content if content is not None else original
+        if data is None:
+            raise ToolError(ErrorCode.INVALID_OPTIONS, "cms_detached_needs_original")
+        infos += await _cades_layer(signed, data, layer, validator, state, root_prints, online)
+        # Firmado otra vez dentro (archivo.pdf.p7m.p7m): cada capa se comprueba (D-222).
+        try:
+            current = data
+            if layer >= 5:
+                break
+            load_signed_data(current)
+            layer += 1
+        except ToolError:
+            break
+    return infos
+
+
+async def _cades_layer(signed, data: bytes, layer: int, validator: _Validator, state, root_prints, online: bool) -> list[SignatureInfo]:
+    from pyhanko.sign.validation import generic_cms
+
     infos = []
     for n, signer_info in enumerate(signed["signer_infos"], 1):
-        info = SignatureInfo(kind="firma", field=f"CAdES {n}", family="CAdES")
+        info = SignatureInfo(kind="firma", field=f"CAdES {n}" if layer == 1 else f"CAdES {n} (capa {layer})", family="CAdES")
+        unsigned = signer_info["unsigned_attrs"].native or []
+        if any(a.get("type") == "counter_signature" for a in unsigned if isinstance(a, dict)):
+            info.notes.append("contrafirma")
         single = _single(signed, signer_info)
 
         async def validate(moment=None, fetch=online):
@@ -138,34 +154,6 @@ async def _cades(raw: bytes, original: bytes | None, validator: _Validator, stat
 # --- XAdES ------------------------------------------------------------------------------------------------------------
 
 
-def _certs_of(sig) -> list:
-    from asn1crypto import x509
-
-    out = []
-    for el in sig.iter(f"{{{DS}}}X509Certificate"):
-        try:
-            out.append(x509.Certificate.load(base64.b64decode("".join((el.text or "").split()))))
-        except Exception:  # noqa: BLE001 - un certificado ilegible se ignora
-            continue
-    return out
-
-
-def _leaf(certs: list):
-    """El certificado del firmante: el primero que no es de una CA (KeyInfo puede traer la cadena entera)."""
-    for cert in certs:
-        constraints = cert.basic_constraints_value
-        if constraints is None or not constraints["ca"].native:
-            return cert
-    return certs[0] if certs else None
-
-
-def _pem(cert) -> str:
-    import textwrap
-
-    body = "\n".join(textwrap.wrap(base64.b64encode(cert.dump()).decode(), 64))
-    return f"-----BEGIN CERTIFICATE-----\n{body}\n-----END CERTIFICATE-----\n"
-
-
 async def _chain(cert, others: list, validator: _Validator, online: bool, moment=None):
     """(confianza, revocado, ruta, problema) de la cadena del certificado, con el mismo contexto que las firmas PDF."""
     from pyhanko_certvalidator import CertificateValidator
@@ -192,66 +180,54 @@ async def _chain(cert, others: list, validator: _Validator, online: bool, moment
 
 
 def _signing_time(sig) -> datetime | None:
-    for el in sig.iter():
-        if el.tag.endswith("}SigningTime") and el.text:
-            try:
-                return datetime.fromisoformat(el.text.strip().replace("Z", "+00:00"))
-            except ValueError:
-                return None
+    """La SigningTime de las propiedades firmadas de esta firma (no la de una contrafirma de dentro)."""
+    for props in sig.iter():
+        if xades.local(props.tag) == "SignedSignatureProperties":
+            for el in props:
+                if xades.local(el.tag) == "SigningTime" and el.text:
+                    try:
+                        return datetime.fromisoformat(el.text.strip().replace("Z", "+00:00"))
+                    except ValueError:
+                        return None
+            break
     return None
 
 
 async def _xades(raw: bytes, original: bytes | None, validator: _Validator, state, root_prints, online: bool) -> list[SignatureInfo]:
-    import copy
-
-    import defusedxml.ElementTree as DET
-    from defusedxml import DefusedXmlException
-    from lxml import etree
-    from signxml import XMLVerifier
-    from signxml.xades import XAdESVerifier
-
-    try:  # entidades y DTD externos fuera antes de que lxml vea nada (16.4)
-        DET.fromstring(raw, forbid_dtd=False, forbid_entities=True, forbid_external=True)
-    except (DefusedXmlException, ValueError) as exc:
-        raise ToolError(ErrorCode.INVALID_OPTIONS, "xml_entities") from exc
-    except SyntaxError as exc:
-        raise ToolError(ErrorCode.CORRUPT_FILE, "XML no válido") from exc
-    parser = etree.XMLParser(resolve_entities=False, no_network=True, load_dtd=False)
-    root = etree.fromstring(raw, parser=parser)
-    signatures = root.findall(f".//{{{DS}}}Signature") if root.tag != f"{{{DS}}}Signature" else [root]
-    if not signatures:
+    root = xades.parse(raw)
+    sigs = xades.signatures(root)
+    if not sigs:
         raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "xades_no_signature")
-    resolver = (lambda uri: original) if original is not None else None
+    duplicated = xades.duplicate_ids(root)
+    index = xades.by_id(root)
+    used = []
+
+    def resolver(uri):
+        used.append(uri)
+        return original
+
     infos = []
-    for n, sig in enumerate(signatures, 1):
+    for n, sig in enumerate(sigs, 1):
         info = SignatureInfo(kind="firma", field=f"XAdES {n}", family="XAdES")
-        certs = _certs_of(sig)
-        cert = _leaf(certs)
+        certs = xades.certificates(sig)
+        cert = xades.leaf(certs)
         if cert is None:
             info.problem = "sin_certificado"
             infos.append(info)
             continue
-        if len(signatures) > 1:
-            # Cada cofirma por separado: se quitan las demás (no forman parte de lo que firma cada una).
-            doc = copy.deepcopy(root)
-            for i, other in enumerate(doc.findall(f".//{{{DS}}}Signature"), 1):
-                if i != n and other.getparent() is not None:
-                    other.getparent().remove(other)
-            data = etree.tostring(doc)
+        refs = xades.data_references(sig, index)
+        if xades.external(refs) and original is None:
+            raise ToolError(ErrorCode.INVALID_OPTIONS, "xades_detached_needs_original")
+        if duplicated:
+            intact, info.problem = False, "ids_duplicados"
         else:
-            data = raw
-        intact = True
-        try:
-            if XADES_132.encode() in etree.tostring(sig):
-                XAdESVerifier().verify(data, x509_cert=_pem(cert), expect_config=_config(True), uri_resolver=resolver)
-                info.ades = "XAdES-B"
-            else:
-                XMLVerifier().verify(data, x509_cert=_pem(cert), expect_config=_config(False), uri_resolver=resolver)
-                info.ades = "XMLDSig"
-        except Exception as exc:  # noqa: BLE001 - firma rota, referencias que no cuadran o algoritmo no admitido
-            intact = False
-            info.problem = type(exc).__name__
-        if any(el.tag.endswith("}SignatureTimeStamp") for el in sig.iter()):
+            intact, info.problem = xades.reference_ok(raw, n - 1, cert, resolver if original is not None else None)
+        if intact and not refs:
+            intact, info.problem = False, "sin_datos"
+        elif intact and not xades.covers_document(root, sig, refs):
+            intact, info.problem = False, "firma_parcial"
+        info.ades = ("XAdES-B" if xades.XADES_132.encode() in raw else "XMLDSig")
+        if any(xades.local(el.tag) == "SignatureTimeStamp" for el in sig.iter()):
             info.notes.append("xades_tst")
         info.signer, info.issuer, info.email = _name(cert)
         info.when = _signing_time(sig)
@@ -260,12 +236,14 @@ async def _xades(raw: bytes, original: bytes | None, validator: _Validator, stat
         if online and not trusted and not revoked and problem == "":
             trusted, revoked, path, problem = await _chain(cert, others, validator, False)
             info.revocation = "fallo_en_linea"
-        if not trusted and info.problem == "":
+        if not trusted and not info.problem:
             info.problem = problem
         if info.revocation != "fallo_en_linea":
             info.revocation = ("en_linea" if trusted else "no_aplica") if online else "no_comprobada"
         _level(info, intact, intact, trusted, revoked, cert, path, state, root_prints, None)
         infos.append(info)
+    if original is not None and not used:
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "verify_attached_mismatch")
     return infos
 
 
@@ -276,14 +254,17 @@ def _split(ctx: ToolContext):
     """La firma y, si hay dos archivos, el documento original (para las firmas separadas)."""
     sigs = [i for i in ctx.inputs if _ext(i) in CMS_EXTS + XML_EXTS + ("pdf",)]
     if len(ctx.inputs) == 2:
-        # Con dos archivos, la firma es el .csig, .p7m, .p7s o .xsig; el otro, el documento.
+        # Con dos archivos, la firma es el .csig, .p7m, .p7s o .xsig (o el .xml que lleva una ds:Signature); el otro, el
+        # documento.
         signed = [i for i in ctx.inputs if _ext(i) in CMS_EXTS + ("xsig",)]
+        if not signed:
+            signed = [i for i in ctx.inputs if _ext(i) == "xml" and DS_MARK in i.path.read_bytes()[:MAX_BYTES]]
         if len(signed) != 1:
             raise ToolError(ErrorCode.INVALID_OPTIONS, "verify_two_files")
         other = next(i for i in ctx.inputs if i is not signed[0])
         return signed[0], other
     if len(sigs) != 1:
-        raise ToolError(ErrorCode.TOO_MANY_FILES, "una firma y, si va separada, el documento")
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "verify_no_signature")
     return sigs[0], None
 
 

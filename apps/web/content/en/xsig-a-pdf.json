@@ -4,8 +4,8 @@
   "intro": [
     "XSIG to PDF gets the original document out of an XAdES signature with the .xsig extension, the one AutoFirma produces when the XML format is chosen. An XAdES signature stores the document inside the XML itself, Base64-encoded, and it cannot be opened without a signing program; here you recover it with its name and format.",
     "We look in the signature for the reference to the signed document, whether an object inside the signature (an “enveloping” signature) or a content node next to it (AutoFirma's “internally detached” signature), and decode it. If it was a PDF, you download the original PDF; if it was another kind of file, you get it as it is with its extension.",
-    "We also accept an XML with the signature inside, such as a signed Facturae invoice: in that case the document is the XML itself without the signature. Since it has to be written again, it may differ from the original in whitespace or attribute order, although the content is the same. If the signature points to a file that is not inside, we tell you.",
-    "The XML is read safely: DTDs and external entities are rejected, so a crafted file cannot read other files on the server. To check whether the signature is valid, use Verify signature."
+    "We also accept an XML with the signature inside, such as a signed Facturae invoice: in that case the document is the XML itself without the signature. It is delivered as it is, with its prefixes and comments, except for the signature, which is removed. If the signature points to a file that is not inside, we tell you.",
+    "The XML is read safely: DTDs and external entities are rejected, and the document is taken from the signature that checks out against its certificate; if the XML repeats identifiers or its signatures point to different documents, nothing is extracted, so a tampered file cannot hand you a document nobody signed. To check whether the signature is valid, use Verify signature."
   ],
   "steps": [
     "Upload one or more .xsig files or a signed XML.",

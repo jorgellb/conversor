@@ -515,6 +515,11 @@ TEXT = {
         "summary": "{n} firma(s): {ok} válida(s) y de confianza.", "summary_none": "Sin firmas digitales.",
         "report": "informe-firmas-{stem}.html", "zip": "informes-firmas.zip",
         "format": "Formato", "xades_tst": "Trae un sello de tiempo XAdES, que no se ha comprobado: la fecha es la que declara el firmante.",
+        "contrafirma": "Lleva una contrafirma, que no se ha comprobado.",
+        "why": {"ids_duplicados": "El XML repite identificadores: no se puede saber qué parte se firmó.",
+                "firma_parcial": "La firma no cubre el documento entero: lo que queda fuera puede haber cambiado.",
+                "sin_datos": "La firma no cubre ningún dato del documento.", "sin_certificado": "La firma no trae su certificado.",
+                "InvalidDigest": "Lo firmado ha cambiado.", "InvalidSignature": "La firma no corresponde al certificado."},
     },
     "en": {
         "title": "Signature report", "file": "File", "none": "The document has no digital signatures.",
@@ -570,6 +575,11 @@ TEXT = {
         "summary": "{n} signature(s): {ok} valid and trusted.", "summary_none": "No digital signatures.",
         "report": "signature-report-{stem}.html", "zip": "signature-reports.zip",
         "format": "Format", "xades_tst": "It carries an XAdES time stamp, which was not checked: the date is the one the signer claims.",
+        "contrafirma": "It carries a countersignature, which was not checked.",
+        "why": {"ids_duplicados": "The XML repeats identifiers: it is impossible to tell which part was signed.",
+                "firma_parcial": "The signature does not cover the whole document: what is left out may have changed.",
+                "sin_datos": "The signature covers no data of the document.", "sin_certificado": "The signature does not carry its certificate.",
+                "InvalidDigest": "What was signed has changed.", "InvalidSignature": "The signature does not match the certificate."},
     },
 }
 
@@ -595,7 +605,8 @@ def _block(t, n: int, s: SignatureInfo) -> str:
     rows.append(_row(t["issuer"], e(s.issuer)))
     if s.when:
         rows.append(_row(t["date"], e(f"{s.when:%d/%m/%Y %H:%M:%S %Z}".strip() + ", " + t["when"][s.when_source].format(tsa=s.tsa))))
-    rows.append(_row(t["integrity"], e(t["intact"] if s.intact and s.valid else t["broken"])))
+    why = t["why"].get(s.problem, "") if not (s.intact and s.valid) else ""
+    rows.append(_row(t["integrity"], e((t["intact"] if s.intact and s.valid else t["broken"]) + (f" {why}" if why else ""))))
     if s.family == "PAdES":
         rows.append(_row(t["changes"], e(t["change"][s.changes] + ("" if s.changes == "ninguno" else t["allowed"] if s.changes_ok else t["forbidden"]))))
     if s.certified:
@@ -606,7 +617,8 @@ def _block(t, n: int, s: SignatureInfo) -> str:
     if s.family == "PAdES":
         rows.append(_row(t["pades"], e(t["no_pades"].format(subfilter=s.subfilter or "?") if s.pades == "no_pades" else s.pades)))
     else:
-        rows.append(_row(t["format"], e(s.ades or s.family) + (f"<br>{e(t['xades_tst'])}" if "xades_tst" in s.notes else "")))
+        extra = "".join(f"<br>{e(t[k])}" for k in ("xades_tst", "contrafirma") if k in s.notes)
+        rows.append(_row(t["format"], e(s.ades or s.family) + extra))
     trust = t["trust_yes"] if s.trusted else t["problems"].get(s.problem, t["problems"][""])
     if s.qualified_service:
         trust += " " + t["qualified_by"].format(service=s.qualified_service, country=f" ({s.country})" if s.country else "")

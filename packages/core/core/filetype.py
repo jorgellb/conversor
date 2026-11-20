@@ -221,6 +221,9 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
         return None
     if _wide_text(head):
         return Detected(declared, "wide-text") if declared in WIDE_TEXT else None
+    # Una firma CMS con un PDF dentro lleva «%PDF-» hacia el byte 66: la regla de CMS va antes que la de PDF (D-222).
+    if declared in CMS and head[:1] == b"\x30" and len(head) > 2 and head[1] in (0x80, 0x81, 0x82, 0x83, 0x84):
+        return Detected(declared, "cms")
     if b"%PDF-" in head[:1024]:
         return Detected("pdf", "pdf")
     if head.startswith(b"\xff\xd8\xff"):
@@ -270,8 +273,6 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
     if head.startswith(b"Rar!\x1a\x07"):
         return Detected("rar", "archive")
     # Comprimidos de F6-E (D-217): 7z, gzip, bzip2, xz y tar (la marca «ustar» en el byte 257).
-    if declared in CMS and head[:1] == b"\x30" and len(head) > 2 and head[1] in (0x80, 0x81, 0x82, 0x83, 0x84):
-        return Detected(declared, "cms")
     if head.startswith(b"7z\xbc\xaf\x27\x1c"):
         return Detected("7z", "archive")
     if head.startswith(b"\x1f\x8b\x08"):
