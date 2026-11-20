@@ -1073,10 +1073,10 @@
     "count": "{n, plural, one {# campo} other {# campos}}",
     "keepEditing": "Seguir editando",
     "signaturesAdded": "{n, plural, one {Se ha añadido # campo de firma} other {Se han añadido # campos de firma}} con pyHanko; se firman con «Firmar PDF» o con tu lector.",
-    "discardSuggestions": "Hay {n} campos sugeridos sin revisar. ¿Guardar sin ellos?",
+    "discardSuggestions": "{n, plural, one {Hay # campo sugerido sin revisar} other {Hay # campos sugeridos sin revisar}}. ¿Guardar sin ellos?",
     "option": "Opción {n}",
     "resetLabel": "Borrar el formulario",
-    "lockedHint": "Este campo ya estaba en el PDF y aquí no se puede cambiar (grupos de opciones, botones y firmas); sí se puede borrar.",
+    "lockedHint": "Este campo ya estaba en el PDF y aquí no se puede cambiar (grupos de opciones, botones, firmas, nombres con punto o campos que aparecen en varios sitios); sí se puede borrar.",
     "suggested": "sugerido",
     "name": "Nombre",
     "defaultValue": "Valor por defecto",
@@ -1104,7 +1104,12 @@
     "borderColor": "Color del borde",
     "background": "Fondo",
     "backgroundColor": "Color del fondo",
-    "position": "Posición {x}, {y} · {w} × {h} pt"
+    "position": "Posición {x}, {y} · {w} × {h} pt",
+    "duplicateName": "Hay dos campos llamados «{name}»: cada campo necesita un nombre distinto.",
+    "emptyName": "Hay un campo sin nombre.",
+    "tooManySignatures": "Como mucho 50 campos de firma por formulario.",
+    "signedWarning": "Este PDF está firmado digitalmente: al guardar el formulario las firmas dejan de ser válidas. Añade los campos antes de firmar.",
+    "keyboardHint": "Con el teclado: Tab va de un campo a otro, las flechas lo mueven (Mayúsculas, de 10 en 10; Alt, cambian el tamaño), Supr lo borra y Ctrl+Z deshace. Un botón de campo pulsado con Intro pone el campo en el centro de la primera página."
   },
   "signPdf": {
     "panel": "Firma",

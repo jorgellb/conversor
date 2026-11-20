@@ -108,7 +108,9 @@ export function SignatureDialog({ onDone, onCancel, initials = false, camera = f
     let cancelled = false;
     const c = canvas.current;
     const spec = SIGNATURE_FONTS.find((f) => f.family === font) ?? SIGNATURE_FONTS[0];
-    void loadFont(spec.family, spec.file).catch(() => undefined).then(() => {
+    // Se pinta ya con la fuente de reserva y otra vez cuando llega la caligráfica: si se pulsa «Usar la firma» antes de
+    // que cargue, la firma no sale vacía.
+    const draw = () => {
       if (cancelled || !c) return;
       const ctx = c.getContext("2d")!;
       ctx.clearRect(0, 0, c.width, c.height);
@@ -122,7 +124,9 @@ export function SignatureDialog({ onDone, onCancel, initials = false, camera = f
       }
       ctx.textBaseline = "middle";
       ctx.fillText(name, 20, c.height / 2);
-    });
+    };
+    draw();
+    void loadFont(spec.family, spec.file).catch(() => undefined).then(draw);
     return () => { cancelled = true; };
   }, [mode, name, font, color]);
 

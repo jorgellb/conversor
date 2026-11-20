@@ -154,3 +154,63 @@ describe("firmar-pdf, insertar firma (A.6)", () => {
     for (const page of out.getPages()) expect(page.node.Resources()?.toString()).toContain("/XObject");
   });
 });
+
+describe("revisión de F4-B1 (D-198)", () => {
+  it("guarda /DV, no marca MultiSelect en un desplegable editable y no vuelve editable uno que no lo es", async () => {
+    const { bytes } = await designForm(null, { fields: [
+      field({ name: "t", defaultValue: "Hola" }),
+      field({ type: "checkbox", name: "c", y: 100, width: 14, height: 14, defaultValue: true }),
+      field({ type: "dropdown", name: "d1", y: 140, options: ["A", "B"], editable: true, defaultValue: "Z" }),
+      field({ type: "dropdown", name: "d2", y: 180, options: ["A", "B"], defaultValue: "Z" }),
+    ] });
+    const form = (await PDFDocument.load(bytes)).getForm();
+    for (const name of ["t", "c", "d1"]) expect(form.getField(name).acroField.dict.has(PDFName.of("DV"))).toBe(true);
+    const d1 = form.getDropdown("d1");
+    expect(d1.isEditable()).toBe(true);
+    expect(d1.isMultiselect()).toBe(false);
+    expect(d1.getSelected()).toEqual(["Z"]);
+    expect(form.getDropdown("d2").isEditable()).toBe(false);
+    expect(form.getDropdown("d2").getSelected()).toEqual([]);
+  });
+
+  it("un nombre nuevo no puede chocar con el antepasado de uno existente, y el borde no agranda el widget", async () => {
+    const doc = await PDFDocument.create();
+    const page = doc.addPage([400, 400]);
+    doc.getForm().createTextField("persona.nombre").addToPage(page, { x: 10, y: 10, width: 100, height: 20 });
+    await expect(designForm({ name: "a.pdf", bytes: await doc.save() }, { fields: [field({ name: "persona" })] }))
+      .rejects.toMatchObject({ code: "INVALID_OPTIONS" });
+    const { bytes } = await designForm(null, { blank: [[400, 400]], fields: [field({ name: "b", x: 20, y: 30, width: 150, height: 24, border: "#000000" })] });
+    const info = await inspectForm({ name: "b.pdf", bytes });
+    expect(info.fields[0].rect).toEqual({ x: 20, y: 30, width: 150, height: 24 });
+  });
+
+  it("rechaza campos fuera de la página, grupos de opciones demasiado bajos y URL mal escritas", async () => {
+    await expect(designForm(null, { blank: [[400, 400]], fields: [field({ x: -500 })] })).rejects.toMatchObject({ code: "INVALID_OPTIONS" });
+    await expect(designForm(null, { blank: [[400, 400]], fields: [field({ type: "radio", height: 20, options: ["a", "b", "c"] })] }))
+      .rejects.toMatchObject({ code: "INVALID_OPTIONS" });
+    await expect(designForm(null, { fields: [field({ type: "button", name: "u", action: "url", url: "https://example.org/%E0%A4%A" })] }))
+      .rejects.toMatchObject({ code: "INVALID_OPTIONS" });
+  });
+
+  it("informa de los widgets y de las firmas existentes, y al mover un campo regenera su apariencia", async () => {
+    const doc = await PDFDocument.create();
+    const p1 = doc.addPage([400, 400]);
+    const p2 = doc.addPage([400, 400]);
+    const repeated = doc.getForm().createTextField("repetido");
+    repeated.addToPage(p1, { x: 10, y: 10, width: 100, height: 20 });
+    repeated.addToPage(p2, { x: 10, y: 10, width: 100, height: 20 });
+    const single = doc.getForm().createTextField("solo");
+    single.setText("Hola mundo");
+    single.addToPage(p1, { x: 10, y: 100, width: 100, height: 20 });
+    const bytes = await doc.save();
+    const info = await inspectForm({ name: "r.pdf", bytes });
+    expect(info.fields.find((f) => f.name === "repetido")?.widgets).toBe(2);
+    expect(info.signed).toBe(false);
+    const { bytes: out } = await designForm({ name: "r.pdf", bytes }, { move: [{ name: "solo", x: 10, y: 200, width: 250, height: 40 }], fields: [] });
+    const outDoc = await PDFDocument.load(out);
+    const moved = outDoc.getForm().getTextField("solo").acroField.getWidgets()[0];
+    const ap = outDoc.context.lookup(moved.getNormalAppearance() as never) as unknown as { dict: { lookup(n: PDFName): unknown } };
+    const bbox = String(ap.dict.lookup(PDFName.of("BBox")));
+    expect(bbox).toContain("250");
+  });
+});

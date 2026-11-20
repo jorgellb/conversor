@@ -48,8 +48,13 @@ def run(ctx: ToolContext) -> list[dict]:
         raise ToolError(ErrorCode.CORRUPT_FILE, "pdf") from exc
     if writer.security_handler is not None:
         raise ToolError(ErrorCode.INVALID_OPTIONS, "el PDF del formulario no debe estar cifrado")
-    pages = int(writer.root["/Pages"]["/Count"])
-    taken = _existing(writer.prev)
+    try:
+        pages = int(writer.root["/Pages"]["/Count"])
+        taken = _existing(writer.prev)
+    except Exception as exc:  # noqa: BLE001 - árbol de páginas o AcroForm rotos (12.3)
+        raise ToolError(ErrorCode.CORRUPT_FILE, "pdf") from exc
+    if pages > ctx.plan.pdf_pages:  # 12.3: el límite de páginas del plan antes de procesar
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{pages} páginas; límite {ctx.plan.pdf_pages}")
     for campo in campos:
         if campo.pagina > pages:
             raise ToolError(ErrorCode.INVALID_OPTIONS, f"página {campo.pagina} de {pages}")
@@ -61,6 +66,8 @@ def run(ctx: ToolContext) -> list[dict]:
             append_signature_field(writer, SigFieldSpec(sig_field_name=campo.nombre, on_page=campo.pagina - 1, box=box))
         except (PdfError, ValueError) as exc:
             raise ToolError(ErrorCode.INVALID_OPTIONS, f"campo {campo.nombre}") from exc
+        except Exception as exc:  # noqa: BLE001 - AcroForm mal formado (p. ej. /Fields que no es una lista)
+            raise ToolError(ErrorCode.CORRUPT_FILE, "pdf") from exc
     ctx.report(0.8, None)
     name = inp.name if inp.name.lower().endswith(".pdf") else derived_name(inp.name, "", "pdf")
     dst = ctx.output(name)

@@ -1073,10 +1073,10 @@
     "count": "{n, plural, one {# field} other {# fields}}",
     "keepEditing": "Keep editing",
     "signaturesAdded": "{n, plural, one {# signature field was added} other {# signature fields were added}} with pyHanko; sign them with “Sign PDF” or your reader.",
-    "discardSuggestions": "There are {n} suggested fields not reviewed. Save without them?",
+    "discardSuggestions": "{n, plural, one {There is # suggested field not reviewed} other {There are # suggested fields not reviewed}}. Save without them?",
     "option": "Option {n}",
     "resetLabel": "Clear the form",
-    "lockedHint": "This field was already in the PDF and cannot be changed here (option groups, buttons and signatures); it can be deleted.",
+    "lockedHint": "This field was already in the PDF and cannot be changed here (option groups, buttons, signatures, names with a dot or fields shown in several places); it can be deleted.",
     "suggested": "suggested",
     "name": "Name",
     "defaultValue": "Default value",
@@ -1104,7 +1104,12 @@
     "borderColor": "Border colour",
     "background": "Background",
     "backgroundColor": "Background colour",
-    "position": "Position {x}, {y} · {w} × {h} pt"
+    "position": "Position {x}, {y} · {w} × {h} pt",
+    "duplicateName": "There are two fields called “{name}”: each field needs a different name.",
+    "emptyName": "There is a field without a name.",
+    "tooManySignatures": "At most 50 signature fields per form.",
+    "signedWarning": "This PDF is digitally signed: saving the form invalidates the signatures. Add the fields before signing.",
+    "keyboardHint": "With the keyboard: Tab moves between fields, the arrows move them (Shift, 10 at a time; Alt, resize), Delete removes and Ctrl+Z undoes. A field button pressed with Enter puts the field in the centre of the first page."
   },
   "signPdf": {
     "panel": "Signature",

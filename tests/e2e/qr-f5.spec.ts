@@ -90,7 +90,11 @@ test("generar-codigo-qr: con logotipo se fuerza la corrección H y zxing-cpp lo 
 
 test("generar-codigo-qr: WiFi en SVG, transferencia SEPA en PDF vectorial y modo Kanji", async ({ page }) => {
   await page.goto("/es/generar-codigo-qr");
-  await page.getByLabel("Tipo de contenido").selectOption("wifi");
+  // Si se elige antes de que la página se hidrate, el cambio se pierde: se repite hasta que salen los campos de WiFi.
+  await expect(async () => {
+    await page.getByLabel("Tipo de contenido").selectOption("wifi");
+    await expect(page.getByLabel("Nombre de la red (SSID)")).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 30_000 });
   await page.getByLabel("Nombre de la red (SSID)").fill("Casa");
   await page.getByLabel("Contraseña").fill("clave;secreta");
   await page.getByLabel("Formato").selectOption("svg");

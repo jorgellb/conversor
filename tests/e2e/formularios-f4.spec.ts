@@ -36,6 +36,9 @@ test("crear-formulario-pdf: en blanco, texto, casilla y desplegable, sin subir n
   await page.getByLabel("Nombre", { exact: true }).fill("nombre_completo");
   await page.getByLabel("Valor por defecto").fill("Ana");
   await page.getByLabel("Obligatorio").check();
+  // Teclado (8.3): el campo elegido se mueve con las flechas.
+  await page.getByRole("button", { name: "Texto: nombre_completo" }).focus();
+  await page.keyboard.press("Shift+ArrowRight");
   await place(page, "Casilla", 0.2, 0.3);
   await page.getByLabel("Nombre", { exact: true }).fill("acepto");
   await place(page, "Desplegable", 0.2, 0.4);
@@ -49,6 +52,9 @@ test("crear-formulario-pdf: en blanco, texto, casilla y desplegable, sin subir n
   expect(form.getFields().map((f) => f.getName()).sort()).toEqual(["acepto", "nombre_completo", "provincia"]);
   expect(form.getTextField("nombre_completo").getText()).toBe("Ana");
   expect(form.getTextField("nombre_completo").isRequired()).toBe(true);
+  // Un clic sin arrastrar da el tamaño de siempre (160 × 20 pt), no un campo diminuto.
+  const rect = form.getTextField("nombre_completo").acroField.getWidgets()[0].getRectangle();
+  expect([Math.round(rect.width), Math.round(rect.height)]).toEqual([160, 20]);
   expect(form.getDropdown("provincia").getOptions()).toEqual(["Madrid", "Teruel"]);
   expect(form.getDropdown("provincia").isEditable()).toBe(true);
   expect(sent).toEqual([]);

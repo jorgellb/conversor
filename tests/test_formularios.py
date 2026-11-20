@@ -82,3 +82,21 @@ def test_name_with_dot_is_rejected_by_the_options_model():
         HacerRellenableOptions(firmas=[_campo("a.b")])
     with pytest.raises(ValidationError):
         HacerRellenableOptions(firmas=[_campo()] * 51)
+
+
+def test_page_limit_and_broken_acroform(make_ctx, tmp_path):
+    from core.errors import ToolError
+
+    ctx = make_ctx(TOOL, [_pdf(tmp_path, pages=3)], {"firmas": [_campo()]})
+    ctx.plan = ctx.plan.model_copy(update={"pdf_pages": 2})
+    with pytest.raises(ToolError) as err:
+        run(TOOL, ctx)
+    assert err.value.code == "LIMIT_EXCEEDED"
+    broken = tmp_path / "roto.pdf"
+    with pikepdf.new() as pdf:
+        pdf.add_blank_page()
+        pdf.Root.AcroForm = pikepdf.Dictionary(Fields=pikepdf.Dictionary(Kids=pikepdf.Array()))
+        pdf.save(broken)
+    with pytest.raises(ToolError) as err:
+        run(TOOL, make_ctx(TOOL, [broken], {"firmas": [_campo()]}))
+    assert err.value.code in ("CORRUPT_FILE", "INVALID_OPTIONS")

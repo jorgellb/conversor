@@ -102,11 +102,17 @@ export interface FormFieldInfo {
   page: number | null;
   /** Posición del primer widget en la página vista, origen arriba a la izquierda. */
   rect?: { x: number; y: number; width: number; height: number };
+  /** Número de widgets (un campo puede aparecer en varias páginas o sitios). */
+  widgets?: number;
+  /** Campo de firma ya firmado (tiene /V). */
+  signed?: boolean;
 }
 
 export interface FormInfo {
   xfa: boolean;
   fields: FormFieldInfo[];
+  /** El PDF tiene alguna firma digital: cualquier cambio que no sea incremental la invalida. */
+  signed?: boolean;
 }
 
 /** Tamaño de página nueva en puntos a partir del papel y la orientación (A.0). */
@@ -477,10 +483,12 @@ export async function inspectForm(file: InFile, password?: string): Promise<Form
       readOnly: field.isReadOnly(),
       page,
       rect,
+      widgets: field.acroField.getWidgets().length,
+      signed: field instanceof PDFSignature ? field.acroField.dict.has(PDFName.of("V")) : undefined,
     };
   });
   fields.sort((a, b) => (a.page ?? 1e9) - (b.page ?? 1e9) || (a.rect?.y ?? 0) - (b.rect?.y ?? 0) || (a.rect?.x ?? 0) - (b.rect?.x ?? 0));
-  return { xfa, fields };
+  return { xfa, fields, signed: fields.some((f) => f.signed) };
 }
 
 /**

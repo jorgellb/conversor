@@ -95,7 +95,8 @@ export function userRect(page: PDFPage, x: number, y: number, width: number, hei
   return { x: Math.min(a[0], b[0]), y: Math.min(a[1], b[1]), width: Math.abs(b[0] - a[0]), height: Math.abs(b[1] - a[1]) };
 }
 
-function validate(design: FormDesign, pageCount: number, existing: Set<string>): void {
+function validate(design: FormDesign, pages: PDFPage[], existing: Set<string>): void {
+  const pageCount = pages.length;
   if (!Array.isArray(design.fields) || design.fields.length > MAX_FIELDS) throw new ToolError("INVALID_OPTIONS", "Demasiados campos");
   const names = new Set(existing);
   for (const f of design.fields) {
@@ -107,14 +108,28 @@ function validate(design: FormDesign, pageCount: number, existing: Set<string>):
     if (![f.x, f.y, f.width, f.height].every(Number.isFinite) || f.width < 4 || f.height < 4) {
       throw new ToolError("INVALID_OPTIONS", `Tamaño de campo no válido: ${name}`);
     }
+    const { width: W, height: H } = displayedSize(pages[f.page]);
+    if (f.x < -1 || f.y < -1 || f.x + f.width > W + 1 || f.y + f.height > H + 1) {
+      throw new ToolError("INVALID_OPTIONS", `El campo ${name} se sale de la página`);
+    }
+    const choices = (f.options ?? []).filter((o) => o.trim()).length;
+    if (f.type === "radio" && f.height / Math.max(1, choices) < 8) {
+      throw new ToolError("INVALID_OPTIONS", `El campo ${name} es demasiado bajo para ${choices} opciones`);
+    }
     if ((f.options ?? []).length > MAX_OPTIONS || (f.options ?? []).some((o) => typeof o !== "string" || o.length > 500)) {
       throw new ToolError("INVALID_OPTIONS", `Opciones no válidas: ${name}`);
     }
     if (["radio", "dropdown", "optionlist"].includes(f.type) && !(f.options ?? []).filter((o) => o.trim()).length) {
       throw new ToolError("INVALID_OPTIONS", `El campo ${name} necesita al menos una opción`);
     }
-    if (f.type === "button" && f.action === "url" && !SAFE_URL.test(f.url ?? "")) {
-      throw new ToolError("INVALID_OPTIONS", `Dirección no válida en el botón ${name}`);
+    if (f.type === "button" && f.action === "url") {
+      let ok = SAFE_URL.test(f.url ?? "");
+      try {
+        decodeURI(f.url ?? "");
+      } catch {
+        ok = false;
+      }
+      if (!ok) throw new ToolError("INVALID_OPTIONS", `Dirección no válida en el botón ${name}`);
     }
     if (f.maxLength !== undefined && (!Number.isInteger(f.maxLength) || f.maxLength < 1 || f.maxLength > 10000)) {
       throw new ToolError("INVALID_OPTIONS", `Longitud máxima no válida: ${name}`);
@@ -139,6 +154,9 @@ function appearance(page: PDFPage, f: DesignField, font: PDFFont, x = f.x, y = f
     : r === 180 ? { x: R.x + R.width - b, y: R.y + R.height - b, width: R.width, height: R.height }
       : r === 270 ? { x: R.x + b, y: R.y + R.height - b, width: R.height, height: R.width }
         : { x: R.x + b, y: R.y + b, width: R.width, height: R.height };
+  // pdf-lib suma el borde al ancho y al alto del widget (createWidget): se le pasa ya descontado.
+  rect.width = Math.max(1, rect.width - bw);
+  rect.height = Math.max(1, rect.height - bw);
   return {
     ...rect,
     font,
@@ -152,6 +170,9 @@ function appearance(page: PDFPage, f: DesignField, font: PDFFont, x = f.x, y = f
 function flags(field: PDFField, f: DesignField): void {
   if (f.required) field.enableRequired();
   if (f.readOnly) field.enableReadOnly();
+  // «Valor por defecto» (A.3): /DV además de /V, para que «Restablecer el formulario» vuelva a él.
+  const value = field.acroField.dict.get(PDFName.of("V"));
+  if (value) field.acroField.dict.set(PDFName.of("DV"), value);
 }
 
 const ALIGN = { left: TextAlignment.Left, center: TextAlignment.Center, right: TextAlignment.Right } as const;
@@ -185,9 +206,15 @@ export async function designForm(file: InFile | null, design: FormDesign, loader
     });
     if (!page) throw new ToolError("INVALID_OPTIONS", `No se encuentra la página del campo ${mv.name}`);
     widgets[0].setRectangle(userRect(page, mv.x, mv.y, mv.width, mv.height));
+    form.markFieldAsDirty(field.ref);  // se redibuja con el tamaño nuevo en updateFieldAppearances
   }
-  const existing = new Set(form.getFields().map((f) => f.getName()));
-  validate(design, pages.length, existing);
+  // Nombres que ya existen y sus antepasados («a.b» ocupa también «a»: pdf-lib no deja crear un campo con ese nombre).
+  const existing = new Set<string>();
+  for (const f of form.getFields()) {
+    const parts = f.getName().split(".");
+    for (let i = 1; i <= parts.length; i += 1) existing.add(parts.slice(0, i).join("."));
+  }
+  validate(design, pages, existing);
 
   // Helvetica (los lectores la tienen y regeneran la apariencia al escribir); si algún texto no cabe en WinAnsi, la
   // fuente completa del cargador, sin subconjunto, para que el usuario pueda escribir cualquier carácter.
@@ -219,7 +246,7 @@ export async function designForm(file: InFile | null, design: FormDesign, loader
       if (f.multiline) field.enableMultiline();
       if (f.maxLength) field.setMaxLength(f.maxLength);
       field.setAlignment(ALIGN[f.align ?? "left"]);
-      if (typeof f.defaultValue === "string" && f.defaultValue) field.setText(f.maxLength ? f.defaultValue.slice(0, f.maxLength) : f.defaultValue);
+      if (typeof f.defaultValue === "string" && f.defaultValue) field.setText(f.maxLength ? Array.from(f.defaultValue).slice(0, f.maxLength).join("") : f.defaultValue);
       field.addToPage(page, appearance(page, f, font));
       field.setFontSize(size);
       flags(field, f);
@@ -244,9 +271,13 @@ export async function designForm(file: InFile | null, design: FormDesign, loader
       flags(field, f);
     } else if (f.type === "dropdown") {
       const field = form.createDropdown(name);
-      field.addOptions((f.options ?? []).map((o) => o.trim()).filter(Boolean));
+      const options = (f.options ?? []).map((o) => o.trim()).filter(Boolean);
+      field.addOptions(options);
       if (f.editable) field.enableEditing();
-      if (typeof f.defaultValue === "string" && f.defaultValue) field.select(f.defaultValue, Boolean(f.editable));
+      // select(valor, merge) no es «editable»: con merge pdf-lib marca MultiSelect, que en un desplegable no vale; y con un
+      // valor que no está en la lista lo vuelve editable. Por eso solo se elige un valor de la lista (o cualquiera, si es
+      // editable).
+      if (typeof f.defaultValue === "string" && f.defaultValue && (f.editable || options.includes(f.defaultValue))) field.select(f.defaultValue);
       field.addToPage(page, appearance(page, f, font));
       field.setFontSize(size);
       flags(field, f);
@@ -267,7 +298,7 @@ export async function designForm(file: InFile | null, design: FormDesign, loader
         borderColor: hexColor(f.border ?? "#555555"), backgroundColor: hexColor(f.background ?? "#E8E8E8") });
       const widget = field.acroField.getWidgets()[0];
       const action = f.action === "url"
-        ? doc.context.obj({ Type: "Action", S: "URI", URI: PDFString.of(f.url ?? "") })
+        ? doc.context.obj({ Type: "Action", S: "URI", URI: PDFString.of(encodeURI(decodeURI(f.url ?? ""))) })
         : doc.context.obj({ Type: "Action", S: "ResetForm" });
       widget.dict.set(PDFName.of("A"), action);
       if (f.readOnly) field.enableReadOnly();
@@ -285,7 +316,7 @@ export async function hacerRellenable(files: InFile[], options: HacerRellenableO
   const file = files[0] ?? null;
   const design = options.design ?? { fields: [] };
   const { bytes, notes, signatures } = await designForm(file, design, loader, file ? passwords[file.name] : undefined, locale);
-  const name = file ? derivedName(file.name, "-rellenable", "pdf") : "formulario.pdf";
+  const name = file ? derivedName(file.name, locale === "en" ? "-fillable" : "-rellenable", "pdf") : locale === "en" ? "form.pdf" : "formulario.pdf";
   return { outputs: [pdfOut(name, bytes)], notes, data: { signatures } };
 }
 

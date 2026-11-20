@@ -25,7 +25,8 @@ interface Item {
   id: string;
   /** Nombre del campo que ya tenía el PDF (se mueve, se cambia o se borra). */
   existing?: string;
-  /** Campo existente que aquí solo se puede mover o borrar no (grupos de opciones, botones y firmas). */
+  /** Campo existente que aquí solo se puede borrar: grupos de opciones, botones, firmas, nombres jerárquicos y campos con
+   *  varios widgets (D-198). */
   locked?: boolean;
   /** Sugerencia de la detección automática, pendiente de que el usuario la acepte. */
   suggested?: boolean;
@@ -72,6 +73,7 @@ type Status =
   | { kind: "error"; code: string; message?: string };
 
 interface Drag {
+  moved?: boolean;
   mode: "move" | "resize" | "draw";
   page: number;
   start: [number, number];
@@ -100,7 +102,7 @@ function fromExisting(f: FormFieldInfo): Item | null {
   if (f.page === null || !f.rect) return null;
   const type = (["text", "checkbox", "radio", "dropdown", "optionlist", "button", "signature"].includes(f.type) ? f.type : "text") as DesignFieldType;
   return {
-    id: newId(), existing: f.name, locked: LOCKED_TYPES.includes(f.type), type, name: f.name, page: f.page, ...f.rect,
+    id: newId(), existing: f.name, locked: LOCKED_TYPES.includes(f.type) || f.name.includes(".") || (f.widgets ?? 1) > 1, type, name: f.name, page: f.page, ...f.rect,
     multiline: f.multiline, maxLength: f.maxLength || undefined, readOnly: f.readOnly, options: f.options,
     defaultValue: f.type === "checkbox" ? Boolean(f.value) : f.value, multiSelect: f.type === "optionlist" && Array.isArray(f.value) && f.value.length > 1,
   };
@@ -143,6 +145,7 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
   const [password, setPassword] = useState("");
   const [detecting, setDetecting] = useState(false);
   const [found, setFound] = useState<number | null>(null);
+  const [signed, setSigned] = useState(false);
   const drag = useRef<Drag | null>(null);
   const turnstileBox = useRef<HTMLDivElement>(null);
 
@@ -157,6 +160,8 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
         image: URL.createObjectURL(new Blob([new Uint8Array(pg.image)], { type: "image/jpeg" })) })));
       setItems(info.fields.map(fromExisting).filter((x): x is Item => x !== null));
       setXfa(info.xfa);
+      setSigned(Boolean(info.signed));
+      setFound(null);
       setRemoved([]);
       setHistory([]);
       setSelected([]);
@@ -172,6 +177,19 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
   }, []);
 
   useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        document.getElementById("deshacer-formulario")?.click();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  useEffect(() => {
     const incoming = takeHandOff();
     if (incoming[0]) void open(incoming[0]);
   }, [open]);
@@ -183,7 +201,10 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
     setItems([]);
     setRemoved([]);
     setHistory([]);
+    setSelected([]);
+    setFound(null);
     setXfa(false);
+    setSigned(false);
     setStatus({ kind: "ready" });
   }
 
@@ -220,8 +241,50 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
   }
 
   const patch = (id: string, change: Partial<Item>, structural = true) => {
-    commit(items.map((i) => (i.id === id ? { ...i, ...change, suggested: false, dirty: i.existing && structural ? true : i.dirty } : i)));
+    commit(items.map((i) => {
+      if (i.id !== id) return i;
+      const next = { ...i, ...change, suggested: false, dirty: i.existing && structural ? true : i.dirty };
+      if (next.type === "radio") {
+        // Cada opción necesita su fila (D-198): el grupo crece si hacen falta más.
+        const rows = Math.max(1, (next.options ?? []).filter((o) => o.trim()).length);
+        next.height = Math.min(Math.max(next.height, rows * 16), pages[next.page].height - next.y);
+      }
+      return next;
+    }));
   };
+
+  /** Coloca un campo en el centro de la primera página (teclado, 8.3). */
+  function placeCentered(k: Kind) {
+    const page = pages[0];
+    if (!page) return;
+    const [w, h] = DEFAULT_SIZE[k];
+    const item = create(k, 0, (page.width - w) / 2, (page.height - h) / 2);
+    commit([...items, item]);
+    setSelected([item.id]);
+    setKind("select");
+  }
+
+  /** Teclado (8.3): flechas mueven (Mayúsculas: 10 pt; Alt: cambian el tamaño), Supr borra. */
+  function onFieldKey(e: React.KeyboardEvent, id: string) {
+    const item = items.find((i) => i.id === id);
+    if (!item) return;
+    if (e.key === "Delete" || e.key === "Backspace") {
+      e.preventDefault();
+      deleteSelected();
+      return;
+    }
+    const step = e.shiftKey ? 10 : 1;
+    const delta: Record<string, [number, number]> = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+    const move = delta[e.key];
+    if (!move || item.locked) return;
+    e.preventDefault();
+    const P = pages[item.page];
+    commit(items.map((i) => {
+      if (i.id !== id) return i;
+      if (e.altKey) return { ...i, width: Math.max(6, Math.min(P.width - i.x, i.width + move[0])), height: Math.max(6, Math.min(P.height - i.y, i.height + move[1])), moved: true };
+      return { ...i, x: Math.max(0, Math.min(P.width - i.width, i.x + move[0])), y: Math.max(0, Math.min(P.height - i.height, i.y + move[1])), moved: true };
+    }));
+  }
 
   // --- Ratón y táctil ---
 
@@ -256,9 +319,11 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
   const onPointerMove = (page: number) => (e: React.PointerEvent<SVGSVGElement>) => {
     const d = drag.current;
     if (!d || d.page !== page) return;
-    const [x, y] = svgPoint(e);
-    const [dx, dy] = [x - d.start[0], y - d.start[1]];
     const P = pages[page];
+    const [rx, ry] = svgPoint(e);
+    const [x, y] = [Math.max(0, Math.min(P.width, rx)), Math.max(0, Math.min(P.height, ry))];
+    const [dx, dy] = [x - d.start[0], y - d.start[1]];
+    if (Math.abs(dx) + Math.abs(dy) > 2) d.moved = true;
     setItems(d.orig.map((i) => {
       if (d.mode === "draw" && i.id === d.id) {
         return { ...i, x: Math.min(d.start[0], x), y: Math.min(d.start[1], y), width: Math.abs(dx), height: Math.abs(dy) };
@@ -283,9 +348,11 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
       // Un clic sin arrastrar crea el campo con su tamaño de siempre.
       const next = items.map((i) => {
         if (i.id !== d.id) return i;
-        if (i.width >= 6 && i.height >= 6) return i.type === "checkbox" ? { ...i, height: i.width } : i;
+        if (d.moved && i.width >= 6 && i.height >= 6) return i.type === "checkbox" ? { ...i, height: i.width } : i;
+        // Un clic o un toque sin arrastrar: el tamaño de siempre, dentro de la página.
         const [w, h] = DEFAULT_SIZE[kind === "select" ? "text" : kind];
-        return { ...i, width: w, height: h };
+        const P = pages[i.page];
+        return { ...i, width: w, height: h, x: Math.min(i.x, P.width - w), y: Math.min(i.y, P.height - h) };
       });
       setHistory((h) => [...h.slice(-50), { items: d.orig.filter((i) => i.id !== d.id), removed }]);
       setItems(next);
@@ -356,6 +423,17 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
   // --- Guardar ---
 
   async function save() {
+    const kept0 = items.filter((i) => !i.suggested);
+    const names = kept0.map((i) => i.name.trim());
+    const bad = names.find((n, k) => !n || names.indexOf(n) !== k);
+    if (bad !== undefined) {
+      setStatus({ kind: "error", code: "INVALID_OPTIONS", message: bad ? t("duplicateName", { name: bad }) : t("emptyName") });
+      return;
+    }
+    if (kept0.filter((i) => i.type === "signature" && (!i.existing || i.dirty)).length > 50) {
+      setStatus({ kind: "error", code: "INVALID_OPTIONS", message: t("tooManySignatures") });
+      return;
+    }
     const suggestions = items.filter((i) => i.suggested);
     if (suggestions.length && !window.confirm(t("discardSuggestions", { n: suggestions.length }))) return;
     const kept = items.filter((i) => !i.suggested);
@@ -394,7 +472,9 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
       recordUse(spec.slug);
     } catch (err) {
       const code = err instanceof ClientToolError || err instanceof ApiError ? err.code : "INTERNAL";
-      setStatus({ kind: "error", code, message: err instanceof ApiError && err.message ? err.message : undefined });
+      // El detalle del motor (nombre repetido, dirección no válida…) va en español: se añade al mensaje traducido.
+      const detail = err instanceof ClientToolError && err.message ? `${te.has(code) ? te(code) : te("INTERNAL")} (${err.message})` : undefined;
+      setStatus({ kind: "error", code, message: err instanceof ApiError && err.message ? err.message : detail });
     }
   }
 
@@ -470,7 +550,8 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
           className={`${kind === "select" ? "btn" : "btn-secondary btn"} min-w-9 px-2 py-1`} onClick={() => setKind("select")}>↖</button>
         {KINDS.map((k) => (
           <button key={k} type="button" aria-pressed={kind === k} aria-label={t(`kind_${k}`)} title={t(`kind_${k}`)}
-            className={`${kind === k ? "btn" : "btn-secondary btn"} min-w-9 px-2 py-1`} onClick={() => setKind(k)}>
+            className={`${kind === k ? "btn" : "btn-secondary btn"} min-w-9 px-2 py-1`}
+            onClick={(e) => (e.detail === 0 ? placeCentered(k) : setKind(k))}>
             <span aria-hidden>{ICON[k]}</span>
           </button>
         ))}
@@ -479,13 +560,15 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
           {detecting ? t("detecting") : t("detect")}
         </button>
         <span className="ml-auto flex flex-wrap gap-2">
-          <button type="button" className="btn-secondary btn px-2 py-1" onClick={undo} disabled={!history.length} aria-label={t("undo")}>↶</button>
+          <button id="deshacer-formulario" type="button" className="btn-secondary btn px-2 py-1" onClick={undo} disabled={!history.length} aria-label={t("undo")}>↶</button>
           <button type="button" className="btn-secondary btn px-2 py-1" onClick={duplicate} disabled={!selected.length} aria-label={t("duplicate")}>⧉</button>
           <button type="button" className="btn-secondary btn px-2 py-1" onClick={deleteSelected} disabled={!selected.length} aria-label={t("delete")}>🗑</button>
         </span>
       </div>
       {kind !== "select" && <p className="muted text-sm">{t("drawHint")}</p>}
       {xfa && <p className="card p-3 text-sm">{t("xfa")}</p>}
+      {signed && <p className="card p-3 text-sm" role="alert">{t("signedWarning")}</p>}
+      <p className="muted text-sm">{t("keyboardHint")}</p>
       {found !== null && (
         <p className="card flex flex-wrap items-center gap-2 p-3 text-sm" role="status">
           {found ? t("found", { n: found }) : t("foundNone")}
@@ -517,12 +600,14 @@ export function FormDesigner({ spec, startBlank = false }: { spec: ClientSpec; s
               )}
               <svg viewBox={`0 0 ${page.width} ${page.height}`} className="absolute inset-0 h-full w-full touch-none"
                 style={{ cursor: kind === "select" ? "default" : "crosshair" }}
-                onPointerDown={onPointerDown(index)} onPointerMove={onPointerMove(index)} onPointerUp={onPointerUp()}>
+                onPointerDown={onPointerDown(index)} onPointerMove={onPointerMove(index)} onPointerUp={onPointerUp()} onPointerCancel={onPointerUp()}>
                 {items.filter((i) => i.page === index).map((i) => {
                   const on = selected.includes(i.id);
                   const color = i.suggested ? "rgba(214,120,0,0.9)" : i.type === "signature" ? "rgba(120,40,200,0.85)" : "rgba(0,90,220,0.85)";
                   return (
-                    <g key={i.id} data-field={i.id} style={{ cursor: i.locked ? "not-allowed" : "move" }}>
+                    <g key={i.id} data-field={i.id} style={{ cursor: i.locked ? "not-allowed" : "move" }} tabIndex={0} role="button"
+                      aria-label={`${t(`kind_${i.type === "text" && i.multiline ? "multiline" : i.type}`)}: ${i.name}`} aria-pressed={on}
+                      onFocus={() => { if (!selected.includes(i.id)) setSelected([i.id]); }} onKeyDown={(e) => onFieldKey(e, i.id)}>
                       <rect x={i.x} y={i.y} width={i.width} height={i.height} fill={i.suggested ? "rgba(255,170,0,0.15)" : "rgba(0,110,255,0.12)"}
                         stroke={color} strokeWidth={on ? 1.6 : 0.8} strokeDasharray={i.suggested || i.locked ? "3 2" : undefined} />
                       <text x={i.x + 2} y={i.y + Math.min(i.height - 2, 9)} fontSize={Math.min(8, Math.max(5, i.height - 3))} fill={color} pointerEvents="none">
