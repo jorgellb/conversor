@@ -76,7 +76,7 @@ convert = [
 # quita PyAV (sus ruedas traen x264 y x265, GPL; D-111): el audio lo decodifica el FFmpeg LGPL de la imagen, aparte.
 # F3, lote D (pdf-a-audio): onnxruntime para Kokoro (6.4) y pypdfium2 y pikepdf para el texto del PDF. Nunca kokoro,
 # kokoro-onnx, misaki ni phonemizer-fork: cargarían espeak-ng (GPL) dentro del proceso (11).
-av = ["faster-whisper==1.2.1", "ctranslate2==4.8.5", "python-docx==1.2.0", "onnxruntime==1.31.0", "pypdfium2==5.14.0",
+av = ["faster-whisper==1.2.1", "ctranslate2==4.8.5", "python-docx==1.2.0", "onnxruntime==1.31.0", "pypdfium2==5.14.0", "pillow==13.0.0",
       "pikepdf==10.17.0"]
 # IA (F3): texto de los PDF y resultados en DOCX; las peticiones van con httpx (dependencia común). openpyxl (MIT) escribe
 # los XLSX de imagen-a-excel y ticket-a-excel (F3, lote C). pysubs2 (MIT, Python puro y sin dependencias) lee y escribe

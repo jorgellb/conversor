@@ -269,6 +269,8 @@ DETAILS: dict[str, dict[str, str]] = {
                                  "en": "The signature already contains the document and the second file is not that document (or is not used): upload only the signature."},
     "verify_no_signature": {"es": "Sube una firma (.csig, .p7m, .p7s, .xsig o un XML o PDF firmado) y, si va separada, el documento.",
                             "en": "Upload a signature (.csig, .p7m, .p7s, .xsig or a signed XML or PDF) and, if it is detached, the document."},
+    "libro_drm": {"es": "El libro tiene DRM (protección contra copia) y no se puede convertir.", "en": "The book has DRM (copy protection) and cannot be converted."},
+    "video_plan": {"es": "Los vídeos son del plan Pro.", "en": "Videos are part of the Pro plan."},
     "midi_unsupported": {"es": "Este MIDI no se puede sintetizar: usa el formato 2, tiempos SMPTE o eventos que FluidSynth no entiende. Guárdalo como MIDI de formato 1 desde tu programa.", "en": "This MIDI cannot be synthesised: it uses format 2, SMPTE timing or events FluidSynth does not understand. Save it as a format 1 MIDI from your program."},
     "udf_no_content": {"es": "El archivo no es un documento UDF de UYAP (falta content.xml).", "en": "The file is not a UYAP UDF document (content.xml is missing)."},
     "musicxml_not_score": {"es": "El archivo no es una partitura MusicXML.", "en": "The file is not a MusicXML score."},

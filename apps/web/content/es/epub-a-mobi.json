@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "EPUB a MOBI convierte libros electrónicos en formato EPUB a MOBI para leerlos en los Kindle de Amazon y la aplicación Kindle. El formato MOBI es el de Amazon: MOBI es el formato clásico que entienden todos los Kindle, también los más antiguos; puedes enviarlo a tu Kindle por cable o con «Enviar a Kindle».",
+    "Para pasar de EPUB a MOBI usamos Calibre, el programa libre de referencia para libros electrónicos, que conserva los capítulos, el índice, la portada, las imágenes, los estilos y los metadatos (título, autor, idioma y editorial). Si quieres, puedes poner otro título u otro autor en las opciones avanzadas, por ejemplo cuando el libro lleva el nombre del archivo en lugar del título real.",
+    "Antes de convertir revisamos el EPUB: que no sea un archivo dañado, que no enlace archivos de fuera del propio libro y que no tenga DRM. Los libros comprados con protección contra copia no se pueden convertir, y te lo decimos sin intentarlo; los libros sin DRM, los de dominio público y los que has creado tú se convierten sin problema.",
+    "La conversión a MOBI se hace en nuestro servidor, con Calibre como programa aparte, sin conexión a internet y con tiempo y memoria limitados. Puedes convertir varios libros EPUB a la vez y descargarlos en un ZIP; se borran cuando caducan."
+  ],
+  "steps": [
+    "Sube uno o varios libros EPUB.",
+    "Si quieres, cambia el título o el autor en las opciones avanzadas.",
+    "Descarga el libro en MOBI o el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué dice que mi libro tiene DRM?",
+      "a": "Porque la tienda lo vende con protección contra copia. Ese cifrado impide pasarlo a MOBI; descárgalo en ese formato desde la propia tienda, si lo ofrece."
+    },
+    {
+      "q": "¿Se conserva el índice?",
+      "a": "Sí, el índice y los capítulos pasan al MOBI, junto con la portada y los metadatos del EPUB."
+    },
+    {
+      "q": "¿Y si quiero el libro en PDF?",
+      "a": "Usa EPUB a PDF, que lo maqueta en páginas con el papel, los márgenes y el tamaño de letra que elijas."
+    }
+  ]
+}

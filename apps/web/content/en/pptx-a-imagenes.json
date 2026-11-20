@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PowerPoint to images turns each slide of a presentation into a PNG or JPG image. It is for putting slides on a website, in a document, an email or social media, for sending a single slide without the whole presentation, or for getting thumbnails of all of them.",
+    "We accept modern (.pptx) and old (.ppt) PowerPoint and OpenDocument presentations (.odp), such as those from LibreOffice Impress. The presentation is first converted with LibreOffice, which keeps backgrounds, images, tables, charts and text, and then each slide is drawn at the resolution you choose: 96 dpi for screens, 150 or 200 for documents and 300 for printing.",
+    "PNG keeps every detail losslessly and is the best choice for slides with text and charts; JPG is smaller and suits photographs. You can convert every slide or only some with a range such as “1-3, 5”. The images carry the slide number in their name and download together in a ZIP.",
+    "Animations and transitions cannot become a still image: each slide comes out in its final state. Fonts not installed on our server are replaced with similar ones, so embed them when saving the presentation if you use unusual typefaces."
+  ],
+  "steps": [
+    "Upload the presentation (.pptx, .ppt or .odp).",
+    "Choose the format, resolution and, optionally, the slides.",
+    "Download the images in a ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Which resolution should I choose?",
+      "a": "150 dpi for documents and websites; 300 dpi if you will print them. A 16:9 slide at 150 dpi is about 2000 × 1125 pixels."
+    },
+    {
+      "q": "Can I get just one slide?",
+      "a": "Yes: type its number in “Slides”, in the advanced options."
+    },
+    {
+      "q": "What about a video of the slides?",
+      "a": "Use PowerPoint to video, which joins them with a time per slide and fades."
+    }
+  ]
+}

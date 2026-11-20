@@ -669,6 +669,11 @@ Markdown en el navegador (D-234), en `tests/test_escribir.py`, `packages/client-
 Abrir Word, ODT, Markdown, HTML y PDF, guardar en ODT, combinación de correspondencia con un PDF por fila y dictado y lectura en voz
 alta (D-236), en `apps/web/test/escribir.test.ts`, `packages/client-tools/test/escribir.test.ts` y `tests/e2e/escribir-f6.spec.ts`.
 
+## F6-C (libros y presentaciones)
+
+Conversión entre EPUB, MOBI y AZW3 con Calibre y el DRM detectado antes, y presentaciones a imágenes y a vídeo VP9 o AV1 (D-237),
+en `tests/test_libros_diapositivas.py` (Calibre simulado; el vídeo con FFmpeg real y ffprobe).
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

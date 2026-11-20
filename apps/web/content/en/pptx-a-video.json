@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PowerPoint to video turns a presentation into a video that plays by itself, with a fixed time per slide and, if you like, a fade between them. It is useful for screens in a shop or at a trade fair, for uploading the presentation to YouTube or social media, or for sending it to someone without PowerPoint.",
+    "We accept .pptx, .ppt and .odp. Each slide is drawn at 720p or 1080p and centred in the frame; 4:3 presentations get black bars at the sides. You choose how many seconds each one lasts (1 to 60) and whether they fade to black when changing. You can also use only some slides with a range.",
+    "The video comes out as WebM with VP9, which plays in every browser and on YouTube, or as MP4 with AV1, the modern codec that current players and systems open. We do not use H.264 because of the patent licences its commercial use requires. The video has no sound: narration and music in the presentation are not included.",
+    "This tool is part of the Pro plan and the video can last at most your plan's video minutes. Animations within a slide are not played: each slide appears in its final state."
+  ],
+  "steps": [
+    "Upload the presentation.",
+    "Choose seconds per slide, resolution, fade and format.",
+    "Download the video."
+  ],
+  "faq": [
+    {
+      "q": "WebM or MP4?",
+      "a": "WebM for the web, YouTube and browsers; MP4 with AV1 if you will play it on a TV or a current computer."
+    },
+    {
+      "q": "Is the presentation's audio included?",
+      "a": "No, the video is silent. You can add music afterwards with a video editor."
+    },
+    {
+      "q": "Why is there no MP4 with H.264?",
+      "a": "Because its commercial use may require patent licences; VP9 and AV1 are published royalty-free."
+    }
+  ]
+}

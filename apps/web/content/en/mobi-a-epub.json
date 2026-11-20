@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MOBI to EPUB converts e-books in MOBI format into EPUB to read them on almost any reader: Kobo, PocketBook, Tolino, phones and tablets with Apple Books, Google Play Books or Lithium, and computers with Calibre or Thorium. EPUB is the standard e-book format and the one almost every reader and app opens, so turning your MOBI books into EPUB lets you read them outside Amazon's ecosystem.",
+    "To go from MOBI to EPUB we use Calibre, the reference free e-book program, which keeps chapters, the table of contents, the cover, images, styles and metadata (title, author, language and publisher). If you like, you can set another title or author in the advanced options, for example when the book carries the file name instead of the real title.",
+    "Before converting we check the MOBI file: that it is not damaged, that it does not link files outside the book itself and that it has no DRM. Books bought with copy protection cannot be converted, and we tell you without trying; DRM-free books, public domain books and books you made yourself convert without trouble.",
+    "Conversion to EPUB runs on our server, with Calibre as a separate program, without internet access and with limited time and memory. You can convert several MOBI books at once and download them in a ZIP; they are deleted when they expire."
+  ],
+  "steps": [
+    "Upload one or more MOBI books.",
+    "Optionally, change the title or author in the advanced options.",
+    "Download the book as EPUB or the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Why does it say my book has DRM?",
+      "a": "Because the shop sells it with copy protection. That encryption prevents turning it into EPUB; download it in that format from the shop, if it offers it."
+    },
+    {
+      "q": "Is the table of contents kept?",
+      "a": "Yes, the table of contents and chapters carry over to EPUB, together with the cover and the MOBI metadata."
+    },
+    {
+      "q": "What if I want the book as PDF?",
+      "a": "Use MOBI to PDF, which lays it out in pages with the paper, margins and font size you choose."
+    }
+  ]
+}

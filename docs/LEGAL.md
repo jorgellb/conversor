@@ -7,7 +7,7 @@ Las anota el propietario con fecha y responsable. Mientras falten, los flags cor
 | Textos de privacidad, términos y aviso legal (datos del titular entre corchetes en `apps/web/src/components/legal.ts`) | Pendiente | No publicar el sitio |
 | HEVC (HEIC y vídeo H.265): licencias de patentes también para servicios en la nube | Pendiente | `HEVC_DECODE_ENABLED=false` |
 | Codificación H.264 | Pendiente | `VIDEO_H264_ENCODING_ENABLED=false` |
-| AAC, VP9 y AV1: pools que reclaman licencias | Pendiente | Sin herramientas que los codifiquen en esta entrega |
+| AAC, VP9 y AV1: pools que reclaman licencias | Pendiente | pptx-a-video codifica VP9 (WebM) y AV1 (MP4) con el FFmpeg LGPL (F6-C, D-237): sus autores (Google y AOMedia) los publican libres de regalías, pero hay pools (Sisvel) que reclaman licencias; revisar antes de abrir el plan Pro al público |
 | MP3, Opus, Vorbis y FLAC | Riesgo bajo (patentes de MP3 caducadas) | ogg-a-mp3, opus-a-mp3, m4a-a-mp3 y mp4-a-mp3 activas |
 | Factura electrónica (generadores): crear-factura (F4-E1) avisa de que no es un sistema de facturación verificable (Veri*factu, RD 1007/2023 y RDL 15/2025) y solo genera el PDF; el asesor confirma ese texto y si basta para publicarla, y revisa los generadores de factura electrónica (RD 238/2026) antes de encenderlos | Pendiente | `INVOICING_ES_ENABLED=false` y `TOOL_<SLUG>_ENABLED` sin definir |
 | IA (OpenRouter, consentimiento, transferencias): un especialista en protección de datos revisa el aviso de 6.6, la política de privacidad (OpenRouter y sus proveedores como destinatarios, transferencia fuera de la UE) y la EIPD de abajo | Pendiente | Herramientas de IA en beta con el aviso y el consentimiento; no anunciarlas hasta la revisión |

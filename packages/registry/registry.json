@@ -17377,6 +17377,404 @@
       }
     },
     {
+      "slug_es": "epub-a-mobi",
+      "slug_en": "epub-to-mobi",
+      "name_es": "EPUB a MOBI",
+      "name_en": "EPUB to MOBI",
+      "summary_es": "Convierte libros EPUB a MOBI para leerlos en Kindle.",
+      "summary_en": "Convert EPUB books to MOBI to read them on Kindle.",
+      "category": "convert",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "epub"
+      ],
+      "outputs": [
+        "mobi",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "epub-a-pdf",
+        "mobi-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "epub-a-mobi, epub-a-azw3, mobi-a-epub y azw3-a-epub (F6-C, D-237): título y autor nuevos (opcionales) y EPUB [3] | 2.",
+        "properties": {
+          "titulo": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Título (déjalo vacío para conservarlo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Title (leave empty to keep it)",
+              "es": "Título (déjalo vacío para conservarlo)"
+            }
+          },
+          "autor": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Autor (déjalo vacío para conservarlo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Author (leave empty to keep it)",
+              "es": "Autor (déjalo vacío para conservarlo)"
+            }
+          },
+          "epub3": {
+            "default": true,
+            "title": "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "EPUB 3 (unticked, EPUB 2 for old readers)",
+              "es": "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)"
+            }
+          }
+        },
+        "title": "LibroFormatoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "epub-a-azw3",
+      "slug_en": "epub-to-azw3",
+      "name_es": "EPUB a AZW3",
+      "name_en": "EPUB to AZW3",
+      "summary_es": "Convierte libros EPUB a AZW3 para leerlos en Kindle.",
+      "summary_en": "Convert EPUB books to AZW3 to read them on Kindle.",
+      "category": "convert",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "epub"
+      ],
+      "outputs": [
+        "azw3",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "epub-a-pdf",
+        "azw3-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "epub-a-mobi, epub-a-azw3, mobi-a-epub y azw3-a-epub (F6-C, D-237): título y autor nuevos (opcionales) y EPUB [3] | 2.",
+        "properties": {
+          "titulo": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Título (déjalo vacío para conservarlo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Title (leave empty to keep it)",
+              "es": "Título (déjalo vacío para conservarlo)"
+            }
+          },
+          "autor": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Autor (déjalo vacío para conservarlo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Author (leave empty to keep it)",
+              "es": "Autor (déjalo vacío para conservarlo)"
+            }
+          },
+          "epub3": {
+            "default": true,
+            "title": "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "EPUB 3 (unticked, EPUB 2 for old readers)",
+              "es": "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)"
+            }
+          }
+        },
+        "title": "LibroFormatoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "mobi-a-epub",
+      "slug_en": "mobi-to-epub",
+      "name_es": "MOBI a EPUB",
+      "name_en": "MOBI to EPUB",
+      "summary_es": "Convierte libros MOBI a EPUB para leerlos en cualquier lector de EPUB.",
+      "summary_en": "Convert MOBI books to EPUB to read them on any EPUB reader.",
+      "category": "convert",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "mobi"
+      ],
+      "outputs": [
+        "epub",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "mobi-a-pdf",
+        "epub-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "epub-a-mobi, epub-a-azw3, mobi-a-epub y azw3-a-epub (F6-C, D-237): título y autor nuevos (opcionales) y EPUB [3] | 2.",
+        "properties": {
+          "titulo": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Título (déjalo vacío para conservarlo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Title (leave empty to keep it)",
+              "es": "Título (déjalo vacío para conservarlo)"
+            }
+          },
+          "autor": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Autor (déjalo vacío para conservarlo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Author (leave empty to keep it)",
+              "es": "Autor (déjalo vacío para conservarlo)"
+            }
+          },
+          "epub3": {
+            "default": true,
+            "title": "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "EPUB 3 (unticked, EPUB 2 for old readers)",
+              "es": "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)"
+            }
+          }
+        },
+        "title": "LibroFormatoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "azw3-a-epub",
+      "slug_en": "azw3-to-epub",
+      "name_es": "AZW3 a EPUB",
+      "name_en": "AZW3 to EPUB",
+      "summary_es": "Convierte libros AZW3 a EPUB para leerlos en cualquier lector de EPUB.",
+      "summary_en": "Convert AZW3 books to EPUB to read them on any EPUB reader.",
+      "category": "convert",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "azw3"
+      ],
+      "outputs": [
+        "epub",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "azw3-a-pdf",
+        "epub-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "epub-a-mobi, epub-a-azw3, mobi-a-epub y azw3-a-epub (F6-C, D-237): título y autor nuevos (opcionales) y EPUB [3] | 2.",
+        "properties": {
+          "titulo": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Título (déjalo vacío para conservarlo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Title (leave empty to keep it)",
+              "es": "Título (déjalo vacío para conservarlo)"
+            }
+          },
+          "autor": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Autor (déjalo vacío para conservarlo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Author (leave empty to keep it)",
+              "es": "Autor (déjalo vacío para conservarlo)"
+            }
+          },
+          "epub3": {
+            "default": true,
+            "title": "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "EPUB 3 (unticked, EPUB 2 for old readers)",
+              "es": "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)"
+            }
+          }
+        },
+        "title": "LibroFormatoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "pptx-a-imagenes",
+      "slug_en": "pptx-to-images",
+      "name_es": "PowerPoint a imágenes",
+      "name_en": "PowerPoint to images",
+      "summary_es": "Convierte cada diapositiva de una presentación en una imagen PNG o JPG con la resolución que elijas.",
+      "summary_en": "Turn each slide of a presentation into a PNG or JPG image at the resolution you choose.",
+      "category": "image",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pptx",
+        "ppt",
+        "odp"
+      ],
+      "outputs": [
+        "png",
+        "jpg",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "pptx-a-pdf",
+        "pptx-a-video"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "pptx-a-imagenes (F6-C, D-237): formato [PNG] | JPG, resolución [150 ppp] y diapositivas (todas o un rango).",
+        "properties": {
+          "formato": {
+            "default": "png",
+            "enum": [
+              "png",
+              "jpg"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "jpg": {
+                "en": "JPG",
+                "es": "JPG"
+              },
+              "png": {
+                "en": "PNG",
+                "es": "PNG"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "resolucion": {
+            "default": 150,
+            "enum": [
+              96,
+              150,
+              200,
+              300
+            ],
+            "title": "Resolución",
+            "type": "integer",
+            "x-labels": {
+              "150": {
+                "en": "150 dpi",
+                "es": "150 ppp"
+              },
+              "200": {
+                "en": "200 dpi",
+                "es": "200 ppp"
+              },
+              "300": {
+                "en": "300 dpi (print)",
+                "es": "300 ppp (imprimir)"
+              },
+              "96": {
+                "en": "96 dpi (screen)",
+                "es": "96 ppp (pantalla)"
+              }
+            },
+            "x-title": {
+              "en": "Resolution",
+              "es": "Resolución"
+            }
+          },
+          "diapositivas": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Diapositivas (vacío: todas; p. ej., 1-3, 5)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Slides (empty: all; e.g. 1-3, 5)",
+              "es": "Diapositivas (vacío: todas; p. ej., 1-3, 5)"
+            }
+          }
+        },
+        "title": "DiapositivasImagenesOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "escribir-pdf",
       "slug_en": "write-pdf",
       "name_es": "Escribir PDF",
@@ -22162,6 +22560,125 @@
           }
         },
         "title": "AudioOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "pptx-a-video",
+      "slug_en": "pptx-to-video",
+      "name_es": "PowerPoint a vídeo",
+      "name_en": "PowerPoint to video",
+      "summary_es": "Convierte una presentación en un vídeo con un tiempo por diapositiva y fundidos, en WebM o MP4.",
+      "summary_en": "Turn a presentation into a video with a time per slide and fades, as WebM or MP4.",
+      "category": "video",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "pptx",
+        "ppt",
+        "odp"
+      ],
+      "outputs": [
+        "webm",
+        "mp4"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "secret_fields": [],
+      "related": [
+        "pptx-a-imagenes",
+        "pptx-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "pptx-a-video (F6-C, D-237): segundos por diapositiva [5], resolución [1080p], fundido [sí] y formato [WebM VP9] | MP4 AV1.",
+        "properties": {
+          "segundos": {
+            "default": 5,
+            "maximum": 60,
+            "minimum": 1,
+            "title": "Segundos por diapositiva",
+            "type": "integer",
+            "x-title": {
+              "en": "Seconds per slide",
+              "es": "Segundos por diapositiva"
+            }
+          },
+          "resolucion": {
+            "default": "1080",
+            "enum": [
+              "720",
+              "1080"
+            ],
+            "title": "Resolución",
+            "type": "string",
+            "x-labels": {
+              "1080": {
+                "en": "1080p (1920 × 1080)",
+                "es": "1080p (1920 × 1080)"
+              },
+              "720": {
+                "en": "720p (1280 × 720)",
+                "es": "720p (1280 × 720)"
+              }
+            },
+            "x-title": {
+              "en": "Resolution",
+              "es": "Resolución"
+            }
+          },
+          "transicion": {
+            "default": true,
+            "title": "Fundido entre diapositivas",
+            "type": "boolean",
+            "x-title": {
+              "en": "Fade between slides",
+              "es": "Fundido entre diapositivas"
+            }
+          },
+          "formato": {
+            "default": "webm",
+            "enum": [
+              "webm",
+              "mp4"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "mp4": {
+                "en": "MP4 (AV1: modern players)",
+                "es": "MP4 (AV1: reproductores modernos)"
+              },
+              "webm": {
+                "en": "WebM (VP9: browsers, YouTube)",
+                "es": "WebM (VP9: navegadores, YouTube)"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "diapositivas": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Diapositivas (vacío: todas; p. ej., 1-3, 5)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Slides (empty: all; e.g. 1-3, 5)",
+              "es": "Diapositivas (vacío: todas; p. ej., 1-3, 5)"
+            }
+          }
+        },
+        "title": "DiapositivasVideoOptions",
         "type": "object"
       }
     },

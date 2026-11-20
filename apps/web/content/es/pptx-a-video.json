@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PowerPoint a vídeo convierte una presentación en un vídeo que se reproduce solo, con un tiempo fijo por diapositiva y, si quieres, un fundido entre ellas. Es útil para pantallas en una tienda o una feria, para subir la presentación a YouTube o a una red social, o para mandarla a alguien que no tiene PowerPoint.",
+    "Admitimos .pptx, .ppt y .odp. Cada diapositiva se dibuja a 720p o 1080p y se centra en el fotograma; las presentaciones 4:3 quedan con bandas negras a los lados. Eliges cuántos segundos dura cada una (de 1 a 60) y si se funden a negro al cambiar. También puedes usar solo algunas diapositivas con un rango.",
+    "El vídeo sale en WebM con VP9, que se reproduce en todos los navegadores y en YouTube, o en MP4 con AV1, el códec moderno que abren los reproductores y sistemas actuales. No usamos H.264 por las licencias de patentes que exige su uso comercial. El vídeo no lleva sonido: las narraciones y la música de la presentación no se incluyen.",
+    "Esta herramienta es del plan Pro y el vídeo puede durar como mucho los minutos de vídeo de tu plan. Las animaciones dentro de una diapositiva no se reproducen: cada diapositiva aparece en su estado final."
+  ],
+  "steps": [
+    "Sube la presentación.",
+    "Elige los segundos por diapositiva, la resolución, el fundido y el formato.",
+    "Descarga el vídeo."
+  ],
+  "faq": [
+    {
+      "q": "¿WebM o MP4?",
+      "a": "WebM para la web, YouTube y los navegadores; MP4 con AV1 si lo vas a reproducir en un televisor o un ordenador actual."
+    },
+    {
+      "q": "¿Se oye el audio de la presentación?",
+      "a": "No, el vídeo es sin sonido. Puedes añadir música después con un editor de vídeo."
+    },
+    {
+      "q": "¿Por qué no hay MP4 con H.264?",
+      "a": "Porque su uso comercial puede exigir licencias de patentes; VP9 y AV1 se publican libres de regalías."
+    }
+  ]
+}

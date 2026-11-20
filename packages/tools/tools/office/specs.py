@@ -110,6 +110,34 @@ class EscribirOptions(BaseModel):
                                       labels={"es": ("Español", "Spanish"), "en": ("Inglés", "English")})
 
 
+class LibroFormatoOptions(BaseModel):
+    """epub-a-mobi, epub-a-azw3, mobi-a-epub y azw3-a-epub (F6-C, D-237): título y autor nuevos (opcionales) y EPUB [3] | 2."""
+
+    titulo: str = opt("", "Título (déjalo vacío para conservarlo)", "Title (leave empty to keep it)", max_length=200, advanced=True)
+    autor: str = opt("", "Autor (déjalo vacío para conservarlo)", "Author (leave empty to keep it)", max_length=200, advanced=True)
+    epub3: bool = opt(True, "EPUB 3 (desmarcado, EPUB 2 para lectores antiguos)", "EPUB 3 (unticked, EPUB 2 for old readers)", advanced=True)
+
+
+class DiapositivasImagenesOptions(BaseModel):
+    """pptx-a-imagenes (F6-C, D-237): formato [PNG] | JPG, resolución [150 ppp] y diapositivas (todas o un rango)."""
+
+    formato: Literal["png", "jpg"] = opt("png", "Formato", "Format", labels={"png": ("PNG", "PNG"), "jpg": ("JPG", "JPG")})
+    resolucion: Literal[96, 150, 200, 300] = opt(150, "Resolución", "Resolution", labels={
+        "96": ("96 ppp (pantalla)", "96 dpi (screen)"), "150": ("150 ppp", "150 dpi"), "200": ("200 ppp", "200 dpi"), "300": ("300 ppp (imprimir)", "300 dpi (print)")})
+    diapositivas: str = opt("", "Diapositivas (vacío: todas; p. ej., 1-3, 5)", "Slides (empty: all; e.g. 1-3, 5)", max_length=200, advanced=True)
+
+
+class DiapositivasVideoOptions(BaseModel):
+    """pptx-a-video (F6-C, D-237): segundos por diapositiva [5], resolución [1080p], fundido [sí] y formato [WebM VP9] | MP4 AV1."""
+
+    segundos: int = opt(5, "Segundos por diapositiva", "Seconds per slide", ge=1, le=60)
+    resolucion: Literal["720", "1080"] = opt("1080", "Resolución", "Resolution", labels={"720": ("720p (1280 × 720)", "720p (1280 × 720)"), "1080": ("1080p (1920 × 1080)", "1080p (1920 × 1080)")})
+    transicion: bool = opt(True, "Fundido entre diapositivas", "Fade between slides")
+    formato: Literal["webm", "mp4"] = opt("webm", "Formato", "Format", labels={
+        "webm": ("WebM (VP9: navegadores, YouTube)", "WebM (VP9: browsers, YouTube)"), "mp4": ("MP4 (AV1: reproductores modernos)", "MP4 (AV1: modern players)")})
+    diapositivas: str = opt("", "Diapositivas (vacío: todas; p. ej., 1-3, 5)", "Slides (empty: all; e.g. 1-3, 5)", max_length=200, advanced=True)
+
+
 class CapturaOptions(BaseModel):
     """captura-web (7.13, F6-M, D-229): formato [PNG] | JPG, ancho de ventana [1280], alto [800], página completa [sí],
     espera [1 s], esquema [claro] y calidad del JPG [85]. La URL se comprueba en la API (12.2)."""
@@ -276,6 +304,20 @@ SPECS: list[ToolSpec] = [
            "Save a web page as PDF from its address. If the address is a document, it is converted.",
            options=WebAPdfOptions, impl="tools.office.web_a_pdf:run", secret_fields=(), outputs=("pdf",),
            time_limit=300, related=("html-a-pdf", "convertir-a-pdf")),
+    # 7.13 (F6-C, D-237): Calibre, como epub-a-pdf; un libro con DRM se rechaza antes de convertirlo.
+    *[office(f"{a}-a-{b}", f"{a}-to-{b}", f"{la} a {lb}", f"{la} to {lb}", (a,),
+             f"Convierte libros {la} a {lb} para leerlos en {'Kindle' if b in ('mobi', 'azw3') else 'cualquier lector de EPUB'}.",
+             f"Convert {la} books to {lb} to read them on {'Kindle' if b in ('mobi', 'azw3') else 'any EPUB reader'}.",
+             options=LibroFormatoOptions, impl="tools.office.libros_formato:run", secret_fields=(), outputs=(b, "zip"), phase="F6",
+             category="convert", queue_kind="heavy", related=(f"{a}-a-pdf", f"{b}-a-pdf") if b != "epub" else (f"{a}-a-pdf", "epub-a-pdf"))
+      for a, b, la, lb in (("epub", "mobi", "EPUB", "MOBI"), ("epub", "azw3", "EPUB", "AZW3"), ("mobi", "epub", "MOBI", "EPUB"),
+                           ("azw3", "epub", "AZW3", "EPUB"))],
+    # 7.13 (F6-C, D-237): LibreOffice de Gotenberg a PDF y cada diapositiva con pypdfium2.
+    office("pptx-a-imagenes", "pptx-to-images", "PowerPoint a imágenes", "PowerPoint to images", ("pptx", "ppt", "odp"),
+           "Convierte cada diapositiva de una presentación en una imagen PNG o JPG con la resolución que elijas.",
+           "Turn each slide of a presentation into a PNG or JPG image at the resolution you choose.",
+           options=DiapositivasImagenesOptions, impl="tools.office.diapositivas:run_images", secret_fields=(), outputs=("png", "jpg", "zip"),
+           phase="F6", category="image", related=("pptx-a-pdf", "pptx-a-video")),
     # A.1 (F6-O1, D-234): el editor está en la página; aquí llega su HTML (y, si se elige, el PDF de membrete).
     office("escribir-pdf", "write-pdf", "Escribir PDF", "Write PDF", ("html", "pdf"),
            "Escribe documentos con títulos, tablas, imágenes, fórmulas e índice y descárgalos en PDF, Word o Markdown.",

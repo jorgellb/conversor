@@ -9,6 +9,7 @@ from pydantic import BaseModel, field_validator
 
 from core.options import opt
 from core.registry import ToolSpec
+from tools.office.specs import DiapositivasVideoOptions
 
 CHANNELS = {"original": ("Como el original", "As original"), "mono": ("Mono", "Mono"), "estereo": ("Estéreo", "Stereo")}
 OUTPUTS = {"mismo": ("Mismo formato que el original", "Same format as the original"), "mp3": ("MP3", "MP3"), "wav": ("WAV", "WAV")}
@@ -194,6 +195,12 @@ SPECS: list[ToolSpec] = [
     audio("flac-a-mp3", "flac-to-mp3", "FLAC a MP3", "FLAC to MP3", ("flac",),
           "Convierte música FLAC sin pérdida a MP3 para el móvil o el coche.", "Convert lossless FLAC music to MP3 for your phone or car."),
     # 7.13 (F6-L, D-228): FluidSynth (LGPL, externo) con FluidR3_GM (MIT) y FFmpeg LGPL.
+    # 7.13 (F6-C, D-237): las diapositivas renderizadas en un vídeo con FFmpeg LGPL (VP9 o AV1, sin H.264); solo Pro (plan.video).
+    ToolSpec(slug_es="pptx-a-video", slug_en="pptx-to-video", name_es="PowerPoint a vídeo", name_en="PowerPoint to video", category="video",
+             where="server", inputs=("pptx", "ppt", "odp"), outputs=("webm", "mp4"), options=DiapositivasVideoOptions, worker_group="av",
+             cost_class="heavy", queue_kind="heavy", impl="tools.office.diapositivas:run_video", launch=True, phase="F6", time_limit=1800,
+             max_files=5, summary_es="Convierte una presentación en un vídeo con un tiempo por diapositiva y fundidos, en WebM o MP4.",
+             summary_en="Turn a presentation into a video with a time per slide and fades, as WebM or MP4.", related=("pptx-a-imagenes", "pptx-a-pdf")),
     audio("midi-a-mp3", "midi-to-mp3", "MIDI a MP3", "MIDI to MP3", ("mid",),
           "Convierte archivos MIDI en MP3 con un banco de sonidos de instrumentos reales, para escucharlos en cualquier sitio.",
           "Turn MIDI files into MP3 with a bank of real instrument sounds, to listen to them anywhere.",
