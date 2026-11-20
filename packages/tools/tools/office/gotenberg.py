@@ -13,12 +13,23 @@ SANS = '"Noto Sans", "DejaVu Sans", "Liberation Sans", Arial, sans-serif'
 
 
 def _post(url: str, files: list[tuple[str, tuple[str | None, bytes | str, str] | tuple[None, str]]], fields: dict[str, str],
-          timeout: float, page_error: ErrorCode | None = None, conflict_error: ErrorCode | None = None) -> bytes:
+          timeout: float, page_error: ErrorCode | None = None, conflict_error: ErrorCode | None = None,
+          max_bytes: int | None = None) -> bytes:
+    """`max_bytes`: la respuesta se lee por partes y se corta al pasar de ese tamaño (capturas de páginas enormes, D-233)."""
     # Siempre multipart: los campos van como partes sin nombre de archivo.
     parts = list(files) + [(k, (None, v)) for k, v in fields.items()]
     try:
         with httpx.Client(timeout=timeout) as client:
-            resp = client.post(url, files=parts, headers={"Gotenberg-Trace": "conversor"})
+            if max_bytes is None:
+                resp = client.post(url, files=parts, headers={"Gotenberg-Trace": "conversor"})
+            else:
+                with client.stream("POST", url, files=parts, headers={"Gotenberg-Trace": "conversor"}) as streamed:
+                    body = bytearray()
+                    for chunk in streamed.iter_bytes(1 << 20):
+                        body += chunk
+                        if len(body) > max_bytes:
+                            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Resultado de Gotenberg demasiado grande")
+                    resp = httpx.Response(streamed.status_code, headers=streamed.headers, content=bytes(body), request=streamed.request)
     except httpx.TimeoutException as exc:
         raise ToolError(ErrorCode.TIMEOUT, "Gotenberg no respondió a tiempo") from exc
     except httpx.HTTPError as exc:

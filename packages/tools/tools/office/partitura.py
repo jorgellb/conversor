@@ -16,20 +16,46 @@ from tools.base import ToolContext, derived_name, run_engine
 from tools.pdf.common import with_batch_zip
 
 MAX_BYTES = 20 * 1024 * 1024
+MAX_MXL_UNCOMPRESSED = 25 * 1024 * 1024
+MAX_MIDI_PDF_BYTES = 2 * 1024 * 1024
+MAX_MIDI_PDF_SECONDS = 30 * 60
+MSCORE_MEM_MB = 1200  # por debajo del límite del contenedor de workeroffice (1536 MB): si no, el límite no saltaría nunca
 
 
-def _check_xml(raw: bytes) -> None:
+def _check_xml(stream, score: bool = True) -> None:
+    """Sin DTD con entidades ni nada externo, leído por partes (un XML de 25 MB no ocupa GB en el worker, D-233)."""
     import defusedxml.ElementTree as DET
     from defusedxml import DefusedXmlException
 
     try:
-        root = DET.fromstring(raw, forbid_dtd=False, forbid_entities=True, forbid_external=True)
+        first = None
+        for _event, elem in DET.iterparse(stream, events=("start", "end"), forbid_dtd=False, forbid_entities=True, forbid_external=True):
+            if first is None:
+                first = elem.tag
+            if _event == "end":
+                elem.clear()
     except (DefusedXmlException, ValueError) as exc:
         raise ToolError(ErrorCode.INVALID_OPTIONS, "xml_entities") from exc
     except SyntaxError as exc:
         raise ToolError(ErrorCode.CORRUPT_FILE, "MusicXML no válido") from exc
-    if root.tag not in ("score-partwise", "score-timewise"):
+    if score and first not in ("score-partwise", "score-timewise"):
         raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "musicxml_not_score")
+
+
+def _rootfile(zf: zipfile.ZipFile) -> str | None:
+    """La partitura que dice META-INF/container.xml (la que abre MuseScore)."""
+    import defusedxml.ElementTree as DET
+
+    try:
+        raw = zf.read("META-INF/container.xml")
+    except KeyError:
+        return None
+    try:
+        root = DET.fromstring(raw, forbid_dtd=True, forbid_entities=True, forbid_external=True)
+    except Exception as exc:  # noqa: BLE001 - DefusedXmlException, ParseError o ValueError
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "xml_entities") from exc
+    node = next((el for el in root.iter() if el.tag.rsplit("}", 1)[-1] == "rootfile"), None)
+    return node.get("full-path") if node is not None else None
 
 
 def _checked(inp) -> str:
@@ -37,20 +63,41 @@ def _checked(inp) -> str:
     if inp.path.stat().st_size > MAX_BYTES:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Partitura de más de 20 MB")
     if ext in ("musicxml", "xml"):
-        _check_xml(inp.path.read_bytes())
+        with open(inp.path, "rb") as stream:
+            _check_xml(stream)
         return "musicxml"
     if ext == "mxl":
-        check_zip(inp.path, max_uncompressed=100 * 1024 * 1024)
-        with zipfile.ZipFile(inp.path) as zf:
-            for info in zf.infolist():
-                if info.filename.lower().endswith((".xml", ".musicxml")) and not info.filename.startswith("META-INF/"):
-                    _check_xml(zf.read(info))
-                    break
-            else:
-                raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "musicxml_not_score")
+        # Se comprueban todos los XML del ZIP, no solo el primero: MuseScore abre el que dice container.xml (D-233).
+        check_zip(inp.path, max_uncompressed=MAX_MXL_UNCOMPRESSED)
+        try:
+            with zipfile.ZipFile(inp.path) as zf:
+                main = _rootfile(zf)
+                names = {i.filename for i in zf.infolist()}
+                if main is not None and main not in names:
+                    raise ToolError(ErrorCode.CORRUPT_FILE, "MXL sin la partitura que indica container.xml")
+                scores = 0
+                for info in zf.infolist():
+                    lower = info.filename.lower()
+                    if info.is_dir() or not lower.endswith((".xml", ".musicxml")):
+                        continue
+                    is_score = info.filename == main or (main is None and not lower.startswith("meta-inf/"))
+                    with zf.open(info) as stream:
+                        _check_xml(stream, score=is_score and info.filename == main)
+                    scores += 1 if is_score else 0
+                if not scores:
+                    raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "musicxml_not_score")
+        except (zipfile.BadZipFile, RuntimeError, NotImplementedError, EOFError) as exc:
+            # CRC erróneo, cifrado o compresión que zipfile no admite.
+            raise ToolError(ErrorCode.CORRUPT_FILE, "MXL dañado o cifrado") from exc
         return "mxl"
-    if inp.path.read_bytes()[:4] != b"MThd":
+    data = inp.path.read_bytes()
+    if data[:4] != b"MThd":
         raise ToolError(ErrorCode.CORRUPT_FILE, "midi")
+    # midi-a-pdf: MuseScore tarda minutos con MIDI grandes; se acotan el tamaño y la duración.
+    from tools.av.midi import duration
+
+    if len(data) > MAX_MIDI_PDF_BYTES or duration(data, playable=False) > MAX_MIDI_PDF_SECONDS:
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, "MIDI demasiado largo para pasarlo a partitura")
     return "mid"
 
 
@@ -70,7 +117,7 @@ def run(ctx: ToolContext) -> list[dict]:
                "XDG_DATA_HOME": str(folder / "data"), "XDG_CACHE_HOME": str(folder / "cache")}
         if ctx.settings.ENGINES_LIBRARY_PATH:
             env["LD_LIBRARY_PATH"] = ctx.settings.ENGINES_LIBRARY_PATH
-        run_engine([str(exe), "-o", "salida.pdf", src.name], cwd=folder, timeout=600, mem_mb=3072, limit_data=True, extra_env=env,
+        run_engine([str(exe), "-o", "salida.pdf", src.name], cwd=folder, timeout=600, mem_mb=MSCORE_MEM_MB, limit_data=True, extra_env=env,
                    ok_codes=tuple(range(256)))
         produced = folder / "salida.pdf"
         if not produced.exists() or produced.stat().st_size == 0:

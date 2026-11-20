@@ -171,7 +171,7 @@ def test_web_page_goes_to_gotenbergweb_with_options(make_ctx, pdf_bytes):
     out = run("web-a-pdf", ctx)
     parts = _parts(route.calls.last.request)
     assert parts["url"] == b"https://www.ejemplo.com/informe/anual"
-    assert parts["landscape"] == b"true" and parts["waitDelay"] == b"2.5s" and parts["emulatedMediaType"] == b"screen"
+    assert parts["landscape"] == b"true" and parts["waitDelay"] == b"2500ms" and parts["emulatedMediaType"] == b"screen"
     assert parts["singlePage"] == b"true"
     assert json.loads(parts["emulatedMediaFeatures"]) == [{"name": "prefers-color-scheme", "value": "dark"}]
     assert out[0]["name"] == "ejemplo.com-informe-anual.pdf"

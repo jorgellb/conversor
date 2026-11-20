@@ -58,6 +58,9 @@ describe("convertir-archivo: rutas desde el registro (7.22)", () => {
     expect(formatName("webp")).toBe("WEBP");
     expect(routeKind("iwork", "pages")).toBe("pages");
     expect(routeKind("zip", "cbz")).toBe("cbz");
+    expect(routeKind("zip", "mxl")).toBe("mxl");
+    expect(routeKind("zip", "udf")).toBe("udf");
+    expect(routeKind("zip", "kmz")).toBe("kmz");
     expect(routeKind("rar", "cbr")).toBe("cbr");
     expect(routeKind("mp4", "m4a")).toBe("m4a");
     expect(routeKind("zip", "docx")).toBe("zip");

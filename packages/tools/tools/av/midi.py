@@ -7,6 +7,7 @@ audio del plan (9.3): un MIDI de pocos bytes con notas larguísimas o un tempo l
 from __future__ import annotations
 
 import shutil
+import signal
 import struct
 from pathlib import Path
 
@@ -17,6 +18,7 @@ from tools.pdf.common import with_batch_zip
 
 MAX_MIDI_BYTES = 5 * 1024 * 1024
 TAIL_SECONDS = 3  # la cola de la reverberación de la última nota
+MIN_FILE_MB = 128
 
 
 def _vlq(data: bytes, i: int) -> tuple[int, int]:
@@ -32,13 +34,26 @@ def _vlq(data: bytes, i: int) -> tuple[int, int]:
     raise ToolError(ErrorCode.CORRUPT_FILE, "midi")
 
 
-def duration(data: bytes) -> float:
-    """Segundos de un MIDI (formatos 0, 1 y 2) con su mapa de tempo; SMPTE incluido."""
+def duration(data: bytes, playable: bool = True) -> float:
+    """Segundos de un MIDI con su mapa de tempo. Con `playable`, solo lo que FluidSynth sabe tocar (D-233): ni el formato
+    2 ni la división SMPTE (los ignora y daría un archivo mudo) ni una división 0 (la toca unas cuatro veces más lenta
+    de lo que dice el archivo, y el límite de minutos del plan no valdría)."""
     if len(data) > MAX_MIDI_BYTES:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, "MIDI de más de 5 MB")
     if data[:4] != b"MThd" or len(data) < 14:
         raise ToolError(ErrorCode.CORRUPT_FILE, "midi")
-    length, _fmt, ntracks, division = struct.unpack(">IHHH", data[4:14])
+    try:
+        return _duration(data, playable)
+    except (struct.error, IndexError) as exc:  # pista cortada justo tras «MTrk»
+        raise ToolError(ErrorCode.CORRUPT_FILE, "midi") from exc
+
+
+def _duration(data: bytes, playable: bool) -> float:
+    length, fmt, ntracks, division = struct.unpack(">IHHH", data[4:14])
+    if division == 0:
+        raise ToolError(ErrorCode.CORRUPT_FILE, "midi")
+    if playable and (fmt == 2 or division & 0x8000):
+        raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "midi_unsupported")
     pos = 8 + length
     events: list[tuple[int, int]] = []  # (tick, tempo) de los cambios de tempo
     end_tick = 0
@@ -78,7 +93,7 @@ def duration(data: bytes) -> float:
     if division & 0x8000:  # SMPTE: fotogramas por segundo y subdivisiones por fotograma
         fps = 256 - (division >> 8)
         return end_tick / (fps * (division & 0xFF) or 1)
-    ppq = division or 480
+    ppq = division
     seconds, last_tick, tempo = 0.0, 0, 500_000
     for tick, new_tempo in sorted(events):
         if tick > end_tick:
@@ -89,15 +104,24 @@ def duration(data: bytes) -> float:
 
 
 def synth(ctx: ToolContext, src: Path, rate: str, dst: Path, seconds: float) -> None:
+    """WAV estéreo de 16 bits. Su tamaño queda limitado por lo que dura según el lector (más la cola y un margen), aunque
+    FluidSynth y el lector no coincidan; y un WAV casi vacío de un MIDI con notas es un MIDI que FluidSynth no ha
+    entendido, no un resultado (D-233)."""
     exe = Path(ctx.settings.FLUIDSYNTH_BIN)
     font = Path(ctx.settings.SOUNDFONT)
     if not exe.is_file() or not font.is_file():
         raise ToolError(ErrorCode.ENGINE_FAILED, "fluidsynth no está instalado")
     env = {"LD_LIBRARY_PATH": ctx.settings.ENGINES_LIBRARY_PATH} if ctx.settings.ENGINES_LIBRARY_PATH else None
-    run_engine([str(exe), "-n", "-i", "-q", "-g", "0.7", "-r", rate, "-T", "wav", "-F", str(dst.name), str(font), str(src.name)],
-               cwd=ctx.work, timeout=int(max(120, seconds * 2 + 60)), mem_mb=1536, extra_env=env)
-    if not dst.exists() or dst.stat().st_size < 100:
-        raise ToolError(ErrorCode.CORRUPT_FILE, "midi")
+    # Con menos de unos 64 MB, FluidSynth muere al arrancar (SIGXFSZ antes de crear el WAV): el tope nunca baja de 128 MB.
+    budget_mb = max(MIN_FILE_MB, int((seconds * 1.25 + TAIL_SECONDS + 30) * int(rate) * 4 / 1024 / 1024) + 2)
+    result = run_engine([str(exe), "-n", "-i", "-q", "-g", "0.7", "-r", rate, "-T", "wav", "-F", str(dst.name), str(font), str(src.name)],
+                        cwd=ctx.work, timeout=int(max(120, seconds * 2 + 60)), mem_mb=1536, extra_env=env, max_file_mb=budget_mb,
+                        ok_codes=(0, -signal.SIGXFSZ))
+    if result.returncode == -signal.SIGXFSZ:  # el WAV llegó al tope: el MIDI suena más de lo que dice
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, "El MIDI suena más de lo que dice")
+    frames = (dst.stat().st_size - 44) // 4 if dst.exists() else 0
+    if frames < int(rate) * min(seconds, 0.5) * 0.5 or b"error:" in result.stderr.lower():
+        raise ToolError(ErrorCode.CORRUPT_FILE, "midi_unsupported")
 
 
 def run(ctx: ToolContext) -> list[dict]:

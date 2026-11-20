@@ -84,7 +84,7 @@ export function buildRoutes(tools: ToolSpec[], disabled: Set<string> = new Set()
 /** El tipo con el que se busca la ruta: dentro de los contenedores ambiguos manda la extensión, como en el servidor. */
 export function routeKind(detected: string, declared: string): string {
   if (detected === "iwork" && ["pages", "key", "numbers"].includes(declared)) return declared;
-  if (detected === "zip" && (declared === "cbz" || declared === "cbr")) return declared;
+  if (detected === "zip" && ["cbz", "cbr", "mxl", "udf", "kmz"].includes(declared)) return declared;
   if (detected === "rar" && declared === "cbr") return "cbr";
   if (detected === "mobi" && ["azw3", "azw"].includes(declared)) return "azw3";
   if (detected === "mp4" && declared === "m4a") return "m4a";

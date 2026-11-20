@@ -27,13 +27,13 @@ def run(ctx: ToolContext) -> list[dict]:
     o = ctx.options
     ctx.report(0.1, None)
     fields = {"width": str(o.ancho), "height": str(o.alto), "clip": str(not o.pagina_completa).lower(),
-              "format": "png" if o.formato == "png" else "jpeg", "waitDelay": f"{o.espera_s:g}s",
+              "format": "png" if o.formato == "png" else "jpeg", "waitDelay": f"{round(o.espera_s * 1000)}ms",
               "emulatedMediaFeatures": json.dumps([{"name": "prefers-color-scheme", "value": "dark" if o.esquema == "oscuro" else "light"}])}
     if o.formato == "jpg":
         fields["quality"] = str(o.calidad)
     files: list = []
     data = gotenberg._post(f"{ctx.settings.GOTENBERG_WEB_URL.rstrip('/')}/forms/chromium/screenshot/url", files,
-                           {**fields, "url": o.url}, 180, page_error=ErrorCode.URL_UNREACHABLE)
+                           {**fields, "url": o.url}, 180, page_error=ErrorCode.URL_UNREACHABLE, max_bytes=MAX_BYTES)
     if len(data) > MAX_BYTES:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Captura de más de 60 MB")
     if not (data.startswith(b"\x89PNG") or data.startswith(b"\xff\xd8")):

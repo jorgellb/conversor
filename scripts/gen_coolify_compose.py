@@ -287,7 +287,10 @@ def build() -> dict:
         "gotenbergweb": svc(
             GOTENBERG,
             command=["gotenberg", "--api-timeout=180s", "--log-format=json", "--chromium-restart-after=10",
-                     "--chromium-proxy-server=http://egressweb:4750", "--libreoffice-disable-routes=true",
+                     "--chromium-proxy-server=http://egressweb:4750",
+                     # D-233: Chromium no pasa por el proxy para el bucle local; 127.0.0.1 y file: se niegan.
+                     r"--chromium-deny-list=^(file:|https?://(localhost|127\.|0\.0\.0\.0|\[::1\]|\[::ffff:127\.)).*",
+                     "--libreoffice-disable-routes=true",
                      "--api-download-from-deny-public-ips=true", "--api-download-from-deny-private-ips=true",
                      "--webhook-deny-public-ips=true", "--webhook-deny-private-ips=true"],
             networks=["webrender"], **memory("gotenbergweb", "1536m"), cpus=1, oom_score_adj=500,

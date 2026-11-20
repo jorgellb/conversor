@@ -180,7 +180,7 @@ def _document_to_pdf(ctx: ToolContext, path: Path, ext: str, dst: Path) -> None:
 
 def chromium_fields(o) -> dict[str, str]:
     fields = gotenberg.page_fields(o.papel, o.orientacion, o.margenes_mm, o.imprimir_fondos, o.una_pagina, o.medio)
-    fields["waitDelay"] = f"{o.espera_s:g}s"
+    fields["waitDelay"] = f"{round(o.espera_s * 1000)}ms"  # «1e-05s» no lo entiende Gotenberg (D-233)
     scheme = "dark" if o.esquema == "oscuro" else "light"
     fields["emulatedMediaFeatures"] = json.dumps([{"name": "prefers-color-scheme", "value": scheme}])
     return fields
