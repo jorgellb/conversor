@@ -15,7 +15,7 @@
   "faq": [
     {
       "q": "What happens if I leave out the .prj?",
-      "a": "Without it the coordinate system is unknown and coordinates are used as they are. If they were in UTM, the map will end up in the wrong place; always include the .prj."
+      "a": "Without it the coordinate system is unknown: coordinates are taken as latitude and longitude (WGS84) and the note says so. If they were in UTM, they will be out of range or in the wrong place; always include the .prj."
     },
     {
       "q": "Can I upload just the .shp?",

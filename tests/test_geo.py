@@ -166,3 +166,53 @@ def test_shapefile_with_ogr2ogr(make_ctx, tmp_path):
     assert abs(lon + 3.7) < 1e-5 and abs(lat - 40.4) < 1e-5 and data["features"][0]["properties"]["nombre"] == "A"
     out = run("shp-a-kml", make_ctx("shp-a-kml", [packed]))
     assert out[0]["name"] == "pts.kml"
+
+
+# --- Revisión de F6-H1 (D-226) -----------------------------------------------------------------------------------------
+
+
+def test_disguised_vrt_in_a_shapefile_zip_is_refused(make_ctx, tmp_path):
+    vrt = b'<OGRVRTDataSource><OGRVRTLayer name="x"><SrcDataSource>CSV:/etc/passwd</SrcDataSource></OGRVRTLayer></OGRVRTDataSource>'
+    packed = tmp_path / "trampa.zip"
+    with zipfile.ZipFile(packed, "w") as zf:
+        zf.writestr("pts.shp", vrt)
+        zf.writestr("pts.shx", b"\x00\x00\x27\x0a" + bytes(96))
+        zf.writestr("pts.dbf", b"\x03" + bytes(40))
+    with pytest.raises(ToolError) as err:
+        run("shp-a-geojson", make_ctx("shp-a-geojson", [packed]))
+    assert err.value.detail == "shp_not_shapefile"
+
+
+def test_round_trip_keeps_missing_elevation_routes_and_waypoint_symbols(make_ctx, tmp_path):
+    import gpxpy
+
+    gpx = ('<?xml version="1.0" encoding="ISO-8859-1"?><gpx version="1.1" creator="x" xmlns="http://www.topografix.com/GPX/1/1">'
+           '<wpt lat="40" lon="-3"><name>Peña</name><sym>Flag</sym><type>Cumbre</type></wpt>'
+           '<rte><name>Ruta</name><rtept lat="40.1" lon="-3.1"/><rtept lat="40.2" lon="-3.2"/></rte>'
+           '<trk><trkseg><trkpt lat="40.3" lon="-3.3"><time>2026-11-20T09:00:00Z</time></trkpt>'
+           '<trkpt lat="40.4" lon="-3.4"><time>2026-11-20T09:01:00Z</time></trkpt></trkseg>'
+           '<trkseg><trkpt lat="41" lon="-4"/></trkseg></trk></gpx>').encode("latin-1")
+    kml_out = run("gpx-a-kml", make_ctx("gpx-a-kml", [_write(tmp_path, "r.gpx", gpx)]))
+    assert "1 tramo(s) o ruta(s) de un solo punto" in kml_out[0]["note"]
+    back = gpxpy.parse(Path(run("kml-a-gpx", make_ctx("kml-a-gpx", [_copy(tmp_path, kml_out)]))[0]["path"]).read_text())
+    wpt = back.waypoints[0]
+    assert (wpt.name, wpt.symbol, wpt.type) == ("Peña", "Flag", "Cumbre")
+    assert [r.name for r in back.routes] == ["Ruta"]
+    assert [p.elevation for p in back.tracks[0].segments[0].points] == [None, None]
+
+
+def test_kml_without_namespace_nan_and_uppercase_names(make_ctx, tmp_path):
+    kml = "<kml><Document><Placemark><name>A</name><Point><coordinates>-3,40</coordinates></Point></Placemark></Document></kml>"
+    out = run("kml-a-gpx", make_ctx("kml-a-gpx", [_write(tmp_path, "s.kml", kml)]))
+    assert out[0]["note"].startswith("1 punto(s)")
+    with pytest.raises(ToolError) as err:
+        run("geojson-a-kml", make_ctx("geojson-a-kml", [_write(tmp_path, "n.geojson", '{"type":"Point","coordinates":[NaN, 1]}')]))
+    assert err.value.code == "CORRUPT_FILE"
+    upper = json.dumps({"type": "Feature", "properties": {"NOMBRE": "Parcela 7"}, "geometry": {"type": "Point", "coordinates": [-3, 40]}})
+    text = Path(run("geojson-a-kml", make_ctx("geojson-a-kml", [_write(tmp_path, "u.geojson", upper)]))[0]["path"]).read_text()
+    assert "<name>Parcela 7</name>" in text
+
+
+def test_csv_rows_with_extra_fields_are_skipped(make_ctx, tmp_path):
+    out = run("csv-a-kml", make_ctx("csv-a-kml", [_write(tmp_path, "c.csv", "nombre,lat,lon\nA,40,1,-3,2\nB,41,-3\n")]))
+    assert out[0]["note"].startswith("1 punto(s)") and "1 fila(s) sin coordenadas" in out[0]["note"]

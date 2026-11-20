@@ -15,7 +15,7 @@
   "faq": [
     {
       "q": "¿Por qué mi capa sale en medio del océano?",
-      "a": "Probablemente faltaba el .prj y las coordenadas no se han podido transformar. Súbela de nuevo con el .prj dentro del ZIP."
+      "a": "Probablemente faltaba el .prj: sin él las coordenadas se toman como latitud y longitud y, si estaban en UTM, quedan donde no es. Súbela de nuevo con el .prj dentro del ZIP."
     },
     {
       "q": "¿Cuántos elementos admite?",

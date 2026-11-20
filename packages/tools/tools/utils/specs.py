@@ -266,12 +266,12 @@ class XmlJsonOptions(BaseModel):
 
 def datos(slug_es: str, slug_en: str, name_es: str, name_en: str, inputs: tuple[str, ...], outputs: tuple[str, ...],
           summary_es: str, summary_en: str, related: tuple[str, ...], options: type[BaseModel] | None = None,
-          category: str = "data", group: str = "utils", impl: str = "tools.utils.datos:run") -> ToolSpec:
+          category: str = "data", group: str = "utils", impl: str = "tools.utils.datos:run", time_limit: int = 600) -> ToolSpec:
     # 7.12 (F6-B, D-213 y D-214): sin motores externos salvo LibreOffice para ODS, que va en workeroffice.
     extra = {"options": options} if options else {}
     return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category=category, where="server",
                     inputs=inputs, outputs=(*outputs, "zip"), worker_group=group, queue_kind="light", cost_class="light",
-                    impl=impl, launch=True, phase="F6", time_limit=600, max_files=20,
+                    impl=impl, launch=True, phase="F6", time_limit=time_limit, max_files=20,
                     summary_es=summary_es, summary_en=summary_en, related=related, **extra)
 
 
@@ -538,35 +538,35 @@ SPECS: list[ToolSpec] = [
     datos("gpx-a-kml", "gpx-to-kml", "GPX a KML", "GPX to KML", ("gpx",), ("kml",),
           "Convierte rutas y puntos GPX de tu GPS, Strava o Wikiloc en KML para Google Earth y Google My Maps, con sus horas.",
           "Turn GPX routes and waypoints from your GPS, Strava or Wikiloc into KML for Google Earth and My Maps, with their times.",
-          ("kml-a-gpx", "gpx-a-geojson"), impl="tools.utils.geo:run"),
+          ("kml-a-gpx", "gpx-a-geojson"), impl="tools.utils.geo:run", time_limit=1800),
     datos("kml-a-gpx", "kml-to-gpx", "KML a GPX", "KML to GPX", ("kml",), ("gpx",),
           "Convierte rutas y lugares KML de Google Earth o My Maps en GPX para tu GPS, reloj o aplicación de rutas.",
           "Turn KML routes and places from Google Earth or My Maps into GPX for your GPS, watch or route app.",
-          ("gpx-a-kml", "kmz-a-gpx"), impl="tools.utils.geo:run"),
+          ("gpx-a-kml", "kmz-a-gpx"), impl="tools.utils.geo:run", time_limit=1800),
     datos("kmz-a-gpx", "kmz-to-gpx", "KMZ a GPX", "KMZ to GPX", ("kmz",), ("gpx",),
           "Convierte archivos KMZ de Google Earth en GPX con sus rutas, pistas y puntos, listo para el GPS.",
           "Turn Google Earth KMZ files into GPX with their routes, tracks and points, ready for the GPS.",
-          ("kml-a-gpx", "gpx-a-kml"), impl="tools.utils.geo:run"),
+          ("kml-a-gpx", "gpx-a-kml"), impl="tools.utils.geo:run", time_limit=1800),
     datos("gpx-a-geojson", "gpx-to-geojson", "GPX a GeoJSON", "GPX to GeoJSON", ("gpx",), ("geojson",),
           "Convierte GPX en GeoJSON para mapas web (Leaflet, Mapbox, QGIS), con altura y hora de cada punto.",
           "Turn GPX into GeoJSON for web maps (Leaflet, Mapbox, QGIS), with the elevation and time of each point.",
-          ("geojson-a-kml", "gpx-a-kml"), impl="tools.utils.geo:run"),
+          ("geojson-a-kml", "gpx-a-kml"), impl="tools.utils.geo:run", time_limit=1800),
     datos("geojson-a-kml", "geojson-to-kml", "GeoJSON a KML", "GeoJSON to KML", ("geojson", "json"), ("kml",),
           "Convierte GeoJSON en KML para Google Earth, con puntos, líneas, polígonos y sus atributos.",
           "Turn GeoJSON into KML for Google Earth, with points, lines, polygons and their attributes.",
-          ("gpx-a-geojson", "shp-a-kml"), impl="tools.utils.geo:run"),
+          ("gpx-a-geojson", "shp-a-kml"), impl="tools.utils.geo:run", time_limit=1800),
     datos("shp-a-geojson", "shp-to-geojson", "Shapefile a GeoJSON", "Shapefile to GeoJSON", ("zip",), ("geojson",),
           "Convierte capas Shapefile (en un ZIP con .shp, .shx, .dbf y .prj) en GeoJSON en WGS84, con todos sus atributos.",
           "Turn Shapefile layers (in a ZIP with .shp, .shx, .dbf and .prj) into WGS84 GeoJSON, with all their attributes.",
-          ("shp-a-kml", "geojson-a-kml"), impl="tools.utils.geo:run"),
+          ("shp-a-kml", "geojson-a-kml"), impl="tools.utils.geo:run", time_limit=1800),
     datos("shp-a-kml", "shp-to-kml", "Shapefile a KML", "Shapefile to KML", ("zip",), ("kml",),
           "Convierte capas Shapefile en KML para verlas en Google Earth, reproyectadas a WGS84 desde su .prj.",
           "Turn Shapefile layers into KML to view them in Google Earth, reprojected to WGS84 from their .prj.",
-          ("shp-a-geojson", "geojson-a-kml"), impl="tools.utils.geo:run"),
+          ("shp-a-geojson", "geojson-a-kml"), impl="tools.utils.geo:run", time_limit=1800),
     datos("csv-a-kml", "csv-to-kml", "CSV a KML", "CSV to KML", ("csv", "txt"), ("kml",),
           "Convierte una lista de lugares en CSV, con columnas de latitud y longitud, en puntos KML para Google Earth y My Maps.",
           "Turn a CSV list of places, with latitude and longitude columns, into KML points for Google Earth and My Maps.",
-          ("geojson-a-kml", "kml-a-gpx"), CsvKmlOptions, impl="tools.utils.geo:run"),
+          ("geojson-a-kml", "kml-a-gpx"), CsvKmlOptions, impl="tools.utils.geo:run", time_limit=1800),
     # 7.13 (F6-H2, D-223): TCX propio con defusedxml y FIT con fitparse (MIT). El Anexo A no fija opciones.
     datos("tcx-a-gpx", "tcx-to-gpx", "TCX a GPX", "TCX to GPX", ("tcx",), ("gpx",),
           "Convierte actividades TCX de Garmin en GPX con su recorrido, altura, hora, pulso y cadencia, para Strava o tu GPS.",

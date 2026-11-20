@@ -122,7 +122,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F6-E | rar-a-zip, 7z-a-zip, tar-a-zip, extraer-archivo-online, srt-a-vtt, vtt-a-srt, ass-a-srt | Hecho (D-217) |
 | F6-F | ttf-a-woff2, otf-a-woff2, woff2-a-ttf, woff-a-ttf, ttf-a-otf, otf-a-ttf | Hecho (D-215) |
 | F6-G | csig-a-pdf, p7m-a-pdf, xsig-a-pdf, verificar-firma | Hecho (D-219); sellos de tiempo de XAdES sin comprobar (anotado) |
-| F6-H1 | gpx-a-kml, kml-a-gpx, kmz-a-gpx, gpx-a-geojson, geojson-a-kml, shp-a-geojson, shp-a-kml, csv-a-kml | Hecho (D-220); Shapefile con ogr2ogr real, en la CI |
+| F6-H1 | gpx-a-kml, kml-a-gpx, kmz-a-gpx, gpx-a-geojson, geojson-a-kml, shp-a-geojson, shp-a-kml, csv-a-kml | Hecho (D-220), con la revisión corregida (D-226); Shapefile con ogr2ogr real, en la CI |
 | F6-H2 | tcx-a-gpx, fit-a-gpx, fit-a-csv | Hecho (D-223) |
 | F6-I | vcf-a-csv, csv-a-vcf, vcf-a-excel, ics-a-csv, csv-a-ics, ics-a-excel | Hecho (D-224) |
 | F6-J | mbox-a-eml, mbox-a-pdf, pst-a-mbox, pst-a-pdf | Hecho (D-225); pst-a-mbox y pst-a-pdf apagadas hasta probarlas con un PST real |

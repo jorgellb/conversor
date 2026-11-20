@@ -15,7 +15,7 @@
   "faq": [
     {
       "q": "Why does my layer appear in the middle of the ocean?",
-      "a": "The .prj was probably missing and the coordinates could not be transformed. Upload it again with the .prj inside the ZIP."
+      "a": "The .prj was probably missing: without it coordinates are taken as latitude and longitude and, if they were in UTM, end up in the wrong place. Upload it again with the .prj inside the ZIP."
     },
     {
       "q": "How many elements does it take?",

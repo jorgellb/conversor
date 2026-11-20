@@ -255,6 +255,7 @@ DETAILS: dict[str, dict[str, str]] = {
     "geo_empty": {"es": "El archivo no tiene ningún punto, línea ni polígono válido.", "en": "The file has no valid point, line or polygon."},
     "geo_no_columns": {"es": "No se encuentran las columnas de latitud y longitud: indícalas en las opciones avanzadas.",
                        "en": "The latitude and longitude columns were not found: set them in the advanced options."},
+    "shp_not_shapefile": {"es": "El ZIP trae un archivo con extensión de Shapefile que no lo es.", "en": "The ZIP holds a file with a Shapefile extension that is not one."},
     "kmz_no_kml": {"es": "El KMZ no contiene ningún archivo KML.", "en": "The KMZ does not contain any KML file."},
     "shp_incomplete": {"es": "El ZIP no tiene un Shapefile completo: hacen falta al menos el .shp, el .shx y el .dbf.",
                        "en": "The ZIP has no complete Shapefile: at least the .shp, .shx and .dbf are needed."},

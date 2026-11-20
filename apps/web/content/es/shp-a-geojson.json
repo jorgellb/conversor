@@ -15,7 +15,7 @@
   "faq": [
     {
       "q": "¿Qué pasa si no incluyo el .prj?",
-      "a": "Sin él no se sabe en qué sistema están las coordenadas y se usan tal cual. Si estaban en UTM, el mapa saldrá en un sitio que no es; incluye siempre el .prj."
+      "a": "Sin él no se sabe en qué sistema están las coordenadas: se toman como latitud y longitud (WGS84) y la nota lo indica. Si estaban en UTM, saldrán fuera de rango o en un sitio que no es; incluye siempre el .prj."
     },
     {
       "q": "¿Puedo subir solo el .shp?",
