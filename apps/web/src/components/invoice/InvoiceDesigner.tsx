@@ -110,14 +110,16 @@ type FacturaE = ReturnType<typeof toFacturaE>;
 
 /** Los datos que devuelve la fase «extraer» de pdf-a-factura-electronica, en el formulario. */
 export function fromFacturaE(f: Partial<FacturaE>): { inv: Partial<Invoice>; lines: InvoiceLine[]; paymentCode?: string } {
+  // El país solo si viene en los datos (vacío no pisa el del emisor guardado; el cliente se completa con ES).
   const party = (p: Partial<FacturaE["emisor"]> | undefined): Party => ({
     name: p?.nombre ?? "", taxId: p?.nif ?? "", address: p?.direccion ?? "", postcode: p?.cp ?? "", city: p?.ciudad ?? "",
-    country: /^[A-Z]{2}$/.test(p?.pais ?? "") ? p!.pais! : "ES", email: p?.correo ?? "", province: p?.provincia ?? "",
+    country: /^[A-Z]{2}$/.test(p?.pais ?? "") ? p!.pais! : "", email: p?.correo ?? "", province: p?.provincia ?? "",
   });
   const num = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? v : d);
   return {
     inv: { number: f.numero ?? "", issueDate: f.fecha || localDate(), dueDate: f.vencimiento || undefined, currency: f.moneda || "EUR",
-      issuer: party(f.emisor), customer: party(f.cliente), iban: f.iban ?? "" },
+      issuer: party(f.emisor), customer: { ...party(f.cliente), country: party(f.cliente).country || "ES" }, iban: f.iban ?? "",
+      notes: f.notas ?? "", paymentMethod: f.condiciones_pago ?? "" },
     lines: (f.lineas ?? []).map((l) => ({ description: String(l.descripcion ?? ""), quantity: num(l.cantidad, 1), unit: String(l.unidad ?? "ud"),
       price: num(l.precio, 0), discount: num(l.descuento, 0), vat: num(l.iva, 21) })),
     paymentCode: f.forma_pago || undefined,
@@ -160,7 +162,9 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
   const [useAi, setUseAi] = useState(false);
   const [ai, setAi] = useState<AiReady>({ ready: false });
   const onAi = useCallback((next: AiReady) => setAi((cur) => (cur.ready === next.ready ? cur : next)), []);
-  const [extracted, setExtracted] = useState<{ note: string } | null>(null);
+  const [extracted, setExtracted] = useState<{ note: string; total: number | null; warnings: string[] } | null>(null);
+  const [aiRefresh, setAiRefresh] = useState(0);
+  const extraction = useRef(0);
   const [reviewed, setReviewed] = useState(false);
 
   useEffect(() => {
@@ -235,6 +239,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
   /** pdf-a-factura-electronica, fase «extraer»: los datos del PDF (su XML, reglas o IA) al formulario para revisarlos. */
   async function extract() {
     if (!pdf) return;
+    const run = ++extraction.current;  // si el PDF cambia a mitad, la respuesta antigua no se usa
     setBusy(true);
     setError(null);
     setExtracted(null);
@@ -245,12 +250,19 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
       if (job.status !== "succeeded" || !job.outputs[0]) throw new ApiError(job.error?.code ?? "INTERNAL", job.error?.message ?? "", 0);
       const res = await fetch(job.outputs[0].url);
       if (!res.ok) throw new ApiError("NOT_FOUND", "", res.status);
-      const data = (await res.json()) as { factura: Partial<FacturaE> };
+      const data = (await res.json()) as { factura: Partial<FacturaE>; avisos?: string[] };
+      if (run !== extraction.current) return;
       const got = fromFacturaE(data.factura ?? {});
+      const warnings = (data.avisos ?? []).filter((w) => !w.startsWith("total:"));
+      const totalWarning = (data.avisos ?? []).find((w) => w.startsWith("total:"));
+      const pdfTotal = totalWarning ? Number(totalWarning.slice(6)) : null;
       setInv((v) => ({ ...v, ...got.inv, issuer: { ...v.issuer, ...Object.fromEntries(Object.entries(got.inv.issuer ?? {}).filter(([, x]) => x)) } as Party }));
-      if (got.lines.length) setRows(got.lines.map((l) => ({ ...newRow(l.vat), ...l, raw: { quantity: asRaw(l.quantity, locale), price: asRaw(l.price, locale), discount: l.discount ? asRaw(l.discount, locale) : "" } })));
-      if (got.paymentCode) setExtra((e) => ({ ...e, paymentCode: got.paymentCode! }));
-      setExtracted({ note: job.outputs[0].note ?? "" });
+      // Los conceptos del PDF nuevo (o uno vacío): nunca los del anterior.
+      setRows(got.lines.length ? got.lines.map((l) => ({ ...newRow(l.vat), ...l, raw: { quantity: asRaw(l.quantity, locale), price: asRaw(l.price, locale), discount: l.discount ? asRaw(l.discount, locale) : "" } })) : [newRow()]);
+      setExtra((e) => ({ ...e, paymentCode: got.paymentCode ?? (got.inv.iban ? "58" : e.paymentCode),
+        buyerReference: data.factura?.referencia_comprador ?? e.buyerReference, order: data.factura?.pedido ?? e.order }));
+      setExtracted({ note: job.outputs[0].note ?? "", total: pdfTotal !== null && Number.isFinite(pdfTotal) ? pdfTotal : null, warnings });
+      if (useAi) setAiRefresh((n) => n + 1);
     } catch (err) {
       const code = err instanceof ApiError ? err.code : "INTERNAL";
       setError(err instanceof ApiError && err.message ? err.message : te.has(code) ? te(code) : te("INTERNAL"));
@@ -272,7 +284,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
       const job = await runServerJob(spec.slug, fromPdf && pdf ? [pdf] : [], options, await token(), () => undefined, new AbortController().signal);
       if (job.status !== "succeeded") throw new ApiError(job.error?.code ?? "INTERNAL", job.error?.message ?? "", 0);
       setFiles(job.outputs);
-      write(STORE.issuer, inv.issuer);
+      if (!fromPdf) write(STORE.issuer, inv.issuer);  // los datos leídos de un PDF ajeno no son «tu» emisor
       recordUse(spec.slug);
     } catch (err) {
       const code = err instanceof ApiError || err instanceof ClientToolError ? err.code : "INTERNAL";
@@ -441,14 +453,21 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
             <section className="card flex flex-col gap-3 p-4" aria-label={t("fromPdf.title")} data-from-pdf>
               <p className="font-semibold">{t("fromPdf.title")}</p>
               <label className="flex flex-col gap-1 text-sm">{t("fromPdf.file")}
-                <input type="file" accept="application/pdf,.pdf" className="field" onChange={(e) => { setPdf(e.target.files?.[0] ?? null); setExtracted(null); setReviewed(false); }} />
+                <input type="file" accept="application/pdf,.pdf" className="field" disabled={busy}
+                       onChange={(e) => { extraction.current += 1; setPdf(e.target.files?.[0] ?? null); setExtracted(null); setReviewed(false); }} />
               </label>
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={useAi} onChange={(e) => setUseAi(e.target.checked)} />{t("fromPdf.useAi")}
               </label>
-              {useAi && <AiPanel slug={spec.slug} refresh={0} onChange={onAi} />}
+              {useAi && <AiPanel slug={spec.slug} refresh={aiRefresh} onChange={onAi} />}
               <div><button type="button" className="btn" disabled={busy || !pdf || (useAi && !ai.ready)} onClick={() => void extract()}>{t("fromPdf.read")}</button></div>
               {extracted && <p role="status" className="text-sm">{extracted.note}</p>}
+              {extracted?.warnings.map((w) => t.has(`fromPdf.warnings.${w}`) && <p key={w} className="text-sm text-amber-800" role="note">{t(`fromPdf.warnings.${w}`)}</p>)}
+              {extracted?.total !== null && extracted?.total !== undefined && Math.abs(extracted.total - totals.payable) > 0.01 && (
+                <p className="text-sm font-semibold text-amber-800" role="alert" data-total-mismatch>
+                  {t("fromPdf.totalMismatch", { computed: money(totals.payable), pdf: money(extracted.total) })}
+                </p>
+              )}
               {extracted && (
                 <label className="flex items-start gap-2 text-sm">
                   <input type="checkbox" className="mt-1" checked={reviewed} onChange={(e) => setReviewed(e.target.checked)} />
@@ -457,22 +476,22 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
               )}
             </section>
           )}
-          {electronic && !fromPdf && (
+          {electronic && (
             <fieldset className="flex flex-col gap-2" data-einvoice-format>
               <legend className="mb-1 font-semibold">{t("einvoice")}</legend>
-              <label className="flex flex-col gap-1 text-sm">{t("format")}
+              {!fromPdf && <label className="flex flex-col gap-1 text-sm">{t("format")}
                 <select className="field" value={format} onChange={(e) => setFormat(e.target.value as Format)}>
                   {FORMATS.map((f) => <option key={f} value={f}>{t(`formats.${f}`)}</option>)}
                 </select>
-              </label>
-              {format === "facturx" && (
+              </label>}
+              {!fromPdf && format === "facturx" && (
                 <label className="flex flex-col gap-1 text-sm">{t("profile")}
                   <select className="field" value={profile} onChange={(e) => setProfile(e.target.value as typeof profile)}>
                     {PROFILES.map((x) => <option key={x} value={x}>{t(`profiles.${x}`)}</option>)}
                   </select>
                 </label>
               )}
-              {format === "facturx" && (profile === "minimum" || profile === "basicwl") && <p className="text-sm text-amber-800" role="note">{t("partialProfile")}</p>}
+              {!fromPdf && format === "facturx" && (profile === "minimum" || profile === "basicwl") && <p className="text-sm text-amber-800" role="note">{t("partialProfile")}</p>}
               {format !== "facturae" && <p className="muted text-sm">{t("euOnly")}</p>}
               <div className="grid grid-cols-2 gap-2">
                 <label className="flex flex-col gap-1 text-sm">{t("buyerReference")}

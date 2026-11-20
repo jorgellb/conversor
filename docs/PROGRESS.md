@@ -560,9 +560,15 @@ Extracción (XML del PDF, reglas o una petición de IA), revisión obligatoria y
 del original. Salvedades en D-208.
 Verificado aquí: pytest de las dos fases (con un cliente de IA falso, KoSIT local y OCRmyPDF real) y e2e de la página.
 
+## Cierre de F4 (F4-Z)
+
+Imagen de la firma dentro de la apariencia PAdES (sello y certificado propio) y .p12 antiguos con 3DES o RC2 en el navegador
+(D-210); revisiones de F4-E2 y F4-E3 corregidas (D-209 y D-211). F4 queda cerrada en este equipo; la e2e de servidor de
+solicitar-firmas con Mailpit y SoftHSM2 se ejecutará en la CI.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4: F4-A, F4-B, F4-C, F4-D y F4-F hechos; siguen F4-E y F4-Z; luego F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; siguen F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

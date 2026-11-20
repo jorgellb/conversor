@@ -9,8 +9,8 @@
 # - fases: fases cerradas y en curso para la cabecera de TOOLS.md. La actualiza el lote que cierra o abre una fase
 #   (F3-Z, F4-Z...), igual que docs/PLAN.md.
 fases:
-  cerradas: [F1, F2, F5 sin vídeo]
-  en_curso: [F3, F4]
+  cerradas: [F1, F2, F4, F5 sin vídeo]
+  en_curso: [F3]
 temas:
   HEVC_DECODE_ENABLED: >-
     Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube

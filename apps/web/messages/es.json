@@ -1457,7 +1457,14 @@
       "useAi": "Leer los datos con IA (una petición; el texto de la factura se envía al modelo)",
       "read": "Leer la factura",
       "reviewed": "He revisado todos los datos del formulario y son los de la factura.",
-      "reviewFirst": "Primero lee la factura y confirma que has revisado los datos."
+      "reviewFirst": "Primero lee la factura y confirma que has revisado los datos.",
+      "totalMismatch": "El total calculado ({computed}) no coincide con el de la factura en PDF ({pdf}): revisa los conceptos, los descuentos y el IVA antes de generar.",
+      "warnings": {
+        "scanned": "El PDF no tiene texto: rellena el formulario a mano o pasa antes «OCR PDF».",
+        "credit_note": "El XML del PDF es una factura rectificativa o un abono: esta herramienta solo genera facturas; revísalo.",
+        "rate_unknown": "Algún concepto del XML no indica su tipo de IVA: se ha puesto 0 %; revísalo.",
+        "header_allowances": "El XML trae descuentos o cargos de toda la factura que el formulario no recoge: revisa el total."
+      }
     },
     "dir3Office": "Oficina contable (DIR3)",
     "dir3Body": "Órgano gestor (DIR3)",

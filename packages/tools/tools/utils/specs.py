@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from core.options import opt
 from core.registry import AiSpec, ToolSpec
@@ -120,6 +120,13 @@ class PdfAFacturaOptions(BaseModel):
     perfil: Literal["en16931"] = opt("en16931", "Perfil Factur-X", "Factur-X profile", labels={"en16931": ("EN 16931", "EN 16931")})
     ia: bool = opt(False, "Leer los datos con IA (una petición)", "Read the data with AI (one request)", show_if={"fase": ("extraer",)})
     factura: FacturaE = opt(FacturaE(), "Factura revisada", "Reviewed invoice", advanced=True, show_if={"fase": ("generar",)})
+
+    @model_validator(mode="after")
+    def _no_ai_when_generating(self):
+        # «generar» no llama al modelo: con `ia` no reservaría peticiones ni pediría consentimiento para nada.
+        if self.fase == "generar":
+            self.ia = False
+        return self
 
 
 SPECS: list[ToolSpec] = [

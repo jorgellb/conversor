@@ -191,7 +191,7 @@ test("pdf-a-factura-electronica: lee la factura, obliga a revisar y genera el Fa
     if (req.method() === "PATCH") { offset += req.postDataBuffer()?.length ?? 0; return route.fulfill({ status: 204, headers: { ...cors, "Upload-Offset": String(offset), "Tus-Resumable": "1.0.0" } }); }
     return route.fulfill({ status: 200, headers: { ...cors, "Upload-Offset": String(offset), "Upload-Length": String(offset), "Tus-Resumable": "1.0.0" } });
   });
-  const datos = { origen: "reglas", avisos: [], factura: { numero: "2026/0099", fecha: "2026-11-20", moneda: "EUR", iban: "ES9121000418450200051332", forma_pago: "58",
+  const datos = { origen: "reglas", avisos: ["total:600"], factura: { numero: "2026/0099", fecha: "2026-11-20", moneda: "EUR", iban: "ES9121000418450200051332", forma_pago: "58",
     emisor: { nif: "B12345674" }, cliente: { nif: "A58818501" }, lineas: [] } };
   await page.route(`${FILES}/**`, (route) => route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify(datos) }));
   const jobs: Record<string, unknown>[] = [];
@@ -228,6 +228,9 @@ test("pdf-a-factura-electronica: lee la factura, obliga a revisar y genera el Fa
   await page.locator("[data-party='customer']").getByLabel("Nombre o razón social").fill("Cliente S.A.");
   await page.locator("[data-line='0']").getByLabel("Descripción").fill("Diseño de logotipo");
   await page.locator("[data-line='0']").getByLabel("Precio sin IVA").fill("450");
+  // El total del PDF (600) no cuadra con lo calculado (450 + 21 %): se avisa antes de generar.
+  await expect(page.locator("[data-total-mismatch]")).toContainText("544,50");
+  await expect(page.locator("[data-einvoice-format]").getByLabel("Forma de pago (código)")).toBeVisible();
   const generate = page.getByRole("button", { name: "Generar y validar la factura electrónica" });
   await generate.click();
   await expect(page.getByText("Primero lee la factura y confirma que has revisado los datos.")).toBeVisible();

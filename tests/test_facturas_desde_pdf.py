@@ -206,3 +206,116 @@ def test_fonts_not_embedded_need_ghostscript(make_ctx, tmp_path, no_ghostscript)
     with pytest.raises(ToolError) as err:
         run(TOOL, ctx)
     assert err.value.code == "PDFA_NEEDS_GHOSTSCRIPT"
+
+
+# --- Revisión de F4-E3 (D-211) ---------------------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("text,number", [
+    ("FACTURA SIMPLIFICADA Nº 123", "123"), ("Factura rectificativa nº R-12", "R-12"), ("Factura Numero 55", "55"),
+    ("Invoice date 12/03/2026\nInvoice no. INV-7", "INV-7"), ("Datos de facturación\nFactura: 2026/12", "2026/12"),
+])
+def test_rules_number_needs_a_digit_and_skips_words(text, number):
+    from tools.utils.facturas.desde_pdf import rules
+
+    assert rules(text)[0].get("numero") == number
+
+
+def test_rules_totals_nifs_dates_and_iban_edge_cases():
+    from tools.utils.facturas.desde_pdf import rules
+
+    data, warnings = rules("Subtotal 100,00\nTOTAL 1.234 €\nCIF: B-12345674 y cliente 12.345.678-Z\nPedido 12345678A\n"
+                           "Pedido del 01/01/2026\nFecha factura: 15/02/2026\nVencimiento 15/03/2026\n"
+                           "IBAN ES91 2100 0418 4502 0005 1332 BIC CAIXESBBXXX")
+    assert warnings == ["total:1234.0"]
+    assert (data["emisor"]["nif"], data["cliente"]["nif"]) == ("B12345674", "12345678Z")  # 12345678A no cuadra
+    assert (data["fecha"], data["vencimiento"]) == ("2026-02-15", "2026-03-15")
+    assert data["iban"] == "ES9121000418450200051332"
+    assert "iban" not in rules("IBAN ES91 2100 0418 4502 0005 1333")[0]  # mod 97
+
+
+def test_ai_answer_is_normalised_before_use():
+    from tools.utils.facturas.desde_pdf import clean
+
+    out = clean({"es_factura": True, "numero": "7", "fecha": "20/11/2026", "vencimiento": "", "moneda": "eur", "iban": "x",
+                 "emisor": {"nombre": "A", "nif": "B-12345674", "pais": "España"}, "cliente": {},
+                 "lineas": [{"descripcion": "X", "cantidad": "2", "unidad": "ud", "precio": "450,00", "descuento": None, "iva": "21%"}],
+                 "total": "1.089,00 €"})
+    assert out["fecha"] == "2026-11-20" and out["moneda"] == "EUR" and out["iban"] == ""
+    assert out["emisor"]["nif"] == "B12345674" and out["emisor"]["pais"] == ""
+    assert out["lineas"][0] == {"descripcion": "X", "cantidad": 2.0, "unidad": "ud", "precio": 450.0, "descuento": 0, "iva": 21.0}
+    assert out["total"] == 1089.0
+    for bad in ({"lineas": "x"}, {"lineas": [], "emisor": "ACME"}, {"lineas": ["texto"]}):
+        with pytest.raises(ValueError):
+            clean(bad)
+
+
+def test_generar_never_reserves_ai():
+    from tools.utils.specs import PdfAFacturaOptions
+
+    assert PdfAFacturaOptions.model_validate({"fase": "generar", "ia": True}).ia is False
+
+
+@needs_kosit
+@respx.mock
+def test_embedded_xml_keeps_the_total_and_can_be_regenerated(make_ctx, tmp_path, fake_verapdf, no_ghostscript):
+    """El XML del PDF da el mismo total al regenerar (el descuento de línea va en el precio) y su IBAN y su forma de
+    pago; y un Factur-X ya hecho (con /PageMode /UseAttachments) se puede volver a generar."""
+    from core.settings import get_settings
+    from tools.base import Handoff
+    from tools.utils.facturas import generar
+    from tools.utils.specs import FacturaE
+
+    _gotenberg()
+    respx.route(url__startswith=get_settings().KOSIT_URL.rstrip("/")).pass_through()
+    ctx = make_ctx("crear-factura-electronica", [], {"formato": "facturx", "perfil": "en16931", "factura": BASE})
+    with pytest.raises(Handoff):
+        run("crear-factura-electronica", ctx)
+    facturx = tmp_path / "con-xml.pdf"
+    with pikepdf.open(ctx.store.job_dir(ctx.job_id) / "stage" / "0.pdf") as pdf:
+        pdf.Root.PageMode = pikepdf.Name.UseAttachments
+        pdf.save(facturx)
+    out = _data(run(TOOL, make_ctx(TOOL, [facturx], {"fase": "extraer"})))
+    f = out["factura"]
+    assert out["origen"] == "xml" and "total:739.72" in out["avisos"]
+    assert f["iban"] == "ES9121000418450200051332" and f["forma_pago"] == "58" and f["emisor"]["direccion"] == "Calle Mayor 1"
+    rebuilt = FacturaE.model_validate({**BASE, **{k: v for k, v in f.items() if k in ("numero", "fecha", "lineas", "iban", "forma_pago")}})
+    assert str(generar.calcular(rebuilt).payable) == "739.72"
+    gen = make_ctx(TOOL, [facturx], {"fase": "generar", "factura": BASE})
+    with pytest.raises(Handoff) as step:
+        run(TOOL, gen)
+    gen.stage = step.value.stage
+    result = run(TOOL, gen)
+    with pikepdf.open(result[0]["path"]) as pdf:
+        assert list(pdf.attachments) == ["factur-x.xml"]
+
+
+@needs_kosit
+@respx.mock
+def test_page_limit_and_signed_pdf_in_generar(make_ctx, tmp_path, no_ghostscript):
+    from core.errors import ToolError
+    from core.settings import get_settings
+    from tools.base import Handoff
+
+    respx.route(url__startswith=get_settings().KOSIT_URL.rstrip("/")).pass_through()
+    big = pikepdf.new()
+    for _ in range(140):
+        big.add_blank_page()
+    path = tmp_path / "grande.pdf"
+    big.save(path)
+    with pytest.raises(ToolError) as err:
+        run(TOOL, make_ctx(TOOL, [path], {"fase": "generar", "factura": BASE}, plan="anon"))
+    assert err.value.code == "LIMIT_EXCEEDED"
+    signed = _embedded_pdf(tmp_path, name="firmado.pdf")
+    with pikepdf.open(signed, allow_overwriting_input=True) as pdf:
+        sig = pdf.make_indirect(pikepdf.Dictionary(FT=pikepdf.Name.Sig, T=pikepdf.String("Firma1"), V=pdf.make_indirect(
+            pikepdf.Dictionary(Type=pikepdf.Name.Sig, Filter=pikepdf.Name("/Adobe.PPKLite"), Contents=pikepdf.String("0" * 16)))))
+        pdf.Root.AcroForm = pikepdf.Dictionary(Fields=[sig], SigFlags=3)
+        pdf.save(signed)
+    ctx = make_ctx(TOOL, [signed], {"fase": "generar", "factura": BASE})
+    with pytest.raises(Handoff) as step:
+        run(TOOL, ctx)
+    ctx.stage = step.value.stage
+    with pytest.raises(ToolError) as err:
+        run(TOOL, ctx)
+    assert err.value.detail == "einvoice_signed_pdf"

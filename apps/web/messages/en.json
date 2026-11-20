@@ -1457,7 +1457,14 @@
       "useAi": "Read the data with AI (one request; the invoice text is sent to the model)",
       "read": "Read the invoice",
       "reviewed": "I have checked every field of the form and it matches the invoice.",
-      "reviewFirst": "First read the invoice and confirm you have checked the data."
+      "reviewFirst": "First read the invoice and confirm you have checked the data.",
+      "totalMismatch": "The computed total ({computed}) does not match the PDF invoice's ({pdf}): check the items, discounts and VAT before generating.",
+      "warnings": {
+        "scanned": "The PDF has no text: fill in the form by hand or run “OCR PDF” first.",
+        "credit_note": "The PDF's XML is a corrective invoice or credit note: this tool only generates invoices; check it.",
+        "rate_unknown": "Some XML item does not state its VAT rate: 0 % has been used; check it.",
+        "header_allowances": "The XML has whole-invoice discounts or charges the form does not hold: check the total."
+      }
     },
     "dir3Office": "Accounting office (DIR3)",
     "dir3Body": "Managing body (DIR3)",

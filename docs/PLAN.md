@@ -106,9 +106,9 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F4-B | firmar-pdf en el navegador, hacer-pdf-rellenable y crear-formulario-pdf | Hecho: hacer-pdf-rellenable y crear-formulario-pdf (F4-B1, D-195 y D-198), «Insertar firma» y el sello desde la página (F4-B2a, D-196) y el certificado propio con firma interrumpida (F4-B2b, D-199); firmar-pdf, encendida |
 | F4-C | compartir-pdf y solicitar-firmas (B-LT, Mailpit) | Hecho: compartir-pdf (F4-C1, D-200) y solicitar-firmas (F4-C2, D-202 y D-203); la e2e con Mailpit, en la CI |
 | F4-D | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf (`workerutils`, KoSIT) | Hecho: validar-factura-electronica y `workerutils` con KoSIT (F4-D1, D-191) y la representación en PDF/A-3 con el XML incrustado (F4-D2, D-192) |
-| F4-E | crear-factura, crear-factura-electronica y pdf-a-factura-electronica (detrás de `INVOICING_ES_ENABLED`) | En curso: crear-factura (F4-E1, D-204 y D-206) y crear-factura-electronica (F4-E2, D-205) hechas; la firma XAdES-EPES de Facturae en el navegador (F4-E2b, D-207) y pdf-a-factura-electronica (F4-E3, D-208) hechas, con la revisión de F4-E2 corregida (D-209) |
+| F4-E | crear-factura, crear-factura-electronica y pdf-a-factura-electronica (detrás de `INVOICING_ES_ENABLED`) | En curso: crear-factura (F4-E1, D-204 y D-206) y crear-factura-electronica (F4-E2, D-205) hechas; la firma XAdES-EPES de Facturae en el navegador (F4-E2b, D-207) y pdf-a-factura-electronica (F4-E3, D-208) hechas, con las revisiones de F4-E2 y F4-E3 corregidas (D-209 y D-211) |
 | F4-F | word-a-pdf-accesible (office → ocr, veraPDF) | Hecho (D-182 y D-184); veraPDF y el PDF/UA de LibreOffice reales, en la CI |
-| F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | En curso: imagen de la firma dentro de la apariencia PAdES y .p12 con 3DES o RC2 hechos (D-210); falta corregir la revisión de F4-E3 y la e2e de servidor con Mailpit en la CI |
+| F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | Hecho aquí: imagen de la firma dentro de la apariencia PAdES y .p12 con 3DES o RC2 (D-210), revisión de F4-E3 corregida (D-211); la e2e de servidor de solicitar-firmas con Mailpit está escrita y se comprueba en la CI cuando vuelva a arrancar |
 
 ## F6: formatos, datos y documentos (pendiente)
 
