@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Mermaid a PNG convierte código Mermaid en una imagen PNG nítida, lista para pegar en un correo, un chat, una diapositiva, un informe de Word o una incidencia. Mermaid es el lenguaje de texto para diagramas que usan GitHub, GitLab, Notion y Obsidian: describes los nodos y las flechas con texto y el diagrama se dibuja solo.",
+    "La vista previa se actualiza mientras escribes y, si te equivocas, te señalamos la línea del error. Hay ejemplos para empezar (flujo, secuencia, Gantt, clases, estados, entidad-relación, tarta, mapa mental y cronología) y puedes abrir un .mmd o un Markdown con un bloque mermaid: tomamos el primero que encuentre.",
+    "Eliges el tema, el fondo (el del tema, blanco o transparente, útil para ponerlo sobre una diapositiva de color) y la escala: 1× para pantalla, 2× para que se vea nítido en pantallas de alta densidad y 3× o 4× para imprimir. Si el diagrama es enorme, bajamos la escala lo justo para no pasar de 100 megapíxeles y te lo indicamos.",
+    "El diagrama se dibuja en tu navegador con Mermaid en modo estricto y se convierte en PNG con resvg y la fuente Noto Sans, la misma con la que se mide el texto en la vista previa, para que las letras no se salgan de las cajas. Nada se sube a ningún servidor."
+  ],
+  "steps": [
+    "Escribe o pega el código, o abre un archivo .mmd o Markdown.",
+    "Elige el tema, el fondo y la escala.",
+    "Descarga el PNG."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué falta texto en un viaje de usuario?",
+      "a": "Ese tipo de diagrama escribe parte del texto como HTML, que no se puede pintar en un PNG. Te avisamos cuando ocurre; descarga el SVG para tenerlo completo."
+    },
+    {
+      "q": "¿Qué escala elijo?",
+      "a": "2× para pantallas y documentos; 4× si vas a imprimirlo grande o recortarlo."
+    },
+    {
+      "q": "¿Se guarda mi código?",
+      "a": "Solo en tu navegador, como borrador. Nunca sale de tu dispositivo."
+    }
+  ]
+}

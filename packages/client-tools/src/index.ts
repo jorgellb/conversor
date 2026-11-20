@@ -22,6 +22,7 @@ import {
   type ImageEnv,
 } from "./imageconvert";
 import { comprimirImagen, imagenAJpg, redimensionarImagen, wasmEncoding, type ImageCodec } from "./imagetools";
+import { exportarMermaid } from "./mermaid";
 import { exportarQr, leerCodigoQr } from "./qrtools";
 import { unir } from "./merge";
 import { dividir, eliminar, extraer, girar, organizar } from "./pages";
@@ -97,7 +98,7 @@ export const CLIENT_TOOLS = [
   "cortar-paginas-por-la-mitad", "imprimir-pdf", "montar-pdf", "marcadores-pdf", "comparar-pdf", "buscar-en-pdf",
   "jpg-a-png", "webp-a-png", "gif-a-png", "jpg-a-webp", "png-a-webp", "avif-a-jpg", "bmp-a-jpg", "tiff-a-jpg", "jpg-a-avif",
   "png-a-ico", "convertir-imagen", "svg-a-png", "svg-a-jpg", "crear-favicon", "quitar-metadatos-foto", "imagen-a-base64",
-  "leer-codigo-qr", "generar-codigo-qr", "crear-collage",
+  "leer-codigo-qr", "generar-codigo-qr", "crear-collage", "mermaid-a-svg", "mermaid-a-png",
 ] as const;
 
 export type ClientToolSlug = (typeof CLIENT_TOOLS)[number];
@@ -152,6 +153,9 @@ export async function runClientTool(slug: string, inputs: InFile[], options: Any
       return exportarQr(files, options, images);
     case "crear-collage":
       return crearCollage(files, options, images);
+    case "mermaid-a-svg":
+    case "mermaid-a-png":
+      return exportarMermaid(files, options, slug === "mermaid-a-svg" ? "svg" : "png", images);
     case "unir-pdf":
       return unir(files, options, env.fonts, p);
     case "dividir-pdf":

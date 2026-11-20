@@ -638,9 +638,14 @@ Correcciones de D-230 (run_engine sin motores huérfanos y con la salida acotada
 horarias, LaTeX con report, book y BibTeX, draw.io con presupuesto total y fallos que no esperan, buzones sin cargarlos enteros), en
 `tests/test_revision_f6ijk.py`.
 
+## F6-N1 (Mermaid)
+
+mermaid-a-svg y mermaid-a-png en el navegador con vista previa en vivo (D-231), en `packages/client-tools/test/mermaid.test.ts` y
+`tests/e2e/mermaid-f6.spec.ts`.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L y F6-M hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M y F6-N1 hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

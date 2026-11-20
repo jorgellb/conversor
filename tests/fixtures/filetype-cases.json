@@ -638,6 +638,18 @@
    "b64": "PD94bWwgdmVyc2lvbj0iMS4wIj8+PHNjb3JlLXBhcnR3aXNlIHZlcnNpb249IjMuMSIvPg=="
   },
   {
+   "id": "mermaid",
+   "declared": "mmd",
+   "expected": "mmd",
+   "b64": "Zmxvd2NoYXJ0IExSCiAgQVtJbmljaW9dIC0tPiBCW0Zpbl0K"
+  },
+  {
+   "id": "mermaid-alias",
+   "declared": "mermaid",
+   "expected": "mmd",
+   "b64": "c2VxdWVuY2VEaWFncmFtCiAgQW5hLT4+THVpczogSG9sYQo="
+  },
+  {
    "id": "txt-utf16-texto-unicode-de-excel",
    "declared": "txt",
    "expected": "txt",

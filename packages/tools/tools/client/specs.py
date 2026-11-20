@@ -654,6 +654,27 @@ class CrearCollageOptions(BaseModel):
                                              show_if={"formato": ("jpg", "png")})
 
 
+# ——— mermaid-a-svg y mermaid-a-png (7.13, F6-N, D-231) ———
+
+MERMAID_THEMES = {"default": ("Clásico", "Classic"), "neutral": ("Neutro (blanco y negro)", "Neutral (black and white)"),
+                  "dark": ("Oscuro", "Dark"), "forest": ("Bosque (verdes)", "Forest (greens)"), "base": ("Sencillo", "Plain")}
+MERMAID_BACKGROUNDS = {"auto": ("El del tema", "The theme's own"), "blanco": ("Blanco", "White"), "transparente": ("Transparente", "Transparent")}
+
+
+class MermaidSvgOptions(BaseModel):
+    """mermaid-a-svg (D-231): tema [clásico] y fondo [el del tema]; el código se escribe o se sube en la página."""
+
+    tema: Literal["default", "neutral", "dark", "forest", "base"] = opt("default", "Tema", "Theme", labels=MERMAID_THEMES)
+    fondo: Literal["auto", "blanco", "transparente"] = opt("auto", "Fondo", "Background", labels=MERMAID_BACKGROUNDS)
+
+
+class MermaidPngOptions(MermaidSvgOptions):
+    """mermaid-a-png (D-231): además, la escala [2×] (con un tope de 100 megapíxeles)."""
+
+    escala: Literal[1, 2, 3, 4] = opt(2, "Escala", "Scale", labels={"1": ("1× (pantalla)", "1× (screen)"), "2": ("2× (nítida)", "2× (sharp)"),
+                                                                  "3": ("3×", "3×"), "4": ("4× (para imprimir)", "4× (for print)")})
+
+
 def client(slug_es, slug_en, name_es, name_en, options, inputs, outputs, summary_es, summary_en, **kw) -> ToolSpec:
     return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category=kw.pop("category", "pdf"),
                     where=kw.pop("where", "client"), inputs=inputs, outputs=outputs, options=options, launch=kw.pop("launch", True),
@@ -874,6 +895,14 @@ SPECS: list[ToolSpec] = [
           "Crea códigos QR de enlaces, WiFi, contactos, pagos SEPA y más, con colores, logotipo y comprobación de lectura.",
           "Create QR codes for links, WiFi, contacts, SEPA payments and more, with colours, a logo and a read check.",
           secret_fields=("wifi_contrasena",), related=("leer-codigo-qr", "crear-favicon")),
+    client("mermaid-a-svg", "mermaid-to-svg", "Mermaid a SVG", "Mermaid to SVG", MermaidSvgOptions, ("mmd",), ("svg",),
+           "Escribe o pega código Mermaid y descarga el diagrama en SVG, con vista previa en vivo y sin subir nada.",
+           "Write or paste Mermaid code and download the diagram as SVG, with a live preview and nothing uploaded.",
+           category="image", phase="F6", related=("mermaid-a-png", "svg-a-png", "drawio-a-pdf")),
+    client("mermaid-a-png", "mermaid-to-png", "Mermaid a PNG", "Mermaid to PNG", MermaidPngOptions, ("mmd",), ("png",),
+           "Convierte diagramas Mermaid (flujos, secuencias, Gantt, clases…) en imágenes PNG nítidas en tu navegador.",
+           "Turn Mermaid diagrams (flowcharts, sequences, Gantt, classes…) into sharp PNG images in your browser.",
+           category="image", phase="F6", related=("mermaid-a-svg", "drawio-a-png", "svg-a-png")),
     image("crear-collage", "collage-maker", "Crear collage", "Collage maker", CrearCollageOptions, COLLAGE_INPUTS, ("pdf", "jpg", "png", "zip"),
           "Junta tus fotos en un collage con plantillas, textos, stickers y marcos, y descárgalo en PDF o imagen sin subirlas.",
           "Combine your photos in a collage with templates, text, stickers and frames, and download it as PDF or image without uploading them.",

@@ -92,6 +92,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | readpst de libpst (pst-utils, Debian) en `workermedia` | GPL-2.0-or-later | pst-a-mbox y pst-a-pdf como programa externo (F6-J, D-225) |
 | Tectonic 0.17.0 (binario oficial musl) y los paquetes de TeX de su caché | MIT; licencias libres de TeX Live (LPPL, GPL, OFL y otras) | latex-a-pdf en `workerutils`, aislado con Landlock (F6-K, D-227) |
 | Visor de draw.io `viewer-static.min.js` v32.6.10 (jgraph/drawio) | Apache-2.0 | drawio-a-pdf y drawio-a-png en el Chromium de Gotenberg (F6-K, D-227) |
+| mermaid 12.2.0 (npm) | MIT | mermaid-a-svg y mermaid-a-png en el navegador (F6-N1, D-231); sus dependencias son MIT, ISC, BSD, Apache-2.0 y DOMPurify (MPL-2.0 o Apache-2.0); elkjs (EPL-2.0) no se empaqueta |
 | FluidSynth (Debian) y el banco FluidR3_GM (fluid-soundfont-gm) en `workerav` | LGPL-2.1-or-later; MIT | midi-a-mp3 y midi-a-wav, FluidSynth como programa externo (F6-L, D-228) |
 | MuseScore 3 (musescore3, Debian) en `workeroffice` | GPL-3.0 | musicxml-a-pdf y midi-a-pdf como programa externo sin interfaz (F6-L, D-228) |
 | libarchive-c 5.3 y libarchive13 (Debian) en `workerutils`; pysubs2 1.9.1 en el extra `utils` | CC0-1.0 y BSD-2-Clause; MIT | Comprimidos RAR, 7z y tar y subtítulos SRT, WebVTT y ASS (F6-E, D-217); sin unrar ni p7zip (11) |

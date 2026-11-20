@@ -130,6 +130,8 @@ def main(argv: list[str]) -> int:
             check("backend", name, version, lic, problems)
     if "npm" in scopes:
         for name, version, lic in npm_packages("@conversor/web"):
+            if name in POLICY.get("not_bundled", []):
+                continue  # sustituida al empaquetar (next.config.ts); la CI comprueba que no está en el build
             check("frontend", name, version, lic, problems)
     for p in problems:
         print(p, file=sys.stderr)

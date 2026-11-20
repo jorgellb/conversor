@@ -79,7 +79,7 @@ const FONT_SET: [FontKind, FontStyle][] = [
 ];
 
 /** Fuentes Noto para el texto de los SVG (solo se cargan si el SVG tiene texto). */
-async function svgFonts(env: ImageEnv, svg: Uint8Array): Promise<Uint8Array[]> {
+export async function svgFonts(env: ImageEnv, svg: Uint8Array): Promise<Uint8Array[]> {
   if (!env.fonts || !svgHasText(svg)) return [];
   const loaded = await Promise.all(FONT_SET.map(([kind, style]) => env.fonts!(kind, style)));
   return [...new Set(loaded.filter((f): f is Uint8Array => Boolean(f)))];

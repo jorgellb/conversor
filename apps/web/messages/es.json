@@ -1469,5 +1469,38 @@
     "dir3Office": "Oficina contable (DIR3)",
     "dir3Body": "Órgano gestor (DIR3)",
     "dir3Unit": "Unidad tramitadora (DIR3)"
+  },
+  "mermaid": {
+    "code": "Código Mermaid",
+    "example": "Cargar un ejemplo",
+    "open": "Abrir archivo",
+    "help": "Escribe o pega el código. También puedes abrir un .mmd o un Markdown con un bloque ```mermaid.",
+    "fileName": "Nombre del archivo",
+    "preview": "Vista previa",
+    "previewAlt": "Vista previa del diagrama",
+    "drawing": "Dibujando…",
+    "line": "Línea {line}:",
+    "privacy": "El diagrama se dibuja en tu navegador: el código no sale de tu dispositivo.",
+    "exportSvg": "Descargar SVG",
+    "exportPng": "Descargar PNG",
+    "exporting": "Preparando…",
+    "ready": "Diagrama listo para descargar.",
+    "download": "Descargar {name}",
+    "opened": "Abierto {name}.",
+    "empty": "Escribe el código del diagrama.",
+    "tooLong": "El código es demasiado largo (máximo {max} caracteres).",
+    "failed": "No se ha podido dibujar el diagrama.",
+    "examples": {
+      "flowchart": "Diagrama de flujo",
+      "sequence": "Secuencia",
+      "gantt": "Gantt",
+      "class": "Clases",
+      "state": "Estados",
+      "er": "Entidad-relación",
+      "pie": "Tarta",
+      "mindmap": "Mapa mental",
+      "timeline": "Cronología"
+    },
+    "moreOptions": "Más opciones"
   }
 }

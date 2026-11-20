@@ -1469,5 +1469,38 @@
     "dir3Office": "Accounting office (DIR3)",
     "dir3Body": "Managing body (DIR3)",
     "dir3Unit": "Processing unit (DIR3)"
+  },
+  "mermaid": {
+    "code": "Mermaid code",
+    "example": "Load an example",
+    "open": "Open file",
+    "help": "Type or paste the code. You can also open a .mmd file or a Markdown file with a ```mermaid block.",
+    "fileName": "File name",
+    "preview": "Preview",
+    "previewAlt": "Diagram preview",
+    "drawing": "Drawing…",
+    "line": "Line {line}:",
+    "privacy": "The diagram is drawn in your browser: the code never leaves your device.",
+    "exportSvg": "Download SVG",
+    "exportPng": "Download PNG",
+    "exporting": "Preparing…",
+    "ready": "Diagram ready to download.",
+    "download": "Download {name}",
+    "opened": "Opened {name}.",
+    "empty": "Type the diagram code.",
+    "tooLong": "The code is too long (at most {max} characters).",
+    "failed": "The diagram could not be drawn.",
+    "examples": {
+      "flowchart": "Flowchart",
+      "sequence": "Sequence",
+      "gantt": "Gantt",
+      "class": "Classes",
+      "state": "States",
+      "er": "Entity-relationship",
+      "pie": "Pie",
+      "mindmap": "Mind map",
+      "timeline": "Timeline"
+    },
+    "moreOptions": "More options"
   }
 }

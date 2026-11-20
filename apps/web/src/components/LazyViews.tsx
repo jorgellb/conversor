@@ -20,6 +20,7 @@ export const ScannerView = dynamic(() => import("./f2/ScannerView").then((m) => 
 export const SearchView = dynamic(() => import("./f2/SearchView").then((m) => m.SearchView));
 export const QrGeneratorView = dynamic(() => import("./f5/QrGeneratorView").then((m) => m.QrGeneratorView));
 export const CollageView = dynamic(() => import("./f5/collage/CollageView").then((m) => m.CollageView));
+export const MermaidView = dynamic(() => import("./f6/MermaidView").then((m) => m.MermaidView));
 export const ChatPdfView = dynamic(() => import("./f3/ChatPdfView").then((m) => m.ChatPdfView));
 export const AccountPage = dynamic(() => import("./AccountPage").then((m) => m.AccountPage));
 export const AdminPage = dynamic(() => import("./AdminPage").then((m) => m.AdminPage));

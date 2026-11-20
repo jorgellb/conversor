@@ -10609,6 +10609,251 @@
       }
     },
     {
+      "slug_es": "mermaid-a-svg",
+      "slug_en": "mermaid-to-svg",
+      "name_es": "Mermaid a SVG",
+      "name_en": "Mermaid to SVG",
+      "summary_es": "Escribe o pega código Mermaid y descarga el diagrama en SVG, con vista previa en vivo y sin subir nada.",
+      "summary_en": "Write or paste Mermaid code and download the diagram as SVG, with a live preview and nothing uploaded.",
+      "category": "image",
+      "where": "client",
+      "worker_group": null,
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "mmd"
+      ],
+      "outputs": [
+        "svg"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "mermaid-a-png",
+        "svg-a-png",
+        "drawio-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "mermaid-a-svg (D-231): tema [clásico] y fondo [el del tema]; el código se escribe o se sube en la página.",
+        "properties": {
+          "tema": {
+            "default": "default",
+            "enum": [
+              "default",
+              "neutral",
+              "dark",
+              "forest",
+              "base"
+            ],
+            "title": "Tema",
+            "type": "string",
+            "x-labels": {
+              "base": {
+                "en": "Plain",
+                "es": "Sencillo"
+              },
+              "dark": {
+                "en": "Dark",
+                "es": "Oscuro"
+              },
+              "default": {
+                "es": "Clásico",
+                "en": "Classic"
+              },
+              "forest": {
+                "en": "Forest (greens)",
+                "es": "Bosque (verdes)"
+              },
+              "neutral": {
+                "en": "Neutral (black and white)",
+                "es": "Neutro (blanco y negro)"
+              }
+            },
+            "x-title": {
+              "en": "Theme",
+              "es": "Tema"
+            }
+          },
+          "fondo": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "blanco",
+              "transparente"
+            ],
+            "title": "Fondo",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The theme's own",
+                "es": "El del tema"
+              },
+              "blanco": {
+                "en": "White",
+                "es": "Blanco"
+              },
+              "transparente": {
+                "en": "Transparent",
+                "es": "Transparente"
+              }
+            },
+            "x-title": {
+              "en": "Background",
+              "es": "Fondo"
+            }
+          }
+        },
+        "title": "MermaidSvgOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "mermaid-a-png",
+      "slug_en": "mermaid-to-png",
+      "name_es": "Mermaid a PNG",
+      "name_en": "Mermaid to PNG",
+      "summary_es": "Convierte diagramas Mermaid (flujos, secuencias, Gantt, clases…) en imágenes PNG nítidas en tu navegador.",
+      "summary_en": "Turn Mermaid diagrams (flowcharts, sequences, Gantt, classes…) into sharp PNG images in your browser.",
+      "category": "image",
+      "where": "client",
+      "worker_group": null,
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "mmd"
+      ],
+      "outputs": [
+        "png"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "mermaid-a-svg",
+        "drawio-a-png",
+        "svg-a-png"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "mermaid-a-png (D-231): además, la escala [2×] (con un tope de 100 megapíxeles).",
+        "properties": {
+          "tema": {
+            "default": "default",
+            "enum": [
+              "default",
+              "neutral",
+              "dark",
+              "forest",
+              "base"
+            ],
+            "title": "Tema",
+            "type": "string",
+            "x-labels": {
+              "base": {
+                "en": "Plain",
+                "es": "Sencillo"
+              },
+              "dark": {
+                "en": "Dark",
+                "es": "Oscuro"
+              },
+              "default": {
+                "es": "Clásico",
+                "en": "Classic"
+              },
+              "forest": {
+                "en": "Forest (greens)",
+                "es": "Bosque (verdes)"
+              },
+              "neutral": {
+                "en": "Neutral (black and white)",
+                "es": "Neutro (blanco y negro)"
+              }
+            },
+            "x-title": {
+              "en": "Theme",
+              "es": "Tema"
+            }
+          },
+          "fondo": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "blanco",
+              "transparente"
+            ],
+            "title": "Fondo",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The theme's own",
+                "es": "El del tema"
+              },
+              "blanco": {
+                "en": "White",
+                "es": "Blanco"
+              },
+              "transparente": {
+                "en": "Transparent",
+                "es": "Transparente"
+              }
+            },
+            "x-title": {
+              "en": "Background",
+              "es": "Fondo"
+            }
+          },
+          "escala": {
+            "default": 2,
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "title": "Escala",
+            "type": "integer",
+            "x-labels": {
+              "1": {
+                "en": "1× (screen)",
+                "es": "1× (pantalla)"
+              },
+              "2": {
+                "en": "2× (sharp)",
+                "es": "2× (nítida)"
+              },
+              "3": {
+                "en": "3×",
+                "es": "3×"
+              },
+              "4": {
+                "en": "4× (for print)",
+                "es": "4× (para imprimir)"
+              }
+            },
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          }
+        },
+        "title": "MermaidPngOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "crear-collage",
       "slug_en": "collage-maker",
       "name_es": "Crear collage",

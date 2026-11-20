@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 243 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 65). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 245 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 67). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -68,6 +68,8 @@ Catálogo publicado en esta entrega: 243 herramientas (F1 43, F2 60, F3 10, F4 1
 | `imagen-a-base64` / `image-to-base64` | navegador | — | light | F5 | activa | jpg, png, webp, gif, svg, avif, bmp, ico → txt, zip | redactado, sin revisar |
 | `leer-codigo-qr` / `qr-code-reader` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif, tiff, svg, pdf → csv | redactado, sin revisar |
 | `generar-codigo-qr` / `qr-code-generator` | navegador | — | light | F5 | activa | — → png, svg, pdf | redactado, sin revisar |
+| `mermaid-a-svg` / `mermaid-to-svg` | navegador | — | light | F6 | activa | mmd → svg | redactado, sin revisar |
+| `mermaid-a-png` / `mermaid-to-png` | navegador | — | light | F6 | activa | mmd → png | redactado, sin revisar |
 | `crear-collage` / `collage-maker` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif → pdf, jpg, png, zip | redactado, sin revisar |
 | `comprimir-pdf` / `compress-pdf` | servidor | pdf | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `proteger-pdf` / `protect-pdf` | servidor | pdf | light | F2 | activa | pdf → pdf, zip | redactado, sin revisar |

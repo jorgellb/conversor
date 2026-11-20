@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: { unoptimized: true },
+  // D-231: elkjs (EPL-2.0) solo lo usa la disposición «elk» de Mermaid, que la web no ofrece: no se empaqueta.
+  turbopack: { resolveAlias: { "elkjs/lib/elk.bundled.js": "./src/lib/elk-stub.ts" } },
+  webpack: (config) => {
+    config.resolve.alias = { ...config.resolve.alias, "elkjs/lib/elk.bundled.js": path.join(import.meta.dirname, "src/lib/elk-stub.ts") };
+    return config;
+  },
   // URL del WebAssembly con el resumen de su contenido (scripts/copy-wasm.mjs lo copia a public/codecs/).
   env: { NEXT_PUBLIC_WASM_URLS: JSON.stringify(wasmUrls()) },
   async headers() {

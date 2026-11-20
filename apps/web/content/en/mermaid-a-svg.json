@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Mermaid to SVG turns Mermaid code into an SVG diagram you can put on a website, in a presentation, a document or a design tool without losing sharpness at any size. Mermaid is the text language for diagrams understood by GitHub, GitLab, Notion, Obsidian and many wikis: you write “A --> B” and an arrow from A to B appears.",
+    "Type or paste the code and the preview updates as you type. If there is a syntax error, we tell you which line it is on and the previous diagram is dimmed until you fix it. You can start from one of the examples (flowchart, sequence, Gantt, classes, states, entity-relationship, pie, mind map or timeline) or open a .mmd file or a Markdown file containing a mermaid block.",
+    "Choose the theme (classic, neutral black and white, dark, forest or plain) and the background: the theme's own, white or transparent. The SVG is self-contained, with its size in pixels, the chosen background and labels as real text, not embedded HTML: it opens properly in Inkscape, Illustrator, Figma, PowerPoint or the browser.",
+    "Everything happens in your browser: the code is not sent to any server and no account is needed. Mermaid runs in strict mode, which cleans labels and disables links and click actions, so a diagram copied from the internet cannot run anything. The draft is kept in your browser so you do not lose it if you reload the page."
+  ],
+  "steps": [
+    "Type or paste the Mermaid code, or open a file.",
+    "Choose the theme and background.",
+    "Download the SVG."
+  ],
+  "faq": [
+    {
+      "q": "Which diagrams are supported?",
+      "a": "All Mermaid 12 diagrams: flowchart, sequence, class, state, entity-relationship, Gantt, pie, mind map, timeline, Git, quadrant, XY chart, kanban, block, Sankey, architecture, packet, requirement, C4 and user journey."
+    },
+    {
+      "q": "Can I use the ELK layout?",
+      "a": "No: diagrams are laid out with dagre, Mermaid's default layout. If your code asks for ELK, it is drawn with dagre."
+    },
+    {
+      "q": "What if I want a PNG?",
+      "a": "Use Mermaid to PNG, with the same editor and a scale from 1× to 4×."
+    }
+  ]
+}

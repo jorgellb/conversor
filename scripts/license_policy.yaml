@@ -71,6 +71,7 @@ overrides:
   "@img/sharp-libvips-linux-x64": LGPL-3.0
   "@img/sharp-libvips-linuxmusl-x64": LGPL-3.0
   caniuse-lite: CC-BY-4.0
+  khroma: MIT  # sin campo license; su archivo license es MIT (dependencia de mermaid, F6-N)
   combine-errors: MIT  # sin campo license; License.md es MIT (dependencia de tus-js-client)
   py-rust-stemmers: MIT  # sin campo License en los metadatos; el README y LICENSE de la rueda dicen MIT (dependencia de fastembed)
   py_rust_stemmers: MIT
@@ -78,3 +79,5 @@ overrides:
   iso4217: LicenseRef-Public-Domain  # declara «Public Domain» (tablas de monedas ISO 4217; dependencia de factur-x)
 # Paquetes que solo se usan en desarrollo y pruebas y nunca llegan a una imagen.
 dev_only: [pytest, respx, pip-licenses, prettytable, wcwidth, iniconfig, pluggy, pygments, fpdf2]
+# Dependencias de npm que se instalan pero nunca llegan al navegador: next.config.ts las sustituye al empaquetar (D-231).
+not_bundled: [elkjs]

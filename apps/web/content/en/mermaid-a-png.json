@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Mermaid to PNG turns Mermaid code into a sharp PNG image, ready to paste into an email, a chat, a slide, a Word report or an issue. Mermaid is the text language for diagrams used by GitHub, GitLab, Notion and Obsidian: you describe the nodes and arrows in text and the diagram draws itself.",
+    "The preview updates as you type and, if you make a mistake, we point out the line with the error. There are examples to start from (flowchart, sequence, Gantt, classes, states, entity-relationship, pie, mind map and timeline) and you can open a .mmd file or a Markdown file with a mermaid block: we take the first one we find.",
+    "You choose the theme, the background (the theme's own, white or transparent, handy for placing it on a coloured slide) and the scale: 1× for screen, 2× to look sharp on high-density screens and 3× or 4× for printing. If the diagram is huge, we lower the scale just enough to stay under 100 megapixels and tell you so.",
+    "The diagram is drawn in your browser with Mermaid in strict mode and turned into a PNG with resvg and the Noto Sans font, the same one used to measure the text in the preview, so letters do not spill out of their boxes. Nothing is uploaded to any server."
+  ],
+  "steps": [
+    "Type or paste the code, or open a .mmd or Markdown file.",
+    "Choose the theme, background and scale.",
+    "Download the PNG."
+  ],
+  "faq": [
+    {
+      "q": "Why is text missing in a user journey?",
+      "a": "That diagram type writes part of its text as HTML, which cannot be painted into a PNG. We warn you when it happens; download the SVG to get all of it."
+    },
+    {
+      "q": "Which scale should I choose?",
+      "a": "2× for screens and documents; 4× if you will print it large or crop it."
+    },
+    {
+      "q": "Is my code stored?",
+      "a": "Only in your browser, as a draft. It never leaves your device."
+    }
+  ]
+}

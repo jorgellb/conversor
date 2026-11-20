@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Mermaid a SVG convierte código Mermaid en un diagrama SVG que puedes poner en una web, una presentación, un documento o un programa de diseño sin perder nitidez a ningún tamaño. Mermaid es el lenguaje de texto para diagramas que entienden GitHub, GitLab, Notion, Obsidian y muchas wikis: escribes «A --> B» y aparece una flecha de A a B.",
+    "Escribe o pega el código y la vista previa se actualiza mientras escribes. Si hay un error de sintaxis, te decimos en qué línea está y el diagrama anterior queda atenuado hasta que lo corrijas. Puedes empezar desde uno de los ejemplos (flujo, secuencia, Gantt, clases, estados, entidad-relación, tarta, mapa mental o cronología) o abrir un archivo .mmd o un Markdown que contenga un bloque mermaid.",
+    "Elige el tema (clásico, neutro en blanco y negro, oscuro, bosque o sencillo) y el fondo: el del tema, blanco o transparente. El SVG sale autónomo, con su tamaño en píxeles, el fondo elegido y las etiquetas como texto real, no como HTML incrustado: se abre bien en Inkscape, Illustrator, Figma, PowerPoint o el navegador.",
+    "Todo ocurre en tu navegador: el código no se envía a ningún servidor y no hace falta cuenta. Mermaid se ejecuta en modo estricto, que limpia las etiquetas y desactiva los enlaces y las acciones al hacer clic, así que un diagrama copiado de internet no puede ejecutar nada. El borrador se guarda en tu navegador para que no lo pierdas si recargas la página."
+  ],
+  "steps": [
+    "Escribe o pega el código Mermaid, o abre un archivo.",
+    "Elige el tema y el fondo.",
+    "Descarga el SVG."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diagramas admite?",
+      "a": "Todos los de Mermaid 12: flujo, secuencia, clases, estados, entidad-relación, Gantt, tarta, mapa mental, cronología, Git, cuadrantes, gráficos XY, kanban, bloques, Sankey, arquitectura, paquetes, requisitos, C4 y viajes de usuario."
+    },
+    {
+      "q": "¿Puedo usar la disposición ELK?",
+      "a": "No: los diagramas se colocan con dagre, la disposición por defecto de Mermaid. Si tu código pide ELK, se dibuja con dagre."
+    },
+    {
+      "q": "¿Y si lo quiero en PNG?",
+      "a": "Usa Mermaid a PNG, con el mismo editor y escala de 1× a 4×."
+    }
+  ]
+}
