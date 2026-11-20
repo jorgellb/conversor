@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL to VRML converts STL models to VRML on the server, with nothing to install. It is useful, for example, to send a part to a printing service that asks for VRML. VRML (.wrl) is the classic 3D scene format and the one many full-colour 3D printing services ask for, because it stores a colour per face.",
+    "STL is the format every slicer reads: it only stores triangles, with no units or colours. VRML uses the Y axis up, so the STL model, with Z up as in 3D printing, is turned so it stands upright; the advanced options let you keep the axes. Choose the units of the STL and the VRML.",
+    "The VRML comes out with one shape per part and, if the model has colours, one colour per face, which is what colour printing services read. You can apply a scale and keep the STL parts separate, merge them or get one per file in a ZIP.",
+    "The STL geometry is not simplified or repaired on its way to VRML. Up to one million triangles are accepted without an account, two million with a free account and ten million with Pro, and up to ten files per task. Each file is converted in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload one or more STL files.",
+    "Choose the units and, optionally, the scale and parts.",
+    "Download the VRML."
+  ],
+  "faq": [
+    {
+      "q": "Why does the VRML come out lying down?",
+      "a": "Because STL and VRML do not use the same vertical axis. Tick or untick “Keep the original axes” in the advanced options."
+    },
+    {
+      "q": "Are the STL colours kept?",
+      "a": "Yes when the VRML supports them (VRML, X3D and USDZ); STL stores no colours and the note says so."
+    },
+    {
+      "q": "What if the STL has textures?",
+      "a": "STL textures are not converted: the geometry and each face's or material's colour go through."
+    }
+  ]
+}

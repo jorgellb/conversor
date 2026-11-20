@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Convertir modelo 3D pasa un modelo de cualquier formato habitual a cualquier otro: STL, OBJ, 3MF, PLY, OFF, AMF, GLB y glTF, FBX, DAE (Collada), 3DS, VRML, X3D y USD o USDZ como entrada, y STL, OBJ con su MTL, 3MF, PLY, OFF, AMF, GLB, X3D, VRML y USDZ como salida. Es la herramienta para las combinaciones que no tienen su propia página.",
+    "Cada formato se lee con lo que mejor lo entiende: lib3mf para 3MF, trimesh para STL, OBJ, PLY, OFF y glTF, assimp para FBX, DAE y 3DS, usd-core para USD y lectores propios para AMF, VRML y X3D. Las unidades del original se leen cuando el formato las guarda (3MF, AMF, glTF, DAE, FBX y USD) y, si no, se toman en milímetros; el resultado sale en las unidades que elijas, salvo GLB, que siempre va en metros.",
+    "La impresión 3D usa el eje Z hacia arriba y glTF, VRML, X3D, USDZ, FBX, DAE y 3DS el Y: al pasar de unos a otros el modelo se gira para que salga de pie, salvo que marques «Conservar los ejes». Los colores pasan cuando el destino los admite y la nota avisa cuando se pierden; las texturas se aproximan a un color por cara o no se convierten.",
+    "Puedes mantener las piezas, fusionarlas o sacar un archivo por pieza en un ZIP, aplicar una escala y elegir STL binario o de texto. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro; cada archivo se convierte en un proceso aislado con su memoria acotada en nuestro servidor de la Unión Europea, y se borra al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios modelos 3D.",
+    "Elige el formato de salida y, si quieres, las unidades, la escala y las piezas.",
+    "Descarga el modelo convertido."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué formato elijo para imprimir?",
+      "a": "3MF si tu laminador lo abre (PrusaSlicer, Bambu Studio, Cura): guarda unidades y colores. STL si no."
+    },
+    {
+      "q": "¿Y para la web o la realidad aumentada?",
+      "a": "GLB para la web y Android, y USDZ para el iPhone y el iPad."
+    },
+    {
+      "q": "¿Se repara el modelo?",
+      "a": "No: la geometría pasa tal cual. Para cerrar agujeros o corregir normales, usa Reparar STL."
+    }
+  ]
+}

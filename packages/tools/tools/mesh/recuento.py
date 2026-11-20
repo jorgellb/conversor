@@ -104,6 +104,16 @@ def count_triangles(path: Path, ext: str, limit: int | None = None) -> int:
             return _stream_count(f, TRIANGLE_RE)
     if ext in ("glb", "gltf"):
         return _gltf_triangles(path, ext)
+    if ext == "off":
+        with open(path, "rb") as f:
+            words = f.read(4096).split()
+        try:
+            start = 1 if words and words[0].upper().endswith(b"OFF") else 0
+            return max(int(words[start + 1]), int(words[start]) // 3)
+        except (IndexError, ValueError) as exc:
+            raise ToolError(ErrorCode.CORRUPT_FILE, "OFF no válido") from exc
+    if ext in ("wrl", "x3d", "usd", "usda", "usdc", "usdz"):
+        return 0  # los cuenta su lector al recorrer la escena (las instancias multiplican), dentro del proceso hijo
     raise ToolError(ErrorCode.UNSUPPORTED_FORMAT)
 
 

@@ -16,7 +16,9 @@ TEXT_FAMILY = {"txt", "mmd", "csv", "md", "markdown", "html", "htm", "svg", "xml
                # Mallas de texto (F7-A, D-244): STL ASCII y OBJ.
                "stl", "obj",
                # F7-B (D-248): AMF y DAE (XML), glTF (JSON) y FBX ASCII.
-               "amf", "dae", "gltf", "fbx"}
+               "amf", "dae", "gltf", "fbx",
+               # F7-C (D-250): VRML, X3D, OFF y USD de texto.
+               "wrl", "x3d", "off", "usda", "usd"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr", "kmz", "mxl", "udf"}  # kmz: un ZIP con doc.kml (F6-H1)
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
@@ -43,7 +45,7 @@ MIME = {
     "mp3": "audio/mpeg", "amr": "audio/amr", "aiff": "audio/aiff", "wma": "audio/x-ms-wma",
     "mkv": "video/x-matroska", "webm": "video/webm", "avi": "video/x-msvideo",
     "stl": "model/stl", "obj": "model/obj", "3mf": "model/3mf", "ply": "application/octet-stream", "glb": "model/gltf-binary",
-    "amf": "application/x-amf",
+    "amf": "application/x-amf", "usdz": "model/vnd.usdz+zip", "x3d": "model/x3d+xml", "wrl": "model/vrml",
     "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
@@ -114,6 +116,9 @@ def _zip_kind(path: Path) -> str:
                 return "3mf"  # 3MF (F7-A): el modelo en 3D/3dmodel.model
             if len(names) == 1 and next(iter(names)).lower().endswith(".amf"):
                 return "amf"  # AMF comprimido (F7-B): un ZIP con un solo .amf
+            first = zf.infolist()[0].filename.lower() if zf.infolist() else ""
+            if first.endswith((".usdc", ".usda", ".usd")):
+                return "usdz"  # USDZ (F7-C): un ZIP sin comprimir con la capa USD la primera
             if "Index/Document.iwa" in names or "index.apxl" in names or "index.xml" in names:
                 return "iwork"
             if "[Content_Types].xml" in names:
@@ -246,6 +251,8 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
         return Detected("glb", "mesh")
     if head.startswith(b"Kaydara FBX Binary"):
         return Detected("fbx", "mesh")
+    if head.startswith(b"PXR-USDC"):
+        return Detected(declared if declared in ("usd", "usdc") else "usdc", "mesh")
     # 3DS: el bloque principal 0x4D4D con su tamaño; sin más firma, solo si se declara .3ds.
     if declared == "3ds" and head[:2] == b"MM" and 0 < int.from_bytes(head[2:6], "little") <= path.stat().st_size + 16:
         return Detected("3ds", "mesh")

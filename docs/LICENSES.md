@@ -90,6 +90,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | fitparse 1.2.0 en el extra `utils` | MIT | FIT de relojes y ciclocomputadores en fit-a-gpx y fit-a-csv (F6-H2, D-223) |
 | trimesh 5.2.1, lib3mf 2.5.0, numpy, scipy y networkx en el extra `mesh` | MIT; BSD-2-Clause; BSD-3-Clause | Mallas STL, OBJ, PLY y 3MF de F7-A (D-244), en `workermesh`; lib3mf por su biblioteca C con búferes de numpy |
 | pyassimp 5.2.5 en el extra `mesh`; libassimp5 (con libdraco8, libminizip1 y libpugixml1v5) de Debian en `workermesh` | ISC; BSD-3-Clause (Apache-2.0, Zlib y MIT las dependencias) | FBX, DAE y 3DS de F7-B en un proceso hijo con Landlock (D-248); AMF y GLB sin bibliotecas nuevas |
+| usd-core 26.11 en el extra `mesh` | LicenseRef-TOST-1.0 (Modified Apache 2.0) | USD y USDZ de F7-C (D-250), permitido en 11; dentro del proceso hijo de las mallas |
 | vobject 0.9.9 (con pytz y six) e icalendar 7.3.0 (con tzdata) en el extra `utils` | Apache-2.0; BSD-2-Clause | vCard e iCalendar de F6-I (D-224) |
 | readpst de libpst (pst-utils, Debian) en `workermedia` | GPL-2.0-or-later | pst-a-mbox y pst-a-pdf como programa externo (F6-J, D-225) |
 | Tectonic 0.17.0 (binario oficial musl) y los paquetes de TeX de su caché | MIT; licencias libres de TeX Live (LPPL, GPL, OFL y otras) | latex-a-pdf en `workerutils`, aislado con Landlock (F6-K, D-227) |

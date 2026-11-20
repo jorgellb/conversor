@@ -19,9 +19,12 @@ TARGET = {"stl-a-obj": "obj", "obj-a-stl": "stl", "stl-a-3mf": "3mf", "3mf-a-stl
           "3mf-a-obj": "obj", "stl-a-ply": "ply", "ply-a-stl": "stl", "stl-ascii-a-binario": "stl",
           # F7-B (D-248)
           "amf-a-stl": "stl", "stl-a-amf": "amf", "amf-a-3mf": "3mf", "glb-a-stl": "stl", "stl-a-glb": "glb", "gltf-a-stl": "stl",
-          "fbx-a-stl": "stl", "fbx-a-obj": "obj", "dae-a-stl": "stl", "3ds-a-stl": "stl"}
-MULTI = {"obj", "3mf", "amf", "glb"}  # formatos con varias piezas en un archivo
-UP = {"glb": "y"}  # eje vertical de cada formato de salida; el resto, Z (impresión 3D)
+          "fbx-a-stl": "stl", "fbx-a-obj": "obj", "dae-a-stl": "stl", "3ds-a-stl": "stl",
+          # F7-C (D-250); convertir-modelo-3d elige el formato en sus opciones
+          "wrl-a-stl": "stl", "stl-a-wrl": "wrl", "x3d-a-stl": "stl", "stl-a-x3d": "x3d", "stl-a-usdz": "usdz", "obj-a-usdz": "usdz",
+          "convertir-modelo-3d": None}
+MULTI = {"obj", "3mf", "amf", "glb", "wrl", "x3d", "usdz"}  # formatos con varias piezas en un archivo
+UP = {"glb": "y", "wrl": "y", "x3d": "y", "usdz": "y"}  # eje vertical de cada formato de salida; el resto, Z (impresión 3D)
 
 TEXTS = {
     "es": {"colors_lost": "El STL no guarda colores: el modelo sale sin ellos.",
@@ -71,6 +74,14 @@ def write(model: formats.Model, target: str, dst: Path, unit: str, ascii: bool) 
         extra.write_amf(model, dst, unit)
     elif target == "glb":
         extra.write_glb(model, dst)
+    elif target in ("wrl", "x3d", "off"):
+        from tools.mesh import escena
+
+        {"wrl": escena.write_wrl, "x3d": escena.write_x3d, "off": escena.write_off}[target](model, dst)
+    elif target == "usdz":
+        from tools.mesh import usd
+
+        usd.write_usdz(model, dst, unit)
     else:
         raise ToolError(ErrorCode.UNSUPPORTED_FORMAT)
 
@@ -98,7 +109,7 @@ def convert_file(src: Path, ext: str, tool: str, options: dict, locale: str, max
                  library_path: str = "") -> list[dict]:
     """Convierte un archivo y deja el resultado en `out_dir`: [{"file", "name", "note"}]."""
     t = TEXTS.get(locale, TEXTS["es"])
-    target = TARGET[tool]
+    target = TARGET[tool] or options.get("formato", "stl")
     ascii = options.get("stl", "binario") == "ascii" and tool != "stl-ascii-a-binario"
     model = formats.load(src, ext, max_triangles, inline=True)
     notes = []
@@ -107,7 +118,7 @@ def convert_file(src: Path, ext: str, tool: str, options: dict, locale: str, max
     if tool == "stl-ascii-a-binario" and formats.stl_is_binary(src):
         notes.append(t["already_binary"])
     src_mm, src_name, assumed = source_unit(model, options.get("unidades_origen", "auto"))
-    dst_unit = options.get("unidades_destino", "m")  # GLB: siempre metros (glTF)
+    dst_unit = "m" if target == "glb" else options.get("unidades_destino", "mm")  # GLB: siempre metros (glTF)
     scale = float(options.get("escala", 1.0))
     formats.scaled(model, src_mm / formats.UNITS_MM[dst_unit] * scale)
     formats.check_finite(model)

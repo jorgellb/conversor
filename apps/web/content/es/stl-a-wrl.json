@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL a VRML convierte modelos STL a VRML en el servidor, sin instalar nada. Sirve, por ejemplo, para enviar una pieza a un servicio de impresión que pide VRML. VRML (.wrl) es el formato clásico de escenas 3D y el que piden muchos servicios de impresión 3D a todo color, porque guarda un color por cara.",
+    "STL es el formato que leen todos los laminadores: solo guarda triángulos, sin unidades ni colores. VRML usa el eje Y hacia arriba, así que el modelo del STL, con Z hacia arriba como en la impresión 3D, se gira para que se vea de pie; las opciones avanzadas permiten conservar los ejes. Elige las unidades del STL y las del VRML.",
+    "El VRML sale con una forma por pieza y, si el modelo tiene colores, un color por cara, que es lo que leen los servicios de impresión en color. Puedes aplicar una escala y mantener las piezas del STL por separado, fusionarlas o sacar una por archivo en un ZIP.",
+    "La geometría del STL no se simplifica ni se repara al pasar al VRML. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea. Cada archivo se convierte en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos STL.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el VRML."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el VRML sale tumbado?",
+      "a": "Porque STL y VRML no usan el mismo eje vertical. Marca o desmarca «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del STL?",
+      "a": "Sí cuando el VRML los admite (VRML, X3D y USDZ); el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el STL tiene texturas?",
+      "a": "Las texturas del STL no se convierten: pasa la geometría y el color de cada cara o material."
+    }
+  ]
+}

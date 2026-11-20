@@ -424,3 +424,98 @@ def test_obj_palette_keeps_alpha_and_uncoloured_parts_are_grey(tmp_path):
     assert "d 0.9412" not in mtl and mtl.count("newmtl") <= 217
     text = (tmp_path / "a.obj").read_text()
     assert text.split("\no liso\n", 1)[1].split("\nf ", 1)[0].endswith("usemtl sin_color")
+
+
+# ——— F7-C (D-250): VRML, X3D, USDZ, OFF y convertir-modelo-3d ———
+
+VRML = b"""#VRML V2.0 utf8
+# pieza con DEF/USE, Transform y color por cara
+DEF Caja Transform { translation 10 0 0 rotation 0 0 1 1.5708 children [
+  Shape { appearance Appearance { material Material { diffuseColor 1 0 0 } }
+    geometry IndexedFaceSet { coord Coordinate { point [ 0 0 0, 1 0 0, 1 1 0, 0 1 0 ] }
+      coordIndex [ 0 1 2 3 -1 ] colorPerVertex FALSE color Color { color [ 0 0 1 ] } } } ] }
+Transform { translation 0 5 0 children [ USE Caja ] }
+"""
+
+
+def test_vrml_def_use_transforms_and_colours(make_ctx, tmp_path):
+    from tools.mesh import escena
+
+    wrl = tmp_path / "escena.wrl"
+    wrl.write_bytes(VRML)
+    model = escena.read_scene(wrl, "wrl", 100)
+    assert model.triangles == 4 and len(model.parts) == 2 and model.up == "y"
+    assert tuple(model.parts[0].colors[0]) == (0, 0, 255, 255)  # el color por cara gana al del material
+    assert np.allclose(model.parts[0].vertices[1], (10, 1, 0), atol=1e-4)  # (1, 0, 0) girado 90° en Z y desplazado
+    assert np.allclose(model.parts[1].vertices[1], (10, 6, 0), atol=1e-4)
+    with pytest.raises(ToolError):
+        escena.read_scene(wrl, "wrl", 3)  # USE cuenta sus triángulos otra vez
+    out = run("wrl-a-stl", make_ctx("wrl-a-stl", [wrl]))
+    assert len(_load(Path(out[0]["path"])).faces) == 4 and "Z vertical" in out[0]["note"]
+
+
+def test_x3d_and_vrml_writers_roundtrip(make_ctx, tmp_path):
+    from tools.mesh import escena
+
+    src = _two_parts_3mf(tmp_path)
+    stl = Path(run("3mf-a-stl", make_ctx("3mf-a-stl", [src]))[0]["path"])
+    for tool, ext in (("stl-a-x3d", "x3d"), ("stl-a-wrl", "wrl")):
+        out = Path(run(tool, make_ctx(tool, [stl]))[0]["path"])
+        assert out.suffix == f".{ext}"
+        back = escena.read_scene(out, ext, 10**6)
+        assert back.triangles == 332
+    model = formats_load(src)
+    escena.write_x3d(model, tmp_path / "c.x3d")
+    again = escena.read_scene(tmp_path / "c.x3d", "x3d", 10**6)
+    assert again.has_colors and {tuple(c) for c in np.unique(np.vstack([p.colors for p in again.parts]), axis=0)} == {(255, 0, 0, 255), (0, 0, 255, 255)}
+
+
+def formats_load(path: Path):
+    from tools.mesh import formats
+
+    return formats.load(path, path.suffix.lstrip("."), 10**6)
+
+
+def test_usdz_for_augmented_reality(make_ctx, tmp_path):
+    pytest.importorskip("pxr")
+    from tools.mesh import usd
+
+    src = _two_parts_3mf(tmp_path, colors=False)
+    obj = Path(run("3mf-a-obj", make_ctx("3mf-a-obj", [src], {"piezas": "fusionar"}))[0]["path"])
+    assert obj.suffix == ".obj"
+    out = run("obj-a-usdz", make_ctx("obj-a-usdz", [obj], {"unidades_destino": "m"}))
+    usdz = Path(out[0]["path"])
+    assert usdz.suffix == ".usdz" and zipfile.is_zipfile(usdz)
+    with zipfile.ZipFile(usdz) as zf:
+        assert zf.infolist()[0].filename.endswith(".usdc") and zf.infolist()[0].compress_type == zipfile.ZIP_STORED
+    model = usd.read_usd(usdz, 10**6)
+    assert model.unit_mm == 1000.0 and model.up == "y" and model.triangles == 332
+    colored = tmp_path / "color.usdz"
+    usd.write_usdz(formats_load(_two_parts_3mf(tmp_path)), colored, "mm")
+    assert usd.read_usd(colored, 10**6).has_colors
+    extents = np.ptp(np.vstack([p.vertices for p in model.parts]), axis=0)
+    assert np.isclose(extents.max(), 0.029, atol=1e-3)  # 29 mm en metros
+
+
+@pytest.mark.parametrize("fmt", ["stl", "obj", "3mf", "ply", "off", "amf", "glb", "x3d", "wrl", "usdz"])
+def test_convert_any_model_to_every_output(make_ctx, tmp_path, fmt):
+    if fmt == "usdz":
+        pytest.importorskip("pxr")
+    src = _box(tmp_path)
+    out = run("convertir-modelo-3d", make_ctx("convertir-modelo-3d", [src], {"formato": fmt}))
+    assert out[0]["name"].endswith(f".{fmt}") or out[0]["name"].endswith(".zip")
+    back = run("convertir-modelo-3d", make_ctx("convertir-modelo-3d", [Path(out[0]["path"])], {"formato": "stl"})) if fmt != "obj" or out[0]["name"].endswith(".obj") else None
+    if back:
+        mesh = _load(Path(back[0]["path"]))
+        assert len(mesh.faces) == 12 and np.allclose(sorted(mesh.extents), [10, 20, 30], atol=1e-3)
+
+
+def test_detection_of_f7c_files(tmp_path):
+    from core.filetype import detect, matches
+
+    wrl = tmp_path / "a.wrl"
+    wrl.write_bytes(VRML)
+    assert matches(detect(wrl, ".wrl"), ".wrl", ("wrl",))
+    off = tmp_path / "a.off"
+    off.write_text("OFF\n3 1 0\n0 0 0\n1 0 0\n0 1 0\n3 0 1 2\n")
+    assert matches(detect(off, ".off"), ".off", ("off",))

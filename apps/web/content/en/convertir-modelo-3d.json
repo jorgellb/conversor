@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "3D model converter turns a model from any common format into any other: STL, OBJ, 3MF, PLY, OFF, AMF, GLB and glTF, FBX, DAE (Collada), 3DS, VRML, X3D and USD or USDZ as input, and STL, OBJ with its MTL, 3MF, PLY, OFF, AMF, GLB, X3D, VRML and USDZ as output. It is the tool for the combinations that do not have their own page.",
+    "Each format is read by what understands it best: lib3mf for 3MF, trimesh for STL, OBJ, PLY, OFF and glTF, assimp for FBX, DAE and 3DS, usd-core for USD and our own readers for AMF, VRML and X3D. The original's units are read when the format stores them (3MF, AMF, glTF, DAE, FBX and USD) and are otherwise taken as millimetres; the result comes out in the units you choose, except GLB, which is always in metres.",
+    "3D printing uses the Z axis up and glTF, VRML, X3D, USDZ, FBX, DAE and 3DS use Y: when going from one to another the model is turned so it stands upright, unless you tick “Keep the original axes”. Colours go through when the target supports them and the note warns when they are lost; textures are approximated to one colour per face or not converted.",
+    "You can keep the parts, merge them or get one file per part in a ZIP, apply a scale and choose binary or text STL. Up to one million triangles are accepted without an account, two million with a free account and ten million with Pro; each file is converted in an isolated process with bounded memory on our server in the European Union, and deleted when it expires."
+  ],
+  "steps": [
+    "Upload one or more 3D models.",
+    "Choose the output format and, optionally, the units, scale and parts.",
+    "Download the converted model."
+  ],
+  "faq": [
+    {
+      "q": "Which format should I choose for printing?",
+      "a": "3MF if your slicer opens it (PrusaSlicer, Bambu Studio, Cura): it stores units and colours. STL otherwise."
+    },
+    {
+      "q": "And for the web or augmented reality?",
+      "a": "GLB for the web and Android, and USDZ for the iPhone and iPad."
+    },
+    {
+      "q": "Is the model repaired?",
+      "a": "No: the geometry goes through as is. To close holes or fix normals, use Repair STL."
+    }
+  ]
+}

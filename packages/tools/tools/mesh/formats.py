@@ -365,6 +365,14 @@ def load(path: Path, ext: str, max_triangles: int, ctx=None, inline: bool = Fals
             return extra.read_assimp_inline(path, ext, max_triangles)
         return extra.read_assimp(ctx, path, ext, max_triangles)  # cuenta los triángulos el proceso hijo
     check_limit(path, ext, max_triangles)
+    if ext in ("wrl", "x3d"):
+        from tools.mesh import escena
+
+        return escena.read_scene(path, ext, max_triangles)  # cuenta cada uso de DEF/USE al recorrer la escena
+    if ext in ("usd", "usda", "usdc", "usdz"):
+        from tools.mesh import usd
+
+        return usd.read_usd(path, max_triangles)
     if ext == "amf":
         return extra.read_amf(path, max_triangles)
     if ext in ("glb", "gltf"):

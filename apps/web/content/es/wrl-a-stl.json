@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "VRML a STL convierte modelos VRML a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir en una impresora de filamento o de resina un modelo VRML pensado para color. STL es el formato que leen todos los laminadores: solo guarda triángulos, sin unidades ni colores.",
+    "VRML (.wrl) es el formato clásico de escenas 3D y el que piden muchos servicios de impresión 3D a todo color, porque guarda un color por cara. VRML usa el eje Y hacia arriba, como pide su especificación, y la impresión 3D el Z: el modelo se gira para que salga de pie en el laminador, salvo que marques «Conservar los ejes». VRML no guarda unidades: se toma en milímetros y puedes elegir otras.",
+    "Se leen las piezas con sus transformaciones, las copias DEF y USE (cada copia cuenta), los colores por cara o por vértice y el color de cada material; las texturas, los archivos Inline y los PROTO no se cargan. Puedes aplicar una escala y mantener las piezas del VRML por separado, fusionarlas o sacar una por archivo en un ZIP.",
+    "La geometría del VRML no se simplifica ni se repara al pasar al STL. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea. Cada archivo se convierte en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos VRML.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el STL sale tumbado?",
+      "a": "Porque VRML y STL no usan el mismo eje vertical. Marca o desmarca «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del VRML?",
+      "a": "Sí cuando el STL los admite (VRML, X3D y USDZ); el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el VRML tiene texturas?",
+      "a": "Las texturas del VRML no se convierten: pasa la geometría y el color de cada cara o material."
+    }
+  ]
+}

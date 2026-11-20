@@ -39,7 +39,7 @@ def run(ctx: ToolContext) -> list[dict]:
         out_dir.mkdir(parents=True, exist_ok=True)
         src = work / f"original.{ext}"
         shutil.copyfile(inp.path, src)
-        target = TARGET[ctx.tool]
+        target = TARGET[ctx.tool] or o.formato
         job = {"paths": _code_paths(), "src": str(src), "ext": ext, "tool": ctx.tool, "options": o.model_dump(), "locale": ctx.locale,
                "max_triangles": ctx.plan.mesh_triangles, "stem": Path(derived_name(inp.name, "", target)).stem,
                "out_dir": str(out_dir), "result": str(work / "resultado.json")}
@@ -60,4 +60,4 @@ def run(ctx: ToolContext) -> list[dict]:
             shutil.move(item["file"], dst)
             outputs.append({"path": str(dst), "name": item["name"], "note": item["note"]})
         shutil.rmtree(work, ignore_errors=True)
-    return with_batch_zip(ctx, outputs, f"modelos-{TARGET[ctx.tool]}.zip")
+    return with_batch_zip(ctx, outputs, f"modelos-{TARGET[ctx.tool] or o.formato}.zip")

@@ -60,9 +60,20 @@ class MeshGlbOptions(BaseModel):
                                advanced=True)
 
 
-Y_UP = {"glb", "gltf", "fbx", "dae", "3ds"}
+Y_UP = {"glb", "gltf", "fbx", "dae", "3ds", "wrl", "x3d", "usdz"}
+ANY_INPUT = ("stl", "obj", "3mf", "ply", "off", "amf", "glb", "gltf", "fbx", "dae", "3ds", "wrl", "x3d", "usd", "usda", "usdc", "usdz")
+OUTPUTS = {"stl": ("STL", "STL"), "obj": ("OBJ (con MTL si hay colores)", "OBJ (with MTL if there are colours)"), "3mf": ("3MF", "3MF"),
+           "ply": ("PLY", "PLY"), "off": ("OFF", "OFF"), "amf": ("AMF", "AMF"), "glb": ("GLB (glTF binario)", "GLB (binary glTF)"),
+           "x3d": ("X3D", "X3D"), "wrl": ("VRML (WRL)", "VRML (WRL)"), "usdz": ("USDZ (realidad aumentada)", "USDZ (augmented reality)")}
+
+
+class ConvertirModeloOptions(MeshAxesStlOptions):
+    """convertir-modelo-3d (7.18, F7-C, D-250): cualquier entrada de 7.18 a [STL] o a cualquier salida; las opciones de 7.18."""
+
+    formato: Literal["stl", "obj", "3mf", "ply", "off", "amf", "glb", "x3d", "wrl", "usdz"] = opt(
+        "stl", "Convertir a", "Convert to", labels=OUTPUTS)
 NAMES = {"stl": "STL", "obj": "OBJ", "3mf": "3MF", "ply": "PLY", "amf": "AMF", "glb": "GLB", "gltf": "glTF", "fbx": "FBX",
-         "dae": "DAE", "3ds": "3DS"}
+         "dae": "DAE", "3ds": "3DS", "wrl": "WRL", "x3d": "X3D", "usdz": "USDZ"}
 WHAT = {
     "stl": ("el formato de malla de las impresoras 3D", "the mesh format of 3D printers"),
     "obj": ("el formato de modelos 3D de Blender, Maya y los visores", "the 3D model format of Blender, Maya and viewers"),
@@ -70,6 +81,9 @@ WHAT = {
     "ply": ("el formato de escáneres 3D y nubes de puntos con color", "the format of 3D scanners and coloured point clouds"),
     "amf": ("el formato XML de fabricación aditiva con unidades y colores", "the additive manufacturing XML format with units and colours"),
     "glb": ("el formato 3D de la web, la realidad aumentada y los visores", "the 3D format of the web, augmented reality and viewers"),
+    "wrl": ("el formato VRML de la impresión 3D en color", "the VRML format of full-colour 3D printing"),
+    "x3d": ("el estándar abierto ISO para escenas 3D", "the open ISO standard for 3D scenes"),
+    "usdz": ("el formato de realidad aumentada del iPhone y el iPad", "the augmented reality format of the iPhone and iPad"),
 }
 
 
@@ -121,4 +135,20 @@ SPECS = [
     mesh("fbx", "obj", ("fbx-a-stl", "obj-a-3mf")),
     mesh("dae", "stl", ("stl-a-obj", "fbx-a-stl")),
     mesh("3ds", "stl", ("stl-a-obj", "fbx-a-stl")),
+    # 7.18 (F7-C, D-250): VRML y X3D propios, USDZ con usd-core y convertir-modelo-3d para el resto de combinaciones.
+    mesh("wrl", "stl", ("stl-a-wrl", "x3d-a-stl")),
+    mesh("stl", "wrl", ("wrl-a-stl", "stl-a-x3d")),
+    mesh("x3d", "stl", ("stl-a-x3d", "wrl-a-stl")),
+    mesh("stl", "x3d", ("x3d-a-stl", "stl-a-wrl")),
+    mesh("stl", "usdz", ("obj-a-usdz", "stl-a-glb")),
+    mesh("obj", "usdz", ("stl-a-usdz", "obj-a-3mf")),
 ]
+
+# convertir-modelo-3d (7.18, F7-C, D-250): el resto de combinaciones, desde cualquier entrada a cualquier salida.
+SPECS.append(ToolSpec(
+    slug_es="convertir-modelo-3d", slug_en="3d-model-converter", name_es="Convertir modelo 3D", name_en="3D model converter",
+    category="3d", where="server", inputs=ANY_INPUT, outputs=(*OUTPUTS, "zip"), options=ConvertirModeloOptions, worker_group="mesh",
+    cost_class="light", impl="tools.mesh.convert:run", precheck="tools.mesh.recuento:precheck", launch=True, phase="F7", time_limit=600,
+    max_files=10, summary_es="Convierte modelos 3D entre STL, OBJ, 3MF, PLY, OFF, AMF, GLB, glTF, FBX, DAE, 3DS, VRML, X3D y USD.",
+    summary_en="Convert 3D models between STL, OBJ, 3MF, PLY, OFF, AMF, GLB, glTF, FBX, DAE, 3DS, VRML, X3D and USD.",
+    related=("stl-a-3mf", "stl-a-obj")))
