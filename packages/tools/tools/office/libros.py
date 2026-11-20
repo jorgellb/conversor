@@ -6,11 +6,13 @@ referencia a archivos locales (`file:`, rutas absolutas o `..` fuera del libro) 
 """
 from __future__ import annotations
 
+import codecs
 import html
 import posixpath
 import re
 import zipfile
 from pathlib import Path
+from urllib.parse import unquote
 
 import pikepdf
 
@@ -25,14 +27,16 @@ TOC_TITLE = {"es": "Índice", "en": "Contents"}
 MAX_TOC_PAGES = 60
 TEXT_MEMBERS = (".xhtml", ".html", ".htm", ".xml", ".css", ".svg", ".opf", ".ncx", ".smil")
 MAX_SCAN_BYTES = 64 * 1024 * 1024
-REF = re.compile(r"""(?:\b(?:src|href|data|poster|xlink:href|l:href|srcset)\s*=\s*(?:"([^"]*)"|'([^']*)')|url\(\s*["']?([^"')]+))""", re.I)
+# Atributos con comillas o sin ellas, `url(...)` y `@import "..."` de CSS (D-243).
+REF = re.compile(r"""(?:\b(?:src|href|data|poster|xlink:href|l:href|srcset|full-path)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))"""
+                 r"""|url\(\s*["']?([^"')]+)|@import\s+["']([^"']+))""", re.I)
 SCHEME = re.compile(r"^[a-z][a-z0-9+.-]*:", re.I)
 ENTITY = re.compile(r"<!ENTITY", re.I)
 
 
 def _escapes(ref: str, member: str) -> bool:
     """La referencia apunta fuera del libro: `file:`, ruta absoluta o `..` por encima de la raíz."""
-    ref = html.unescape(ref).strip().replace("\\", "/")
+    ref = unquote(html.unescape(ref)).strip().replace("\\", "/")  # «%2e%2e/» también cuenta
     if not ref:
         return False
     if ref.lower().startswith("file:") or ref.startswith("/"):
@@ -43,6 +47,32 @@ def _escapes(ref: str, member: str) -> bool:
     if not path:
         return False
     return posixpath.normpath(posixpath.join(posixpath.dirname(member), path)).startswith("..")
+
+
+BINARY_MEMBERS = (".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".ttf", ".otf", ".woff", ".woff2", ".mp3", ".mp4", ".m4a",
+                  ".ogg", ".webm", ".opus")
+
+
+def decode_text(data: bytes) -> str:
+    """Texto con su codificación: BOM de UTF-8/16/32 o UTF-16 sin BOM (bytes nulos alternos); si no, UTF-8."""
+    for bom, enc in ((codecs.BOM_UTF32_LE, "utf-32"), (codecs.BOM_UTF32_BE, "utf-32"), (codecs.BOM_UTF8, "utf-8-sig"),
+                     (codecs.BOM_UTF16_LE, "utf-16"), (codecs.BOM_UTF16_BE, "utf-16")):
+        if data.startswith(bom):
+            return data.decode(enc, "replace")
+    head = data[:200]
+    if len(head) >= 4 and head[1::2].count(0) > len(head) // 4:
+        return data.decode("utf-16-le", "replace")
+    if len(head) >= 4 and head[0::2].count(0) > len(head) // 4:
+        return data.decode("utf-16-be", "replace")
+    return data.decode("utf-8", "replace")
+
+
+def calibre_landlock(work: Path) -> list[tuple[Path, str]]:
+    """Landlock para Calibre (12.3, D-243): escribe solo en su carpeta de trabajo (y en /dev, por la memoria compartida de
+    QtWebEngine) y lee el sistema, pero no el almacén de archivos, el código del worker ni /run. Landlock también impide
+    leer /proc/<pid>/environ de procesos de fuera del aislamiento (comprobación de ptrace)."""
+    read = [Path(d) for d in ("/usr", "/lib", "/lib64", "/bin", "/etc", "/proc", "/sys", "/var/cache/fontconfig", "/opt/calibre")]
+    return [(work, "rw"), (Path("/dev"), "rw"), *((d, "rx") for d in read if d.exists())]
 
 
 def _scan_text(text: str, member: str) -> None:
@@ -65,12 +95,14 @@ def check_book(path: Path, ext: str) -> None:
         scanned = 0
         with zipfile.ZipFile(path) as zf:
             for info in zf.infolist():
-                if info.is_dir() or not info.filename.lower().endswith(TEXT_MEMBERS):
+                if info.is_dir() or info.filename.lower().endswith(BINARY_MEMBERS):
                     continue
+                # Todo lo que no es una imagen, una fuente o un medio se revisa, tenga la extensión que tenga: Calibre
+                # trata como texto lo que el OPF declara como tal (D-243).
                 scanned += info.file_size
                 if scanned > MAX_SCAN_BYTES:
                     raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Libro demasiado grande")
-                _scan_text(zf.read(info).decode("utf-8", "replace"), info.filename)
+                _scan_text(decode_text(zf.read(info)), info.filename)
     elif ext == "fb2":
         from defusedxml import ElementTree as SafeET
 
@@ -79,7 +111,7 @@ def check_book(path: Path, ext: str) -> None:
             SafeET.fromstring(data)
         except Exception as exc:  # noqa: BLE001 - XML mal formado o con entidades (XXE)
             raise ToolError(ErrorCode.CORRUPT_FILE, "FB2 no válido") from exc
-        _scan_text(data.decode("utf-8", "replace"), "libro.fb2")
+        _scan_text(decode_text(data), "libro.fb2")
 
 
 def _title_on_top(textpage, title: str) -> bool:
@@ -167,7 +199,7 @@ def run(ctx: ToolContext) -> list[dict]:
                "CALIBRE_CACHE_DIRECTORY": str(work / "cache"), "QTWEBENGINE_CHROMIUM_FLAGS": "--no-sandbox --disable-gpu"}
         # Memoria de datos y no virtual: QtWebEngine reserva mucho espacio de direcciones y con RLIMIT_AS no arranca (D-52).
         # 1200 MB: por debajo de los 1536 MB del contenedor (D-191), para que salte este tope y no el OOM del cgroup.
-        run_engine(args, cwd=work, timeout=900, mem_mb=1200, extra_env=env, limit_data=True)
+        run_engine(args, cwd=work, timeout=900, mem_mb=1200, extra_env=env, limit_data=True, landlock=calibre_landlock(work))
         if not tmp.exists():
             raise ToolError(ErrorCode.ENGINE_FAILED, "Calibre no generó el PDF")
         with pikepdf.open(tmp) as pdf:

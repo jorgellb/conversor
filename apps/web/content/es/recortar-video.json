@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Recortar vídeo corta un trozo de un vídeo MP4, MOV, MKV, WebM o AVI entre dos tiempos: el gol de un partido, una parte de una clase, el momento clave de una reunión o el principio de una grabación sin los minutos de espera. Escribe el inicio y el final en segundos, en minutos y segundos (1:30) o en horas (1:02:15,5).",
+    "El modo rápido no recodifica nada: copia la imagen y el sonido tal cual, así que tarda segundos aunque el vídeo dure una hora y la calidad es exactamente la del original. A cambio, el corte empieza en el fotograma clave anterior al inicio elegido, que puede estar unos segundos antes, porque un vídeo comprimido solo se puede empezar a reproducir desde esos fotogramas.",
+    "El modo preciso corta en el fotograma exacto que pides recodificando el trozo: con VP9 los WebM y con H.264 (si el servidor lo tiene activado) o AV1 el resto, que entonces sale en MP4. Tarda más, pero es el adecuado cuando cada fotograma cuenta. Si dejas el final vacío, el corte llega hasta el final del vídeo.",
+    "Recortar vídeo está en el plan Pro: vídeos de hasta una hora y 1 GB, hasta cinco a la vez con un ZIP al final. Se procesan en nuestro servidor de la Unión Europea, sin metadatos de ubicación ni de fecha en el resultado, y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el vídeo.",
+    "Escribe el inicio y el final y elige el modo.",
+    "Descarga el trozo recortado."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué empieza un poco antes?",
+      "a": "Porque el modo rápido corta en el fotograma clave anterior. Usa el modo preciso si necesitas el fotograma exacto."
+    },
+    {
+      "q": "¿Pierde calidad?",
+      "a": "En el modo rápido, no. En el preciso, la diferencia no suele notarse."
+    },
+    {
+      "q": "¿Puedo sacar varios trozos?",
+      "a": "Recorta cada trozo por separado; puedes subir el mismo vídeo varias veces."
+    }
+  ]
+}

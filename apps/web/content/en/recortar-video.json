@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Trim video cuts a part of an MP4, MOV, MKV, WebM or AVI video between two times: the goal in a match, part of a lesson, the key moment of a meeting or the start of a recording without the minutes of waiting. Type the start and end in seconds, in minutes and seconds (1:30) or in hours (1:02:15.5).",
+    "Fast mode re-encodes nothing: it copies the picture and sound as they are, so it takes seconds even for an hour-long video and the quality is exactly the original's. In exchange, the cut starts at the keyframe before the chosen start, which can be a few seconds earlier, because a compressed video can only start playing from those frames.",
+    "Precise mode cuts at the exact frame you ask for by re-encoding the part: WebM with VP9 and the rest with H.264 (if the server has it enabled) or AV1, which then comes out as MP4. It takes longer, but it is the right choice when every frame counts. If you leave the end empty, the cut goes to the end of the video.",
+    "Trim video is part of the Pro plan: videos up to one hour and 1 GB, up to five at a time with a ZIP at the end. They are processed on our server in the European Union, with no location or date metadata in the result, and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the video.",
+    "Type the start and end and choose the mode.",
+    "Download the trimmed part."
+  ],
+  "faq": [
+    {
+      "q": "Why does it start a bit earlier?",
+      "a": "Because fast mode cuts at the previous keyframe. Use precise mode if you need the exact frame."
+    },
+    {
+      "q": "Does it lose quality?",
+      "a": "In fast mode, no. In precise mode, the difference is usually not visible."
+    },
+    {
+      "q": "Can I take several parts?",
+      "a": "Trim each part separately; you can upload the same video several times."
+    }
+  ]
+}

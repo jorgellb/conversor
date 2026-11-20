@@ -149,3 +149,87 @@ def test_api_rejects_video_without_a_video_plan(api, user_token, tus_upload, tmp
     assert res.status_code == 403 and res.json()["error"]["code"] == "LIMIT_EXCEEDED"
     tools = {t["slug_es"]: t for t in json.loads((Path(__file__).resolve().parents[1] / "packages/registry/registry.json").read_text())["tools"]}
     assert tools["mp4-a-webm"]["needs_video"] and tools["pptx-a-video"]["needs_video"] and not tools["srt-a-vtt"]["needs_video"]
+
+
+# ——— F5-V2 (D-242): comprimir, recortar, rotar y quitar el audio ———
+
+def _streams_info(path: Path) -> dict:
+    out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_type,codec_name,width,height:stream_side_data=rotation",
+                          "-of", "json", str(path)], capture_output=True, check=True).stdout
+    return {s["codec_type"]: s for s in json.loads(out)["streams"]}
+
+
+def test_remove_audio_copies_the_picture(make_ctx, tmp_path):
+    src = _clip(tmp_path, "charla.mkv", "libx264")
+    out = run("quitar-audio-video", make_ctx("quitar-audio-video", [src]))
+    assert out[0]["name"] == "charla-sin-audio.mkv" and "Sin recodificar" in out[0]["note"]
+    assert _probe(Path(out[0]["path"]))["codecs"] == {"video": "h264"}
+
+
+def test_trim_fast_and_precise(make_ctx, tmp_path, monkeypatch):
+    monkeypatch.delenv("VIDEO_H264_ENCODING_ENABLED", raising=False)
+    src = _clip(tmp_path, "partido.mp4", "libx264", seconds=6)
+    out = run("recortar-video", make_ctx("recortar-video", [src], {"inicio": "0:02", "fin": "0:04"}))
+    info = _probe(Path(out[0]["path"]))
+    assert info["codecs"] == {"video": "h264", "audio": "aac"} and "fotograma clave" in out[0]["note"]
+    assert 1.8 <= float(info["format"]["duration"]) <= 4.3  # desde el fotograma clave anterior
+    out = run("recortar-video", make_ctx("recortar-video", [src], {"inicio": "2", "fin": "4", "modo": "preciso"}))
+    info = _probe(Path(out[0]["path"]))
+    assert info["codecs"]["video"] == "av1" and abs(float(info["format"]["duration"]) - 2) < 0.15
+    with pytest.raises(ToolError) as err:
+        run("recortar-video", make_ctx("recortar-video", [src], {"inicio": "0:30"}))
+    assert err.value.detail == "video_cut_range"
+    with pytest.raises(Exception):
+        make_ctx("recortar-video", [src], {"inicio": "5", "fin": "3"})
+
+
+def test_rotate_mp4_without_reencoding_adds_to_existing_rotation(make_ctx, tmp_path):
+    src = _clip(tmp_path, "movil.mp4", "libx264")
+    out = run("rotar-video", make_ctx("rotar-video", [src], {"angulo": "90"}))
+    rotated = Path(out[0]["path"])
+    info = _streams_info(rotated)
+    assert info["video"]["codec_name"] == "h264" and info["video"]["side_data_list"][0]["rotation"] == -90
+    assert "sin recodificar" in out[0]["note"].lower()
+    again = run("rotar-video", make_ctx("rotar-video", [rotated], {"angulo": "90"}))
+    assert abs(_streams_info(Path(again[0]["path"]))["video"]["side_data_list"][0]["rotation"]) == 180
+
+
+def test_rotate_webm_rotates_the_pixels(make_ctx, tmp_path):
+    src = _clip(tmp_path, "clip.webm", "libvpx-vp9", "libopus")
+    out = run("rotar-video", make_ctx("rotar-video", [src], {"angulo": "270", "voltear": "horizontal"}))
+    info = _streams_info(Path(out[0]["path"]))
+    assert (info["video"]["width"], info["video"]["height"]) == (240, 320) and info["video"]["codec_name"] == "vp9"
+    assert info["audio"]["codec_name"] == "opus"
+    with pytest.raises(ToolError):
+        run("rotar-video", make_ctx("rotar-video", [src], {"angulo": "0"}))
+
+
+def test_compress_reduces_size_and_resolution_and_never_grows(make_ctx, tmp_path, monkeypatch):
+    monkeypatch.delenv("VIDEO_H264_ENCODING_ENABLED", raising=False)
+    big = tmp_path / "grande.mov"
+    subprocess.run([FFMPEG, "-v", "error", "-f", "lavfi", "-i", "testsrc2=size=1280x720:rate=25:duration=3", "-f", "lavfi",
+                    "-i", "sine=duration=3", "-c:v", "libx264", "-crf", "8", "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", "-y", str(big)],
+                   check=True)
+    out = run("comprimir-video", make_ctx("comprimir-video", [big], {"nivel": "fuerte", "resolucion": "480"}))
+    path = Path(out[0]["path"])
+    info = _streams_info(path)
+    assert path.suffix == ".mp4" and path.stat().st_size < big.stat().st_size
+    assert info["video"]["codec_name"] == "av1" and info["video"]["height"] == 480 and info["video"]["width"] == 854
+    assert "menos" in out[0]["note"] and "MP4" in out[0]["note"]
+    # Un vídeo ya diminuto: se devuelve el original.
+    tiny = _clip(tmp_path, "mini.mp4", "libx264", None, seconds=1, size="64x48")
+    out = run("comprimir-video", make_ctx("comprimir-video", [tiny], {"nivel": "ligera"}))
+    if "ya estaba" in out[0]["note"]:
+        assert Path(out[0]["path"]).read_bytes() == tiny.read_bytes()
+
+
+def test_tiny_gif_to_av1_is_padded(make_ctx, tmp_path, monkeypatch):
+    from PIL import Image
+
+    monkeypatch.delenv("VIDEO_H264_ENCODING_ENABLED", raising=False)
+    gif = tmp_path / "icono.gif"
+    frames = [Image.new("RGB", (40, 30), c) for c in ("red", "blue", "green")]
+    frames[0].save(gif, save_all=True, append_images=frames[1:], duration=200, loop=0)
+    out = run("gif-a-mp4", make_ctx("gif-a-mp4", [gif]))
+    info = _streams_info(Path(out[0]["path"]))
+    assert info["video"]["codec_name"] == "av1" and (info["video"]["width"], info["video"]["height"]) == (64, 64)

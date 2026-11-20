@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import Literal
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, model_validator
 
 from core.options import opt
 from core.registry import NoOptions, ToolSpec
@@ -45,6 +45,55 @@ class WavOptions(BaseModel):
                                                 labels={"44100": ("44,1 kHz", "44.1 kHz"), "48000": ("48 kHz", "48 kHz")})
     canales: Literal["original", "mono", "estereo"] = opt("original", "Canales", "Channels", labels=CHANNELS)
     normalizar: bool = opt(False, "Normalizar volumen", "Normalize volume", advanced=True)
+
+
+class ComprimirVideoOptions(BaseModel):
+    """comprimir-video (7.9, F5-V2, D-242): nivel [ligera] | media | fuerte, resolución máxima [original], 30 fps y sonido."""
+
+    nivel: Literal["ligera", "media", "fuerte"] = opt("media", "Compresión", "Compression", labels={
+        "ligera": ("Ligera (casi sin pérdida visible)", "Light (almost no visible loss)"),
+        "media": ("Media (recomendada)", "Medium (recommended)"),
+        "fuerte": ("Fuerte (el menor tamaño)", "Strong (smallest size)")})
+    resolucion: Literal["original", "1080", "720", "480"] = opt("original", "Resolución máxima", "Maximum resolution", labels={
+        "original": ("La original", "Original"), "1080": ("1080p", "1080p"), "720": ("720p", "720p"), "480": ("480p", "480p")})
+    fps_30: bool = opt(False, "Limitar a 30 fotogramas por segundo", "Limit to 30 frames per second", advanced=True)
+    sonido: bool = opt(True, "Conservar el sonido", "Keep the sound", advanced=True)
+
+
+class RecortarVideoOptions(BaseModel):
+    """recortar-video (7.9, F5-V2, D-242): inicio y final (h:mm:ss) y modo [rápido sin recodificar] | preciso."""
+
+    inicio: str = opt("0:00", "Inicio (h:mm:ss)", "Start (h:mm:ss)", max_length=20)
+    fin: str = opt("", "Final (vacío: hasta el final)", "End (empty: until the end)", max_length=20)
+    modo: Literal["rapido", "preciso"] = opt("rapido", "Modo", "Mode", labels={
+        "rapido": ("Rápido, sin recodificar (empieza en el fotograma clave anterior)", "Fast, no re-encoding (starts at the previous keyframe)"),
+        "preciso": ("Preciso, al fotograma (recodifica)", "Precise, to the frame (re-encodes)")})
+
+    @field_validator("inicio", "fin")
+    @classmethod
+    def _time(cls, v: str) -> str:
+        parse_time(v)
+        return v
+
+    @model_validator(mode="after")
+    def _order(self):
+        start, end = parse_time(self.inicio) or 0, parse_time(self.fin)
+        if end is not None and end <= start:
+            raise ValueError("El final tiene que ir después del inicio")
+        return self
+
+
+class RotarVideoOptions(BaseModel):
+    """rotar-video (7.9, F5-V2, D-242): [90°] | 180° | 270° | 0°, voltear [no] y modo [rápido] | recodificar."""
+
+    angulo: Literal["0", "90", "180", "270"] = opt("90", "Girar", "Rotate", labels={
+        "0": ("No girar", "Do not rotate"), "90": ("90° a la derecha", "90° clockwise"), "180": ("180°", "180°"),
+        "270": ("90° a la izquierda", "90° counter-clockwise")})
+    voltear: Literal["no", "horizontal", "vertical"] = opt("no", "Voltear", "Flip", labels={
+        "no": ("No", "No"), "horizontal": ("Horizontal (espejo)", "Horizontal (mirror)"), "vertical": ("Vertical", "Vertical")})
+    modo: Literal["rapido", "recodificar"] = opt("rapido", "Modo", "Mode", advanced=True, labels={
+        "rapido": ("Rápido, sin recodificar (MP4 y MOV)", "Fast, no re-encoding (MP4 and MOV)"),
+        "recodificar": ("Girar los píxeles (para reproductores antiguos)", "Rotate the pixels (for old players)")})
 
 
 class VideoGifOptions(BaseModel):
@@ -227,6 +276,24 @@ SPECS: list[ToolSpec] = [
              impl="tools.av.video:run_gif_mp4", launch=True, needs_video=True, phase="F5", time_limit=1200, max_files=10,
              summary_es="Convierte GIF animados en MP4, mucho más ligeros y que se reproducen en cualquier sitio.",
              summary_en="Turn animated GIFs into MP4, much lighter and playable anywhere.", related=("video-a-gif", "gif-a-png")),
+    # 7.9 (F5-V2, D-242): sin recodificar cuando la operación lo permite; solo Pro.
+    *[ToolSpec(slug_es=es, slug_en=en, name_es=ne, name_en=nn, category="video", where="server", inputs=VIDEO_INPUTS,
+               outputs=(*VIDEO_INPUTS, "zip"), options=options, worker_group="av", cost_class="heavy", queue_kind="heavy",
+               impl=f"tools.av.video_edicion:{fn}", launch=True, needs_video=True, phase="F5", time_limit=3600, max_files=5,
+               summary_es=se, summary_en=sn, related=rel)
+      for es, en, ne, nn, options, fn, se, sn, rel in (
+          ("comprimir-video", "compress-video", "Comprimir vídeo", "Compress video", ComprimirVideoOptions, "run_compress",
+           "Reduce el tamaño de un vídeo con una calidad constante y, si quieres, una resolución menor.",
+           "Reduce a video's size with constant quality and, optionally, a lower resolution.", ("recortar-video", "mp4-a-webm")),
+          ("recortar-video", "trim-video", "Recortar vídeo", "Trim video", RecortarVideoOptions, "run_trim",
+           "Corta un trozo de un vídeo entre dos tiempos, en segundos y sin recodificar o al fotograma exacto.",
+           "Cut a part of a video between two times, in seconds without re-encoding or to the exact frame.", ("comprimir-video", "video-a-gif")),
+          ("rotar-video", "rotate-video", "Rotar vídeo", "Rotate video", RotarVideoOptions, "run_rotate",
+           "Gira un vídeo 90°, 180° o 270° o lo voltea; en MP4 y MOV, sin recodificar.",
+           "Rotate a video 90°, 180° or 270° or flip it; in MP4 and MOV, without re-encoding.", ("recortar-video", "comprimir-video")),
+          ("quitar-audio-video", "remove-audio-from-video", "Quitar audio de vídeo", "Remove audio from video", NoOptions, "run_mute",
+           "Quita el sonido de un vídeo sin tocar la imagen ni recodificar.",
+           "Remove the sound from a video without touching the picture or re-encoding.", ("mp4-a-mp3", "comprimir-video")))],
     # 7.13 (F6-C, D-237): las diapositivas renderizadas en un vídeo con FFmpeg LGPL (VP9 o AV1, sin H.264); solo Pro (plan.video).
     ToolSpec(slug_es="pptx-a-video", slug_en="pptx-to-video", name_es="PowerPoint a vídeo", name_en="PowerPoint to video", category="video",
              where="server", inputs=("pptx", "ppt", "odp"), outputs=("webm", "mp4"), options=DiapositivasVideoOptions, worker_group="av",

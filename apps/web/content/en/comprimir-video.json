@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Compress video reduces the size of an MP4, MOV, MKV, WebM or AVI video so you can send it by email or messaging, upload it faster or save space on your phone and in the cloud. It works with recordings from phones, cameras, screen captures or video calls.",
+    "The video is re-encoded at constant quality: simple scenes take very little space and busy ones keep their detail. There are three levels: light, with almost no visible loss; medium, the recommended one, which usually halves the size or more; and strong, for the smallest size even if it shows a little.",
+    "You can also cap the resolution at 1080p, 720p or 480p (the short side, so a vertical phone video looks right), limit it to 30 frames per second or remove the sound. WebM files stay WebM with VP9; the rest come out as MP4 with H.264 if the server has it enabled or with AV1, a modern codec that plays in browsers, Windows, Android and recent Macs and iPhones. If the result is not smaller than the original, we give you back the original and say so.",
+    "Compress video is part of the Pro plan: videos up to one hour and 1 GB, up to five at a time with a ZIP at the end. They are processed on our server in the European Union, with no location or date metadata in the result, and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the video.",
+    "Choose the compression level and, optionally, the maximum resolution.",
+    "Download the compressed video."
+  ],
+  "faq": [
+    {
+      "q": "How much smaller does it get?",
+      "a": "It depends on the video: high-resolution phone videos usually drop to a half or a quarter with medium compression."
+    },
+    {
+      "q": "Why does it take a while?",
+      "a": "Because compressing means re-encoding every frame. A ten-minute video can take a few minutes."
+    },
+    {
+      "q": "Why does my MOV come out as MP4?",
+      "a": "Because the result's codec goes in MP4, which also opens on any device."
+    }
+  ]
+}

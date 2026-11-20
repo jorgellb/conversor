@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Quitar audio de vídeo elimina el sonido de un vídeo MP4, MOV, MKV, WebM o AVI y deja la imagen exactamente igual. Es útil para quitar el ruido de fondo o las conversaciones de una grabación antes de compartirla, para preparar un fondo animado de una web o una presentación, o para ponerle después otra música.",
+    "No se recodifica nada: la imagen se copia tal cual, así que tarda segundos aunque el vídeo dure una hora, no pierde calidad y el archivo queda un poco más ligero, porque ya no lleva la pista de sonido. El vídeo conserva su formato, su resolución, sus fotogramas por segundo y su orientación.",
+    "Si el vídeo tiene varias pistas de sonido o de subtítulos, se quitan todas, y también los metadatos globales del archivo, como la fecha de grabación, la ubicación GPS o la aplicación que lo grabó. Si lo que quieres es lo contrario, conservar solo el sonido, usa MP4 a MP3.",
+    "Quitar audio de vídeo está en el plan Pro: vídeos de hasta una hora y 1 GB, hasta cinco a la vez con un ZIP al final. Se procesan en nuestro servidor de la Unión Europea, sin metadatos de ubicación ni de fecha en el resultado, y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios vídeos.",
+    "Pulsa quitar el audio.",
+    "Descarga el vídeo sin sonido."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierde calidad la imagen?",
+      "a": "No: se copia sin recodificar, fotograma a fotograma."
+    },
+    {
+      "q": "¿Puedo quitar solo un trozo del sonido?",
+      "a": "No: se quita la pista de sonido entera."
+    },
+    {
+      "q": "¿Y si el vídeo ya no tenía sonido?",
+      "a": "Te lo devolvemos igual y la nota del resultado lo indica."
+    }
+  ]
+}

@@ -4,6 +4,7 @@ con ffprobe)."""
 from __future__ import annotations
 
 import json
+import sys
 import shutil
 import struct
 import subprocess
@@ -132,3 +133,112 @@ def test_video_needs_pro_and_slide_limit(make_ctx, tmp_path):
     with pytest.raises(ToolError) as err:
         run("pptx-a-video", make_ctx("pptx-a-video", [src], {"segundos": 60}, plan="pro"))
     assert err.value.code == "LIMIT_EXCEEDED"
+
+
+def _brightness(path: str, at: float) -> float:
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", str(at), "-i", path, "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "gray",
+                          "-s", "32x18", "-"], capture_output=True, check=True).stdout
+    return sum(raw) / max(1, len(raw))
+
+
+@pytest.mark.skipif(not shutil.which("ffprobe"), reason="sin FFmpeg")
+@pytest.mark.parametrize("fmt,resolution", [("webm", "720"), ("mp4", "1080")])
+@respx.mock
+def test_slides_with_fades_are_visible_and_av1_fits_at_1080(make_ctx, tmp_path, fmt, resolution):
+    """D-243: cada fundido solo actúa en su ventana (antes el vídeo entero salía negro) y AV1 a 1080p cabe en su memoria."""
+    respx.post(_gotenberg("/forms/libreoffice/convert")).mock(return_value=Response(200, content=_slides_pdf(tmp_path)))
+    src = _write(tmp_path, "charla.pptx", b"PK\x03\x04falso")
+    out = run("pptx-a-video", make_ctx("pptx-a-video", [src], {"segundos": 2, "resolucion": resolution, "formato": fmt, "transicion": True}))
+    for at in (1.0, 3.0, 5.0):  # mitad de cada diapositiva (blancas)
+        assert _brightness(out[0]["path"], at) > 200, at
+    assert _brightness(out[0]["path"], 2.0) < 120  # en el cambio, fundido a negro
+
+
+@respx.mock
+def test_slide_limit_counts_only_the_selected_slides(make_ctx, tmp_path):
+    from tools.office import diapositivas
+
+    respx.post(_gotenberg("/forms/libreoffice/convert")).mock(return_value=Response(200, content=_slides_pdf(tmp_path, pages=5)))
+    src = _write(tmp_path, "charla.pptx", b"PK\x03\x04falso")
+    import pypdfium2 as pdfium
+
+    pdf = pdfium.PdfDocument(_slides_pdf(tmp_path, pages=5))
+    assert diapositivas._selected(pdf, "1-2", 3) == [0, 1]
+    with pytest.raises(ToolError):
+        diapositivas._selected(pdf, "", 3)
+    pdf.close()
+
+
+# ——— D-243: correcciones de la revisión de F6-C ———
+
+def _epub_with(tmp_path: Path, name: str, member: str, data: bytes) -> Path:
+    path = _epub(tmp_path, name)
+    with zipfile.ZipFile(path, "a") as zf:
+        zf.writestr(member, data)
+    return path
+
+
+@pytest.mark.parametrize("member,data", [
+    ("c2.html", b"<html><body><img src=file:///etc/passwd></body></html>"),
+    ("estilo.css", b'@import "/etc/passwd";'),
+    ("c3.xhtml", '<html><body><img src="/etc/hostname"/></body></html>'.encode("utf-16")),
+    ("c4.xhtml", b'<html><body><a href="%2e%2e/%2e%2e/etc/passwd">x</a></body></html>'),
+    ("capitulo.dat", b'<html><body><img src="/proc/1/environ"/></body></html>'),
+])
+def test_book_check_catches_the_bypasses(tmp_path, member, data):
+    from tools.office.libros import check_book
+
+    with pytest.raises(ToolError):
+        check_book(_epub_with(tmp_path, f"{member}.epub", member, data), "epub")
+
+
+def test_drm_detection_variants(tmp_path):
+    from tools.office.libros_formato import has_drm
+
+    single = "<encryption><EncryptionMethod Algorithm='http://www.w3.org/2001/04/xmlenc#aes128-cbc'/></encryption>"
+    assert has_drm(_epub(tmp_path, "s.epub", single), "epub")
+    path = _epub(tmp_path, "u.epub")
+    with zipfile.ZipFile(path, "a") as zf:
+        zf.writestr("META-INF/Encryption.xml", single.replace("'", '"').encode("utf-16"))
+    assert has_drm(path, "epub")
+
+
+def test_calibre_runs_under_landlock(make_ctx, tmp_path, monkeypatch):
+    from tools.office import libros_formato
+
+    seen = {}
+
+    def fake(args, cwd, **kw):
+        seen.update(kw)
+        Path(args[2]).write_bytes(b"BOOKMOBI convertido")
+        return subprocess.CompletedProcess(args, 0, b"", b"")
+
+    monkeypatch.setattr(libros_formato, "run_engine", fake)
+    ctx = make_ctx("mobi-a-epub", [_mobi(tmp_path, 0)])
+    run("mobi-a-epub", ctx)
+    rules = dict(seen["landlock"])
+    assert rules[Path("/usr")] == "rx" and Path("/dev") in rules
+    assert not any(str(ctx.settings.FILESTORE_PATH).startswith(str(p)) and p != Path("/") for p in rules if rules[p] != "rw" and str(p) != "/")
+    assert all(not str(p).startswith(("/data", "/app", "/run", "/home")) for p in rules if "libro-" not in str(p))
+
+
+def test_landlock_rules_for_calibre_allow_system_but_not_other_files(tmp_path):
+    from tools import sandbox
+    from tools.base import run_engine
+    from tools.office.libros import calibre_landlock
+
+    try:
+        sandbox.abi()
+    except Exception:
+        pytest.skip("núcleo sin Landlock")
+    if sandbox.abi() < 1:
+        pytest.skip("núcleo sin Landlock")
+    secret = tmp_path / "ajeno" / "secreto.txt"
+    secret.parent.mkdir()
+    secret.write_text("de otro usuario")
+    work = tmp_path / "trabajo"
+    work.mkdir()
+    script = ("import sys\nprint(open('/etc/hostname').read() != '')\n"
+              f"try:\n    open({str(secret)!r}).read(); print('LEAK')\nexcept PermissionError:\n    print('denied')\n")
+    res = run_engine(["/usr/bin/python3", "-I", "-c", script], cwd=work, timeout=60, landlock=calibre_landlock(work))
+    assert b"denied" in res.stdout and b"LEAK" not in res.stdout

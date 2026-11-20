@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Rotate video straightens a video recorded sideways or upside down: turn it 90 degrees clockwise, 90 counter-clockwise or 180, and optionally flip it like a mirror, horizontally or vertically. It is for phone videos that come out lying down, recordings from cameras mounted upside down or webcams that mirror the picture.",
+    "MP4 and MOV need no re-encoding: the orientation the video itself stores is changed, added to whatever it already had, so it takes seconds and the quality is the original's. Phones, browsers, Windows, macOS, VLC and current editors respect it.",
+    "For MKV, WebM and AVI, which do not store that orientation, or if you choose to rotate the pixels for an old player or TV that ignores it, the picture is re-encoded already rotated: WebM with VP9 and the rest with H.264 (if the server has it enabled) or AV1, as MP4. The sound is kept as is when it fits the output format.",
+    "Rotate video is part of the Pro plan: videos up to one hour and 1 GB, up to five at a time with a ZIP at the end. They are processed on our server in the European Union, with no location or date metadata in the result, and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the video.",
+    "Choose the rotation and, optionally, the flip.",
+    "Download the rotated video."
+  ],
+  "faq": [
+    {
+      "q": "Does it lose quality?",
+      "a": "In MP4 and MOV with fast mode, no: only the stored orientation changes. Rotating the pixels re-encodes."
+    },
+    {
+      "q": "It still lies sideways on my TV",
+      "a": "Some old players ignore the stored orientation. Choose “rotate the pixels” in the advanced options."
+    },
+    {
+      "q": "Can I rotate only a part?",
+      "a": "No: the whole video is rotated. Trim the part first with Trim video."
+    }
+  ]
+}

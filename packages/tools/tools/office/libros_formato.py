@@ -8,13 +8,14 @@ cifrado de la cabecera PalmDOC del primer registro.
 from __future__ import annotations
 
 import re
+import shutil
 import struct
 import zipfile
 from pathlib import Path
 
 from core.errors import ErrorCode, ToolError
 from tools.base import ToolContext, derived_name, run_engine
-from tools.office.libros import check_book
+from tools.office.libros import calibre_landlock, check_book, decode_text
 from tools.pdf.common import with_batch_zip
 
 TARGET = {"epub-a-mobi": "mobi", "epub-a-azw3": "azw3", "mobi-a-epub": "epub", "azw3-a-epub": "epub"}
@@ -26,15 +27,16 @@ def has_drm(path: Path, ext: str) -> bool:
     if ext == "epub":
         try:
             with zipfile.ZipFile(path) as zf:
-                if "META-INF/rights.xml" in zf.namelist():
+                # Los nombres sin distinguir mayúsculas y el XML con su codificación (D-243).
+                names = {n.lower(): n for n in zf.namelist()}
+                if "meta-inf/rights.xml" in names:
                     return True
-                try:
-                    enc = zf.read("META-INF/encryption.xml").decode("utf-8", "replace")
-                except KeyError:
+                if "meta-inf/encryption.xml" not in names:
                     return False
+                enc = decode_text(zf.read(names["meta-inf/encryption.xml"]))
         except zipfile.BadZipFile:
             return False
-        algorithms = re.findall(r'Algorithm\s*=\s*"([^"]+)"', enc)
+        algorithms = [a or b for a, b in re.findall(r"""Algorithm\s*=\s*(?:"([^"]+)"|'([^']+)')""", enc)]
         return any(a not in FONT_OBFUSCATION for a in algorithms)
     with open(path, "rb") as f:
         header = f.read(78 + 8)
@@ -60,12 +62,13 @@ def run(ctx: ToolContext) -> list[dict]:
             raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Libro de más de 200 MB")
         if ext in ("epub", "fb2"):
             check_book(inp.path, ext)
+        # MOBI y AZW3 no se pueden revisar por dentro sin descomprimirlos: los cubre Landlock (calibre_landlock, D-243).
         if has_drm(inp.path, ext):
             raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "libro_drm")
         work = ctx.work / f"libro-{n}"
         work.mkdir(parents=True, exist_ok=True)
         src = work / f"libro.{ext}"
-        src.write_bytes(inp.path.read_bytes())
+        shutil.copyfile(inp.path, src)
         tmp = work / f"salida.{target}"
         args = ["ebook-convert", str(src), str(tmp)]
         if o.titulo.strip():
@@ -73,17 +76,18 @@ def run(ctx: ToolContext) -> list[dict]:
         if o.autor.strip():
             args += ["--authors", o.autor.strip()]
         if target in ("mobi", "azw3"):
-            args += ["--mobi-keep-original-images"] + (["--mobi-file-type", "new"] if target == "mobi" else [])
+            args += ["--mobi-keep-original-images"] + (["--mobi-file-type", "both"] if target == "mobi" else [])
         else:
             args += ["--epub-version", "3"] if o.epub3 else ["--epub-version", "2"]
         env = {"QT_QPA_PLATFORM": "offscreen", "CALIBRE_CONFIG_DIRECTORY": str(work / "config"), "CALIBRE_TEMP_DIR": str(work),
                "CALIBRE_CACHE_DIRECTORY": str(work / "cache"), "QTWEBENGINE_CHROMIUM_FLAGS": "--no-sandbox --disable-gpu"}
         # Memoria de datos y no virtual (D-52) y por debajo del límite del contenedor (D-191), como en epub-a-pdf.
-        run_engine(args, cwd=work, timeout=900, mem_mb=1200, extra_env=env, limit_data=True, max_file_mb=1024)
+        run_engine(args, cwd=work, timeout=900, mem_mb=1200, extra_env=env, limit_data=True, max_file_mb=1024,
+                   landlock=calibre_landlock(work))
         if not tmp.exists() or not tmp.stat().st_size:
             raise ToolError(ErrorCode.ENGINE_FAILED, "Calibre no generó el libro")
         name = derived_name(inp.name, "", target)
         dst = ctx.output(name)
-        dst.write_bytes(tmp.read_bytes())
+        shutil.move(tmp, dst)
         outputs.append({"path": str(dst), "name": name})
     return with_batch_zip(ctx, outputs, f"libros-{target}.zip")

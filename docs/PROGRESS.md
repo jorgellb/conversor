@@ -692,6 +692,12 @@ mp4-a-webm, webm-a-mp4, mov-a-mp4, mkv-a-mp4, avi-a-mp4, video-a-gif y gif-a-mp4
 códecs caben, VP9, H.264 con su interruptor o AV1 cuando no, y el vídeo rechazado en la API fuera del plan Pro (D-241), en
 `tests/test_video.py` con el FFmpeg real y ffprobe.
 
+## F5-V2 (edición de vídeo) y revisión de F6-C y F6-D
+
+comprimir-video, recortar-video, rotar-video y quitar-audio-video sin recodificar cuando se puede (D-242), en `tests/test_video.py`;
+correcciones de la revisión de F6-C y F6-D (D-243): fundidos de pptx-a-video visibles, Calibre bajo Landlock, traducción de Office
+con saltos y campos y memoria acotada, en `tests/test_libros_diapositivas.py` y `tests/test_ia_oficina.py`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

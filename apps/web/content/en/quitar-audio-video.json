@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Remove audio from video deletes the sound from an MP4, MOV, MKV, WebM or AVI video and leaves the picture exactly the same. It is useful for removing background noise or conversations from a recording before sharing it, for preparing an animated background for a website or presentation, or for adding other music later.",
+    "Nothing is re-encoded: the picture is copied as is, so it takes seconds even for an hour-long video, loses no quality and the file gets a little lighter, because it no longer carries the sound track. The video keeps its format, resolution, frame rate and orientation.",
+    "If the video has several sound or subtitle tracks, they are all removed, and so is the file's global metadata, such as the recording date, GPS location or the app that recorded it. If you want the opposite, keeping only the sound as an audio file, use MP4 to MP3.",
+    "Remove audio from video is part of the Pro plan: videos up to one hour and 1 GB, up to five at a time with a ZIP at the end. They are processed on our server in the European Union, with no location or date metadata in the result, and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more videos.",
+    "Press remove audio.",
+    "Download the silent video."
+  ],
+  "faq": [
+    {
+      "q": "Does the picture lose quality?",
+      "a": "No: it is copied without re-encoding, frame by frame."
+    },
+    {
+      "q": "Can I remove only part of the sound?",
+      "a": "No: the whole sound track is removed."
+    },
+    {
+      "q": "What if the video had no sound already?",
+      "a": "We give it back unchanged and the result note says so."
+    }
+  ]
+}

@@ -23094,6 +23094,410 @@
       }
     },
     {
+      "slug_es": "comprimir-video",
+      "slug_en": "compress-video",
+      "name_es": "Comprimir vídeo",
+      "name_en": "Compress video",
+      "summary_es": "Reduce el tamaño de un vídeo con una calidad constante y, si quieres, una resolución menor.",
+      "summary_en": "Reduce a video's size with constant quality and, optionally, a lower resolution.",
+      "category": "video",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi"
+      ],
+      "outputs": [
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi",
+        "zip"
+      ],
+      "phase": "F5",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": true,
+      "secret_fields": [],
+      "related": [
+        "recortar-video",
+        "mp4-a-webm"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "comprimir-video (7.9, F5-V2, D-242): nivel [ligera] | media | fuerte, resolución máxima [original], 30 fps y sonido.",
+        "properties": {
+          "nivel": {
+            "default": "media",
+            "enum": [
+              "ligera",
+              "media",
+              "fuerte"
+            ],
+            "title": "Compresión",
+            "type": "string",
+            "x-labels": {
+              "fuerte": {
+                "en": "Strong (smallest size)",
+                "es": "Fuerte (el menor tamaño)"
+              },
+              "ligera": {
+                "en": "Light (almost no visible loss)",
+                "es": "Ligera (casi sin pérdida visible)"
+              },
+              "media": {
+                "en": "Medium (recommended)",
+                "es": "Media (recomendada)"
+              }
+            },
+            "x-title": {
+              "en": "Compression",
+              "es": "Compresión"
+            }
+          },
+          "resolucion": {
+            "default": "original",
+            "enum": [
+              "original",
+              "1080",
+              "720",
+              "480"
+            ],
+            "title": "Resolución máxima",
+            "type": "string",
+            "x-labels": {
+              "1080": {
+                "en": "1080p",
+                "es": "1080p"
+              },
+              "480": {
+                "en": "480p",
+                "es": "480p"
+              },
+              "720": {
+                "en": "720p",
+                "es": "720p"
+              },
+              "original": {
+                "en": "Original",
+                "es": "La original"
+              }
+            },
+            "x-title": {
+              "en": "Maximum resolution",
+              "es": "Resolución máxima"
+            }
+          },
+          "fps_30": {
+            "default": false,
+            "title": "Limitar a 30 fotogramas por segundo",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Limit to 30 frames per second",
+              "es": "Limitar a 30 fotogramas por segundo"
+            }
+          },
+          "sonido": {
+            "default": true,
+            "title": "Conservar el sonido",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the sound",
+              "es": "Conservar el sonido"
+            }
+          }
+        },
+        "title": "ComprimirVideoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "recortar-video",
+      "slug_en": "trim-video",
+      "name_es": "Recortar vídeo",
+      "name_en": "Trim video",
+      "summary_es": "Corta un trozo de un vídeo entre dos tiempos, en segundos y sin recodificar o al fotograma exacto.",
+      "summary_en": "Cut a part of a video between two times, in seconds without re-encoding or to the exact frame.",
+      "category": "video",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi"
+      ],
+      "outputs": [
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi",
+        "zip"
+      ],
+      "phase": "F5",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": true,
+      "secret_fields": [],
+      "related": [
+        "comprimir-video",
+        "video-a-gif"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "recortar-video (7.9, F5-V2, D-242): inicio y final (h:mm:ss) y modo [rápido sin recodificar] | preciso.",
+        "properties": {
+          "inicio": {
+            "default": "0:00",
+            "maxLength": 20,
+            "title": "Inicio (h:mm:ss)",
+            "type": "string",
+            "x-title": {
+              "en": "Start (h:mm:ss)",
+              "es": "Inicio (h:mm:ss)"
+            }
+          },
+          "fin": {
+            "default": "",
+            "maxLength": 20,
+            "title": "Final (vacío: hasta el final)",
+            "type": "string",
+            "x-title": {
+              "en": "End (empty: until the end)",
+              "es": "Final (vacío: hasta el final)"
+            }
+          },
+          "modo": {
+            "default": "rapido",
+            "enum": [
+              "rapido",
+              "preciso"
+            ],
+            "title": "Modo",
+            "type": "string",
+            "x-labels": {
+              "preciso": {
+                "en": "Precise, to the frame (re-encodes)",
+                "es": "Preciso, al fotograma (recodifica)"
+              },
+              "rapido": {
+                "en": "Fast, no re-encoding (starts at the previous keyframe)",
+                "es": "Rápido, sin recodificar (empieza en el fotograma clave anterior)"
+              }
+            },
+            "x-title": {
+              "en": "Mode",
+              "es": "Modo"
+            }
+          }
+        },
+        "title": "RecortarVideoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "rotar-video",
+      "slug_en": "rotate-video",
+      "name_es": "Rotar vídeo",
+      "name_en": "Rotate video",
+      "summary_es": "Gira un vídeo 90°, 180° o 270° o lo voltea; en MP4 y MOV, sin recodificar.",
+      "summary_en": "Rotate a video 90°, 180° or 270° or flip it; in MP4 and MOV, without re-encoding.",
+      "category": "video",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi"
+      ],
+      "outputs": [
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi",
+        "zip"
+      ],
+      "phase": "F5",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": true,
+      "secret_fields": [],
+      "related": [
+        "recortar-video",
+        "comprimir-video"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "rotar-video (7.9, F5-V2, D-242): [90°] | 180° | 270° | 0°, voltear [no] y modo [rápido] | recodificar.",
+        "properties": {
+          "angulo": {
+            "default": "90",
+            "enum": [
+              "0",
+              "90",
+              "180",
+              "270"
+            ],
+            "title": "Girar",
+            "type": "string",
+            "x-labels": {
+              "0": {
+                "en": "Do not rotate",
+                "es": "No girar"
+              },
+              "180": {
+                "en": "180°",
+                "es": "180°"
+              },
+              "270": {
+                "en": "90° counter-clockwise",
+                "es": "90° a la izquierda"
+              },
+              "90": {
+                "en": "90° clockwise",
+                "es": "90° a la derecha"
+              }
+            },
+            "x-title": {
+              "en": "Rotate",
+              "es": "Girar"
+            }
+          },
+          "voltear": {
+            "default": "no",
+            "enum": [
+              "no",
+              "horizontal",
+              "vertical"
+            ],
+            "title": "Voltear",
+            "type": "string",
+            "x-labels": {
+              "horizontal": {
+                "en": "Horizontal (mirror)",
+                "es": "Horizontal (espejo)"
+              },
+              "no": {
+                "en": "No",
+                "es": "No"
+              },
+              "vertical": {
+                "en": "Vertical",
+                "es": "Vertical"
+              }
+            },
+            "x-title": {
+              "en": "Flip",
+              "es": "Voltear"
+            }
+          },
+          "modo": {
+            "default": "rapido",
+            "enum": [
+              "rapido",
+              "recodificar"
+            ],
+            "title": "Modo",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "rapido": {
+                "en": "Fast, no re-encoding (MP4 and MOV)",
+                "es": "Rápido, sin recodificar (MP4 y MOV)"
+              },
+              "recodificar": {
+                "en": "Rotate the pixels (for old players)",
+                "es": "Girar los píxeles (para reproductores antiguos)"
+              }
+            },
+            "x-title": {
+              "en": "Mode",
+              "es": "Modo"
+            }
+          }
+        },
+        "title": "RotarVideoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "quitar-audio-video",
+      "slug_en": "remove-audio-from-video",
+      "name_es": "Quitar audio de vídeo",
+      "name_en": "Remove audio from video",
+      "summary_es": "Quita el sonido de un vídeo sin tocar la imagen ni recodificar.",
+      "summary_en": "Remove the sound from a video without touching the picture or re-encoding.",
+      "category": "video",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi"
+      ],
+      "outputs": [
+        "mp4",
+        "mov",
+        "mkv",
+        "webm",
+        "avi",
+        "zip"
+      ],
+      "phase": "F5",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": true,
+      "secret_fields": [],
+      "related": [
+        "mp4-a-mp3",
+        "comprimir-video"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "pptx-a-video",
       "slug_en": "pptx-to-video",
       "name_es": "PowerPoint a vídeo",

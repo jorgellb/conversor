@@ -169,7 +169,8 @@ class AIClient:
         for attempt in range(MAX_ATTEMPTS):
             models = order[:catalog.MAX_CANDIDATES]
             router = self.settings.LLM_FALLBACK_ROUTER
-            if attempt == MAX_ATTEMPTS - 1 and router and router not in models and schema is None:
+            # El enrutador gratuito puede elegir un modelo sin imágenes: con imágenes no se usa (D-243).
+            if attempt == MAX_ATTEMPTS - 1 and router and router not in models and schema is None and not needs.images:
                 models = (models[:catalog.MAX_CANDIDATES - 1] + [router]) if models else [router]
             self._wait_rpm()
             self.budget.take()

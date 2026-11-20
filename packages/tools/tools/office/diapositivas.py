@@ -36,15 +36,19 @@ def slides_pdf(ctx: ToolContext, inp, n: int) -> Path:
 
 
 def _selected(pdf: pdfium.PdfDocument, spec: str, limit: int) -> list[int]:
+    """Las diapositivas elegidas; el límite cuenta las elegidas, no la presentación entera (D-243)."""
     total = len(pdf)
-    if total > limit:
-        raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{total} diapositivas")
-    if not spec.strip():
-        return list(range(total))
+    if total == 0:
+        raise ToolError(ErrorCode.CORRUPT_FILE, "Presentación sin diapositivas")
     try:
-        return parse_page_ranges(spec, total)
+        pages = parse_page_ranges(spec, total) if spec.strip() else list(range(total))
     except ValueError as exc:
         raise ToolError(ErrorCode.INVALID_OPTIONS, str(exc)) from exc
+    if not pages:
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "Ninguna diapositiva elegida")
+    if len(pages) > limit:
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{len(pages)} diapositivas")
+    return pages
 
 
 def run_images(ctx: ToolContext) -> list[dict]:
@@ -61,8 +65,9 @@ def run_images(ctx: ToolContext) -> list[dict]:
                 page = pdf[index]
                 scale = o.resolucion / 72
                 w, h = page.get_size()
-                if w * h * scale * scale > MAX_PIXELS:
-                    scale = (MAX_PIXELS / (w * h)) ** 0.5
+                cap = min(MAX_PIXELS, ctx.settings.RENDER_MAX_PIXELS)
+                if w * h * scale * scale > cap:
+                    scale = (cap / (w * h)) ** 0.5
                 image = page.render(scale=scale).to_pil()
                 page.close()
                 buf = io.BytesIO()
@@ -83,12 +88,14 @@ def run_images(ctx: ToolContext) -> list[dict]:
 
 def run_video(ctx: ToolContext) -> list[dict]:
     from tools.av.audio import BASE, ffmpeg
+    from tools.av.video import av1
 
     o = ctx.options
     if not ctx.plan.video:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, "video_plan")
     width, height = VIDEO_SIZES.get(o.resolucion, VIDEO_SIZES["1080"])
     outputs = []
+    minutes_left = ctx.plan.video_minutes * 60  # los minutos del plan cuentan para todos los archivos de la tarea
     for n, inp in enumerate(ctx.inputs):
         ctx.report(n / len(ctx.inputs), None)
         pdf = pdfium.PdfDocument(str(slides_pdf(ctx, inp, n)))
@@ -97,8 +104,9 @@ def run_video(ctx: ToolContext) -> list[dict]:
         try:
             pages = _selected(pdf, o.diapositivas, MAX_SLIDES_VIDEO)
             total = len(pages) * o.segundos
-            if total > ctx.plan.video_minutes * 60:
+            if total > minutes_left:
                 raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{total} s de vídeo")
+            minutes_left -= total
             frames = []
             for k, index in enumerate(pages):
                 page = pdf[index]
@@ -122,18 +130,22 @@ def run_video(ctx: ToolContext) -> list[dict]:
             lines += [f"file '{frame.name}'", f"duration {o.segundos}"]
         lines.append(f"file '{frames[-1].name}'")
         (folder / "lista.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
-        vf = ["fps=25", "format=yuv420p"]
+        # Diapositivas quietas: 5 fotogramas por segundo bastan; con fundidos, 15 para que sean suaves.
+        vf = ["fps=5", "format=yuv420p"]
         if o.transicion and len(frames) > 1:
-            # Fundido a negro al entrar y al salir de cada diapositiva.
+            # Fundido a negro al entrar y al salir de cada diapositiva. Cada filtro solo actúa en su ventana (`enable`):
+            # sin ella, `fade` deja en negro todo lo de antes de su entrada y lo de después de su salida, y con varias
+            # diapositivas el vídeo entero salía negro (D-243).
             fades = []
             for k in range(len(frames)):
-                start = k * o.segundos
-                fades += [f"fade=t=in:st={start}:d=0.4:alpha=0", f"fade=t=out:st={start + o.segundos - 0.4}:d=0.4"]
-            vf = ["fps=25", *fades, "format=yuv420p"]
+                start, end = k * o.segundos, (k + 1) * o.segundos
+                fades += [f"fade=t=in:st={start}:d=0.4:enable='between(t,{start},{start + 0.4})'",
+                          f"fade=t=out:st={end - 0.4}:d=0.4:enable='between(t,{end - 0.4},{end})'"]
+            vf = ["fps=15", *fades, "format=yuv420p"]
         ext = "webm" if o.formato == "webm" else "mp4"
         # Diapositivas casi siempre quietas: VP9 en tiempo real y AV1 con un preset rápido dan el mismo resultado mucho antes.
         codec = (["-c:v", "libvpx-vp9", "-b:v", "0", "-crf", "34", "-row-mt", "1", "-deadline", "realtime", "-cpu-used", "8"] if ext == "webm"
-                 else ["-c:v", "libsvtav1", "-crf", "36", "-preset", "8", "-movflags", "+faststart"])
+                 else [*av1(36), "-movflags", "+faststart"])
         out = folder / f"salida.{ext}"
         args = [ffmpeg(), *BASE, "-f", "concat", "-safe", "0", "-i", "lista.txt", "-vf", ",".join(vf), "-an", *codec,
                 "-t", str(total), "-threads", str(max(1, ctx.threads)), "-y", out.name]

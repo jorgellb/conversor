@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Comprimir vídeo reduce el tamaño de un vídeo MP4, MOV, MKV, WebM o AVI para enviarlo por correo o mensajería, subirlo más rápido o ahorrar espacio en el móvil y en la nube. Funciona con grabaciones del móvil, de la cámara, de la pantalla o de videollamadas.",
+    "El vídeo se recodifica con una calidad constante: las escenas sencillas ocupan muy poco y las de mucho movimiento conservan el detalle. Hay tres niveles: ligera, casi sin pérdida visible; media, la recomendada, que suele reducir el tamaño a la mitad o menos; y fuerte, para el menor tamaño posible aunque se note algo.",
+    "También puedes limitar la resolución a 1080p, 720p o 480p (el lado corto, así que un vídeo vertical del móvil queda bien), limitarlo a 30 fotogramas por segundo o quitarle el sonido. Los WebM salen en WebM con VP9; el resto sale en MP4 con H.264 si el servidor lo tiene activado o con AV1, un códec moderno que reproducen los navegadores, Windows, Android y los Mac y iPhone recientes. Si el resultado no pesa menos que el original, te devolvemos el original y te lo decimos.",
+    "Comprimir vídeo está en el plan Pro: vídeos de hasta una hora y 1 GB, hasta cinco a la vez con un ZIP al final. Se procesan en nuestro servidor de la Unión Europea, sin metadatos de ubicación ni de fecha en el resultado, y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el vídeo.",
+    "Elige el nivel de compresión y, si quieres, la resolución máxima.",
+    "Descarga el vídeo comprimido."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuánto se reduce?",
+      "a": "Depende del vídeo: los del móvil a resolución alta suelen bajar a la mitad o a la cuarta parte con la compresión media."
+    },
+    {
+      "q": "¿Por qué tarda?",
+      "a": "Porque comprimir exige recodificar cada fotograma. Un vídeo de diez minutos puede tardar unos minutos."
+    },
+    {
+      "q": "¿Por qué mi MOV sale en MP4?",
+      "a": "Porque el códec del resultado va en MP4, que además se abre en cualquier dispositivo."
+    }
+  ]
+}

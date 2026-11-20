@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Rotar vídeo endereza un vídeo grabado de lado o del revés: gíralo 90 grados a la derecha, 90 a la izquierda o 180, y si quieres voltéalo como un espejo, en horizontal o en vertical. Sirve para los vídeos del móvil que salen tumbados, las grabaciones de cámaras montadas al revés o las de webcams que invierten la imagen.",
+    "En los MP4 y MOV no hace falta recodificar: se cambia la orientación que el propio vídeo guarda, sumada a la que ya tuviera, así que tarda segundos y la calidad es la del original. La respetan los móviles, los navegadores, Windows, macOS, VLC y los editores actuales.",
+    "Para los MKV, WebM y AVI, que no guardan esa orientación, o si eliges girar los píxeles para un reproductor o un televisor antiguo que la ignora, se recodifica la imagen ya girada: con VP9 los WebM y con H.264 (si el servidor lo tiene activado) o AV1 el resto, en MP4. El sonido se conserva tal cual cuando cabe en el formato de salida.",
+    "Rotar vídeo está en el plan Pro: vídeos de hasta una hora y 1 GB, hasta cinco a la vez con un ZIP al final. Se procesan en nuestro servidor de la Unión Europea, sin metadatos de ubicación ni de fecha en el resultado, y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el vídeo.",
+    "Elige el giro y, si quieres, el volteo.",
+    "Descarga el vídeo girado."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierde calidad?",
+      "a": "En MP4 y MOV con el modo rápido, no: solo cambia la orientación guardada. Al girar los píxeles se recodifica."
+    },
+    {
+      "q": "En mi televisor sigue tumbado",
+      "a": "Algunos reproductores antiguos ignoran la orientación guardada. Elige «girar los píxeles» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se puede girar solo un trozo?",
+      "a": "No: se gira el vídeo entero. Recorta antes el trozo con Recortar vídeo."
+    }
+  ]
+}

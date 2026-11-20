@@ -54,7 +54,7 @@ def _t(ctx: ToolContext) -> dict:
 def probe(path: Path, demuxer: str, cwd: Path) -> dict:
     ffprobe = shutil.which("ffprobe") or "ffprobe"
     res = run_engine([ffprobe, "-v", "error", "-protocol_whitelist", "file,pipe", "-f", demuxer, "-show_entries",
-                      "format=duration:stream=index,codec_type,codec_name,width,height,r_frame_rate,nb_frames", "-of", "json", str(path)],
+                      "format=duration:stream=index,codec_type,codec_name,width,height,r_frame_rate,nb_frames:stream_side_data=rotation", "-of", "json", str(path)],
                      cwd=cwd, timeout=120, mem_mb=512)
     try:
         return json.loads(res.stdout or b"{}")
@@ -69,6 +69,17 @@ def encoders() -> frozenset[str]:
     except (OSError, subprocess.SubprocessError):
         return frozenset()
     return frozenset(line.split()[1] for line in out.splitlines() if line.startswith(" V") or line.startswith(" A"))
+
+
+# SVT-AV1 no acepta lados de menos de 64 px: se rellena con negro hasta 64 (un GIF de 48 × 48, por ejemplo).
+AV1_PAD = "pad=w='max(iw,64)':h='max(ih,64)':x='(ow-iw)/2':y='(oh-ih)/2'"
+EVEN = "scale=trunc(iw/2)*2:trunc(ih/2)*2"
+
+
+def av1(crf: int) -> list[str]:
+    """SVT-AV1 con el paralelismo acotado: sin `lp` dimensiona sus búferes por los núcleos de la máquina y a 1080p no cabe
+    en 1400 MB de datos (D-242; `-threads` no lo limita)."""
+    return ["-c:v", "libsvtav1", "-crf", str(crf), "-preset", "8", "-svtav1-params", "lp=2"]
 
 
 def h264_encoder() -> str | None:
@@ -115,7 +126,7 @@ def _encode_args(target: str, video: dict, audio: dict | None) -> tuple[list[str
     elif (enc := h264_encoder()) is not None:
         vargs, note = ["-c:v", enc, *(["-crf", "23", "-preset", "medium"] if enc == "libx264" else ["-b:v", "4M"]), *even], "h264"
     else:
-        vargs, note = ["-c:v", "libsvtav1", "-crf", "32", "-preset", "8", *even], "av1"
+        vargs, note = [*av1(32), "-vf", f"{EVEN},{AV1_PAD}", "-pix_fmt", "yuv420p"], "av1"
     if audio is None:
         aargs = []
     elif copy_audio:
@@ -189,9 +200,9 @@ def run_gif_mp4(ctx: ToolContext) -> list[dict]:
         _demuxer, _info, duration, _video, _audio = checked(ctx, inp)
         enc = h264_encoder()
         codec = (["-c:v", enc, *(["-crf", "20"] if enc == "libx264" else ["-b:v", "3M"])] if enc
-                 else ["-c:v", "libsvtav1", "-crf", "30", "-preset", "8"])
+                 else av1(30))
         tmp = ctx.work / f"gif-{n}.mp4"
-        args = [ffmpeg(), *BASE, "-f", "gif", "-i", str(inp.path), "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2,format=yuv420p",
+        args = [ffmpeg(), *BASE, "-f", "gif", "-i", str(inp.path), "-vf", f"{EVEN},{'' if enc else AV1_PAD + ','}format=yuv420p",
                 "-an", "-map_metadata", "-1", *codec, "-movflags", "+faststart", "-y", tmp.name]
         run_engine(args, cwd=ctx.work, timeout=int(max(300, duration * 8 + 120)), mem_mb=1400, limit_data=True, max_file_mb=2048)
         if not tmp.exists() or not tmp.stat().st_size:

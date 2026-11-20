@@ -59,9 +59,14 @@ def pages_of(ctx: ToolContext, path: Path, ext: str) -> list[str]:
             return out
         finally:
             doc.close()
-    with open_image(path, ctx.settings.IMAGE_MAX_PIXELS) as img:
+    # Se reduce antes de girar y de pasar a RGB: un JPEG de 99 megapíxeles se decodifica a escala con `draft` y nunca
+    # entero (D-243); el resto, como mucho 40 megapíxeles.
+    with open_image(path, min(ctx.settings.IMAGE_MAX_PIXELS, 40_000_000 if ext not in ("jpg", "jpeg") else 100_000_000)) as img:
         from PIL import ImageOps
 
+        if img.format == "JPEG":
+            img.draft("RGB", (SIDE, SIDE))
+        img.thumbnail((SIDE, SIDE))
         return [_jpeg(ImageOps.exif_transpose(img))]
 
 
