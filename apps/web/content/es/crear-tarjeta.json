@@ -1,0 +1,35 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Crear tarjeta te deja diseñar postales y tarjetas dobladas (dípticas) para cumpleaños, Navidad, bodas, nacimientos, aniversarios, invitaciones, agradecimientos, condolencias, San Valentín o graduaciones. Partes de una plantilla propia para cada ocasión, con su fondo, su hueco de foto, el título y un mensaje, y lo cambias todo a tu gusto en el editor.",
+    "Pon tus fotos desde el ordenador o haz una con la cámara del móvil, y elige su forma (rectángulo, círculo, corazón, estrella o arco) y un filtro: blanco y negro, sepia, cálido, frío, antiguo o vivo. Los textos admiten tres tipos de letra, negrita, cursiva, sombra, contorno y curva, para escribir en arco o en sonrisa. Añade adornos, formas, un código QR con un enlace o un vídeo, y un fondo de color, degradado, foto o motivo (lunares, rayas, vichy, estrellas, corazones, confeti o copos de nieve).",
+    "Para enviar la misma tarjeta a mucha gente, carga una lista en CSV o en Excel con una fila por persona: se crea una tarjeta por fila y los campos entre llaves, como {Nombre}, se sustituyen en los textos y en el código QR. Con un clic pones la dirección de cada uno en el reverso de la postal, junto al recuadro del sello.",
+    "Al terminar eliges cómo la quieres. «Imprimir en casa» coloca varias tarjetas por A4 o Letter con marcas de corte, y los reversos van en la hoja siguiente en espejo, para que coincidan al imprimir a doble cara; la díptica sale abierta con marcas del pliegue. «Imprenta» da cada cara a tamaño final con 3 mm de sangrado, TrimBox y BleedBox y marcas de corte, y te avisa si alguna foto no llega a 300 ppp. «Imagen» da un JPG o PNG de cada cara para mandarla por mensajería o correo.",
+    "Todo ocurre en tu navegador: ni las fotos ni la lista de destinatarios se suben a ningún servidor. Puedes guardar el diseño en un archivo y abrirlo otro día para seguir con él."
+  ],
+  "steps": [
+    "Elige el formato, el tamaño y la ocasión, y empieza con su plantilla.",
+    "Pon tus fotos, cambia los textos y decora cada cara.",
+    "Si quieres, carga la lista de destinatarios y pon la dirección en el reverso.",
+    "Elige la salida (casa, imprenta o imagen) y crea la tarjeta."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo imprimo a doble cara para que el reverso coincida?",
+      "a": "Imprime el PDF a doble cara girando por el lado largo si la hoja es vertical, o por el corto si es apaisada; la nota del resultado te dice cuál. Los reversos ya van en espejo para caer detrás de su frente."
+    },
+    {
+      "q": "¿Qué es el sangrado?",
+      "a": "Un margen de unos milímetros por fuera del corte, al que llegan el fondo y las fotos del borde, para que no quede un filo blanco si la guillotina se desvía. Las imprentas suelen pedir 3 mm."
+    },
+    {
+      "q": "¿Cuántas tarjetas puedo hacer con una lista?",
+      "a": "Hasta 500 para imprimir y 20 en imagen, con una tarjeta por fila de la lista."
+    },
+    {
+      "q": "¿Se guardan mis fotos?",
+      "a": "No. Se quedan en tu navegador mientras editas y desaparecen al cerrar la página, salvo que guardes el diseño (el archivo guarda la composición, no las fotos)."
+    }
+  ]
+}

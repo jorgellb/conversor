@@ -27,9 +27,13 @@ import {
   setGraphicsState,
   setLineWidth,
   setStrokingRgbColor,
+  setLineJoin,
   setTextMatrix,
+  setTextRenderingMode,
   showText,
   stroke,
+  LineJoinStyle,
+  TextRenderingMode,
   type PDFFont,
   type PDFPage,
   type PDFRef,
@@ -468,6 +472,24 @@ async function drawText(ctx: Context, node: SvgNode, m: Matrix): Promise<void> {
   const y = len(node.attrs.y);
   // El espacio de la página tiene el eje Y hacia abajo (como SVG): la letra se endereza con una simetría.
   const tm = multiply(m, [1, 0, 0, -1, x, y]);
+  // Contorno (crear-tarjeta): primero el trazo y encima el relleno, como `paint-order="stroke"`.
+  const outline = parseColor(style(node, "stroke"));
+  if (outline) {
+    const scale = Math.sqrt(Math.abs(m[0] * m[3] - m[1] * m[2]));
+    ctx.ops.push(
+      pushGraphicsState(),
+      setStrokingRgbColor(...(outline.map((v) => v / 255) as [number, number, number])),
+      setLineWidth(len(style(node, "stroke-width"), 1) * scale),
+      setLineJoin(LineJoinStyle.Round),
+      beginText(),
+      setTextRenderingMode(TextRenderingMode.Outline),
+      setFontAndSize(name, size),
+      setTextMatrix(...tm),
+      showText(font.encodeText(text)),
+      endText(),
+      popGraphicsState(),
+    );
+  }
   ctx.ops.push(
     pushGraphicsState(),
     ...opacityOps(ctx, alphaOf(style(node, "fill-opacity")) * alphaOf(style(node, "opacity"))),

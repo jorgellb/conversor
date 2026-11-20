@@ -23,6 +23,7 @@
     "@resvg/resvg-wasm": "2.6.2",
     "diff-match-patch": "1.0.5",
     "fflate": "0.8.3",
+    "qrcode-generator": "1.5.2",
     "gifenc": "1.0.3",
     "utif2": "4.1.0",
     "wasm-feature-detect": "1.9.0",
@@ -34,7 +35,6 @@
     "@techstark/opencv-js": "5.0.0-release.1",
     "@types/diff-match-patch": "1.0.36",
     "@types/node": "26.6.6",
-    "qrcode-generator": "1.5.2",
     "typescript": "7.0.2",
     "vitest": "5.0.5"
   }

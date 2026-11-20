@@ -654,6 +654,23 @@ class CrearCollageOptions(BaseModel):
                                              show_if={"formato": ("jpg", "png")})
 
 
+# ——— crear-tarjeta (A.1, F6-N2, D-232) ———
+
+
+class CrearTarjetaOptions(BaseModel):
+    """crear-tarjeta (A.1): el editor compone la tarjeta en la página; el worker recibe además el documento (`doc`)."""
+
+    salida: Literal["casa", "imprenta", "imagen"] = opt("casa", "Salida", "Output", labels={
+        "casa": ("Imprimir en casa (varias por hoja, con marcas de corte)", "Print at home (several per sheet, with crop marks)"),
+        "imprenta": ("Imprenta (tamaño final con sangrado)", "Print shop (final size with bleed)"),
+        "imagen": ("Imagen para enviar", "Image to send")})
+    papel: Literal["A4", "Letter"] = opt("A4", "Papel", "Paper", labels={"A4": ("A4", "A4"), "Letter": ("Carta (Letter)", "Letter")},
+                                         show_if={"salida": ("casa",)})
+    sangrado: float = opt(3, "Sangrado (mm)", "Bleed (mm)", ge=0, le=5, show_if={"salida": ("imprenta",)})
+    formato_imagen: Literal["jpg", "png"] = opt("jpg", "Formato de la imagen", "Image format",
+                                                labels={"jpg": ("JPG", "JPG"), "png": ("PNG", "PNG")}, show_if={"salida": ("imagen",)})
+
+
 # ——— mermaid-a-svg y mermaid-a-png (7.13, F6-N, D-231) ———
 
 MERMAID_THEMES = {"default": ("Clásico", "Classic"), "neutral": ("Neutro (blanco y negro)", "Neutral (black and white)"),
@@ -895,6 +912,10 @@ SPECS: list[ToolSpec] = [
           "Crea códigos QR de enlaces, WiFi, contactos, pagos SEPA y más, con colores, logotipo y comprobación de lectura.",
           "Create QR codes for links, WiFi, contacts, SEPA payments and more, with colours, a logo and a read check.",
           secret_fields=("wifi_contrasena",), related=("leer-codigo-qr", "crear-favicon")),
+    client("crear-tarjeta", "card-maker", "Crear tarjeta", "Card maker", CrearTarjetaOptions, COLLAGE_INPUTS, ("pdf", "jpg", "png", "zip"),
+           "Diseña postales y tarjetas dobladas con plantillas por ocasión, fotos, textos y QR, para imprimir en casa o en imprenta.",
+           "Design postcards and folded cards with templates for each occasion, photos, text and QR codes, to print at home or at a print shop.",
+           category="image", phase="F6", max_files=60, related=("crear-collage", "generar-codigo-qr", "imagenes-a-pdf")),
     client("mermaid-a-svg", "mermaid-to-svg", "Mermaid a SVG", "Mermaid to SVG", MermaidSvgOptions, ("mmd",), ("svg",),
            "Escribe o pega código Mermaid y descarga el diagrama en SVG, con vista previa en vivo y sin subir nada.",
            "Write or paste Mermaid code and download the diagram as SVG, with a live preview and nothing uploaded.",

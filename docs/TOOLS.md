@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 245 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 67). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 246 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 68). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -68,6 +68,7 @@ Catálogo publicado en esta entrega: 245 herramientas (F1 43, F2 60, F3 10, F4 1
 | `imagen-a-base64` / `image-to-base64` | navegador | — | light | F5 | activa | jpg, png, webp, gif, svg, avif, bmp, ico → txt, zip | redactado, sin revisar |
 | `leer-codigo-qr` / `qr-code-reader` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif, tiff, svg, pdf → csv | redactado, sin revisar |
 | `generar-codigo-qr` / `qr-code-generator` | navegador | — | light | F5 | activa | — → png, svg, pdf | redactado, sin revisar |
+| `crear-tarjeta` / `card-maker` | navegador | — | light | F6 | activa | jpg, png, webp, gif, bmp, avif → pdf, jpg, png, zip | redactado, sin revisar |
 | `mermaid-a-svg` / `mermaid-to-svg` | navegador | — | light | F6 | activa | mmd → svg | redactado, sin revisar |
 | `mermaid-a-png` / `mermaid-to-png` | navegador | — | light | F6 | activa | mmd → png | redactado, sin revisar |
 | `crear-collage` / `collage-maker` | navegador | — | light | F5 | activa | jpg, png, webp, gif, bmp, avif → pdf, jpg, png, zip | redactado, sin revisar |
@@ -296,7 +297,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | Straighten scans (`/en/straighten-pdf`) | `ocr-pdf` | disponible | Sin página propia en 7: el enderezado está en ocr-pdf (Enderezar, A.5) y en escaner-pdf (corrección de perspectiva, A.1). |
 | Webpage to PDF (`/en/webpage-to-pdf`) | `web-a-pdf` | disponible |  |
 | Create photo collage (`/en/create-photo-collage`) | `crear-collage` | disponible |  |
-| Create card (`/en/create-card`) | `crear-tarjeta` | pendiente (F6) |  |
+| Create card (`/en/create-card`) | `crear-tarjeta` | disponible |  |
 | Create PDF form (`/en/create-fillable-pdf-form`) | `crear-formulario-pdf`, `hacer-pdf-rellenable` | disponible |  |
 | Create PDF job application (`/en/create-job-application`) | `solicitud-de-empleo-pdf` | disponible |  |
 | Generate QR code (`/en/generate-qr-code`) | `generar-codigo-qr` | disponible |  |
@@ -407,7 +408,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Printer (`/en/pdf-printer`) | — | sin equivalente | No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3). |
 | PDF Reader (`/en/pdf-reader`) | — | sin equivalente | No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf. |
 
-Resumen: 116 disponibles, 2 pendientes de su fase y 6 sin equivalente (con su explicación).
+Resumen: 117 disponibles, 1 pendientes de su fase y 6 sin equivalente (con su explicación).
 
 ## Mejoras posteriores
 

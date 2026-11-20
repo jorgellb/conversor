@@ -13,7 +13,11 @@ export interface CollagePhoto {
   height: number;
 }
 
-export type CellShape = "rect" | "ellipse";
+/** Forma (máscara) de la foto: las tres últimas, para crear-tarjeta (F6-N2, D-232). */
+export type CellShape = "rect" | "ellipse" | "corazon" | "estrella" | "arco";
+
+/** Filtros de color de una foto (crear-tarjeta): se aplican a los píxeles antes de componer, igual en PDF e imagen. */
+export type PhotoFilter = "ninguno" | "byn" | "sepia" | "calido" | "frio" | "vintage" | "vivo";
 
 export interface Cell {
   id: string;
@@ -38,6 +42,8 @@ export interface Cell {
   caption?: string;
   /** «contain»: la foto se ve entera dentro del hueco (documentación fotográfica); si falta, lo cubre recortando. */
   fit?: "contain";
+  /** Filtro de color de la foto (crear-tarjeta). */
+  filter?: PhotoFilter;
 }
 
 interface ItemBase {
@@ -60,6 +66,11 @@ export interface TextItem extends ItemBase {
   size: number;
   color: string;
   align: "start" | "middle" | "end";
+  /** Texto en curva (crear-tarjeta): de −1 (sonrisa) a 1 (arco hacia arriba); 0 o sin definir, recto. Solo una línea. */
+  curve?: number;
+  /** Contorno de las letras (crear-tarjeta): color y grosor en mm. */
+  outline?: string | null;
+  outlineWidth?: number;
 }
 
 export interface StickerItem extends ItemBase {
@@ -78,10 +89,23 @@ export interface ShapeItem extends ItemBase {
   strokeWidth: number;
 }
 
-export type Item = TextItem | StickerItem | ShapeItem;
+/** Código QR (crear-tarjeta): el contenido se codifica al componer, igual en el editor y en la exportación. */
+export interface QrItem extends ItemBase {
+  kind: "qr";
+  data: string;
+  color: string;
+  /** Fondo del código (con su zona de silencio); null, transparente. */
+  background: string | null;
+}
+
+export type Item = TextItem | StickerItem | ShapeItem | QrItem;
+
+export type PatternName = "puntos" | "rayas" | "cuadros" | "estrellas" | "corazones" | "confeti" | "copos";
 
 export interface Background {
-  kind: "color" | "degradado" | "imagen";
+  kind: "color" | "degradado" | "imagen" | "patron";
+  /** Motivo del fondo «patron» (crear-tarjeta), dibujado con color2 sobre color. */
+  pattern?: PatternName;
   color: string;
   color2: string;
   /** Ángulo del degradado lineal (0 = de izquierda a derecha). */
@@ -98,6 +122,8 @@ export interface CollagePage {
   realSize?: { cutMarks: boolean };
   /** Documentación fotográfica: la página lleva el encabezado y el número de página del documento. */
   documentation?: boolean;
+  /** Fondo propio de esta página (cada cara de una tarjeta); si falta, el del documento. */
+  background?: Background;
 }
 
 export interface CollageDoc {

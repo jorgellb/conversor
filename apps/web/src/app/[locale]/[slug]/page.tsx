@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { BoardEditor, BookmarksEditor, ChatPdfView, CollageView, CompareView, MermaidView, CopyView, FormDesigner, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
+import { BoardEditor, BookmarksEditor, ChatPdfView, CardView, CollageView, CompareView, MermaidView, CopyView, FormDesigner, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
   InvoiceDesigner, SearchView, SignatureRequestView } from "@/components/LazyViews";
 import { Feedback } from "@/components/Feedback";
 import { StaticPage } from "@/components/StaticPage";
@@ -23,7 +23,7 @@ import { formatName } from "@/lib/conversions";
 type Params = { params: Promise<{ locale: string; slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 /** Editores que necesitan más ancho que el resto de páginas (paneles a los lados del lienzo). */
-const WIDE_TOOLS = ["crear-collage", "mermaid-a-svg", "mermaid-a-png"];
+const WIDE_TOOLS = ["crear-collage", "crear-tarjeta", "mermaid-a-svg", "mermaid-a-png"];
 
 const EDITORS: Record<string, "editar" | "rellenar" | "redactar" | "anotar" | "firmar"> = {
   "editar-pdf": "editar", "rellenar-pdf": "rellenar", "redactar-pdf": "redactar", "anotar-pdf": "anotar", "firmar-pdf": "firmar",
@@ -35,7 +35,7 @@ const FORM_DESIGNERS = ["hacer-pdf-rellenable", "crear-formulario-pdf"];
 /** Mensajes propios de la vista de cada herramienta (D-197); el resto de páginas solo recibe los comunes. */
 const VIEW_OF: Record<string, readonly ViewNamespace[]> = {
   "marcadores-pdf": ["bookmarks"], "comparar-pdf": ["compare"], "escaner-pdf": ["scanner"], "copiar-de-pdf": ["copy"],
-  "generar-codigo-qr": ["qr"], "crear-collage": ["collage"], "mermaid-a-svg": ["mermaid"], "mermaid-a-png": ["mermaid"], "chat-pdf": ["chatPdf"], "lector-pdf": ["viewer"], "imprimir-pdf": ["printjob"],
+  "generar-codigo-qr": ["qr"], "crear-collage": ["collage"], "mermaid-a-svg": ["mermaid"], "crear-tarjeta": ["tarjeta", "collage"], "mermaid-a-png": ["mermaid"], "chat-pdf": ["chatPdf"], "lector-pdf": ["viewer"], "imprimir-pdf": ["printjob"],
   "hacer-pdf-rellenable": ["formDesigner"], "crear-formulario-pdf": ["formDesigner"],
   "editar-pdf": ["editor"], "rellenar-pdf": ["editor"], "redactar-pdf": ["editor"], "anotar-pdf": ["editor"], "firmar-pdf": ["editor", "signPdf"],
   "solicitar-firmas": ["signRequest"], "crear-factura": ["invoice"], "crear-factura-electronica": ["invoice"], "pdf-a-factura-electronica": ["invoice"],
@@ -212,6 +212,8 @@ export default async function SlugPage({ params, searchParams }: Params) {
           <QrGeneratorView spec={clientSpec(tool, locale)} />
         ) : tool.slug_es === "crear-collage" && !disabledByEnv(tool.slug_es) ? (
           <CollageView spec={clientSpec(tool, locale)} />
+        ) : tool.slug_es === "crear-tarjeta" && !disabledByEnv(tool.slug_es) ? (
+          <CardView spec={clientSpec(tool, locale)} />
         ) : (tool.slug_es === "mermaid-a-svg" || tool.slug_es === "mermaid-a-png") && !disabledByEnv(tool.slug_es) ? (
           <MermaidView spec={clientSpec(tool, locale)} />
         ) : tool.slug_es === "chat-pdf" && !disabledByEnv(tool.slug_es) ? (

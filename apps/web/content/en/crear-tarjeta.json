@@ -1,0 +1,35 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Card maker lets you design postcards and folded cards for birthdays, Christmas, weddings, new babies, anniversaries, invitations, thank-yous, sympathy, Valentine's Day or graduations. You start from our own template for each occasion, with its background, photo slot, title and message, and change everything you like in the editor.",
+    "Add your photos from your computer or take one with your phone's camera, and choose their shape (rectangle, circle, heart, star or arch) and a filter: black and white, sepia, warm, cool, vintage or vivid. Text supports three typefaces, bold, italics, shadow, outline and curve, to write in an arch or a smile. Add stickers, shapes, a QR code with a link or a video, and a background of colour, gradient, photo or pattern (polka dots, stripes, gingham, stars, hearts, confetti or snowflakes).",
+    "To send the same card to many people, load a CSV or Excel list with one row per person: one card is made per row and fields in braces, such as {Name}, are filled in in the text and the QR code. With one click you put each person's address on the back of the postcard, next to the stamp box.",
+    "When you finish, choose how you want it. “Print at home” places several cards per A4 or Letter sheet with crop marks, and the backs go on the next sheet mirrored so they line up when printing double-sided; folded cards come out open with fold marks. “Print shop” gives each side at final size with 3 mm bleed, TrimBox and BleedBox and crop marks, and warns you if any photo is below 300 dpi. “Image” gives a JPG or PNG of each side to send by messaging or email.",
+    "Everything happens in your browser: neither the photos nor the recipient list are uploaded to any server. You can save the design to a file and open it another day to carry on."
+  ],
+  "steps": [
+    "Choose the format, size and occasion, and start with its template.",
+    "Add your photos, change the text and decorate each side.",
+    "Optionally, load the recipient list and put the address on the back.",
+    "Choose the output (home, print shop or image) and create the card."
+  ],
+  "faq": [
+    {
+      "q": "How do I print double-sided so the back lines up?",
+      "a": "Print the PDF double-sided flipping on the long edge if the sheet is portrait, or the short edge if it is landscape; the result note tells you which. Backs are already mirrored to fall behind their fronts."
+    },
+    {
+      "q": "What is bleed?",
+      "a": "A margin of a few millimetres outside the cut line, which the background and edge photos reach into, so no white edge shows if the guillotine drifts. Print shops usually ask for 3 mm."
+    },
+    {
+      "q": "How many cards can I make from a list?",
+      "a": "Up to 500 for printing and 20 as images, one card per row of the list."
+    },
+    {
+      "q": "Are my photos stored?",
+      "a": "No. They stay in your browser while you edit and disappear when you close the page, unless you save the design (the file keeps the layout, not the photos)."
+    }
+  ]
+}

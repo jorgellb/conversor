@@ -51,7 +51,7 @@ herramientas:
     equivalentes: [crear-collage]
   - pdf24: "Create card"
     ruta: /en/create-card
-    equivalentes: [crear-tarjeta:F6]
+    equivalentes: [crear-tarjeta]
   - pdf24: "Create PDF form"
     ruta: /en/create-fillable-pdf-form
     equivalentes: [crear-formulario-pdf, hacer-pdf-rellenable]

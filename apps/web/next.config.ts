@@ -52,9 +52,9 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
       },
       {
-        // La cámara solo se permite en escaner-pdf, crear-collage y firmar-pdf (12.4; la firma con la cámara de A.6); esta regla
+        // La cámara solo se permite en escaner-pdf, crear-collage, crear-tarjeta y firmar-pdf (12.4; la firma con la cámara de A.6); esta regla
         // va después y sustituye a la general.
-        source: "/:locale(es|en)/:slug(escaner-pdf|pdf-scanner|crear-collage|collage-maker|firmar-pdf|sign-pdf)",
+        source: "/:locale(es|en)/:slug(escaner-pdf|pdf-scanner|crear-collage|collage-maker|crear-tarjeta|card-maker|firmar-pdf|sign-pdf)",
         headers: [{ key: "Permissions-Policy", value: "camera=(self), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()" }],
       },
     ];

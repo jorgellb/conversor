@@ -10609,6 +10609,154 @@
       }
     },
     {
+      "slug_es": "crear-tarjeta",
+      "slug_en": "card-maker",
+      "name_es": "Crear tarjeta",
+      "name_en": "Card maker",
+      "summary_es": "Diseña postales y tarjetas dobladas con plantillas por ocasión, fotos, textos y QR, para imprimir en casa o en imprenta.",
+      "summary_en": "Design postcards and folded cards with templates for each occasion, photos, text and QR codes, to print at home or at a print shop.",
+      "category": "image",
+      "where": "client",
+      "worker_group": null,
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "jpg",
+        "png",
+        "webp",
+        "gif",
+        "bmp",
+        "avif"
+      ],
+      "outputs": [
+        "pdf",
+        "jpg",
+        "png",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 60,
+      "secret_fields": [],
+      "related": [
+        "crear-collage",
+        "generar-codigo-qr",
+        "imagenes-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "crear-tarjeta (A.1): el editor compone la tarjeta en la página; el worker recibe además el documento (`doc`).",
+        "properties": {
+          "salida": {
+            "default": "casa",
+            "enum": [
+              "casa",
+              "imprenta",
+              "imagen"
+            ],
+            "title": "Salida",
+            "type": "string",
+            "x-labels": {
+              "casa": {
+                "en": "Print at home (several per sheet, with crop marks)",
+                "es": "Imprimir en casa (varias por hoja, con marcas de corte)"
+              },
+              "imagen": {
+                "en": "Image to send",
+                "es": "Imagen para enviar"
+              },
+              "imprenta": {
+                "en": "Print shop (final size with bleed)",
+                "es": "Imprenta (tamaño final con sangrado)"
+              }
+            },
+            "x-title": {
+              "en": "Output",
+              "es": "Salida"
+            }
+          },
+          "papel": {
+            "default": "A4",
+            "enum": [
+              "A4",
+              "Letter"
+            ],
+            "title": "Papel",
+            "type": "string",
+            "x-labels": {
+              "A4": {
+                "en": "A4",
+                "es": "A4"
+              },
+              "Letter": {
+                "en": "Letter",
+                "es": "Carta (Letter)"
+              }
+            },
+            "x-show-if": {
+              "salida": [
+                "casa"
+              ]
+            },
+            "x-title": {
+              "en": "Paper",
+              "es": "Papel"
+            }
+          },
+          "sangrado": {
+            "default": 3,
+            "maximum": 5,
+            "minimum": 0,
+            "title": "Sangrado (mm)",
+            "type": "number",
+            "x-show-if": {
+              "salida": [
+                "imprenta"
+              ]
+            },
+            "x-title": {
+              "en": "Bleed (mm)",
+              "es": "Sangrado (mm)"
+            }
+          },
+          "formato_imagen": {
+            "default": "jpg",
+            "enum": [
+              "jpg",
+              "png"
+            ],
+            "title": "Formato de la imagen",
+            "type": "string",
+            "x-labels": {
+              "jpg": {
+                "en": "JPG",
+                "es": "JPG"
+              },
+              "png": {
+                "en": "PNG",
+                "es": "PNG"
+              }
+            },
+            "x-show-if": {
+              "salida": [
+                "imagen"
+              ]
+            },
+            "x-title": {
+              "en": "Image format",
+              "es": "Formato de la imagen"
+            }
+          }
+        },
+        "title": "CrearTarjetaOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "mermaid-a-svg",
       "slug_en": "mermaid-to-svg",
       "name_es": "Mermaid a SVG",

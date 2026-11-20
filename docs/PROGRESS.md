@@ -648,9 +648,14 @@ mermaid-a-svg y mermaid-a-png en el navegador con vista previa en vivo (D-231), 
 Correcciones de D-233 (UDF acotado y sin marcas inyectadas, MIDI que FluidSynth no toca como dice, .mxl con señuelo, límites de
 MuseScore y de las capturas, lista de bloqueo de Chromium en `gotenbergweb`), en `tests/test_revision_f6lm.py`.
 
+## F6-N2 (crear-tarjeta)
+
+Postales y dípticas con plantillas por ocasión sobre el motor del collage, destinatarios de CSV o Excel y salidas para casa, imprenta
+e imagen (D-232), en `packages/client-tools/test/tarjeta.test.ts` y `tests/e2e/tarjeta-f6.spec.ts`.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M y F6-N1 hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1 y F6-N2 hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

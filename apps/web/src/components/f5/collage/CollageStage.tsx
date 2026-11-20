@@ -4,8 +4,11 @@
 // (svg.ts): encuadre de cada foto, marcos, sombras, fondo y adornos. Solo se carga en el navegador (dynamic, ssr: false).
 import { CAPTION, FOOTER, HEADER, MARK, captionText, cutMarks, hasHeader, pageNumberText } from "@conversor/client-tools/collage/decor";
 import { STRUCTURED, cellAt, swapCells, toLocal, type PageMeta } from "@conversor/client-tools/collage/editor";
-import { coverPlacement, panBy, type Cell, type CollageDoc, type CollagePage, type Item, type TextItem } from "@conversor/client-tools/collage/model";
+import { coverPlacement, panBy, type Cell, type CellShape, type CollageDoc, type CollagePage, type Item, type PhotoFilter, type QrItem, type TextItem } from "@conversor/client-tools/collage/model";
+import { qrModules } from "@conversor/client-tools/collage/qr";
+import { applyFilter, maskPath, patternLayers } from "@conversor/client-tools/collage/shapes";
 import { STICKER_BY_ID } from "@conversor/client-tools/collage/stickers";
+import { curvedGlyphs } from "@conversor/client-tools/collage/textcurve";
 import { cellRadius, photoRect } from "@conversor/client-tools/collage/svg";
 import Konva from "konva";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
@@ -16,7 +19,7 @@ Konva.dragDistance = 4;
 export type Selection = { kind: "cell"; index: number } | { kind: "item"; id: string } | null;
 
 export interface StagePhoto {
-  bitmap: ImageBitmap;
+  bitmap: ImageBitmap | HTMLCanvasElement;
   width: number;
   height: number;
 }
@@ -49,15 +52,29 @@ const hex = (c: string | null | undefined, fallback: string) => (c && /^#[0-9a-f
 
 type Box = { x: number; y: number; w: number; h: number };
 
-/** Rectángulo (con esquinas) o elipse en coordenadas locales, como `shapeTag` de svg.ts. */
-function Outline({ box, ellipse, radius, ...rest }: { box: Box; ellipse: boolean; radius: number } & Konva.ShapeConfig) {
+/** Rectángulo (con esquinas), elipse o máscara (corazón, estrella, arco) en coordenadas locales, como `shapeTag` de svg.ts. */
+function Outline({ box, ellipse, radius, ...rest }: { box: Box; ellipse: boolean | CellShape; radius: number } & Konva.ShapeConfig) {
+  if (typeof ellipse === "string") {
+    const d = maskPath(ellipse, box);
+    if (d) return <Path data={d} {...(rest as Konva.PathConfig)} />;
+    ellipse = ellipse === "ellipse";
+  }
   if (ellipse) return <Ellipse x={box.x + box.w / 2} y={box.y + box.h / 2} radiusX={box.w / 2} radiusY={box.h / 2} {...rest} />;
   const r = Math.max(0, Math.min(radius, box.w / 2, box.h / 2));
   return <Rect x={box.x} y={box.y} width={box.w} height={box.h} cornerRadius={r} {...rest} />;
 }
 
-function clipTo(box: Box, ellipse: boolean, radius: number) {
+function clipTo(box: Box, ellipse: boolean | CellShape, radius: number) {
+  const d = typeof ellipse === "string" ? maskPath(ellipse, box) : null;
+  if (typeof ellipse === "string") ellipse = ellipse === "ellipse";
   return (ctx: Konva.Context) => {
+    if (d) {
+      // Las máscaras (corazón, estrella, arco) las recorta PhotoShape con un Path2D; aquí basta su caja.
+      ctx.beginPath();
+      ctx.rect(box.x, box.y, box.w, box.h);
+      ctx.closePath();
+      return;
+    }
     ctx.beginPath();
     if (ellipse) ctx.ellipse(box.x + box.w / 2, box.y + box.h / 2, box.w / 2, box.h / 2, 0, 0, Math.PI * 2);
     else ctx.roundRect(box.x, box.y, box.w, box.h, Math.max(0, Math.min(radius, box.w / 2, box.h / 2)));
@@ -70,25 +87,61 @@ function clipTo(box: Box, ellipse: boolean, radius: number) {
  * entera, que se sale por los lados al cubrirlo.
  */
 function PhotoShape({ bitmap, area, ellipse, radius, place }: {
-  bitmap: ImageBitmap; area: Box; ellipse: boolean; radius: number; place: { x: number; y: number; w: number; h: number };
+  bitmap: ImageBitmap | HTMLCanvasElement; area: Box; ellipse: boolean | CellShape; radius: number; place: { x: number; y: number; w: number; h: number };
 }) {
   const local = { x: 0, y: 0, w: area.w, h: area.h };
   const outline = clipTo(local, ellipse, radius);
+  const mask = typeof ellipse === "string" ? maskPath(ellipse, local) : null;
   return (
     <Shape x={area.x} y={area.y} width={area.w} height={area.h} perfectDrawEnabled={false}
       sceneFunc={(ctx) => {
         ctx.save();
-        outline(ctx);
-        ctx.clip();
+        if (mask) {
+          (ctx as unknown as { _context: CanvasRenderingContext2D })._context.clip(new Path2D(mask));
+        } else {
+          outline(ctx);
+          ctx.clip();
+        }
         ctx.drawImage(bitmap, place.x, place.y, place.w, place.h);
         ctx.restore();
       }}
       hitFunc={(ctx, shape) => {
-        outline(ctx);
+        if (mask) {
+          ctx.beginPath();
+          ctx.rect(0, 0, area.w, area.h);
+          ctx.closePath();
+        } else {
+          outline(ctx);
+        }
         ctx.fillStrokeShape(shape);
       }}
     />
   );
+}
+
+/** Foto con su filtro de color (crear-tarjeta), reducida a 1600 px para que el editor vaya fluido; se guarda por foto y filtro. */
+const filteredCache = new WeakMap<object, Map<string, HTMLCanvasElement>>();
+export function filteredBitmap(bitmap: ImageBitmap | HTMLCanvasElement, filter: PhotoFilter | undefined): ImageBitmap | HTMLCanvasElement {
+  if (!filter || filter === "ninguno" || typeof document === "undefined") return bitmap;
+  let byFilter = filteredCache.get(bitmap);
+  if (!byFilter) {
+    byFilter = new Map();
+    filteredCache.set(bitmap, byFilter);
+  }
+  const hit = byFilter.get(filter);
+  if (hit) return hit;
+  const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  if (!ctx) return bitmap;
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  applyFilter(data.data, filter);
+  ctx.putImageData(data, 0, 0);
+  byFilter.set(filter, canvas);
+  return canvas;
 }
 
 /** Una línea de texto Noto Sans con su línea base en (x, y), recortada a `clip` si se da (pies de foto). */
@@ -137,8 +190,32 @@ function TextShape({ item, fontsVersion }: { item: TextItem; fontsVersion: numbe
         ctx.setAttr("textAlign", item.align === "middle" ? "center" : item.align === "end" ? "right" : "left");
         ctx.setAttr("textBaseline", "alphabetic");
         ctx.setAttr("fillStyle", hex(item.color, "#000000"));
+        const outline = item.outline && (item.outlineWidth ?? 0) > 0;
+        if (outline) {
+          ctx.setAttr("strokeStyle", hex(item.outline, "#FFFFFF"));
+          ctx.setAttr("lineWidth", Math.min(5, item.outlineWidth!) * 2);
+          ctx.setAttr("lineJoin", "round");
+        }
+        const curve = Math.max(-1, Math.min(1, item.curve ?? 0));
+        if (curve !== 0) {
+          // Como en la exportación: cada letra en su sitio del arco y con su giro.
+          ctx.setAttr("textAlign", "center");
+          const glyphs = curvedGlyphs(textLines(item).join(" "), { x: 0, y: 0, w: item.w, size: item.size, curve }, (ch) => ctx.measureText(ch).width);
+          for (const g of glyphs) {
+            if (!g.ch.trim()) continue;
+            ctx.save();
+            ctx.translate(g.x, g.y);
+            ctx.rotate((g.angle * Math.PI) / 180);
+            if (outline) ctx.strokeText(g.ch, 0, 0);
+            ctx.fillText(g.ch, 0, 0);
+            ctx.restore();
+          }
+          return;
+        }
         textLines(item).forEach((line, i) => {
-          if (line) ctx.fillText(line, x, item.size * 0.8 + i * item.size * 1.25);
+          if (!line) return;
+          if (outline) ctx.strokeText(line, x, item.size * 0.8 + i * item.size * 1.25);
+          ctx.fillText(line, x, item.size * 0.8 + i * item.size * 1.25);
         });
       }}
       hitFunc={(ctx, shape) => {
@@ -151,8 +228,22 @@ function TextShape({ item, fontsVersion }: { item: TextItem; fontsVersion: numbe
   );
 }
 
+function QrShape({ item }: { item: QrItem }) {
+  const qr = qrModules(item.data);
+  const side = Math.min(item.w, item.h);
+  const ox = (item.w - side) / 2;
+  const oy = (item.h - side) / 2;
+  return (
+    <>
+      <Rect width={item.w} height={item.h} fill={item.background ? hex(item.background, "#FFFFFF") : "transparent"} />
+      <Path data={qr.d} x={ox} y={oy} scaleX={side / qr.size} scaleY={side / qr.size} fill={hex(item.color, "#000000")} listening={false} />
+    </>
+  );
+}
+
 function ItemBody({ item, fontsVersion }: { item: Item; fontsVersion: number }) {
   if (item.kind === "text") return <TextShape item={item} fontsVersion={fontsVersion} />;
+  if (item.kind === "qr") return <QrShape item={item} />;
   if (item.kind === "sticker") {
     const sticker = STICKER_BY_ID.get(item.sticker);
     if (!sticker) return <Rect width={item.w} height={item.h} stroke="#9CA3AF" strokeWidth={0.5} dash={[2, 2]} />;
@@ -258,7 +349,7 @@ export function CollageStage({ doc, pageIndex, page, cellLabels, meta, photos, s
     return { patch: { x: node.x() - w / 2, y: node.y() - h / 2, w, h, rotation: Math.round(node.rotation() * 10) / 10 }, sy };
   };
 
-  const bg = doc.background;
+  const bg = page.background ?? doc.background;
   const angle = ((bg.angle || 0) * Math.PI) / 180;
   const half = (Math.abs(Math.cos(angle)) * W + Math.abs(Math.sin(angle)) * H) / 2;
   const bgPhoto = bg.kind === "imagen" && bg.image ? photos.get(bg.image) : undefined;
@@ -334,6 +425,11 @@ export function CollageStage({ doc, pageIndex, page, cellLabels, meta, photos, s
             // En el móvil, deslizar sobre el fondo desplaza la página (sobre las fotos, encuadra o intercambia).
             <Rect name="fondo" width={W} height={H} fill={hex(bg.color, "#FFFFFF")} preventDefault={false} />
           )}
+          {bg.kind === "patron" && (
+            <Group name="fondo" clipX={0} clipY={0} clipWidth={W} clipHeight={H} listening={false}>
+              {patternLayers(bg, { x: 0, y: 0, w: W, h: H }).map((l, i) => <Path key={i} data={l.d} fill={l.fill} opacity={l.opacity} />)}
+            </Group>
+          )}
           {bgPhoto && bgPlace && (
             <Group name="fondo" clipX={0} clipY={0} clipWidth={W} clipHeight={H} listening={false}>
               <KImage image={bgPhoto.bitmap} x={bgPlace.x} y={bgPlace.y} width={bgPlace.w} height={bgPlace.h} />
@@ -342,7 +438,7 @@ export function CollageStage({ doc, pageIndex, page, cellLabels, meta, photos, s
           <Group>
             {cells.map(({ cell, index }) => {
               const photo = cell.photo ? photos.get(cell.photo) : undefined;
-              const ellipse = cell.shape === "ellipse";
+              const ellipse: CellShape = cell.shape ?? "rect";
               const radius = cellRadius(doc, cell);
               const full = { x: 0, y: 0, w: cell.w, h: cell.h };
               const caption = captionText(doc, pageIndex, index);
@@ -399,11 +495,11 @@ export function CollageStage({ doc, pageIndex, page, cellLabels, meta, photos, s
                   )}
                   {cell.polaroid && <Outline box={full} ellipse={false} radius={radius} fill="#FFFFFF" />}
                   {photo && place ? (
-                    <PhotoShape bitmap={photo.bitmap} area={area} ellipse={ellipse} radius={cell.polaroid ? 0 : radius}
+                    <PhotoShape bitmap={filteredBitmap(photo.bitmap, cell.filter)} area={area} ellipse={ellipse} radius={cell.polaroid ? 0 : radius}
                       place={{ x: place.x - r.x, y: place.y - r.y, w: place.w, h: place.h }} />
                   ) : (
                     <>
-                      <Outline box={area} ellipse={ellipse} radius={cell.polaroid ? 0 : radius} fill="#E5E7EB" />
+                      <Outline box={area} ellipse={ellipse} radius={cell.polaroid ? 0 : radius} fill="#E5E7EB" opacity={0.85} />
                       <Line points={[area.x + area.w / 2 - 4, area.y + area.h / 2, area.x + area.w / 2 + 4, area.y + area.h / 2]} stroke="#9CA3AF" strokeWidth={1} listening={false} />
                       <Line points={[area.x + area.w / 2, area.y + area.h / 2 - 4, area.x + area.w / 2, area.y + area.h / 2 + 4]} stroke="#9CA3AF" strokeWidth={1} listening={false} />
                       {cellLabels?.[index] && (

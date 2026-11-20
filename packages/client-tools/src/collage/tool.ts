@@ -11,7 +11,11 @@ import type { FontKind, FontLoader, FontStyle } from "../pdfutil";
 import { sniffImage } from "../sniff";
 import { addSvgPage } from "../svgpdf";
 import { renderSvg, type WasmLoader } from "../wasmcodecs";
-import { LIMITS, MM_PT, coverPlacement, type CollageDoc } from "./model";
+import { LIMITS, MM_PT, coverPlacement, type CellShape, type CollageDoc, type PhotoFilter } from "./model";
+import { QR_MAX } from "./qr";
+
+const CELL_SHAPES: CellShape[] = ["rect", "ellipse", "corazon", "estrella", "arco"];
+const FILTERS: PhotoFilter[] = ["ninguno", "byn", "sepia", "calido", "frio", "vintage", "vivo"];
 import { collageSvg, photoRect, type PhotoAsset } from "./svg";
 
 export interface CrearCollageOptions {
@@ -57,7 +61,21 @@ export function validateDoc(doc: CollageDoc, files: Map<string, InFile>): void {
       for (const v of [c.radius, c.captionHeight]) if (v !== undefined && (!finite(v) || v < 0 || v > 100)) bad("Medidas no válidas");
       if (c.caption !== undefined && (typeof c.caption !== "string" || c.caption.length > LIMITS.captionLength)) bad("Pie de foto no válido");
     }
-    for (const it of page.items) if (it.kind === "text" && (typeof it.text !== "string" || it.text.length > LIMITS.textLength)) bad("Texto no válido");
+    for (const it of page.items) {
+      if (it.kind === "text" && (typeof it.text !== "string" || it.text.length > LIMITS.textLength)) bad("Texto no válido");
+      if (it.kind === "text" && ![it.curve ?? 0, it.outlineWidth ?? 0].every(finite)) bad("Texto no válido");
+      if (it.kind === "qr" && (typeof it.data !== "string" || it.data.length > QR_MAX)) bad("Código QR no válido");
+      if (!["text", "sticker", "shape", "qr"].includes(it.kind)) bad("Elemento no válido");
+    }
+    for (const c of page.cells) {
+      if (!CELL_SHAPES.includes(c.shape)) bad("Forma no válida");
+      if (c.filter !== undefined && !FILTERS.includes(c.filter)) bad("Filtro no válido");
+    }
+    if (page.background !== undefined) {
+      const b = page.background;
+      if (typeof b !== "object" || b === null || !["color", "degradado", "imagen", "patron"].includes(b.kind)) bad("Fondo no válido");
+      if (b.kind === "imagen" && b.image && !files.has(b.image)) bad("Falta la foto del fondo");
+    }
     if (page.realSize !== undefined && (typeof page.realSize !== "object" || page.realSize === null || typeof page.realSize.cutMarks !== "boolean")) bad("Página no válida");
     if (page.documentation !== undefined && typeof page.documentation !== "boolean") bad("Página no válida");
   }
@@ -92,7 +110,7 @@ export function rawSize(b: Uint8Array): { width: number; height: number } | null
  * Bytes de las fotos por referencia: el SVG de cada página solo lleva una referencia y svgpdf y resvg reciben los bytes aparte
  * (sin pasar 30 fotos a base64 dentro de cada página).
  */
-class PhotoStore {
+export class PhotoStore {
   readonly bytes = new Map<string, Uint8Array>();
   readonly kinds = new Map<string, "png" | "jpg">();
 
@@ -109,15 +127,18 @@ class PhotoStore {
   }
 }
 
-function usedPhotos(doc: CollageDoc): Set<string> {
+export function usedPhotos(doc: CollageDoc): Set<string> {
   const used = new Set<string>();
-  for (const page of doc.pages) for (const c of page.cells) if (c.photo) used.add(c.photo);
+  for (const page of doc.pages) {
+    for (const c of page.cells) if (c.photo) used.add(c.photo);
+    if (page.background?.kind === "imagen" && page.background.image) used.add(page.background.image);
+  }
   if (doc.background.kind === "imagen" && doc.background.image) used.add(doc.background.image);
   return used;
 }
 
 /** Lado mayor en píxeles que necesita cada foto a la resolución pedida (la más grande de sus celdas, con el zoom). */
-function neededPixels(doc: CollageDoc, id: string, photo: { width: number; height: number }, dpi: number): number {
+export function neededPixels(doc: CollageDoc, id: string, photo: { width: number; height: number }, dpi: number): number {
   let px = 0;
   const scale = dpi / 25.4;
   for (const page of doc.pages) {
@@ -127,14 +148,15 @@ function neededPixels(doc: CollageDoc, id: string, photo: { width: number; heigh
       px = Math.max(px, Math.max(p.w, p.h) * scale);
     }
   }
-  if (doc.background.kind === "imagen" && doc.background.image === id) {
+  const bgs = [doc.background, ...doc.pages.map((p) => p.background)];
+  if (bgs.some((b) => b?.kind === "imagen" && b.image === id)) {
     const p = coverPlacement({ x: 0, y: 0, w: doc.paper.width, h: doc.paper.height, zoom: 1, panX: 0, panY: 0 }, photo);
     px = Math.max(px, Math.max(p.w, p.h) * scale);
   }
   return Math.ceil(px);
 }
 
-const FONT_SET: [FontKind, FontStyle][] = [
+export const FONT_SET: [FontKind, FontStyle][] = [
   ["sans", "regular"], ["sans", "bold"], ["sans", "italic"], ["sans", "bolditalic"],
   ["serif", "regular"], ["serif", "bold"], ["serif", "italic"], ["serif", "bolditalic"],
   ["mono", "regular"], ["mono", "bold"],
