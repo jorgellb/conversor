@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MIDI to PDF turns MIDI files into a PDF score, with staves, bars, notes and rests. It is for seeing and studying the music in a MIDI, printing it to play or getting a first version of the score that you can polish later in a notation program.",
+    "We use MuseScore, the free notation program, which imports the MIDI, quantises the rhythm (fitting notes to the nearest note values), splits each channel into an instrument with its own staff and chooses clefs and key signature. Each MIDI track appears as an instrument with its name.",
+    "A MIDI stores when each note sounds, not how it is written, so the transcription is automatic: there may be syncopated rhythms written oddly, extra ties or enharmonics different from what a musician would write. Pieces recorded by playing a keyboard live usually need more touching up than MIDI made in a sequencer.",
+    "The conversion runs on our server, with MuseScore as a separate program, without a display and with limited time and memory. You can convert up to 20 MIDI files at once."
+  ],
+  "steps": [
+    "Upload one or more MIDI files.",
+    "Wait for the transcription.",
+    "Download the PDF score."
+  ],
+  "faq": [
+    {
+      "q": "Why do some notes look badly written?",
+      "a": "Because MIDI does not say how each note is written and the transcription is automatic. If you need a perfect score, open the MIDI in MuseScore and correct it there."
+    },
+    {
+      "q": "Are karaoke lyrics included?",
+      "a": "Lyrics in some .kar files may be lost; the transcription focuses on the notes."
+    },
+    {
+      "q": "Can I listen to it too?",
+      "a": "Yes, with MIDI to MP3 or MIDI to WAV, which synthesise it with real instruments."
+    }
+  ]
+}

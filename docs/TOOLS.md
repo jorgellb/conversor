@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 237 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 59). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 241 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 63). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -112,6 +112,8 @@ Catálogo publicado en esta entrega: 237 herramientas (F1 43, F2 60, F3 10, F4 1
 | `web-a-pdf` / `web-to-pdf` | servidor | office | light | F1 | activa | — → pdf | redactado, sin revisar |
 | `word-a-pdf-accesible` / `accessible-word-to-pdf` | servidor | office | light | F4 | activa | doc, docx, odt, rtf → pdf, html, zip | redactado, sin revisar |
 | `csv-a-pdf` / `csv-to-pdf` | servidor | office | light | F1 | activa | csv → pdf, zip | redactado, sin revisar |
+| `musicxml-a-pdf` / `musicxml-to-pdf` | servidor | office | light | F6 | activa | musicxml, mxl, xml → pdf, zip | redactado, sin revisar |
+| `midi-a-pdf` / `midi-to-pdf` | servidor | office | light | F6 | activa | mid → pdf, zip | redactado, sin revisar |
 | `ocr-pdf` / `ocr-pdf` | servidor | ocr | heavy | F2 | activa | pdf → pdf, txt, zip | redactado, sin revisar |
 | `pdf-a-pdfa` / `pdf-to-pdfa` | servidor | ocr | heavy | F2 | activa | pdf → pdf, html, zip | redactado, sin revisar |
 | `validar-pdfa` / `validate-pdfa` | servidor | ocr | light | F2 | activa | pdf → html, zip | redactado, sin revisar |
@@ -136,6 +138,8 @@ Catálogo publicado en esta entrega: 237 herramientas (F1 43, F2 60, F3 10, F4 1
 | `mp4-a-mp3` / `mp4-to-mp3` | servidor | av | light | F5 | activa | mp4, m4a → mp3, zip | redactado, sin revisar |
 | `aac-a-mp3` / `aac-to-mp3` | servidor | av | light | F5 | activa | aac, m4a → mp3, zip | redactado, sin revisar |
 | `flac-a-mp3` / `flac-to-mp3` | servidor | av | light | F5 | activa | flac → mp3, zip | redactado, sin revisar |
+| `midi-a-mp3` / `midi-to-mp3` | servidor | av | light | F6 | activa | mid → mp3, zip | redactado, sin revisar |
+| `midi-a-wav` / `midi-to-wav` | servidor | av | light | F6 | activa | mid → wav, zip | redactado, sin revisar |
 | `wav-a-mp3` / `wav-to-mp3` | servidor | av | light | F5 | activa | wav → mp3, zip | redactado, sin revisar |
 | `wma-a-mp3` / `wma-to-mp3` | servidor | av | light | F5 | activa | wma → mp3, zip | redactado, sin revisar |
 | `amr-a-mp3` / `amr-to-mp3` | servidor | av | light | F5 | activa | amr → mp3, zip | redactado, sin revisar |

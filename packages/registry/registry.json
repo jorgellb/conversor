@@ -17381,6 +17381,372 @@
       }
     },
     {
+      "slug_es": "musicxml-a-pdf",
+      "slug_en": "musicxml-to-pdf",
+      "name_es": "MusicXML a PDF",
+      "name_en": "MusicXML to PDF",
+      "summary_es": "Convierte partituras MusicXML (de MuseScore, Sibelius, Finale o Dorico) en un PDF listo para imprimir.",
+      "summary_en": "Turn MusicXML scores (from MuseScore, Sibelius, Finale or Dorico) into a print-ready PDF.",
+      "category": "audio",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "musicxml",
+        "mxl",
+        "xml"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "midi-a-pdf",
+        "midi-a-mp3"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "formato": {
+            "default": "pdf",
+            "enum": [
+              "pdf",
+              "pdfa",
+              "pdfua"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "pdf": {
+                "en": "PDF",
+                "es": "PDF"
+              },
+              "pdfa": {
+                "en": "PDF/A-2b",
+                "es": "PDF/A-2b"
+              },
+              "pdfua": {
+                "en": "PDF/UA",
+                "es": "PDF/UA"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "paginas": {
+            "default": "todas",
+            "title": "Páginas",
+            "type": "string",
+            "x-title": {
+              "en": "Pages",
+              "es": "Páginas"
+            }
+          },
+          "marcadores": {
+            "default": true,
+            "title": "Marcadores desde los títulos",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Bookmarks from headings",
+              "es": "Marcadores desde los títulos"
+            }
+          },
+          "campos_formulario": {
+            "default": true,
+            "title": "Exportar campos de formulario",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Export form fields",
+              "es": "Exportar campos de formulario"
+            }
+          },
+          "calidad_imagenes": {
+            "default": 90,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Calidad de imágenes (%)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Image quality (%)",
+              "es": "Calidad de imágenes (%)"
+            }
+          },
+          "resolucion_maxima": {
+            "default": 300,
+            "enum": [
+              75,
+              150,
+              300,
+              600,
+              1200
+            ],
+            "title": "Resolución máxima (ppp)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Maximum resolution (dpi)",
+              "es": "Resolución máxima (ppp)"
+            }
+          },
+          "contrasena": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contraseña del documento",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Document password",
+              "es": "Contraseña del documento"
+            }
+          },
+          "hoja_una_pagina": {
+            "default": false,
+            "title": "Excel: cada hoja en una sola página",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Excel: each sheet on a single page",
+              "es": "Excel: cada hoja en una sola página"
+            }
+          },
+          "diapositivas_ocultas": {
+            "default": false,
+            "title": "PowerPoint: diapositivas ocultas",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "PowerPoint: hidden slides",
+              "es": "PowerPoint: diapositivas ocultas"
+            }
+          },
+          "paginas_notas": {
+            "default": false,
+            "title": "PowerPoint: páginas de notas",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "PowerPoint: notes pages",
+              "es": "PowerPoint: páginas de notas"
+            }
+          },
+          "comentarios_margen": {
+            "default": false,
+            "title": "Word: comentarios en el margen",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Word: comments in margin",
+              "es": "Word: comentarios en el margen"
+            }
+          }
+        },
+        "title": "OfficeOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "midi-a-pdf",
+      "slug_en": "midi-to-pdf",
+      "name_es": "MIDI a PDF",
+      "name_en": "MIDI to PDF",
+      "summary_es": "Convierte archivos MIDI en una partitura en PDF, con sus pentagramas, compases y figuras.",
+      "summary_en": "Turn MIDI files into a PDF score, with staves, bars and notes.",
+      "category": "audio",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "mid"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "musicxml-a-pdf",
+        "midi-a-mp3"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "formato": {
+            "default": "pdf",
+            "enum": [
+              "pdf",
+              "pdfa",
+              "pdfua"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "pdf": {
+                "en": "PDF",
+                "es": "PDF"
+              },
+              "pdfa": {
+                "en": "PDF/A-2b",
+                "es": "PDF/A-2b"
+              },
+              "pdfua": {
+                "en": "PDF/UA",
+                "es": "PDF/UA"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "paginas": {
+            "default": "todas",
+            "title": "Páginas",
+            "type": "string",
+            "x-title": {
+              "en": "Pages",
+              "es": "Páginas"
+            }
+          },
+          "marcadores": {
+            "default": true,
+            "title": "Marcadores desde los títulos",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Bookmarks from headings",
+              "es": "Marcadores desde los títulos"
+            }
+          },
+          "campos_formulario": {
+            "default": true,
+            "title": "Exportar campos de formulario",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Export form fields",
+              "es": "Exportar campos de formulario"
+            }
+          },
+          "calidad_imagenes": {
+            "default": 90,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Calidad de imágenes (%)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Image quality (%)",
+              "es": "Calidad de imágenes (%)"
+            }
+          },
+          "resolucion_maxima": {
+            "default": 300,
+            "enum": [
+              75,
+              150,
+              300,
+              600,
+              1200
+            ],
+            "title": "Resolución máxima (ppp)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Maximum resolution (dpi)",
+              "es": "Resolución máxima (ppp)"
+            }
+          },
+          "contrasena": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contraseña del documento",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Document password",
+              "es": "Contraseña del documento"
+            }
+          },
+          "hoja_una_pagina": {
+            "default": false,
+            "title": "Excel: cada hoja en una sola página",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Excel: each sheet on a single page",
+              "es": "Excel: cada hoja en una sola página"
+            }
+          },
+          "diapositivas_ocultas": {
+            "default": false,
+            "title": "PowerPoint: diapositivas ocultas",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "PowerPoint: hidden slides",
+              "es": "PowerPoint: diapositivas ocultas"
+            }
+          },
+          "paginas_notas": {
+            "default": false,
+            "title": "PowerPoint: páginas de notas",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "PowerPoint: notes pages",
+              "es": "PowerPoint: páginas de notas"
+            }
+          },
+          "comentarios_margen": {
+            "default": false,
+            "title": "Word: comentarios en el margen",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Word: comments in margin",
+              "es": "Word: comentarios en el margen"
+            }
+          }
+        },
+        "title": "OfficeOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "ocr-pdf",
       "slug_en": "ocr-pdf",
       "name_es": "OCR de PDF",
@@ -20833,6 +21199,142 @@
           }
         },
         "title": "AudioOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "midi-a-mp3",
+      "slug_en": "midi-to-mp3",
+      "name_es": "MIDI a MP3",
+      "name_en": "MIDI to MP3",
+      "summary_es": "Convierte archivos MIDI en MP3 con un banco de sonidos de instrumentos reales, para escucharlos en cualquier sitio.",
+      "summary_en": "Turn MIDI files into MP3 with a bank of real instrument sounds, to listen to them anywhere.",
+      "category": "audio",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "mid"
+      ],
+      "outputs": [
+        "mp3",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "midi-a-wav",
+        "midi-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "midi-a-mp3 (F6-L, D-228): calidad [192 kbps].",
+        "properties": {
+          "calidad": {
+            "default": "192",
+            "enum": [
+              "128",
+              "192",
+              "320",
+              "vbr"
+            ],
+            "title": "Calidad MP3",
+            "type": "string",
+            "x-labels": {
+              "128": {
+                "en": "128 kbps",
+                "es": "128 kbps"
+              },
+              "192": {
+                "en": "192 kbps",
+                "es": "192 kbps"
+              },
+              "320": {
+                "en": "320 kbps",
+                "es": "320 kbps"
+              },
+              "vbr": {
+                "en": "VBR (variable)",
+                "es": "VBR (variable)"
+              }
+            },
+            "x-title": {
+              "en": "MP3 quality",
+              "es": "Calidad MP3"
+            }
+          }
+        },
+        "title": "MidiMp3Options",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "midi-a-wav",
+      "slug_en": "midi-to-wav",
+      "name_es": "MIDI a WAV",
+      "name_en": "MIDI to WAV",
+      "summary_es": "Convierte archivos MIDI en audio WAV sin pérdida, con un banco de sonidos General MIDI completo.",
+      "summary_en": "Turn MIDI files into lossless WAV audio, with a complete General MIDI sound bank.",
+      "category": "audio",
+      "where": "server",
+      "worker_group": "av",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "mid"
+      ],
+      "outputs": [
+        "wav",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "midi-a-mp3",
+        "midi-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "midi-a-wav (F6-L, D-228): frecuencia [44,1 kHz].",
+        "properties": {
+          "frecuencia": {
+            "default": "44100",
+            "enum": [
+              "44100",
+              "48000"
+            ],
+            "title": "Frecuencia de muestreo",
+            "type": "string",
+            "x-labels": {
+              "44100": {
+                "en": "44.1 kHz",
+                "es": "44,1 kHz"
+              },
+              "48000": {
+                "en": "48 kHz",
+                "es": "48 kHz"
+              }
+            },
+            "x-title": {
+              "en": "Sample rate",
+              "es": "Frecuencia de muestreo"
+            }
+          }
+        },
+        "title": "MidiWavOptions",
         "type": "object"
       }
     },

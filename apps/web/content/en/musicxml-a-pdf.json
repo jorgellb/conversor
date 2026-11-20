@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MusicXML to PDF turns scores in MusicXML, the format exported and imported by MuseScore, Sibelius, Finale, Dorico, Notion and almost any notation program, into a PDF ready to print, send to musicians or publish.",
+    "We lay out the score with MuseScore, the free music notation program, which places staves, clefs, key signatures, bars, notes, slurs, dynamics, lyrics and chords, and spreads the music over pages. Title, composer and instrument names appear as in the original.",
+    "We accept uncompressed MusicXML (.musicxml or .xml) and compressed (.mxl). The XML is read safely, without loading DTDs or external entities, and the .mxl is checked before it is opened. MuseScore runs on our server without a display, as a separate program with limited time and memory.",
+    "If the score has several parts, such as a quartet or a band, the PDF holds the full score with every instrument. To get a single instrument's part, export it from your program as a separate MusicXML and convert it here. Lyrics in several verses are kept, each verse on its own line under the notes.",
+    "The layout is MuseScore's: page size, system breaks and spacing may differ slightly from the program the score was written in, especially if it relied on manual adjustments. You can convert up to 20 scores at once."
+  ],
+  "steps": [
+    "Upload one or more MusicXML or MXL files.",
+    "Wait while the score is laid out.",
+    "Download the PDF."
+  ],
+  "faq": [
+    {
+      "q": "How do I export MusicXML from my program?",
+      "a": "In MuseScore, Sibelius, Finale and Dorico it is under File, Export, MusicXML. The compressed .mxl is smaller and works the same."
+    },
+    {
+      "q": "Are lyrics kept?",
+      "a": "Yes, lyrics, chords and text markings included in the MusicXML."
+    },
+    {
+      "q": "What about a MIDI file?",
+      "a": "MIDI to PDF transcribes a MIDI into a score, though with less detail than a MusicXML."
+    }
+  ]
+}

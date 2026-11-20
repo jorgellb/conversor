@@ -46,6 +46,21 @@ class WavOptions(BaseModel):
     normalizar: bool = opt(False, "Normalizar volumen", "Normalize volume", advanced=True)
 
 
+class MidiMp3Options(BaseModel):
+    """midi-a-mp3 (F6-L, D-228): calidad [192 kbps]."""
+
+    calidad: Literal["128", "192", "320", "vbr"] = opt("192", "Calidad MP3", "MP3 quality",
+                                                      labels={"128": ("128 kbps", "128 kbps"), "192": ("192 kbps", "192 kbps"),
+                                                              "320": ("320 kbps", "320 kbps"), "vbr": ("VBR (variable)", "VBR (variable)")})
+
+
+class MidiWavOptions(BaseModel):
+    """midi-a-wav (F6-L, D-228): frecuencia [44,1 kHz]."""
+
+    frecuencia: Literal["44100", "48000"] = opt("44100", "Frecuencia de muestreo", "Sample rate",
+                                                labels={"44100": ("44,1 kHz", "44.1 kHz"), "48000": ("48 kHz", "48 kHz")})
+
+
 class CortarAudioOptions(BaseModel):
     inicio: str = opt("0:00", "Inicio (h:mm:ss)", "Start (h:mm:ss)", max_length=20)
     fin: str = opt("", "Final (vacío: hasta el final)", "End (empty: until the end)", max_length=20)
@@ -161,7 +176,7 @@ def audio(slug_es, slug_en, name_es, name_en, inputs, summary_es, summary_en, op
           impl="tools.av.audio:run", **kw) -> ToolSpec:
     return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category="audio", where="server",
                     inputs=inputs, outputs=outputs, options=options, worker_group="av", cost_class="light",
-                    queue_kind="light", impl=impl, launch=True, phase="F5", time_limit=kw.pop("time_limit", 900),
+                    queue_kind="light", impl=impl, launch=True, phase=kw.pop("phase", "F5"), time_limit=kw.pop("time_limit", 900),
                     summary_es=summary_es, summary_en=summary_en, related=kw.pop("related", ("ogg-a-mp3", "m4a-a-mp3")), **kw)
 
 
@@ -178,6 +193,15 @@ SPECS: list[ToolSpec] = [
           "Convierte audios AAC a MP3.", "Convert AAC audio to MP3."),
     audio("flac-a-mp3", "flac-to-mp3", "FLAC a MP3", "FLAC to MP3", ("flac",),
           "Convierte música FLAC sin pérdida a MP3 para el móvil o el coche.", "Convert lossless FLAC music to MP3 for your phone or car."),
+    # 7.13 (F6-L, D-228): FluidSynth (LGPL, externo) con FluidR3_GM (MIT) y FFmpeg LGPL.
+    audio("midi-a-mp3", "midi-to-mp3", "MIDI a MP3", "MIDI to MP3", ("mid",),
+          "Convierte archivos MIDI en MP3 con un banco de sonidos de instrumentos reales, para escucharlos en cualquier sitio.",
+          "Turn MIDI files into MP3 with a bank of real instrument sounds, to listen to them anywhere.",
+          options=MidiMp3Options, impl="tools.av.midi:run", phase="F6", related=("midi-a-wav", "midi-a-pdf")),
+    audio("midi-a-wav", "midi-to-wav", "MIDI a WAV", "MIDI to WAV", ("mid",),
+          "Convierte archivos MIDI en audio WAV sin pérdida, con un banco de sonidos General MIDI completo.",
+          "Turn MIDI files into lossless WAV audio, with a complete General MIDI sound bank.",
+          options=MidiWavOptions, outputs=("wav", "zip"), impl="tools.av.midi:run", phase="F6", related=("midi-a-mp3", "midi-a-pdf")),
     audio("wav-a-mp3", "wav-to-mp3", "WAV a MP3", "WAV to MP3", ("wav",),
           "Convierte grabaciones WAV a MP3, que ocupan mucho menos.", "Convert WAV recordings to MP3, which take far less space."),
     audio("wma-a-mp3", "wma-to-mp3", "WMA a MP3", "WMA to MP3", ("wma",),

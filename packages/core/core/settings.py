@@ -118,6 +118,12 @@ class Settings(BaseSettings):
     TECTONIC_CACHE: Path = Path("/opt/tectonic/cache")
     # drawio-a-pdf y drawio-a-png (F6-K): el visor de draw.io (infra/drawio/fetch.sh) en workeroffice.
     DRAWIO_VIEWER: Path = Path("/opt/drawio/viewer-static.min.js")
+    # F6-L (D-228): FluidSynth y su banco FluidR3_GM (MIT) en workerav; MuseScore 3 en workeroffice. Los tres, del sistema.
+    FLUIDSYNTH_BIN: Path = Path("/usr/bin/fluidsynth")
+    SOUNDFONT: Path = Path("/usr/share/sounds/sf2/FluidR3_GM.sf2")
+    MSCORE_BIN: Path = Path("/usr/bin/mscore3")
+    # Solo para probar en local con motores sacados de paquetes .deb sin instalar: LD_LIBRARY_PATH de esos motores.
+    ENGINES_LIBRARY_PATH: str = ""
     # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
     # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
     SIGN_VERIFY_EXTRA_ROOTS: str = ""

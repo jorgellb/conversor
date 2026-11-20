@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MIDI a PDF convierte archivos MIDI en una partitura en PDF, con sus pentagramas, compases, notas y silencios. Sirve para ver y estudiar la música de un MIDI, imprimirla para tocarla o tener una primera versión de la partitura que luego puedas pulir en un programa de notación.",
+    "Usamos MuseScore, el programa libre de notación, que importa el MIDI, cuantiza el ritmo (ajusta las notas a las figuras más cercanas), separa cada canal en un instrumento con su pentagrama y elige las claves y la armadura. Cada pista del MIDI aparece como un instrumento con su nombre.",
+    "Un MIDI guarda cuándo suena cada nota, no cómo se escribe, así que la transcripción es automática: puede haber ritmos sincopados escritos de forma rara, ligaduras de más o enarmonías distintas de las que escribiría un músico. Para piezas grabadas tocando un teclado en directo el resultado suele necesitar más retoques que para MIDI hechos en un secuenciador.",
+    "La conversión se hace en nuestro servidor, con MuseScore como programa aparte, sin interfaz y con tiempo y memoria limitados. Puedes convertir hasta 20 archivos MIDI a la vez."
+  ],
+  "steps": [
+    "Sube uno o varios archivos MIDI.",
+    "Espera a la transcripción.",
+    "Descarga la partitura en PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué hay notas que parecen mal escritas?",
+      "a": "Porque el MIDI no dice cómo se escribe cada nota y la transcripción es automática. Si necesitas una partitura perfecta, abre el MIDI en MuseScore y corrígela allí."
+    },
+    {
+      "q": "¿Se incluye la letra de un karaoke?",
+      "a": "Las letras de algunos .kar se pueden perder; la transcripción se centra en las notas."
+    },
+    {
+      "q": "¿Puedo escucharlo también?",
+      "a": "Sí, con MIDI a MP3 o MIDI a WAV, que lo sintetizan con instrumentos reales."
+    }
+  ]
+}

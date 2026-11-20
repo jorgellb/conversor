@@ -94,7 +94,7 @@ FROM base AS worker-office
 # LibreOffice local solo para conversiones que no son a PDF (pdf-a-word fiel); Office a PDF va por Gotenberg.
 # Calibre (`ebook-convert`, GPL, solo como proceso externo) para EPUB, MOBI, AZW3 y FB2 a PDF (F2, lote C; D-53).
 RUN apt-get update \
- && apt-get install -y --no-install-recommends libreoffice-writer-nogui libreoffice-calc-nogui libreoffice-impress-nogui \
+ && apt-get install -y --no-install-recommends libreoffice-writer-nogui libreoffice-calc-nogui libreoffice-impress-nogui musescore3 \
       calibre fonts-dejavu fonts-liberation2 fonts-noto-core fonts-crosextra-carlito fonts-crosextra-caladea \
  && rm -rf /var/lib/apt/lists/* \
  && ebook-convert --version
@@ -204,6 +204,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl xz-utils \
 # espeak-ng (GPL-3.0) para los fonemas de pdf-a-audio, solo como programa externo con run_engine (11 y 12.1).
 RUN apt-get update && apt-get install -y --no-install-recommends espeak-ng \
  && rm -rf /var/lib/apt/lists/* && espeak-ng --version
+# FluidSynth (LGPL, externo) y el banco FluidR3_GM (MIT) para midi-a-mp3 y midi-a-wav (F6-L, D-228).
+RUN apt-get update && apt-get install -y --no-install-recommends fluidsynth fluid-soundfont-gm \
+ && rm -rf /var/lib/apt/lists/* && fluidsynth --version && test -f /usr/share/sounds/sf2/FluidR3_GM.sf2
 COPY infra/uv-overrides.txt ./infra/uv-overrides.txt
 # faster-whisper sin PyAV (D-111), y comprobado: ni el módulo `av` ni libx264/libx265 en la imagen. Tampoco los paquetes
 # de Python que cargarían espeak-ng dentro del proceso (misaki, phonemizer, kokoro, kokoro-onnx, espeakng-loader; 11).

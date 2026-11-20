@@ -626,6 +626,18 @@
    "b64": "XGRvY3VtZW50Y2xhc3N7YXJ0aWNsZX0KXGJlZ2lue2RvY3VtZW50fUhvbGFcZW5ke2RvY3VtZW50fQo="
   },
   {
+   "id": "midi",
+   "declared": "mid",
+   "expected": "mid",
+   "b64": "TVRoZAAAAAYAAAABAeBNVHJrAAAABAD/LwA="
+  },
+  {
+   "id": "musicxml",
+   "declared": "musicxml",
+   "expected": "musicxml",
+   "b64": "PD94bWwgdmVyc2lvbj0iMS4wIj8+PHNjb3JlLXBhcnR3aXNlIHZlcnNpb249IjMuMSIvPg=="
+  },
+  {
    "id": "txt-utf16-texto-unicode-de-excel",
    "declared": "txt",
    "expected": "txt",

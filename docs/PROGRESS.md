@@ -622,9 +622,14 @@ probarlas con un PST real (D-225), en `tests/test_buzones.py`.
 latex-a-pdf con Tectonic aislado con Landlock (16.4: `\input{/etc/hostname}` no se lee) y drawio-a-pdf y drawio-a-png con el visor
 oficial de draw.io en el Chromium de Gotenberg (D-227), en `tests/test_latex_drawio.py` con Tectonic, Landlock y Chromium reales.
 
+## F6-L (música)
+
+midi-a-mp3 y midi-a-wav con FluidSynth y FluidR3_GM, y musicxml-a-pdf y midi-a-pdf con MuseScore 3 (D-228), en
+`tests/test_musica.py` con los tres motores reales sacados de sus paquetes de Debian.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J y F6-K hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K y F6-L hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

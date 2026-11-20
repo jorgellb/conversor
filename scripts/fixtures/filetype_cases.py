@@ -165,6 +165,8 @@ def cases() -> list[dict]:
         ("pst", "pst", b"!BDN\x00\x00\x00\x00SM\x17\x00" + bytes(40), "pst"),
         ("drawio", "drawio", b'<mxfile host="app.diagrams.net"><diagram id="a" name="P">dZ</diagram></mxfile>', "drawio"),
         ("tex", "tex", b"\\documentclass{article}\n\\begin{document}Hola\\end{document}\n", "tex"),
+        ("midi", "mid", b"MThd\x00\x00\x00\x06\x00\x00\x00\x01\x01\xe0MTrk\x00\x00\x00\x04\x00\xff\x2f\x00", "mid"),
+        ("musicxml", "musicxml", b'<?xml version="1.0"?><score-partwise version="3.1"/>', "musicxml"),
         ("txt-utf16-texto-unicode-de-excel", "txt", "Nombre\tAño\r\nPeña\t1990\r\n".encode("utf-16"), "txt"),
         ("md-utf16-no-admitido", "md", "# Hola\n".encode("utf-16"), None),
         ("mp3-capa1-ff-fe", "mp3", b"\xff\xfe\x90\x00" + bytes(range(1, 31)), "mp3"),

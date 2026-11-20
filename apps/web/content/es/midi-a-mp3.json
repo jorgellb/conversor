@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MIDI a MP3 convierte archivos MIDI (.mid, .midi o .kar) en audio MP3 que se reproduce en cualquier móvil, ordenador, coche o altavoz. Un MIDI no lleva sonido grabado, sino las notas que debe tocar cada instrumento; para oírlo hace falta un sintetizador, y aquí lo hacemos por ti con un banco de sonidos de instrumentos reales.",
+    "Usamos FluidSynth, el sintetizador libre de referencia, con el banco FluidR3_GM: los 128 instrumentos del estándar General MIDI (pianos, cuerdas, metales, guitarras, sintetizadores…) y la batería, grabados de instrumentos de verdad. Se respetan el tempo y sus cambios, los instrumentos de cada canal, el volumen, la panorámica y los pedales, con reverberación.",
+    "Eliges la calidad del MP3: 128, 192 o 320 kbps, o variable. Antes de sintetizar calculamos lo que dura el MIDI, y el límite de minutos de tu plan es el mismo que el de las demás herramientas de audio; así un archivo diminuto con notas eternas no puede bloquear el servidor.",
+    "Es útil para escuchar una base de karaoke, compartir una composición hecha en un secuenciador, preparar el acompañamiento de un ensayo o pasar a audio una colección de MIDI antiguos. Puedes convertir hasta 20 archivos a la vez."
+  ],
+  "steps": [
+    "Sube uno o varios archivos MIDI.",
+    "Elige la calidad del MP3.",
+    "Descarga el MP3 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué suena distinto que en mi teclado?",
+      "a": "Cada sintetizador tiene sus propios sonidos. El MIDI solo dice qué nota toca cada instrumento; aquí usamos el banco FluidR3_GM, de calidad alta y licencia libre."
+    },
+    {
+      "q": "¿Se oye la letra de un karaoke?",
+      "a": "No: un MIDI no lleva voz grabada. Las letras de los .kar son texto y no se cantan."
+    },
+    {
+      "q": "¿Puedo obtener la partitura?",
+      "a": "Sí, con MIDI a PDF, que transcribe las notas a pentagramas."
+    }
+  ]
+}

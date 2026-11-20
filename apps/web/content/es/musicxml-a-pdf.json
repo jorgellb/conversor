@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MusicXML a PDF convierte partituras en formato MusicXML, el que exportan e importan MuseScore, Sibelius, Finale, Dorico, Notion y casi cualquier programa de notación, en un PDF listo para imprimir, enviar a los músicos o publicar.",
+    "Maquetamos la partitura con MuseScore, el programa libre de notación musical, que coloca los pentagramas, las claves, las armaduras, los compases, las figuras, las ligaduras, las dinámicas, la letra y los acordes, y reparte la música en páginas. El título, el compositor y los nombres de los instrumentos aparecen como en el original.",
+    "Admitimos MusicXML sin comprimir (.musicxml o .xml) y comprimido (.mxl). El XML se lee de forma segura, sin cargar DTD ni entidades externas, y el .mxl se revisa antes de abrirlo. MuseScore funciona en nuestro servidor sin interfaz, como programa aparte y con tiempo y memoria limitados.",
+    "Si la partitura tiene varias partes, como un cuarteto o una banda, el PDF incluye la partitura general con todos los instrumentos. Para sacar la particella de un solo instrumento, expórtala desde tu programa como un MusicXML aparte y conviértela aquí.",
+    "La maquetación es la de MuseScore: el tamaño de página, los saltos de sistema y el espaciado pueden diferir un poco del programa en que se escribió la partitura, sobre todo si dependía de ajustes manuales. Puedes convertir hasta 20 partituras a la vez."
+  ],
+  "steps": [
+    "Sube uno o varios archivos MusicXML o MXL.",
+    "Espera a que se maquete la partitura.",
+    "Descarga el PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo exporto MusicXML desde mi programa?",
+      "a": "En MuseScore, Sibelius, Finale y Dorico está en Archivo, Exportar, MusicXML. El .mxl comprimido ocupa menos y funciona igual."
+    },
+    {
+      "q": "¿Se conserva la letra?",
+      "a": "Sí, la letra, los acordes y las indicaciones de texto que incluya el MusicXML."
+    },
+    {
+      "q": "¿Y a partir de un MIDI?",
+      "a": "MIDI a PDF transcribe un MIDI a partitura, aunque con menos detalle que un MusicXML."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MIDI a WAV convierte archivos MIDI en audio WAV sin compresión, el formato que necesitan los editores de audio y vídeo, las estaciones de trabajo musicales y los programas de masterización. Es la forma de llevar una pieza en MIDI a Audacity, Reaper, Premiere, DaVinci Resolve o una mesa de mezclas sin perder calidad.",
+    "El sonido lo genera FluidSynth con el banco FluidR3_GM, que contiene los 128 instrumentos General MIDI y la batería, sampleados de instrumentos reales. Se respetan el tempo y sus cambios, los programas de cada canal, el volumen, la panorámica, los pedales y la reverberación.",
+    "El WAV sale en estéreo, PCM de 16 bits, a 44,1 kHz (calidad de CD) o a 48 kHz (el estándar de vídeo). Calculamos la duración del MIDI antes de sintetizar y aplicamos el límite de minutos de audio de tu plan, así que sabes de antemano si cabe.",
+    "La síntesis se hace en nuestro servidor, con el sintetizador como programa aparte y con tiempo y memoria limitados. Puedes convertir hasta 20 archivos a la vez y descargarlos en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos MIDI.",
+    "Elige la frecuencia de muestreo.",
+    "Descarga el WAV o el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿44,1 o 48 kHz?",
+      "a": "44,1 kHz para música y CD; 48 kHz si el audio va a un vídeo, porque es lo que usan los editores de vídeo."
+    },
+    {
+      "q": "¿Ocupa mucho?",
+      "a": "Unos 10 MB por minuto, porque WAV no comprime. Si solo quieres escucharlo, MIDI a MP3 ocupa diez veces menos."
+    },
+    {
+      "q": "¿Puedo separar cada instrumento en una pista?",
+      "a": "No: se genera una mezcla estéreo con todos. Para pistas separadas hace falta un secuenciador."
+    }
+  ]
+}

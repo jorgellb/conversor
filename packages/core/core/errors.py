@@ -269,6 +269,7 @@ DETAILS: dict[str, dict[str, str]] = {
                                  "en": "The signature already contains the document and the second file is not that document (or is not used): upload only the signature."},
     "verify_no_signature": {"es": "Sube una firma (.csig, .p7m, .p7s, .xsig o un XML o PDF firmado) y, si va separada, el documento.",
                             "en": "Upload a signature (.csig, .p7m, .p7s, .xsig or a signed XML or PDF) and, if it is detached, the document."},
+    "musicxml_not_score": {"es": "El archivo no es una partitura MusicXML.", "en": "The file is not a MusicXML score."},
     "latex_no_main": {"es": "El ZIP no tiene ningún .tex con \\documentclass.", "en": "The ZIP has no .tex file with \\documentclass."},
     "drawio_empty": {"es": "El archivo no tiene ningún diagrama de draw.io.", "en": "The file has no draw.io diagram."},
     "mail_empty": {"es": "El buzón no tiene ningún mensaje.", "en": "The mailbox has no messages."},

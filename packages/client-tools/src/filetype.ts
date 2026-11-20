@@ -17,7 +17,7 @@ const EBML = [0x1a, 0x45, 0xdf, 0xa3];
 
 export const OLE2_FAMILY = new Set(["doc", "xls", "ppt", "pps", "msg", "pub", "vsd"]);
 export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
-  "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics", "mbox", "drawio", "tex"]);
+  "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics", "mbox", "drawio", "tex", "musicxml"]);
 // Firmas CMS (F6-G): DER binario (una SEQUENCE ASN.1) o PEM y Base64 de texto; solo con su extensión declarada.
 const CMS = new Set(["csig", "p7m", "p7s"]);
 const RAW_TIFF = new Set(["cr2", "nef", "arw", "dng"]);
@@ -29,7 +29,7 @@ const WIDE_BOMS: [number[], number, boolean][] = [
   [[0xff, 0xfe, 0x00, 0x00], 4, true], [[0x00, 0x00, 0xfe, 0xff], 4, false], [[0xff, 0xfe], 2, true], [[0xfe, 0xff], 2, false],
 ];
 const EXT_ALIASES: Record<string, string> = { jpeg: "jpg", tif: "tiff", htm: "html", markdown: "md", oga: "ogg", aif: "aiff", ssa: "ass", yml: "yaml",
-  tgz: "gz", tbz2: "bz2", tbz: "bz2", txz: "xz", vcard: "vcf", ical: "ics", ifb: "ics", dio: "drawio", latex: "tex" };
+  tgz: "gz", tbz2: "bz2", tbz: "bz2", txz: "xz", vcard: "vcf", ical: "ics", ifb: "ics", dio: "drawio", latex: "tex", midi: "mid", kar: "mid" };
 const ODF: Record<string, string> = {
   "application/vnd.oasis.opendocument.text": "odt",
   "application/vnd.oasis.opendocument.spreadsheet": "ods",
@@ -253,6 +253,8 @@ export function detectHead(head: Uint8Array, declaredExt = ""): Detected | null 
   // Comprimidos de F6-E (D-217): 7z, gzip, bzip2, xz y tar (la marca «ustar» en el byte 257).
   // PST y OST de Outlook (F6-J): «!BDN» al principio; manda la extensión declarada entre las dos.
   if (startsWith(head, "!BDN")) return { ext: declared === "pst" || declared === "ost" ? declared : "pst", family: "mail" };
+  // MIDI (F6-L).
+  if (startsWith(head, [0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6])) return { ext: "mid", family: "audio" };
   // FIT (F6-H2): cabecera de 12 o 14 bytes con «.FIT» en el byte 8.
   if (head.length >= 12 && (head[0] === 12 || head[0] === 14) && ascii(head, 8, 12) === ".FIT") return { ext: "fit", family: "sport" };
   if (startsWith(head, [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c])) return { ext: "7z", family: "archive" };

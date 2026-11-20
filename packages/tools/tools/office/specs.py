@@ -237,4 +237,15 @@ SPECS: list[ToolSpec] = [
            launch=True, time_limit=1800, related=("word-a-pdf", "validar-pdfa", "pdf-a-pdfa")),
     office("csv-a-pdf", "csv-to-pdf", "CSV a PDF", "CSV to PDF", ("csv",),
            "Convierte archivos CSV a una tabla en PDF.", "Convert CSV files to a PDF table.", related=("excel-a-pdf",)),
+    # 7.13 (F6-L, D-228): MuseScore 3 (GPL) como programa externo y sin interfaz, en workeroffice.
+    office("musicxml-a-pdf", "musicxml-to-pdf", "MusicXML a PDF", "MusicXML to PDF", ("musicxml", "mxl", "xml"),
+           "Convierte partituras MusicXML (de MuseScore, Sibelius, Finale o Dorico) en un PDF listo para imprimir.",
+           "Turn MusicXML scores (from MuseScore, Sibelius, Finale or Dorico) into a print-ready PDF.",
+           impl="tools.office.partitura:run", secret_fields=(), phase="F6", category="audio", time_limit=900,
+           related=("midi-a-pdf", "midi-a-mp3")),
+    office("midi-a-pdf", "midi-to-pdf", "MIDI a PDF", "MIDI to PDF", ("mid",),
+           "Convierte archivos MIDI en una partitura en PDF, con sus pentagramas, compases y figuras.",
+           "Turn MIDI files into a PDF score, with staves, bars and notes.",
+           impl="tools.office.partitura:run", secret_fields=(), phase="F6", category="audio", time_limit=900,
+           related=("musicxml-a-pdf", "midi-a-mp3")),
 ]
