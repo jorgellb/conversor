@@ -891,6 +891,8 @@ services:
       EUTL_LOTL_URL: ${EUTL_LOTL_URL:-https://ec.europa.eu/tools/lotl/eu-lotl.xml}
       EUTL_REFRESH_HOURS: ${EUTL_REFRESH_HOURS:-24}
       SIGN_VERIFY_EXTRA_ROOTS: ${SIGN_VERIFY_EXTRA_ROOTS:-}
+      TSA_URL: ${TSA_URL:-}
+      TSA_TRUST_ROOTS: ${TSA_TRUST_ROOTS:-}
     volumes:
     - filestore:/srv/files
     - eutl:/srv/eutl

@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
 import { ApiError } from "@/lib/api-client";
+import type { OwnCertificate } from "@/lib/p12";
 import { identityToken } from "@/lib/identity";
 import { getConfig } from "@/lib/runtime";
 import { runServerJob } from "@/lib/server-job";
@@ -15,7 +16,9 @@ import { runServerJob } from "@/lib/server-job";
 import { solveTurnstile } from "../turnstile";
 
 export interface DigitalOptions {
-  certificado: "plataforma";
+  certificado: "plataforma" | "propio";
+  /** Certificado propio abierto en el navegador (D-199): su clave nunca se envía. */
+  own?: OwnCertificate;
   visible: boolean;
   pagina: string;
   posicion: "abajo_derecha" | "abajo_izquierda" | "arriba_derecha" | "arriba_izquierda";
@@ -34,7 +37,19 @@ const DEFAULTS: DigitalOptions = {
 };
 const TURNSTILE_BOX = "firma-turnstile";
 
-/** Sube el PDF a firmar-pdf con el sello de la plataforma y devuelve el enlace de descarga. */
+async function job(file: File, options: Record<string, unknown>, token: string, onProgress: (f: number) => void) {
+  const done = await runServerJob("firmar-pdf", [file], options, token,
+    (phase) => onProgress(phase.kind === "upload" ? phase.percent / 200 : phase.kind === "running" ? 0.5 + phase.progress / 2 : 0.5),
+    new AbortController().signal);
+  if (done.status !== "succeeded") throw new ApiError(done.error?.code ?? "INTERNAL", done.error?.message ?? "", 0);
+  return done.outputs;
+}
+
+/**
+ * Firma digital desde la página. Con el sello de la plataforma, un trabajo. Con el certificado propio (firma
+ * interrumpida, D-199), dos: «preparar» devuelve el PDF con el hueco y los atributos de CMS, el navegador los firma con
+ * WebCrypto y «completar» escribe la firma, el sello de tiempo y los datos de validación.
+ */
 export async function signDigitally(file: File, options: DigitalOptions, locale: string, onProgress: (f: number) => void) {
   const config = await getConfig();
   const token = await identityToken(async () => {
@@ -42,11 +57,25 @@ export async function signDigitally(file: File, options: DigitalOptions, locale:
     if (!box) throw new ApiError("TURNSTILE_FAILED", "", 403);
     return solveTurnstile(box as HTMLDivElement, config.turnstileSiteKey, locale);
   });
-  const job = await runServerJob("firmar-pdf", [file], { ...options }, token,
-    (phase) => onProgress(phase.kind === "upload" ? phase.percent / 200 : phase.kind === "running" ? 0.5 + phase.progress / 2 : 0.5),
-    new AbortController().signal);
-  if (job.status !== "succeeded") throw new ApiError(job.error?.code ?? "INTERNAL", job.error?.message ?? "", 0);
-  const pdf = job.outputs.find((o) => o.name.toLowerCase().endsWith(".pdf"));
+  const { own, ...rest } = options;
+  let outputs;
+  if (rest.certificado === "propio") {
+    if (!own) throw new ApiError("INVALID_OPTIONS", "", 0);
+    const { signAttributes } = await import("@/lib/p12");
+    const base = { ...rest, cadena: own.chainPem };
+    const first = await job(file, { ...base, fase: "preparar" }, token, (f) => onProgress(f / 2));
+    const preparedOut = first.find((o) => o.name.toLowerCase().endsWith(".pdf"));
+    const stateOut = first.find((o) => o.name.toLowerCase().endsWith(".json"));
+    if (!preparedOut || !stateOut) throw new ApiError("INTERNAL", "", 0);
+    const [prepared, stateText] = await Promise.all([(await fetch(preparedOut.url)).blob(), (await fetch(stateOut.url)).text()]);
+    const state = JSON.parse(stateText) as { attrs: string };
+    const firma = await signAttributes(own, state.attrs);
+    outputs = await job(new File([prepared], preparedOut.name, { type: "application/pdf" }), { ...base, fase: "completar", estado: stateText, firma },
+      token, (f) => onProgress(0.5 + f / 2));
+  } else {
+    outputs = await job(file, rest, token, onProgress);
+  }
+  const pdf = outputs.find((o) => o.name.toLowerCase().endsWith(".pdf"));
   if (!pdf) throw new ApiError("INTERNAL", "", 0);
   return { url: pdf.url, name: pdf.name, size: pdf.size, notes: pdf.note ? [pdf.note] : [] };
 }
@@ -59,6 +88,27 @@ export function SignPanel({ form, pageCount, selected, onRepeat, onDigital }: {
   const [mode, setMode] = useState<"insertar" | "digital">("insertar");
   const [options, setOptions] = useState<DigitalOptions>(DEFAULTS);
   const [repeat, setRepeat] = useState("todas");
+  const [p12, setP12] = useState<File | null>(null);
+  const [password, setPassword] = useState("");
+  const [p12Error, setP12Error] = useState<string | null>(null);
+  const [opening, setOpening] = useState(false);
+
+  async function openCertificate() {
+    if (!p12) return;
+    setP12Error(null);
+    setOpening(true);
+    try {
+      const { openP12 } = await import("@/lib/p12");
+      const own = await openP12(await p12.arrayBuffer(), password);
+      setPassword("");
+      setOptions((o) => ({ ...o, own }));
+    } catch (err) {
+      const code = (err as { code?: string }).code ?? "p12_invalid";
+      setP12Error(t.has(code) ? t(code) : t("p12_invalid"));
+    } finally {
+      setOpening(false);
+    }
+  }
   const fields = (form?.fields ?? []).filter((f) => f.type === "signature").map((f) => f.name);
 
   useEffect(() => {
@@ -91,11 +141,35 @@ export function SignPanel({ form, pageCount, selected, onRepeat, onDigital }: {
       {mode === "digital" && (
         <div className="card flex flex-col gap-2 p-3" role="group" aria-label={t("digital")}>
           <label className="flex flex-col gap-1">{t("certificate")}
-            <select className="field" value={options.certificado} onChange={() => set({ certificado: "plataforma" })}>
+            <select className="field" value={options.certificado} onChange={(e) => set({ certificado: e.target.value as DigitalOptions["certificado"] })}>
               <option value="plataforma">{t("platformSeal")}</option>
+              <option value="propio">{t("ownCertificate")}</option>
             </select>
           </label>
-          <p className="muted">{t("ownCertificateSoon")}</p>
+          {options.certificado === "propio" && (
+            <div className="flex flex-col gap-2 rounded border p-2">
+              {options.own ? (
+                <>
+                  <p>{t("ownOpened", { subject: options.own.subject, date: options.own.notAfter.toLocaleDateString() })}</p>
+                  <button type="button" className="btn-secondary btn self-start" onClick={() => set({ own: undefined })}>{t("ownChange")}</button>
+                </>
+              ) : (
+                <>
+                  <label className="flex flex-col gap-1">{t("ownFile")}
+                    <input className="field" type="file" accept=".p12,.pfx" onChange={(e) => setP12(e.target.files?.[0] ?? null)} />
+                  </label>
+                  <label className="flex flex-col gap-1">{t("ownPassword")}
+                    <input className="field" type="password" autoComplete="off" value={password} onChange={(e) => setPassword(e.target.value)} />
+                  </label>
+                  <button type="button" className="btn-secondary btn self-start" disabled={!p12 || opening} onClick={() => void openCertificate()}>
+                    {opening ? t("ownOpening") : t("ownOpen")}
+                  </button>
+                  {p12Error && <p role="alert" className="text-red-700">{p12Error}</p>}
+                </>
+              )}
+              <p className="muted">{t("ownPrivacy")}</p>
+            </div>
+          )}
           {fields.length > 0 && (
             <label className="flex flex-col gap-1">{t("field")}
               <select className="field" value={options.campo} onChange={(e) => set({ campo: e.target.value })}>
@@ -145,7 +219,7 @@ export function SignPanel({ form, pageCount, selected, onRepeat, onDigital }: {
               {(["no", "sin_cambios", "formularios", "formularios_anotaciones"] as const).map((c) => <option key={c} value={c}>{t(`cert_${c}`)}</option>)}
             </select>
           </label>
-          <p className="muted">{t("accountNeeded")}</p>
+          {options.certificado === "plataforma" && <p className="muted">{t("accountNeeded")}</p>}
           <div id={TURNSTILE_BOX} aria-live="polite" />
         </div>
       )}

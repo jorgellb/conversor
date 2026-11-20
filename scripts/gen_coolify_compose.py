@@ -336,7 +336,9 @@ def build() -> dict:
                                    {"EGRESS_WEB_URL": "http://egressweb:4750", "EUTL_CACHE_PATH": "/srv/eutl",
                                     "EUTL_LOTL_URL": "${EUTL_LOTL_URL:-https://ec.europa.eu/tools/lotl/eu-lotl.xml}",
                                     "EUTL_REFRESH_HOURS": "${EUTL_REFRESH_HOURS:-24}",
-                                    "SIGN_VERIFY_EXTRA_ROOTS": "${SIGN_VERIFY_EXTRA_ROOTS:-}"},
+                                    "SIGN_VERIFY_EXTRA_ROOTS": "${SIGN_VERIFY_EXTRA_ROOTS:-}",
+                                    # firmar-pdf con certificado propio (D-199): la misma TSA que el sello, por egressweb.
+                                    "TSA_URL": "${TSA_URL:-}", "TSA_TRUST_ROOTS": "${TSA_TRUST_ROOTS:-}"},
                                    networks=["internal", "webrender"], volumes=["eutl:/srv/eutl"]),
         "workerpdf": worker("worker-pdf", "worker-pdf", "pdf", "pdf", 3, 1, "3g", 3, secrets=True),
         "workerocr": worker("worker-ocr", "worker-ocr", "ocr", "ocr", 1, 2, "3g", 2),

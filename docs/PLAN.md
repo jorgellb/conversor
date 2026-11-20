@@ -103,7 +103,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | Lote | Herramientas | Estado |
 | --- | --- | --- |
 | F4-A | verificar-firmas-pdf y firmar-pdf en servidor (`workersign` y `sign.verify`, pyHanko, SoftHSM2, LOTL; migración 0006) | Hecho: verificar-firmas-pdf y la lista de la UE (F4-A1, D-185 a D-187) y el sello de firmar-pdf en `workersign` con la migración 0006 (F4-A2, D-188); firmar-pdf sigue apagada hasta F4-B |
-| F4-B | firmar-pdf en el navegador, hacer-pdf-rellenable y crear-formulario-pdf | En curso: hacer-pdf-rellenable y crear-formulario-pdf (F4-B1, D-195) e «Insertar firma» y el sello desde la página de firmar-pdf (F4-B2a, D-196); falta el certificado propio con firma interrumpida (F4-B2b) |
+| F4-B | firmar-pdf en el navegador, hacer-pdf-rellenable y crear-formulario-pdf | Hecho: hacer-pdf-rellenable y crear-formulario-pdf (F4-B1, D-195 y D-198), «Insertar firma» y el sello desde la página (F4-B2a, D-196) y el certificado propio con firma interrumpida (F4-B2b, D-199); firmar-pdf, encendida |
 | F4-C | compartir-pdf y solicitar-firmas (B-LT, Mailpit) | Pendiente (F4-A) |
 | F4-D | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf (`workerutils`, KoSIT) | Hecho: validar-factura-electronica y `workerutils` con KoSIT (F4-D1, D-191) y la representación en PDF/A-3 con el XML incrustado (F4-D2, D-192) |
 | F4-E | crear-factura, crear-factura-electronica y pdf-a-factura-electronica (detrás de `INVOICING_ES_ENABLED`) | Pendiente (F4-D y F4-B) |

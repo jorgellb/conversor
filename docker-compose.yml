@@ -459,6 +459,9 @@ services:
       VALKEY_URL: redis://valkey:6379/0
       DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
       EGRESS_WEB_URL: http://egressweb:4750
+      # Firma con certificado propio (D-199): la TSA de pruebas, directa por la red interna.
+      TSA_URL: http://certomancer:9000/conversor-pruebas/tsa/tsa
+      TSA_EGRESS_URL: ""
       EUTL_CACHE_PATH: /srv/eutl
       EUTL_REFRESH_HOURS: ${EUTL_REFRESH_HOURS:-24}
       THREADS: "1"

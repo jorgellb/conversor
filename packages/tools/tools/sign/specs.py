@@ -29,8 +29,19 @@ class FirmarOptions(BaseModel):
     """firmar-pdf, firma digital (A.6) con el sello de la plataforma; la firma en el navegador y el certificado propio
     llegan en F4-B (D-188)."""
 
-    certificado: Literal["plataforma"] = opt("plataforma", "Certificado", "Certificate",
-                                             labels={"plataforma": ("Sello de la plataforma", "Platform seal")})
+    certificado: Literal["plataforma", "propio"] = opt("plataforma", "Certificado", "Certificate", labels={
+        "plataforma": ("Sello de la plataforma", "Platform seal"),
+        "propio": ("Certificado propio o de la empresa (.p12 o .pfx)", "Your own or company certificate (.p12 or .pfx)")})
+    # Certificado propio (D-199): firma interrumpida en dos trabajos; la página rellena estos campos, no el usuario.
+    fase: Literal["preparar", "completar"] = opt("preparar", "Fase de la firma con certificado propio", "Own-certificate signing step",
+                                                 advanced=True, labels={"preparar": ("Preparar", "Prepare"), "completar": ("Completar", "Complete")},
+                                                 show_if={"certificado": ("propio",)})
+    cadena: str = opt("", "Cadena de certificados (PEM, sin la clave)", "Certificate chain (PEM, without the key)", max_length=40000,
+                      advanced=True, show_if={"certificado": ("propio",)})
+    estado: str = opt("", "Estado de la firma preparada", "Prepared signature state", max_length=40000, advanced=True,
+                      show_if={"certificado": ("propio",)})
+    firma: str = opt("", "Valor de la firma (base64)", "Signature value (base64)", max_length=4000, advanced=True,
+                     show_if={"certificado": ("propio",)})
     visible: bool = opt(True, "Firma visible", "Visible signature")
     pagina: str = opt("ultima", "Página de la firma (última, primera o un número)", "Signature page (last, first or a number)",
                       max_length=10, show_if={"visible": (True,)})
@@ -48,15 +59,15 @@ class FirmarOptions(BaseModel):
 
 SPECS: list[ToolSpec] = [
     # A.6 y 10 (F4-A2): el sello de la plataforma en `workersign`, el único con el token y el PIN; «Insertar firma» en el
-    # navegador (F4-B2a, D-196). Apagada hasta el certificado propio con firma interrumpida (F4-B2b,
-    # config/tools-notes.yaml). El sello, solo con cuenta (precheck).
+    # navegador (F4-B2a, D-196) y el certificado propio con firma interrumpida en `sign.verify` (F4-B2b, D-199). El sello,
+    # solo con cuenta (precheck).
     ToolSpec(
         slug_es="firmar-pdf", slug_en="sign-pdf", name_es="Firmar PDF", name_en="Sign PDF", category="sign",
         where="hybrid", inputs=("pdf",), outputs=("pdf", "zip"), options=FirmarOptions, worker_group="sign",
         cost_class="light", impl="tools.sign.firmar:run", precheck="tools.sign.firmar:precheck", launch=True,
-        phase="F4", time_limit=600, default_enabled=False, max_files=10,
-        summary_es="Firma un PDF con el sello de la plataforma (PAdES con sello de tiempo), visible o invisible.",
-        summary_en="Sign a PDF with the platform seal (PAdES with a time stamp), visible or invisible.",
+        phase="F4", time_limit=600, max_files=10,
+        summary_es="Firma un PDF a mano en el navegador o digitalmente (PAdES) con tu certificado o el sello de la plataforma.",
+        summary_en="Sign a PDF by hand in your browser or digitally (PAdES) with your certificate or the platform seal.",
         related=("verificar-firmas-pdf", "proteger-pdf"),
     ),
     # 7.23: en `sign.verify`, un contenedor de la imagen worker-sign sin el volumen del token ni el PIN, para que un PDF

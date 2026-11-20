@@ -131,7 +131,7 @@ def test_options_and_errors(arch, make_ctx, tmp_path, monkeypatch):
     assert spec.queue == "sign" and spec.category == "sign" and spec.default_enabled is False and spec.ai is None
     defaults = spec.options().model_dump()
     assert defaults == {"certificado": "plataforma", "visible": True, "pagina": "ultima", "posicion": "abajo_derecha",
-                        "campo": "", "nombre": "", "motivo": "", "lugar": "", "sello_tiempo": True, "nivel": "B-T", "certificacion": "no"}
+                        "fase": "preparar", "cadena": "", "estado": "", "firma": "", "campo": "", "nombre": "", "motivo": "", "lugar": "", "sello_tiempo": True, "nivel": "B-T", "certificacion": "no"}
     settings = get_settings()
     with pytest.raises(AppError) as err:
         firmar.precheck(settings, None, "anon", {}, [])

@@ -94,6 +94,8 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       explicación (D-191); una Facturae firmada real (AutoFirma o FNMT) sale «Firma XAdES íntegra» y, tocada, «no es válida»
       (las pruebas solo tienen firmas hechas aquí, D-193); y factura-electronica-a-pdf da un PDF/A-3b que veraPDF acepta
       con el XML dentro (D-192).
+- [ ] firmar-pdf con un certificado propio real (FNMT o de empresa, .p12 exportado con AES): la página lo abre, la firma sale
+      PAdES B-T y Adobe Acrobat Reader y verificar-firmas-pdf la dan por buena con la identidad del titular (D-199).
 - [ ] Confirmar con OpenPeppol las condiciones de redistribución del Schematron de Peppol BIS 3.0 dentro de la imagen worker-utils (su repositorio no declara licencia; D-191 y LICENSES).
 - [ ] Con «Comprobar la revocación en línea», un PDF firmado con un certificado de la FNMT consulta su OCSP por `egressweb`
       (en el log de Smokescreen) y el informe dice «Comprobada en línea».

@@ -20,6 +20,23 @@ temas:
     Las herramientas que generan facturas son un sistema informático de facturación (Veri*factu, RD 1007/2023) y
     tocan la factura electrónica obligatoria (RD 238/2026). Apagado hasta la revisión con un asesor anotada en
     docs/LEGAL.md (7.23). Las que validan o muestran facturas no dependen de este flag.
+herramientas: {}
+fuera_de_alcance: lo que 7.24 deja fuera, con lo que haría falta para hacerlo.
+# - mejoras: mejoras posteriores que la especificación pide anotar en TOOLS.md.
+# - fases: fases cerradas y en curso para la cabecera de TOOLS.md. La actualiza el lote que cierra o abre una fase
+#   (F3-Z, F4-Z...), igual que docs/PLAN.md.
+fases:
+  cerradas: [F1, F2, F5 sin vídeo]
+  en_curso: [F3, F4]
+temas:
+  HEVC_DECODE_ENABLED: >-
+    Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube
+    (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo
+    exportar a JPEG desde el iPhone o el Mac y lleva noindex.
+  INVOICING_ES_ENABLED: >-
+    Las herramientas que generan facturas son un sistema informático de facturación (Veri*factu, RD 1007/2023) y
+    tocan la factura electrónica obligatoria (RD 238/2026). Apagado hasta la revisión con un asesor anotada en
+    docs/LEGAL.md (7.23). Las que validan o muestran facturas no dependen de este flag.
 herramientas:
   firmar-pdf: >-
     Apagada hasta F4-B2b: el sello de la plataforma en servidor (PAdES B-T a B-LTA, DocMDP, firma visible, también

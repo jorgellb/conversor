@@ -1124,7 +1124,6 @@
     "repeatHint": "Choose a signature, initials or a date to repeat it in the same place on other pages.",
     "certificate": "Certificate",
     "platformSeal": "Platform seal",
-    "ownCertificateSoon": "Signing with your own certificate (.p12 or .pfx) is coming soon: the key will not leave your browser.",
     "field": "Signature field",
     "newField": "A new one",
     "visible": "Visible signature",
@@ -1144,6 +1143,19 @@
     "cert_sin_cambios": "No changes",
     "cert_formularios": "Allow form filling",
     "cert_formularios_anotaciones": "Allow forms and comments",
-    "accountNeeded": "The platform seal needs an account."
+    "accountNeeded": "The platform seal needs an account.",
+    "ownCertificate": "Your own or company certificate (.p12 or .pfx)",
+    "ownFile": "Certificate file (.p12 or .pfx)",
+    "ownPassword": "Certificate password",
+    "ownOpen": "Open the certificate",
+    "ownOpening": "Opening…",
+    "ownChange": "Use another certificate",
+    "ownOpened": "Certificate of {subject}, valid until {date}.",
+    "ownPrivacy": "The certificate opens in your browser and the private key never leaves it: our server only receives the public part and prepares the PDF; your browser makes the signature.",
+    "p12_password": "The password is not correct.",
+    "p12_legacy": "This file uses an old encryption (3DES or RC2) that browsers do not support. Export it again with AES encryption (for example, choose “AES256-SHA256” when exporting on Windows).",
+    "p12_invalid": "It is not a valid .p12 or .pfx file.",
+    "p12_no_key": "The file does not carry the private key together with its certificate.",
+    "p12_key_type": "The certificate uses an unsupported key type (only RSA and EC)."
   }
 }

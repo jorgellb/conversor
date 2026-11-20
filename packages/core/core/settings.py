@@ -83,6 +83,9 @@ class Settings(BaseSettings):
     SIGN_PKCS11_PIN: str = ""
     SIGN_CERT_PATH: str = ""
     TSA_URL: str = ""
+    # Firma con certificado propio en sign.verify (D-199): salida a la TSA y a OCSP/CRL. Sin definir, EGRESS_WEB_URL;
+    # vacía, directa (desarrollo: la TSA de certomancer está en la red interna, que Smokescreen no deja alcanzar).
+    TSA_EGRESS_URL: str | None = None
     SEAL_ENABLED: bool = True
     SEAL_DAILY_LIMIT: int = 500
     # Sellos por cuenta y día (D-189), para que una cuenta no gaste el límite de todos.

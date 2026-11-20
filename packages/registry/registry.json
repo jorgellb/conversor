@@ -26420,8 +26420,8 @@
       "slug_en": "sign-pdf",
       "name_es": "Firmar PDF",
       "name_en": "Sign PDF",
-      "summary_es": "Firma un PDF con el sello de la plataforma (PAdES con sello de tiempo), visible o invisible.",
-      "summary_en": "Sign a PDF with the platform seal (PAdES with a time stamp), visible or invisible.",
+      "summary_es": "Firma un PDF a mano en el navegador o digitalmente (PAdES) con tu certificado o el sello de la plataforma.",
+      "summary_en": "Sign a PDF by hand in your browser or digitally (PAdES) with your certificate or the platform seal.",
       "category": "sign",
       "where": "hybrid",
       "worker_group": "sign",
@@ -26436,7 +26436,7 @@
       ],
       "phase": "F4",
       "launch": true,
-      "default_enabled": false,
+      "default_enabled": true,
       "indexable": true,
       "max_files": 10,
       "secret_fields": [],
@@ -26451,19 +26451,103 @@
         "description": "firmar-pdf, firma digital (A.6) con el sello de la plataforma; la firma en el navegador y el certificado propio\nllegan en F4-B (D-188).",
         "properties": {
           "certificado": {
-            "const": "plataforma",
             "default": "plataforma",
+            "enum": [
+              "plataforma",
+              "propio"
+            ],
             "title": "Certificado",
             "type": "string",
             "x-labels": {
               "plataforma": {
                 "en": "Platform seal",
                 "es": "Sello de la plataforma"
+              },
+              "propio": {
+                "en": "Your own or company certificate (.p12 or .pfx)",
+                "es": "Certificado propio o de la empresa (.p12 o .pfx)"
               }
             },
             "x-title": {
               "en": "Certificate",
               "es": "Certificado"
+            }
+          },
+          "fase": {
+            "default": "preparar",
+            "enum": [
+              "preparar",
+              "completar"
+            ],
+            "title": "Fase de la firma con certificado propio",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "completar": {
+                "en": "Complete",
+                "es": "Completar"
+              },
+              "preparar": {
+                "en": "Prepare",
+                "es": "Preparar"
+              }
+            },
+            "x-show-if": {
+              "certificado": [
+                "propio"
+              ]
+            },
+            "x-title": {
+              "en": "Own-certificate signing step",
+              "es": "Fase de la firma con certificado propio"
+            }
+          },
+          "cadena": {
+            "default": "",
+            "maxLength": 40000,
+            "title": "Cadena de certificados (PEM, sin la clave)",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "certificado": [
+                "propio"
+              ]
+            },
+            "x-title": {
+              "en": "Certificate chain (PEM, without the key)",
+              "es": "Cadena de certificados (PEM, sin la clave)"
+            }
+          },
+          "estado": {
+            "default": "",
+            "maxLength": 40000,
+            "title": "Estado de la firma preparada",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "certificado": [
+                "propio"
+              ]
+            },
+            "x-title": {
+              "en": "Prepared signature state",
+              "es": "Estado de la firma preparada"
+            }
+          },
+          "firma": {
+            "default": "",
+            "maxLength": 4000,
+            "title": "Valor de la firma (base64)",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "certificado": [
+                "propio"
+              ]
+            },
+            "x-title": {
+              "en": "Signature value (base64)",
+              "es": "Valor de la firma (base64)"
             }
           },
           "visible": {

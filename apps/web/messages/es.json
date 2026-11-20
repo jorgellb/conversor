@@ -1124,7 +1124,6 @@
     "repeatHint": "Elige una firma, unas iniciales o una fecha para repetirla en el mismo sitio de otras páginas.",
     "certificate": "Certificado",
     "platformSeal": "Sello de la plataforma",
-    "ownCertificateSoon": "La firma con tu propio certificado (.p12 o .pfx) llega pronto: la clave no saldrá de tu navegador.",
     "field": "Campo de firma",
     "newField": "Uno nuevo",
     "visible": "Firma visible",
@@ -1144,6 +1143,19 @@
     "cert_sin_cambios": "Sin cambios",
     "cert_formularios": "Permitir rellenar formularios",
     "cert_formularios_anotaciones": "Permitir formularios y comentarios",
-    "accountNeeded": "El sello de la plataforma necesita una cuenta."
+    "accountNeeded": "El sello de la plataforma necesita una cuenta.",
+    "ownCertificate": "Certificado propio o de la empresa (.p12 o .pfx)",
+    "ownFile": "Archivo del certificado (.p12 o .pfx)",
+    "ownPassword": "Contraseña del certificado",
+    "ownOpen": "Abrir el certificado",
+    "ownOpening": "Abriendo…",
+    "ownChange": "Usar otro certificado",
+    "ownOpened": "Certificado de {subject}, válido hasta el {date}.",
+    "ownPrivacy": "El certificado se abre en tu navegador y la clave privada no sale de él: nuestro servidor solo recibe la parte pública y prepara el PDF; la firma la hace tu navegador.",
+    "p12_password": "La contraseña no es correcta.",
+    "p12_legacy": "Este archivo usa un cifrado antiguo (3DES o RC2) que los navegadores no admiten. Vuelve a exportarlo con cifrado AES (por ejemplo, en Windows elige «AES256-SHA256» al exportar).",
+    "p12_invalid": "No es un archivo .p12 o .pfx válido.",
+    "p12_no_key": "El archivo no trae la clave privada junto con su certificado.",
+    "p12_key_type": "El certificado usa un tipo de clave que no se admite (solo RSA y EC)."
   }
 }

@@ -239,7 +239,7 @@ MINIMOS: dict[str, dict[str, Opt]] = {
        for slug in ("factura-electronica-a-pdf", "facturae-a-pdf", "ubl-a-pdf", "cii-a-pdf")},
     # A.6 (F4-A2): la firma digital con el sello de la plataforma; el modo «Insertar firma», el origen de la firma y el
     # certificado propio llegan con F4-B (D-188).
-    "firmar-pdf": {"certificado": E("plataforma", "plataforma"), "visible": D(True), "nivel": E("B-T", "B-T", "B-LT", "B-LTA"),
+    "firmar-pdf": {"certificado": E("plataforma", "plataforma", "propio"), "visible": D(True), "nivel": E("B-T", "B-T", "B-LT", "B-LTA"),
                    "certificacion": E("no", "no", "sin_cambios", "formularios", "formularios_anotaciones"),
                    "sello_tiempo": D(True), "nombre": X, "motivo": X, "lugar": X, "campo": X},
     # A.7 (F4): revocación OCSP y CRL «bajo petición» (apagada por defecto).

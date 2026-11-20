@@ -4,8 +4,8 @@ import { PDFDocument, PDFName, PDFDict } from "@cantoo/pdf-lib";
 import { expect, test, type Page } from "@playwright/test";
 
 // F4, lote B2a: firmar-pdf en el navegador («Insertar firma»: firma escrita, iniciales, fecha y repetir en varias
-// páginas). Apagada por defecto hasta F4-B2b: la CI arranca next con TOOL_FIRMAR_PDF_ENABLED=true. El sello del
-// servidor lo prueba pytest (tests/test_sello.py).
+// páginas). El sello y el certificado propio del servidor los prueba pytest (tests/test_sello.py y
+// tests/test_firma_propia.py) y la apertura del .p12, vitest (apps/web/test/p12.test.ts).
 
 function watchUploads(page: Page): string[] {
   const sent: string[] = [];

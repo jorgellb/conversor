@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Sign PDF lets you sign a document in two ways. The first is to insert your signature as an image: draw it with the mouse, your finger or a pen choosing colour and thickness, type it with one of three handwriting fonts, upload a photo or scan of your signature (the page removes the paper background) or take it with your phone camera. You can also add your initials, the date and marks, place them where you want, resize them and repeat them on every page or the ones you choose. All of this happens in your browser and the PDF does not leave your device.",
+    "The second is a PAdES digital signature, the kind Adobe Acrobat Reader and official validators recognise. With your own or your company's certificate (a .p12 or .pfx file), the certificate opens in your browser: our server only receives the public part, prepares the PDF and returns what needs signing; your browser computes the signature and the private key is never sent. A time stamp from a time-stamping authority is then added.",
+    "If you have no certificate, you can use the platform seal, which proves the document has not changed since a date, although it does not say who signed it; it needs an account. With both options you choose whether the signature shows on the page or is invisible, on which page and corner, the reason and location, the level (B-T with a time stamp, B-LT with the data to validate it in the long term and B-LTA with a document time stamp) and whether the document is certified so it allows no changes, or only forms and comments.",
+    "If the PDF has empty signature fields, for example those added by “Make a PDF fillable”, you can sign inside one of them and the signature fills its box."
+  ],
+  "faq": [
+    {
+      "q": "Is a signature inserted as an image legally valid?",
+      "a": "It is a simple electronic signature: it works for many everyday procedures, but it does not prove who signed or prevent changes. That is what the digital signature with a certificate is for."
+    },
+    {
+      "q": "Does my private key leave my computer?",
+      "a": "No. The .p12 file is opened in your browser with its password and the key stays there, non-exportable. The server only receives the public certificate, the PDF and the signature result."
+    },
+    {
+      "q": "My .p12 gives an old-encryption error, what should I do?",
+      "a": "Some certificates exported years ago use 3DES or RC2, which browsers do not support. Export it again choosing AES encryption; on Windows, the “AES256-SHA256” option of the export wizard."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "Inserting the signature does not count: it runs in your browser. The digital signature is a light server task (with your own certificate, two tasks: prepare and complete), within the 20 a day without an account, 50 with a free account or 1,000 on Pro; the platform seal also needs an account."
+    }
+  ]
+}

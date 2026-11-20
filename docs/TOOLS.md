@@ -172,7 +172,7 @@ Catálogo publicado en esta entrega: 173 herramientas (F1 43, F2 60, F3 10, F4 1
 | `ticket-a-excel` / `receipt-to-excel` | servidor | ocr | ai | F3 | activa | jpg, png, webp, tiff, bmp, gif → xlsx, csv | redactado, sin revisar |
 | `traducir-subtitulos` / `translate-subtitles` | servidor | ai | ai | F5 | activa | srt, vtt, ass, mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → srt, vtt, ass | redactado, sin revisar |
 | `resumir-reunion` / `summarize-meeting` | servidor | av | ai | F5 | activa | mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → docx, txt, md | redactado, sin revisar |
-| `firmar-pdf` / `sign-pdf` | híbrida | sign | light | F4 | apagada | pdf → pdf, zip | pendiente |
+| `firmar-pdf` / `sign-pdf` | híbrida | sign | light | F4 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `verificar-firmas-pdf` / `verify-pdf-signatures` | servidor | sign | light | F4 | activa | pdf → html, zip | redactado, sin revisar |
 | `validar-factura-electronica` / `validate-e-invoice` | servidor | utils | light | F4 | activa | xml, pdf, zip → html, csv, zip | redactado, sin revisar |
 | `factura-electronica-a-pdf` / `e-invoice-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |
@@ -184,7 +184,6 @@ Catálogo publicado en esta entrega: 173 herramientas (F1 43, F2 60, F3 10, F4 1
 
 | Herramienta | Motivo |
 | --- | --- |
-| `firmar-pdf` | Apagada por defecto; se enciende con `TOOL_FIRMAR_PDF_ENABLED=true`. Apagada hasta F4-B2b: el sello de la plataforma en servidor (PAdES B-T a B-LTA, DocMDP, firma visible, también dentro de un campo vacío) ya funciona en `workersign` (F4-A2, D-188) y «Insertar firma» (dibujada, escrita, subida o con la cámara, iniciales, fecha, repetir en varias páginas) en el navegador (F4-B2a, D-196), pero A.6 pide además la firma interrumpida con certificado propio (.p12/.pfx con PKI.js y WebCrypto), que llega en F4-B2b. Para probar el sello antes: TOOL_FIRMAR_PDF_ENABLED=true, con el token, SIGN_CERT_PATH y TSA_URL configurados (DEPLOY-CHECKLIST). |
 | `heic-a-jpg` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-pdf` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-png` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
@@ -211,7 +210,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | Split PDF (`/en/split-pdf`) | `dividir-pdf` | disponible |  |
 | Compress PDF (`/en/compress-pdf`) | `comprimir-pdf` | disponible |  |
 | Edit PDF (`/en/edit-pdf`) | `editar-pdf` | disponible |  |
-| Sign PDF (`/en/sign-pdf`) | `firmar-pdf` | disponible, apagada (ver «Desactivadas») |  |
+| Sign PDF (`/en/sign-pdf`) | `firmar-pdf` | disponible |  |
 | Create PDF (`/en/create-pdf`) | `crear-pdf` (página fija) | disponible |  |
 | PDF Converter (`/en/pdf-converter`) | `conversor-pdf` (página fija) | disponible |  |
 | Images to PDF (`/en/images-to-pdf`) | `imagenes-a-pdf` | disponible |  |

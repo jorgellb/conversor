@@ -513,6 +513,15 @@ de un campo vacío. Sigue apagada hasta F4-B2b. Salvedades en D-196.
 Verificado aquí: vitest de la inserción, pytest del sello dentro del campo y e2e de la página (encendida por entorno).
 Sin verificar aquí: el sello desde la página contra la pila completa y la cámara en un móvil.
 
+## F4-B2b (firmar-pdf con certificado propio) y cierre de F4-B
+
+Firma interrumpida: el .p12 se abre en el navegador con PKI.js y la clave firma con WebCrypto; el servidor prepara y
+completa en `sign.verify` con pyHanko (sello de tiempo, B-LT y B-LTA). firmar-pdf, encendida y con contenido 8.2.
+Revisión de F4-B1 corregida (D-198). Salvedades en D-199.
+Verificado aquí: pytest de las dos fases (RSA y P-256, niveles, manipulaciones), vitest de la apertura del .p12 (EC, RSA,
+contraseña, cifrado antiguo) y la prueba cruzada navegador-servidor. Sin verificar aquí: un certificado de la FNMT real,
+la CI (GitHub Actions no arranca los trabajos por la facturación de la cuenta desde dabab57).
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4: F4-F, F4-A y F4-D hechos; siguen después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo

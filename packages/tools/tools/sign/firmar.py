@@ -59,7 +59,13 @@ CONFIG = {"PathBuildingError"}
 
 
 def precheck(settings, plan, owner_type: str, options: dict, paths: list[Path], locale: str = "es") -> None:
-    """Antes de encolar (sin gastar cuota): con cuenta, encendido, tamaño y el límite del día de la plataforma."""
+    """Antes de encolar (sin gastar cuota): con cuenta, encendido, tamaño y el límite del día de la plataforma. Con el
+    certificado propio (D-199) solo el tamaño: la firma es del usuario y no gasta el sello."""
+    if options.get("certificado") == "propio":
+        for path in paths:
+            if path.stat().st_size > MAX_MB * 1024 * 1024:
+                raise AppError(ErrorCode.LIMIT_EXCEEDED, status=413, detail=f"seal_size:{path.stat().st_size // 1048576}>{MAX_MB}")
+        return
     if owner_type == "anon":
         raise AppError(ErrorCode.UNAUTHORIZED, status=401, detail="seal_account")
     if not settings.SEAL_ENABLED:
@@ -395,6 +401,10 @@ def run(ctx: ToolContext) -> list[dict]:
 
     o = ctx.options
     t = TEXTS.get(ctx.locale, TEXTS["es"])
+    if o.certificado == "propio":  # firma interrumpida con el certificado del usuario, en sign.verify (D-199)
+        from tools.sign import propio
+
+        return propio.run(ctx)
     if ctx.owner[0] == "anon":
         raise ToolError(ErrorCode.UNAUTHORIZED, "seal_account")
     if not ctx.settings.SEAL_ENABLED:

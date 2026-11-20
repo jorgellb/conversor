@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Firmar PDF te deja firmar un documento de dos maneras. La primera es insertar tu firma como imagen: la dibujas con el ratón, el dedo o un lápiz eligiendo el color y el grosor, la escribes con una de las tres letras caligráficas, subes una foto o un escaneo de tu firma (la página quita el fondo del papel) o la haces con la cámara del móvil. Puedes añadir también tus iniciales, la fecha y marcas, colocarlas donde quieras, cambiar su tamaño y repetirlas en todas las páginas o en las que elijas. Todo eso pasa en tu navegador y el PDF no sale de tu equipo.",
+    "La segunda es la firma digital PAdES, la que reconocen Adobe Acrobat Reader, AutoFirma y los validadores oficiales. Con tu propio certificado o el de tu empresa (un archivo .p12 o .pfx, como los de la FNMT), el certificado se abre en tu navegador: nuestro servidor solo recibe la parte pública, prepara el PDF y te devuelve lo que hay que firmar; la firma la calcula tu navegador y la clave privada nunca se envía. Después se añade el sello de tiempo de una autoridad de sellado.",
+    "Si no tienes certificado, puedes usar el sello de la plataforma, que acredita que el documento no ha cambiado desde una fecha, aunque no dice quién lo firma; para usarlo hace falta una cuenta. En las dos opciones eliges si la firma se ve en la página o es invisible, en qué página y esquina va, el motivo y el lugar, el nivel (B-T con sello de tiempo, B-LT con los datos para validarla a largo plazo y B-LTA con un sello de tiempo del documento) y si el documento queda certificado para que no admita cambios o solo formularios y comentarios.",
+    "Si el PDF tiene campos de firma vacíos, por ejemplo los que añade «Hacer un PDF rellenable», puedes firmar dentro de uno de ellos y la firma ocupa su recuadro."
+  ],
+  "faq": [
+    {
+      "q": "¿Tiene validez legal la firma insertada como imagen?",
+      "a": "Es una firma electrónica simple: vale para muchos trámites del día a día, pero no prueba quién firmó ni impide cambios. Para eso está la firma digital con certificado."
+    },
+    {
+      "q": "¿Sale mi clave privada de mi ordenador?",
+      "a": "No. El archivo .p12 se abre en tu navegador con su contraseña y la clave se queda allí, sin poder exportarse. Al servidor solo llegan el certificado público, el PDF y el resultado de la firma."
+    },
+    {
+      "q": "Mi .p12 da un error de cifrado antiguo, ¿qué hago?",
+      "a": "Algunos certificados exportados hace años usan 3DES o RC2, que los navegadores no admiten. Vuelve a exportarlo eligiendo cifrado AES; en Windows, la opción «AES256-SHA256» del asistente de exportación."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Insertar la firma no cuenta: se hace en tu navegador. La firma digital es una tarea ligera del servidor (con certificado propio, dos tareas: preparar y completar), dentro de las 20 diarias sin cuenta, 50 con cuenta gratuita o 1.000 en Pro; el sello de la plataforma, además, solo con cuenta."
+    }
+  ]
+}
