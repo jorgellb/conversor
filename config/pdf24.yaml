@@ -35,7 +35,7 @@ herramientas:
     equivalentes: [pdf-a-imagenes]
   - pdf24: "Write PDF"
     ruta: /en/write-pdf
-    equivalentes: [escribir-pdf:F6]
+    equivalentes: [escribir-pdf]
   - pdf24: "Create PDF with a camera"
     ruta: /en/scan-pdf
     equivalentes: [escaner-pdf]

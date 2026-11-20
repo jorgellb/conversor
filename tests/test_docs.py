@@ -27,7 +27,7 @@ def test_tools_md_sections():
     assert "| `heic-a-jpg` | Apagada mientras `HEVC_DECODE_ENABLED`" in text
     assert "PostScript" in text and "SLDPRT" in text
     assert "| Merge PDF (`/en/merge-pdf`) | `unir-pdf` | disponible |" in text
-    assert "| Write PDF (`/en/write-pdf`) | `escribir-pdf` | pendiente (F6) |" in text
+    assert "| Write PDF (`/en/write-pdf`) | `escribir-pdf` | disponible |" in text
     # Las apagadas por defecto (`default_enabled`) salen como apagadas; firmar-pdf ya no lo está (F4-B2b, D-199).
     assert "| Sign PDF (`/en/sign-pdf`) | `firmar-pdf` | disponible |" in text
 

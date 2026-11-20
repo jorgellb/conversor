@@ -13,3 +13,4 @@ Todas las muestras se generan al ejecutar las pruebas, salvo una de terceros, de
 - `packages/client-tools/test/images.fixture.ts`: imágenes mínimas (40 × 20 y 30 × 30 píxeles) generadas con Pillow.
 - Las pruebas de TypeScript crean sus PDF con `@cantoo/pdf-lib`.
 - Fuentes Noto (OFL-1.1) de https://github.com/notofonts, en `apps/web/public/fonts/` con su licencia.
+- `escribir-indice.pdf`: generado con Chromium (Playwright, `page.pdf` con `outline` y `tagged`, la misma impresión que usa Gotenberg) a partir de un HTML propio con un índice que enlaza los títulos `h-uno` y `h-dos` y un campo `https://campo.invalid/texto/nombre` (F6-O1, D-234).

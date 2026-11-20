@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 246 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 68). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 247 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 69). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -113,6 +113,7 @@ Catálogo publicado en esta entrega: 246 herramientas (F1 43, F2 60, F3 10, F4 1
 | `fb2-a-pdf` / `fb2-to-pdf` | servidor | office | light | F2 | activa | fb2 → pdf, zip | redactado, sin revisar |
 | `solicitud-de-empleo-pdf` / `job-application-pdf` | servidor | office | light | F2 | activa | pdf, doc, docx, rtf, odt, txt, xls, xlsx, ods, csv, ppt, pptx, pps, odp, odg, jpg, png, gif, bmp, tiff, webp → pdf, zip | redactado, sin revisar |
 | `web-a-pdf` / `web-to-pdf` | servidor | office | light | F1 | activa | — → pdf | redactado, sin revisar |
+| `escribir-pdf` / `write-pdf` | servidor | office | light | F6 | activa | html, pdf → pdf | redactado, sin revisar |
 | `captura-web` / `website-screenshot` | servidor | office | light | F6 | activa | — → png, jpg | redactado, sin revisar |
 | `udf-a-pdf` / `udf-to-pdf` | servidor | office | light | F6 | apagada | udf → pdf, zip | redactado, sin revisar |
 | `word-a-pdf-accesible` / `accessible-word-to-pdf` | servidor | office | light | F4 | activa | doc, docx, odt, rtf → pdf, html, zip | redactado, sin revisar |
@@ -292,7 +293,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Converter (`/en/pdf-converter`) | `conversor-pdf` (página fija) | disponible |  |
 | Images to PDF (`/en/images-to-pdf`) | `imagenes-a-pdf` | disponible |  |
 | PDF to Images (`/en/pdf-to-images`) | `pdf-a-imagenes` | disponible |  |
-| Write PDF (`/en/write-pdf`) | `escribir-pdf` | pendiente (F6) |  |
+| Write PDF (`/en/write-pdf`) | `escribir-pdf` | disponible |  |
 | Create PDF with a camera (`/en/scan-pdf`) | `escaner-pdf` | disponible |  |
 | Straighten scans (`/en/straighten-pdf`) | `ocr-pdf` | disponible | Sin página propia en 7: el enderezado está en ocr-pdf (Enderezar, A.5) y en escaner-pdf (corrección de perspectiva, A.1). |
 | Webpage to PDF (`/en/webpage-to-pdf`) | `web-a-pdf` | disponible |  |
@@ -408,7 +409,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Printer (`/en/pdf-printer`) | — | sin equivalente | No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3). |
 | PDF Reader (`/en/pdf-reader`) | — | sin equivalente | No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf. |
 
-Resumen: 117 disponibles, 1 pendientes de su fase y 6 sin equivalente (con su explicación).
+Resumen: 118 disponibles, 0 pendientes de su fase y 6 sin equivalente (con su explicación).
 
 ## Mejoras posteriores
 

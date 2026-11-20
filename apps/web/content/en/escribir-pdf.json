@@ -1,0 +1,34 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Write PDF is an in-browser document editor for letters, reports, quotes, CVs, minutes, certificates, leaflets or applications, which you can download as PDF, Word or Markdown. It has what you expect from a word processor: headings, typefaces and sizes, colours, highlighting, bold, italics, underline, strikethrough, subscript and superscript, alignment, lists, task lists, quotes and code blocks.",
+    "You can insert tables (adding or removing rows and columns), images from your computer, links, numbered footnotes, LaTeX maths formulas shown as you type, two-column text, page breaks, special characters and emoji, and an automatic table of contents that follows the headings. Find and replace changes a word across the whole document at once.",
+    "On the page settings you choose the paper (A4, A5, Letter or Legal), orientation, margins and font; you add a header and footer with page numbers, a watermark, a border and letterhead paper, a background PDF with your logo. The PDF includes the table of contents with real page numbers, bookmarks from the headings, tags for screen readers, the document properties and, if you insert them, fillable text, checkbox or date fields that can be completed with any PDF reader.",
+    "Our own templates give you a starting point for each kind of document. As you type, the draft is saved in your browser and you can save named versions and go back to them; none of that is uploaded to any server. Word and Markdown are generated on your device; the PDF is laid out on our server, with an exact preview to see the pages before downloading, and deleted when it expires."
+  ],
+  "steps": [
+    "Choose a template or start blank.",
+    "Write and format with the toolbar.",
+    "Set up the page: paper, margins, header, footer and letterhead.",
+    "Download as PDF, Word or Markdown."
+  ],
+  "faq": [
+    {
+      "q": "Do footnotes appear at the bottom of each page?",
+      "a": "In the PDF they are numbered in the text and gathered at the end of the document, as endnotes. In Word they are real footnotes, on the page where they are cited."
+    },
+    {
+      "q": "How do I know where each page ends?",
+      "a": "The blue lines in the editor show the approximate breaks. To see it exactly, use “Exact preview”, which shows the PDF as it is."
+    },
+    {
+      "q": "What does the automatic table of contents do?",
+      "a": "It gathers level 1 to 3 headings with a link to each; in the PDF their real page numbers are added in a second pass, and in Word it updates when the file is opened."
+    },
+    {
+      "q": "Is my document saved?",
+      "a": "The draft and versions only in this browser. If you clear browser data or use a private window, they are lost: download the file to keep it."
+    }
+  ]
+}

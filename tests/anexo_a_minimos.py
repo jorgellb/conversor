@@ -99,6 +99,10 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     # Formato «Imprimir» lo ofrece la vista del collage, fuera del esquema.
     "crear-collage": {"papel": E("A4", "A4"), "orientacion": X, "formato": E("pdf", "pdf", "jpg", "png"), "resolucion": D(300)},
     # A.1: [Imprimir en casa] | Imprenta (sangrado [3 mm]) | Imagen para enviar; el formato, las caras y los destinatarios van en el editor.
+    # A.1: papel [A4] y márgenes [25 mm], encabezado y pie con números, marca de agua, membrete, borde y propiedades.
+    "escribir-pdf": {"papel": E("A4", "A4", "A5", "Letter", "Legal"), "margenes_mm": R(25, 5, 50), "encabezado": X, "pie": X,
+                     "numeros_pagina": E("pie", "pie", "encabezado", "ninguno"), "marca_agua": X, "membrete": X, "borde": X,
+                     "titulo": X, "autor": X, "asunto": X, "palabras_clave": X},
     "crear-tarjeta": {"salida": E("casa", "casa", "imprenta", "imagen"), "papel": E("A4", "A4", "Letter"), "sangrado": R(3, 0, 5), "formato_imagen": X},
     "solicitud-de-empleo-pdf": {"marcadores": D(True), "indice": D(False), "comprimir": D(True), "umbral_mb": D(10)},
     "generar-codigo-qr": {

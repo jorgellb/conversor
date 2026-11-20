@@ -22,6 +22,8 @@ export const QrGeneratorView = dynamic(() => import("./f5/QrGeneratorView").then
 export const CollageView = dynamic(() => import("./f5/collage/CollageView").then((m) => m.CollageView));
 export const MermaidView = dynamic(() => import("./f6/MermaidView").then((m) => m.MermaidView));
 export const CardView = dynamic(() => import("./f6/tarjeta/CardView").then((m) => m.CardView));
+// El editor de documentos solo en el navegador: TipTap mide y edita el DOM.
+export const WriterView = dynamic(() => import("./f6/escribir/WriterView").then((m) => m.WriterView), { ssr: false });
 export const ChatPdfView = dynamic(() => import("./f3/ChatPdfView").then((m) => m.ChatPdfView));
 export const AccountPage = dynamic(() => import("./AccountPage").then((m) => m.AccountPage));
 export const AdminPage = dynamic(() => import("./AdminPage").then((m) => m.AdminPage));

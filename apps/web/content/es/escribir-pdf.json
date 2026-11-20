@@ -1,0 +1,34 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Escribir PDF es un editor de documentos en el navegador para crear cartas, informes, presupuestos, currículos, actas, certificados, folletos o solicitudes y descargarlos en PDF, Word o Markdown. Tiene lo que esperas de un procesador de textos: títulos, tipos y tamaños de letra, colores, resaltado, negrita, cursiva, subrayado, tachado, subíndices y superíndices, alineación, listas, listas de tareas, citas y bloques de código.",
+    "Puedes insertar tablas (con filas y columnas que se añaden o quitan), imágenes desde tu equipo, enlaces, notas al pie numeradas, fórmulas matemáticas en LaTeX que se ven al momento, texto en dos columnas, saltos de página, caracteres especiales y emojis, y un índice automático que se actualiza con los títulos. Buscar y reemplazar cambia una palabra en todo el documento de una vez.",
+    "En la página eliges el papel (A4, A5, Letter o Legal), la orientación, los márgenes y la letra; añades un encabezado y un pie con los números de página, una marca de agua, un borde y un papel con membrete, que es un PDF de fondo con tu logotipo. El PDF lleva el índice con los números de página reales, marcadores con los títulos, etiquetas para lectores de pantalla, las propiedades del documento y, si los insertas, campos rellenables de texto, casilla o fecha que se completan con cualquier lector de PDF.",
+    "Las plantillas propias te dan un punto de partida para cada tipo de documento. Mientras escribes, el borrador se guarda en tu navegador y puedes guardar versiones con nombre y volver a ellas; nada de eso se sube a ningún servidor. Word y Markdown se generan en tu dispositivo; el PDF se compone en nuestro servidor, con la vista previa exacta para ver las páginas antes de descargarlo, y se borra cuando caduca."
+  ],
+  "steps": [
+    "Elige una plantilla o empieza en blanco.",
+    "Escribe y da formato con la barra de herramientas.",
+    "Ajusta la página: papel, márgenes, encabezado, pie y membrete.",
+    "Descarga en PDF, Word o Markdown."
+  ],
+  "faq": [
+    {
+      "q": "¿Las notas al pie salen al pie de cada página?",
+      "a": "En el PDF se numeran en el texto y se reúnen al final del documento, como notas finales. En Word son notas al pie de verdad, en la página donde se citan."
+    },
+    {
+      "q": "¿Cómo sé dónde acaba cada página?",
+      "a": "Las líneas azules del editor marcan los saltos aproximados. Para verlo exacto, usa «Vista previa exacta», que muestra el PDF tal cual."
+    },
+    {
+      "q": "¿Qué hace el índice automático?",
+      "a": "Reúne los títulos de nivel 1 a 3 con un enlace a cada uno; en el PDF se añaden sus números de página reales en una segunda pasada y en Word se actualiza al abrirlo."
+    },
+    {
+      "q": "¿Se guarda mi documento?",
+      "a": "El borrador y las versiones solo en este navegador. Si borras los datos del navegador o usas una ventana privada, se pierden: descarga el archivo para guardarlo."
+    }
+  ]
+}

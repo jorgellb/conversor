@@ -92,6 +92,10 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | readpst de libpst (pst-utils, Debian) en `workermedia` | GPL-2.0-or-later | pst-a-mbox y pst-a-pdf como programa externo (F6-J, D-225) |
 | Tectonic 0.17.0 (binario oficial musl) y los paquetes de TeX de su caché | MIT; licencias libres de TeX Live (LPPL, GPL, OFL y otras) | latex-a-pdf en `workerutils`, aislado con Landlock (F6-K, D-227) |
 | Visor de draw.io `viewer-static.min.js` v32.6.10 (jgraph/drawio) | Apache-2.0 | drawio-a-pdf y drawio-a-png en el Chromium de Gotenberg (F6-K, D-227) |
+| TipTap 3.33.0 (@tiptap/*, npm) | MIT | editor de escribir-pdf; solo paquetes del registro público, sin Pages ni la conversión a DOCX de pago (F6-O1, D-234) |
+| KaTeX 0.18.10 (npm) | MIT | fórmulas de escribir-pdf (en el editor y como MathML en el PDF) |
+| docx 9.15.2 (npm) | MIT | exportación de escribir-pdf a Word en el navegador |
+| linkedom 0.18.15 (npm, desarrollo) | ISC | DOM para las pruebas de la exportación de escribir-pdf; no llega al build |
 | qrcode-generator 1.5.2 (npm) | MIT | códigos QR de crear-tarjeta en el editor y en el worker (F6-N2, D-232) |
 | mermaid 12.2.0 (npm) | MIT | mermaid-a-svg y mermaid-a-png en el navegador (F6-N1, D-231); sus dependencias son MIT, ISC, BSD, Apache-2.0 y DOMPurify (MPL-2.0 o Apache-2.0); elkjs (EPL-2.0) no se empaqueta |
 | FluidSynth (Debian) y el banco FluidR3_GM (fluid-soundfont-gm) en `workerav` | LGPL-2.1-or-later; MIT | midi-a-mp3 y midi-a-wav, FluidSynth como programa externo (F6-L, D-228) |

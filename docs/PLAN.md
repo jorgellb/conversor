@@ -131,7 +131,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F6-M | captura-web, udf-a-pdf (`default_enabled=False`) | Hecho (D-229); udf-a-pdf apagada hasta probarla con documentos reales |
 | F6-N1 | mermaid-a-png, mermaid-a-svg | Hecho (D-231) |
 | F6-N2 | crear-tarjeta | Hecho (D-232) |
-| F6-O1 | escribir-pdf: editor y exportación | Pendiente (F4-Z) |
+| F6-O1 | escribir-pdf: editor y exportación | Hecho (D-234) |
 | F6-O2 | escribir-pdf: abrir, ODT, combinación de correspondencia y extras | Pendiente (F6-O1 y F6-A) |
 | F6-Z | Cierre de F6: 16.5 de su ámbito y paridad con PDF24 en `TOOLS.md` | Pendiente (F6-A a F6-O2) |
 

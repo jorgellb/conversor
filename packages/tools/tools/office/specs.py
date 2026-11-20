@@ -80,6 +80,36 @@ class WebAPdfOptions(BaseModel):
                                               labels={"claro": ("Claro", "Light"), "oscuro": ("Oscuro", "Dark")})
 
 
+class EscribirOptions(BaseModel):
+    """escribir-pdf (A.1, F6-O1, D-234): página [A4, 25 mm], letra [Noto Serif], encabezado, pie con números de página,
+    marca de agua, borde, membrete (el PDF de fondo se sube con el documento) y propiedades del documento."""
+
+    papel: ChromiumPaper = opt("A4", "Papel", "Paper", labels=CHROMIUM_PAPERS)
+    orientacion: Literal["vertical", "horizontal"] = opt("vertical", "Orientación", "Orientation", labels=ORIENTATION)
+    margenes_mm: float = opt(25, "Márgenes (mm)", "Margins (mm)", ge=5, le=50)
+    fuente: Literal["serif", "sans", "mono"] = opt("serif", "Letra del texto", "Body font", labels={
+        "serif": ("Con remates (Noto Serif)", "Serif (Noto Serif)"), "sans": ("Sin remates (Noto Sans)", "Sans serif (Noto Sans)"),
+        "mono": ("Monoespaciada (Noto Sans Mono)", "Monospace (Noto Sans Mono)")})
+    encabezado: str = opt("", "Encabezado", "Header", max_length=200)
+    pie: str = opt("", "Pie de página", "Footer", max_length=200)
+    numeros_pagina: Literal["pie", "encabezado", "ninguno"] = opt("pie", "Números de página", "Page numbers", labels={
+        "pie": ("En el pie", "In the footer"), "encabezado": ("En el encabezado", "In the header"), "ninguno": ("Sin números", "No numbers")})
+    formato_numero: Literal["n_de_total", "n"] = opt("n_de_total", "Formato del número", "Number format", advanced=True,
+                                                     labels={"n_de_total": ("3 / 10", "3 / 10"), "n": ("3", "3")},
+                                                     show_if={"numeros_pagina": ("pie", "encabezado")})
+    marca_agua: str = opt("", "Marca de agua", "Watermark", max_length=60, advanced=True)
+    borde: Literal["ninguno", "fino", "doble"] = opt("ninguno", "Borde de página", "Page border", advanced=True, labels={
+        "ninguno": ("Sin borde", "No border"), "fino": ("Fino", "Thin"), "doble": ("Doble", "Double")})
+    membrete: Literal["todas", "primera"] = opt("todas", "Membrete en", "Letterhead on", advanced=True, labels={
+        "todas": ("Todas las páginas", "Every page"), "primera": ("Solo la primera", "First page only")})
+    titulo: str = opt("", "Título del documento", "Document title", max_length=200, advanced=True)
+    autor: str = opt("", "Autor", "Author", max_length=200, advanced=True)
+    asunto: str = opt("", "Asunto", "Subject", max_length=300, advanced=True)
+    palabras_clave: str = opt("", "Palabras clave", "Keywords", max_length=300, advanced=True)
+    idioma: Literal["es", "en"] = opt("es", "Idioma del documento", "Document language", advanced=True,
+                                      labels={"es": ("Español", "Spanish"), "en": ("Inglés", "English")})
+
+
 class CapturaOptions(BaseModel):
     """captura-web (7.13, F6-M, D-229): formato [PNG] | JPG, ancho de ventana [1280], alto [800], página completa [sí],
     espera [1 s], esquema [claro] y calidad del JPG [85]. La URL se comprueba en la API (12.2)."""
@@ -246,6 +276,12 @@ SPECS: list[ToolSpec] = [
            "Save a web page as PDF from its address. If the address is a document, it is converted.",
            options=WebAPdfOptions, impl="tools.office.web_a_pdf:run", secret_fields=(), outputs=("pdf",),
            time_limit=300, related=("html-a-pdf", "convertir-a-pdf")),
+    # A.1 (F6-O1, D-234): el editor está en la página; aquí llega su HTML (y, si se elige, el PDF de membrete).
+    office("escribir-pdf", "write-pdf", "Escribir PDF", "Write PDF", ("html", "pdf"),
+           "Escribe documentos con títulos, tablas, imágenes, fórmulas e índice y descárgalos en PDF, Word o Markdown.",
+           "Write documents with headings, tables, images, formulas and a table of contents and download them as PDF, Word or Markdown.",
+           options=EscribirOptions, impl="tools.office.escribir:run", secret_fields=(), outputs=("pdf",), phase="F6", category="pdf",
+           max_files=2, time_limit=600, related=("html-a-pdf", "markdown-a-pdf", "word-a-pdf")),
     # 7.13 (F6-M, D-229): como web-a-pdf, por gotenbergweb y egressweb; nunca recibe archivos de usuarios.
     office("captura-web", "website-screenshot", "Captura web", "Website screenshot", (),
            "Haz una captura de una página web entera, a partir de su dirección, en PNG o JPG, como en móvil o en ordenador.",

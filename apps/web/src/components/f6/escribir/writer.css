@@ -1,0 +1,49 @@
+/* escribir-pdf (F6-O1, D-234): el documento en el editor, con la misma hoja de estilos básica que el PDF. */
+.escribir-hoja {
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+  margin: 0 auto;
+  /* Saltos de página aproximados: una línea discontinua cada alto de página útil (variable --alto-pagina). */
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--alto-pagina) - 1px), #93c5fd calc(var(--alto-pagina) - 1px), #93c5fd var(--alto-pagina));
+  background-origin: content-box;
+  background-clip: content-box;
+}
+.escribir-hoja .ProseMirror { outline: none; min-height: 60vh; line-height: 1.45; font-size: 11pt; }
+.escribir-hoja .ProseMirror > * + * { margin-top: 0; }
+.escribir-hoja h1 { font-size: 22pt; font-weight: 700; margin: 0 0 10pt; line-height: 1.2; }
+.escribir-hoja h2 { font-size: 16pt; font-weight: 700; margin: 14pt 0 8pt; line-height: 1.2; }
+.escribir-hoja h3 { font-size: 13pt; font-weight: 700; margin: 12pt 0 6pt; line-height: 1.2; }
+.escribir-hoja h4, .escribir-hoja h5, .escribir-hoja h6 { font-size: 11pt; font-weight: 700; margin: 10pt 0 4pt; }
+.escribir-hoja p { margin: 0 0 6pt; }
+.escribir-hoja ul { list-style: disc; padding-left: 20pt; margin: 0 0 6pt; }
+.escribir-hoja ol { list-style: decimal; padding-left: 20pt; margin: 0 0 6pt; }
+.escribir-hoja ul[data-type="taskList"] { list-style: none; padding-left: 4pt; }
+.escribir-hoja ul[data-type="taskList"] li { display: flex; gap: 6pt; }
+.escribir-hoja ul[data-type="taskList"] li > label { flex: none; }
+.escribir-hoja ul[data-type="taskList"] li > div { flex: 1; }
+.escribir-hoja blockquote { margin: 6pt 0; padding: 2pt 10pt; border-left: 3pt solid #d1d5db; color: #374151; }
+.escribir-hoja pre { background: #f3f4f6; padding: 8pt; border-radius: 3pt; white-space: pre-wrap; font-family: "NotoMonoEditor", monospace; font-size: 9.5pt; }
+.escribir-hoja code { font-family: "NotoMonoEditor", monospace; font-size: 9.5pt; background: #f3f4f6; padding: 0 2pt; border-radius: 2pt; }
+.escribir-hoja a { color: #1d4ed8; text-decoration: underline; }
+.escribir-hoja table { border-collapse: collapse; width: 100%; margin: 6pt 0; table-layout: fixed; }
+.escribir-hoja th, .escribir-hoja td { border: 1px solid #9ca3af; padding: 4pt 6pt; vertical-align: top; position: relative; }
+.escribir-hoja th { background: #f3f4f6; font-weight: 700; text-align: left; }
+.escribir-hoja .selectedCell::after { content: ""; position: absolute; inset: 0; background: rgb(59 130 246 / 0.15); pointer-events: none; }
+.escribir-hoja img { max-width: 100%; height: auto; }
+.escribir-hoja img.ProseMirror-selectednode { outline: 2px solid #2563eb; }
+.escribir-hoja hr { border: 0; border-top: 1px solid #9ca3af; margin: 8pt 0; }
+.escribir-hoja hr.salto-pagina { border-top: 2px dashed #2563eb; margin: 10pt 0; position: relative; }
+.escribir-hoja hr.salto-pagina::after { content: attr(data-etiqueta); position: absolute; right: 0; top: -9pt; font-size: 8pt; color: #2563eb; background: #fff; padding: 0 3pt; }
+.escribir-hoja .columnas { column-gap: 8mm; border: 1px dashed #d1d5db; padding: 2pt; }
+.escribir-hoja .columnas[data-columnas="2"] { column-count: 2; }
+.escribir-hoja .columnas[data-columnas="3"] { column-count: 3; }
+.escribir-hoja .ProseMirror { counter-reset: nota; }
+.escribir-hoja sup.nota { counter-increment: nota; color: #1d4ed8; cursor: help; }
+.escribir-hoja sup.nota::after { content: counter(nota); }
+.escribir-hoja .campo-editor { display: inline-block; border-bottom: 1px dashed #6b7280; background: #eff6ff; color: #6b7280; font-size: 8pt; padding: 0 2pt; vertical-align: baseline; overflow: hidden; white-space: nowrap; }
+.escribir-hoja .campo-editor[data-tipo="casilla"] { border: 1px solid #6b7280; font-size: 0; height: 1em; }
+.escribir-hoja nav.indice-editor { border: 1px dashed #93c5fd; padding: 6pt; margin: 6pt 0 10pt; }
+.escribir-hoja [data-type="block-math"] { display: block; text-align: center; margin: 6pt 0; }
+.escribir-hoja .ProseMirror p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: #9ca3af; float: left; height: 0; pointer-events: none; }
+.escribir-hoja mark { padding: 0 1pt; }

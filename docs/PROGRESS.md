@@ -658,9 +658,15 @@ e imagen (D-232), en `packages/client-tools/test/tarjeta.test.ts` y `tests/e2e/t
 Correcciones de D-235 (fotos con «#», QR por bytes, caracteres no XML, alineación validada, dípticas que caben en casa, lector de XLSX
 lineal, filas vacías en las listas, ELK en Mermaid), en `packages/client-tools/test/tarjeta.test.ts`.
 
+## F6-O1 (escribir-pdf)
+
+Editor TipTap con índice, notas, fórmulas, campos, plantillas y versiones; PDF por Gotenberg con índice en dos pasadas, Word y
+Markdown en el navegador (D-234), en `tests/test_escribir.py`, `packages/client-tools/test/escribir.test.ts`,
+`apps/web/test/escribir.test.ts` y `tests/e2e/escribir-f6.spec.ts`.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1 y F6-N2 hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2 y F6-O1 hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

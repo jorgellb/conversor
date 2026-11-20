@@ -17377,6 +17377,357 @@
       }
     },
     {
+      "slug_es": "escribir-pdf",
+      "slug_en": "write-pdf",
+      "name_es": "Escribir PDF",
+      "name_en": "Write PDF",
+      "summary_es": "Escribe documentos con títulos, tablas, imágenes, fórmulas e índice y descárgalos en PDF, Word o Markdown.",
+      "summary_en": "Write documents with headings, tables, images, formulas and a table of contents and download them as PDF, Word or Markdown.",
+      "category": "pdf",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "html",
+        "pdf"
+      ],
+      "outputs": [
+        "pdf"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 2,
+      "secret_fields": [],
+      "related": [
+        "html-a-pdf",
+        "markdown-a-pdf",
+        "word-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "escribir-pdf (A.1, F6-O1, D-234): página [A4, 25 mm], letra [Noto Serif], encabezado, pie con números de página,\nmarca de agua, borde, membrete (el PDF de fondo se sube con el documento) y propiedades del documento.",
+        "properties": {
+          "papel": {
+            "default": "A4",
+            "enum": [
+              "A3",
+              "A4",
+              "A5",
+              "Letter",
+              "Legal"
+            ],
+            "title": "Papel",
+            "type": "string",
+            "x-labels": {
+              "A3": {
+                "en": "A3",
+                "es": "A3"
+              },
+              "A4": {
+                "en": "A4",
+                "es": "A4"
+              },
+              "A5": {
+                "en": "A5",
+                "es": "A5"
+              },
+              "Legal": {
+                "en": "Legal",
+                "es": "Legal"
+              },
+              "Letter": {
+                "en": "Letter",
+                "es": "Letter"
+              }
+            },
+            "x-title": {
+              "en": "Paper",
+              "es": "Papel"
+            }
+          },
+          "orientacion": {
+            "default": "vertical",
+            "enum": [
+              "vertical",
+              "horizontal"
+            ],
+            "title": "Orientación",
+            "type": "string",
+            "x-labels": {
+              "horizontal": {
+                "en": "Landscape",
+                "es": "Horizontal"
+              },
+              "vertical": {
+                "en": "Portrait",
+                "es": "Vertical"
+              }
+            },
+            "x-title": {
+              "en": "Orientation",
+              "es": "Orientación"
+            }
+          },
+          "margenes_mm": {
+            "default": 25,
+            "maximum": 50,
+            "minimum": 5,
+            "title": "Márgenes (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Margins (mm)",
+              "es": "Márgenes (mm)"
+            }
+          },
+          "fuente": {
+            "default": "serif",
+            "enum": [
+              "serif",
+              "sans",
+              "mono"
+            ],
+            "title": "Letra del texto",
+            "type": "string",
+            "x-labels": {
+              "mono": {
+                "en": "Monospace (Noto Sans Mono)",
+                "es": "Monoespaciada (Noto Sans Mono)"
+              },
+              "sans": {
+                "en": "Sans serif (Noto Sans)",
+                "es": "Sin remates (Noto Sans)"
+              },
+              "serif": {
+                "en": "Serif (Noto Serif)",
+                "es": "Con remates (Noto Serif)"
+              }
+            },
+            "x-title": {
+              "en": "Body font",
+              "es": "Letra del texto"
+            }
+          },
+          "encabezado": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Encabezado",
+            "type": "string",
+            "x-title": {
+              "en": "Header",
+              "es": "Encabezado"
+            }
+          },
+          "pie": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Pie de página",
+            "type": "string",
+            "x-title": {
+              "en": "Footer",
+              "es": "Pie de página"
+            }
+          },
+          "numeros_pagina": {
+            "default": "pie",
+            "enum": [
+              "pie",
+              "encabezado",
+              "ninguno"
+            ],
+            "title": "Números de página",
+            "type": "string",
+            "x-labels": {
+              "encabezado": {
+                "en": "In the header",
+                "es": "En el encabezado"
+              },
+              "ninguno": {
+                "en": "No numbers",
+                "es": "Sin números"
+              },
+              "pie": {
+                "en": "In the footer",
+                "es": "En el pie"
+              }
+            },
+            "x-title": {
+              "en": "Page numbers",
+              "es": "Números de página"
+            }
+          },
+          "formato_numero": {
+            "default": "n_de_total",
+            "enum": [
+              "n_de_total",
+              "n"
+            ],
+            "title": "Formato del número",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "n": {
+                "en": "3",
+                "es": "3"
+              },
+              "n_de_total": {
+                "en": "3 / 10",
+                "es": "3 / 10"
+              }
+            },
+            "x-show-if": {
+              "numeros_pagina": [
+                "pie",
+                "encabezado"
+              ]
+            },
+            "x-title": {
+              "en": "Number format",
+              "es": "Formato del número"
+            }
+          },
+          "marca_agua": {
+            "default": "",
+            "maxLength": 60,
+            "title": "Marca de agua",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Watermark",
+              "es": "Marca de agua"
+            }
+          },
+          "borde": {
+            "default": "ninguno",
+            "enum": [
+              "ninguno",
+              "fino",
+              "doble"
+            ],
+            "title": "Borde de página",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "doble": {
+                "en": "Double",
+                "es": "Doble"
+              },
+              "fino": {
+                "en": "Thin",
+                "es": "Fino"
+              },
+              "ninguno": {
+                "en": "No border",
+                "es": "Sin borde"
+              }
+            },
+            "x-title": {
+              "en": "Page border",
+              "es": "Borde de página"
+            }
+          },
+          "membrete": {
+            "default": "todas",
+            "enum": [
+              "todas",
+              "primera"
+            ],
+            "title": "Membrete en",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "primera": {
+                "en": "First page only",
+                "es": "Solo la primera"
+              },
+              "todas": {
+                "en": "Every page",
+                "es": "Todas las páginas"
+              }
+            },
+            "x-title": {
+              "en": "Letterhead on",
+              "es": "Membrete en"
+            }
+          },
+          "titulo": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Título del documento",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Document title",
+              "es": "Título del documento"
+            }
+          },
+          "autor": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Autor",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Author",
+              "es": "Autor"
+            }
+          },
+          "asunto": {
+            "default": "",
+            "maxLength": 300,
+            "title": "Asunto",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Subject",
+              "es": "Asunto"
+            }
+          },
+          "palabras_clave": {
+            "default": "",
+            "maxLength": 300,
+            "title": "Palabras clave",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keywords",
+              "es": "Palabras clave"
+            }
+          },
+          "idioma": {
+            "default": "es",
+            "enum": [
+              "es",
+              "en"
+            ],
+            "title": "Idioma del documento",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              }
+            },
+            "x-title": {
+              "en": "Document language",
+              "es": "Idioma del documento"
+            }
+          }
+        },
+        "title": "EscribirOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "captura-web",
       "slug_en": "website-screenshot",
       "name_es": "Captura web",
