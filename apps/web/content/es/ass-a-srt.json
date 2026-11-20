@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ASS a SRT convierte subtítulos Advanced SubStation Alpha (.ass) y su versión anterior SubStation Alpha (.ssa), los que crea Aegisub y que son habituales en anime, fansubs y karaoke, en SRT, que entienden todos los reproductores, televisores y editores de vídeo.",
+    "ASS permite colocar cada línea en cualquier punto de la pantalla, con fuentes, colores, contornos, animaciones y dibujos vectoriales. SRT no tiene nada de eso: conservamos el texto, los tiempos, los saltos de línea y el estilo básico (negrita, cursiva, subrayado y tachado), tanto el que va dentro de la línea como el del estilo que la línea usa. El resto de etiquetas se quita.",
+    "Las líneas comentadas y los dibujos vectoriales ({\\p1}), que no son texto, no se incluyen, y te decimos cuántos se han quitado. Los subtítulos se ordenan por tiempo, porque en un ASS suelen estar agrupados por estilo o por capa.",
+    "La conversión se hace en nuestro servidor: los subtítulos se leen con pysubs2, una biblioteca libre muy usada para este trabajo, y el archivo nuevo se escribe en UTF-8 y ordenado por tiempo. Detectamos la codificación del original, así que los subtítulos antiguos en Windows-1252, con las tildes y las eñes de toda la vida, salen bien. Puedes convertir hasta 20 archivos a la vez y descargarlos juntos en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .ass o .ssa.",
+    "Elige si conservar negrita y cursiva o solo el texto.",
+    "Descarga el .srt."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué los carteles salen como subtítulos normales?",
+      "a": "Porque en SRT todas las líneas se muestran abajo: la posición de los carteles de un ASS no se puede expresar. Si molestan, bórralos del SRT."
+    },
+    {
+      "q": "¿Y el karaoke?",
+      "a": "Se conserva el texto de cada línea completo; los efectos de sílaba a sílaba ({\\k}) no existen en SRT y se quitan."
+    },
+    {
+      "q": "¿Puedo pasar el ASS a WebVTT?",
+      "a": "Conviértelo primero a SRT con esta herramienta y después con SRT a VTT."
+    }
+  ]
+}

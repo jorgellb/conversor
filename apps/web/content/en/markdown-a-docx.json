@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Markdown to DOCX turns .md files into Word documents you can keep editing. It is handy when you write in Markdown, in a code editor or a notes app, but have to hand the work in as Word: a report, a chapter, study notes or a project's documentation.",
+    "Headings, lists (task lists too), quotes, links, tables, strikethrough, footnotes and code blocks are understood, and code comes out with syntax highlighting. Formulas written between dollar signs, such as $x^2$, become editable Word equations. The title and author in an opening YAML block are read as well; if that block is malformed, it is ignored instead of failing.",
+    "You can add a table of contents at the start, which Word updates with one click, and number the headings (1, 1.1, 1.2…). The document uses the standard Word styles, so you can change its whole look at once by applying your template.",
+    "To include images, upload a ZIP with the .md and its images (PNG, JPEG, GIF, TIFF, BMP or WebP, up to 10 MB each; the Markdown, up to 2 MB) at the same relative paths the text uses. For safety, images are never loaded from the internet or from outside the ZIP; if any are missing, we tell you. Pandoc runs sandboxed on our server."
+  ],
+  "steps": [
+    "Upload a .md or a ZIP with the .md and its images.",
+    "Choose the Markdown flavor, whether to add a table of contents and whether to number headings.",
+    "Download the Word document."
+  ],
+  "faq": [
+    {
+      "q": "Why is an image missing?",
+      "a": "Only images inside the ZIP, at the path the Markdown gives, are included. Those pointing to a web address or to a folder on your computer are never downloaded; the note on the result says how many were left out."
+    },
+    {
+      "q": "Which file is used if the ZIP has several .md files?",
+      "a": "The README.md or index.md in the shallowest folder; if there is none, the first .md of that folder in alphabetical order."
+    },
+    {
+      "q": "Would you rather have a PDF?",
+      "a": "Markdown to PDF turns the same file into a laid-out PDF, with a light theme or a plain one for printing."
+    }
+  ]
+}

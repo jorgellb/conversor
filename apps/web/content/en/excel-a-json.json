@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Excel to JSON turns an Excel sheet into JSON data ready for a web app, an API, a script or a document database. It is the quick way to bring into code a table someone maintains in Excel: a product catalogue, a price list, translations or a project's configuration.",
+    "By default you get a list of objects in which the first row names the keys: each row of the sheet becomes an object such as {\"Customer\": \"Smith\", \"Amount\": 1234.5}. If headers repeat or are empty, keys are numbered (“id_2”, “columna_3”) so none is lost. You can also ask for the rows as they are, as lists of values.",
+    "Types are respected: numbers stay numbers (whole numbers without “.0”), logical values are true and false, empty cells are null and dates are written as ISO text (2026-01-15). The calculated values of formulas are used; if a program saved formulas without calculating them, we warn you.",
+    "You can convert only the active sheet or all of them, and then the JSON is an object with one entry per sheet. The file is indented, in UTF-8 and with accented letters unescaped. We read the workbook with openpyxl on our server, without running macros, with up to 20 workbooks per batch."
+  ],
+  "steps": [
+    "Upload one or more .xlsx files.",
+    "Choose objects or rows and which sheets to convert.",
+    "Download the .json file."
+  ],
+  "faq": [
+    {
+      "q": "What if my table does not start on the first row?",
+      "a": "Empty rows at the top are skipped and the first row with data gives the keys. If there is a title above the header, delete it before converting or choose “Lists of values” and drop the extra rows."
+    },
+    {
+      "q": "Can I convert a CSV to JSON?",
+      "a": "Yes, with CSV to JSON, which also detects the file's separator and encoding."
+    },
+    {
+      "q": "Can dates come out as numbers?",
+      "a": "No: they are always written as ISO text, which almost every language and database understands."
+    }
+  ]
+}

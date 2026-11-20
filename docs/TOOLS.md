@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 178 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 209 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 31). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -184,6 +184,37 @@ Catálogo publicado en esta entrega: 178 herramientas (F1 43, F2 60, F3 10, F4 1
 | `facturae-a-pdf` / `facturae-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |
 | `ubl-a-pdf` / `ubl-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |
 | `cii-a-pdf` / `cii-to-pdf` | servidor | utils | light | F4 | activa | xml → pdf, zip | redactado, sin revisar |
+| `docx-a-odt` / `docx-to-odt` | servidor | utils | light | F6 | activa | docx → odt, zip | redactado, sin revisar |
+| `odt-a-docx` / `odt-to-docx` | servidor | utils | light | F6 | activa | odt → docx, zip | redactado, sin revisar |
+| `docx-a-markdown` / `docx-to-markdown` | servidor | utils | light | F6 | activa | docx → md, zip | redactado, sin revisar |
+| `markdown-a-docx` / `markdown-to-docx` | servidor | utils | light | F6 | activa | md, zip → docx, zip | redactado, sin revisar |
+| `docx-a-html` / `docx-to-html` | servidor | utils | light | F6 | activa | docx → html, zip | redactado, sin revisar |
+| `html-a-docx` / `html-to-docx` | servidor | utils | light | F6 | activa | html, zip → docx, zip | redactado, sin revisar |
+| `xlsx-a-csv` / `xlsx-to-csv` | servidor | utils | light | F6 | activa | xlsx → csv, zip | redactado, sin revisar |
+| `csv-a-xlsx` / `csv-to-xlsx` | servidor | utils | light | F6 | activa | csv, txt → xlsx, zip | redactado, sin revisar |
+| `ods-a-xlsx` / `ods-to-xlsx` | servidor | office | light | F6 | activa | ods → xlsx, zip | redactado, sin revisar |
+| `xlsx-a-ods` / `xlsx-to-ods` | servidor | office | light | F6 | activa | xlsx, xls → ods, zip | redactado, sin revisar |
+| `excel-a-json` / `excel-to-json` | servidor | utils | light | F6 | activa | xlsx → json, zip | redactado, sin revisar |
+| `arreglar-codificacion-csv` / `fix-csv-encoding` | servidor | utils | light | F6 | activa | csv, txt → csv, zip | redactado, sin revisar |
+| `csv-a-json` / `csv-to-json` | servidor | utils | light | F6 | activa | csv, txt → json, zip | redactado, sin revisar |
+| `json-a-csv` / `json-to-csv` | servidor | utils | light | F6 | activa | json → csv, zip | redactado, sin revisar |
+| `json-a-xml` / `json-to-xml` | servidor | utils | light | F6 | activa | json → xml, zip | redactado, sin revisar |
+| `xml-a-json` / `xml-to-json` | servidor | utils | light | F6 | activa | xml → json, zip | redactado, sin revisar |
+| `yaml-a-json` / `yaml-to-json` | servidor | utils | light | F6 | activa | yaml → json, zip | redactado, sin revisar |
+| `json-a-yaml` / `json-to-yaml` | servidor | utils | light | F6 | activa | json → yaml, zip | redactado, sin revisar |
+| `ttf-a-woff2` / `ttf-to-woff2` | servidor | utils | light | F6 | activa | ttf → woff2, zip | redactado, sin revisar |
+| `otf-a-woff2` / `otf-to-woff2` | servidor | utils | light | F6 | activa | otf → woff2, zip | redactado, sin revisar |
+| `woff2-a-ttf` / `woff2-to-ttf` | servidor | utils | light | F6 | activa | woff2 → ttf, zip | redactado, sin revisar |
+| `woff-a-ttf` / `woff-to-ttf` | servidor | utils | light | F6 | activa | woff → ttf, zip | redactado, sin revisar |
+| `ttf-a-otf` / `ttf-to-otf` | servidor | utils | light | F6 | activa | ttf → otf, zip | redactado, sin revisar |
+| `otf-a-ttf` / `otf-to-ttf` | servidor | utils | light | F6 | activa | otf → ttf, zip | redactado, sin revisar |
+| `rar-a-zip` / `rar-to-zip` | servidor | utils | light | F6 | activa | rar → zip | redactado, sin revisar |
+| `7z-a-zip` / `7z-to-zip` | servidor | utils | light | F6 | activa | 7z → zip | redactado, sin revisar |
+| `tar-a-zip` / `tar-to-zip` | servidor | utils | light | F6 | activa | tar, gz, bz2, xz → zip | redactado, sin revisar |
+| `extraer-archivo-online` / `extract-archive-online` | servidor | utils | light | F6 | activa | zip, rar, 7z, tar, gz, bz2, xz → zip | redactado, sin revisar |
+| `srt-a-vtt` / `srt-to-vtt` | servidor | utils | light | F6 | activa | srt → vtt, zip | redactado, sin revisar |
+| `vtt-a-srt` / `vtt-to-srt` | servidor | utils | light | F6 | activa | vtt → srt, zip | redactado, sin revisar |
+| `ass-a-srt` / `ass-to-srt` | servidor | utils | light | F6 | activa | ass → srt, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

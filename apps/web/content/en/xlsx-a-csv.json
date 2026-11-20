@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Excel to CSV exports the sheets of an .xlsx workbook to CSV files, the text format understood by databases, accounting software, online shops, Python, R and almost any application that imports data. It is the way to get a table out of Excel and load it into another system without opening Excel or fighting the “Save as” dialog.",
+    "You can export only the active sheet (the one open when the workbook was saved) or all of them, with one CSV per sheet inside a ZIP. You choose the separator (comma, semicolon or tab), the decimal mark and the encoding: UTF-8, UTF-8 with BOM so Excel reopens it with accents intact, or Windows-1252 for older programs; characters that do not exist in Windows-1252 are replaced with “?” and we tell you how many.",
+    "The calculated values are exported, not the formulas: what you would see in the cell. Dates come out in ISO format (2026-01-15, plus the time if they have one), logical values as TRUE and FALSE and numbers with all their decimals, without thousands formatting or currency symbols. Codes with leading zeros that were stored as text, such as 00123 or a postcode, are kept as they are. Trailing empty rows and columns are removed, and text starting with =, +, - or @ gets an apostrophe in front so that a spreadsheet does not run it as a formula when the CSV is opened.",
+    "Some programs (those that generate reports automatically, for example) save formulas without their result; those cells come out empty and we warn you so you can open and save the workbook in Excel or LibreOffice before converting. The conversion runs on our server with openpyxl, without running macros, with up to 20 workbooks per batch."
+  ],
+  "steps": [
+    "Upload one or more .xlsx files.",
+    "Choose the sheets, separator, decimal mark and encoding.",
+    "Download the CSV, or the ZIP with one CSV per sheet."
+  ],
+  "faq": [
+    {
+      "q": "Which separator should I choose?",
+      "a": "The comma is the standard and what most programs expect. If you will open the CSV in an Excel set up for a European language, semicolon with a decimal comma is what that Excel expects."
+    },
+    {
+      "q": "What about old .xls files?",
+      "a": "This tool reads .xlsx. Open the .xls in Excel or LibreOffice and save it as .xlsx before uploading it."
+    },
+    {
+      "q": "What happens to merged cells?",
+      "a": "The value stays in the first cell of the group and the others come out empty, which is how Excel stores it."
+    }
+  ]
+}

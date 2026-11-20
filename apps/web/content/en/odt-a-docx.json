@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODT to DOCX turns LibreOffice Writer, Collabora or OpenOffice documents into Microsoft Word files. Use it when someone asks you for a .docx, when a platform only accepts Word, or when you want to keep editing in Word a text you started in LibreOffice.",
+    "Headings keep their hierarchy, and paragraphs, bold, italic or struck-through text, lists, tables, images, links and footnotes are all kept. Comments and margin annotations are not copied, so the .docx comes out clean.",
+    "The Word document uses the standard styles (Heading 1, Heading 2, Normal, Table…), not those of your template. That makes it easy to apply whatever design you like afterwards, but bear in mind that margins, headers and footers, frames and column layouts are not copied.",
+    "The conversion is done by pandoc on our server, sandboxed and with no access to the network or to other files. It accepts up to 20 files per batch and, if you upload several, you also get a ZIP with every .docx."
+  ],
+  "steps": [
+    "Upload one or more .odt files.",
+    "Wait for the conversion to finish.",
+    "Download each Word document or the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Will it look the same as in LibreOffice?",
+      "a": "The content is the same, but not the layout: the result uses the standard Word styles. If you want a file to print or send unchanged, ODT to PDF is a better choice."
+    },
+    {
+      "q": "Does it work for spreadsheets or presentations?",
+      "a": "No, only for text documents (.odt). .ods spreadsheets and .odp presentations are not supported by this tool."
+    },
+    {
+      "q": "Do I lose footnotes?",
+      "a": "No. Footnotes and endnotes become real Word notes, with automatic numbering, so you can keep adding or removing notes and Word renumbers them for you."
+    }
+  ]
+}

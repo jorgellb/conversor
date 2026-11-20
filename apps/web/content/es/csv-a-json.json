@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV a JSON convierte una tabla en CSV en datos JSON para usarlos en una aplicación, una API, una base de datos documental o un script. Es útil para cargar en una web la exportación de una hoja de cálculo, preparar datos de prueba o pasar a un formato estructurado lo que otro sistema entrega en CSV.",
+    "Detectamos la codificación del archivo, incluidas UTF-8, UTF-16 y Windows-1252, y el separador: coma, punto y coma, tabulador o barra vertical. Las comillas, las comas dentro de un campo y los saltos de línea dentro de las celdas se leen como dice el estándar del CSV, de modo que «Uno, dos» entre comillas sigue siendo un solo valor.",
+    "Por defecto, cada fila se convierte en un objeto con los encabezados como claves, y las claves vacías o repetidas se numeran para que no se pierda ninguna columna. Los números pasan a ser números, true y false valores lógicos y las celdas vacías null; los códigos con ceros a la izquierda, como 04001, y los números de más de 15 cifras se quedan como texto para no perder dígitos. Si prefieres el texto exacto de cada celda, desactiva la conversión de tipos.",
+    "También puedes obtener las filas como listas de valores, con el encabezado como primera lista. El JSON sale con sangría y en UTF-8. La conversión se hace en nuestro servidor, con archivos de hasta 25 MB y 20 por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos CSV.",
+    "Elige el separador, la forma y si convertir los tipos.",
+    "Descarga el archivo .json."
+  ],
+  "faq": [
+    {
+      "q": "¿Se detecta el decimal con coma?",
+      "a": "Sí. Si la mayoría de las cifras usan coma decimal, como 12,5 o 1.234,56, se leen así; si usan punto, como 12.5, se leen con punto."
+    },
+    {
+      "q": "¿Qué pasa si una fila tiene menos columnas?",
+      "a": "Las que faltan se completan con null (o con texto vacío si no conviertes los tipos), así todos los objetos tienen las mismas claves."
+    },
+    {
+      "q": "¿Y al revés?",
+      "a": "JSON a CSV convierte una lista de objetos JSON en una tabla CSV, aplanando los objetos anidados."
+    }
+  ]
+}

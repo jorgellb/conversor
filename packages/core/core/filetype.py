@@ -11,18 +11,22 @@ EBML = bytes.fromhex("1A45DFA3")
 
 # Formatos que comparten contenedor: se confía en la extensión declarada solo dentro de su familia.
 OLE2_FAMILY = {"doc", "xls", "ppt", "pps", "msg", "pub", "vsd"}
-TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "srt", "vtt", "ass", "eml", "fb2", "dxf"}
+TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr"}
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
 RAW_TIFF = {"cr2", "nef", "arw", "dng"}
 IWORK = {"pages", "key", "numbers"}
 # Texto en UTF-16 o UTF-32 con BOM: solo para las herramientas que lo leen (los subtítulos, D-179). Va antes de las
-# reglas de MP3 y AAC, porque el BOM FF FE parece una palabra de sincronía MPEG.
-WIDE_TEXT = {"srt", "vtt", "ass"}
+# reglas de MP3 y AAC, porque el BOM FF FE parece una palabra de sincronía MPEG. CSV y TXT también (F6-B, D-213 y
+# D-218): el «Texto Unicode» de Excel es un .txt en UTF-16 separado por tabuladores.
+WIDE_TEXT = {"srt", "vtt", "ass", "csv", "txt"}
 WIDE_BOMS = ((b"\xff\xfe\x00\x00", "utf-32-le"), (b"\x00\x00\xfe\xff", "utf-32-be"), (b"\xff\xfe", "utf-16-le"),
              (b"\xfe\xff", "utf-16-be"))
 MOBI = {"mobi", "azw3", "azw"}
+# Fuentes (F6-F): un .otf puede llevar contornos TrueType (cabecera 00 01 00 00) y un .ttf, CFF; manda la extensión
+# declarada si es de fuente.
+FONTS = {"ttf", "otf"}
 
 MIME = {
     "pdf": "application/pdf", "jpg": "image/jpeg", "png": "image/png", "gif": "image/gif",
@@ -47,9 +51,17 @@ MIME = {
     "arw": "image/x-sony-arw", "dng": "image/x-adobe-dng",
     # Subtítulos (F3-E): SRT, WebVTT y ASS (también SSA, su versión anterior).
     "srt": "application/x-subrip", "vtt": "text/vtt", "ass": "text/x-ssa",
+    # Fuentes (F6-F).
+    "ttf": "font/ttf", "otf": "font/otf", "woff": "font/woff", "woff2": "font/woff2",
+    # Comprimidos (F6-E).
+    "7z": "application/x-7z-compressed", "tar": "application/x-tar", "gz": "application/gzip", "bz2": "application/x-bzip2",
+    "xz": "application/x-xz",
+    # Datos (F6-B).
+    "json": "application/json", "xml": "application/xml", "yaml": "application/yaml",
 }
 
-EXT_ALIASES = {"jpeg": "jpg", "tif": "tiff", "htm": "html", "markdown": "md", "oga": "ogg", "aif": "aiff", "ssa": "ass"}
+EXT_ALIASES = {"jpeg": "jpg", "tif": "tiff", "htm": "html", "markdown": "md", "oga": "ogg", "aif": "aiff", "ssa": "ass", "yml": "yaml",
+               "tgz": "gz", "tbz2": "bz2", "tbz": "bz2", "txz": "xz"}
 
 
 @dataclass(frozen=True)
@@ -225,6 +237,10 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
         return Detected(kind, "image" if kind in ("heic", "avif") else "media")
     if head.startswith(b"OggS"):
         return Detected(_ogg_kind(head), "audio")
+    if head[:4] in (b"\x00\x01\x00\x00", b"true", b"OTTO") and len(head) >= 12 and 0 < int.from_bytes(head[4:6], "big") < 100:
+        return Detected(declared if declared in FONTS else ("otf" if head[:4] == b"OTTO" else "ttf"), "font")
+    if head[:4] in (b"wOFF", b"wOF2"):
+        return Detected("woff" if head[:4] == b"wOFF" else "woff2", "font")
     if head.startswith(b"fLaC"):
         return Detected("flac", "audio")
     if head.startswith(b"#!AMR"):
@@ -244,6 +260,17 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
         return Detected(_zip_kind(path), "zip")
     if head.startswith(b"Rar!\x1a\x07"):
         return Detected("rar", "archive")
+    # Comprimidos de F6-E (D-217): 7z, gzip, bzip2, xz y tar (la marca «ustar» en el byte 257).
+    if head.startswith(b"7z\xbc\xaf\x27\x1c"):
+        return Detected("7z", "archive")
+    if head.startswith(b"\x1f\x8b\x08"):
+        return Detected("gz", "archive")
+    if head.startswith(b"BZh") and head[3:4].isdigit() and head[4:10] in (b"1AY&SY", b"\x17rE8P\x90"):
+        return Detected("bz2", "archive")
+    if head.startswith(b"\xfd7zXZ\x00"):
+        return Detected("xz", "archive")
+    if head[257:262] == b"ustar":
+        return Detected("tar", "archive")
     if head.startswith(b"AT&TFORM"):
         return Detected("djvu", "djvu")
     if head[60:68] == b"BOOKMOBI":
@@ -270,7 +297,7 @@ FAMILIES = {
     "arw": "image", "dng": "image", "wav": "audio", "ogg": "audio", "opus": "audio",
     "flac": "audio", "amr": "audio", "aiff": "audio", "wma": "audio", "mp3": "audio", "aac": "audio", "avi": "video",
     "mkv": "video", "webm": "video", "mp4": "media", "m4a": "media", "mov": "media", "rtf": "text",
-    "html": "text", "svg": "text", "ole2": "ole2",
+    "html": "text", "svg": "text", "ole2": "ole2", "ttf": "font", "otf": "font", "woff": "font", "woff2": "font",
 }
 
 

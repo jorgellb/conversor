@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OTF to TTF turns OpenType fonts with CFF outlines into TrueType fonts. It is needed when a program, device or system only accepts TTF: some editors, TVs, consoles, vinyl cutters, embroidery machines, games or old versions of Windows and Office.",
+    "CFF cubic curves cannot always be written exactly as quadratic ones, so we approximate them with fontTools' method (cu2qu), with a maximum error of one unit of the font's grid, usually a thousandth of its size: invisible even at very large sizes. Outline direction is adjusted to what TrueType expects.",
+    "Glyphs, the character map, family and style names, metrics, kerning and OpenType features such as ligatures or small caps are kept. The TTF carries no hinting, because the original CFF font had no TrueType instructions; it looks fine on current screens.",
+    "Fonts that already have TrueType outlines even though they are called .otf are copied unchanged. CFF2 variable fonts cannot be converted. We work with fontTools on our server, up to 20 fonts per batch, with a ZIP if there are several."
+  ],
+  "steps": [
+    "Upload one or more .otf files.",
+    "Wait for the conversion.",
+    "Download each .ttf or the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Is the curve approximation noticeable?",
+      "a": "No. The maximum error is one unit of a grid of 1000 or 2048 per letter; on a 10 cm letter that would be 0.1 mm at most."
+    },
+    {
+      "q": "Will the file be larger?",
+      "a": "Usually a little, because quadratic curves need more points than cubic ones. For the web, compress the result with TTF to WOFF2."
+    },
+    {
+      "q": "Can I convert any font?",
+      "a": "Technically yes, but turning it into TTF does not change its licence: if the licence does not allow installing it on your computer, the conversion does not give you that right. Fonts under a free licence, such as the SIL Open Font License used by Google Fonts, do allow it."
+    }
+  ]
+}

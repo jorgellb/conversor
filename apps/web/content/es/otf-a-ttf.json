@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OTF a TTF convierte fuentes OpenType con contornos CFF en fuentes TrueType. Hace falta cuando un programa, un dispositivo o un sistema solo admite TTF: algunos editores, televisores, consolas, cortadoras de vinilo, máquinas de bordar, juegos o versiones antiguas de Windows y Office.",
+    "Las curvas cúbicas de CFF no siempre se pueden escribir exactamente como cuadráticas, así que las aproximamos con el método de fontTools (cu2qu), con un error máximo de una unidad de la cuadrícula de la fuente, normalmente una milésima de su tamaño: imperceptible incluso a tamaños muy grandes. El sentido de los contornos se ajusta al que espera TrueType.",
+    "Se conservan los glifos, el mapa de caracteres, los nombres de la familia y del estilo, las métricas, el kerning y las funciones OpenType como ligaduras o versalitas. El TTF no lleva hinting, porque la fuente original CFF no tenía instrucciones de TrueType; se ve bien en las pantallas actuales.",
+    "Las fuentes que ya tienen contornos TrueType aunque se llamen .otf se copian sin cambios. Las variables CFF2 no se pueden convertir. Trabajamos con fontTools en nuestro servidor, hasta 20 fuentes por tanda, con un ZIP si son varias."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .otf.",
+    "Espera a la conversión.",
+    "Descarga cada .ttf o el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se nota la aproximación de las curvas?",
+      "a": "No. El error máximo es una unidad de una cuadrícula de 1000 o 2048 por letra; en una letra de 10 cm serían 0,1 mm como mucho."
+    },
+    {
+      "q": "¿El archivo será más grande?",
+      "a": "Suele serlo un poco, porque las curvas cuadráticas necesitan más puntos que las cúbicas. Para la web, comprime el resultado con TTF a WOFF2."
+    },
+    {
+      "q": "¿Puedo convertir cualquier fuente?",
+      "a": "Técnicamente sí, pero pasarla a TTF no cambia su licencia: si la licencia no permite instalarla en tu equipo, la conversión no te da ese derecho. Las fuentes con licencia libre, como la SIL Open Font License de Google Fonts, sí lo permiten."
+    }
+  ]
+}

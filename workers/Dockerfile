@@ -272,9 +272,12 @@ CMD ["python", "/app/pki.py", "serve", "/home/app/pki", "9000"]
 # (infra/facturae, SHA256SUMS). JRE 17 de Debian; KoSIT y las configuraciones, con SHA-256 fijados ---
 FROM base AS worker-utils
 RUN apt-get update \
- && apt-get install -y --no-install-recommends openjdk-17-jre-headless curl \
+ && apt-get install -y --no-install-recommends openjdk-17-jre-headless curl libarchive13 \
  && rm -rf /var/lib/apt/lists/* && java -version
 RUN uv pip install -r pyproject.toml --extra utils
+# pandoc 3.13 estático (F6-A, D-212), versión y SHA-256 fijados en el script; GPL, solo como proceso externo (11).
+COPY infra/pandoc/fetch.sh /tmp/pandoc-fetch.sh
+RUN sh /tmp/pandoc-fetch.sh /usr/local/bin && rm /tmp/pandoc-fetch.sh
 COPY infra/kosit/fetch.sh infra/kosit/scenarios.xml /tmp/kosit/
 RUN sh /tmp/kosit/fetch.sh /opt/kosit "$(python -c 'import facturx, pathlib; print(pathlib.Path(facturx.__file__).parent / "xsd_and_schematron")')" \
       /tmp/kosit/scenarios.xml \

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "RAR a ZIP convierte archivos comprimidos RAR en ZIP, el formato que Windows, macOS, Linux, Android e iOS abren sin instalar ningún programa. Es la solución cuando alguien te envía un .rar y no tienes WinRAR, o cuando una plataforma solo acepta ZIP para subir documentos.",
+    "Leemos tanto el RAR clásico (versión 4) como RAR 5, y conservamos las carpetas, los nombres con tildes y las fechas de cada archivo. El ZIP resultante se crea con compresión Deflate y ZIP64, así que admite archivos grandes y miles de entradas, y cualquier descompresor lo abre.",
+    "Por seguridad, ninguna ruta puede salirse de la carpeta del archivo: las que llevan «..», empiezan en la raíz o indican una unidad de Windows se guardan dentro, y los enlaces simbólicos, los enlaces duros y los archivos de dispositivo no se copian. También limitamos el número de entradas (10 000) y el tamaño descomprimido, para que un archivo preparado para ocupar terabytes no bloquee nada.",
+    "Usamos libarchive, una biblioteca libre de lectura de comprimidos, en lugar de los programas de RAR. Los RAR cifrados con contraseña no se pueden abrir aquí, porque libarchive no los descifra: descomprímelos en tu equipo. Puedes convertir hasta 20 archivos a la vez."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .rar.",
+    "Espera a que se conviertan.",
+    "Descarga el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Funciona con RAR divididos en partes (.part1.rar)?",
+      "a": "No: hace falta tener todas las partes juntas, y aquí se sube un archivo cada vez. Únelas en tu equipo y sube el resultado."
+    },
+    {
+      "q": "¿Y si solo quiero sacar un archivo?",
+      "a": "Extraer archivo online abre el RAR y te deja descargar cada archivo por separado."
+    },
+    {
+      "q": "¿El ZIP ocupa más que el RAR?",
+      "a": "Puede ocupar un poco más, porque RAR comprime algo mejor. A cambio, el ZIP lo abre cualquier sistema."
+    }
+  ]
+}

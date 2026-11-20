@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DOCX to Markdown turns a Word document into clean, readable Markdown. It is the quick way to move a report, notes or documentation written in Word into a GitHub or GitLab repository, a wiki, a static site generator such as Hugo, Jekyll or MkDocs, or a notes app such as Obsidian.",
+    "Headings become hashes (#, ##…), bold and italics become asterisks, lists become dashes or numbers, links become [text](address) and simple tables become pipe tables. Tables with merged cells, which GitHub Markdown and CommonMark cannot express, are written as HTML; in pandoc's Markdown, as a grid table. Word formulas come out in LaTeX notation and footnotes stay as footnotes.",
+    "You can choose the flavor: GitHub's (GFM), the most widespread; CommonMark, the strict standard; or pandoc's Markdown, which supports more elements such as definition lists and table captions. Lines are not wrapped at a fixed width, so each paragraph stays on one line and changes read better in git.",
+    "Images can go in a media/ folder next to the .md, inside a ZIP; inside the Markdown itself as data, in a single file; or be left out with their alt text. The conversion runs with pandoc on our server, sandboxed, with up to 20 documents per batch."
+  ],
+  "steps": [
+    "Upload one or more .docx files.",
+    "Choose the Markdown flavor and what to do with images.",
+    "Download the .md, or the ZIP with the .md and its images."
+  ],
+  "faq": [
+    {
+      "q": "Why do I get a ZIP instead of a .md?",
+      "a": "Because the document has images and you chose to keep them in a folder. The ZIP holds the .md and the media/ folder with the images, linked with relative paths. If you prefer a single file, choose “Inside the Markdown” or “No images”."
+    },
+    {
+      "q": "Do images inside the Markdown show on GitHub?",
+      "a": "GitHub does not display images written as data (data:). For GitHub, the folder option is best: upload the .md and the media/ folder to the repository."
+    },
+    {
+      "q": "Can I go back to Word later?",
+      "a": "Yes, with Markdown to DOCX. The round trip keeps the structure, though not the custom styles of the original document."
+    }
+  ]
+}

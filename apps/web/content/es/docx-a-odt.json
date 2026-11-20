@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DOCX a ODT convierte documentos de Microsoft Word en el formato abierto OpenDocument que usan LibreOffice, Collabora y muchas administraciones públicas. Es útil cuando te piden entregar un trabajo en ODT, cuando quieres archivar textos en un formato normalizado (ISO/IEC 26300) que no depende de un fabricante o cuando trabajas con alguien que no tiene Word.",
+    "La conversión respeta la estructura del documento: títulos y subtítulos con sus niveles, párrafos, negritas y cursivas, listas numeradas y con viñetas, tablas, imágenes, enlaces, notas al pie y fórmulas. Los cambios controlados se aceptan y los comentarios no se copian, así que el ODT sale limpio.",
+    "Lo que no se conserva es la maquetación exacta: los márgenes, los encabezados y pies de página, los cuadros de texto, las columnas y los estilos con nombre propio se sustituyen por los estilos estándar de OpenDocument. Si necesitas que el resultado sea idéntico en la página, abre el .docx directamente con LibreOffice o conviértelo a PDF con Word a PDF.",
+    "Usamos pandoc en nuestro servidor, siempre en modo aislado: no lee ningún otro archivo ni sale a internet mientras convierte. Puedes subir hasta 20 documentos a la vez; recibes un ODT por cada uno y, si son varios, un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .docx.",
+    "Espera a que se conviertan en el servidor.",
+    "Descarga cada ODT o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo convertir archivos .doc antiguos?",
+      "a": "No con esta herramienta: el .doc de Word 97-2003 es un formato binario distinto. Ábrelo con Word o LibreOffice y guárdalo como .docx, o pásalo directamente a PDF con Word a PDF."
+    },
+    {
+      "q": "¿Se mantienen las imágenes?",
+      "a": "Sí. Las imágenes del documento se copian dentro del ODT con su tamaño. Los gráficos de Word y los objetos incrustados de otros programas pueden quedarse fuera."
+    },
+    {
+      "q": "¿Y al revés, de ODT a Word?",
+      "a": "ODT a DOCX hace el camino contrario con el mismo motor y las mismas reglas."
+    }
+  ]
+}

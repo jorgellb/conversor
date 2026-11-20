@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "XML a JSON convierte documentos XML en JSON fácil de usar desde JavaScript, Python o cualquier API. Es útil para trabajar con facturas electrónicas, catálogos, fuentes RSS, exportaciones de sistemas de gestión o respuestas SOAP sin escribir un analizador de XML.",
+    "La conversión sigue una convención conocida: cada elemento es una clave, los atributos llevan «@» delante (@schemeID), el texto de un elemento que también tiene atributos o hijos va en «#text» y los elementos que se repiten se agrupan en una lista. Un elemento vacío es null. Los espacios de nombres conservan su prefijo, así que un elemento cbc:ID de una factura UBL sigue llamándose cbc:ID.",
+    "Por seguridad, el XML se lee sin cargar nada externo: los DTD y las entidades externas, que permiten leer archivos del servidor (los ataques XXE), y las entidades que se expanden en cadena, que pueden agotar la memoria, se rechazan con un mensaje. Hay además límites de tamaño, de número de elementos y de profundidad.",
+    "Por defecto, todos los valores se quedan como texto, porque en XML no hay tipos y un código como 00123 no debe perder sus ceros. Si lo prefieres, puedes convertir a número y a true o false los textos que lo son claramente. El JSON sale con sangría y en UTF-8, para archivos de hasta 25 MB y 20 por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .xml.",
+    "Indica si quieres convertir números y valores lógicos.",
+    "Descarga el JSON."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conserva el orden cuando un texto se mezcla con elementos?",
+      "a": "No del todo: en un párrafo como <p>Hola <b>mundo</b></p>, el texto suelto va a «#text» y el elemento b a su clave. Para documentos de texto con formato es mejor otro formato, como HTML."
+    },
+    {
+      "q": "¿Por qué mi XML con DOCTYPE da error?",
+      "a": "Porque declara entidades o un DTD externo, que no cargamos por seguridad. Quita la declaración DOCTYPE y las referencias a entidades propias antes de convertir."
+    },
+    {
+      "q": "¿Funciona con facturas Facturae o UBL?",
+      "a": "Sí, se convierten como cualquier XML. Para comprobar que una factura es válida, usa Validar factura electrónica."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JSON a YAML convierte datos JSON en YAML, el formato que usan para su configuración Docker Compose, Kubernetes, GitHub Actions, Ansible y muchos otros programas. Es más fácil de leer y de editar a mano: sin llaves, sin comillas en la mayoría de los textos y con la estructura marcada por la sangría.",
+    "Las claves se mantienen en el orden del JSON original, sin reordenarlas alfabéticamente, y los acentos, la eñe y cualquier otro carácter se escriben tal cual, sin secuencias de escape. Las listas se escriben una por línea con guion y los objetos anidados con sangría, sin la forma compacta entre llaves, para que los cambios se vean bien en un control de versiones.",
+    "Los textos que en YAML podrían confundirse con otro tipo se ponen entre comillas automáticamente: una fecha como '2026-11-20', las palabras yes o no, o un texto que parece un número. Así, al volver a leer el YAML obtienes exactamente los mismos datos que tenías en JSON.",
+    "También admitimos JSON Lines, con un objeto por línea, que se convierte en una lista. La conversión se hace en nuestro servidor con límites de tamaño y profundidad, hasta 25 MB por archivo y 20 archivos por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .json.",
+    "Espera a la conversión.",
+    "Descarga el archivo .yaml."
+  ],
+  "faq": [
+    {
+      "q": "¿El YAML resultante es válido para Kubernetes o Docker Compose?",
+      "a": "Es YAML válido con los mismos datos que tu JSON; que sea una configuración correcta depende de las claves que contenga, igual que con el JSON."
+    },
+    {
+      "q": "¿Por qué algunas cadenas salen entre comillas?",
+      "a": "Porque sin comillas YAML las leería como otra cosa: una fecha, un número o un valor lógico. Las comillas garantizan que se conserven como texto."
+    },
+    {
+      "q": "¿Puedo elegir la sangría?",
+      "a": "Se usan dos espacios, que es lo habitual en YAML y lo que esperan la mayoría de herramientas."
+    }
+  ]
+}

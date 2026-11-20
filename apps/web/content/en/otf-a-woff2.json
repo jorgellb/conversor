@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "OTF to WOFF2 compresses OpenType fonts into WOFF2 for use on a web page. It is what you need when you buy or download a typeface as .otf, the usual format of type foundries and design programs, and want to use it on your site with @font-face without making the page heavy.",
+    "OpenType fonts can carry CFF outlines (cubic curves, like PostScript ones) or TrueType ones. The WOFF2 keeps the outlines as they are, without converting them, and compresses the font losslessly with Brotli: same glyphs, same kerning, same OpenType features such as ligatures, small caps or old-style figures.",
+    "The resulting file usually weighs between a half and a third of the original. Every current browser supports it; in CSS it is declared with src: url(\"font.woff2\") format(\"woff2\"). If a font is variable, with weight or width axes, the WOFF2 stays variable.",
+    "We work with fontTools on our server and reopen every converted font to check it is valid. It takes up to 20 fonts per batch, with a ZIP if you upload several."
+  ],
+  "steps": [
+    "Upload one or more .otf files.",
+    "Wait for the conversion.",
+    "Download each .woff2 or the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Do I lose quality with the compression?",
+      "a": "No. WOFF2 is lossless compression: when it is decompressed, the browser gets the same font with the same data."
+    },
+    {
+      "q": "Can I get the OTF back?",
+      "a": "From a WOFF2, WOFF2 to TTF gives you an installable font; if the font had CFF outlines, they are converted to TrueType."
+    },
+    {
+      "q": "Can I convert any font?",
+      "a": "Technically yes, but turning it into WOFF2 does not change its licence: if the licence does not allow web use, the conversion does not give you that right. Fonts under a free licence, such as the SIL Open Font License used by Google Fonts, do allow it."
+    }
+  ]
+}

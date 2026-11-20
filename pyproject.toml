@@ -91,7 +91,14 @@ sign = ["pyHanko[pkcs11,image-support,opentype,etsi]==0.38.1", "pyhanko-certvali
 # Facturas electrónicas (F4, lote D; grupo utils): factur-x (BSD; trae los XSD y el Schematron oficiales de Factur-X
 # 1.09, que usan los escenarios propios de KoSIT), lxml y signxml (Apache-2.0) para Facturae y su firma XAdES; nunca
 # xmlsig (AGPL, 11). KoSIT es Java y va como programa aparte dentro de la imagen.
-utils = ["factur-x==7.9", "lxml==6.1.3", "signxml==5.3.0", "pikepdf==10.17.0", "pypdfium2==5.14.0", "pillow==13.0.0"]
+# F6-B (D-213): openpyxl (MIT) para xlsx-a-csv, csv-a-xlsx y excel-a-json y charset-normalizer (MIT) para los CSV; las
+# mismas versiones que en los extras `convert` y `office`. PyYAML y defusedxml ya son dependencias comunes.
+utils = ["factur-x==7.9", "lxml==6.1.3", "signxml==5.3.0", "pikepdf==10.17.0", "pypdfium2==5.14.0", "pillow==13.0.0",
+         "openpyxl==3.1.5", "charset-normalizer==3.5.2",
+         # F6-F (D-215): fuentes con fontTools (MIT) y brotli (MIT) para WOFF2.
+         "fonttools==4.68.0", "brotli==1.2.1",
+         # F6-E (D-217): libarchive-c (CC0) sobre libarchive13 del sistema y pysubs2 (MIT), las versiones de `media` y `ai`.
+         "libarchive-c==5.3", "pysubs2==1.9.1"]
 # fpdf2 (LGPL-3.0) solo genera muestras de prueba en scripts/fixtures (1.8); nunca llega a una imagen. certomancer (MIT)
 # hace la PKI de pruebas de F4 (CA, TSA, OCSP y CRL, dobles de 0.1) en las pruebas y en el Compose de desarrollo.
 dev = ["pytest==9.2.0", "respx==0.23.1", "pip-licenses==5.0.0", "fpdf2==2.9.0", "certomancer[web-api]==0.16.0"]

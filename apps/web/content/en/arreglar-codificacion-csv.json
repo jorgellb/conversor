@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Fix CSV encoding recovers the accents, the ñ, opening punctuation and the euro sign in a CSV file that shows strange characters. It is the typical problem of a CSV exported from an old program, a bank or an ERP that, when opened in Excel or imported into another application, shows “Pe�a”, “PeÃ±a” or other odd symbols instead of “Peña”.",
+    "We solve both cases. If the file is in an old encoding (Windows-1252, ISO-8859-1 or -15, the MS-DOS one, the classic Mac one, or UTF-16), we detect it by checking which one gives sensible text and convert it to UTF-8. If the file is already UTF-8 but someone saved it wrongly along the way, with “Ã±” instead of “ñ” or “Ã©” instead of “é”, we fix those sequences, even when the mistake happened twice.",
+    "Only what is clearly wrong is changed: an “Ã” that belongs to a real word, in Portuguese for instance, is left alone. Separators, quotes and line breaks are untouched, so the CSV keeps its structure. We tell you the encoding detected, the separator and how many sequences were fixed.",
+    "By default the result carries the UTF-8 BOM mark, which Excel needs to open it with a double click and show the accents correctly; if you will import it into a program or a database, choose UTF-8 without BOM. You can also set the source encoding yourself if you know it."
+  ],
+  "steps": [
+    "Upload the CSV that looks wrong.",
+    "Leave “Detect” or choose the source encoding.",
+    "Download the fixed CSV in UTF-8."
+  ],
+  "faq": [
+    {
+      "q": "Why do those strange characters appear?",
+      "a": "Because the file was written with one character table and read with another. The “ñ” takes one byte in Windows-1252 and two in UTF-8; if they are mixed up, the letter breaks or turns into two symbols such as “Ã±”."
+    },
+    {
+      "q": "Can I recover the question-mark diamonds “�”?",
+      "a": "Not always. That symbol means the previous program already replaced the letter when saving and the information was lost; it can only be recovered if you still have the original file."
+    },
+    {
+      "q": "Does it work for .txt files?",
+      "a": "Yes, any text separated by commas, semicolons or tabs, even if it is called .txt."
+    }
+  ]
+}

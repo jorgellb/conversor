@@ -6,6 +6,10 @@ tienen que dar los dos detectores. Uso: python scripts/fixtures/filetype_cases.p
 from __future__ import annotations
 
 import base64
+import bz2
+import gzip
+import lzma
+import tarfile
 import codecs
 import io
 import json
@@ -40,6 +44,15 @@ def make_zip(files: dict[str, bytes], stored_first: str | None = None) -> bytes:
 def odf(mimetype: str) -> bytes:
     return make_zip({"mimetype": mimetype.encode(), "content.xml": b"<office:document-content/>", "META-INF/manifest.xml": b"<m/>"},
                     stored_first="mimetype")
+
+
+def tar_bytes() -> bytes:
+    buf = io.BytesIO()
+    with tarfile.open(fileobj=buf, mode="w", format=tarfile.USTAR_FORMAT) as tf:
+        info = tarfile.TarInfo("hola.txt")
+        info.size, info.mtime = 4, 0
+        tf.addfile(info, io.BytesIO(b"hola"))
+    return buf.getvalue()
 
 
 def cases() -> list[dict]:
@@ -120,7 +133,22 @@ def cases() -> list[dict]:
         ("srt-utf16be", "srt", codecs.BOM_UTF16_BE + "1\n00:00:01,000 --> 00:00:02,000\nAño\n".encode("utf-16-be"), "srt"),
         ("vtt-utf32le", "vtt", codecs.BOM_UTF32_LE + "WEBVTT\n\n00:01.000 --> 00:02.000\nHola\n".encode("utf-32-le"), "vtt"),
         ("ass-utf16-chino", "ass", codecs.BOM_UTF16_LE + "[Events]\nDialogue: 0,0:00:01.00,0:00:02.00,Default,,0,0,0,,你好\n".encode("utf-16-le"), "ass"),
-        ("txt-utf16-no-admitido", "txt", "Hola, esto es texto.\n".encode("utf-16"), None),
+        ("csv-utf16-excel", "csv", "Nombre\tAño\r\nPeña\t1990\r\n".encode("utf-16"), "csv"),
+        ("yaml", "yml", "nombre: Peña\npuertos: [80, 443]\n".encode(), "yaml"),
+        ("xml", "xml", b'<?xml version="1.0"?><r a="1"/>', "xml"),
+        ("ttf", "ttf", b"\x00\x01\x00\x00\x00\x0e\x00\x80\x00\x03\x00\x60" + bytes(40), "ttf"),
+        ("otf-cff", "otf", b"OTTO\x00\x0b\x00\x80\x00\x03\x00\x30" + bytes(40), "otf"),
+        ("otf-con-contornos-truetype", "otf", b"\x00\x01\x00\x00\x00\x0e\x00\x80\x00\x03\x00\x60" + bytes(40), "otf"),
+        ("fuente-sin-extension", "bin", b"OTTO\x00\x0b\x00\x80\x00\x03\x00\x30" + bytes(40), "otf"),
+        ("woff", "woff", b"wOFF\x00\x01\x00\x00" + bytes(40), "woff"),
+        ("woff2", "woff2", b"wOF2\x00\x01\x00\x00" + bytes(40), "woff2"),
+        ("7z", "7z", b"7z\xbc\xaf\x27\x1c\x00\x04" + bytes(40), "7z"),
+        ("tar-gz", "tgz", gzip.compress(b"hola", mtime=0), "gz"),
+        ("bz2", "bz2", bz2.compress(b"hola"), "bz2"),
+        ("xz", "xz", lzma.compress(b"hola"), "xz"),
+        ("tar", "tar", tar_bytes(), "tar"),
+        ("txt-utf16-texto-unicode-de-excel", "txt", "Nombre\tAño\r\nPeña\t1990\r\n".encode("utf-16"), "txt"),
+        ("md-utf16-no-admitido", "md", "# Hola\n".encode("utf-16"), None),
         ("mp3-capa1-ff-fe", "mp3", b"\xff\xfe\x90\x00" + bytes(range(1, 31)), "mp3"),
         ("texto-con-extension-rara", "exe", "Hola, esto es texto plano.\n".encode(), "txt"),
         ("latin1", "txt", "Año y canción en Latin-1, sin UTF-8.\n".encode("latin-1"), "txt"),

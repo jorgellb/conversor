@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JSON a CSV convierte datos JSON en una tabla CSV que se abre en Excel, LibreOffice o Google Sheets y se importa en casi cualquier programa. Sirve para revisar en una hoja de cálculo la respuesta de una API, un volcado de una base de datos documental o un archivo de exportación de una aplicación.",
+    "Admitimos una lista de objetos, una lista de listas, un único objeto y también JSON Lines (un objeto por línea, habitual en registros y exportaciones grandes). Si el archivo es un objeto que contiene una sola lista de registros, como {\"total\": 2, \"data\": [...]}, usamos esa lista y te lo indicamos en una nota.",
+    "Las columnas son la unión de las claves de todos los objetos, en el orden en que aparecen, así que no se pierde ningún campo aunque solo esté en algunos registros. Los objetos anidados se aplanan con puntos (user.name, user.geo.lat) y las listas se guardan como JSON dentro de su celda. Los valores nulos quedan vacíos y los lógicos como true y false. Un texto que empieza por =, +, - o @ lleva un apóstrofo delante, para que Excel no lo ejecute como fórmula al abrir el CSV.",
+    "Eliges el separador (coma, punto y coma o tabulador) y la codificación: UTF-8 o UTF-8 con BOM para que Excel muestre bien los acentos al abrirlo con doble clic. Leemos el JSON en nuestro servidor con límites de tamaño y de profundidad, hasta 25 MB por archivo y 20 archivos por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .json.",
+    "Elige el separador y la codificación.",
+    "Descarga el CSV."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué hace con los objetos dentro de objetos?",
+      "a": "Los convierte en columnas con el camino completo separado por puntos: {\"user\": {\"name\": \"Ana\"}} da una columna user.name con el valor Ana."
+    },
+    {
+      "q": "¿Y con las listas?",
+      "a": "Una lista dentro de un registro se escribe en su celda como JSON, por ejemplo [\"a\", \"b\"], para no inventar columnas ni filas que no existen."
+    },
+    {
+      "q": "¿Hay un límite de anidamiento?",
+      "a": "Sí, 200 niveles, 20 millones de celdas y 200 MB de resultado. Un JSON más profundo o más grande se rechaza con un mensaje claro en lugar de bloquear la conversión."
+    }
+  ]
+}

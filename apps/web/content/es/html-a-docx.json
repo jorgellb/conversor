@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HTML a DOCX convierte páginas HTML en documentos de Word editables. Sirve para pasar a Word un artículo guardado desde el navegador, un correo exportado, una página de documentación o el resultado de una aplicación que genera HTML, y seguir trabajando en él como en cualquier otro documento.",
+    "Se traslada el contenido y su estructura: títulos, párrafos, negritas y cursivas, listas, citas, tablas, enlaces y bloques de código. Los scripts y los marcos se ignoran, de los formularios solo queda el texto visible, y las hojas de estilo CSS no se aplican: el documento sale con los estilos estándar de Word, preparado para que le des el formato que quieras.",
+    "Las imágenes escritas como datos dentro del HTML (data:) se incluyen siempre. Para las demás, sube un ZIP con la página (index.html o el HTML menos profundo) y sus imágenes PNG, JPEG, GIF, TIFF, BMP o WebP con las rutas relativas que usa el código. Las imágenes de internet o de rutas absolutas no se cargan nunca, por seguridad, y te avisamos de cuántas han quedado fuera.",
+    "La conversión la hace pandoc en nuestro servidor en modo aislado, sin red y sin poder leer otros archivos. Puedes añadir un índice al principio y procesar hasta 20 páginas por tanda."
+  ],
+  "steps": [
+    "Sube un .html o un ZIP con la página y sus imágenes.",
+    "Indica si quieres un índice.",
+    "Descarga el documento de Word."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo convertir una página web poniendo su dirección?",
+      "a": "No, aquí hay que subir el archivo. Guarda la página desde el navegador como «Página web completa», comprime en un ZIP el .html y su carpeta, y súbelo. Para obtener un PDF de una dirección, usa Web a PDF."
+    },
+    {
+      "q": "¿Por qué no se ven los colores y las fuentes de la página?",
+      "a": "Porque el CSS no se traslada a Word: solo la estructura. Así el documento queda limpio y editable, con estilos de Word que puedes cambiar."
+    },
+    {
+      "q": "¿Se convierten las tablas?",
+      "a": "Sí, las tablas HTML pasan a tablas de Word, también con celdas que ocupan varias columnas."
+    }
+  ]
+}

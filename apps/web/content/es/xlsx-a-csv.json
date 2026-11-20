@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Excel a CSV exporta las hojas de un libro .xlsx a archivos CSV, el formato de texto que entienden las bases de datos, los programas de contabilidad, las tiendas en línea, Python, R y casi cualquier aplicación que importe datos. Es la forma de sacar una tabla de Excel para cargarla en otro sistema sin abrir Excel ni pelearse con el diálogo «Guardar como».",
+    "Puedes exportar solo la hoja activa (la que estaba abierta al guardar el libro) o todas, con un CSV por hoja dentro de un ZIP. Eliges el separador (coma, punto y coma o tabulador), el separador decimal y la codificación: UTF-8, UTF-8 con BOM para que Excel lo vuelva a abrir con las tildes bien, o Windows-1252 para programas antiguos; los caracteres que no existen en Windows-1252 se cambian por «?» y te decimos cuántos.",
+    "Se exportan los valores calculados, no las fórmulas: lo que verías en la celda. Las fechas salen en formato ISO (2026-01-15, y la hora si la tienen), los valores lógicos como TRUE y FALSE y los números con todos sus decimales, sin el formato de miles ni el símbolo de moneda. Los códigos con ceros a la izquierda que estaban guardados como texto, como 00123 o un código postal, se mantienen tal cual. Las filas y columnas vacías del final se eliminan, y un texto que empieza por =, +, - o @ lleva un apóstrofo delante para que, al abrir el CSV, la hoja de cálculo no lo ejecute como fórmula.",
+    "Algunos programas (los que generan informes de forma automática, por ejemplo) guardan fórmulas sin su resultado; esas celdas salen vacías y te avisamos para que abras y guardes el libro en Excel o LibreOffice antes de convertir. La conversión se hace en nuestro servidor con openpyxl, sin ejecutar macros, con hasta 20 libros por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .xlsx.",
+    "Elige las hojas, el separador, el decimal y la codificación.",
+    "Descarga el CSV, o el ZIP con un CSV por hoja."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué separador elijo?",
+      "a": "La coma es el estándar y lo que esperan la mayoría de programas. Si vas a abrir el CSV en un Excel configurado en español, el punto y coma con decimal en coma es lo que Excel espera."
+    },
+    {
+      "q": "¿Y los archivos .xls antiguos?",
+      "a": "Esta herramienta lee .xlsx. Abre el .xls en Excel o LibreOffice y guárdalo como .xlsx antes de subirlo."
+    },
+    {
+      "q": "¿Qué pasa con las celdas combinadas?",
+      "a": "El valor queda en la primera celda del grupo y las demás salen vacías, que es como lo guarda Excel."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "VTT to SRT turns WebVTT subtitles (.vtt), the ones downloaded from websites, video platforms and online courses, into SubRip (.srt), the most compatible format: VLC, Windows Media Player, smart TVs, Plex, Kodi and video editors such as Premiere, DaVinci Resolve or CapCut all read it.",
+    "Timings, line breaks, italics, bold, underline and strikethrough are kept, and subtitles are renumbered in order. WebVTT NOTE, STYLE and REGION blocks, which are not subtitles, are discarded.",
+    "WebVTT position settings (align, position, line, size) and speaker names (<v Ana>) do not exist in SRT: they are lost and we warn you. Entities such as &amp; are turned back into their character.",
+    "The conversion runs on our server: subtitles are read with pysubs2, a widely used free library for this job, and the new file is written in UTF-8 and sorted by time. We detect the original's encoding, so old subtitles in Windows-1252, with all their accents, come out right. You can convert up to 20 files at once and download them together in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .vtt files.",
+    "Choose whether to keep the text styling.",
+    "Download the .srt."
+  ],
+  "faq": [
+    {
+      "q": "Will the SRT work on my TV?",
+      "a": "Almost certainly: it is the most widespread subtitle format. Give it the same name as the video (movie.mp4 and movie.srt) so it loads automatically."
+    },
+    {
+      "q": "What happens to overlapping subtitles?",
+      "a": "They keep their timings and are sorted by when they start; most players show them at the same time."
+    },
+    {
+      "q": "Can I convert a WebVTT with CSS styles?",
+      "a": "Yes, but styles in the STYLE block have no equivalent in SRT and are not copied."
+    }
+  ]
+}

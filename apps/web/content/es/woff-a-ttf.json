@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WOFF a TTF convierte fuentes web WOFF, la primera versión del formato de fuentes para la web, en archivos TrueType que se instalan en cualquier sistema operativo. Muchas webs y paquetes de tipografías antiguos todavía distribuyen sus fuentes en .woff, y con esta herramienta puedes usarlas en tus documentos y programas.",
+    "Un WOFF es la fuente original comprimida con zlib y con unos metadatos añadidos, así que al descomprimirla se recupera completa: glifos, métricas, kerning, funciones OpenType y hinting. Si la fuente lleva contornos CFF, los pasamos a TrueType con una aproximación de las curvas de como mucho una unidad de la cuadrícula, y lo indicamos en una nota.",
+    "La fuente conserva el nombre de su familia y su estilo, de modo que se instala junto a las demás variantes de la misma familia sin conflictos. Las fuentes variables se mantienen variables.",
+    "La conversión se hace en nuestro servidor con fontTools, y cada TTF se vuelve a abrir para comprobar que es válido. Hasta 20 fuentes por tanda, con un ZIP si subes varias."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .woff.",
+    "Espera a la conversión.",
+    "Descarga cada .ttf o el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diferencia hay entre WOFF y WOFF2?",
+      "a": "WOFF2 comprime bastante más, gracias a Brotli y a transformar las tablas de la fuente. Para usar una fuente en la web hoy, WOFF2 es la mejor opción: TTF a WOFF2 lo genera."
+    },
+    {
+      "q": "¿Se ve igual que en la web?",
+      "a": "Sí, es la misma fuente sin comprimir. Solo si tenía contornos CFF hay una aproximación, de como mucho una milésima del tamaño de la letra."
+    },
+    {
+      "q": "¿Puedo convertir cualquier fuente?",
+      "a": "Técnicamente sí, pero pasarla a TTF para instalarla no cambia su licencia: si la licencia no permite instalarla en tu equipo, la conversión no te da ese derecho. Las fuentes con licencia libre, como la SIL Open Font License de Google Fonts, sí lo permiten."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JSON a XML convierte datos JSON en un documento XML bien formado. Sirve para alimentar sistemas que solo aceptan XML (servicios SOAP, programas de gestión antiguos, importadores de catálogos o administraciones), para generar datos de prueba o para comparar estructuras entre los dos formatos.",
+    "Cada clave del JSON se convierte en un elemento con su nombre y los valores en su texto. Las listas se escriben como elementos repetidos con el nombre de su clave, y las listas sueltas o de primer nivel, con el elemento que elijas (item por defecto). Los valores nulos quedan como elementos vacíos y los lógicos como true y false. Todo cuelga de un elemento raíz configurable, root por defecto.",
+    "Los nombres de elemento tienen reglas que las claves de JSON no siguen: no pueden empezar por una cifra, llevar espacios ni símbolos, ni empezar por «xml». Los arreglamos de forma predecible (los caracteres no válidos pasan a «_» y se antepone «_» si hace falta) y, cuando cambia, guardamos la clave original en un atributo «clave» para que no se pierda. Las letras con tilde y la eñe se mantienen.",
+    "El XML sale en UTF-8, con declaración y sangría para que se pueda leer. La conversión se hace en nuestro servidor, con límites de tamaño y de profundidad, para archivos de hasta 25 MB y 20 por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .json.",
+    "Elige el elemento raíz y el de los valores de las listas.",
+    "Descarga el XML."
+  ],
+  "faq": [
+    {
+      "q": "¿Se pueden generar atributos en lugar de elementos?",
+      "a": "No: todo valor se escribe como elemento, que es la forma que no pierde información. El atributo «clave» solo aparece cuando hemos tenido que cambiar un nombre."
+    },
+    {
+      "q": "¿El XML cumple un esquema concreto?",
+      "a": "Es XML bien formado, pero no sigue ningún esquema (XSD) en particular. Si un sistema exige uno, revisa los nombres y el orden que pide."
+    },
+    {
+      "q": "¿Y de XML a JSON?",
+      "a": "XML a JSON hace el camino contrario, con los atributos, los textos y los elementos repetidos como listas."
+    }
+  ]
+}

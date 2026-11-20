@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV to JSON turns a CSV table into JSON data for use in an application, an API, a document database or a script. It is useful for loading a spreadsheet export into a website, preparing test data or bringing into a structured format what another system delivers as CSV.",
+    "We detect the file's encoding, including UTF-8, UTF-16 and Windows-1252, and the separator: comma, semicolon, tab or pipe. Quotes, commas inside a field and line breaks inside cells are read as the CSV standard says, so “One, two” in quotes stays a single value.",
+    "By default each row becomes an object with the headers as keys, and empty or repeated keys are numbered so no column is lost. Numbers become numbers, true and false logical values and empty cells null; codes with leading zeros, such as 04001, and numbers with more than 15 digits stay as text so no digits are lost. If you prefer each cell's exact text, turn type conversion off.",
+    "You can also get the rows as lists of values, with the header as the first list. The JSON is indented and in UTF-8. The conversion runs on our server, with files of up to 25 MB and 20 per batch."
+  ],
+  "steps": [
+    "Upload one or more CSV files.",
+    "Choose the separator, the shape and whether to convert types.",
+    "Download the .json file."
+  ],
+  "faq": [
+    {
+      "q": "Is a decimal comma detected?",
+      "a": "Yes. If most figures use a decimal comma, such as 12,5 or 1.234,56, they are read that way; if they use a point, such as 12.5, they are read with a point."
+    },
+    {
+      "q": "What if a row has fewer columns?",
+      "a": "The missing ones are filled with null (or empty text if you do not convert types), so every object has the same keys."
+    },
+    {
+      "q": "And the other way?",
+      "a": "JSON to CSV turns a list of JSON objects into a CSV table, flattening nested objects."
+    }
+  ]
+}

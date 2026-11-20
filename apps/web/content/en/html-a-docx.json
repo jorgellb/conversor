@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "HTML to DOCX turns HTML pages into editable Word documents. Use it to bring into Word an article saved from the browser, an exported email, a documentation page or the output of an application that produces HTML, and keep working on it like any other document.",
+    "The content and its structure are carried over: headings, paragraphs, bold and italics, lists, quotes, tables, links and code blocks. Scripts and frames are ignored, only the visible text of forms remains, and CSS style sheets are not applied: the document comes out with the standard Word styles, ready for you to format as you like.",
+    "Images written as data inside the HTML (data:) are always included. For the rest, upload a ZIP with the page (index.html or the shallowest HTML) and its PNG, JPEG, GIF, TIFF, BMP or WebP images at the relative paths the code uses. Images from the internet or at absolute paths are never loaded, for safety, and we tell you how many were left out.",
+    "The conversion is done by pandoc on our server in sandbox mode, with no network and no way to read other files. You can add a table of contents at the start and process up to 20 pages per batch."
+  ],
+  "steps": [
+    "Upload a .html or a ZIP with the page and its images.",
+    "Say whether you want a table of contents.",
+    "Download the Word document."
+  ],
+  "faq": [
+    {
+      "q": "Can I convert a web page by entering its address?",
+      "a": "No, here you upload the file. Save the page from your browser as “Web page, complete”, put the .html and its folder in a ZIP and upload it. To get a PDF from an address, use Web to PDF."
+    },
+    {
+      "q": "Why are the page's colours and fonts missing?",
+      "a": "Because CSS is not carried into Word, only the structure. That keeps the document clean and editable, with Word styles you can change."
+    },
+    {
+      "q": "Are tables converted?",
+      "a": "Yes, HTML tables become Word tables, including cells that span several columns."
+    }
+  ]
+}

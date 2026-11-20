@@ -1,4 +1,5 @@
-"""Grupo utils (F4 y F6): facturas electrónicas con KoSIT en modo servicio dentro de `workerutils` (5.4 y 7.23)."""
+"""Grupo utils (F4 y F6): facturas electrónicas con KoSIT en modo servicio dentro de `workerutils` (5.4 y 7.23) y
+conversiones de documentos y datos (7.12 y 7.13)."""
 from __future__ import annotations
 
 from typing import Literal
@@ -129,6 +130,170 @@ class PdfAFacturaOptions(BaseModel):
         return self
 
 
+# --- F6-A (7.12, D-212): documentos con pandoc estático y siempre con --sandbox. El Anexo A no fija opciones. ---------
+
+FLAVORS = {"gfm": ("GitHub (GFM)", "GitHub (GFM)"), "commonmark": ("CommonMark", "CommonMark"),
+           "markdown": ("Markdown de pandoc", "Pandoc Markdown")}
+
+
+class DocxMarkdownOptions(BaseModel):
+    """docx-a-markdown (D-212): sabor [GitHub] | CommonMark | pandoc e imágenes [carpeta media/ en un ZIP] | dentro del
+    Markdown | sin imágenes."""
+
+    sabor: Literal["gfm", "commonmark", "markdown"] = opt("gfm", "Sabor de Markdown", "Markdown flavor", labels=FLAVORS)
+    imagenes: Literal["carpeta", "incrustadas", "omitir"] = opt("carpeta", "Imágenes", "Images", labels={
+        "carpeta": ("En una carpeta (ZIP con el .md)", "In a folder (ZIP with the .md)"),
+        "incrustadas": ("Dentro del Markdown (data:)", "Inside the Markdown (data:)"),
+        "omitir": ("Sin imágenes (solo el texto alternativo)", "No images (alt text only)")})
+
+
+class MarkdownDocxOptions(BaseModel):
+    """markdown-a-docx (D-212): sabor [GitHub] | CommonMark | pandoc, índice [no] y secciones numeradas [no]."""
+
+    sabor: Literal["gfm", "commonmark", "markdown"] = opt("gfm", "Sabor de Markdown", "Markdown flavor", labels=FLAVORS)
+    indice: bool = opt(False, "Añadir índice", "Add table of contents")
+    numerar: bool = opt(False, "Numerar los títulos", "Number the headings")
+
+
+class IndiceOptions(BaseModel):
+    """docx-a-html y html-a-docx (D-212): índice [no]."""
+
+    indice: bool = opt(False, "Añadir índice", "Add table of contents")
+
+
+def documento(slug_es: str, slug_en: str, name_es: str, name_en: str, inputs: tuple[str, ...], outputs: tuple[str, ...],
+              summary_es: str, summary_en: str, related: tuple[str, ...], options: type[BaseModel] | None = None) -> ToolSpec:
+    # 7.12 (F6-A, D-212): pandoc es GPL, así que solo como proceso externo en workerutils (11), siempre con --sandbox (12.3).
+    extra = {"options": options} if options else {}
+    return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category="office", where="server",
+                    inputs=inputs, outputs=(*outputs, "zip"), worker_group="utils", queue_kind="light", cost_class="light",
+                    impl="tools.utils.documentos:run", launch=True, phase="F6", time_limit=1800, max_files=20,
+                    summary_es=summary_es, summary_en=summary_en, related=related, **extra)
+
+
+# --- F6-B (7.12, D-213 y D-214): hojas de cálculo y datos con openpyxl, la biblioteca estándar, defusedxml y PyYAML. ----
+# El Anexo A no fija opciones.
+
+SEPARATORS = {"coma": ("Coma (,)", "Comma (,)"), "punto_y_coma": ("Punto y coma (;)", "Semicolon (;)"),
+              "tabulador": ("Tabulador", "Tab")}
+DETECT_SEPARATORS = {"auto": ("Detectar", "Detect"), **SEPARATORS, "barra": ("Barra vertical (|)", "Pipe (|)")}
+DECIMALS = {"punto": ("Punto (1234.5)", "Point (1234.5)"), "coma": ("Coma (1234,5)", "Comma (1234,5)")}
+OUT_ENCODINGS = {"utf-8": ("UTF-8", "UTF-8"), "utf-8-bom": ("UTF-8 con BOM (para Excel)", "UTF-8 with BOM (for Excel)"),
+                 "windows-1252": ("Windows-1252 (Excel antiguo)", "Windows-1252 (old Excel)")}
+SHEETS = {"activa": ("La hoja activa", "The active sheet"), "todas": ("Todas (un archivo por hoja)", "All (one file per sheet)")}
+SHAPES = {"objetos": ("Objetos con la primera fila como claves", "Objects with the first row as keys"),
+          "filas": ("Listas de valores, fila a fila", "Lists of values, row by row")}
+
+
+class XlsxCsvOptions(BaseModel):
+    """xlsx-a-csv (D-213): hojas [la activa] | todas, separador [coma] | punto y coma | tabulador, decimal [punto] | coma
+    y codificación [UTF-8] | UTF-8 con BOM | Windows-1252."""
+
+    hojas: Literal["activa", "todas"] = opt("activa", "Hojas", "Sheets", labels=SHEETS)
+    separador: Literal["coma", "punto_y_coma", "tabulador"] = opt("coma", "Separador", "Separator", labels=SEPARATORS)
+    decimal: Literal["punto", "coma"] = opt("punto", "Separador decimal", "Decimal separator", labels=DECIMALS)
+    codificacion: Literal["utf-8", "utf-8-bom", "windows-1252"] = opt("utf-8", "Codificación", "Encoding", labels=OUT_ENCODINGS)
+
+
+class CsvXlsxOptions(BaseModel):
+    """csv-a-xlsx (D-213): separador [detectar], decimal [detectar], tipos [convertir números y fechas ISO], encabezado
+    [primera fila en negrita, fija y con filtros] y libro [uno por archivo] | uno con una hoja por archivo."""
+
+    separador: Literal["auto", "coma", "punto_y_coma", "tabulador", "barra"] = opt("auto", "Separador", "Separator",
+                                                                                   labels=DETECT_SEPARATORS)
+    decimal: Literal["auto", "punto", "coma"] = opt("auto", "Separador decimal", "Decimal separator",
+                                                    labels={"auto": ("Detectar", "Detect"), **DECIMALS})
+    tipos: bool = opt(True, "Convertir números y fechas", "Convert numbers and dates")
+    encabezado: bool = opt(True, "La primera fila es el encabezado", "The first row is the header")
+    libro: Literal["separados", "uno"] = opt("separados", "Varios CSV", "Several CSV files", labels={
+        "separados": ("Un libro por archivo", "One workbook per file"),
+        "uno": ("Un solo libro, una hoja por archivo", "One workbook, one sheet per file")})
+
+
+class ExcelJsonOptions(BaseModel):
+    """excel-a-json (D-213): forma [objetos con la primera fila como claves] | filas y hojas [la activa] | todas."""
+
+    forma: Literal["objetos", "filas"] = opt("objetos", "Forma", "Shape", labels=SHAPES)
+    hojas: Literal["activa", "todas"] = opt("activa", "Hojas", "Sheets", labels={
+        "activa": ("La hoja activa", "The active sheet"), "todas": ("Todas (un objeto por hoja)", "All (one object per sheet)")})
+
+
+class CodificacionCsvOptions(BaseModel):
+    """arreglar-codificacion-csv (D-213): origen [detectar] | Windows-1252 | ISO-8859-1 | ISO-8859-15 | MS-DOS (CP850) |
+    Mac Roman | UTF-16 y salida [UTF-8 con BOM] | UTF-8."""
+
+    origen: Literal["auto", "windows-1252", "iso-8859-1", "iso-8859-15", "cp850", "mac-roman", "utf-16"] = opt(
+        "auto", "Codificación de origen", "Source encoding", labels={
+            "auto": ("Detectar", "Detect"), "windows-1252": ("Windows-1252", "Windows-1252"),
+            "iso-8859-1": ("ISO-8859-1 (Latin-1)", "ISO-8859-1 (Latin-1)"), "iso-8859-15": ("ISO-8859-15 (Latin-9)", "ISO-8859-15 (Latin-9)"),
+            "cp850": ("MS-DOS (CP850)", "MS-DOS (CP850)"), "mac-roman": ("Mac Roman", "Mac Roman"), "utf-16": ("UTF-16", "UTF-16")})
+    salida: Literal["utf-8-bom", "utf-8"] = opt("utf-8-bom", "Salida", "Output", labels={
+        "utf-8-bom": ("UTF-8 con BOM (Excel lo abre bien)", "UTF-8 with BOM (Excel opens it correctly)"),
+        "utf-8": ("UTF-8 sin BOM", "UTF-8 without BOM")})
+
+
+class CsvJsonOptions(BaseModel):
+    """csv-a-json (D-214): separador [detectar], forma [objetos] | filas y tipos [números, verdadero/falso y vacíos como
+    null]."""
+
+    separador: Literal["auto", "coma", "punto_y_coma", "tabulador", "barra"] = opt("auto", "Separador", "Separator",
+                                                                                   labels=DETECT_SEPARATORS)
+    forma: Literal["objetos", "filas"] = opt("objetos", "Forma", "Shape", labels=SHAPES)
+    tipos: bool = opt(True, "Convertir números, true/false y vacíos", "Convert numbers, true/false and empty values")
+
+
+class JsonCsvOptions(BaseModel):
+    """json-a-csv (D-214): separador [coma] | punto y coma | tabulador y codificación [UTF-8] | UTF-8 con BOM."""
+
+    separador: Literal["coma", "punto_y_coma", "tabulador"] = opt("coma", "Separador", "Separator", labels=SEPARATORS)
+    codificacion: Literal["utf-8", "utf-8-bom"] = opt("utf-8", "Codificación", "Encoding", labels={
+        "utf-8": ("UTF-8", "UTF-8"), "utf-8-bom": ("UTF-8 con BOM (para Excel)", "UTF-8 with BOM (for Excel)")})
+
+
+class JsonXmlOptions(BaseModel):
+    """json-a-xml (D-214): elemento raíz [root] y elemento de cada valor de una lista [item]."""
+
+    raiz: str = opt("root", "Elemento raíz", "Root element", pattern=r"^[A-Za-z_][A-Za-z0-9_.-]{0,63}$", max_length=64)
+    elemento: str = opt("item", "Elemento de cada valor de una lista", "Element for each list value",
+                        pattern=r"^[A-Za-z_][A-Za-z0-9_.-]{0,63}$", max_length=64)
+
+
+class XmlJsonOptions(BaseModel):
+    """xml-a-json (D-214): tipos [no: el texto sigue siendo texto] | números y true/false."""
+
+    tipos: bool = opt(False, "Convertir números y true/false", "Convert numbers and true/false")
+
+
+def datos(slug_es: str, slug_en: str, name_es: str, name_en: str, inputs: tuple[str, ...], outputs: tuple[str, ...],
+          summary_es: str, summary_en: str, related: tuple[str, ...], options: type[BaseModel] | None = None,
+          category: str = "data", group: str = "utils", impl: str = "tools.utils.datos:run") -> ToolSpec:
+    # 7.12 (F6-B, D-213 y D-214): sin motores externos salvo LibreOffice para ODS, que va en workeroffice.
+    extra = {"options": options} if options else {}
+    return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category=category, where="server",
+                    inputs=inputs, outputs=(*outputs, "zip"), worker_group=group, queue_kind="light", cost_class="light",
+                    impl=impl, launch=True, phase="F6", time_limit=600, max_files=20,
+                    summary_es=summary_es, summary_en=summary_en, related=related, **extra)
+
+
+# --- F6-E (7.13, D-217): comprimidos con libarchive y subtítulos con pysubs2. El Anexo A no fija opciones. -------------
+
+
+class ContrasenaArchivoOptions(BaseModel):
+    """extraer-archivo-online (D-217): contraseña de un ZIP cifrado (los RAR y 7z cifrados no se admiten)."""
+
+    contrasena: str | None = opt(None, "Contraseña (solo ZIP cifrados)", "Password (encrypted ZIP only)", advanced=True,
+                                 max_length=127)
+
+
+class SubtitulosOptions(BaseModel):
+    """srt-a-vtt, vtt-a-srt y ass-a-srt (D-217): etiquetas de estilo [conservar negrita, cursiva, subrayado y tachado] |
+    quitarlas."""
+
+    etiquetas: Literal["conservar", "quitar"] = opt("conservar", "Estilo del texto", "Text style", labels={
+        "conservar": ("Conservar negrita, cursiva, subrayado y tachado", "Keep bold, italics, underline and strikethrough"),
+        "quitar": ("Solo texto", "Plain text only")})
+
+
 SPECS: list[ToolSpec] = [
     # A.2 (F4-E3, D-208): genera facturas, así que va detrás de INVOICING_ES_ENABLED y apagada por defecto (7.23). La
     # extracción con IA es una petición con consentimiento (6.6); la categoría invoice puede usar IA, la sign no.
@@ -181,4 +346,134 @@ SPECS: list[ToolSpec] = [
           "Convierte facturas CII de UN/CEFACT (también XRechnung CII) en un PDF legible, con el XML incrustado en PDF/A-3.",
           "Turn UN/CEFACT CII invoices (also XRechnung CII) into a readable PDF, with the XML embedded in PDF/A-3.",
           ("factura-electronica-a-pdf", "validar-factura-electronica")),
+    documento("docx-a-odt", "docx-to-odt", "DOCX a ODT", "DOCX to ODT", ("docx",), ("odt",),
+              "Convierte documentos de Word (.docx) en ODT de LibreOffice conservando títulos, listas, tablas e imágenes.",
+              "Turn Word documents (.docx) into LibreOffice ODT, keeping headings, lists, tables and images.",
+              ("odt-a-docx", "word-a-pdf")),
+    documento("odt-a-docx", "odt-to-docx", "ODT a DOCX", "ODT to DOCX", ("odt",), ("docx",),
+              "Convierte documentos ODT de LibreOffice en Word (.docx) conservando títulos, listas, tablas e imágenes.",
+              "Turn LibreOffice ODT documents into Word (.docx), keeping headings, lists, tables and images.",
+              ("docx-a-odt", "odt-a-pdf")),
+    documento("docx-a-markdown", "docx-to-markdown", "DOCX a Markdown", "DOCX to Markdown", ("docx",), ("md",),
+              "Convierte documentos de Word en Markdown limpio (GitHub, CommonMark o pandoc), con sus imágenes en una carpeta.",
+              "Turn Word documents into clean Markdown (GitHub, CommonMark or pandoc), with their images in a folder.",
+              ("markdown-a-docx", "docx-a-html"), DocxMarkdownOptions),
+    documento("markdown-a-docx", "markdown-to-docx", "Markdown a DOCX", "Markdown to DOCX", ("md", "zip"), ("docx",),
+              "Convierte archivos Markdown en documentos de Word con títulos, tablas, código, fórmulas e imágenes del ZIP.",
+              "Turn Markdown files into Word documents with headings, tables, code, formulas and images from the ZIP.",
+              ("docx-a-markdown", "markdown-a-pdf"), MarkdownDocxOptions),
+    documento("docx-a-html", "docx-to-html", "DOCX a HTML", "DOCX to HTML", ("docx",), ("html",),
+              "Convierte documentos de Word en una página HTML de un solo archivo, con las imágenes y las fórmulas dentro.",
+              "Turn Word documents into a single-file HTML page, with the images and formulas inside.",
+              ("html-a-docx", "docx-a-markdown"), IndiceOptions),
+    documento("html-a-docx", "html-to-docx", "HTML a DOCX", "HTML to DOCX", ("html", "zip"), ("docx",),
+              "Convierte páginas HTML en documentos de Word editables, con las imágenes que subas en el mismo ZIP.",
+              "Turn HTML pages into editable Word documents, with the images you upload in the same ZIP.",
+              ("docx-a-html", "html-a-pdf"), IndiceOptions),
+    datos("xlsx-a-csv", "xlsx-to-csv", "Excel a CSV", "Excel to CSV", ("xlsx",), ("csv",),
+          "Exporta hojas de Excel a CSV con el separador, el decimal y la codificación que necesites, con los valores calculados.",
+          "Export Excel sheets to CSV with the separator, decimal mark and encoding you need, using the calculated values.",
+          ("csv-a-xlsx", "excel-a-json"), XlsxCsvOptions, category="office"),
+    datos("csv-a-xlsx", "csv-to-xlsx", "CSV a Excel", "CSV to Excel", ("csv", "txt"), ("xlsx",),
+          "Convierte CSV en hojas de Excel con números y fechas de verdad, encabezado con filtros y la codificación detectada.",
+          "Turn CSV files into Excel sheets with real numbers and dates, a filtered header and the encoding detected.",
+          ("xlsx-a-csv", "arreglar-codificacion-csv"), CsvXlsxOptions, category="office"),
+    datos("ods-a-xlsx", "ods-to-xlsx", "ODS a Excel", "ODS to Excel", ("ods",), ("xlsx",),
+          "Convierte hojas de cálculo ODS de LibreOffice en Excel (.xlsx) con sus hojas, fórmulas y formatos.",
+          "Turn LibreOffice ODS spreadsheets into Excel (.xlsx) with their sheets, formulas and formatting.",
+          ("xlsx-a-ods", "xlsx-a-csv"), category="office", group="office", impl="tools.office.hojas:run"),
+    datos("xlsx-a-ods", "xlsx-to-ods", "Excel a ODS", "Excel to ODS", ("xlsx", "xls"), ("ods",),
+          "Convierte libros de Excel (.xlsx y .xls) en hojas de cálculo ODS de LibreOffice con sus fórmulas y formatos.",
+          "Turn Excel workbooks (.xlsx and .xls) into LibreOffice ODS spreadsheets with their formulas and formatting.",
+          ("ods-a-xlsx", "excel-a-pdf"), category="office", group="office", impl="tools.office.hojas:run"),
+    datos("excel-a-json", "excel-to-json", "Excel a JSON", "Excel to JSON", ("xlsx",), ("json",),
+          "Convierte hojas de Excel en JSON: una lista de objetos con la primera fila como claves, o de filas, con sus tipos.",
+          "Turn Excel sheets into JSON: a list of objects keyed by the first row, or of rows, keeping their types.",
+          ("csv-a-json", "xlsx-a-csv"), ExcelJsonOptions),
+    datos("arreglar-codificacion-csv", "fix-csv-encoding", "Arreglar codificación de CSV", "Fix CSV encoding", ("csv", "txt"),
+          ("csv",), "Recupera las tildes y las eñes de un CSV: lo pasa de Windows-1252 y otras codificaciones a UTF-8 y corrige el «Ã±».",
+          "Recover the accents in a CSV: convert it from Windows-1252 and other encodings to UTF-8 and fix mojibake like “Ã±”.",
+          ("csv-a-xlsx", "xlsx-a-csv"), CodificacionCsvOptions),
+    datos("csv-a-json", "csv-to-json", "CSV a JSON", "CSV to JSON", ("csv", "txt"), ("json",),
+          "Convierte CSV en JSON, como lista de objetos o de filas, con números y valores vacíos de verdad.",
+          "Turn CSV into JSON, as a list of objects or of rows, with real numbers and empty values.",
+          ("json-a-csv", "excel-a-json"), CsvJsonOptions),
+    datos("json-a-csv", "json-to-csv", "JSON a CSV", "JSON to CSV", ("json",), ("csv",),
+          "Convierte JSON (también JSON Lines) en CSV: aplana los objetos anidados en columnas y une las claves de todos.",
+          "Turn JSON (JSON Lines too) into CSV: flatten nested objects into columns and merge every object's keys.",
+          ("csv-a-json", "json-a-xml"), JsonCsvOptions),
+    datos("json-a-xml", "json-to-xml", "JSON a XML", "JSON to XML", ("json",), ("xml",),
+          "Convierte JSON en XML bien formado, con nombres de elemento válidos y el elemento raíz que elijas.",
+          "Turn JSON into well-formed XML, with valid element names and the root element you choose.",
+          ("xml-a-json", "json-a-yaml"), JsonXmlOptions),
+    datos("xml-a-json", "xml-to-json", "XML a JSON", "XML to JSON", ("xml",), ("json",),
+          "Convierte XML en JSON con atributos, texto y elementos repetidos como listas, sin cargar entidades externas.",
+          "Turn XML into JSON with attributes, text and repeated elements as lists, without loading external entities.",
+          ("json-a-xml", "json-a-yaml"), XmlJsonOptions),
+    datos("yaml-a-json", "yaml-to-json", "YAML a JSON", "YAML to JSON", ("yaml",), ("json",),
+          "Convierte YAML en JSON, también con varios documentos, sin ejecutar etiquetas ni expandir alias sin límite.",
+          "Turn YAML into JSON, multiple documents too, without running tags or expanding aliases without limit.",
+          ("json-a-yaml", "xml-a-json")),
+    datos("json-a-yaml", "json-to-yaml", "JSON a YAML", "JSON to YAML", ("json",), ("yaml",),
+          "Convierte JSON en YAML legible, con las claves en su orden y los acentos sin escapar.",
+          "Turn JSON into readable YAML, with keys in their order and accented letters unescaped.",
+          ("yaml-a-json", "json-a-xml")),
+    # 7.13 (F6-F, D-215): fuentes con fontTools y brotli. El Anexo A no fija opciones.
+    datos("ttf-a-woff2", "ttf-to-woff2", "TTF a WOFF2", "TTF to WOFF2", ("ttf",), ("woff2",),
+          "Comprime fuentes TrueType en WOFF2 para la web: el mismo diseño en un archivo hasta un 70 % más pequeño.",
+          "Compress TrueType fonts into WOFF2 for the web: the same design in a file up to 70% smaller.",
+          ("otf-a-woff2", "woff2-a-ttf"), impl="tools.utils.fuentes:run"),
+    datos("otf-a-woff2", "otf-to-woff2", "OTF a WOFF2", "OTF to WOFF2", ("otf",), ("woff2",),
+          "Comprime fuentes OpenType en WOFF2 para usarlas en una web con @font-face, sin tocar sus contornos.",
+          "Compress OpenType fonts into WOFF2 to use them on a website with @font-face, without touching their outlines.",
+          ("ttf-a-woff2", "otf-a-ttf"), impl="tools.utils.fuentes:run"),
+    datos("woff2-a-ttf", "woff2-to-ttf", "WOFF2 a TTF", "WOFF2 to TTF", ("woff2",), ("ttf",),
+          "Convierte fuentes web WOFF2 en TTF que se pueden instalar en Windows, macOS y Linux o usar en programas de diseño.",
+          "Turn WOFF2 web fonts into TTF you can install on Windows, macOS and Linux or use in design programs.",
+          ("woff-a-ttf", "ttf-a-woff2"), impl="tools.utils.fuentes:run"),
+    datos("woff-a-ttf", "woff-to-ttf", "WOFF a TTF", "WOFF to TTF", ("woff",), ("ttf",),
+          "Convierte fuentes web WOFF en TTF instalables, también las que llevan contornos CFF.",
+          "Turn WOFF web fonts into installable TTF files, including those with CFF outlines.",
+          ("woff2-a-ttf", "ttf-a-woff2"), impl="tools.utils.fuentes:run"),
+    datos("ttf-a-otf", "ttf-to-otf", "TTF a OTF", "TTF to OTF", ("ttf",), ("otf",),
+          "Convierte fuentes TrueType en OpenType con contornos CFF, pasando las curvas a cúbicas sin perder precisión.",
+          "Turn TrueType fonts into OpenType with CFF outlines, converting the curves to cubic ones without losing precision.",
+          ("otf-a-ttf", "ttf-a-woff2"), impl="tools.utils.fuentes:run"),
+    datos("otf-a-ttf", "otf-to-ttf", "OTF a TTF", "OTF to TTF", ("otf",), ("ttf",),
+          "Convierte fuentes OpenType CFF en TrueType para programas y dispositivos que solo admiten TTF.",
+          "Turn OpenType CFF fonts into TrueType for programs and devices that only accept TTF.",
+          ("ttf-a-otf", "otf-a-woff2"), impl="tools.utils.fuentes:run"),
+    # 7.13 (F6-E, D-217): libarchive en workerutils, nunca unrar ni p7zip (11).
+    datos("rar-a-zip", "rar-to-zip", "RAR a ZIP", "RAR to ZIP", ("rar",), (),
+          "Convierte archivos RAR (también RAR 5) en ZIP, que se abre en cualquier sistema sin instalar nada.",
+          "Turn RAR archives (RAR 5 too) into ZIP, which opens on any system without installing anything.",
+          ("7z-a-zip", "extraer-archivo-online"), impl="tools.utils.comprimidos:run"),
+    datos("7z-a-zip", "7z-to-zip", "7Z a ZIP", "7Z to ZIP", ("7z",), (),
+          "Convierte archivos 7z en ZIP con las mismas carpetas y archivos, listo para abrir en Windows, macOS o el móvil.",
+          "Turn 7z archives into ZIP with the same folders and files, ready to open on Windows, macOS or a phone.",
+          ("rar-a-zip", "tar-a-zip"), impl="tools.utils.comprimidos:run"),
+    datos("tar-a-zip", "tar-to-zip", "TAR a ZIP", "TAR to ZIP", ("tar", "gz", "bz2", "xz"), (),
+          "Convierte archivos tar, tar.gz, tgz, tar.bz2 y tar.xz en ZIP, conservando las carpetas y las fechas.",
+          "Turn tar, tar.gz, tgz, tar.bz2 and tar.xz archives into ZIP, keeping folders and dates.",
+          ("7z-a-zip", "extraer-archivo-online"), impl="tools.utils.comprimidos:run"),
+    ToolSpec(slug_es="extraer-archivo-online", slug_en="extract-archive-online", name_es="Extraer archivo online",
+             name_en="Extract archive online", category="data", where="server", inputs=("zip", "rar", "7z", "tar", "gz", "bz2", "xz"),
+             outputs=("zip",), options=ContrasenaArchivoOptions, secret_fields=("contrasena",), worker_group="utils",
+             queue_kind="light", cost_class="light", impl="tools.utils.comprimidos:run", launch=True, phase="F6",
+             time_limit=600, max_files=1,
+             summary_es="Abre archivos ZIP, RAR, 7z y tar sin instalar nada y descarga los archivos que contienen, uno a uno o todos.",
+             summary_en="Open ZIP, RAR, 7z and tar archives without installing anything and download the files inside, one by one or all.",
+             related=("rar-a-zip", "7z-a-zip")),
+    datos("srt-a-vtt", "srt-to-vtt", "SRT a VTT", "SRT to VTT", ("srt",), ("vtt",),
+          "Convierte subtítulos SRT en WebVTT para los vídeos de una web (<track>), con los tiempos y las cursivas.",
+          "Turn SRT subtitles into WebVTT for videos on a website (<track>), keeping timings and italics.",
+          ("vtt-a-srt", "traducir-subtitulos"), SubtitulosOptions, category="video", impl="tools.utils.subtitulos:run"),
+    datos("vtt-a-srt", "vtt-to-srt", "VTT a SRT", "VTT to SRT", ("vtt",), ("srt",),
+          "Convierte subtítulos WebVTT en SRT, el formato que leen VLC, los televisores y los editores de vídeo.",
+          "Turn WebVTT subtitles into SRT, the format VLC, TVs and video editors read.",
+          ("srt-a-vtt", "ass-a-srt"), SubtitulosOptions, category="video", impl="tools.utils.subtitulos:run"),
+    datos("ass-a-srt", "ass-to-srt", "ASS a SRT", "ASS to SRT", ("ass",), ("srt",),
+          "Convierte subtítulos ASS y SSA (Aegisub, anime) en SRT, ordenados por tiempo y con negrita y cursiva.",
+          "Turn ASS and SSA subtitles (Aegisub, anime) into SRT, sorted by time and with bold and italics.",
+          ("vtt-a-srt", "srt-a-vtt"), SubtitulosOptions, category="video", impl="tools.utils.subtitulos:run"),
 ]

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JSON to XML turns JSON data into a well-formed XML document. Use it to feed systems that only accept XML (SOAP services, older business software, catalogue importers or public administrations), to generate test data or to compare structures between the two formats.",
+    "Each JSON key becomes an element with its name and values become its text. Lists are written as repeated elements named after their key, and loose or top-level lists use the element you choose (item by default). Null values become empty elements and logical values true and false. Everything hangs from a configurable root element, root by default.",
+    "Element names have rules that JSON keys do not follow: they cannot start with a digit, contain spaces or symbols, or start with “xml”. We fix them predictably (invalid characters become “_” and “_” is prepended when needed) and, when a name changes, we keep the original key in a “clave” attribute so it is not lost. Accented letters are kept.",
+    "The XML is written in UTF-8, with a declaration and indentation so it can be read. The conversion runs on our server, with size and depth limits, for files of up to 25 MB and 20 per batch."
+  ],
+  "steps": [
+    "Upload one or more .json files.",
+    "Choose the root element and the element for list values.",
+    "Download the XML."
+  ],
+  "faq": [
+    {
+      "q": "Can attributes be generated instead of elements?",
+      "a": "No: every value is written as an element, which is the form that loses no information. The “clave” attribute only appears when we had to change a name."
+    },
+    {
+      "q": "Does the XML follow a specific schema?",
+      "a": "It is well-formed XML, but it does not follow any particular schema (XSD). If a system requires one, check the names and order it asks for."
+    },
+    {
+      "q": "And from XML to JSON?",
+      "a": "XML to JSON does the reverse, with attributes, text and repeated elements as lists."
+    }
+  ]
+}

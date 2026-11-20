@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TTF to OTF turns TrueType fonts into OpenType fonts with CFF outlines, the format many print shops, professional layout programs and some design workflows prefer because they work with cubic curves, like PostScript ones.",
+    "TrueType curves are quadratic and CFF ones cubic. Every quadratic curve can be written exactly as a cubic one, so the conversion changes the shape of no letter: the outlines are the same, point by point. Glyphs, their names, the character map, metrics, kerning and OpenType features are kept.",
+    "What has no equivalent is TrueType hinting, the instructions that fit letters to the pixel grid on low-resolution screens. They are removed, and we warn you when the font had them; in print and on current screens the difference is not noticeable. Variable fonts cannot be converted this way, because they would need the CFF2 format.",
+    "We use fontTools on our server and check that the OTF reads back without errors. You can convert up to 20 fonts at once and download a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .ttf files.",
+    "Wait for the conversion.",
+    "Download each .otf or the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Does it improve the font's quality?",
+      "a": "No: the shape is exactly the same. Converting to OTF is useful when a program or a print shop asks for OpenType CFF, not to improve the design."
+    },
+    {
+      "q": "Why can't I convert my variable font?",
+      "a": "Because its variations are stored for TrueType outlines. You can use it as it is, which works on current systems, or compress it for the web with TTF to WOFF2."
+    },
+    {
+      "q": "Can I convert any font?",
+      "a": "Technically yes, but turning it into OTF does not change its licence: if the licence does not allow modifying it, the conversion does not give you that right. Fonts under a free licence, such as the SIL Open Font License used by Google Fonts, do allow it."
+    }
+  ]
+}

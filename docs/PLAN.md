@@ -110,17 +110,17 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F4-F | word-a-pdf-accesible (office → ocr, veraPDF) | Hecho (D-182 y D-184); veraPDF y el PDF/UA de LibreOffice reales, en la CI |
 | F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | Hecho aquí: imagen de la firma dentro de la apariencia PAdES y .p12 con 3DES o RC2 (D-210), revisión de F4-E3 corregida (D-211); la e2e de servidor de solicitar-firmas con Mailpit está escrita y se comprueba en la CI cuando vuelva a arrancar |
 
-## F6: formatos, datos y documentos (pendiente)
+## F6: formatos, datos y documentos (en curso)
 
 | Lote | Herramientas | Estado |
 | --- | --- | --- |
-| F6-A | docx-a-odt, odt-a-docx, docx-a-markdown, markdown-a-docx, docx-a-html, html-a-docx (pandoc estático) | Pendiente (F4-Z) |
-| F6-B1 | xlsx-a-csv, csv-a-xlsx, ods-a-xlsx, xlsx-a-ods, excel-a-json, arreglar-codificacion-csv | Pendiente (F4-Z) |
-| F6-B2 | csv-a-json, json-a-csv, json-a-xml, xml-a-json, yaml-a-json, json-a-yaml | Pendiente (F4-Z) |
+| F6-A | docx-a-odt, odt-a-docx, docx-a-markdown, markdown-a-docx, docx-a-html, html-a-docx (pandoc estático) | Hecho (D-212), con la revisión corregida (D-216) |
+| F6-B1 | xlsx-a-csv, csv-a-xlsx, ods-a-xlsx, xlsx-a-ods, excel-a-json, arreglar-codificacion-csv | Hecho (D-213), con la revisión corregida (D-218); ods-a-xlsx y xlsx-a-ods con LibreOffice Calc real, en la CI |
+| F6-B2 | csv-a-json, json-a-csv, json-a-xml, xml-a-json, yaml-a-json, json-a-yaml | Hecho (D-214), con la revisión corregida (D-218) |
 | F6-C | epub-a-mobi, epub-a-azw3, mobi-a-epub, azw3-a-epub, pptx-a-imagenes, pptx-a-video | Pendiente (F4-Z) |
 | F6-D | traducir-word, traducir-excel, traducir-powerpoint, manuscrito-a-texto | Pendiente (F4-Z) |
-| F6-E | rar-a-zip, 7z-a-zip, tar-a-zip, extraer-archivo-online, srt-a-vtt, vtt-a-srt, ass-a-srt | Pendiente (F4-Z) |
-| F6-F | ttf-a-woff2, otf-a-woff2, woff2-a-ttf, woff-a-ttf, ttf-a-otf, otf-a-ttf | Pendiente (F4-Z) |
+| F6-E | rar-a-zip, 7z-a-zip, tar-a-zip, extraer-archivo-online, srt-a-vtt, vtt-a-srt, ass-a-srt | Hecho (D-217) |
+| F6-F | ttf-a-woff2, otf-a-woff2, woff2-a-ttf, woff-a-ttf, ttf-a-otf, otf-a-ttf | Hecho (D-215) |
 | F6-G | csig-a-pdf, p7m-a-pdf, xsig-a-pdf, verificar-firma | Pendiente (F4-Z) |
 | F6-H1 | gpx-a-kml, kml-a-gpx, kmz-a-gpx, gpx-a-geojson, geojson-a-kml, shp-a-geojson, shp-a-kml, csv-a-kml | Pendiente (F4-Z) |
 | F6-H2 | tcx-a-gpx, fit-a-gpx, fit-a-csv | Pendiente (F4-Z) |

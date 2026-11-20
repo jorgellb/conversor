@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DOCX to HTML turns a Word document into a web page ready to open in any browser or to publish. It is practical for posting a text on an intranet, sending it as a page instead of a Word attachment, pasting it into a content management system or reading it on a device without Office.",
+    "The result is a single .html file: images go inside as data and formulas are written in MathML, which current browsers display without plug-ins. There are no folders or external resources that can get lost when you move it or send it by email.",
+    "The page is clean, semantic HTML, without the inline styles Word adds when saving as a web page: h1, h2 and h3 headings, paragraphs, lists, tables, links and footnotes at the end. It includes a simple, readable style sheet with automatic dark mode that you can replace with your own. Optionally, we add a table of contents with links to each section.",
+    "We convert with pandoc on our server, sandboxed and with no network access. You can upload up to 20 documents and, if there are several, also download a ZIP with all the pages."
+  ],
+  "steps": [
+    "Upload one or more .docx files.",
+    "Say whether you want a table of contents at the top.",
+    "Download the HTML page or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Is the Word design kept?",
+      "a": "The structure and basic formatting are kept, not the layout: margins, page colours, text boxes and fonts are replaced by a clean web style."
+    },
+    {
+      "q": "Can I edit the HTML?",
+      "a": "Yes. It is readable HTML5 with a style sheet at the top; images are long data: attributes, but the rest of the text can be edited in any editor."
+    },
+    {
+      "q": "What if I want to go back to Word?",
+      "a": "HTML to DOCX turns an HTML page into an editable Word document."
+    }
+  ]
+}

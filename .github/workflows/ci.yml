@@ -36,7 +36,7 @@ jobs:
       - name: Motores del sistema para las pruebas de efecto
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng tesseract-ocr-osd ffmpeg libreoffice-writer-nogui fonts-dejavu postgresql-client restic \
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng tesseract-ocr-osd ffmpeg libreoffice-writer-nogui libreoffice-calc-nogui fonts-dejavu postgresql-client restic \
             djvulibre-bin libarchive13 calibre libheif-examples libheif-plugin-libde265 libheif-plugin-x265 espeak-ng softhsm2
       # x265 solo en la CI, para crear la muestra HEIC de la prueba; nunca en las imágenes (D-49).
       - name: Herramientas del lote D (tiffcp, pdftocairo, perfil CMYK) y veraPDF fijado por SHA-256
@@ -87,6 +87,10 @@ jobs:
           .venv/bin/python scripts/gen_coolify_compose.py --check
           .venv/bin/python scripts/gen_coolify_compose.py --validate
           docker compose -f docker-compose.yml config --quiet
+      - name: pandoc estático para docx, odt, Markdown y HTML (F6-A, SHA-256 fijado)
+        run: |
+          sh infra/pandoc/fetch.sh "$RUNNER_TEMP/pandoc"
+          echo "PANDOC_BIN=$RUNNER_TEMP/pandoc/pandoc" >> "$GITHUB_ENV"
       - name: KoSIT en modo servicio para validar-factura-electronica (F4-D, SHA-256 fijados)
         run: |
           FX=$(.venv/bin/python -c 'import facturx, pathlib; print(pathlib.Path(facturx.__file__).parent / "xsd_and_schematron")')

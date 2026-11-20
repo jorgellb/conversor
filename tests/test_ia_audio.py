@@ -207,12 +207,14 @@ def test_output_names_and_limits(subs_dir, tmp_path, monkeypatch):
     assert st.output_name(inp("Película.en.srt"), "es", "srt") == "Película.es.srt"
     assert st.output_name(inp("reunión.mp4"), "fr", "srt") == "reunión.fr.srt"
     assert st.output_name(inp("capítulo 1.ass"), "en", "vtt") == "capítulo 1.en.vtt"
-    monkeypatch.setattr(st, "MAX_BYTES", 100)
+    import tools.subs as subs  # la lectura vive en tools/subs.py desde F6-E (D-217)
+
+    monkeypatch.setattr(subs, "MAX_BYTES", 100)
     with pytest.raises(ToolError) as exc:
         st.parse(subs_dir / "reunion.srt", "srt")
     assert exc.value.code == ErrorCode.LIMIT_EXCEEDED
-    monkeypatch.setattr(st, "MAX_BYTES", 10**6)
-    monkeypatch.setattr(st, "MAX_EVENTS", 3)
+    monkeypatch.setattr(subs, "MAX_BYTES", 10**6)
+    monkeypatch.setattr(subs, "MAX_EVENTS", 3)
     with pytest.raises(ToolError) as exc:
         st.parse(subs_dir / "reunion.srt", "srt")
     assert exc.value.code == ErrorCode.LIMIT_EXCEEDED

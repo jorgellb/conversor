@@ -29299,6 +29299,1931 @@
         "title": "APdfOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "docx-a-odt",
+      "slug_en": "docx-to-odt",
+      "name_es": "DOCX a ODT",
+      "name_en": "DOCX to ODT",
+      "summary_es": "Convierte documentos de Word (.docx) en ODT de LibreOffice conservando títulos, listas, tablas e imágenes.",
+      "summary_en": "Turn Word documents (.docx) into LibreOffice ODT, keeping headings, lists, tables and images.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "docx"
+      ],
+      "outputs": [
+        "odt",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "odt-a-docx",
+        "word-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "odt-a-docx",
+      "slug_en": "odt-to-docx",
+      "name_es": "ODT a DOCX",
+      "name_en": "ODT to DOCX",
+      "summary_es": "Convierte documentos ODT de LibreOffice en Word (.docx) conservando títulos, listas, tablas e imágenes.",
+      "summary_en": "Turn LibreOffice ODT documents into Word (.docx), keeping headings, lists, tables and images.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "odt"
+      ],
+      "outputs": [
+        "docx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "docx-a-odt",
+        "odt-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "docx-a-markdown",
+      "slug_en": "docx-to-markdown",
+      "name_es": "DOCX a Markdown",
+      "name_en": "DOCX to Markdown",
+      "summary_es": "Convierte documentos de Word en Markdown limpio (GitHub, CommonMark o pandoc), con sus imágenes en una carpeta.",
+      "summary_en": "Turn Word documents into clean Markdown (GitHub, CommonMark or pandoc), with their images in a folder.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "docx"
+      ],
+      "outputs": [
+        "md",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "markdown-a-docx",
+        "docx-a-html"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "docx-a-markdown (D-212): sabor [GitHub] | CommonMark | pandoc e imágenes [carpeta media/ en un ZIP] | dentro del\nMarkdown | sin imágenes.",
+        "properties": {
+          "sabor": {
+            "default": "gfm",
+            "enum": [
+              "gfm",
+              "commonmark",
+              "markdown"
+            ],
+            "title": "Sabor de Markdown",
+            "type": "string",
+            "x-labels": {
+              "commonmark": {
+                "en": "CommonMark",
+                "es": "CommonMark"
+              },
+              "gfm": {
+                "en": "GitHub (GFM)",
+                "es": "GitHub (GFM)"
+              },
+              "markdown": {
+                "en": "Pandoc Markdown",
+                "es": "Markdown de pandoc"
+              }
+            },
+            "x-title": {
+              "en": "Markdown flavor",
+              "es": "Sabor de Markdown"
+            }
+          },
+          "imagenes": {
+            "default": "carpeta",
+            "enum": [
+              "carpeta",
+              "incrustadas",
+              "omitir"
+            ],
+            "title": "Imágenes",
+            "type": "string",
+            "x-labels": {
+              "carpeta": {
+                "en": "In a folder (ZIP with the .md)",
+                "es": "En una carpeta (ZIP con el .md)"
+              },
+              "incrustadas": {
+                "en": "Inside the Markdown (data:)",
+                "es": "Dentro del Markdown (data:)"
+              },
+              "omitir": {
+                "en": "No images (alt text only)",
+                "es": "Sin imágenes (solo el texto alternativo)"
+              }
+            },
+            "x-title": {
+              "en": "Images",
+              "es": "Imágenes"
+            }
+          }
+        },
+        "title": "DocxMarkdownOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "markdown-a-docx",
+      "slug_en": "markdown-to-docx",
+      "name_es": "Markdown a DOCX",
+      "name_en": "Markdown to DOCX",
+      "summary_es": "Convierte archivos Markdown en documentos de Word con títulos, tablas, código, fórmulas e imágenes del ZIP.",
+      "summary_en": "Turn Markdown files into Word documents with headings, tables, code, formulas and images from the ZIP.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "md",
+        "zip"
+      ],
+      "outputs": [
+        "docx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "docx-a-markdown",
+        "markdown-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "markdown-a-docx (D-212): sabor [GitHub] | CommonMark | pandoc, índice [no] y secciones numeradas [no].",
+        "properties": {
+          "sabor": {
+            "default": "gfm",
+            "enum": [
+              "gfm",
+              "commonmark",
+              "markdown"
+            ],
+            "title": "Sabor de Markdown",
+            "type": "string",
+            "x-labels": {
+              "commonmark": {
+                "en": "CommonMark",
+                "es": "CommonMark"
+              },
+              "gfm": {
+                "en": "GitHub (GFM)",
+                "es": "GitHub (GFM)"
+              },
+              "markdown": {
+                "en": "Pandoc Markdown",
+                "es": "Markdown de pandoc"
+              }
+            },
+            "x-title": {
+              "en": "Markdown flavor",
+              "es": "Sabor de Markdown"
+            }
+          },
+          "indice": {
+            "default": false,
+            "title": "Añadir índice",
+            "type": "boolean",
+            "x-title": {
+              "en": "Add table of contents",
+              "es": "Añadir índice"
+            }
+          },
+          "numerar": {
+            "default": false,
+            "title": "Numerar los títulos",
+            "type": "boolean",
+            "x-title": {
+              "en": "Number the headings",
+              "es": "Numerar los títulos"
+            }
+          }
+        },
+        "title": "MarkdownDocxOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "docx-a-html",
+      "slug_en": "docx-to-html",
+      "name_es": "DOCX a HTML",
+      "name_en": "DOCX to HTML",
+      "summary_es": "Convierte documentos de Word en una página HTML de un solo archivo, con las imágenes y las fórmulas dentro.",
+      "summary_en": "Turn Word documents into a single-file HTML page, with the images and formulas inside.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "docx"
+      ],
+      "outputs": [
+        "html",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "html-a-docx",
+        "docx-a-markdown"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "docx-a-html y html-a-docx (D-212): índice [no].",
+        "properties": {
+          "indice": {
+            "default": false,
+            "title": "Añadir índice",
+            "type": "boolean",
+            "x-title": {
+              "en": "Add table of contents",
+              "es": "Añadir índice"
+            }
+          }
+        },
+        "title": "IndiceOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "html-a-docx",
+      "slug_en": "html-to-docx",
+      "name_es": "HTML a DOCX",
+      "name_en": "HTML to DOCX",
+      "summary_es": "Convierte páginas HTML en documentos de Word editables, con las imágenes que subas en el mismo ZIP.",
+      "summary_en": "Turn HTML pages into editable Word documents, with the images you upload in the same ZIP.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "html",
+        "zip"
+      ],
+      "outputs": [
+        "docx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "docx-a-html",
+        "html-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "docx-a-html y html-a-docx (D-212): índice [no].",
+        "properties": {
+          "indice": {
+            "default": false,
+            "title": "Añadir índice",
+            "type": "boolean",
+            "x-title": {
+              "en": "Add table of contents",
+              "es": "Añadir índice"
+            }
+          }
+        },
+        "title": "IndiceOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "xlsx-a-csv",
+      "slug_en": "xlsx-to-csv",
+      "name_es": "Excel a CSV",
+      "name_en": "Excel to CSV",
+      "summary_es": "Exporta hojas de Excel a CSV con el separador, el decimal y la codificación que necesites, con los valores calculados.",
+      "summary_en": "Export Excel sheets to CSV with the separator, decimal mark and encoding you need, using the calculated values.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xlsx"
+      ],
+      "outputs": [
+        "csv",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "csv-a-xlsx",
+        "excel-a-json"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "xlsx-a-csv (D-213): hojas [la activa] | todas, separador [coma] | punto y coma | tabulador, decimal [punto] | coma\ny codificación [UTF-8] | UTF-8 con BOM | Windows-1252.",
+        "properties": {
+          "hojas": {
+            "default": "activa",
+            "enum": [
+              "activa",
+              "todas"
+            ],
+            "title": "Hojas",
+            "type": "string",
+            "x-labels": {
+              "activa": {
+                "en": "The active sheet",
+                "es": "La hoja activa"
+              },
+              "todas": {
+                "en": "All (one file per sheet)",
+                "es": "Todas (un archivo por hoja)"
+              }
+            },
+            "x-title": {
+              "en": "Sheets",
+              "es": "Hojas"
+            }
+          },
+          "separador": {
+            "default": "coma",
+            "enum": [
+              "coma",
+              "punto_y_coma",
+              "tabulador"
+            ],
+            "title": "Separador",
+            "type": "string",
+            "x-labels": {
+              "coma": {
+                "en": "Comma (,)",
+                "es": "Coma (,)"
+              },
+              "punto_y_coma": {
+                "en": "Semicolon (;)",
+                "es": "Punto y coma (;)"
+              },
+              "tabulador": {
+                "en": "Tab",
+                "es": "Tabulador"
+              }
+            },
+            "x-title": {
+              "en": "Separator",
+              "es": "Separador"
+            }
+          },
+          "decimal": {
+            "default": "punto",
+            "enum": [
+              "punto",
+              "coma"
+            ],
+            "title": "Separador decimal",
+            "type": "string",
+            "x-labels": {
+              "coma": {
+                "en": "Comma (1234,5)",
+                "es": "Coma (1234,5)"
+              },
+              "punto": {
+                "en": "Point (1234.5)",
+                "es": "Punto (1234.5)"
+              }
+            },
+            "x-title": {
+              "en": "Decimal separator",
+              "es": "Separador decimal"
+            }
+          },
+          "codificacion": {
+            "default": "utf-8",
+            "enum": [
+              "utf-8",
+              "utf-8-bom",
+              "windows-1252"
+            ],
+            "title": "Codificación",
+            "type": "string",
+            "x-labels": {
+              "utf-8": {
+                "en": "UTF-8",
+                "es": "UTF-8"
+              },
+              "utf-8-bom": {
+                "en": "UTF-8 with BOM (for Excel)",
+                "es": "UTF-8 con BOM (para Excel)"
+              },
+              "windows-1252": {
+                "en": "Windows-1252 (old Excel)",
+                "es": "Windows-1252 (Excel antiguo)"
+              }
+            },
+            "x-title": {
+              "en": "Encoding",
+              "es": "Codificación"
+            }
+          }
+        },
+        "title": "XlsxCsvOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "csv-a-xlsx",
+      "slug_en": "csv-to-xlsx",
+      "name_es": "CSV a Excel",
+      "name_en": "CSV to Excel",
+      "summary_es": "Convierte CSV en hojas de Excel con números y fechas de verdad, encabezado con filtros y la codificación detectada.",
+      "summary_en": "Turn CSV files into Excel sheets with real numbers and dates, a filtered header and the encoding detected.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "csv",
+        "txt"
+      ],
+      "outputs": [
+        "xlsx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "xlsx-a-csv",
+        "arreglar-codificacion-csv"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "csv-a-xlsx (D-213): separador [detectar], decimal [detectar], tipos [convertir números y fechas ISO], encabezado\n[primera fila en negrita, fija y con filtros] y libro [uno por archivo] | uno con una hoja por archivo.",
+        "properties": {
+          "separador": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "coma",
+              "punto_y_coma",
+              "tabulador",
+              "barra"
+            ],
+            "title": "Separador",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Detect",
+                "es": "Detectar"
+              },
+              "barra": {
+                "en": "Pipe (|)",
+                "es": "Barra vertical (|)"
+              },
+              "coma": {
+                "en": "Comma (,)",
+                "es": "Coma (,)"
+              },
+              "punto_y_coma": {
+                "en": "Semicolon (;)",
+                "es": "Punto y coma (;)"
+              },
+              "tabulador": {
+                "en": "Tab",
+                "es": "Tabulador"
+              }
+            },
+            "x-title": {
+              "en": "Separator",
+              "es": "Separador"
+            }
+          },
+          "decimal": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "punto",
+              "coma"
+            ],
+            "title": "Separador decimal",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Detect",
+                "es": "Detectar"
+              },
+              "coma": {
+                "en": "Comma (1234,5)",
+                "es": "Coma (1234,5)"
+              },
+              "punto": {
+                "en": "Point (1234.5)",
+                "es": "Punto (1234.5)"
+              }
+            },
+            "x-title": {
+              "en": "Decimal separator",
+              "es": "Separador decimal"
+            }
+          },
+          "tipos": {
+            "default": true,
+            "title": "Convertir números y fechas",
+            "type": "boolean",
+            "x-title": {
+              "en": "Convert numbers and dates",
+              "es": "Convertir números y fechas"
+            }
+          },
+          "encabezado": {
+            "default": true,
+            "title": "La primera fila es el encabezado",
+            "type": "boolean",
+            "x-title": {
+              "en": "The first row is the header",
+              "es": "La primera fila es el encabezado"
+            }
+          },
+          "libro": {
+            "default": "separados",
+            "enum": [
+              "separados",
+              "uno"
+            ],
+            "title": "Varios CSV",
+            "type": "string",
+            "x-labels": {
+              "separados": {
+                "en": "One workbook per file",
+                "es": "Un libro por archivo"
+              },
+              "uno": {
+                "en": "One workbook, one sheet per file",
+                "es": "Un solo libro, una hoja por archivo"
+              }
+            },
+            "x-title": {
+              "en": "Several CSV files",
+              "es": "Varios CSV"
+            }
+          }
+        },
+        "title": "CsvXlsxOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "ods-a-xlsx",
+      "slug_en": "ods-to-xlsx",
+      "name_es": "ODS a Excel",
+      "name_en": "ODS to Excel",
+      "summary_es": "Convierte hojas de cálculo ODS de LibreOffice en Excel (.xlsx) con sus hojas, fórmulas y formatos.",
+      "summary_en": "Turn LibreOffice ODS spreadsheets into Excel (.xlsx) with their sheets, formulas and formatting.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "ods"
+      ],
+      "outputs": [
+        "xlsx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "xlsx-a-ods",
+        "xlsx-a-csv"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "xlsx-a-ods",
+      "slug_en": "xlsx-to-ods",
+      "name_es": "Excel a ODS",
+      "name_en": "Excel to ODS",
+      "summary_es": "Convierte libros de Excel (.xlsx y .xls) en hojas de cálculo ODS de LibreOffice con sus fórmulas y formatos.",
+      "summary_en": "Turn Excel workbooks (.xlsx and .xls) into LibreOffice ODS spreadsheets with their formulas and formatting.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xlsx",
+        "xls"
+      ],
+      "outputs": [
+        "ods",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "ods-a-xlsx",
+        "excel-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "excel-a-json",
+      "slug_en": "excel-to-json",
+      "name_es": "Excel a JSON",
+      "name_en": "Excel to JSON",
+      "summary_es": "Convierte hojas de Excel en JSON: una lista de objetos con la primera fila como claves, o de filas, con sus tipos.",
+      "summary_en": "Turn Excel sheets into JSON: a list of objects keyed by the first row, or of rows, keeping their types.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xlsx"
+      ],
+      "outputs": [
+        "json",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "csv-a-json",
+        "xlsx-a-csv"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "excel-a-json (D-213): forma [objetos con la primera fila como claves] | filas y hojas [la activa] | todas.",
+        "properties": {
+          "forma": {
+            "default": "objetos",
+            "enum": [
+              "objetos",
+              "filas"
+            ],
+            "title": "Forma",
+            "type": "string",
+            "x-labels": {
+              "filas": {
+                "en": "Lists of values, row by row",
+                "es": "Listas de valores, fila a fila"
+              },
+              "objetos": {
+                "en": "Objects with the first row as keys",
+                "es": "Objetos con la primera fila como claves"
+              }
+            },
+            "x-title": {
+              "en": "Shape",
+              "es": "Forma"
+            }
+          },
+          "hojas": {
+            "default": "activa",
+            "enum": [
+              "activa",
+              "todas"
+            ],
+            "title": "Hojas",
+            "type": "string",
+            "x-labels": {
+              "activa": {
+                "en": "The active sheet",
+                "es": "La hoja activa"
+              },
+              "todas": {
+                "en": "All (one object per sheet)",
+                "es": "Todas (un objeto por hoja)"
+              }
+            },
+            "x-title": {
+              "en": "Sheets",
+              "es": "Hojas"
+            }
+          }
+        },
+        "title": "ExcelJsonOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "arreglar-codificacion-csv",
+      "slug_en": "fix-csv-encoding",
+      "name_es": "Arreglar codificación de CSV",
+      "name_en": "Fix CSV encoding",
+      "summary_es": "Recupera las tildes y las eñes de un CSV: lo pasa de Windows-1252 y otras codificaciones a UTF-8 y corrige el «Ã±».",
+      "summary_en": "Recover the accents in a CSV: convert it from Windows-1252 and other encodings to UTF-8 and fix mojibake like “Ã±”.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "csv",
+        "txt"
+      ],
+      "outputs": [
+        "csv",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "csv-a-xlsx",
+        "xlsx-a-csv"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "arreglar-codificacion-csv (D-213): origen [detectar] | Windows-1252 | ISO-8859-1 | ISO-8859-15 | MS-DOS (CP850) |\nMac Roman | UTF-16 y salida [UTF-8 con BOM] | UTF-8.",
+        "properties": {
+          "origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "windows-1252",
+              "iso-8859-1",
+              "iso-8859-15",
+              "cp850",
+              "mac-roman",
+              "utf-16"
+            ],
+            "title": "Codificación de origen",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Detect",
+                "es": "Detectar"
+              },
+              "cp850": {
+                "en": "MS-DOS (CP850)",
+                "es": "MS-DOS (CP850)"
+              },
+              "iso-8859-1": {
+                "en": "ISO-8859-1 (Latin-1)",
+                "es": "ISO-8859-1 (Latin-1)"
+              },
+              "iso-8859-15": {
+                "en": "ISO-8859-15 (Latin-9)",
+                "es": "ISO-8859-15 (Latin-9)"
+              },
+              "mac-roman": {
+                "en": "Mac Roman",
+                "es": "Mac Roman"
+              },
+              "utf-16": {
+                "en": "UTF-16",
+                "es": "UTF-16"
+              },
+              "windows-1252": {
+                "en": "Windows-1252",
+                "es": "Windows-1252"
+              }
+            },
+            "x-title": {
+              "en": "Source encoding",
+              "es": "Codificación de origen"
+            }
+          },
+          "salida": {
+            "default": "utf-8-bom",
+            "enum": [
+              "utf-8-bom",
+              "utf-8"
+            ],
+            "title": "Salida",
+            "type": "string",
+            "x-labels": {
+              "utf-8": {
+                "en": "UTF-8 without BOM",
+                "es": "UTF-8 sin BOM"
+              },
+              "utf-8-bom": {
+                "en": "UTF-8 with BOM (Excel opens it correctly)",
+                "es": "UTF-8 con BOM (Excel lo abre bien)"
+              }
+            },
+            "x-title": {
+              "en": "Output",
+              "es": "Salida"
+            }
+          }
+        },
+        "title": "CodificacionCsvOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "csv-a-json",
+      "slug_en": "csv-to-json",
+      "name_es": "CSV a JSON",
+      "name_en": "CSV to JSON",
+      "summary_es": "Convierte CSV en JSON, como lista de objetos o de filas, con números y valores vacíos de verdad.",
+      "summary_en": "Turn CSV into JSON, as a list of objects or of rows, with real numbers and empty values.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "csv",
+        "txt"
+      ],
+      "outputs": [
+        "json",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "json-a-csv",
+        "excel-a-json"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "csv-a-json (D-214): separador [detectar], forma [objetos] | filas y tipos [números, verdadero/falso y vacíos como\nnull].",
+        "properties": {
+          "separador": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "coma",
+              "punto_y_coma",
+              "tabulador",
+              "barra"
+            ],
+            "title": "Separador",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Detect",
+                "es": "Detectar"
+              },
+              "barra": {
+                "en": "Pipe (|)",
+                "es": "Barra vertical (|)"
+              },
+              "coma": {
+                "en": "Comma (,)",
+                "es": "Coma (,)"
+              },
+              "punto_y_coma": {
+                "en": "Semicolon (;)",
+                "es": "Punto y coma (;)"
+              },
+              "tabulador": {
+                "en": "Tab",
+                "es": "Tabulador"
+              }
+            },
+            "x-title": {
+              "en": "Separator",
+              "es": "Separador"
+            }
+          },
+          "forma": {
+            "default": "objetos",
+            "enum": [
+              "objetos",
+              "filas"
+            ],
+            "title": "Forma",
+            "type": "string",
+            "x-labels": {
+              "filas": {
+                "en": "Lists of values, row by row",
+                "es": "Listas de valores, fila a fila"
+              },
+              "objetos": {
+                "en": "Objects with the first row as keys",
+                "es": "Objetos con la primera fila como claves"
+              }
+            },
+            "x-title": {
+              "en": "Shape",
+              "es": "Forma"
+            }
+          },
+          "tipos": {
+            "default": true,
+            "title": "Convertir números, true/false y vacíos",
+            "type": "boolean",
+            "x-title": {
+              "en": "Convert numbers, true/false and empty values",
+              "es": "Convertir números, true/false y vacíos"
+            }
+          }
+        },
+        "title": "CsvJsonOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "json-a-csv",
+      "slug_en": "json-to-csv",
+      "name_es": "JSON a CSV",
+      "name_en": "JSON to CSV",
+      "summary_es": "Convierte JSON (también JSON Lines) en CSV: aplana los objetos anidados en columnas y une las claves de todos.",
+      "summary_en": "Turn JSON (JSON Lines too) into CSV: flatten nested objects into columns and merge every object's keys.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "json"
+      ],
+      "outputs": [
+        "csv",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "csv-a-json",
+        "json-a-xml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "json-a-csv (D-214): separador [coma] | punto y coma | tabulador y codificación [UTF-8] | UTF-8 con BOM.",
+        "properties": {
+          "separador": {
+            "default": "coma",
+            "enum": [
+              "coma",
+              "punto_y_coma",
+              "tabulador"
+            ],
+            "title": "Separador",
+            "type": "string",
+            "x-labels": {
+              "coma": {
+                "en": "Comma (,)",
+                "es": "Coma (,)"
+              },
+              "punto_y_coma": {
+                "en": "Semicolon (;)",
+                "es": "Punto y coma (;)"
+              },
+              "tabulador": {
+                "en": "Tab",
+                "es": "Tabulador"
+              }
+            },
+            "x-title": {
+              "en": "Separator",
+              "es": "Separador"
+            }
+          },
+          "codificacion": {
+            "default": "utf-8",
+            "enum": [
+              "utf-8",
+              "utf-8-bom"
+            ],
+            "title": "Codificación",
+            "type": "string",
+            "x-labels": {
+              "utf-8": {
+                "en": "UTF-8",
+                "es": "UTF-8"
+              },
+              "utf-8-bom": {
+                "en": "UTF-8 with BOM (for Excel)",
+                "es": "UTF-8 con BOM (para Excel)"
+              }
+            },
+            "x-title": {
+              "en": "Encoding",
+              "es": "Codificación"
+            }
+          }
+        },
+        "title": "JsonCsvOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "json-a-xml",
+      "slug_en": "json-to-xml",
+      "name_es": "JSON a XML",
+      "name_en": "JSON to XML",
+      "summary_es": "Convierte JSON en XML bien formado, con nombres de elemento válidos y el elemento raíz que elijas.",
+      "summary_en": "Turn JSON into well-formed XML, with valid element names and the root element you choose.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "json"
+      ],
+      "outputs": [
+        "xml",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "xml-a-json",
+        "json-a-yaml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "json-a-xml (D-214): elemento raíz [root] y elemento de cada valor de una lista [item].",
+        "properties": {
+          "raiz": {
+            "default": "root",
+            "maxLength": 64,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$",
+            "title": "Elemento raíz",
+            "type": "string",
+            "x-title": {
+              "en": "Root element",
+              "es": "Elemento raíz"
+            }
+          },
+          "elemento": {
+            "default": "item",
+            "maxLength": 64,
+            "pattern": "^[A-Za-z_][A-Za-z0-9_.-]{0,63}$",
+            "title": "Elemento de cada valor de una lista",
+            "type": "string",
+            "x-title": {
+              "en": "Element for each list value",
+              "es": "Elemento de cada valor de una lista"
+            }
+          }
+        },
+        "title": "JsonXmlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "xml-a-json",
+      "slug_en": "xml-to-json",
+      "name_es": "XML a JSON",
+      "name_en": "XML to JSON",
+      "summary_es": "Convierte XML en JSON con atributos, texto y elementos repetidos como listas, sin cargar entidades externas.",
+      "summary_en": "Turn XML into JSON with attributes, text and repeated elements as lists, without loading external entities.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xml"
+      ],
+      "outputs": [
+        "json",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "json-a-xml",
+        "json-a-yaml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "xml-a-json (D-214): tipos [no: el texto sigue siendo texto] | números y true/false.",
+        "properties": {
+          "tipos": {
+            "default": false,
+            "title": "Convertir números y true/false",
+            "type": "boolean",
+            "x-title": {
+              "en": "Convert numbers and true/false",
+              "es": "Convertir números y true/false"
+            }
+          }
+        },
+        "title": "XmlJsonOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "yaml-a-json",
+      "slug_en": "yaml-to-json",
+      "name_es": "YAML a JSON",
+      "name_en": "YAML to JSON",
+      "summary_es": "Convierte YAML en JSON, también con varios documentos, sin ejecutar etiquetas ni expandir alias sin límite.",
+      "summary_en": "Turn YAML into JSON, multiple documents too, without running tags or expanding aliases without limit.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "yaml"
+      ],
+      "outputs": [
+        "json",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "json-a-yaml",
+        "xml-a-json"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "json-a-yaml",
+      "slug_en": "json-to-yaml",
+      "name_es": "JSON a YAML",
+      "name_en": "JSON to YAML",
+      "summary_es": "Convierte JSON en YAML legible, con las claves en su orden y los acentos sin escapar.",
+      "summary_en": "Turn JSON into readable YAML, with keys in their order and accented letters unescaped.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "json"
+      ],
+      "outputs": [
+        "yaml",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "yaml-a-json",
+        "json-a-xml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "ttf-a-woff2",
+      "slug_en": "ttf-to-woff2",
+      "name_es": "TTF a WOFF2",
+      "name_en": "TTF to WOFF2",
+      "summary_es": "Comprime fuentes TrueType en WOFF2 para la web: el mismo diseño en un archivo hasta un 70 % más pequeño.",
+      "summary_en": "Compress TrueType fonts into WOFF2 for the web: the same design in a file up to 70% smaller.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "ttf"
+      ],
+      "outputs": [
+        "woff2",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "otf-a-woff2",
+        "woff2-a-ttf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "otf-a-woff2",
+      "slug_en": "otf-to-woff2",
+      "name_es": "OTF a WOFF2",
+      "name_en": "OTF to WOFF2",
+      "summary_es": "Comprime fuentes OpenType en WOFF2 para usarlas en una web con @font-face, sin tocar sus contornos.",
+      "summary_en": "Compress OpenType fonts into WOFF2 to use them on a website with @font-face, without touching their outlines.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "otf"
+      ],
+      "outputs": [
+        "woff2",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "ttf-a-woff2",
+        "otf-a-ttf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "woff2-a-ttf",
+      "slug_en": "woff2-to-ttf",
+      "name_es": "WOFF2 a TTF",
+      "name_en": "WOFF2 to TTF",
+      "summary_es": "Convierte fuentes web WOFF2 en TTF que se pueden instalar en Windows, macOS y Linux o usar en programas de diseño.",
+      "summary_en": "Turn WOFF2 web fonts into TTF you can install on Windows, macOS and Linux or use in design programs.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "woff2"
+      ],
+      "outputs": [
+        "ttf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "woff-a-ttf",
+        "ttf-a-woff2"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "woff-a-ttf",
+      "slug_en": "woff-to-ttf",
+      "name_es": "WOFF a TTF",
+      "name_en": "WOFF to TTF",
+      "summary_es": "Convierte fuentes web WOFF en TTF instalables, también las que llevan contornos CFF.",
+      "summary_en": "Turn WOFF web fonts into installable TTF files, including those with CFF outlines.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "woff"
+      ],
+      "outputs": [
+        "ttf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "woff2-a-ttf",
+        "ttf-a-woff2"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "ttf-a-otf",
+      "slug_en": "ttf-to-otf",
+      "name_es": "TTF a OTF",
+      "name_en": "TTF to OTF",
+      "summary_es": "Convierte fuentes TrueType en OpenType con contornos CFF, pasando las curvas a cúbicas sin perder precisión.",
+      "summary_en": "Turn TrueType fonts into OpenType with CFF outlines, converting the curves to cubic ones without losing precision.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "ttf"
+      ],
+      "outputs": [
+        "otf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "otf-a-ttf",
+        "ttf-a-woff2"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "otf-a-ttf",
+      "slug_en": "otf-to-ttf",
+      "name_es": "OTF a TTF",
+      "name_en": "OTF to TTF",
+      "summary_es": "Convierte fuentes OpenType CFF en TrueType para programas y dispositivos que solo admiten TTF.",
+      "summary_en": "Turn OpenType CFF fonts into TrueType for programs and devices that only accept TTF.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "otf"
+      ],
+      "outputs": [
+        "ttf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "ttf-a-otf",
+        "otf-a-woff2"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "rar-a-zip",
+      "slug_en": "rar-to-zip",
+      "name_es": "RAR a ZIP",
+      "name_en": "RAR to ZIP",
+      "summary_es": "Convierte archivos RAR (también RAR 5) en ZIP, que se abre en cualquier sistema sin instalar nada.",
+      "summary_en": "Turn RAR archives (RAR 5 too) into ZIP, which opens on any system without installing anything.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "rar"
+      ],
+      "outputs": [
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "7z-a-zip",
+        "extraer-archivo-online"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "7z-a-zip",
+      "slug_en": "7z-to-zip",
+      "name_es": "7Z a ZIP",
+      "name_en": "7Z to ZIP",
+      "summary_es": "Convierte archivos 7z en ZIP con las mismas carpetas y archivos, listo para abrir en Windows, macOS o el móvil.",
+      "summary_en": "Turn 7z archives into ZIP with the same folders and files, ready to open on Windows, macOS or a phone.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "7z"
+      ],
+      "outputs": [
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "rar-a-zip",
+        "tar-a-zip"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "tar-a-zip",
+      "slug_en": "tar-to-zip",
+      "name_es": "TAR a ZIP",
+      "name_en": "TAR to ZIP",
+      "summary_es": "Convierte archivos tar, tar.gz, tgz, tar.bz2 y tar.xz en ZIP, conservando las carpetas y las fechas.",
+      "summary_en": "Turn tar, tar.gz, tgz, tar.bz2 and tar.xz archives into ZIP, keeping folders and dates.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "tar",
+        "gz",
+        "bz2",
+        "xz"
+      ],
+      "outputs": [
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "7z-a-zip",
+        "extraer-archivo-online"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "extraer-archivo-online",
+      "slug_en": "extract-archive-online",
+      "name_es": "Extraer archivo online",
+      "name_en": "Extract archive online",
+      "summary_es": "Abre archivos ZIP, RAR, 7z y tar sin instalar nada y descarga los archivos que contienen, uno a uno o todos.",
+      "summary_en": "Open ZIP, RAR, 7z and tar archives without installing anything and download the files inside, one by one or all.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "zip",
+        "rar",
+        "7z",
+        "tar",
+        "gz",
+        "bz2",
+        "xz"
+      ],
+      "outputs": [
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [
+        "contrasena"
+      ],
+      "related": [
+        "rar-a-zip",
+        "7z-a-zip"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "extraer-archivo-online (D-217): contraseña de un ZIP cifrado (los RAR y 7z cifrados no se admiten).",
+        "properties": {
+          "contrasena": {
+            "anyOf": [
+              {
+                "maxLength": 127,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Contraseña (solo ZIP cifrados)",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Password (encrypted ZIP only)",
+              "es": "Contraseña (solo ZIP cifrados)"
+            },
+            "writeOnly": true,
+            "format": "password"
+          }
+        },
+        "title": "ContrasenaArchivoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "srt-a-vtt",
+      "slug_en": "srt-to-vtt",
+      "name_es": "SRT a VTT",
+      "name_en": "SRT to VTT",
+      "summary_es": "Convierte subtítulos SRT en WebVTT para los vídeos de una web (<track>), con los tiempos y las cursivas.",
+      "summary_en": "Turn SRT subtitles into WebVTT for videos on a website (<track>), keeping timings and italics.",
+      "category": "video",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "srt"
+      ],
+      "outputs": [
+        "vtt",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "vtt-a-srt",
+        "traducir-subtitulos"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "srt-a-vtt, vtt-a-srt y ass-a-srt (D-217): etiquetas de estilo [conservar negrita, cursiva, subrayado y tachado] |\nquitarlas.",
+        "properties": {
+          "etiquetas": {
+            "default": "conservar",
+            "enum": [
+              "conservar",
+              "quitar"
+            ],
+            "title": "Estilo del texto",
+            "type": "string",
+            "x-labels": {
+              "conservar": {
+                "en": "Keep bold, italics, underline and strikethrough",
+                "es": "Conservar negrita, cursiva, subrayado y tachado"
+              },
+              "quitar": {
+                "en": "Plain text only",
+                "es": "Solo texto"
+              }
+            },
+            "x-title": {
+              "en": "Text style",
+              "es": "Estilo del texto"
+            }
+          }
+        },
+        "title": "SubtitulosOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "vtt-a-srt",
+      "slug_en": "vtt-to-srt",
+      "name_es": "VTT a SRT",
+      "name_en": "VTT to SRT",
+      "summary_es": "Convierte subtítulos WebVTT en SRT, el formato que leen VLC, los televisores y los editores de vídeo.",
+      "summary_en": "Turn WebVTT subtitles into SRT, the format VLC, TVs and video editors read.",
+      "category": "video",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "vtt"
+      ],
+      "outputs": [
+        "srt",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "srt-a-vtt",
+        "ass-a-srt"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "srt-a-vtt, vtt-a-srt y ass-a-srt (D-217): etiquetas de estilo [conservar negrita, cursiva, subrayado y tachado] |\nquitarlas.",
+        "properties": {
+          "etiquetas": {
+            "default": "conservar",
+            "enum": [
+              "conservar",
+              "quitar"
+            ],
+            "title": "Estilo del texto",
+            "type": "string",
+            "x-labels": {
+              "conservar": {
+                "en": "Keep bold, italics, underline and strikethrough",
+                "es": "Conservar negrita, cursiva, subrayado y tachado"
+              },
+              "quitar": {
+                "en": "Plain text only",
+                "es": "Solo texto"
+              }
+            },
+            "x-title": {
+              "en": "Text style",
+              "es": "Estilo del texto"
+            }
+          }
+        },
+        "title": "SubtitulosOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "ass-a-srt",
+      "slug_en": "ass-to-srt",
+      "name_es": "ASS a SRT",
+      "name_en": "ASS to SRT",
+      "summary_es": "Convierte subtítulos ASS y SSA (Aegisub, anime) en SRT, ordenados por tiempo y con negrita y cursiva.",
+      "summary_en": "Turn ASS and SSA subtitles (Aegisub, anime) into SRT, sorted by time and with bold and italics.",
+      "category": "video",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "ass"
+      ],
+      "outputs": [
+        "srt",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "vtt-a-srt",
+        "srt-a-vtt"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "srt-a-vtt, vtt-a-srt y ass-a-srt (D-217): etiquetas de estilo [conservar negrita, cursiva, subrayado y tachado] |\nquitarlas.",
+        "properties": {
+          "etiquetas": {
+            "default": "conservar",
+            "enum": [
+              "conservar",
+              "quitar"
+            ],
+            "title": "Estilo del texto",
+            "type": "string",
+            "x-labels": {
+              "conservar": {
+                "en": "Keep bold, italics, underline and strikethrough",
+                "es": "Conservar negrita, cursiva, subrayado y tachado"
+              },
+              "quitar": {
+                "en": "Plain text only",
+                "es": "Solo texto"
+              }
+            },
+            "x-title": {
+              "en": "Text style",
+              "es": "Estilo del texto"
+            }
+          }
+        },
+        "title": "SubtitulosOptions",
+        "type": "object"
+      }
     }
   ]
 }

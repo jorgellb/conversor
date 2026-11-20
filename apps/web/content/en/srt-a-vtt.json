@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SRT to VTT turns SubRip subtitles (.srt) into WebVTT (.vtt), the format the HTML5 <track> element requires to show subtitles on a website's videos, and the one used by YouTube, Vimeo, most web players and many online course platforms.",
+    "Each subtitle keeps its timings, to the millisecond, and its line breaks. Italics, bold, underline and strikethrough from the SRT are written with WebVTT tags, and special characters such as “&” or “<” are escaped as the format requires, so the browser does not mistake them for tags. If you prefer, you can drop the styling and keep plain text.",
+    "The conversion runs on our server: subtitles are read with pysubs2, a widely used free library for this job, and the new file is written in UTF-8 and sorted by time. We detect the original's encoding, so old subtitles in Windows-1252, with all their accents, come out right. You can convert up to 20 files at once and download them together in a ZIP.",
+    "On the page, add the file to the video with <track kind=\"subtitles\" src=\"subtitles.vtt\" srclang=\"en\" label=\"English\">. The server has to deliver the .vtt with the text/vtt type; most already do."
+  ],
+  "steps": [
+    "Upload one or more .srt files.",
+    "Choose whether to keep the text styling.",
+    "Download the .vtt."
+  ],
+  "faq": [
+    {
+      "q": "Can I adjust the timings?",
+      "a": "This tool copies the timings as they are. To translate subtitles into another language, use Translate subtitles."
+    },
+    {
+      "q": "Why did my SRT have colours and now it doesn't?",
+      "a": "The <font color> tags some SRT files use are not standard and are not kept. In WebVTT, colours are set with CSS on the page."
+    },
+    {
+      "q": "And the other way?",
+      "a": "VTT to SRT turns WebVTT into SRT for desktop players and video editors."
+    }
+  ]
+}

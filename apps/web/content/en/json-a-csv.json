@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JSON to CSV turns JSON data into a CSV table that opens in Excel, LibreOffice or Google Sheets and imports into almost any program. Use it to review an API response, a document database dump or an application's export file in a spreadsheet.",
+    "We accept a list of objects, a list of lists, a single object and also JSON Lines (one object per line, common in logs and large exports). If the file is an object holding a single list of records, such as {\"total\": 2, \"data\": [...]}, we use that list and tell you in a note.",
+    "The columns are the union of every object's keys, in the order they appear, so no field is lost even if it only exists in some records. Nested objects are flattened with dots (user.name, user.geo.lat) and lists are stored as JSON inside their cell. Null values are left empty and logical values written as true and false. Text starting with =, +, - or @ gets an apostrophe in front, so Excel does not run it as a formula when opening the CSV.",
+    "You choose the separator (comma, semicolon or tab) and the encoding: UTF-8, or UTF-8 with BOM so Excel shows accents correctly when you double-click it. We read the JSON on our server with size and depth limits, up to 25 MB per file and 20 files per batch."
+  ],
+  "steps": [
+    "Upload one or more .json files.",
+    "Choose the separator and the encoding.",
+    "Download the CSV."
+  ],
+  "faq": [
+    {
+      "q": "What does it do with objects inside objects?",
+      "a": "It turns them into columns named with the full path separated by dots: {\"user\": {\"name\": \"Ana\"}} gives a user.name column with the value Ana."
+    },
+    {
+      "q": "And with lists?",
+      "a": "A list inside a record is written in its cell as JSON, for example [\"a\", \"b\"], so no columns or rows are invented."
+    },
+    {
+      "q": "Is there a nesting limit?",
+      "a": "Yes, 200 levels, 20 million cells and 200 MB of output. Deeper or larger JSON is rejected with a clear message instead of stalling the conversion."
+    }
+  ]
+}

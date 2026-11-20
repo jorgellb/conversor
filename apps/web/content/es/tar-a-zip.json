@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TAR a ZIP convierte archivos tar, el formato habitual en Linux y en las descargas de código fuente, en ZIP. Admite el tar sin comprimir y también comprimido con gzip (.tar.gz o .tgz), bzip2 (.tar.bz2) o xz (.tar.xz), que son los que suelen descargarse de servidores, copias de seguridad y repositorios.",
+    "El ZIP conserva la estructura de carpetas, los nombres y la fecha de modificación de cada archivo, y se abre en Windows y macOS sin instalar nada. Los permisos de Unix y los propietarios no existen en ZIP y no se copian.",
+    "Por seguridad, ninguna ruta puede salirse de la carpeta del archivo: las que llevan «..», empiezan en la raíz o indican una unidad de Windows se guardan dentro, y los enlaces simbólicos, los enlaces duros y los archivos de dispositivo no se copian. También limitamos el número de entradas (10 000) y el tamaño descomprimido, para que un archivo preparado para ocupar terabytes no bloquee nada.",
+    "La lectura la hace libarchive en nuestro servidor. Puedes convertir hasta 20 archivos a la vez; con varios, descargas cada ZIP y otro ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .tar, .tar.gz, .tgz, .tar.bz2 o .tar.xz.",
+    "Espera a la conversión.",
+    "Descarga el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Sirve para un .gz que no es un tar?",
+      "a": "No: un .gz con un solo archivo comprimido no tiene carpetas ni nombres que pasar a ZIP. Esta herramienta espera un tar comprimido."
+    },
+    {
+      "q": "¿Por qué hay enlaces que no aparecen?",
+      "a": "Los tar de Linux suelen llevar enlaces simbólicos, que en ZIP no existen y podrían apuntar fuera de la carpeta. No se copian, y la nota del resultado dice cuántos había."
+    },
+    {
+      "q": "¿Se conservan los permisos de ejecución?",
+      "a": "No. ZIP no guarda los permisos de Unix de forma fiable; si los necesitas, mantén el archivo en tar."
+    }
+  ]
+}

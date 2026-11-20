@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extraer archivo online abre archivos comprimidos ZIP, RAR, 7z y tar (también .tar.gz, .tgz, .tar.bz2 y .tar.xz) sin instalar ningún programa, y te deja descargar los archivos que contienen. Es útil en un ordenador ajeno, en el trabajo sin permisos para instalar nada, en un Chromebook o en el móvil.",
+    "Si el comprimido tiene hasta 50 archivos, puedes descargarlos uno a uno; además recibes un ZIP con todo, con sus carpetas. Si tiene más, descargas el ZIP completo. Cuando dos archivos se llaman igual en carpetas distintas, el nombre lleva delante la carpeta para que no se confundan.",
+    "Por seguridad, ninguna ruta puede salirse de la carpeta del archivo: las que llevan «..», empiezan en la raíz o indican una unidad de Windows se guardan dentro, y los enlaces simbólicos, los enlaces duros y los archivos de dispositivo no se copian. También limitamos el número de entradas (10 000) y el tamaño descomprimido, para que un archivo preparado para ocupar terabytes no bloquee nada.",
+    "Los ZIP cifrados se pueden abrir escribiendo su contraseña en las opciones avanzadas; viaja cifrada y se borra al terminar. Los RAR y 7z cifrados no se admiten. La extracción la hace libarchive en nuestro servidor."
+  ],
+  "steps": [
+    "Sube el archivo comprimido.",
+    "Si es un ZIP con contraseña, escríbela en las opciones avanzadas.",
+    "Descarga los archivos que quieras o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Es seguro abrir aquí un archivo de origen desconocido?",
+      "a": "Los archivos solo se descomprimen, nunca se ejecutan, y se borran automáticamente al caducar. Aun así, ten cuidado al abrir en tu equipo un programa o un documento con macros que no esperabas."
+    },
+    {
+      "q": "¿Puedo extraer solo una carpeta?",
+      "a": "Descarga el ZIP con todo y quédate con esa carpeta, o descarga uno a uno los archivos que te interesen si son 50 o menos."
+    },
+    {
+      "q": "¿Por qué no se abre mi RAR con contraseña?",
+      "a": "Porque la biblioteca que usamos no descifra RAR ni 7z. Descomprímelo en tu equipo con WinRAR o 7-Zip."
+    }
+  ]
+}

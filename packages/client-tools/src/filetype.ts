@@ -16,15 +16,17 @@ const ASF = [0x30, 0x26, 0xb2, 0x75, 0x8e, 0x66, 0xcf, 0x11];
 const EBML = [0x1a, 0x45, 0xdf, 0xa3];
 
 export const OLE2_FAMILY = new Set(["doc", "xls", "ppt", "pps", "msg", "pub", "vsd"]);
-export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "srt", "vtt", "ass", "eml", "fb2", "dxf"]);
+export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf"]);
 const RAW_TIFF = new Set(["cr2", "nef", "arw", "dng"]);
 // Texto en UTF-16 o UTF-32 con BOM: solo para las herramientas que lo leen (los subtítulos, D-179). Va antes de las
-// reglas de MP3 y AAC, porque el BOM FF FE parece una palabra de sincronía MPEG.
-const WIDE_TEXT = new Set(["srt", "vtt", "ass"]);
+// reglas de MP3 y AAC, porque el BOM FF FE parece una palabra de sincronía MPEG. CSV y TXT también (F6-B, D-213 y
+// D-218): el «Texto Unicode» de Excel es un .txt en UTF-16 separado por tabuladores.
+const WIDE_TEXT = new Set(["srt", "vtt", "ass", "csv", "txt"]);
 const WIDE_BOMS: [number[], number, boolean][] = [
   [[0xff, 0xfe, 0x00, 0x00], 4, true], [[0x00, 0x00, 0xfe, 0xff], 4, false], [[0xff, 0xfe], 2, true], [[0xfe, 0xff], 2, false],
 ];
-const EXT_ALIASES: Record<string, string> = { jpeg: "jpg", tif: "tiff", htm: "html", markdown: "md", oga: "ogg", aif: "aiff", ssa: "ass" };
+const EXT_ALIASES: Record<string, string> = { jpeg: "jpg", tif: "tiff", htm: "html", markdown: "md", oga: "ogg", aif: "aiff", ssa: "ass", yml: "yaml",
+  tgz: "gz", tbz2: "bz2", tbz: "bz2", txz: "xz" };
 const ODF: Record<string, string> = {
   "application/vnd.oasis.opendocument.text": "odt",
   "application/vnd.oasis.opendocument.spreadsheet": "ods",
@@ -227,6 +229,12 @@ export function detectHead(head: Uint8Array, declaredExt = ""): Detected | null 
   const ftyp = ftypKind(head);
   if (ftyp) return { ext: ftyp, family: ftyp === "heic" || ftyp === "avif" ? "image" : "media" };
   if (startsWith(head, "OggS")) return { ext: indexOf(head, "OpusHead") >= 0 ? "opus" : "ogg", family: "audio" };
+  // Fuentes (F6-F): la extensión declarada manda entre ttf y otf (un .otf puede llevar contornos TrueType).
+  const tables = head.length >= 12 ? (head[4] << 8) | head[5] : 0;
+  if ((startsWith(head, [0x00, 0x01, 0x00, 0x00]) || startsWith(head, "true") || startsWith(head, "OTTO")) && tables > 0 && tables < 100) {
+    return { ext: declared === "ttf" || declared === "otf" ? declared : startsWith(head, "OTTO") ? "otf" : "ttf", family: "font" };
+  }
+  if (startsWith(head, "wOFF") || startsWith(head, "wOF2")) return { ext: startsWith(head, "wOFF") ? "woff" : "woff2", family: "font" };
   if (startsWith(head, "fLaC")) return { ext: "flac", family: "audio" };
   if (startsWith(head, "#!AMR")) return { ext: "amr", family: "audio" };
   if (startsWith(head, "FORM") && ["AIFF", "AIFC"].includes(ascii(head, 8, 12))) return { ext: "aiff", family: "audio" };
@@ -237,6 +245,12 @@ export function detectHead(head: Uint8Array, declaredExt = ""): Detected | null 
   if (startsWith(head, "ID3") || (head.length > 1 && head[0] === 0xff && (head[1] & 0xe0) === 0xe0 && head[1] !== 0xff)) return { ext: "mp3", family: "audio" };
   if (startsWith(head, [0x50, 0x4b, 0x03, 0x04])) return { ext: "zip", family: "zip" };
   if (startsWith(head, [0x52, 0x61, 0x72, 0x21, 0x1a, 0x07])) return { ext: "rar", family: "archive" };
+  // Comprimidos de F6-E (D-217): 7z, gzip, bzip2, xz y tar (la marca «ustar» en el byte 257).
+  if (startsWith(head, [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c])) return { ext: "7z", family: "archive" };
+  if (startsWith(head, [0x1f, 0x8b, 0x08])) return { ext: "gz", family: "archive" };
+  if (startsWith(head, "BZh") && head[3] >= 0x30 && head[3] <= 0x39 && (ascii(head, 4, 10) === "1AY&SY" || startsWith(head.subarray(4), [0x17, 0x72, 0x45, 0x38, 0x50, 0x90]))) return { ext: "bz2", family: "archive" };
+  if (startsWith(head, [0xfd, 0x37, 0x7a, 0x58, 0x5a, 0x00])) return { ext: "xz", family: "archive" };
+  if (head.length > 262 && ascii(head, 257, 262) === "ustar") return { ext: "tar", family: "archive" };
   if (startsWith(head, "AT&TFORM")) return { ext: "djvu", family: "djvu" };
   if (ascii(head, 60, 68) === "BOOKMOBI") return { ext: "mobi", family: "ebook" };
   if (startsWith(head, "AutoCAD Binary DXF")) return { ext: "dxf", family: "cad" };

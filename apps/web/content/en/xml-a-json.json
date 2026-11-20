@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "XML to JSON turns XML documents into JSON that is easy to use from JavaScript, Python or any API. It is useful for working with e-invoices, catalogues, RSS feeds, business software exports or SOAP responses without writing an XML parser.",
+    "The conversion follows a well-known convention: each element is a key, attributes get an “@” prefix (@schemeID), the text of an element that also has attributes or children goes in “#text” and repeated elements are grouped into a list. An empty element is null. Namespaces keep their prefix, so a cbc:ID element of a UBL invoice is still called cbc:ID.",
+    "For safety, the XML is read without loading anything external: DTDs and external entities, which allow reading server files (XXE attacks), and chained entities that can exhaust memory are rejected with a message. There are also limits on size, number of elements and depth.",
+    "By default every value stays as text, because XML has no types and a code such as 00123 must not lose its zeros. If you prefer, you can turn clear numbers and true or false into real numbers and logical values. The JSON is indented and in UTF-8, for files of up to 25 MB and 20 per batch."
+  ],
+  "steps": [
+    "Upload one or more .xml files.",
+    "Say whether to convert numbers and logical values.",
+    "Download the JSON."
+  ],
+  "faq": [
+    {
+      "q": "Is the order kept when text is mixed with elements?",
+      "a": "Not entirely: in a paragraph such as <p>Hello <b>world</b></p>, the loose text goes to “#text” and the b element to its key. For formatted text documents another format, such as HTML, is better."
+    },
+    {
+      "q": "Why does my XML with a DOCTYPE fail?",
+      "a": "Because it declares entities or an external DTD, which we do not load for safety. Remove the DOCTYPE declaration and references to custom entities before converting."
+    },
+    {
+      "q": "Does it work with Facturae or UBL invoices?",
+      "a": "Yes, they are converted like any XML. To check that an invoice is valid, use Validate e-invoice."
+    }
+  ]
+}

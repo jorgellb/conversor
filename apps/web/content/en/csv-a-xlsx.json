@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV to Excel turns CSV files into .xlsx workbooks that open correctly the first time: with the right accents, each value in its column, numbers as numbers and dates as dates. It avoids the classic problem of double-clicking a CSV and finding everything in column A or full of strange characters.",
+    "We detect the encoding (UTF-8, Excel's UTF-16, Windows-1252 and others), the separator (comma, semicolon, tab or pipe) and whether decimals use a point or a comma, though you can set them by hand; if a figure such as 1,500 could be fifteen hundred or one and a half and nothing settles it, it stays as text. Figures such as 1,234.56 or 1.234,56 become numbers you can calculate with, and ISO dates (2026-03-01, with a time too) become Excel dates.",
+    "Anything that could lose information stays as text: codes with leading zeros (postcodes, references), numbers with more than 15 digits, such as a card number, which Excel would round, and phone numbers with a + prefix. Values starting with “=”, “+” or “@” are never turned into formulas, so a malicious CSV cannot run anything when the workbook is opened.",
+    "The first row is made bold, stays frozen when you scroll and gets filters, and column widths fit the content. With several CSV files you can get one workbook per file or a single one with a sheet per file. Everything runs on our server, up to 1,048,576 rows per sheet, Excel's maximum."
+  ],
+  "steps": [
+    "Upload one or more CSV files.",
+    "Check the separator, the decimal mark and whether the first row is the header.",
+    "Download the Excel workbook."
+  ],
+  "faq": [
+    {
+      "q": "Why does the date 01/03/2026 stay as text?",
+      "a": "Because there is no way to know whether it is 1 March or 3 January. Only unambiguous year-month-day dates are converted; the others stay as they were and you can convert them in Excel with “Text to Columns”."
+    },
+    {
+      "q": "What if the CSV has strange characters such as “Ã±”?",
+      "a": "That text was already saved wrongly earlier. Run it through Fix CSV encoding first, which recovers the accents, and then convert it."
+    },
+    {
+      "q": "Can I convert nothing and keep everything as text?",
+      "a": "Yes: untick “Convert numbers and dates” and each cell keeps the exact text of the CSV."
+    }
+  ]
+}

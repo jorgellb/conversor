@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "WOFF to TTF turns WOFF web fonts, the first version of the web font format, into TrueType files that install on any operating system. Many websites and older font packages still distribute their fonts as .woff, and with this tool you can use them in your documents and programs.",
+    "A WOFF is the original font compressed with zlib plus some added metadata, so decompressing it recovers it whole: glyphs, metrics, kerning, OpenType features and hinting. If the font carries CFF outlines, we turn them into TrueType with a curve approximation of at most one grid unit, and note it.",
+    "The font keeps its family and style names, so it installs alongside the other variants of the same family without conflicts. Variable fonts stay variable.",
+    "The conversion runs on our server with fontTools, and each TTF is reopened to check it is valid. Up to 20 fonts per batch, with a ZIP if you upload several."
+  ],
+  "steps": [
+    "Upload one or more .woff files.",
+    "Wait for the conversion.",
+    "Download each .ttf or the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "What is the difference between WOFF and WOFF2?",
+      "a": "WOFF2 compresses much better, thanks to Brotli and to transforming the font's tables. To use a font on the web today, WOFF2 is the best choice: TTF to WOFF2 creates it."
+    },
+    {
+      "q": "Does it look the same as on the web?",
+      "a": "Yes, it is the same font uncompressed. Only if it had CFF outlines is there an approximation, of at most a thousandth of the letter size."
+    },
+    {
+      "q": "Can I convert any font?",
+      "a": "Technically yes, but turning it into TTF to install it does not change its licence: if the licence does not allow installing it on your computer, the conversion does not give you that right. Fonts under a free licence, such as the SIL Open Font License used by Google Fonts, do allow it."
+    }
+  ]
+}

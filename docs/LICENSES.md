@@ -71,6 +71,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | Reglas EN 16931 de la Comisión Europea (Schematron de `ConnectingEurope/eInvoicing-EN16931`, dentro de la configuración de XRechnung) | EUPL-1.2 | Reglas de negocio de EN 16931; se redistribuyen sin cambios en la imagen worker-utils |
 | factur-x 7.9 (extra `utils`) y sus dependencias python-stdnum, iso4217, pypdf y requests (con urllib3, idna, charset-normalizer y certifi) | BSD-3-Clause; LGPL-2.1+; dominio público; BSD-3-Clause; Apache-2.0 (MIT, BSD-3-Clause, MIT y MPL-2.0) | XML de Factur-X en PDF y XSD y Schematron oficiales de Factur-X 1.09 (artefactos de FNFE-MPE y FeRD que redistribuye factur-x; se redistribuyen sin cambios dentro de la imagen worker-utils publicada, que es el uso previsto por la especificación) |
 | OpenJDK 17 JRE headless (Debian) en la imagen worker-utils | GPL-2.0 con Classpath Exception | Ejecuta KoSIT como programa aparte |
+| pandoc 3.13 (binario estático oficial de jgm/pandoc, `infra/pandoc/fetch.sh` con SHA-256) | GPL-2.0-or-later | Programa externo en `workerutils` con `run_engine` y siempre `--sandbox`: docx-a-odt, odt-a-docx, docx-a-markdown, markdown-a-docx, docx-a-html y html-a-docx (F6-A, D-212); nunca se enlaza ni se distribuye fuera de las imágenes privadas (3 y 11) |
 | XSD de Facturae 3.2, 3.2.1 y 3.2.2 (facturae.gob.es) y XSD de XMLDSig (W3C), en `infra/facturae` | Reutilización de la información del sector público (Ley 37/2007); W3C Software and Document License | Validación de Facturae |
 | Noto Sans Regular 2.004 (Google, `packages/tools/tools/sign/fonts`, con su SHA-256) | SIL OFL 1.1 (texto en `OFL-NotoSans.txt`) | Texto de los sellos visibles de firmar-pdf y solicitar-firmas; sustituye a DejaVu, con la que pyHanko 0.38 calculaba mal las anchuras (D-202) |
 | certomancer 0.16.0 (extra `dev` y la imagen `certomancer` de desarrollo; nunca en producción) | MIT | PKI de pruebas: CA, TSA, OCSP y CRL (dobles de 0.1) |
@@ -81,7 +82,12 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | Smokescreen v0.1.0 (compilado desde su etiqueta con `golang:1.25.14-bookworm`, D-155) | MIT (el binario lleva `LICENSE.txt`; sus dependencias en `vendor/` son MIT, BSD y Apache-2.0) | Proxies de salida `egressweb` y `egressai` |
 | markdown-it-py, mdit-py-plugins | MIT | markdown-a-pdf |
 | Pygments | BSD-2-Clause | Código resaltado en markdown-a-pdf |
-| charset-normalizer | MIT | Detección de la codificación en txt-a-pdf y markdown-a-pdf |
+| charset-normalizer | MIT | Detección de la codificación en txt-a-pdf y markdown-a-pdf, y de los CSV de F6-B en `workerutils` (D-213) |
+| openpyxl 3.1.5 (y et-xmlfile) en el extra `utils` | MIT | xlsx-a-csv, csv-a-xlsx y excel-a-json (F6-B1, D-213) |
+| fontTools 4.68.0 y brotli 1.2.1 en el extra `utils` | MIT; MIT | Conversiones de fuentes TTF, OTF, WOFF y WOFF2 (F6-F, D-215) |
+| libarchive-c 5.3 y libarchive13 (Debian) en `workerutils`; pysubs2 1.9.1 en el extra `utils` | CC0-1.0 y BSD-2-Clause; MIT | Comprimidos RAR, 7z y tar y subtítulos SRT, WebVTT y ASS (F6-E, D-217); sin unrar ni p7zip (11) |
+| PyYAML 6.0.3 (con libyaml) y defusedxml 0.7.1 | MIT; PSF-2.0 | yaml-a-json, json-a-yaml y xml-a-json (F6-B2, D-214): `CSafeLoader` y XML sin entidades ni DTD externos |
+| LibreOffice Calc (`libreoffice-calc-nogui`, Debian) en `workeroffice` | MPL-2.0 | ods-a-xlsx y xlsx-a-ods como programa externo (F6-B1) |
 | FFmpeg (compilación LGPL de BtbN, n8.1.3-27 del autobuild 2026-10-31, D-137) | LGPL-2.1 o posterior | Programa externo en `workerav`; SHA-256 fijado y la imagen falla si detecta `--enable-gpl` |
 | tusd | MIT | Servicio de subidas |
 | Caddy | Apache-2.0 | Descargas |

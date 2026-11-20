@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TAR to ZIP turns tar archives, the usual format on Linux and for source code downloads, into ZIP. It accepts plain tar and also tar compressed with gzip (.tar.gz or .tgz), bzip2 (.tar.bz2) or xz (.tar.xz), the kinds usually downloaded from servers, backups and repositories.",
+    "The ZIP keeps the folder structure, names and each file's modification date, and opens on Windows and macOS without installing anything. Unix permissions and owners do not exist in ZIP and are not copied.",
+    "For safety, no path can escape the archive's folder: paths with “..”, starting at the root or naming a Windows drive are stored inside, and symbolic links, hard links and device files are not copied. We also limit the number of entries (10,000) and the uncompressed size, so an archive crafted to fill terabytes blocks nothing.",
+    "Reading is done by libarchive on our server. You can convert up to 20 archives at once; with several, you download each ZIP and another ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more .tar, .tar.gz, .tgz, .tar.bz2 or .tar.xz files.",
+    "Wait for the conversion.",
+    "Download the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Does it work for a .gz that is not a tar?",
+      "a": "No: a .gz holding a single compressed file has no folders or names to carry into a ZIP. This tool expects a compressed tar."
+    },
+    {
+      "q": "Why are some links missing?",
+      "a": "Linux tar files often carry symbolic links, which do not exist in ZIP and could point outside the folder. They are not copied, and the result's note says how many there were."
+    },
+    {
+      "q": "Are execute permissions kept?",
+      "a": "No. ZIP does not store Unix permissions reliably; if you need them, keep the archive as tar."
+    }
+  ]
+}

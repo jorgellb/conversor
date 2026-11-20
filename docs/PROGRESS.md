@@ -566,9 +566,34 @@ Imagen de la firma dentro de la apariencia PAdES (sello y certificado propio) y 
 (D-210); revisiones de F4-E2 y F4-E3 corregidas (D-209 y D-211). F4 queda cerrada en este equipo; la e2e de servidor de
 solicitar-firmas con Mailpit y SoftHSM2 se ejecutará en la CI.
 
+## F6-A (documentos con pandoc)
+
+docx-a-odt, odt-a-docx, docx-a-markdown, markdown-a-docx, docx-a-html y html-a-docx en `workerutils` con pandoc 3.13
+estático y siempre `--sandbox` (D-212). Las imágenes de un Markdown o un HTML solo entran si van dentro del ZIP: pasan por el
+árbol JSON de pandoc como `data:`; `/proc/self/environ`, `file://`, la web y `..` nunca se leen (16.4, en
+`tests/test_documentos_pandoc.py`). Contenido 8.2 en es y en.
+
+## F6-B (hojas de cálculo y datos)
+
+xlsx-a-csv, csv-a-xlsx, excel-a-json y arreglar-codificacion-csv con openpyxl y charset-normalizer, ods-a-xlsx y xlsx-a-ods con
+LibreOffice Calc (D-213), y csv-a-json, json-a-csv, json-a-xml, xml-a-json, yaml-a-json y json-a-yaml (D-214). 16.5: la
+codificación de CSV se recupera desde seis codificaciones y del «Ã±» simple y doble; 16.4: XXE, entidades en cadena, etiquetas de
+Python en YAML y la bomba de alias, en `tests/test_datos.py`. La conversión de ODS con Calc real se comprueba en la CI.
+
+## F6-F (fuentes)
+
+ttf-a-woff2, otf-a-woff2, woff2-a-ttf, woff-a-ttf, ttf-a-otf y otf-a-ttf con fontTools y brotli (D-215): TTF a OTF exacto,
+OTF a TTF con cu2qu dentro de 1 unidad, WOFF2 sin pérdida y fuentes variables solo a WOFF2, en `tests/test_fuentes.py` con Noto
+Sans real.
+
+## F6-E (comprimidos y subtítulos)
+
+rar-a-zip, 7z-a-zip, tar-a-zip y extraer-archivo-online con libarchive (rutas con «../», enlaces y dispositivos nunca salen de
+la carpeta: 16.4), y srt-a-vtt, vtt-a-srt y ass-a-srt con pysubs2 (D-217), en `tests/test_comprimidos_subtitulos.py`.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; siguen F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E y F6-F hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODS to Excel turns LibreOffice Calc, Collabora or OpenOffice spreadsheets into Microsoft Excel workbooks (.xlsx). It is what you need when you are asked for a spreadsheet in Excel, when a platform only accepts .xlsx or when you share a budget or a rota with someone who works with Office.",
+    "The conversion is done by LibreOffice Calc, the same program that creates ODS files, so sheets keep their names, and formulas (which keep calculating in Excel), number and date formats, colours, borders, merged cells, column widths, filters and most charts are preserved.",
+    "Some functions exist in only one of the two programs; LibreOffice translates them when there is an equivalent and, if not, Excel shows an error in that cell. Pivot tables and very elaborate charts may change appearance: check them after converting. Macros are not run during the conversion.",
+    "LibreOffice runs on our server with no internet access and a fresh profile for every job. You can upload up to 20 spreadsheets at once and, if there are several, also download a ZIP with all the Excel workbooks."
+  ],
+  "steps": [
+    "Upload one or more .ods files.",
+    "Wait while LibreOffice converts them.",
+    "Download each .xlsx or the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Do formulas keep working?",
+      "a": "Yes. They are saved as Excel formulas and recalculated when the workbook is opened. Only functions that do not exist in Excel show an error."
+    },
+    {
+      "q": "Are hidden sheets kept?",
+      "a": "All sheets are kept, hidden ones too, with their order and names. Check sheet protection after converting, because Excel and LibreOffice do not store it the same way."
+    },
+    {
+      "q": "Need the opposite direction?",
+      "a": "Excel to ODS turns .xlsx and .xls workbooks into ODS spreadsheets."
+    }
+  ]
+}

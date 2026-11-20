@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DOCX a Markdown convierte un documento de Word en texto Markdown limpio y legible. Es la forma rápida de llevar un informe, unos apuntes o una documentación escrita en Word a un repositorio de GitHub o GitLab, a una wiki, a un generador de sitios estáticos como Hugo, Jekyll o MkDocs, o a una aplicación de notas como Obsidian.",
+    "Los títulos pasan a almohadillas (#, ##…), las negritas y cursivas a asteriscos, las listas a guiones o números, los enlaces a [texto](dirección) y las tablas sencillas a tablas con barras. Las tablas con celdas combinadas, que el Markdown de GitHub y CommonMark no saben expresar, se escriben como HTML; en el de pandoc, como tabla de cuadrícula. Las fórmulas de Word salen en notación LaTeX y las notas al pie se mantienen como notas.",
+    "Puedes elegir el sabor: el de GitHub (GFM), que es el más extendido; CommonMark, el estándar estricto; o el Markdown de pandoc, que admite más elementos, como definiciones y títulos de tabla. Las líneas no se cortan a un ancho fijo, así que cada párrafo queda en una sola línea y los cambios se ven mejor en git.",
+    "Las imágenes pueden ir en una carpeta media/ junto al .md, dentro de un ZIP; dentro del propio Markdown como datos, en un solo archivo; o quedarse fuera con su texto alternativo. La conversión se hace con pandoc en nuestro servidor, en modo aislado, con hasta 20 documentos por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .docx.",
+    "Elige el sabor de Markdown y qué hacer con las imágenes.",
+    "Descarga el .md, o el ZIP con el .md y sus imágenes."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué recibo un ZIP en lugar de un .md?",
+      "a": "Porque el documento tiene imágenes y elegiste guardarlas en una carpeta. El ZIP contiene el .md y la carpeta media/ con las imágenes, enlazadas con rutas relativas. Si prefieres un único archivo, elige «Dentro del Markdown» o «Sin imágenes»."
+    },
+    {
+      "q": "¿Las imágenes dentro del Markdown se ven en GitHub?",
+      "a": "GitHub no muestra las imágenes escritas como datos (data:). Para GitHub, lo mejor es la opción de la carpeta: sube el .md y la carpeta media/ al repositorio."
+    },
+    {
+      "q": "¿Puedo volver a Word después?",
+      "a": "Sí, con Markdown a DOCX. El ida y vuelta conserva la estructura, aunque no los estilos personalizados del documento original."
+    }
+  ]
+}

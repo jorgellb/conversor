@@ -8,6 +8,7 @@
         "http://127.0.0.1:3100/es/resumir-pdf",
         "http://127.0.0.1:3100/es/word-a-pdf-accesible",
         "http://127.0.0.1:3100/es/ogg-a-mp3",
+        "http://127.0.0.1:3100/es/docx-a-markdown",
         "http://127.0.0.1:3100/en/compress-pdf"
       ],
       "numberOfRuns": 3,

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extract archive online opens ZIP, RAR, 7z and tar archives (also .tar.gz, .tgz, .tar.bz2 and .tar.xz) without installing any program, and lets you download the files inside. It is useful on someone else's computer, at work without permission to install software, on a Chromebook or on a phone.",
+    "If the archive holds up to 50 files, you can download them one by one; you also get a ZIP with everything, folders included. If it holds more, you download the full ZIP. When two files share a name in different folders, the folder is put in front of the name so they are not confused.",
+    "For safety, no path can escape the archive's folder: paths with “..”, starting at the root or naming a Windows drive are stored inside, and symbolic links, hard links and device files are not copied. We also limit the number of entries (10,000) and the uncompressed size, so an archive crafted to fill terabytes blocks nothing.",
+    "Encrypted ZIP files can be opened by entering their password in the advanced options; it travels encrypted and is deleted when the job ends. Encrypted RAR and 7z archives are not supported. Extraction is done by libarchive on our server."
+  ],
+  "steps": [
+    "Upload the archive.",
+    "If it is a password-protected ZIP, enter the password in the advanced options.",
+    "Download the files you want or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Is it safe to open an archive of unknown origin here?",
+      "a": "Files are only extracted, never run, and are deleted automatically when they expire. Still, be careful when opening on your computer a program or a document with macros you did not expect."
+    },
+    {
+      "q": "Can I extract only one folder?",
+      "a": "Download the ZIP with everything and keep that folder, or download the files you want one by one if there are 50 or fewer."
+    },
+    {
+      "q": "Why won't my password-protected RAR open?",
+      "a": "Because the library we use does not decrypt RAR or 7z. Extract it on your computer with WinRAR or 7-Zip."
+    }
+  ]
+}

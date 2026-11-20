@@ -107,6 +107,8 @@ class Settings(BaseSettings):
     # Configuraciones de KoSIT en la imagen worker-utils: sus XSD de UBL 2.1 y CII D16B validan la sintaxis en las
     # páginas ubl-a-pdf y cii-a-pdf (7.14, D-194).
     KOSIT_HOME: Path = Path("/opt/kosit")
+    # pandoc estático de infra/pandoc/fetch.sh en workerutils (F6-A, D-212): GPL, solo como proceso externo (11).
+    PANDOC_BIN: Path = Path("/usr/local/bin/pandoc")
     # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
     # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
     SIGN_VERIFY_EXTRA_ROOTS: str = ""

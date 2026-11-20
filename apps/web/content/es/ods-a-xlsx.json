@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODS a Excel convierte hojas de cálculo de LibreOffice Calc, Collabora u OpenOffice en libros de Microsoft Excel (.xlsx). Es lo que necesitas cuando te piden una hoja en Excel, cuando una plataforma solo acepta .xlsx o cuando compartes un presupuesto o un cuadrante con alguien que trabaja con Office.",
+    "La conversión la hace LibreOffice Calc, el mismo programa que crea los ODS, así que se conservan las hojas con sus nombres, las fórmulas (que siguen calculándose en Excel), los formatos de número y de fecha, los colores, los bordes, las celdas combinadas, los anchos de columna, los filtros y la mayoría de los gráficos.",
+    "Algunas funciones existen solo en uno de los dos programas; LibreOffice las traduce cuando hay equivalente y, si no, Excel mostrará un error en esa celda. Las tablas dinámicas y los gráficos muy elaborados pueden cambiar de aspecto: revísalos después de convertir. Las macros no se ejecutan durante la conversión.",
+    "LibreOffice trabaja en nuestro servidor sin acceso a internet, con un perfil nuevo para cada trabajo. Puedes subir hasta 20 hojas a la vez y, si son varias, descargar también un ZIP con todos los libros de Excel."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .ods.",
+    "Espera a que LibreOffice los convierta.",
+    "Descarga cada .xlsx o el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Las fórmulas siguen funcionando?",
+      "a": "Sí. Se guardan como fórmulas de Excel y se recalculan al abrir el libro. Solo las funciones que no existen en Excel muestran un error."
+    },
+    {
+      "q": "¿Se conservan las hojas ocultas?",
+      "a": "Se conservan todas las hojas, también las ocultas, con su orden y sus nombres. Revisa la protección de las hojas después de convertir, porque Excel y LibreOffice no la guardan igual."
+    },
+    {
+      "q": "¿Necesito el camino contrario?",
+      "a": "Excel a ODS convierte libros .xlsx y .xls en hojas de cálculo ODS."
+    }
+  ]
+}

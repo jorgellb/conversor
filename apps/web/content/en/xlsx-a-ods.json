@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Excel to ODS turns Microsoft Excel workbooks, both current .xlsx files and Excel 97-2003 .xls files, into OpenDocument spreadsheets (.ods). It is the open, standardised format (ISO/IEC 26300) used by LibreOffice and Collabora and requested by many public administrations for submitting documents.",
+    "We convert with LibreOffice Calc, which keeps sheets, formulas, number, date and currency formats, cell styles, merged cells, column widths, filters, data validation and most charts. Formulas are translated to LibreOffice functions and keep calculating.",
+    "Some Excel features have no exact equivalent: slicers, some recent chart types or the newest dynamic array functions may look different or show an error in LibreOffice. If the workbook is for printing or sending unchanged, Excel to PDF is the safer choice.",
+    "LibreOffice runs on our server with no internet access, no macros and its own profile for every job. It takes up to 20 workbooks per batch; with several, you download each ODS and a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more .xlsx or .xls workbooks.",
+    "Wait while LibreOffice converts them.",
+    "Download each .ods or the ZIP."
+  ],
+  "faq": [
+    {
+      "q": "Are VBA macros kept?",
+      "a": "They are not run during the conversion and you should not count on them in the ODS: LibreOffice uses another macro language and VBA macros do not always work."
+    },
+    {
+      "q": "Can I convert a workbook with an opening password?",
+      "a": "No. Remove the password in Excel before uploading; an encrypted workbook cannot be read without it."
+    },
+    {
+      "q": "Why choose ODS?",
+      "a": "Because it is an open standard that does not depend on one vendor, opens in LibreOffice, Collabora, Google Sheets and Excel, and is the format some tenders and official procedures require."
+    }
+  ]
+}

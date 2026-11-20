@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ASS to SRT turns Advanced SubStation Alpha (.ass) subtitles and their predecessor SubStation Alpha (.ssa), the ones Aegisub creates and that are common in anime, fansubs and karaoke, into SRT, which every player, TV and video editor understands.",
+    "ASS lets each line sit anywhere on screen, with fonts, colours, outlines, animations and vector drawings. SRT has none of that: we keep the text, timings, line breaks and basic styling (bold, italics, underline and strikethrough), both inside the line and from the style the line uses. Other tags are removed.",
+    "Commented lines and vector drawings ({\\p1}), which are not text, are left out, and we tell you how many were removed. Subtitles are sorted by time, because in an ASS file they are often grouped by style or layer.",
+    "The conversion runs on our server: subtitles are read with pysubs2, a widely used free library for this job, and the new file is written in UTF-8 and sorted by time. We detect the original's encoding, so old subtitles in Windows-1252, with all their accents, come out right. You can convert up to 20 files at once and download them together in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .ass or .ssa files.",
+    "Choose whether to keep bold and italics or plain text only.",
+    "Download the .srt."
+  ],
+  "faq": [
+    {
+      "q": "Why do signs come out as normal subtitles?",
+      "a": "Because in SRT every line is shown at the bottom: the position of an ASS sign cannot be expressed. If they get in the way, delete them from the SRT."
+    },
+    {
+      "q": "What about karaoke?",
+      "a": "Each line's full text is kept; syllable-by-syllable effects ({\\k}) do not exist in SRT and are removed."
+    },
+    {
+      "q": "Can I turn the ASS into WebVTT?",
+      "a": "Convert it to SRT with this tool first and then with SRT to VTT."
+    }
+  ]
+}

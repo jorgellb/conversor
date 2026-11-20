@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ODT a DOCX convierte documentos de LibreOffice Writer, Collabora u OpenOffice en archivos de Microsoft Word. Sirve cuando alguien te pide un .docx, cuando una plataforma solo acepta Word o cuando quieres seguir editando en Word un texto que empezaste en LibreOffice.",
+    "Se conservan los títulos con su jerarquía, los párrafos, el texto en negrita, cursiva o tachado, las listas, las tablas, las imágenes, los enlaces y las notas al pie. Los comentarios y las anotaciones al margen no se copian, así que el .docx sale limpio.",
+    "El documento de Word sale con los estilos estándar (Título 1, Título 2, Normal, Tabla…), no con los de tu plantilla. Así es fácil aplicarle después el diseño que quieras, pero ten en cuenta que no se copian los márgenes, los encabezados y pies, los marcos ni la disposición en columnas.",
+    "La conversión la hace pandoc en nuestro servidor, aislado y sin acceso a la red ni a otros archivos. Acepta hasta 20 archivos por tanda y, si subes varios, además de cada .docx recibes un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .odt.",
+    "Espera a que termine la conversión.",
+    "Descarga cada documento de Word o el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se ve igual que en LibreOffice?",
+      "a": "El contenido es el mismo, pero no la maquetación: el resultado usa los estilos estándar de Word. Si lo que quieres es un archivo para imprimir o enviar sin cambios, ODT a PDF es mejor opción."
+    },
+    {
+      "q": "¿Sirve para hojas de cálculo o presentaciones?",
+      "a": "No, solo para documentos de texto (.odt). Las hojas .ods y las presentaciones .odp no son compatibles con esta herramienta."
+    },
+    {
+      "q": "¿Pierdo las notas al pie?",
+      "a": "No. Las notas al pie y las notas finales se convierten en notas de Word, con su numeración automática."
+    }
+  ]
+}

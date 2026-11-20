@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "YAML to JSON turns YAML files (configuration for Docker Compose, Kubernetes, GitHub Actions, OpenAPI or Ansible, for example) into JSON. Use it to pass a configuration to a tool that only understands JSON, to validate it against a JSON schema or to see clearly how a program interprets what you wrote in YAML.",
+    "Everything YAML 1.1 defines is honoured: block and inline lists and mappings, multi-line text with | and >, comments (which disappear, since JSON has none), anchors and aliases. Unquoted dates such as 2026-11-20 are written as ISO text, and keys that are not text (numbers or logical values) become text, as JSON requires.",
+    "If the file holds several documents separated by ---, the JSON is a list with one per document and we tell you so. Anchors and aliases are expanded, that is, each alias is replaced by a copy of its value.",
+    "We read YAML in safe mode: tags that in other programs create Python objects or run commands are rejected. We also count the values after expanding aliases and reject files that multiply beyond 2 million values (the well-known “billion laughs” bomb) or that contain themselves. Up to 25 MB per file and 20 per batch."
+  ],
+  "steps": [
+    "Upload one or more .yaml or .yml files.",
+    "Wait for the conversion on the server.",
+    "Download the JSON."
+  ],
+  "faq": [
+    {
+      "q": "Why does “no” become false?",
+      "a": "Because in YAML 1.1 the unquoted words yes, no, on and off are logical values. If you want the text, write it in quotes: \"no\"."
+    },
+    {
+      "q": "Are comments lost?",
+      "a": "Yes, JSON does not support comments. If you need them, keep the original YAML too."
+    },
+    {
+      "q": "And the other way?",
+      "a": "JSON to YAML turns JSON into readable YAML, with keys in their order."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "JSON to YAML turns JSON data into YAML, the format Docker Compose, Kubernetes, GitHub Actions, Ansible and many other programs use for their configuration. It is easier to read and edit by hand: no braces, no quotes around most text and structure shown by indentation.",
+    "Keys keep the order of the original JSON, without alphabetical sorting, and accented letters and any other character are written as they are, without escape sequences. Lists are written one item per line with a dash and nested objects with indentation, without the compact brace form, so changes read well in version control.",
+    "Text that YAML could mistake for another type is quoted automatically: a date such as '2026-11-20', the words yes or no, or text that looks like a number. That way, reading the YAML back gives you exactly the same data you had in JSON.",
+    "We also accept JSON Lines, with one object per line, which becomes a list. The conversion runs on our server with size and depth limits, up to 25 MB per file and 20 files per batch."
+  ],
+  "steps": [
+    "Upload one or more .json files.",
+    "Wait for the conversion.",
+    "Download the .yaml file."
+  ],
+  "faq": [
+    {
+      "q": "Is the resulting YAML valid for Kubernetes or Docker Compose?",
+      "a": "It is valid YAML with the same data as your JSON; whether it is a correct configuration depends on the keys it contains, just as with the JSON."
+    },
+    {
+      "q": "Why do some strings come out quoted?",
+      "a": "Because without quotes YAML would read them as something else: a date, a number or a logical value. The quotes make sure they stay text."
+    },
+    {
+      "q": "Can I choose the indentation?",
+      "a": "Two spaces are used, which is the YAML norm and what most tools expect."
+    }
+  ]
+}

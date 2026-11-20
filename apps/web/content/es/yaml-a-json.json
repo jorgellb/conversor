@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "YAML a JSON convierte archivos YAML (de configuración de Docker Compose, Kubernetes, GitHub Actions, OpenAPI o Ansible, por ejemplo) en JSON. Sirve para pasar una configuración a una herramienta que solo entiende JSON, para validarla con un esquema JSON o para ver con claridad cómo interpreta un programa lo que has escrito en YAML.",
+    "Se respeta todo lo que define YAML 1.1: listas y diccionarios en bloque o en línea, textos de varias líneas con | y >, comentarios (que desaparecen, porque JSON no los tiene), anclas y alias. Las fechas sin comillas, como 2026-11-20, se escriben como texto ISO y las claves que no son texto (números o valores lógicos) pasan a ser texto, como exige JSON.",
+    "Si el archivo tiene varios documentos separados por ---, el JSON es una lista con uno por documento y te lo indicamos. Las anclas y alias se expanden, es decir, cada alias se sustituye por una copia de su valor.",
+    "Leemos el YAML en modo seguro: las etiquetas que en otros programas crean objetos de Python o ejecutan órdenes se rechazan. Además, contamos los valores tras expandir los alias y rechazamos los archivos que se multiplican hasta más de 2 millones de valores (la conocida «bomba de los mil millones de risas») o que se contienen a sí mismos. Hasta 25 MB por archivo y 20 por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .yaml o .yml.",
+    "Espera a la conversión en el servidor.",
+    "Descarga el JSON."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué «no» se convierte en false?",
+      "a": "Porque en YAML 1.1 las palabras yes, no, on y off sin comillas son valores lógicos. Si quieres el texto, escríbelo entre comillas: \"no\"."
+    },
+    {
+      "q": "¿Se pierden los comentarios?",
+      "a": "Sí, JSON no admite comentarios. Si necesitas conservarlos, guarda también el YAML original."
+    },
+    {
+      "q": "¿Y al revés?",
+      "a": "JSON a YAML convierte JSON en YAML legible, con las claves en su orden."
+    }
+  ]
+}

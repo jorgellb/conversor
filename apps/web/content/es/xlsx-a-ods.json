@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Excel a ODS convierte libros de Microsoft Excel, tanto los .xlsx actuales como los .xls de Excel 97-2003, en hojas de cálculo OpenDocument (.ods). Es el formato abierto y normalizado (ISO/IEC 26300) que usan LibreOffice y Collabora y que piden muchas administraciones públicas para entregar documentación.",
+    "Convertimos con LibreOffice Calc, que conserva las hojas, las fórmulas, los formatos de número, fecha y moneda, los estilos de celda, las celdas combinadas, los anchos de columna, los filtros, la validación de datos y la mayoría de los gráficos. Las fórmulas se traducen a las funciones de LibreOffice y siguen calculándose.",
+    "Hay elementos propios de Excel que no tienen equivalente exacto: las segmentaciones de datos, algunos tipos de gráfico recientes o las funciones más nuevas de matrices dinámicas pueden quedar con otro aspecto o mostrar un error en LibreOffice. Si el libro es para imprimir o enviar sin cambios, Excel a PDF es más seguro.",
+    "LibreOffice se ejecuta en nuestro servidor sin acceso a internet, sin macros y con un perfil propio para cada trabajo. Admite hasta 20 libros por tanda; con varios, descargas cada ODS y un ZIP con todos."
+  ],
+  "steps": [
+    "Sube uno o varios libros .xlsx o .xls.",
+    "Espera a que LibreOffice los convierta.",
+    "Descarga cada .ods o el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan las macros de VBA?",
+      "a": "No se ejecutan durante la conversión y no hay que contar con ellas en el ODS: LibreOffice usa otro lenguaje de macros y las de VBA no siempre funcionan."
+    },
+    {
+      "q": "¿Puedo convertir un libro con contraseña de apertura?",
+      "a": "No. Quítale la contraseña en Excel antes de subirlo; un libro cifrado no se puede leer sin ella."
+    },
+    {
+      "q": "¿Por qué elegir ODS?",
+      "a": "Porque es un estándar abierto que no depende de un fabricante, se abre en LibreOffice, Collabora, Google Sheets y Excel, y es el formato que exigen algunas licitaciones y trámites."
+    }
+  ]
+}

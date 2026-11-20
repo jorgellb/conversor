@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Markdown a DOCX convierte archivos .md en documentos de Word que se pueden seguir editando. Viene bien cuando escribes en Markdown, en un editor de código o en una aplicación de notas, pero tienes que entregar el trabajo en Word: un informe, un capítulo, unos apuntes o la documentación de un proyecto.",
+    "Se interpretan los títulos, las listas (también las de tareas), las citas, los enlaces, las tablas, el texto tachado, las notas al pie y los bloques de código, que salen con resaltado de sintaxis. Las fórmulas escritas entre signos de dólar, como $x^2$, se convierten en ecuaciones de Word editables. También se leen el título y el autor del bloque YAML inicial, si lo tiene; si ese bloque está mal escrito, se ignora en lugar de fallar.",
+    "Puedes añadir un índice al principio, que Word actualiza con un clic, y numerar los títulos (1, 1.1, 1.2…). El documento usa los estilos estándar de Word, así que puedes cambiar de golpe su aspecto aplicando tu plantilla.",
+    "Para que entren las imágenes, sube un ZIP con el .md y sus imágenes (PNG, JPEG, GIF, TIFF, BMP o WebP, hasta 10 MB cada una; el Markdown, hasta 2 MB) con las mismas rutas relativas que usa el texto. Por seguridad, nunca se cargan imágenes de internet ni de fuera del ZIP; si alguna falta, te lo indicamos. Pandoc trabaja en modo aislado en nuestro servidor."
+  ],
+  "steps": [
+    "Sube un .md o un ZIP con el .md y sus imágenes.",
+    "Elige el sabor de Markdown, si quieres índice y si numerar los títulos.",
+    "Descarga el documento de Word."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué no aparece una imagen?",
+      "a": "Solo se incluyen las imágenes que van dentro del ZIP, con la ruta que indica el Markdown. Las que apuntan a una dirección web o a una carpeta de tu equipo no se descargan nunca; en la nota del resultado verás cuántas han quedado fuera."
+    },
+    {
+      "q": "¿Qué archivo usa si el ZIP tiene varios .md?",
+      "a": "El README.md o index.md de la carpeta menos profunda; si no hay ninguno, el primer .md por orden alfabético de esa carpeta."
+    },
+    {
+      "q": "¿Prefieres un PDF?",
+      "a": "Markdown a PDF convierte el mismo archivo en un PDF maquetado, con un tema claro o uno sobrio para imprimir."
+    }
+  ]
+}

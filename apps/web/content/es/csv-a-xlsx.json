@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV a Excel convierte archivos CSV en libros .xlsx que se abren bien a la primera: con las tildes y las eñes correctas, cada dato en su columna, los números como números y las fechas como fechas. Evita el problema clásico de abrir un CSV con doble clic y encontrarlo todo en la columna A o con caracteres extraños.",
+    "Detectamos la codificación (UTF-8, UTF-16 de Excel, Windows-1252 y otras), el separador (coma, punto y coma, tabulador o barra vertical) y si los decimales van con punto o con coma, aunque puedes indicarlos a mano; si una cifra como 1,500 puede ser mil quinientos o uno y medio y nada lo aclara, se queda como texto. Las cifras como 1.234,56 o 12,5 se convierten en números con los que se puede calcular, y las fechas en formato ISO (2026-03-01, también con hora) en fechas de Excel.",
+    "Lo que podría perder información se queda como texto: los códigos con ceros a la izquierda (códigos postales, referencias), los números de más de 15 cifras, como un número de tarjeta, que Excel redondearía, y los teléfonos con prefijo +. Los valores que empiezan por «=», «+» o «@» nunca se convierten en fórmulas, así que un CSV malicioso no puede ejecutar nada al abrir el libro.",
+    "La primera fila se pone en negrita, queda fija al desplazarte y lleva filtros, y el ancho de las columnas se ajusta al contenido. Con varios CSV puedes recibir un libro por archivo o uno solo con una hoja por archivo. Todo se hace en nuestro servidor, hasta 1 048 576 filas por hoja, el máximo de Excel."
+  ],
+  "steps": [
+    "Sube uno o varios archivos CSV.",
+    "Revisa el separador, el decimal y si la primera fila es el encabezado.",
+    "Descarga el libro de Excel."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué la fecha 01/03/2026 se queda como texto?",
+      "a": "Porque no se sabe si es el 1 de marzo o el 3 de enero. Solo se convierten las fechas sin ambigüedad, en formato año-mes-día; las demás se quedan como estaban y puedes convertirlas en Excel con «Texto en columnas»."
+    },
+    {
+      "q": "¿Y si el CSV tiene caracteres raros como «Ã±»?",
+      "a": "Ese texto ya se guardó mal antes. Pásalo primero por Arreglar codificación de CSV, que recupera las tildes y las eñes, y después conviértelo."
+    },
+    {
+      "q": "¿Puedo no convertir nada y dejarlo todo como texto?",
+      "a": "Sí: desmarca «Convertir números y fechas» y cada celda conservará el texto exacto del CSV."
+    }
+  ]
+}

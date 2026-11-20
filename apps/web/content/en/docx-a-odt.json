@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DOCX to ODT turns Microsoft Word documents into OpenDocument, the open format used by LibreOffice, Collabora and many public administrations. It helps when you are asked to hand in work as ODT, when you want to archive texts in a standardised format (ISO/IEC 26300) that does not depend on one vendor, or when you work with someone who does not have Word.",
+    "The conversion keeps the document's structure: headings with their levels, paragraphs, bold and italics, numbered and bulleted lists, tables, images, links, footnotes and formulas. Tracked changes are accepted and comments are not copied, so the ODT comes out clean.",
+    "What is not kept is the exact layout: margins, headers and footers, text boxes, columns and custom named styles are replaced by the standard OpenDocument styles. If you need the result to look identical on the page, open the .docx directly in LibreOffice or turn it into a PDF with Word to PDF.",
+    "We use pandoc on our server, always in sandbox mode: it reads no other file and does not go online while converting. You can upload up to 20 documents at once; you get one ODT per document and, if there are several, a ZIP with all of them."
+  ],
+  "steps": [
+    "Upload one or more .docx files.",
+    "Wait while they are converted on the server.",
+    "Download each ODT or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Can I convert old .doc files?",
+      "a": "Not with this tool: Word 97-2003 .doc is a different binary format. Open it in Word or LibreOffice and save it as .docx, or turn it straight into a PDF with Word to PDF."
+    },
+    {
+      "q": "Are images kept?",
+      "a": "Yes. The document's images are copied into the ODT at their size. Word charts and objects embedded from other programs may be left out."
+    },
+    {
+      "q": "And the other way, from ODT to Word?",
+      "a": "ODT to DOCX does the reverse with the same engine and the same rules."
+    }
+  ]
+}

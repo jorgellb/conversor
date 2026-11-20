@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Excel a JSON convierte una hoja de Excel en datos JSON listos para una aplicación web, una API, un script o una base de datos documental. Es la forma rápida de pasar a código una tabla que alguien mantiene en Excel: un catálogo de productos, una lista de precios, traducciones o la configuración de un proyecto.",
+    "Por defecto obtienes una lista de objetos en la que la primera fila da los nombres de las claves: cada fila de la hoja se convierte en un objeto como {\"Cliente\": \"Peña\", \"Importe\": 1234.5}. Si los encabezados se repiten o están vacíos, las claves se numeran («id_2», «columna_3») para que ninguna se pierda. También puedes pedir las filas tal cual, como listas de valores.",
+    "Los tipos se respetan: los números siguen siendo números (los enteros, sin «.0»), los valores lógicos son true y false, las celdas vacías son null y las fechas se escriben como texto ISO (2026-01-15). Se usan los valores calculados de las fórmulas; si un programa guardó fórmulas sin calcular, te avisamos.",
+    "Puedes convertir solo la hoja activa o todas, y entonces el JSON es un objeto con una entrada por hoja. El archivo sale con sangría, en UTF-8 y con los acentos sin escapar. Leemos el libro con openpyxl en nuestro servidor, sin ejecutar macros, con hasta 20 libros por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .xlsx.",
+    "Elige objetos o filas y qué hojas convertir.",
+    "Descarga el archivo .json."
+  ],
+  "faq": [
+    {
+      "q": "¿Y si mi tabla no empieza en la primera fila?",
+      "a": "Las filas vacías del principio se saltan y la primera con datos da las claves. Si encima del encabezado hay un título, bórralo antes de convertir o elige «Listas de valores» y descarta las filas que sobren."
+    },
+    {
+      "q": "¿Puedo convertir un CSV a JSON?",
+      "a": "Sí, con CSV a JSON, que además detecta el separador y la codificación del archivo."
+    },
+    {
+      "q": "¿Las fechas pueden salir como números?",
+      "a": "No: se escriben siempre como texto ISO, que es lo que entienden casi todos los lenguajes y bases de datos."
+    }
+  ]
+}

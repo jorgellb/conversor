@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Arreglar codificación de CSV recupera las tildes, las eñes, los signos de apertura y el símbolo del euro de un archivo CSV que se ve con caracteres extraños. Es el problema típico de un CSV exportado desde un programa antiguo, un banco o un ERP que, al abrirlo en Excel o importarlo en otra aplicación, muestra «Pe�a», «PeÃ±a» o «Peña» con signos raros.",
+    "Resolvemos los dos casos. Si el archivo está en una codificación antigua (Windows-1252, ISO-8859-1 o -15, la de MS-DOS o la de los Mac clásicos, o UTF-16), la detectamos comparando cuál da un texto con sentido y lo pasamos a UTF-8. Si el archivo ya es UTF-8 pero alguien lo guardó mal por el camino, con «Ã±» en lugar de «ñ» o «Ã©» en lugar de «é», corregimos esas secuencias, también si el error se repitió dos veces.",
+    "Solo se cambia lo que está claramente mal: una «Ã» que forma parte de una palabra de verdad, en portugués por ejemplo, se queda como está. Los separadores, las comillas y los saltos de línea no se tocan, así que el CSV conserva su estructura. Te indicamos la codificación detectada, el separador y cuántas secuencias se han corregido.",
+    "Por defecto, el resultado lleva la marca BOM de UTF-8, que es lo que necesita Excel para abrirlo con doble clic y ver bien los acentos; si lo vas a importar en un programa o en una base de datos, elige UTF-8 sin BOM. También puedes indicar tú la codificación de origen si la conoces."
+  ],
+  "steps": [
+    "Sube el CSV que se ve mal.",
+    "Deja «Detectar» o elige la codificación de origen.",
+    "Descarga el CSV corregido en UTF-8."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué aparecen esos caracteres raros?",
+      "a": "Porque el archivo se escribió con una tabla de caracteres y se leyó con otra. La «ñ» ocupa un byte en Windows-1252 y dos en UTF-8; si se confunden, la letra se rompe o se convierte en dos símbolos como «Ã±»."
+    },
+    {
+      "q": "¿Puedo recuperar los rombos con interrogación «�»?",
+      "a": "No siempre. Ese símbolo significa que el programa anterior ya sustituyó la letra al guardar y la información se perdió; solo se puede recuperar si aún tienes el archivo original."
+    },
+    {
+      "q": "¿Sirve para archivos .txt?",
+      "a": "Sí, cualquier texto separado por comas, puntos y comas o tabuladores, aunque se llame .txt."
+    }
+  ]
+}

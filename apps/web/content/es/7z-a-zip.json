@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "7Z a ZIP convierte archivos 7z, el formato de 7-Zip, en ZIP para abrirlos en cualquier sistema. 7z comprime muy bien, pero muchos ordenadores y móviles no lo abren sin instalar algo; el ZIP lo descomprime Windows, macOS, Linux, Android e iOS de serie.",
+    "Se conservan las carpetas, los nombres de los archivos (con tildes, eñes y otros alfabetos) y sus fechas. El ZIP se escribe con compresión Deflate y ZIP64, sin límite práctico de tamaño ni de número de archivos.",
+    "Igual que en el resto de conversiones de comprimidos, ninguna ruta puede salirse de la carpeta del archivo: las que llevan «..», empiezan en la raíz o indican una unidad de Windows se guardan dentro, y los enlaces simbólicos, los enlaces duros y los archivos de dispositivo no se copian. También limitamos el número de entradas (10 000) y el tamaño descomprimido, para que un archivo preparado para ocupar terabytes no bloquee nada.",
+    "Leemos el 7z con libarchive, una biblioteca libre, sin usar el programa 7-Zip. Los 7z cifrados con contraseña no se pueden abrir aquí. Admite hasta 20 archivos por tanda y, si subes varios, un ZIP con todos los resultados."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .7z.",
+    "Espera a la conversión.",
+    "Descarga el ZIP."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierdo algún archivo al convertir?",
+      "a": "No, se copian todos los archivos normales. Solo se omiten los enlaces simbólicos y los archivos especiales, y te decimos cuántos."
+    },
+    {
+      "q": "¿Puedo convertir un 7z con contraseña?",
+      "a": "No. Descomprímelo en tu equipo con 7-Zip y su contraseña; si necesitas un ZIP protegido, créalo desde ahí."
+    },
+    {
+      "q": "¿Qué hago con un 7z de varias partes (.7z.001)?",
+      "a": "Une las partes en tu equipo primero: aquí cada archivo se convierte por separado."
+    }
+  ]
+}
