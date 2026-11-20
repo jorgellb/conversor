@@ -9,6 +9,7 @@ import { BoardEditor, BookmarksEditor, ChatPdfView, CollageView, CompareView, Co
   SearchView } from "@/components/LazyViews";
 import { Feedback } from "@/components/Feedback";
 import { StaticPage } from "@/components/StaticPage";
+import { ViewMessages, type ViewNamespace } from "@/components/ViewMessages";
 import { ToolRunner, type NextTool } from "@/components/ToolRunner";
 import type { Locale } from "@/i18n/routing";
 import { contentReady, toolContent } from "@/lib/content";
@@ -30,6 +31,14 @@ const EDITORS: Record<string, "editar" | "rellenar" | "redactar" | "anotar" | "f
 
 /** Diseñador de campos (A.3, F4-B1): crear-formulario-pdf es la misma herramienta empezando en blanco. */
 const FORM_DESIGNERS = ["hacer-pdf-rellenable", "crear-formulario-pdf"];
+
+/** Mensajes propios de la vista de cada herramienta (D-197); el resto de páginas solo recibe los comunes. */
+const VIEW_OF: Record<string, readonly ViewNamespace[]> = {
+  "marcadores-pdf": ["bookmarks"], "comparar-pdf": ["compare"], "escaner-pdf": ["scanner"], "copiar-de-pdf": ["copy"],
+  "generar-codigo-qr": ["qr"], "crear-collage": ["collage"], "chat-pdf": ["chatPdf"], "lector-pdf": ["viewer"], "imprimir-pdf": ["printjob"],
+  "hacer-pdf-rellenable": ["formDesigner"], "crear-formulario-pdf": ["formDesigner"],
+  "editar-pdf": ["editor"], "rellenar-pdf": ["editor"], "redactar-pdf": ["editor"], "anotar-pdf": ["editor"], "firmar-pdf": ["editor", "signPdf"],
+};
 
 function isIndexable(tool: ToolSpec, locale: Locale): boolean {
   return tool.indexable && tool.launch && !disabledByEnv(tool.slug_es) && contentReady(locale, tool.slug_es);
@@ -178,6 +187,7 @@ export default async function SlugPage({ params, searchParams }: Params) {
       </nav>
       <h1 className="text-3xl font-bold">{name}</h1>
       <p className="muted mt-2 text-lg">{summaryOf(tool, locale)}</p>
+      <ViewMessages namespaces={VIEW_OF[tool.slug_es] ?? []}>
       <div className="mt-6">
         {tool.slug_es === "montar-pdf" && !disabledByEnv(tool.slug_es) ? (
           <BoardEditor spec={clientSpec(tool, locale)} />
@@ -219,6 +229,7 @@ export default async function SlugPage({ params, searchParams }: Params) {
           <HeicHelp locale={locale} jpgHref={toolPath(locale, toolBySlugEs("jpg-a-pdf")!)} />
         )}
       </div>
+      </ViewMessages>
       <article className="mx-auto mt-12 flex max-w-4xl flex-col gap-8">
         <section>
           <h2 className="mb-2 text-xl font-semibold">{t("whatItDoes")}</h2>

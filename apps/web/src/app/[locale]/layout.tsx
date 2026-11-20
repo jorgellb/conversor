@@ -10,6 +10,7 @@ import "../globals.css";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ServiceWorker } from "@/components/ServiceWorker";
+import { pickMessages } from "@/components/ViewMessages";
 import { routing, type Locale } from "@/i18n/routing";
 import { languageMap, SITE_NAME, webUrl } from "@/lib/site";
 
@@ -38,7 +39,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   setRequestLocale(locale);
   // Leer las cabeceras hace la página dinámica: cada respuesta lleva su nonce de CSP (12.4).
   const nonce = (await headers()).get("x-nonce") ?? undefined;
-  const messages = await getMessages();
+  const messages = pickMessages((await getMessages()) as Record<string, unknown>);
   const t = await getTranslations({ locale, namespace: "nav" });
   return (
     <html lang={locale} suppressHydrationWarning>

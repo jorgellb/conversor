@@ -14,6 +14,7 @@ import { ToolRunner } from "./ToolRunner";
 import { CreatePdfPage } from "./CreatePdfPage";
 import { LEGAL } from "./legal";
 import { PricingPage } from "./PricingPage";
+import { ViewMessages } from "./ViewMessages";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAILS?.split(",")[0]?.trim() || "admin@ejemplo.test";
 
@@ -28,9 +29,9 @@ export async function StaticPage({ pageKey, locale, search = {} }: {
     case "precios":
       return wrap(<PricingPage locale={locale} plans={PLANS} />);
     case "cuenta":
-      return wrap(<AccountPage />);
+      return wrap(<ViewMessages namespaces={["account"]}><AccountPage /></ViewMessages>);
     case "admin":
-      return wrap(<AdminPage tools={TOOLS.map((t) => ({ slug: t.slug_es, name: nameOf(t, locale) }))} />);
+      return wrap(<ViewMessages namespaces={["admin", "adminAi"]}><AdminPage tools={TOOLS.map((t) => ({ slug: t.slug_es, name: nameOf(t, locale) }))} /></ViewMessages>);
     case "entrar":
       return wrap(<AuthPage mode="signIn" />);
     case "registro":
