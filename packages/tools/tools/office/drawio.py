@@ -23,9 +23,12 @@ from tools.pdf.common import with_batch_zip
 MAX_BYTES = 20 * 1024 * 1024
 MAX_PAGES = 100
 MAX_PNG_SIDE = 8000
+MAX_INFLATED = 50 * 1024 * 1024  # entre todas las páginas comprimidas (D-230)
+MAX_CELLS = 100_000
 BORDER = 10
 MM_PX = 96 / 25.4
 
+WAIT = {"waitForExpression": "window.ready === true", "failOnConsoleExceptions": "true"}
 NOTES = {
     "es": {"pages": "{n} página(s) del diagrama.", "external": "Las imágenes o formas que el diagrama carga de internet no se incluyen."},
     "en": {"pages": "{n} diagram page(s).", "external": "Images or shapes the diagram loads from the internet are not included."},
@@ -44,23 +47,91 @@ def _safe(raw: bytes):
         raise ToolError(ErrorCode.CORRUPT_FILE, "draw.io no válido") from exc
 
 
-def _model(diagram):
-    """El mxGraphModel de una página: hijo directo o texto comprimido (Base64 de deflate sin cabecera y URL-encode)."""
+class _Budget:
+    def __init__(self) -> None:
+        self.inflated = 0
+        self.cells = 0
+        self.external = False
+
+
+def _model(diagram, budget: _Budget):
+    """El mxGraphModel de una página: hijo directo o texto comprimido (Base64 de deflate sin cabecera y URL-encode).
+
+    El Base64 se comprueba estricto, como el `atob` del visor (que fallaría y dejaría a Gotenberg esperando), y lo
+    descomprimido de todas las páginas suma contra MAX_INFLATED (D-230)."""
     child = diagram.find("mxGraphModel")
     if child is not None:
         return child
-    text = (diagram.text or "").strip()
+    text = re.sub(r"\s+", "", diagram.text or "")
     if not text:
         return None
     try:
-        inflated = zlib.decompressobj(-15).decompress(base64.b64decode(text), 50 * 1024 * 1024)
-        return _safe(urllib.parse.unquote(inflated.decode("utf-8")).encode("utf-8"))
+        data = base64.b64decode(text, validate=True)
+        inflater = zlib.decompressobj(-15)
+        left = MAX_INFLATED - budget.inflated
+        inflated = inflater.decompress(data, left + 1)
+        if len(inflated) > left or inflater.unconsumed_tail:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Diagrama de más de 50 MB descomprimido")
+        budget.inflated += len(inflated)
+        xml = urllib.parse.unquote(inflated.decode("utf-8"))
     except (ValueError, zlib.error, UnicodeDecodeError) as exc:
         raise ToolError(ErrorCode.CORRUPT_FILE, "página de draw.io ilegible") from exc
+    if re.search(r"https?://", xml):
+        budget.external = True
+    return _safe(xml.encode("utf-8"))
 
 
-def pages(raw: bytes) -> list[tuple[str, tuple[float, float]]]:
-    """(nombre, (ancho, alto)) de cada página, con el tamaño de lo dibujado (vértices y puntos de las flechas)."""
+def _num(el, key: str) -> float:
+    try:
+        v = float(el.get(key, 0))
+    except ValueError:
+        return 0.0
+    return v if math.isfinite(v) else 0.0
+
+
+def _bounds(model, budget: _Budget) -> tuple[float, float]:
+    """Lo que ocupa lo dibujado: vértices (los de un grupo, relativos a él) y los puntos de las flechas."""
+    cells = {}
+    for cell in model.iter("mxCell"):
+        budget.cells += 1
+        if budget.cells > MAX_CELLS:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"Más de {MAX_CELLS} elementos en el diagrama")
+        cells[cell.get("id")] = cell
+    origin: dict[str, tuple[float, float]] = {}
+
+    def offset(cell_id: str | None, depth: int = 0) -> tuple[float, float]:
+        cell = cells.get(cell_id)
+        if cell is None or depth > 50:
+            return (0.0, 0.0)
+        if cell_id in origin:
+            return origin[cell_id]
+        geo = cell.find("mxGeometry")
+        base = offset(cell.get("parent"), depth + 1)
+        here = (base[0] + _num(geo, "x"), base[1] + _num(geo, "y")) if geo is not None and cell.get("vertex") == "1" else base
+        origin[cell_id] = here
+        return here
+
+    xs, ys = [], []
+    for cell in cells.values():
+        geo = cell.find("mxGeometry")
+        if geo is None:
+            continue
+        ox, oy = offset(cell.get("parent"))
+        if cell.get("vertex") == "1" and geo.get("relative") != "1":
+            x, y = ox + _num(geo, "x"), oy + _num(geo, "y")
+            xs += [x, x + _num(geo, "width")]
+            ys += [y, y + _num(geo, "height")]
+        if cell.get("edge") == "1":
+            for point in geo.iter("mxPoint"):
+                xs.append(ox + _num(point, "x"))
+                ys.append(oy + _num(point, "y"))
+    if not xs:
+        return (800.0, 600.0)
+    return (max(max(xs) - min(xs), 10.0), max(max(ys) - min(ys), 10.0))
+
+
+def scan(raw: bytes):
+    """(páginas [(nombre, (ancho, alto))], elementos <diagram>, ¿carga cosas de internet?)."""
     if len(raw) > MAX_BYTES:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Diagrama de más de 20 MB")
     root = _safe(raw)
@@ -69,24 +140,26 @@ def pages(raw: bytes) -> list[tuple[str, tuple[float, float]]]:
         raise ToolError(ErrorCode.CORRUPT_FILE, "drawio_empty")
     if len(diagrams) > MAX_PAGES:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{len(diagrams)} páginas")
+    budget = _Budget()
+    budget.external = bool(re.search(rb"https?://", raw))
     out = []
     for i, d in enumerate(diagrams):
-        model = d if d.tag == "mxGraphModel" else _model(d)
-        xs, ys = [], []
-        for geo in (model.iter("mxGeometry") if model is not None else []):
-            if geo.get("relative") == "1":
-                continue
-            try:
-                x, y = float(geo.get("x", 0)), float(geo.get("y", 0))
-                w, h = float(geo.get("width", 0)), float(geo.get("height", 0))
-            except ValueError:
-                continue
-            if all(math.isfinite(v) for v in (x, y, w, h)):
-                xs += [x, x + w]
-                ys += [y, y + h]
-        size = (max(xs) - min(xs), max(ys) - min(ys)) if xs else (800.0, 600.0)
-        out.append((d.get("name") or f"Página {i + 1}", (max(size[0], 10.0), max(size[1], 10.0))))
-    return out
+        model = d if d.tag == "mxGraphModel" else _model(d, budget)
+        size = _bounds(model, budget) if model is not None else (800.0, 600.0)
+        out.append((d.get("name") or f"Página {i + 1}", size))
+    return out, diagrams, budget.external
+
+
+def pages(raw: bytes) -> list[tuple[str, tuple[float, float]]]:
+    return scan(raw)[0]
+
+
+def single_page(root_tag: str, diagram) -> str:
+    """El archivo con una sola página, para que cada PNG no vuelva a subir el diagrama entero (D-230)."""
+    import xml.etree.ElementTree as ET
+
+    body = ET.tostring(diagram, encoding="unicode")
+    return body if root_tag == "mxGraphModel" else f"<mxfile>{body}</mxfile>"
 
 
 def page_html(xml: str, count: int, box: tuple[float, float] | None, fit: bool, transparent: bool, only: int | None = None) -> bytes:
@@ -94,20 +167,26 @@ def page_html(xml: str, count: int, box: tuple[float, float] | None, fit: bool, 
     `window.ready` avisa a Gotenberg (waitForExpression) cuando todas las páginas están dibujadas."""
     indexes = [only] if only is not None else list(range(count))
     sections = "".join(f'<section class="p" id="p{i}"></section>' for i in indexes)
-    config = {"xml": xml, "box": box, "fit": fit, "pages": indexes, "border": BORDER}
+    # Con `only`, el XML ya trae solo esa página (single_page): en el visor es la página 0.
+    config = {"xml": xml, "box": box, "fit": fit, "pages": indexes, "border": BORDER, "first": 0}
     background = "transparent" if transparent else "#fff"
     script = (
-        "(function(){var c=JSON.parse(document.getElementById('cfg').textContent);"
-        "var doc=mxUtils.parseXml(c.xml);"
-        "c.pages.forEach(function(i){var el=document.getElementById('p'+i);"
-        "new GraphViewer(el,doc.documentElement,{highlight:'none',nav:false,lightbox:false,toolbar:null,page:i,border:c.border,"
-        "'auto-fit':false,resize:false,'check-visible-state':false});});"
+        # Si una página falla o no se dibuja en 60 s, `window.ready` se pone igualmente y el error sale como excepción
+        # sin capturar: Gotenberg (failOnConsoleExceptions) responde 409 en lugar de esperar hasta su límite (D-230).
+        "(function(){var c=JSON.parse(document.getElementById('cfg').textContent),tries=0;"
+        "function fail(m){window.ready=true;setTimeout(function(){throw new Error('drawio: '+m);},0);}"
+        "var doc;try{doc=mxUtils.parseXml(c.xml);}catch(e){fail('xml');return;}"
+        "var broken=false;c.pages.forEach(function(i,n){var el=document.getElementById('p'+i);try{"
+        "new GraphViewer(el,doc.documentElement,{highlight:'none',nav:false,lightbox:false,toolbar:null,page:c.first+n,border:c.border,"
+        "'auto-fit':false,resize:false,'check-visible-state':false});}catch(e){broken=true;}});"
+        "if(broken){fail('page');return;}"
         "function fit(){var done=true;c.pages.forEach(function(i){var s=document.querySelector('#p'+i+' svg');"
-        "if(!s){done=false;return;}if(s.dataset.f)return;var w=parseFloat(s.getAttribute('width'))||s.getBBox().width,"
-        "h=parseFloat(s.getAttribute('height'))||s.getBBox().height;if(!s.getAttribute('viewBox'))s.setAttribute('viewBox','0 0 '+w+' '+h);"
+        "if(!s){done=false;return;}if(s.dataset.f)return;var w=parseFloat(s.getAttribute('width'))||s.getBBox().width||1,"
+        "h=parseFloat(s.getAttribute('height'))||s.getBBox().height||1;w=Math.max(w,1);h=Math.max(h,1);"
+        "if(!s.getAttribute('viewBox'))s.setAttribute('viewBox','0 0 '+w+' '+h);"
         "var k=1;if(c.box){k=Math.min(c.box[0]/w,c.box[1]/h);if(!c.fit)k=Math.min(k,1);}"
         "s.setAttribute('width',w*k);s.setAttribute('height',h*k);s.style.minWidth='';s.style.minHeight='';s.dataset.f='1';});"
-        "if(done){window.ready=true;}else{setTimeout(fit,50);}}fit();})();"
+        "if(done){window.ready=true;}else if(++tries>1200){fail('timeout');}else{setTimeout(fit,50);}}fit();})();"
     )
     page = (
         "<!doctype html><html><head><meta charset=\"utf-8\"><title>diagrama</title>"
@@ -138,10 +217,11 @@ def run(ctx: ToolContext) -> list[dict]:
     for n, inp in enumerate(ctx.inputs):
         ctx.report(n / len(ctx.inputs), None)
         raw = inp.path.read_bytes()
-        info = pages(raw)
-        xml = raw.decode("utf-8", errors="replace").lstrip("﻿")
+        info, diagrams, external = scan(raw)
+        xml = raw.decode("utf-8", errors="replace").lstrip("\ufeff")
+        root_tag = "mxGraphModel" if diagrams[0].tag == "mxGraphModel" else "mxfile"
         notes = [t["pages"].format(n=len(info))]
-        if re.search(r"https?://", xml):
+        if external:
             notes.append(t["external"])
         if ctx.tool == "drawio-a-pdf":
             orientation = o.orientacion
@@ -153,9 +233,9 @@ def run(ctx: ToolContext) -> list[dict]:
                 w_mm, h_mm = h_mm, w_mm
             margin = 10
             box = ((w_mm - 2 * margin) * MM_PX - 4, (h_mm - 2 * margin) * MM_PX - 4)
-            fields = {**gotenberg.page_fields(o.papel, orientation, margin, True), "waitForExpression": "window.ready === true"}
+            fields = {**gotenberg.page_fields(o.papel, orientation, margin, True), **WAIT}
             files = [("index.html", page_html(xml, len(info), box, o.ajustar, False), "text/html"), ("viewer.js", viewer, "text/javascript")]
-            data = gotenberg.chromium_html_files(ctx.settings.GOTENBERG_URL, files, fields)
+            data = gotenberg.chromium_html_files(ctx.settings.GOTENBERG_URL, files, fields, conflict_error=ErrorCode.CORRUPT_FILE)
             name = derived_name(inp.name, "", "pdf")
             dst = ctx.output(name)
             dst.write_bytes(data)
@@ -166,10 +246,11 @@ def run(ctx: ToolContext) -> list[dict]:
             scale = min(o.escala, MAX_PNG_SIDE / max(w + 2 * BORDER, h + 2 * BORDER))
             width, height = math.ceil((w + 2 * BORDER) * scale), math.ceil((h + 2 * BORDER) * scale)
             fields = {"width": str(width), "height": str(height), "clip": "true", "format": "png",
-                      "omitBackground": str(o.transparente).lower(), "waitForExpression": "window.ready === true"}
-            files = [("index.html", page_html(xml, len(info), (width, height), True, o.transparente, only=i), "text/html"),
+                      "omitBackground": str(o.transparente).lower(), **WAIT}
+            one = single_page(root_tag, diagrams[i])
+            files = [("index.html", page_html(one, 1, (width, height), True, o.transparente, only=i), "text/html"),
                      ("viewer.js", viewer, "text/javascript")]
-            png = gotenberg.chromium_screenshot_files(ctx.settings.GOTENBERG_URL, files, fields)
+            png = gotenberg.chromium_screenshot_files(ctx.settings.GOTENBERG_URL, files, fields, conflict_error=ErrorCode.CORRUPT_FILE)
             suffix = "" if len(info) == 1 else "-" + (re.sub(r"[^\w.-]+", "_", title).strip("._")[:60] or str(i + 1))
             name = derived_name(inp.name, suffix, "png")
             dst = ctx.output(name)

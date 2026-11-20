@@ -33,26 +33,43 @@ def _t(ctx: ToolContext) -> dict:
     return NOTES.get(ctx.locale, NOTES["es"])
 
 
-def messages(path: Path) -> list[bytes]:
-    """Los mensajes de un mbox, cada uno con sus bytes originales (sin la línea «From » que los separa)."""
-    try:
-        box = mailbox.mbox(str(path), create=False)
-        keys = list(box.iterkeys())
-    except (mailbox.Error, OSError, UnicodeDecodeError) as exc:
-        raise ToolError(ErrorCode.CORRUPT_FILE, "mbox") from exc
-    if len(keys) > MAX_MESSAGES:
-        raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mail_too_many")
-    out = []
-    try:
-        for key in keys:
-            data = box.get_bytes(key)
-            if data.strip():
-                out.append(data)
-    finally:
+class Box:
+    """Un mbox abierto: solo guarda la posición de cada mensaje y lo lee cuando hace falta (D-230: un buzón de 1 GB no
+    se carga entero en memoria)."""
+
+    def __init__(self, path: Path) -> None:
+        try:
+            self.box = mailbox.mbox(str(path), create=False)
+            self.keys = list(self.box.iterkeys())
+        except (mailbox.Error, OSError, UnicodeDecodeError) as exc:
+            raise ToolError(ErrorCode.CORRUPT_FILE, "mbox") from exc
+
+    def read(self, key) -> bytes:
+        return self.box.get_bytes(key)
+
+    def head(self, key) -> bytes:
+        with self.box.get_file(key) as f:
+            return f.read(16384)
+
+    def close(self) -> None:
+        self.box.close()
+
+
+def messages(path: Path, limit: int = MAX_MESSAGES) -> list[tuple[Box, object]]:
+    """Referencias a los mensajes de un mbox (cada uno se lee con sus bytes originales, sin la línea «From »)."""
+    box = Box(path)
+    if len(box.keys) > limit:
         box.close()
-    if not out:
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mail_too_many")
+    if not box.keys:
+        box.close()
         raise ToolError(ErrorCode.CORRUPT_FILE, "mail_empty")
-    return out
+    return [(box, key) for key in box.keys]
+
+
+def _close(refs) -> None:
+    for box in {id(b): b for b, _ in refs}.values():
+        box.close()
 
 
 def _subject_name(data: bytes, n: int, used: set[str]) -> str:
@@ -64,9 +81,9 @@ def _subject_name(data: bytes, n: int, used: set[str]) -> str:
     except Exception:  # noqa: BLE001 - una cabecera mal codificada no impide guardar el mensaje
         subject = ""
     clean = re.sub(r"[^\w .,()-]+", "_", subject, flags=re.UNICODE).strip(" ._")[:80] or "mensaje"
-    name = f"{n:04d} - {clean}.eml"
+    name = f"{n:05d} - {clean}.eml"  # cinco cifras: el orden se mantiene hasta MAX_MESSAGES
     while name.lower() in used:
-        name = f"{n:04d} - {clean} ({len(used)}).eml"
+        name = f"{n:05d} - {clean} ({len(used)}).eml"
     used.add(name.lower())
     return name
 
@@ -82,22 +99,29 @@ def _date_of(data: bytes) -> datetime:
     return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
 
 
-def to_eml_zip(ctx: ToolContext, msgs: list[bytes], stem: str, folder: str = "") -> tuple[Path, int]:
+def to_eml_zip(ctx: ToolContext, msgs, stem: str, folder: str = "") -> tuple[Path, int]:
     work = ctx.work / f"eml-{stem}"
     work.mkdir(parents=True, exist_ok=True)
     used: set[str] = set()
     files = []
-    for n, data in enumerate(msgs, 1):
+    n = 0
+    for box, key in msgs:
+        data = box.read(key)
+        if not data.strip():
+            continue
+        n += 1
         name = _subject_name(data, n, used)
         path = work / f"{n:05d}.eml"
         path.write_bytes(data)
         files.append((path, f"{folder}/{name}" if folder else name))
+    if not files:
+        raise ToolError(ErrorCode.CORRUPT_FILE, "mail_empty")
     dst = ctx.work / f"{stem}-eml.zip"
     zip_files(files, dst)
     return dst, len(files)
 
 
-def to_pdf(ctx: ToolContext, msgs: list[bytes], stem: str) -> tuple[Path, list[str]]:
+def to_pdf(ctx: ToolContext, msgs, stem: str) -> tuple[Path, list[str]]:
     """Cada mensaje como en eml-a-pdf (cabeceras, cuerpo e imágenes incrustadas), ordenados por fecha, en un PDF con un
     marcador por mensaje; los adjuntos solo si se piden."""
     from tools.media import correo
@@ -108,13 +132,17 @@ def to_pdf(ctx: ToolContext, msgs: list[bytes], stem: str) -> tuple[Path, list[s
     t, o = _t(ctx), ctx.options
     labels = correo.LABELS.get(ctx.locale, correo.LABELS["es"])
     notes = []
-    ordered = sorted(msgs, key=_date_of) if o.orden == "fecha" else msgs
+    # Para ordenar basta la cabecera de cada mensaje; el mensaje entero solo se lee si entra en el PDF.
+    ordered = sorted(msgs, key=lambda ref: _date_of(ref[0].head(ref[1]))) if o.orden == "fecha" else list(msgs)
     if len(ordered) > MAX_PDF_MESSAGES:
         notes.append(t["cut"].format(n=MAX_PDF_MESSAGES, total=len(ordered)))
         ordered = ordered[:MAX_PDF_MESSAGES]
     parts, bad = [], 0
-    for n, data in enumerate(ordered):
+    for n, (box, key) in enumerate(ordered):
         ctx.report(n / len(ordered), None)
+        data = box.read(key)
+        if not data.strip():
+            continue
         try:
             mail = correo.parse_eml(data)
         except ToolError:
@@ -162,12 +190,21 @@ def readpst(ctx: ToolContext, path: Path) -> list[tuple[str, Path]]:
     src = ctx.work / "buzon.pst"
     shutil.copyfile(path, src)
     # -r: una carpeta del sistema de archivos por carpeta del PST, con su mbox; -b: sin los cuerpos RTF aparte; -q: sin ruido.
-    result = run_engine([exe, "-q", "-r", "-b", "-j", "0", "-o", str(out.relative_to(ctx.work)), src.name], cwd=ctx.work,
-                        timeout=1500, mem_mb=2048, ok_codes=tuple(range(256)))
-    boxes = sorted(p for p in out.rglob("*") if p.is_file() and p.stat().st_size and p.name == "mbox")
+    # readpst (C, GPL) lee un binario del usuario y crea carpetas con los nombres del PST («..» incluido): con Landlock
+    # solo puede escribir dentro del trabajo y leer su programa y las bibliotecas (D-230); cada archivo, como mucho 2 GB.
+    exe_path = Path(exe).resolve()
+    libs = [(Path(d), "rx") for d in ("/lib", "/lib64", "/usr/lib", "/usr/lib64", "/usr/local/lib")]
+    result = run_engine([str(exe_path), "-q", "-r", "-b", "-j", "0", "-o", str(out.relative_to(ctx.work)), src.name], cwd=ctx.work,
+                        timeout=1500, mem_mb=2048, ok_codes=tuple(range(256)), max_file_mb=2048,
+                        landlock=[(ctx.work, "rw"), (exe_path, "rx"), (Path("/etc/ld.so.cache"), "r"), *libs])
+    boxes = sorted(p for p in out.rglob("*") if p.is_file() and not p.is_symlink() and p.stat().st_size and p.name == "mbox")
     if not boxes:
         raise ToolError(ErrorCode.CORRUPT_FILE, f"pst (readpst {result.returncode})")
-    return [(str(p.parent.relative_to(out)) or "Buzón", p) for p in boxes]
+    named = []
+    for p in boxes:
+        rel = p.parent.relative_to(out)
+        named.append((rel.as_posix() if rel != Path(".") else "Buzón", p))
+    return named
 
 
 def run(ctx: ToolContext) -> list[dict]:
@@ -177,12 +214,18 @@ def run(ctx: ToolContext) -> list[dict]:
         stem = Path(inp.name).stem or "buzon"
         if ctx.tool == "mbox-a-eml":
             msgs = messages(inp.path)
-            packed, count = to_eml_zip(ctx, msgs, stem)
+            try:
+                packed, count = to_eml_zip(ctx, msgs, stem)
+            finally:
+                _close(msgs)
             name = derived_name(inp.name, "-eml", "zip")
             note = t["messages"].format(n=count)
         elif ctx.tool == "mbox-a-pdf":
             msgs = messages(inp.path)
-            pdf, notes = to_pdf(ctx, msgs, stem)
+            try:
+                pdf, notes = to_pdf(ctx, msgs, stem)
+            finally:
+                _close(msgs)
             packed, name, note = pdf, derived_name(inp.name, "", "pdf"), " ".join([t["messages"].format(n=len(msgs)), *notes])
         elif ctx.tool == "pst-a-mbox":
             boxes = readpst(ctx, inp.path)
@@ -191,8 +234,20 @@ def run(ctx: ToolContext) -> list[dict]:
             name = derived_name(inp.name, "-mbox", "zip")
             note = t["folders"].format(n=len(boxes))
         else:  # pst-a-pdf
-            msgs = [m for _folder, p in readpst(ctx, inp.path) for m in messages(p)]
-            pdf, notes = to_pdf(ctx, msgs, stem)
+            # Todas las carpetas juntas, con el límite de mensajes para el PST entero; una carpeta vacía no lo corta.
+            msgs = []
+            try:
+                for _folder, p in readpst(ctx, inp.path):
+                    try:
+                        msgs += messages(p, MAX_MESSAGES - len(msgs))
+                    except ToolError as exc:
+                        if exc.detail != "mail_empty" and exc.code != ErrorCode.CORRUPT_FILE:
+                            raise
+                if not msgs:
+                    raise ToolError(ErrorCode.CORRUPT_FILE, "mail_empty")
+                pdf, notes = to_pdf(ctx, msgs, stem)
+            finally:
+                _close(msgs)
             packed, name, note = pdf, derived_name(inp.name, "", "pdf"), " ".join([t["messages"].format(n=len(msgs)), *notes])
         dst = ctx.output(name)
         shutil.move(packed, dst)

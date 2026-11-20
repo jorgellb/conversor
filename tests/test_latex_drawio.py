@@ -151,19 +151,24 @@ def test_drawio_renders_offline_in_chromium(tmp_path):
     from tools.office.drawio import page_html
 
     (tmp_path / "index.html").write_bytes(page_html(DIAGRAM, 1, (700, 500), True, False))
+    # D-230: si el visor no puede con la página, `window.ready` llega igual y el error sale como excepción (409 en Gotenberg).
+    (tmp_path / "roto.html").write_bytes(page_html("<mxfile><diagram>%%%</diagram></mxfile>", 1, (700, 500), True, False))
     shutil.copyfile(viewer, tmp_path / "viewer.js")
     script = tmp_path / "render.cjs"
     script.write_text(
         "const { chromium } = require('playwright');(async () => {"
         "const b = await chromium.launch(process.env.PW_CHROMIUM_PATH ? { executablePath: process.env.PW_CHROMIUM_PATH } : {});"
-        "const p = await b.newPage(); const ext = []; p.on('request', r => { if (!r.url().startsWith('file:')) ext.push(r.url()); });"
+        "const p = await b.newPage(); const ext = [], errs = []; p.on('request', r => { if (!r.url().startsWith('file:')) ext.push(r.url()); });"
+        "p.on('pageerror', e => errs.push(String(e.message)));"
         "await p.route(/^https?:/, r => r.abort()); await p.goto('file://' + process.argv[2] + '/index.html');"
         "await p.waitForFunction('window.ready === true', null, { timeout: 20000 });"
         "const r = await p.evaluate(() => { const s = document.querySelector('svg'); return [s.getAttribute('width'), s.getAttribute('height'), document.body.innerText]; });"
-        "console.log(JSON.stringify({ r, ext })); await b.close(); })();")
+        "await p.goto('file://' + process.argv[2] + '/roto.html'); await p.waitForFunction('window.ready === true', null, { timeout: 20000 });"
+        "await p.waitForTimeout(200); console.log(JSON.stringify({ r, ext, errs })); await b.close(); })();")
     env = {**os.environ, "NODE_PATH": str(ROOT / "node_modules")}
     result = subprocess.run(["node", str(script), str(tmp_path)], capture_output=True, text=True, timeout=120, env=env)
     data = json.loads(result.stdout.strip().splitlines()[-1])
     width, height, text = data["r"]
     assert "Inicio ñ" in text and "Fin" in text and data["ext"] == []
+    assert len(data["errs"]) == 1 and data["errs"][0].startswith("drawio:")  # solo el del diagrama roto
     assert abs(float(width) - 700) < 1 or abs(float(height) - 500) < 1

@@ -7,8 +7,10 @@ import hashlib
 import mimetypes
 import os
 import resource
+import selectors
 import signal
 import subprocess
+import time
 import zipfile
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -158,28 +160,97 @@ def open_image(src, max_pixels: int):
         img.close()
 
 
-def _limits(mem_mb: int | None, data_only: bool = False, landlock: list[tuple[Path, str]] | None = None):
+PR_SET_PDEATHSIG = 1
+MAX_STDOUT = 256 * 1024 * 1024
+STDERR_KEEP = 2 * 1024 * 1024  # del registro de error se guardan el principio y el final
+
+
+def _limits(mem_mb: int | None, data_only: bool = False, landlock: list[tuple[Path, str]] | None = None,
+            cpu_s: int | None = None, max_file_mb: int | None = None):
+    # Todo lo que no es una llamada al sistema se prepara en el padre (después del fork solo se llama, D-230).
+    restrict = None
+    if landlock is not None:
+        from tools.sandbox import prepare
+
+        restrict = prepare(landlock)
+    import ctypes
+
+    libc = ctypes.CDLL(None, use_errno=True)
+
     def apply() -> None:
         os.setsid()
+        # Si muere el worker (límite duro de Celery, OOM), el motor muere con él en lugar de quedarse huérfano.
+        libc.prctl(PR_SET_PDEATHSIG, signal.SIGKILL, 0, 0, 0)
         if mem_mb:
             limit = mem_mb * 1024 * 1024
             resource.setrlimit(resource.RLIMIT_DATA if data_only else resource.RLIMIT_AS, (limit, limit))
+        if cpu_s:
+            resource.setrlimit(resource.RLIMIT_CPU, (cpu_s, cpu_s))
+        if max_file_mb:
+            size = max_file_mb * 1024 * 1024
+            resource.setrlimit(resource.RLIMIT_FSIZE, (size, size))
         resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-        if landlock is not None:
-            from tools.sandbox import restrict
-
-            restrict(landlock)  # si no se puede, el hijo no llega a ejecutar el motor
+        if restrict is not None:
+            restrict()  # si no se puede, el hijo no llega a ejecutar el motor
 
     return apply
 
 
-def _popen_sandboxed(args, cwd: Path, env: dict, mem_mb, limit_data: bool, landlock) -> subprocess.Popen:
-    """Popen con Landlock (tools/sandbox.py, D-227): si el núcleo no lo permite, error claro en lugar de ejecutar sin él."""
+def _kill(proc: subprocess.Popen) -> None:
     try:
-        return subprocess.Popen(args, cwd=str(cwd), env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, preexec_fn=_limits(mem_mb, limit_data, landlock))
-    except subprocess.SubprocessError as exc:
-        raise ToolError(ErrorCode.ENGINE_FAILED, "sandbox") from exc
+        os.killpg(proc.pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        pass
+    try:
+        proc.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        pass
+
+
+class _TooMuchOutput(Exception):
+    pass
+
+
+def _collect(proc: subprocess.Popen, timeout: float, max_stdout: int) -> tuple[bytes, bytes]:
+    """Lee stdout y stderr a la vez, con plazo: stdout hasta `max_stdout`; de stderr, el principio y el final (D-230)."""
+    deadline = time.monotonic() + timeout
+    out = bytearray()
+    head = bytearray()
+    tail = bytearray()
+    cut = False
+    with selectors.DefaultSelector() as sel:
+        sel.register(proc.stdout, selectors.EVENT_READ, "out")
+        sel.register(proc.stderr, selectors.EVENT_READ, "err")
+        while sel.get_map():
+            left = deadline - time.monotonic()
+            if left <= 0:
+                raise subprocess.TimeoutExpired(proc.args, timeout)
+            for key, _ in sel.select(min(left, 1.0)):
+                chunk = os.read(key.fd, 1 << 16)
+                if not chunk:
+                    sel.unregister(key.fileobj)
+                    continue
+                if key.data == "out":
+                    out += chunk
+                    if len(out) > max_stdout:
+                        raise _TooMuchOutput
+                elif len(head) < STDERR_KEEP:
+                    head += chunk
+                else:
+                    tail += chunk
+                    if len(tail) > 2 * STDERR_KEEP:
+                        del tail[: len(tail) - STDERR_KEEP]
+                        cut = True
+    proc.stdout.close()
+    proc.stderr.close()
+    left = deadline - time.monotonic()
+    if left <= 0:
+        raise subprocess.TimeoutExpired(proc.args, timeout)
+    proc.wait(timeout=left)
+    if cut:
+        tail = tail[-STDERR_KEEP:]
+        return bytes(out), bytes(head) + b"\n[...]\n" + bytes(tail)
+    return bytes(out), bytes(head) + bytes(tail)
 
 
 def run_engine(
@@ -191,10 +262,15 @@ def run_engine(
     limit_data: bool = False,
     ok_codes: tuple[int, ...] = (0,),
     landlock: list[tuple[Path, str]] | None = None,
+    max_file_mb: int | None = None,
+    max_stdout: int = MAX_STDOUT,
 ) -> subprocess.CompletedProcess:
     """Ejecuta un motor externo con entorno vacío (12.1): solo PATH, HOME y TMPDIR del trabajo.
 
-    Ningún secreto del worker llega al subproceso. Si se pasa del tiempo, se mata el grupo entero.
+    Ningún secreto del worker llega al subproceso. Si se pasa del tiempo, si llega el límite blando de Celery o si
+    falla cualquier cosa mientras se espera, se mata el grupo entero (D-230); y si muere el worker, el motor recibe
+    SIGKILL. El tiempo de CPU se limita a `timeout` por núcleo, la salida estándar a `max_stdout` y, con
+    `max_file_mb`, el tamaño de cada archivo que escriba.
     Los mensajes de error del motor no se devuelven literalmente al usuario. `limit_data` limita la memoria de datos
     (RLIMIT_DATA) en lugar de la virtual: es para motores con Chromium, como Calibre, que reservan mucho espacio de
     direcciones sin usarlo y con RLIMIT_AS no arrancan (D-52). `ok_codes`: códigos de salida que no son un fallo (veraPDF
@@ -203,24 +279,30 @@ def run_engine(
     env = {"PATH": SAFE_PATH, "HOME": str(cwd), "TMPDIR": str(cwd), "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8"}
     if extra_env:
         env.update(extra_env)
-    proc = subprocess.Popen(
-        args,
-        cwd=str(cwd),
-        env=env,
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        preexec_fn=_limits(mem_mb, limit_data, landlock),
-    ) if landlock is None else _popen_sandboxed(args, cwd, env, mem_mb, limit_data, landlock)
+    cpu_s = int(timeout) * max(1, os.cpu_count() or 1) + 30
     try:
-        out, err = proc.communicate(timeout=timeout)
+        preexec = _limits(mem_mb, limit_data, landlock, cpu_s, max_file_mb)
+    except Exception as exc:
+        raise ToolError(ErrorCode.ENGINE_FAILED, "sandbox") from exc
+    try:
+        proc = subprocess.Popen(args, cwd=str(cwd), env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, preexec_fn=preexec)
+    except subprocess.SubprocessError as exc:
+        # Landlock (tools/sandbox.py, D-227): si el núcleo no lo permite, error claro en lugar de ejecutar sin él.
+        if landlock is not None:
+            raise ToolError(ErrorCode.ENGINE_FAILED, "sandbox") from exc
+        raise
+    try:
+        out, err = _collect(proc, timeout, max_stdout)
     except subprocess.TimeoutExpired:
-        try:
-            os.killpg(proc.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        proc.communicate()
-        raise ToolError(ErrorCode.TIMEOUT, f"{Path(args[0]).name} superó {timeout} s")
+        _kill(proc)
+        raise ToolError(ErrorCode.TIMEOUT, f"{Path(args[0]).name} superó {timeout} s") from None
+    except _TooMuchOutput:
+        _kill(proc)
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{Path(args[0]).name} produjo demasiada salida") from None
+    except BaseException:
+        _kill(proc)  # SoftTimeLimitExceeded, KeyboardInterrupt…: el motor no sigue solo
+        raise
     result = subprocess.CompletedProcess(args, proc.returncode, out, err)
     if proc.returncode not in ok_codes:
         raise ToolError(ErrorCode.ENGINE_FAILED, f"{Path(args[0]).name} terminó con código {proc.returncode}")

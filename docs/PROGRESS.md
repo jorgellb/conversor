@@ -632,6 +632,12 @@ midi-a-mp3 y midi-a-wav con FluidSynth y FluidR3_GM, y musicxml-a-pdf y midi-a-p
 captura-web por `gotenbergweb` y `egressweb` y udf-a-pdf, apagada hasta probarla con documentos reales de UYAP (D-229), en
 `tests/test_captura_udf.py`.
 
+## Revisión de F6-I, F6-J y F6-K
+
+Correcciones de D-230 (run_engine sin motores huérfanos y con la salida acotada, vCard con comas y 2.1, tablas acotadas, zonas
+horarias, LaTeX con report, book y BibTeX, draw.io con presupuesto total y fallos que no esperan, buzones sin cargarlos enteros), en
+`tests/test_revision_f6ijk.py`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L y F6-M hechos); siguen el resto de F6, vídeo

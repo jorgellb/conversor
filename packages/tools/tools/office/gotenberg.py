@@ -13,7 +13,7 @@ SANS = '"Noto Sans", "DejaVu Sans", "Liberation Sans", Arial, sans-serif'
 
 
 def _post(url: str, files: list[tuple[str, tuple[str | None, bytes | str, str] | tuple[None, str]]], fields: dict[str, str],
-          timeout: float, page_error: ErrorCode | None = None) -> bytes:
+          timeout: float, page_error: ErrorCode | None = None, conflict_error: ErrorCode | None = None) -> bytes:
     # Siempre multipart: los campos van como partes sin nombre de archivo.
     parts = list(files) + [(k, (None, v)) for k, v in fields.items()]
     try:
@@ -30,6 +30,9 @@ def _post(url: str, files: list[tuple[str, tuple[str | None, bytes | str, str] |
         if page_error is not None:
             raise ToolError(ErrorCode.TIMEOUT, "La página tardó demasiado en cargar")
         raise ToolError(ErrorCode.ENGINE_FAILED, "Gotenberg ocupado (503)", transient=True)
+    if resp.status_code == 409 and conflict_error is not None:
+        # failOnConsoleExceptions: la página ha fallado al dibujar (no es un fallo pasajero del motor).
+        raise ToolError(conflict_error, "La página falló al dibujarse")
     if resp.status_code == 400 and "password" in resp.text.lower():
         raise ToolError(ErrorCode.WRONG_PASSWORD)
     if page_error is not None and resp.status_code in (400, 403, 404, 409, 500):
@@ -51,16 +54,18 @@ def chromium_html(base_url: str, html_path: Path, fields: dict[str, str], timeou
     return _post(f"{base_url.rstrip('/')}/forms/chromium/convert/html", files, fields, timeout)
 
 
-def chromium_html_files(base_url: str, files: list[tuple[str, bytes, str]], fields: dict[str, str], timeout: float = 300) -> bytes:
+def chromium_html_files(base_url: str, files: list[tuple[str, bytes, str]], fields: dict[str, str], timeout: float = 300,
+                        conflict_error: ErrorCode | None = None) -> bytes:
     """`index.html` y sus recursos, todos en el mismo nivel (Gotenberg no conserva carpetas)."""
     parts = [("files", (name, data, mime)) for name, data, mime in files]
-    return _post(f"{base_url.rstrip('/')}/forms/chromium/convert/html", parts, fields, timeout)
+    return _post(f"{base_url.rstrip('/')}/forms/chromium/convert/html", parts, fields, timeout, conflict_error=conflict_error)
 
 
-def chromium_screenshot_files(base_url: str, files: list[tuple[str, bytes, str]], fields: dict[str, str], timeout: float = 300) -> bytes:
+def chromium_screenshot_files(base_url: str, files: list[tuple[str, bytes, str]], fields: dict[str, str], timeout: float = 300,
+                              conflict_error: ErrorCode | None = None) -> bytes:
     """Captura de `index.html` y sus recursos (ruta de capturas de Gotenberg 8: width, height, clip y format)."""
     parts = [("files", (name, data, mime)) for name, data, mime in files]
-    return _post(f"{base_url.rstrip('/')}/forms/chromium/screenshot/html", parts, fields, timeout)
+    return _post(f"{base_url.rstrip('/')}/forms/chromium/screenshot/html", parts, fields, timeout, conflict_error=conflict_error)
 
 
 def chromium_url(base_url: str, url: str, fields: dict[str, str], timeout: float = 180) -> bytes:

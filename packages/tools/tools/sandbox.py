@@ -59,8 +59,13 @@ def abi() -> int:
     return max(0, int(version))
 
 
-def restrict(paths: list[tuple[Path, str]]) -> None:
-    """Se queda (este proceso y sus hijos) con acceso solo a `paths` [(ruta, «r»|«rx»|«rw»)] y, con ABI 4, sin TCP."""
+def prepare(paths: list[tuple[Path, str]]):
+    """Prepara en el padre el conjunto de reglas y devuelve la función que lo aplica en el hijo tras el fork.
+
+    En el hijo solo quedan llamadas al sistema (`prctl` y `landlock_restrict_self`): nada de importar módulos ni
+    cargar bibliotecas, que no es seguro después de un fork en un proceso con hilos. Los descriptores de las rutas y del
+    conjunto se cierran en el hijo al hacer exec (O_CLOEXEC) y en el padre cuando se recoge la función.
+    """
     numbers = SYS.get(platform.machine())
     version = abi()
     if numbers is None or version < 1:
@@ -68,7 +73,7 @@ def restrict(paths: list[tuple[Path, str]]) -> None:
     create, add, restrict_self = numbers
     libc = _libc()
     libc.syscall.restype = ctypes.c_long
-    handled = (1 << 13) - 1  # ABI 1
+    handled = (1 << 13) - 1
     if version >= 2:
         handled |= REFER
     if version >= 3:
@@ -78,6 +83,7 @@ def restrict(paths: list[tuple[Path, str]]) -> None:
     ruleset = libc.syscall(create, ctypes.byref(attr), ctypes.c_size_t(size), ctypes.c_uint32(0))
     if ruleset < 0:
         raise SandboxUnavailable(f"landlock_create_ruleset {ctypes.get_errno()}")
+    os.set_inheritable(ruleset, False)
     try:
         for path, mode in paths:
             if not path.exists():
@@ -92,9 +98,35 @@ def restrict(paths: list[tuple[Path, str]]) -> None:
                     raise SandboxUnavailable(f"landlock_add_rule {ctypes.get_errno()}")
             finally:
                 os.close(fd)
-        if libc.prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) != 0:
-            raise SandboxUnavailable("no_new_privs")
-        if libc.syscall(restrict_self, ctypes.c_int(ruleset), ctypes.c_uint32(0)) < 0:
-            raise SandboxUnavailable(f"landlock_restrict_self {ctypes.get_errno()}")
-    finally:
+    except BaseException:
         os.close(ruleset)
+        raise
+    holder = _Ruleset(ruleset)
+    prctl, syscall = libc.prctl, libc.syscall
+    rs, no_new_privs = ctypes.c_int(ruleset), PR_SET_NO_NEW_PRIVS
+    flags = ctypes.c_uint32(0)
+
+    def apply() -> None:
+        _ = holder  # mantiene abierto el conjunto mientras viva la función
+        if prctl(no_new_privs, 1, 0, 0, 0) != 0:
+            raise SandboxUnavailable("no_new_privs")
+        if syscall(restrict_self, rs, flags) < 0:
+            raise SandboxUnavailable("landlock_restrict_self")
+
+    return apply
+
+
+class _Ruleset:
+    def __init__(self, fd: int) -> None:
+        self.fd = fd
+
+    def __del__(self) -> None:
+        try:
+            os.close(self.fd)
+        except OSError:
+            pass
+
+
+def restrict(paths: list[tuple[Path, str]]) -> None:
+    """Se queda (este proceso y sus hijos) con acceso solo a `paths` [(ruta, «r»|«rx»|«rw»)] y, con ABI 4, sin TCP."""
+    prepare(paths)()

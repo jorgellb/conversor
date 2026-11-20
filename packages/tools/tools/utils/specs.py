@@ -323,11 +323,15 @@ class VcfOptions(BaseModel):
 
 
 class IcsOptions(BaseModel):
-    """ics-a-csv e ics-a-excel (D-224): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook."""
+    """ics-a-csv e ics-a-excel (D-224, D-230): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook;
+    en estas dos, la zona horaria de las horas [la del calendario: X-WR-TIMEZONE o Madrid]."""
 
     plantilla: Literal["completo", "google", "outlook"] = opt("completo", "Columnas", "Columns", labels={
         "completo": ("Completas (zona horaria, asistentes, repetición)", "Full (time zone, attendees, recurrence)"),
         "google": ("Plantilla de Google Calendar", "Google Calendar template"), "outlook": ("Plantilla de Outlook", "Outlook template")})
+    zona: Literal[("calendario",) + tuple(ZONES)] = opt(
+        "calendario", "Zona horaria de las horas", "Time zone of the times", show_if={"plantilla": ("google", "outlook")},
+        labels={"calendario": ("La del calendario (o Madrid)", "The calendar's own (or Madrid)"), **ZONES})
 
 
 class CsvIcsOptions(BaseModel):

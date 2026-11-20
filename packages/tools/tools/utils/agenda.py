@@ -27,11 +27,17 @@ NOTES = {
     "es": {"contacts": "{n} contacto(s).", "events": "{n} evento(s).", "photos": "{n} foto(s) de contacto no caben en una tabla y no se han incluido.",
            "recurring": "{n} evento(s) que se repiten salen una sola vez: las plantillas de Google y Outlook no admiten repeticiones (usa «Completa»).",
            "skipped_rows": "{n} fila(s) sin nombre ni datos de contacto se han saltado.", "bad_dates": "{n} fila(s) sin una fecha de inicio válida se han saltado.",
-           "template": "Columnas reconocidas como plantilla de {name}."},
+           "template": "Columnas reconocidas como plantilla de {name}.",
+           "capped": "{n} dato(s) de contacto se han quitado: como mucho {max} correos, teléfonos, direcciones o webs por contacto.",
+           "dropped": "{n} dato(s) (teléfonos, direcciones, correos o webs de más) no caben en la plantilla de Outlook: usa la de Google o la propia para conservarlos.",
+           "bad_times": "{n} evento(s) con una hora que no se entiende han salido de día completo: revisa la columna de la hora."},
     "en": {"contacts": "{n} contact(s).", "events": "{n} event(s).", "photos": "{n} contact photo(s) do not fit in a table and were not included.",
            "recurring": "{n} recurring event(s) come out once: the Google and Outlook templates do not support recurrence (use “Full”).",
            "skipped_rows": "{n} row(s) without a name or contact details were skipped.", "bad_dates": "{n} row(s) without a valid start date were skipped.",
-           "template": "Columns recognised as the {name} template."},
+           "template": "Columns recognised as the {name} template.",
+           "capped": "{n} contact detail(s) were removed: at most {max} emails, phones, addresses or websites per contact.",
+           "dropped": "{n} detail(s) (extra phones, addresses, emails or websites) do not fit the Outlook template: use the Google or own template to keep them.",
+           "bad_times": "{n} event(s) with a time that could not be understood came out as all-day: check the time column."},
 }
 TEMPLATE_NAMES = {"google": "Google", "outlook": "Outlook", "generico": "la herramienta"}
 
@@ -67,64 +73,181 @@ class Contact:
         return self.full or " ".join(p for p in (self.prefix, self.given, self.middle, self.family, self.suffix) if p) or self.org
 
 
+KINDS = ("fax", "cell", "work", "home", "main", "other")  # el fax primero: «TYPE=WORK,FAX» es un fax
+BARE_TYPES = {"cell", "mobile", "work", "home", "fax", "main", "pref", "voice", "internet", "pager", "car", "other", "msg",
+              "x400", "dom", "intl", "postal", "parcel", "bbs", "modem", "isdn", "video"}
+MAX_PER_KIND = 10  # correos, teléfonos, direcciones y webs por contacto: una tabla no crece sin límite (D-230)
+MAX_CELLS = 5_000_000
+
+
 def _kind(params: dict) -> str:
-    types = {str(v).lower() for v in params.get("TYPE", []) for v in str(v).split(",")}
-    for t in ("cell", "work", "home", "fax", "main", "other"):
+    types = {t.strip().lower() for v in params.get("TYPE", []) for t in str(v).split(",")}
+    for t in KINDS:
         if t in types or (t == "cell" and "mobile" in types):
             return t
     return "other"
 
 
-def read_vcf(raw: bytes) -> tuple[list[Contact], int]:
-    import vobject
+def _unescape(text: str) -> str:
+    return re.sub(r"\\(.)", lambda m: "\n" if m.group(1) in "nN" else m.group(1), text)
 
+
+def _split(text: str, sep: str) -> list[str]:
+    """Parte por `sep` sin escapar (`\;` o `\,` no parten) y quita los escapes de cada trozo."""
+    parts, cur, i = [], [], 0
+    while i < len(text):
+        ch = text[i]
+        if ch == "\\" and i + 1 < len(text):
+            cur.append(text[i:i + 2])
+            i += 2
+            continue
+        if ch == sep:
+            parts.append(_unescape("".join(cur)))
+            cur = []
+        else:
+            cur.append(ch)
+        i += 1
+    parts.append(_unescape("".join(cur)))
+    return parts
+
+
+def _logical_lines(text: str) -> list[str]:
+    """Desdobla las líneas (RFC 6350 3.2) y junta los saltos suaves de quoted-printable de vCard 2.1 («=» al final)."""
+    raw = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    out: list[str] = []
+    qp = False
+    for line in raw:
+        if out and qp and out[-1].endswith("="):
+            out[-1] = out[-1][:-1] + line
+        elif out and line[:1] in (" ", "\t"):
+            out[-1] += line[1:]
+        else:
+            out.append(line)
+        head = out[-1].split(":", 1)[0].upper()
+        qp = "QUOTED-PRINTABLE" in head
+    return [ln for ln in out if ln.strip()]
+
+
+def _parse_line(line: str) -> tuple[str, dict[str, list[str]], str] | None:
+    in_quotes = False
+    for i, ch in enumerate(line):
+        if ch == '"':
+            in_quotes = not in_quotes
+        elif ch == ":" and not in_quotes:
+            head, value = line[:i], line[i + 1:]
+            break
+    else:
+        return None
+    pieces = head.split(";")
+    name = pieces[0].split(".")[-1].strip().upper()  # «item1.TEL» (grupos de Apple)
+    params: dict[str, list[str]] = {}
+    for piece in pieces[1:]:
+        if "=" in piece:
+            key, val = piece.split("=", 1)
+            params.setdefault(key.strip().upper(), []).extend(v.strip().strip('"') for v in val.split(","))
+        elif piece.strip():
+            # vCard 2.1: «TEL;CELL;WORK:…», parámetros sueltos que son tipos o la codificación.
+            bare = piece.strip().lower()
+            if bare in ("quoted-printable", "base64", "b", "8bit"):
+                params.setdefault("ENCODING", []).append(bare.upper())
+            elif bare in BARE_TYPES or bare.startswith("x-"):
+                params.setdefault("TYPE", []).append(bare)
+    return name, params, value
+
+
+def _decode_value(value: str, params: dict[str, list[str]]) -> str:
+    import quopri
+
+    encoding = {e.upper() for e in params.get("ENCODING", [])}
+    if "QUOTED-PRINTABLE" in encoding:
+        charset = (params.get("CHARSET") or ["utf-8"])[0]
+        data = quopri.decodestring(value.encode("latin-1", "replace"))
+        try:
+            return data.decode(charset)
+        except (LookupError, UnicodeDecodeError):
+            try:
+                return data.decode("utf-8")
+            except UnicodeDecodeError:
+                return data.decode("cp1252", "replace")
+    return value
+
+
+def read_vcf(raw: bytes) -> tuple[list[Contact], int]:
+    """vCard 2.1, 3.0 y 4.0 con un lector propio (D-230): vobject partía el texto en cada coma sin escapar (FN, TITLE,
+    NOTE…), y vCard 2.1 no escapa las comas; también perdía los tipos sueltos de 2.1 y los saltos de quoted-printable."""
     text, _ = decode(raw)
     contacts, photos = [], 0
-    try:
-        for card in vobject.readComponents(text, ignoreUnreadable=True):
-            if card.name != "VCARD":
-                continue
-            c = Contact()
-            for line in card.getChildren():
-                key, value, params = line.name.upper(), line.value, line.params
-                if key == "N" and hasattr(value, "given"):
-                    c.given, c.family = _s(value.given), _s(value.family)
-                    c.middle, c.prefix, c.suffix = _s(value.additional), _s(value.prefix), _s(value.suffix)
-                elif key == "FN":
-                    c.full = _s(value)
-                elif key == "NICKNAME":
-                    c.nickname = _s(value)
-                elif key == "ORG":
-                    c.org = " ".join(_s(v) for v in value) if isinstance(value, list) else _s(value)
-                elif key == "TITLE":
-                    c.title = _s(value)
-                elif key == "BDAY":
-                    c.birthday = _s(value)
-                elif key == "NOTE":
-                    c.note = _s(value)
-                elif key == "CATEGORIES":
-                    c.categories = [_s(v) for v in (value if isinstance(value, list) else [value]) if _s(v)]
-                elif key == "EMAIL" and _s(value):
-                    c.emails.append((_kind(params), _s(value)))
-                elif key == "TEL" and _s(value):
-                    c.phones.append((_kind(params), _s(value)))
-                elif key == "ADR" and hasattr(value, "street"):
-                    c.addresses.append((_kind(params), {"street": _s(value.street), "city": _s(value.city), "region": _s(value.region),
-                                                        "code": _s(value.code), "country": _s(value.country)}))
-                elif key == "URL" and _s(value):
-                    c.urls.append(_s(value))
-                elif key == "PHOTO":
-                    photos += 1
-            contacts.append(c)
-            if len(contacts) > MAX_ITEMS:
-                raise ToolError(ErrorCode.LIMIT_EXCEEDED, "agenda_too_many")
-    except ToolError:
-        raise
-    except Exception as exc:  # noqa: BLE001 - vobject lanza ParseError, ValueError o KeyError con un vCard mal formado
-        raise ToolError(ErrorCode.CORRUPT_FILE, "vCard no válido") from exc
+    c: Contact | None = None
+    depth = 0
+    for line in _logical_lines(text):
+        parsed = _parse_line(line)
+        if parsed is None:
+            continue
+        key, params, value = parsed
+        if key == "BEGIN" and value.strip().upper() == "VCARD":
+            depth += 1
+            if depth == 1:
+                c = Contact()
+            continue
+        if key == "END" and value.strip().upper() == "VCARD":
+            depth = max(0, depth - 1)
+            if depth == 0 and c is not None:
+                contacts.append(c)
+                c = None
+                if len(contacts) > MAX_ITEMS:
+                    raise ToolError(ErrorCode.LIMIT_EXCEEDED, "agenda_too_many")
+            continue
+        if c is None or depth != 1:
+            continue  # fuera de una tarjeta o dentro de un AGENT anidado
+        if key == "PHOTO":
+            photos += 1
+            continue
+        value = _decode_value(value, params)
+        kind = _kind(params)
+        if key == "N":
+            parts = (_split(value, ";") + [""] * 5)[:5]
+            c.family, c.given, c.middle, c.prefix, c.suffix = (p.strip() for p in parts)
+        elif key == "FN":
+            c.full = _unescape(value).strip()
+        elif key == "NICKNAME":
+            c.nickname = _unescape(value).strip()
+        elif key == "ORG":
+            c.org = " ".join(p.strip() for p in _split(value, ";") if p.strip())
+        elif key == "TITLE":
+            c.title = _unescape(value).strip()
+        elif key == "BDAY":
+            c.birthday = _unescape(value).strip()
+        elif key == "NOTE":
+            c.note = _unescape(value).strip()
+        elif key == "CATEGORIES":
+            c.categories = [p.strip() for p in _split(value, ",") if p.strip()]
+        elif key == "EMAIL" and value.strip():
+            c.emails.append((kind, _unescape(value).strip()))
+        elif key == "TEL" and value.strip():
+            c.phones.append((kind, _unescape(value).strip().removeprefix("tel:")))
+        elif key == "ADR":
+            parts = (_split(value, ";") + [""] * 7)[:7]
+            street = ", ".join(p.strip() for p in (parts[1], parts[2]) if p.strip())  # apartado y calle
+            adr = {"street": street, "city": parts[3].strip(), "region": parts[4].strip(), "code": parts[5].strip(), "country": parts[6].strip()}
+            if any(adr.values()):
+                c.addresses.append((kind, adr))
+        elif key == "URL" and value.strip():
+            c.urls.append(_unescape(value).strip())
     if not contacts:
         raise ToolError(ErrorCode.CORRUPT_FILE, "agenda_empty")
     return contacts, photos
+
+
+def cap_entries(contacts: list[Contact]) -> int:
+    """Como mucho MAX_PER_KIND correos, teléfonos, direcciones y webs por contacto; devuelve cuántos se han quitado."""
+    dropped = 0
+    for c in contacts:
+        for attr in ("emails", "phones", "addresses", "urls"):
+            items = getattr(c, attr)
+            if len(items) > MAX_PER_KIND:
+                dropped += len(items) - MAX_PER_KIND
+                setattr(c, attr, items[:MAX_PER_KIND])
+    return dropped
 
 
 def _s(value) -> str:
@@ -137,7 +260,18 @@ GOOGLE_LABEL = {"cell": "Mobile", "work": "Work", "home": "Home", "fax": "Work F
 GOOGLE_TYPE = {v.lower(): k for k, v in GOOGLE_LABEL.items()} | {"mobile": "cell", "móvil": "cell", "trabajo": "work", "casa": "home"}
 
 
-def contact_rows(contacts: list[Contact], template: str, locale: str) -> list[list[str]]:
+PHONE_COLUMNS = ("Business Phone", "Business Phone 2", "Home Phone", "Home Phone 2", "Mobile Phone", "Car Phone",
+                 "Business Fax", "Home Fax", "Other Fax", "Pager", "Other Phone", "Primary Phone")
+PHONE_SLOTS = {"work": ("Business Phone", "Business Phone 2"), "home": ("Home Phone", "Home Phone 2"), "cell": ("Mobile Phone", "Car Phone"),
+               "fax": ("Business Fax", "Home Fax", "Other Fax"), "main": ("Primary Phone",), "other": ("Other Phone", "Primary Phone")}
+OUTLOOK_PHONE_KIND = {"business phone": "work", "business phone 2": "work", "home phone": "home", "home phone 2": "home",
+                      "mobile phone": "cell", "car phone": "cell", "business fax": "fax", "home fax": "fax", "other fax": "fax",
+                      "primary phone": "main", "other phone": "other", "pager": "other"}
+
+
+def contact_rows(contacts: list[Contact], template: str, locale: str, dropped: list[int] | None = None) -> list[list[str]]:
+    """Filas de la tabla; `dropped[0]` suma los datos que no caben en la plantilla de Outlook."""
+    dropped = dropped if dropped is not None else [0]
     if template == "google":
         n_mail = max((len(c.emails) for c in contacts), default=0) or 1
         n_tel = max((len(c.phones) for c in contacts), default=0) or 1
@@ -149,6 +283,8 @@ def contact_rows(contacts: list[Contact], template: str, locale: str) -> list[li
         header += [f"Phone {i} - {k}" for i in range(1, n_tel + 1) for k in ("Label", "Value")]
         header += [f"Address {i} - {k}" for i in range(1, n_adr + 1) for k in ("Label", "Street", "City", "Region", "Postal Code", "Country")]
         header += [f"Website {i} - {k}" for i in range(1, n_web + 1) for k in ("Label", "Value")]
+        if len(header) * (len(contacts) + 1) > MAX_CELLS:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "agenda_too_many")
         rows = [header]
         for c in contacts:
             given = c.given or ("" if c.family else c.full)
@@ -167,24 +303,33 @@ def contact_rows(contacts: list[Contact], template: str, locale: str) -> list[li
         return rows
     if template == "outlook":
         header = ["First Name", "Middle Name", "Last Name", "Title", "Suffix", "Nickname", "Company", "Job Title",
-                  "E-mail Address", "E-mail 2 Address", "E-mail 3 Address", "Business Phone", "Home Phone", "Mobile Phone",
-                  "Business Fax", "Other Phone", "Home Street", "Home City", "Home State", "Home Postal Code", "Home Country/Region",
-                  "Business Street", "Business City", "Business State", "Business Postal Code", "Business Country/Region",
+                  "E-mail Address", "E-mail 2 Address", "E-mail 3 Address", *PHONE_COLUMNS,
+                  *(f"{p} {k}" for p in ("Home", "Business", "Other") for k in ("Street", "City", "State", "Postal Code", "Country/Region")),
                   "Web Page", "Birthday", "Notes", "Categories"]
         rows = [header]
         for c in contacts:
-            phones = {"work": "", "home": "", "cell": "", "fax": "", "other": ""}
+            phones = dict.fromkeys(PHONE_COLUMNS, "")
             for kind, value in c.phones:
-                slot = kind if kind in phones else "other"
-                phones[slot] = phones[slot] or value
-            home = next((a for k, a in c.addresses if k == "home"), None) or (c.addresses[0][1] if c.addresses and c.addresses[0][0] != "work" else None)
-            work = next((a for k, a in c.addresses if k == "work"), None)
+                # Cada tipo a sus columnas y, si están llenas, a las de «otro»; lo que no cabe se cuenta en la nota.
+                slot = next((col for col in PHONE_SLOTS.get(kind, ()) + PHONE_SLOTS["other"] if not phones[col]), None)
+                if slot is None:
+                    dropped[0] += 1
+                else:
+                    phones[slot] = value
+            places: dict[str, dict | None] = {"home": None, "work": None, "other": None}
+            for kind, a in c.addresses:
+                slot = next((k for k in ((kind,) if kind in places else ()) + ("other", "home", "work") if places[k] is None), None)
+                if slot is None:
+                    dropped[0] += 1
+                else:
+                    places[slot] = a
+            dropped[0] += max(0, len(c.emails) - 3) + max(0, len(c.urls) - 1)
             emails = [v for _, v in c.emails][:3] + [""] * 3
             def adr(a):
                 return [a["street"], a["city"], a["region"], a["code"], a["country"]] if a else [""] * 5
             rows.append([c.given or ("" if c.family else c.full), c.middle, c.family, c.prefix, c.suffix, c.nickname, c.org, c.title,
-                         *emails[:3], phones["work"], phones["home"], phones["cell"], phones["fax"], phones["other"],
-                         *adr(home), *adr(work), c.urls[0] if c.urls else "", c.birthday, c.note, ";".join(c.categories)])
+                         *emails[:3], *phones.values(), *adr(places["home"]), *adr(places["work"]), *adr(places["other"]),
+                         c.urls[0] if c.urls else "", c.birthday, c.note, ";".join(c.categories)])
         return rows
     es = locale == "es"
     header = (["Nombre completo", "Nombre", "Apellidos", "Empresa", "Cargo", "Correo electrónico", "Teléfono", "Dirección", "Web",
@@ -263,12 +408,12 @@ def contacts_from_csv(ctx: ToolContext, path: Path) -> tuple[list[Contact], str,
                 continue
             if key in ("e-mail address", "e-mail 2 address", "e-mail 3 address", "email", "e-mail", "correo", "correo electrónico", "correo electronico"):
                 c.emails += [("other" if template != "outlook" else "work" if key == "e-mail address" else "other", v.strip()) for v in value.split(";") if v.strip()]
-            elif key in ("business phone", "home phone", "mobile phone", "business fax", "other phone", "phone", "teléfono", "telefono", "móvil", "movil"):
-                kind = {"business phone": "work", "home phone": "home", "mobile phone": "cell", "business fax": "fax", "móvil": "cell", "movil": "cell"}.get(key, "other")
+            elif key in OUTLOOK_PHONE_KIND or key in ("phone", "teléfono", "telefono", "móvil", "movil"):
+                kind = OUTLOOK_PHONE_KIND.get(key) or {"móvil": "cell", "movil": "cell"}.get(key, "other")
                 c.phones += [(kind, v.strip()) for v in value.split(";") if v.strip()]
             elif key in ("web page", "web", "website", "sitio web"):
                 c.urls.append(value)
-        for prefix_, kind in (("home", "home"), ("business", "work")):
+        for prefix_, kind in (("home", "home"), ("business", "work"), ("other", "other")):
             street = cell.get(f"{prefix_} street", "")
             if street or cell.get(f"{prefix_} city"):
                 c.addresses.append((kind, {"street": street, "city": cell.get(f"{prefix_} city", ""), "region": cell.get(f"{prefix_} state", ""),
@@ -325,6 +470,17 @@ def write_vcf(contacts: list[Contact]) -> bytes:
 # --- Calendarios -------------------------------------------------------------------------------------------------------
 
 
+def calendar_zone(raw: bytes, choice: str):
+    """La zona elegida o, con «calendario», la X-WR-TIMEZONE del archivo (la que pone Google al exportar) o Madrid."""
+    if choice != "calendario":
+        return ZoneInfo(choice)
+    m = re.search(rb"^X-WR-TIMEZONE:([A-Za-z_/+-]{1,40})\s*$", raw[:200_000], re.M)
+    try:
+        return ZoneInfo(m.group(1).decode()) if m else ZoneInfo("Europe/Madrid")
+    except (ValueError, KeyError, OSError):
+        return ZoneInfo("Europe/Madrid")
+
+
 def read_ics(raw: bytes) -> list:
     import icalendar
 
@@ -357,7 +513,9 @@ def _text(ev, key: str) -> str:
     return str(value).strip()
 
 
-def event_rows(events: list, template: str, locale: str) -> tuple[list[list], int]:
+def event_rows(events: list, template: str, locale: str, zone=None) -> tuple[list[list], int]:
+    """`zone`: en las plantillas de Google y Outlook (que no llevan zona horaria) las horas se pasan a esa zona, la del
+    calendario al que se importan; las horas «flotantes» (sin zona) se dejan como están (D-230)."""
     recurring = sum(1 for ev in events if ev.get("RRULE") is not None)
     if template in ("google", "outlook"):
         header = (["Subject", "Start Date", "Start Time", "End Date", "End Time", "All Day Event", "Description", "Location", "Private"]
@@ -373,6 +531,8 @@ def event_rows(events: list, template: str, locale: str) -> tuple[list[list], in
                 end = start + (_value(ev, "DURATION") or (timedelta(days=1) if all_day else timedelta(0)))
             if all_day and isinstance(end, date):
                 end = end - timedelta(days=1)  # en iCalendar el fin de un día completo es el día siguiente
+            if zone is not None and not all_day:
+                start, end = (v.astimezone(zone) if isinstance(v, datetime) and v.tzinfo else v for v in (start, end))
             def d(v):
                 return v.strftime("%m/%d/%Y")
             def h(v):
@@ -448,12 +608,13 @@ def _parse_date(text: str, order: str) -> tuple[date | None, time | None]:
 
 
 def _time(text: str) -> time | None:
-    m = re.fullmatch(r"\s*(\d{1,2}):(\d{2})(?::\d{2})?\s*([AaPp][Mm])?\s*", text or "")
+    """«9:30», «09:30:00», «9:30 PM», «9.30», «9:30 p. m.» y «9h30»."""
+    m = re.fullmatch(r"\s*(\d{1,2})[:.h](\d{2})(?::\d{2})?\s*([AaPp])?\.?\s*(?:[Mm]\.?)?\s*", text or "")
     if not m:
         return None
     hour, minute = int(m[1]), int(m[2])
     if m[3]:
-        hour = hour % 12 + (12 if m[3].lower() == "pm" else 0)
+        hour = hour % 12 + (12 if m[3].lower() == "p" else 0)
     return time(hour, minute) if hour < 24 and minute < 60 else None
 
 
@@ -474,7 +635,7 @@ def events_from_csv(ctx: ToolContext, path: Path) -> tuple[bytes, int, int]:
     cal = icalendar.Calendar()
     cal.add("prodid", "-//conversor//csv-a-ics//ES")
     cal.add("version", "2.0")
-    added = bad = 0
+    added = bad = bad_times = 0
     for row in rows[1:]:
         def get(key):
             i = col[key]
@@ -485,6 +646,8 @@ def events_from_csv(ctx: ToolContext, path: Path) -> tuple[bytes, int, int]:
             bad += 1
             continue
         start_t = _time(get("start_time")) or start_t
+        if get("start_time") and _time(get("start_time")) is None:
+            bad_times += 1  # «9.30» o «9:00 a. m.»: sale de día completo, y se avisa
         end_d, end_t = _parse_date(get("end_date"), order)
         end_t = _time(get("end_time")) or end_t
         all_day = get("all_day").lower() in ("true", "sí", "si", "yes", "1", "verdadero") or start_t is None
@@ -512,7 +675,7 @@ def events_from_csv(ctx: ToolContext, path: Path) -> tuple[bytes, int, int]:
     if not added:
         raise ToolError(ErrorCode.CORRUPT_FILE, "agenda_empty")
     cal.add_missing_timezones()
-    return cal.to_ical(), added, bad
+    return cal.to_ical(), added, bad, bad_times
 
 
 def _template_of_events(lower: list[str]) -> bool:
@@ -556,13 +719,21 @@ def run(ctx: ToolContext) -> list[dict]:
         notes: list[str] = []
         if ctx.tool in ("vcf-a-csv", "vcf-a-excel"):
             contacts, photos = read_vcf(inp.path.read_bytes())
-            rows = contact_rows(contacts, o.plantilla, ctx.locale)
+            capped = cap_entries(contacts)
+            dropped = [0]
+            rows = contact_rows(contacts, o.plantilla, ctx.locale, dropped)
             notes.append(t["contacts"].format(n=len(contacts)))
             if photos:
                 notes.append(t["photos"].format(n=photos))
+            if capped:
+                notes.append(t["capped"].format(n=capped, max=MAX_PER_KIND))
+            if dropped[0]:
+                notes.append(t["dropped"].format(n=dropped[0]))
         elif ctx.tool in ("ics-a-csv", "ics-a-excel"):
-            events = read_ics(inp.path.read_bytes())
-            rows, recurring = event_rows(events, o.plantilla, ctx.locale)
+            raw = inp.path.read_bytes()
+            events = read_ics(raw)
+            zone = calendar_zone(raw, o.zona) if o.plantilla in ("google", "outlook") else None
+            rows, recurring = event_rows(events, o.plantilla, ctx.locale, zone)
             notes.append(t["events"].format(n=len(rows) - 1))
             if recurring:
                 notes.append(t["recurring"].format(n=recurring))
@@ -578,8 +749,9 @@ def run(ctx: ToolContext) -> list[dict]:
             outputs.append({"path": str(dst), "name": name, "note": " ".join(notes)})
             continue
         else:  # csv-a-ics
-            data, added, bad = events_from_csv(ctx, inp.path)
+            data, added, bad, bad_times = events_from_csv(ctx, inp.path)
             notes = [t["events"].format(n=added)] + ([t["bad_dates"].format(n=bad)] if bad else [])
+            notes += [t["bad_times"].format(n=bad_times)] if bad_times else []
             name = derived_name(inp.name, "", "ics")
             dst = ctx.output(name)
             dst.write_bytes(data)

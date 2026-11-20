@@ -42,7 +42,7 @@ def test_mbox_to_eml_keeps_each_message(make_ctx, tmp_path):
     assert out[0]["name"] == "Bandeja-eml.zip" and out[0]["note"] == "3 mensaje(s)."
     with zipfile.ZipFile(out[0]["path"]) as zf:
         names = sorted(zf.namelist())
-        assert len(names) == 3 and names[0].startswith("0001 - Segundo_ reunión") or names[0].startswith("0001")
+        assert len(names) == 3 and names[0].startswith("00001") and names[2].startswith("00003")
         first = zf.read(names[0])
     assert b"Subject: Segundo:" in first and b"line that begins with From" in first
 

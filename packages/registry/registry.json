@@ -33062,7 +33062,7 @@
       "ai": false,
       "ai_option": null,
       "options_schema": {
-        "description": "ics-a-csv e ics-a-excel (D-224): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook.",
+        "description": "ics-a-csv e ics-a-excel (D-224, D-230): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook;\nen estas dos, la zona horaria de las horas [la del calendario: X-WR-TIMEZONE o Madrid].",
         "properties": {
           "plantilla": {
             "default": "completo",
@@ -33090,6 +33090,105 @@
             "x-title": {
               "en": "Columns",
               "es": "Columnas"
+            }
+          },
+          "zona": {
+            "default": "calendario",
+            "enum": [
+              "calendario",
+              "Europe/Madrid",
+              "Atlantic/Canary",
+              "Europe/Lisbon",
+              "Europe/London",
+              "Europe/Paris",
+              "UTC",
+              "America/Mexico_City",
+              "America/Bogota",
+              "America/Lima",
+              "America/Santiago",
+              "America/Argentina/Buenos_Aires",
+              "America/Caracas",
+              "America/New_York",
+              "America/Chicago",
+              "America/Los_Angeles"
+            ],
+            "title": "Zona horaria de las horas",
+            "type": "string",
+            "x-labels": {
+              "America/Argentina/Buenos_Aires": {
+                "en": "America/Argentina/Buenos Aires",
+                "es": "America/Argentina/Buenos Aires"
+              },
+              "America/Bogota": {
+                "en": "America/Bogota",
+                "es": "America/Bogota"
+              },
+              "America/Caracas": {
+                "en": "America/Caracas",
+                "es": "America/Caracas"
+              },
+              "America/Chicago": {
+                "en": "America/Chicago",
+                "es": "America/Chicago"
+              },
+              "America/Lima": {
+                "en": "America/Lima",
+                "es": "America/Lima"
+              },
+              "America/Los_Angeles": {
+                "en": "America/Los Angeles",
+                "es": "America/Los Angeles"
+              },
+              "America/Mexico_City": {
+                "en": "America/Mexico City",
+                "es": "America/Mexico City"
+              },
+              "America/New_York": {
+                "en": "America/New York",
+                "es": "America/New York"
+              },
+              "America/Santiago": {
+                "en": "America/Santiago",
+                "es": "America/Santiago"
+              },
+              "Atlantic/Canary": {
+                "en": "Atlantic/Canary",
+                "es": "Atlantic/Canary"
+              },
+              "Europe/Lisbon": {
+                "en": "Europe/Lisbon",
+                "es": "Europe/Lisbon"
+              },
+              "Europe/London": {
+                "en": "Europe/London",
+                "es": "Europe/London"
+              },
+              "Europe/Madrid": {
+                "en": "Europe/Madrid",
+                "es": "Europe/Madrid"
+              },
+              "Europe/Paris": {
+                "en": "Europe/Paris",
+                "es": "Europe/Paris"
+              },
+              "UTC": {
+                "en": "UTC",
+                "es": "UTC"
+              },
+              "calendario": {
+                "en": "The calendar's own (or Madrid)",
+                "es": "La del calendario (o Madrid)"
+              }
+            },
+            "x-show-if": {
+              "plantilla": [
+                "google",
+                "outlook"
+              ]
+            },
+            "x-title": {
+              "en": "Time zone of the times",
+              "es": "Zona horaria de las horas"
             }
           }
         },
@@ -33287,7 +33386,7 @@
       "ai": false,
       "ai_option": null,
       "options_schema": {
-        "description": "ics-a-csv e ics-a-excel (D-224): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook.",
+        "description": "ics-a-csv e ics-a-excel (D-224, D-230): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook;\nen estas dos, la zona horaria de las horas [la del calendario: X-WR-TIMEZONE o Madrid].",
         "properties": {
           "plantilla": {
             "default": "completo",
@@ -33315,6 +33414,105 @@
             "x-title": {
               "en": "Columns",
               "es": "Columnas"
+            }
+          },
+          "zona": {
+            "default": "calendario",
+            "enum": [
+              "calendario",
+              "Europe/Madrid",
+              "Atlantic/Canary",
+              "Europe/Lisbon",
+              "Europe/London",
+              "Europe/Paris",
+              "UTC",
+              "America/Mexico_City",
+              "America/Bogota",
+              "America/Lima",
+              "America/Santiago",
+              "America/Argentina/Buenos_Aires",
+              "America/Caracas",
+              "America/New_York",
+              "America/Chicago",
+              "America/Los_Angeles"
+            ],
+            "title": "Zona horaria de las horas",
+            "type": "string",
+            "x-labels": {
+              "America/Argentina/Buenos_Aires": {
+                "en": "America/Argentina/Buenos Aires",
+                "es": "America/Argentina/Buenos Aires"
+              },
+              "America/Bogota": {
+                "en": "America/Bogota",
+                "es": "America/Bogota"
+              },
+              "America/Caracas": {
+                "en": "America/Caracas",
+                "es": "America/Caracas"
+              },
+              "America/Chicago": {
+                "en": "America/Chicago",
+                "es": "America/Chicago"
+              },
+              "America/Lima": {
+                "en": "America/Lima",
+                "es": "America/Lima"
+              },
+              "America/Los_Angeles": {
+                "en": "America/Los Angeles",
+                "es": "America/Los Angeles"
+              },
+              "America/Mexico_City": {
+                "en": "America/Mexico City",
+                "es": "America/Mexico City"
+              },
+              "America/New_York": {
+                "en": "America/New York",
+                "es": "America/New York"
+              },
+              "America/Santiago": {
+                "en": "America/Santiago",
+                "es": "America/Santiago"
+              },
+              "Atlantic/Canary": {
+                "en": "Atlantic/Canary",
+                "es": "Atlantic/Canary"
+              },
+              "Europe/Lisbon": {
+                "en": "Europe/Lisbon",
+                "es": "Europe/Lisbon"
+              },
+              "Europe/London": {
+                "en": "Europe/London",
+                "es": "Europe/London"
+              },
+              "Europe/Madrid": {
+                "en": "Europe/Madrid",
+                "es": "Europe/Madrid"
+              },
+              "Europe/Paris": {
+                "en": "Europe/Paris",
+                "es": "Europe/Paris"
+              },
+              "UTC": {
+                "en": "UTC",
+                "es": "UTC"
+              },
+              "calendario": {
+                "en": "The calendar's own (or Madrid)",
+                "es": "La del calendario (o Madrid)"
+              }
+            },
+            "x-show-if": {
+              "plantilla": [
+                "google",
+                "outlook"
+              ]
+            },
+            "x-title": {
+              "en": "Time zone of the times",
+              "es": "Zona horaria de las horas"
             }
           }
         },
