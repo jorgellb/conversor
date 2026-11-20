@@ -1445,6 +1445,14 @@
       "p12_invalid": "El archivo no es un certificado .p12 o .pfx.",
       "p12_no_key": "El archivo no trae la clave privada del certificado.",
       "p12_key_type": "El certificado usa un tipo de clave que no se admite."
+    },
+    "fromPdf": {
+      "title": "1. La factura en PDF",
+      "file": "Factura en PDF",
+      "useAi": "Leer los datos con IA (una petición; el texto de la factura se envía al modelo)",
+      "read": "Leer la factura",
+      "reviewed": "He revisado todos los datos del formulario y son los de la factura.",
+      "reviewFirst": "Primero lee la factura y confirma que has revisado los datos."
     }
   }
 }

@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from core.options import opt
-from core.registry import ToolSpec
+from core.registry import AiSpec, ToolSpec
 
 
 class APdfOptions(BaseModel):
@@ -99,7 +99,32 @@ class CrearFacturaElectronicaOptions(BaseModel):
     factura: FacturaE = opt(FacturaE(), "Factura", "Invoice", advanced=True)
 
 
+class PdfAFacturaOptions(BaseModel):
+    """pdf-a-factura-electronica (A.2, F4-E3, D-208): perfil Factur-X [EN 16931]. La página crea dos trabajos: `extraer`
+    (los datos para el formulario de revisión, con IA solo si se pide y se consiente) y `generar` (con la factura revisada)."""
+
+    fase: Literal["extraer", "generar"] = opt("extraer", "Paso", "Step", advanced=True, labels={
+        "extraer": ("Leer los datos de la factura", "Read the invoice data"), "generar": ("Generar el Factur-X", "Generate the Factur-X")})
+    perfil: Literal["en16931"] = opt("en16931", "Perfil Factur-X", "Factur-X profile", labels={"en16931": ("EN 16931", "EN 16931")})
+    ia: bool = opt(False, "Leer los datos con IA (una petición)", "Read the data with AI (one request)", show_if={"fase": ("extraer",)})
+    factura: FacturaE = opt(FacturaE(), "Factura revisada", "Reviewed invoice", advanced=True, show_if={"fase": ("generar",)})
+
+
 SPECS: list[ToolSpec] = [
+    # A.2 (F4-E3, D-208): genera facturas, así que va detrás de INVOICING_ES_ENABLED y apagada por defecto (7.23). La
+    # extracción con IA es una petición con consentimiento (6.6); la categoría invoice puede usar IA, la sign no.
+    ToolSpec(
+        slug_es="pdf-a-factura-electronica", slug_en="pdf-to-e-invoice", name_es="PDF a factura electrónica",
+        name_en="PDF to e-invoice", category="invoice", where="server", inputs=("pdf",), outputs=("json", "pdf", "xml"),
+        # Clase «ai» como el resto de herramientas con IA (la web y las cuotas lo leen); la tarea cuenta como ligera y las
+        # peticiones de IA van aparte, como en imagen-a-excel (D-161).
+        options=PdfAFacturaOptions, worker_group="utils", queue_kind="light", cost_class="ai", cost=lambda o: "light",
+        impl="tools.utils.facturas.desde_pdf:run", launch=True, phase="F4", time_limit=1800, max_files=1, default_enabled=False,
+        ai=AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=1500, option="ia"),
+        summary_es="Convierte una factura en PDF en Factur-X: lee sus datos, te deja revisarlos y genera el PDF/A-3 con el XML.",
+        summary_en="Turn a PDF invoice into Factur-X: read its data, let you check it and generate the PDF/A-3 with the XML.",
+        related=("crear-factura-electronica", "validar-factura-electronica"),
+    ),
     # A.2 (F4-E2, D-205): genera facturas, así que va detrás de INVOICING_ES_ENABLED y apagada por defecto (7.23). Sin
     # archivos: el XML sale del formulario y se valida con el mismo motor que validar-factura-electronica.
     ToolSpec(

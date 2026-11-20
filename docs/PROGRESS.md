@@ -554,6 +554,12 @@ Salvedades en D-205.
 Verificado aquí: pytest de los once formatos con el KoSIT local, de los requisitos de cada formato y del PDF Factur-X, Vitest
 y e2e de las dos páginas. Sin verificar aquí: la firma de Facturae (F4-E2b) y la pila completa.
 
+## F4-E3 (pdf-a-factura-electronica)
+
+Extracción (XML del PDF, reglas o una petición de IA), revisión obligatoria y Factur-X EN 16931 en PDF/A-3b con las páginas
+del original. Salvedades en D-208.
+Verificado aquí: pytest de las dos fases (con un cliente de IA falso, KoSIT local y OCRmyPDF real) y e2e de la página.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4: F4-A, F4-B, F4-C, F4-D y F4-F hechos; siguen F4-E y F4-Z; luego F6, vídeo

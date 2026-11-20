@@ -239,6 +239,8 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     # | UBL, Peppol BIS 3.0, UBL 2.1 y Facturae 3.2.2.
     "crear-factura-electronica": {"formato": E("facturx", "facturx", "xrechnung_cii", "xrechnung_ubl", "peppol", "ubl", "facturae"),
                                   "perfil": E("en16931", "minimum", "basicwl", "basic", "en16931", "extended", "xrechnung"), "factura": X},
+    # A.2 (F4-E3): perfil Factur-X [EN 16931]; extracción y generación en dos trabajos.
+    "pdf-a-factura-electronica": {"perfil": E("en16931", "en16931"), "fase": X, "ia": D(False), "factura": X},
     # A.2 (F4-D): validar-factura-electronica no tiene opciones (detecta sintaxis y especificación).
     "validar-factura-electronica": {},
     # A.2 (F4-D2): salida [PDF/A-3 con el XML incrustado] | PDF simple e idioma [el de la factura]; las páginas de 7.14 igual.

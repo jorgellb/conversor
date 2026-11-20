@@ -156,7 +156,7 @@ jobs:
           # La API, tus y las descargas se simulan con page.route en 8100, 8180 y 8190 (ia-f3, chat-f3 y f2; D-141).
           (cd apps/web && PORT=3100 PUBLIC_WEB_URL=http://127.0.0.1:3100 BETTER_AUTH_URL=http://127.0.0.1:3100 \
             PUBLIC_API_URL=http://127.0.0.1:8100 PUBLIC_UPLOAD_URL=http://127.0.0.1:8180 PUBLIC_FILES_URL=http://127.0.0.1:8190 \
-            INVOICING_ES_ENABLED=true TOOL_CREAR_FACTURA_ENABLED=true TOOL_CREAR_FACTURA_ELECTRONICA_ENABLED=true \
+            INVOICING_ES_ENABLED=true TOOL_CREAR_FACTURA_ENABLED=true TOOL_CREAR_FACTURA_ELECTRONICA_ENABLED=true TOOL_PDF_A_FACTURA_ELECTRONICA_ENABLED=true \
             AUTH_SECRET=ci-solo-pruebas-0123456789abcdef npx next start -p 3100 &)
           for i in $(seq 60); do curl -sf http://127.0.0.1:3100/api/health && break; sleep 2; done
           npx playwright test -c tests/e2e/playwright.config.ts --project=navegador

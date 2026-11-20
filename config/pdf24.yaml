@@ -73,7 +73,7 @@ herramientas:
     equivalentes: [crear-factura-electronica]
   - pdf24: "PDF invoice to e-invoice"
     ruta: /en/pdf-to-e-invoice
-    equivalentes: [pdf-a-factura-electronica:F4]
+    equivalentes: [pdf-a-factura-electronica]
   - pdf24: "XML e-invoice to PDF"
     ruta: /en/xml-invoice-to-pdf
     equivalentes: [factura-electronica-a-pdf]

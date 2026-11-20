@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF a factura electrónica convierte una factura que ya tienes en PDF en Factur-X según la norma europea EN 16931: el mismo PDF, con sus páginas, en formato de archivo PDF/A-3 y con la factura electrónica (el XML) dentro, para que el programa de tu cliente la lea sola.",
+    "Primero leemos los datos. Si el PDF ya lleva una factura electrónica, salen de ella. Si no, buscamos en su texto el número, las fechas, los NIF, el IBAN y el total y, si lo pides y lo consientes, una sola petición a un modelo de IA completa el resto: emisor, cliente y conceptos.",
+    "Después revisas el formulario, que es obligatorio: todos los campos se pueden cambiar y nada se genera hasta que confirmas que son los de la factura. La IA se puede equivocar.",
+    "Al generar, la factura pasa por el mismo validador que «Validar factura electrónica» (los esquemas y las reglas de KoSIT); el PDF se convierte a PDF/A-3 sin Ghostscript y se comprueba con veraPDF. Un PDF escaneado sin texto necesita antes «OCR PDF»."
+  ],
+  "faq": [
+    {
+      "q": "¿Se cambian las páginas de mi factura?",
+      "a": "No: se conserva el PDF con su aspecto; solo se convierte a PDF/A-3 y se le añade el XML."
+    },
+    {
+      "q": "¿Tengo que usar la IA?",
+      "a": "No. Sin IA rellenamos lo que encuentran las reglas y completas tú el resto. Con IA hace falta una cuenta y aceptar que el texto de la factura se envíe al modelo."
+    },
+    {
+      "q": "¿Por qué no se convierte mi PDF?",
+      "a": "Si sus fuentes no van incrustadas, no se puede hacer PDF/A sin Ghostscript, que no usamos por su licencia; vuelve a exportar el PDF desde tu programa con las fuentes incrustadas."
+    },
+    {
+      "q": "¿Sirve para Veri*factu?",
+      "a": "No: esta herramienta no es un sistema de facturación verificable; solo convierte la factura a un formato electrónico."
+    }
+  ]
+}

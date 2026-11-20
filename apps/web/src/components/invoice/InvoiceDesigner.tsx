@@ -4,7 +4,7 @@
 // validación de NIF/NIE/CIF e IBAN; el emisor, los clientes y la numeración se recuerdan en este navegador. El PDF se
 // genera aquí (pdf-lib en el Web Worker): la factura no sale del equipo.
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { computeTotals, EXEMPTION_TEXT, formatMoney, invoiceProblems, parseAmount, type Exemption, type Invoice, type InvoiceLine,
   type Party } from "@conversor/client-tools/invoice-calc";
@@ -15,6 +15,7 @@ import { identityToken } from "@/lib/identity";
 import { getConfig } from "@/lib/runtime";
 import { runServerJob, type JobOutput } from "@/lib/server-job";
 
+import { AiPanel, type AiReady } from "../AiPanel";
 import { solveTurnstile } from "../turnstile";
 import { recordUse } from "@/lib/prefs";
 import type { ClientSpec } from "@/lib/registry";
@@ -97,7 +98,27 @@ export function toFacturaE(inv: Invoice, extra: { buyerReference: string; order:
   };
 }
 
-export function InvoiceDesigner({ spec, einvoiceHref, electronic = false }: { spec: ClientSpec; einvoiceHref?: string; electronic?: boolean }) {
+type FacturaE = ReturnType<typeof toFacturaE>;
+
+/** Los datos que devuelve la fase «extraer» de pdf-a-factura-electronica, en el formulario. */
+export function fromFacturaE(f: Partial<FacturaE>): { inv: Partial<Invoice>; lines: InvoiceLine[]; paymentCode?: string } {
+  const party = (p: Partial<FacturaE["emisor"]> | undefined): Party => ({
+    name: p?.nombre ?? "", taxId: p?.nif ?? "", address: p?.direccion ?? "", postcode: p?.cp ?? "", city: p?.ciudad ?? "",
+    country: /^[A-Z]{2}$/.test(p?.pais ?? "") ? p!.pais! : "ES", email: p?.correo ?? "", province: p?.provincia ?? "",
+  });
+  const num = (v: unknown, d: number) => (typeof v === "number" && Number.isFinite(v) ? v : d);
+  return {
+    inv: { number: f.numero ?? "", issueDate: f.fecha || localDate(), dueDate: f.vencimiento || undefined, currency: f.moneda || "EUR",
+      issuer: party(f.emisor), customer: party(f.cliente), iban: f.iban ?? "" },
+    lines: (f.lineas ?? []).map((l) => ({ description: String(l.descripcion ?? ""), quantity: num(l.cantidad, 1), unit: String(l.unidad ?? "ud"),
+      price: num(l.precio, 0), discount: num(l.descuento, 0), vat: num(l.iva, 21) })),
+    paymentCode: f.forma_pago || undefined,
+  };
+}
+
+export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPdf = false }: {
+  spec: ClientSpec; einvoiceHref?: string; electronic?: boolean; fromPdf?: boolean;
+}) {
   const t = useTranslations("invoice");
   const te = useTranslations("errors");
   const locale = useLocale() === "en" ? "en" : "es";
@@ -127,6 +148,12 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false }: { sp
   const [p12Password, setP12Password] = useState("");
   const [signed, setSigned] = useState<{ url: string; name: string } | null>(null);
   const [signError, setSignError] = useState<string | null>(null);
+  const [pdf, setPdf] = useState<File | null>(null);
+  const [useAi, setUseAi] = useState(false);
+  const [ai, setAi] = useState<AiReady>({ ready: false });
+  const onAi = useCallback((next: AiReady) => setAi((cur) => (cur.ready === next.ready ? cur : next)), []);
+  const [extracted, setExtracted] = useState<{ note: string } | null>(null);
+  const [reviewed, setReviewed] = useState(false);
 
   useEffect(() => {
     const issuer = read<Party | null>(STORE.issuer, (v): v is Party | null => v === null || isParty(v), null);
@@ -184,20 +211,52 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false }: { sp
     setLogo({ data: new Uint8Array(await file.arrayBuffer()), format, url: URL.createObjectURL(file) });
   }
 
+  async function token(): Promise<string> {
+    const config = await getConfig();
+    return identityToken(async () => {
+      if (!turnstileBox.current) throw new ApiError("TURNSTILE_FAILED", "", 403);
+      return solveTurnstile(turnstileBox.current, config.turnstileSiteKey, locale);
+    });
+  }
+
+  /** pdf-a-factura-electronica, fase «extraer»: los datos del PDF (su XML, reglas o IA) al formulario para revisarlos. */
+  async function extract() {
+    if (!pdf) return;
+    setBusy(true);
+    setError(null);
+    setExtracted(null);
+    setReviewed(false);
+    try {
+      const job = await runServerJob(spec.slug, [pdf], { fase: "extraer", ia: useAi }, await token(), () => undefined,
+        new AbortController().signal, useAi ? { ai_consent: true } : undefined);
+      if (job.status !== "succeeded" || !job.outputs[0]) throw new ApiError(job.error?.code ?? "INTERNAL", job.error?.message ?? "", 0);
+      const res = await fetch(job.outputs[0].url);
+      if (!res.ok) throw new ApiError("NOT_FOUND", "", res.status);
+      const data = (await res.json()) as { factura: Partial<FacturaE> };
+      const got = fromFacturaE(data.factura ?? {});
+      setInv((v) => ({ ...v, ...got.inv, issuer: { ...v.issuer, ...Object.fromEntries(Object.entries(got.inv.issuer ?? {}).filter(([, x]) => x)) } as Party }));
+      if (got.lines.length) setRows(got.lines.map((l) => ({ ...newRow(l.vat), ...l, raw: { quantity: String(l.quantity), price: String(l.price), discount: l.discount ? String(l.discount) : "" } })));
+      if (got.paymentCode) setExtra((e) => ({ ...e, paymentCode: got.paymentCode! }));
+      setExtracted({ note: job.outputs[0].note ?? "" });
+    } catch (err) {
+      const code = err instanceof ApiError ? err.code : "INTERNAL";
+      setError(err instanceof ApiError && err.message ? err.message : te.has(code) ? te(code) : te("INTERNAL"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function generateElectronic() {
     setTouched(true);
     if (problems.length) { setError(t("fix")); return; }
+    if (fromPdf && (!pdf || !extracted || !reviewed)) { setError(t("fromPdf.reviewFirst")); return; }
     setBusy(true);
     setError(null);
     setFiles([]);
     try {
-      const config = await getConfig();
-      const token = await identityToken(async () => {
-        if (!turnstileBox.current) throw new ApiError("TURNSTILE_FAILED", "", 403);
-        return solveTurnstile(turnstileBox.current, config.turnstileSiteKey, locale);
-      });
-      const options = { formato: format, perfil: profile, factura: toFacturaE(invoice, extra, t("discountText")) };
-      const job = await runServerJob(spec.slug, [], options, token, () => undefined, new AbortController().signal);
+      const factura = toFacturaE(invoice, extra, t("discountText"));
+      const options = fromPdf ? { fase: "generar", factura } : { formato: format, perfil: profile, factura };
+      const job = await runServerJob(spec.slug, fromPdf && pdf ? [pdf] : [], options, await token(), () => undefined, new AbortController().signal);
       if (job.status !== "succeeded") throw new ApiError(job.error?.code ?? "INTERNAL", job.error?.message ?? "", 0);
       setFiles(job.outputs);
       write(STORE.issuer, inv.issuer);
@@ -365,7 +424,27 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false }: { sp
       <p className="card p-3 text-sm" role="note">{t("legal")}</p>
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="flex flex-col gap-5">
-          {electronic && (
+          {fromPdf && (
+            <section className="card flex flex-col gap-3 p-4" aria-label={t("fromPdf.title")} data-from-pdf>
+              <p className="font-semibold">{t("fromPdf.title")}</p>
+              <label className="flex flex-col gap-1 text-sm">{t("fromPdf.file")}
+                <input type="file" accept="application/pdf,.pdf" className="field" onChange={(e) => { setPdf(e.target.files?.[0] ?? null); setExtracted(null); setReviewed(false); }} />
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={useAi} onChange={(e) => setUseAi(e.target.checked)} />{t("fromPdf.useAi")}
+              </label>
+              {useAi && <AiPanel slug={spec.slug} refresh={0} onChange={onAi} />}
+              <div><button type="button" className="btn" disabled={busy || !pdf || (useAi && !ai.ready)} onClick={() => void extract()}>{t("fromPdf.read")}</button></div>
+              {extracted && <p role="status" className="text-sm">{extracted.note}</p>}
+              {extracted && (
+                <label className="flex items-start gap-2 text-sm">
+                  <input type="checkbox" className="mt-1" checked={reviewed} onChange={(e) => setReviewed(e.target.checked)} />
+                  <span>{t("fromPdf.reviewed")}</span>
+                </label>
+              )}
+            </section>
+          )}
+          {electronic && !fromPdf && (
             <fieldset className="flex flex-col gap-2" data-einvoice-format>
               <legend className="mb-1 font-semibold">{t("einvoice")}</legend>
               <label className="flex flex-col gap-1 text-sm">{t("format")}

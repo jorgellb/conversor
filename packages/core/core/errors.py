@@ -217,6 +217,7 @@ DETAILS: dict[str, dict[str, str]] = {
     "einvoice_invalid": {"es": "El validador rechaza la factura generada ({need}); no se entrega. Revisa los datos y vuelve a probar.",
                          "en": "The validator rejects the generated invoice ({need}); it is not delivered. Check the details and try again."},
     "einvoice_lines": {"es": "Añade al menos un concepto, cada uno con su descripción.", "en": "Add at least one item, each with its description."},
+    "not_invoice": {"es": "El PDF no parece una factura.", "en": "The PDF does not look like an invoice."},
     "einvoice_number": {"es": "Falta el número de factura.", "en": "The invoice number is missing."},
     "einvoice_surcharge": {"es": "El recargo de equivalencia solo existe en Facturae: elige Facturae o quítalo.",
                            "en": "The equivalence surcharge only exists in Facturae: choose Facturae or remove it."},

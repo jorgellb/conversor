@@ -174,3 +174,69 @@ test("crear-factura-electronica: Facturae firmado con XAdES-EPES en el navegador
   expect(xml).toContain("<xades:ClaimedRole>emisor</xades:ClaimedRole>");
   expect(sent.some((body) => body.includes("clave"))).toBe(false); // la contraseña no viaja
 });
+
+// F4-E3: pdf-a-factura-electronica en dos trabajos (extraer → revisar → generar), con la API simulada.
+test("pdf-a-factura-electronica: lee la factura, obliga a revisar y genera el Factur-X", async ({ page }) => {
+  const API = "http://127.0.0.1:8100", UP = "http://127.0.0.1:8180", FILES = "http://127.0.0.1:8190";
+  const cors = { "Access-Control-Allow-Origin": "http://127.0.0.1:3100", "Access-Control-Allow-Methods": "GET, POST, PATCH, HEAD, OPTIONS",
+    "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, Accept-Language, Tus-Resumable, Upload-Length, Upload-Offset, Upload-Metadata",
+    "Access-Control-Expose-Headers": "Location, Upload-Offset, Upload-Length, Tus-Resumable" };
+  await page.route("https://challenges.cloudflare.com/**", (route) => route.fulfill({ status: 200, contentType: "text/javascript",
+    body: "window.turnstile={render:function(el,o){setTimeout(function(){o.callback('ok')},0);return 't1'},remove:function(){}};" }));
+  let offset = 0;
+  await page.route(`${UP}/**`, (route) => {
+    const req = route.request();
+    if (req.method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
+    if (req.method() === "POST") return route.fulfill({ status: 201, headers: { ...cors, Location: `${UP}/files/s${Date.now()}`, "Tus-Resumable": "1.0.0" } });
+    if (req.method() === "PATCH") { offset += req.postDataBuffer()?.length ?? 0; return route.fulfill({ status: 204, headers: { ...cors, "Upload-Offset": String(offset), "Tus-Resumable": "1.0.0" } }); }
+    return route.fulfill({ status: 200, headers: { ...cors, "Upload-Offset": String(offset), "Upload-Length": String(offset), "Tus-Resumable": "1.0.0" } });
+  });
+  const datos = { origen: "reglas", avisos: [], factura: { numero: "2026/0099", fecha: "2026-11-20", moneda: "EUR", iban: "ES9121000418450200051332", forma_pago: "58",
+    emisor: { nif: "B12345674" }, cliente: { nif: "A58818501" }, lineas: [] } };
+  await page.route(`${FILES}/**`, (route) => route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify(datos) }));
+  const jobs: Record<string, unknown>[] = [];
+  await page.route(`${API}/**`, (route) => {
+    const req = route.request();
+    const json = (status: number, body: unknown) => route.fulfill({ status, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (req.method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
+    if (req.url().endsWith("/v1/session/anon")) return json(200, { token: "anon.e2e.firma", expires_in: 86400 });
+    if (req.method() === "POST" && req.url().endsWith("/v1/jobs")) {
+      const body = req.postDataJSON();
+      jobs.push(body);
+      const out = body.options.fase === "extraer"
+        ? [{ name: "datos-factura.json", size: 300, mime: "application/json", note: "Datos encontrados en el texto del PDF: revisa y completa el formulario antes de generar.", url: `${FILES}/d/x/datos-factura.json?t=x`, url_expires_in: 900 }]
+        : [{ name: "factura-facturx.pdf", size: 9000, mime: "application/pdf", note: "Factur-X EN 16931: PDF/A-3 con las páginas del original y el XML incrustado (factur-x.xml). Cumple: PDF/A-3b.", url: `${FILES}/d/y/factura-facturx.pdf?t=x`, url_expires_in: 900 }];
+      return json(201, { id: `j${jobs.length}`, tool: "pdf-a-factura-electronica", status: "succeeded", progress: 1, message: null, error: null, expires_at: null, inputs: [], outputs: out });
+    }
+    return route.fulfill({ status: 404, headers: cors });
+  });
+  await page.goto("/es/pdf-a-factura-electronica");
+  await expect(page.getByRole("heading", { level: 1, name: "PDF a factura electrónica" })).toBeVisible();
+  const box = page.locator("[data-from-pdf]");
+  const { PDFDocument } = await import("@cantoo/pdf-lib");
+  const doc = await PDFDocument.create();
+  doc.addPage([595, 842]);
+  await box.getByLabel("Factura en PDF").setInputFiles({ name: "factura.pdf", mimeType: "application/pdf", buffer: Buffer.from(await doc.save()) });
+  await box.getByRole("button", { name: "Leer la factura" }).click();
+  await expect(box.getByRole("status")).toContainText("Datos encontrados en el texto del PDF");
+  await expect(page.getByLabel("Número de factura")).toHaveValue("2026/0099");
+  await expect(page.locator("[data-party='customer']").getByLabel(/NIF, NIE o CIF/)).toHaveValue("A58818501");
+  const issuer = page.locator("[data-party='issuer']");
+  await issuer.getByLabel("Nombre o razón social").fill("Estudio Pérez S.L.");
+  await issuer.getByLabel("Dirección", { exact: true }).fill("Calle Mayor 1");
+  await issuer.getByLabel("Población").fill("Madrid");
+  await page.locator("[data-party='customer']").getByLabel("Nombre o razón social").fill("Cliente S.A.");
+  await page.locator("[data-line='0']").getByLabel("Descripción").fill("Diseño de logotipo");
+  await page.locator("[data-line='0']").getByLabel("Precio sin IVA").fill("450");
+  const generate = page.getByRole("button", { name: "Generar y validar la factura electrónica" });
+  await generate.click();
+  await expect(page.getByText("Primero lee la factura y confirma que has revisado los datos.")).toBeVisible();
+  await box.getByLabel(/He revisado todos los datos/).check();
+  await generate.click();
+  await expect(page.locator("[data-einvoice-output]")).toHaveText("Descargar factura-facturx.pdf");
+  expect(jobs.map((j) => (j.options as { fase: string }).fase)).toEqual(["extraer", "generar"]);
+  const factura = (jobs[1].options as { factura: { numero: string; emisor: { nombre: string; nif: string }; lineas: unknown[] } }).factura;
+  expect([factura.numero, factura.emisor.nombre, factura.emisor.nif]).toEqual(["2026/0099", "Estudio Pérez S.L.", "B12345674"]);
+  expect((jobs[0] as { upload_ids: string[] }).upload_ids).toHaveLength(1);
+  expect((jobs[1] as { upload_ids: string[] }).upload_ids).toHaveLength(1); // el mismo PDF, con sus páginas
+});

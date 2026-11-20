@@ -1445,6 +1445,14 @@
       "p12_invalid": "The file is not a .p12 or .pfx certificate.",
       "p12_no_key": "The file does not contain the certificate's private key.",
       "p12_key_type": "The certificate uses an unsupported key type."
+    },
+    "fromPdf": {
+      "title": "1. The PDF invoice",
+      "file": "PDF invoice",
+      "useAi": "Read the data with AI (one request; the invoice text is sent to the model)",
+      "read": "Read the invoice",
+      "reviewed": "I have checked every field of the form and it matches the invoice.",
+      "reviewFirst": "First read the invoice and confirm you have checked the data."
     }
   }
 }

@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PDF to e-invoice turns an invoice you already have as a PDF into Factur-X under the European standard EN 16931: the same PDF, with its pages, in the PDF/A-3 archiving format and with the e-invoice (the XML) inside, so your customer's software can read it on its own.",
+    "First we read the data. If the PDF already carries an e-invoice, it comes from there. If not, we look in its text for the number, dates, tax IDs, IBAN and total and, if you ask and consent, a single request to an AI model fills in the rest: seller, buyer and items.",
+    "Then you check the form, which is mandatory: every field can be changed and nothing is generated until you confirm it matches the invoice. The AI can make mistakes.",
+    "On generating, the invoice goes through the same validator as “Validate e-invoice” (the KoSIT schemas and rules); the PDF is converted to PDF/A-3 without Ghostscript and checked with veraPDF. A scanned PDF without text needs “OCR PDF” first."
+  ],
+  "faq": [
+    {
+      "q": "Are my invoice pages changed?",
+      "a": "No: the PDF keeps its look; it is only converted to PDF/A-3 and the XML is added."
+    },
+    {
+      "q": "Do I have to use AI?",
+      "a": "No. Without AI we fill in what the rules find and you complete the rest. With AI you need an account and to agree that the invoice text is sent to the model."
+    },
+    {
+      "q": "Why is my PDF not converted?",
+      "a": "If its fonts are not embedded, PDF/A cannot be made without Ghostscript, which we do not use because of its licence; export the PDF again from your program with embedded fonts."
+    },
+    {
+      "q": "Is it valid for Veri*factu?",
+      "a": "No: this tool is not a verifiable invoicing system; it only converts the invoice to an electronic format."
+    }
+  ]
+}

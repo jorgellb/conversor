@@ -28,6 +28,9 @@ herramientas:
   crear-factura-electronica: >-
     Genera facturas electrónicas (RD 238/2026 y Veri*factu): además de INVOICING_ES_ENABLED necesita
     TOOL_CREAR_FACTURA_ELECTRONICA_ENABLED=true, tras la revisión con un asesor de docs/LEGAL.md.
+  pdf-a-factura-electronica: >-
+    Genera facturas electrónicas desde un PDF: además de INVOICING_ES_ENABLED necesita
+    TOOL_PDF_A_FACTURA_ELECTRONICA_ENABLED=true, tras la revisión con un asesor de docs/LEGAL.md.
 fuera_de_alcance:
   - formato: XPS, PostScript/EPS y PDF/X
     motivo: Dependen de Ghostscript o MuPDF (AGPL, 11).
