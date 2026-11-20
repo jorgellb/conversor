@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "draw.io a PNG convierte diagramas de draw.io (diagrams.net) en imágenes PNG para insertarlas en una presentación, un documento de Word, una wiki, un correo o una página web. Cada pestaña del diagrama se convierte en una imagen; si hay varias, las descargas juntas en un ZIP.",
+    "El diagrama se dibuja con el visor oficial de draw.io, el mismo motor que la aplicación, así que se ve igual que en el editor. Eliges la escala: 1× para el tamaño real, 2× para que se vea nítido en pantallas de alta resolución o 3× si lo vas a imprimir. El tamaño de la imagen se ajusta a lo que hay dibujado, con un pequeño margen.",
+    "Puedes dejar el fondo blanco o hacerlo transparente, útil para colocar el diagrama sobre un fondo de color en una presentación o en una web. El texto, los colores, las flechas y las imágenes incrustadas se conservan; las que el diagrama carga de internet no, porque el navegador que dibuja no tiene acceso a la red.",
+    "Admitimos archivos .drawio y .dio de hasta 20 MB. Las imágenes no pasan de 8000 píxeles por lado: un diagrama enorme a escala 3× se reduce lo justo para no superar ese tamaño."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .drawio.",
+    "Elige la escala y si quieres el fondo transparente.",
+    "Descarga el PNG o el ZIP con todas las páginas."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué escala elijo?",
+      "a": "2× es lo mejor para pantalla y documentos. Para imprimir en grande, 3×. 1× da el tamaño exacto del diagrama en el editor."
+    },
+    {
+      "q": "¿Puedo obtener un SVG?",
+      "a": "Por ahora, PNG o PDF. El PDF conserva el diagrama vectorial y se puede convertir después con PDF a SVG."
+    },
+    {
+      "q": "¿Por qué falta un icono de mi diagrama?",
+      "a": "Si el icono se cargaba desde una dirección web, no se incluye. Inserta la imagen dentro del diagrama y vuelve a convertirlo."
+    }
+  ]
+}

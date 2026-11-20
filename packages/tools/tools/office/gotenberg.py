@@ -57,6 +57,12 @@ def chromium_html_files(base_url: str, files: list[tuple[str, bytes, str]], fiel
     return _post(f"{base_url.rstrip('/')}/forms/chromium/convert/html", parts, fields, timeout)
 
 
+def chromium_screenshot_files(base_url: str, files: list[tuple[str, bytes, str]], fields: dict[str, str], timeout: float = 300) -> bytes:
+    """Captura de `index.html` y sus recursos (ruta de capturas de Gotenberg 8: width, height, clip y format)."""
+    parts = [("files", (name, data, mime)) for name, data, mime in files]
+    return _post(f"{base_url.rstrip('/')}/forms/chromium/screenshot/html", parts, fields, timeout)
+
+
 def chromium_url(base_url: str, url: str, fields: dict[str, str], timeout: float = 180) -> bytes:
     """Ruta URL de Chromium. Solo para `gotenbergweb`, que sale por `egressweb` (12.2)."""
     return _post(f"{base_url.rstrip('/')}/forms/chromium/convert/url", [], {**fields, "url": url}, timeout,

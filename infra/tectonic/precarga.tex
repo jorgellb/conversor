@@ -1,0 +1,17 @@
+% Paquetes habituales que se descargan al construir la imagen (F6-K, D-227): latex-a-pdf compila con --only-cached.
+\documentclass[a4paper]{article}
+\usepackage[spanish,english]{babel}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx,xcolor,geometry,hyperref,url}
+\usepackage{booktabs,multirow,longtable,tabularx,array,float,caption,subcaption}
+\usepackage{enumitem,fancyhdr,titlesec,microtype,csquotes,setspace,parskip}
+\usepackage{listings,verbatim,siunitx,natbib,tikz,pgfplots}
+\usepackage{lipsum}
+\pgfplotsset{compat=1.18}
+\begin{document}
+\section{Precarga}
+\lipsum[1] $\sum_{i=1}^n i^2$ \SI{3}{\meter} \cite{x}
+\begin{tikzpicture}\draw (0,0) circle (1);\end{tikzpicture}
+\begin{tikzpicture}\begin{axis}\addplot {x^2};\end{axis}\end{tikzpicture}
+\end{document}

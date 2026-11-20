@@ -269,6 +269,8 @@ DETAILS: dict[str, dict[str, str]] = {
                                  "en": "The signature already contains the document and the second file is not that document (or is not used): upload only the signature."},
     "verify_no_signature": {"es": "Sube una firma (.csig, .p7m, .p7s, .xsig o un XML o PDF firmado) y, si va separada, el documento.",
                             "en": "Upload a signature (.csig, .p7m, .p7s, .xsig or a signed XML or PDF) and, if it is detached, the document."},
+    "latex_no_main": {"es": "El ZIP no tiene ningún .tex con \\documentclass.", "en": "The ZIP has no .tex file with \\documentclass."},
+    "drawio_empty": {"es": "El archivo no tiene ningún diagrama de draw.io.", "en": "The file has no draw.io diagram."},
     "mail_empty": {"es": "El buzón no tiene ningún mensaje.", "en": "The mailbox has no messages."},
     "mail_too_many": {"es": "El buzón tiene más de 20 000 mensajes: divídelo antes.", "en": "The mailbox has more than 20,000 messages: split it first."},
     "agenda_empty": {"es": "El archivo no tiene ningún contacto o evento.", "en": "The file has no contacts or events."},

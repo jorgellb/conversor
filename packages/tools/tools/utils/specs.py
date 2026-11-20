@@ -339,6 +339,27 @@ class CsvIcsOptions(BaseModel):
         "dia_mes": ("Día/mes (3 de abril)", "Day/month (3 April)"), "mes_dia": ("Mes/día (4 de marzo)", "Month/day (March 4)")})
 
 
+# --- F6-K (7.13, D-227): draw.io y LaTeX. El Anexo A no fija opciones. --------------------------------------------------
+
+
+class DrawioPdfOptions(BaseModel):
+    """drawio-a-pdf (D-227): papel [A4] | A3 | Letter, orientación [automática] y ajustar el diagrama a la página [sí]."""
+
+    papel: Literal["A4", "A3", "Letter"] = opt("A4", "Papel", "Paper", labels={k: (k, k) for k in ("A4", "A3", "Letter")})
+    orientacion: Literal["auto", "vertical", "horizontal"] = opt("auto", "Orientación", "Orientation", labels={
+        "auto": ("Automática (según el diagrama)", "Automatic (from the diagram)"), "vertical": ("Vertical", "Portrait"),
+        "horizontal": ("Horizontal", "Landscape")})
+    ajustar: bool = opt(True, "Ajustar el diagrama a la página", "Fit the diagram to the page")
+
+
+class DrawioPngOptions(BaseModel):
+    """drawio-a-png (D-227): escala [2×] y fondo transparente [no]."""
+
+    escala: Literal[1, 2, 3] = opt(2, "Escala", "Scale", labels={1: ("1× (tamaño real)", "1× (actual size)"), 2: ("2× (nítido)", "2× (sharp)"),
+                                                                 3: ("3× (para imprimir)", "3× (for print)")})
+    transparente: bool = opt(False, "Fondo transparente", "Transparent background")
+
+
 SPECS: list[ToolSpec] = [
     # A.2 (F4-E3, D-208): genera facturas, así que va detrás de INVOICING_ES_ENABLED y apagada por defecto (7.23). La
     # extracción con IA es una petición con consentimiento (6.6); la categoría invoice puede usar IA, la sign no.
@@ -605,4 +626,17 @@ SPECS: list[ToolSpec] = [
           "Convierte un calendario ICS en una hoja de Excel con todos sus eventos, para revisarlos, filtrarlos o imprimirlos.",
           "Turn an ICS calendar into an Excel sheet with all its events, to review, filter or print them.",
           ("ics-a-csv", "csv-a-ics"), IcsOptions, impl="tools.utils.agenda:run"),
+    # 7.13 (F6-K, D-227): Tectonic con Landlock y --only-cached; draw.io con su visor en el Chromium de Gotenberg.
+    datos("latex-a-pdf", "latex-to-pdf", "LaTeX a PDF", "LaTeX to PDF", ("tex", "zip"), ("pdf",),
+          "Compila documentos LaTeX (.tex o un ZIP con imágenes y bibliografía) en PDF con XeTeX, sin instalar nada.",
+          "Compile LaTeX documents (.tex or a ZIP with images and bibliography) into PDF with XeTeX, without installing anything.",
+          ("markdown-a-pdf", "word-a-pdf"), category="office", impl="tools.utils.latex:run", time_limit=900),
+    datos("drawio-a-pdf", "drawio-to-pdf", "draw.io a PDF", "draw.io to PDF", ("drawio",), ("pdf",),
+          "Convierte diagramas de draw.io (diagrams.net) en PDF vectorial, una página por pestaña del diagrama.",
+          "Turn draw.io (diagrams.net) diagrams into vector PDF, one page per diagram tab.",
+          ("drawio-a-png", "svg-a-pdf"), DrawioPdfOptions, category="office", group="office", impl="tools.office.drawio:run"),
+    datos("drawio-a-png", "drawio-to-png", "draw.io a PNG", "draw.io to PNG", ("drawio",), ("png",),
+          "Convierte diagramas de draw.io en imágenes PNG nítidas, con fondo blanco o transparente.",
+          "Turn draw.io diagrams into sharp PNG images, with a white or transparent background.",
+          ("drawio-a-pdf", "png-a-svg"), DrawioPngOptions, category="office", group="office", impl="tools.office.drawio:run"),
 ]

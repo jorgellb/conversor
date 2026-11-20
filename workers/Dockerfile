@@ -99,6 +99,9 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* \
  && ebook-convert --version
 RUN uv pip install -r pyproject.toml --extra office
+# Visor de draw.io (F6-K, D-227) con su SHA-256: drawio-a-pdf y drawio-a-png en el Chromium de gotenberg.
+COPY infra/drawio/fetch.sh /tmp/drawio-fetch.sh
+RUN sh /tmp/drawio-fetch.sh /opt/drawio && rm /tmp/drawio-fetch.sh
 COPY --from=code /app /app
 USER app
 ENV SERVICE_ROLE=worker-office
@@ -278,6 +281,9 @@ RUN uv pip install -r pyproject.toml --extra utils
 # pandoc 3.13 estático (F6-A, D-212), versión y SHA-256 fijados en el script; GPL, solo como proceso externo (11).
 COPY infra/pandoc/fetch.sh /tmp/pandoc-fetch.sh
 RUN sh /tmp/pandoc-fetch.sh /usr/local/bin && rm /tmp/pandoc-fetch.sh
+# Tectonic 0.17.0 con su caché de paquetes llena (F6-K, D-227): latex-a-pdf compila con --only-cached y sin red.
+COPY infra/tectonic /tmp/tectonic
+RUN sh /tmp/tectonic/fetch.sh /opt/tectonic/bin /opt/tectonic/cache && rm -r /tmp/tectonic && chmod -R a+rX /opt/tectonic
 COPY infra/kosit/fetch.sh infra/kosit/scenarios.xml /tmp/kosit/
 RUN sh /tmp/kosit/fetch.sh /opt/kosit "$(python -c 'import facturx, pathlib; print(pathlib.Path(facturx.__file__).parent / "xsd_and_schematron")')" \
       /tmp/kosit/scenarios.xml \

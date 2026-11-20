@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "draw.io to PNG turns draw.io (diagrams.net) diagrams into PNG images to insert into a presentation, a Word document, a wiki, an email or a web page. Each diagram tab becomes an image; if there are several, you download them together in a ZIP.",
+    "The diagram is drawn with the official draw.io viewer, the same engine as the application, so it looks the same as in the editor. You choose the scale: 1× for actual size, 2× to look sharp on high-resolution screens or 3× if you will print it. The image size fits what is drawn, with a small margin.",
+    "You can keep a white background or make it transparent, useful for placing the diagram over a coloured background in a presentation or website. Text, colours, arrows and embedded images are kept; those the diagram loads from the internet are not, because the browser that draws it has no network access.",
+    "We accept .drawio and .dio files of up to 20 MB. Images are capped at 8000 pixels per side: a huge diagram at 3× is reduced just enough to stay within that size."
+  ],
+  "steps": [
+    "Upload one or more .drawio files.",
+    "Choose the scale and whether you want a transparent background.",
+    "Download the PNG or the ZIP with every page."
+  ],
+  "faq": [
+    {
+      "q": "Which scale should I choose?",
+      "a": "2× is best for screens and documents. For large prints, 3×. 1× gives the diagram's exact size in the editor."
+    },
+    {
+      "q": "Can I get an SVG?",
+      "a": "For now, PNG or PDF. The PDF keeps the diagram as vectors and can be converted afterwards with PDF to SVG."
+    },
+    {
+      "q": "Why is an icon missing from my diagram?",
+      "a": "If the icon was loaded from a web address, it is not included. Insert the image into the diagram and convert it again."
+    }
+  ]
+}

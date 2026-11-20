@@ -32600,6 +32600,228 @@
         "title": "IcsOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "latex-a-pdf",
+      "slug_en": "latex-to-pdf",
+      "name_es": "LaTeX a PDF",
+      "name_en": "LaTeX to PDF",
+      "summary_es": "Compila documentos LaTeX (.tex o un ZIP con imágenes y bibliografía) en PDF con XeTeX, sin instalar nada.",
+      "summary_en": "Compile LaTeX documents (.tex or a ZIP with images and bibliography) into PDF with XeTeX, without installing anything.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "tex",
+        "zip"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "markdown-a-pdf",
+        "word-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "drawio-a-pdf",
+      "slug_en": "drawio-to-pdf",
+      "name_es": "draw.io a PDF",
+      "name_en": "draw.io to PDF",
+      "summary_es": "Convierte diagramas de draw.io (diagrams.net) en PDF vectorial, una página por pestaña del diagrama.",
+      "summary_en": "Turn draw.io (diagrams.net) diagrams into vector PDF, one page per diagram tab.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "drawio"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "drawio-a-png",
+        "svg-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "drawio-a-pdf (D-227): papel [A4] | A3 | Letter, orientación [automática] y ajustar el diagrama a la página [sí].",
+        "properties": {
+          "papel": {
+            "default": "A4",
+            "enum": [
+              "A4",
+              "A3",
+              "Letter"
+            ],
+            "title": "Papel",
+            "type": "string",
+            "x-labels": {
+              "A3": {
+                "en": "A3",
+                "es": "A3"
+              },
+              "A4": {
+                "en": "A4",
+                "es": "A4"
+              },
+              "Letter": {
+                "en": "Letter",
+                "es": "Letter"
+              }
+            },
+            "x-title": {
+              "en": "Paper",
+              "es": "Papel"
+            }
+          },
+          "orientacion": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "vertical",
+              "horizontal"
+            ],
+            "title": "Orientación",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Automatic (from the diagram)",
+                "es": "Automática (según el diagrama)"
+              },
+              "horizontal": {
+                "en": "Landscape",
+                "es": "Horizontal"
+              },
+              "vertical": {
+                "en": "Portrait",
+                "es": "Vertical"
+              }
+            },
+            "x-title": {
+              "en": "Orientation",
+              "es": "Orientación"
+            }
+          },
+          "ajustar": {
+            "default": true,
+            "title": "Ajustar el diagrama a la página",
+            "type": "boolean",
+            "x-title": {
+              "en": "Fit the diagram to the page",
+              "es": "Ajustar el diagrama a la página"
+            }
+          }
+        },
+        "title": "DrawioPdfOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "drawio-a-png",
+      "slug_en": "drawio-to-png",
+      "name_es": "draw.io a PNG",
+      "name_en": "draw.io to PNG",
+      "summary_es": "Convierte diagramas de draw.io en imágenes PNG nítidas, con fondo blanco o transparente.",
+      "summary_en": "Turn draw.io diagrams into sharp PNG images, with a white or transparent background.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "drawio"
+      ],
+      "outputs": [
+        "png",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "drawio-a-pdf",
+        "png-a-svg"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "drawio-a-png (D-227): escala [2×] y fondo transparente [no].",
+        "properties": {
+          "escala": {
+            "default": 2,
+            "enum": [
+              1,
+              2,
+              3
+            ],
+            "title": "Escala",
+            "type": "integer",
+            "x-labels": {
+              "1": {
+                "en": "1× (actual size)",
+                "es": "1× (tamaño real)"
+              },
+              "2": {
+                "en": "2× (sharp)",
+                "es": "2× (nítido)"
+              },
+              "3": {
+                "en": "3× (for print)",
+                "es": "3× (para imprimir)"
+              }
+            },
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "transparente": {
+            "default": false,
+            "title": "Fondo transparente",
+            "type": "boolean",
+            "x-title": {
+              "en": "Transparent background",
+              "es": "Fondo transparente"
+            }
+          }
+        },
+        "title": "DrawioPngOptions",
+        "type": "object"
+      }
     }
   ]
 }

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "LaTeX a PDF compila documentos LaTeX en PDF sin instalar TeX Live ni MiKTeX. Sube un .tex suelto o un ZIP con todo el proyecto (el documento principal, los capítulos, las imágenes y la bibliografía) y descarga el PDF, listo para entregar un trabajo, un artículo o una tesis desde cualquier equipo.",
+    "Usamos Tectonic, un motor moderno basado en XeTeX: entiende UTF-8, así que las tildes y las eñes funcionan sin configurar nada, admite fontspec y hace por sí mismo todas las pasadas que hacen falta para que el índice, las referencias cruzadas y la bibliografía con BibTeX queden bien. Tenemos instalados los paquetes más habituales: amsmath, graphicx, hyperref, geometry, babel, booktabs, siunitx, listings, TikZ, pgfplots, beamer y muchos más.",
+    "En un ZIP, el documento principal es el que tiene \\documentclass (mejor si se llama main.tex), y las rutas relativas de \\input, \\include e \\includegraphics funcionan como en tu equipo. Si el documento no compila, en lugar de un error genérico te damos el registro de LaTeX y, en la nota, el primer error con su número de línea.",
+    "Por seguridad, el compilador trabaja aislado: solo puede leer los archivos de tu proyecto y sus propios paquetes, no puede ejecutar órdenes del sistema ni conectarse a internet. Un documento que intente leer otros archivos del servidor simplemente no los encuentra."
+  ],
+  "steps": [
+    "Sube el .tex o un ZIP con el proyecto completo.",
+    "Espera a que se compile.",
+    "Descarga el PDF (o el registro, si hay errores)."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué dice que falta un paquete?",
+      "a": "Porque no está entre los instalados: el compilador no descarga paquetes de internet. Los más comunes sí están; si necesitas uno muy concreto, compílalo en tu equipo."
+    },
+    {
+      "q": "¿Puedo usar biber y biblatex?",
+      "a": "BibTeX funciona; biber no está disponible. Con biblatex usa la opción backend=bibtex, o natbib."
+    },
+    {
+      "q": "¿Funciona con pdflatex?",
+      "a": "El motor es XeTeX, compatible con casi todos los documentos de pdflatex. Si usas inputenc o fontenc, se ignoran sin problema; los paquetes exclusivos de pdflatex, como algunos de microtype, pueden comportarse algo distinto."
+    }
+  ]
+}

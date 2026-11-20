@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "LaTeX to PDF compiles LaTeX documents into PDF without installing TeX Live or MiKTeX. Upload a single .tex or a ZIP with the whole project (main document, chapters, images and bibliography) and download the PDF, ready to hand in an assignment, a paper or a thesis from any computer.",
+    "We use Tectonic, a modern engine based on XeTeX: it understands UTF-8, so accented letters work without any setup, supports fontspec and runs as many passes as needed by itself so the table of contents, cross-references and BibTeX bibliography come out right. The most common packages are installed: amsmath, graphicx, hyperref, geometry, babel, booktabs, siunitx, listings, TikZ, pgfplots, beamer and many more.",
+    "In a ZIP, the main document is the one with \\documentclass (preferably named main.tex), and relative paths in \\input, \\include and \\includegraphics work as on your computer. If the document does not compile, instead of a generic error we give you the LaTeX log and, in the note, the first error with its line number.",
+    "For safety, the compiler runs isolated: it can only read your project's files and its own packages, it cannot run system commands or connect to the internet. A document that tries to read other files on the server simply does not find them."
+  ],
+  "steps": [
+    "Upload the .tex or a ZIP with the whole project.",
+    "Wait for it to compile.",
+    "Download the PDF (or the log, if there are errors)."
+  ],
+  "faq": [
+    {
+      "q": "Why does it say a package is missing?",
+      "a": "Because it is not among the installed ones: the compiler does not download packages from the internet. The common ones are there; if you need a very specific one, compile on your computer."
+    },
+    {
+      "q": "Can I use biber and biblatex?",
+      "a": "BibTeX works; biber is not available. With biblatex use the backend=bibtex option, or natbib."
+    },
+    {
+      "q": "Does it work with pdflatex documents?",
+      "a": "The engine is XeTeX, compatible with almost every pdflatex document. inputenc or fontenc are ignored harmlessly; pdflatex-only packages, such as some parts of microtype, may behave slightly differently."
+    }
+  ]
+}

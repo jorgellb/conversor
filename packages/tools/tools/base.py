@@ -158,15 +158,28 @@ def open_image(src, max_pixels: int):
         img.close()
 
 
-def _limits(mem_mb: int | None, data_only: bool = False):
+def _limits(mem_mb: int | None, data_only: bool = False, landlock: list[tuple[Path, str]] | None = None):
     def apply() -> None:
         os.setsid()
         if mem_mb:
             limit = mem_mb * 1024 * 1024
             resource.setrlimit(resource.RLIMIT_DATA if data_only else resource.RLIMIT_AS, (limit, limit))
         resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        if landlock is not None:
+            from tools.sandbox import restrict
+
+            restrict(landlock)  # si no se puede, el hijo no llega a ejecutar el motor
 
     return apply
+
+
+def _popen_sandboxed(args, cwd: Path, env: dict, mem_mb, limit_data: bool, landlock) -> subprocess.Popen:
+    """Popen con Landlock (tools/sandbox.py, D-227): si el núcleo no lo permite, error claro en lugar de ejecutar sin él."""
+    try:
+        return subprocess.Popen(args, cwd=str(cwd), env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE, preexec_fn=_limits(mem_mb, limit_data, landlock))
+    except subprocess.SubprocessError as exc:
+        raise ToolError(ErrorCode.ENGINE_FAILED, "sandbox") from exc
 
 
 def run_engine(
@@ -177,6 +190,7 @@ def run_engine(
     extra_env: dict[str, str] | None = None,
     limit_data: bool = False,
     ok_codes: tuple[int, ...] = (0,),
+    landlock: list[tuple[Path, str]] | None = None,
 ) -> subprocess.CompletedProcess:
     """Ejecuta un motor externo con entorno vacío (12.1): solo PATH, HOME y TMPDIR del trabajo.
 
@@ -196,8 +210,8 @@ def run_engine(
         stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        preexec_fn=_limits(mem_mb, limit_data),
-    )
+        preexec_fn=_limits(mem_mb, limit_data, landlock),
+    ) if landlock is None else _popen_sandboxed(args, cwd, env, mem_mb, limit_data, landlock)
     try:
         out, err = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:

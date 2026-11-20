@@ -126,7 +126,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F6-H2 | tcx-a-gpx, fit-a-gpx, fit-a-csv | Hecho (D-223) |
 | F6-I | vcf-a-csv, csv-a-vcf, vcf-a-excel, ics-a-csv, csv-a-ics, ics-a-excel | Hecho (D-224) |
 | F6-J | mbox-a-eml, mbox-a-pdf, pst-a-mbox, pst-a-pdf | Hecho (D-225); pst-a-mbox y pst-a-pdf apagadas hasta probarlas con un PST real |
-| F6-K | drawio-a-pdf, drawio-a-png, latex-a-pdf | Pendiente (F4-Z) |
+| F6-K | drawio-a-pdf, drawio-a-png, latex-a-pdf | Hecho (D-227); Landlock en el Docker del VPS, en DEPLOY-CHECKLIST |
 | F6-L | midi-a-mp3, midi-a-wav, musicxml-a-pdf, midi-a-pdf | Pendiente (F4-Z) |
 | F6-M | captura-web, udf-a-pdf (`default_enabled=False`) | Pendiente (F4-Z) |
 | F6-N | mermaid-a-png, mermaid-a-svg, crear-tarjeta | Pendiente (F4-Z) |

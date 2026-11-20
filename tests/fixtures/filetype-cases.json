@@ -614,6 +614,18 @@
    "b64": "IUJETgAAAABTTRcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
   },
   {
+   "id": "drawio",
+   "declared": "drawio",
+   "expected": "drawio",
+   "b64": "PG14ZmlsZSBob3N0PSJhcHAuZGlhZ3JhbXMubmV0Ij48ZGlhZ3JhbSBpZD0iYSIgbmFtZT0iUCI+ZFo8L2RpYWdyYW0+PC9teGZpbGU+"
+  },
+  {
+   "id": "tex",
+   "declared": "tex",
+   "expected": "tex",
+   "b64": "XGRvY3VtZW50Y2xhc3N7YXJ0aWNsZX0KXGJlZ2lue2RvY3VtZW50fUhvbGFcZW5ke2RvY3VtZW50fQo="
+  },
+  {
    "id": "txt-utf16-texto-unicode-de-excel",
    "declared": "txt",
    "expected": "txt",

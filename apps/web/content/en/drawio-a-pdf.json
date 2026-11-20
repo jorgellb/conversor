@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "draw.io to PDF turns draw.io diagrams, also known as diagrams.net, into vector PDF: flowcharts, org charts, network diagrams, mind maps, UML or process diagrams. The PDF can be printed, sent to someone without draw.io or included in a report, and stays sharp at any size.",
+    "We draw the diagram with the official draw.io viewer, the same engine the application uses, so shapes, colours, arrows, formatted text and embedded images come out as in the editor. Each diagram tab becomes a page of the PDF.",
+    "You can choose the paper (A4, A3 or Letter) and the orientation, or let it be chosen automatically from the diagram's shape. By default each page is scaled to fill the paper; if you turn that off, small diagrams keep their actual size and large ones are shrunk to fit.",
+    "The conversion runs on our server, in a browser with no internet access: images or shapes the diagram loads from a web address are not included, and we warn you. We accept .drawio and .dio files of up to 20 MB and 100 pages."
+  ],
+  "steps": [
+    "Upload one or more .drawio files.",
+    "Choose the paper, orientation and whether to fit to the page.",
+    "Download the PDF."
+  ],
+  "faq": [
+    {
+      "q": "How do I save my diagram as .drawio?",
+      "a": "In draw.io or diagrams.net, File, Save as, and pick your device as the destination. Diagrams on Google Drive or OneDrive can be downloaded the same way."
+    },
+    {
+      "q": "Is the PDF vector?",
+      "a": "Yes: text can be selected and searched, and lines do not pixelate when you zoom in."
+    },
+    {
+      "q": "What if I need it as an image?",
+      "a": "draw.io to PNG turns each page of the diagram into a PNG image."
+    }
+  ]
+}

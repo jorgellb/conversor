@@ -87,6 +87,13 @@ jobs:
           .venv/bin/python scripts/gen_coolify_compose.py --check
           .venv/bin/python scripts/gen_coolify_compose.py --validate
           docker compose -f docker-compose.yml config --quiet
+      - name: Tectonic con su caché y el visor de draw.io (F6-K, SHA-256 fijados)
+        run: |
+          sh infra/tectonic/fetch.sh "$RUNNER_TEMP/tectonic/bin" "$RUNNER_TEMP/tectonic/cache"
+          sh infra/drawio/fetch.sh "$RUNNER_TEMP/drawio"
+          echo "TECTONIC_BIN=$RUNNER_TEMP/tectonic/bin/tectonic" >> "$GITHUB_ENV"
+          echo "TECTONIC_CACHE=$RUNNER_TEMP/tectonic/cache" >> "$GITHUB_ENV"
+          echo "DRAWIO_VIEWER=$RUNNER_TEMP/drawio/viewer-static.min.js" >> "$GITHUB_ENV"
       - name: pandoc estático para docx, odt, Markdown y HTML (F6-A, SHA-256 fijado)
         run: |
           sh infra/pandoc/fetch.sh "$RUNNER_TEMP/pandoc"

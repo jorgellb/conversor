@@ -113,6 +113,11 @@ class Settings(BaseSettings):
     OGR2OGR_BIN: Path = Path("/usr/bin/ogr2ogr")
     # readpst de libpst (pst-utils) en workermedia para pst-a-mbox y pst-a-pdf (F6-J, D-225): GPL, solo como programa externo.
     READPST_BIN: Path = Path("/usr/bin/readpst")
+    # latex-a-pdf (F6-K, D-227): Tectonic con su caché de paquetes ya llena (infra/tectonic/fetch.sh), en workerutils.
+    TECTONIC_BIN: Path = Path("/opt/tectonic/bin/tectonic")
+    TECTONIC_CACHE: Path = Path("/opt/tectonic/cache")
+    # drawio-a-pdf y drawio-a-png (F6-K): el visor de draw.io (infra/drawio/fetch.sh) en workeroffice.
+    DRAWIO_VIEWER: Path = Path("/opt/drawio/viewer-static.min.js")
     # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
     # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
     SIGN_VERIFY_EXTRA_ROOTS: str = ""
