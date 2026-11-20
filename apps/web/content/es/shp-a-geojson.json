@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Shapefile a GeoJSON convierte capas Shapefile, el formato clásico de ArcGIS y de los catastros, ayuntamientos e institutos geográficos, en GeoJSON para mapas web y aplicaciones modernas. Como un Shapefile son varios archivos, súbelos en un ZIP: al menos el .shp, el .shx y el .dbf, y el .prj con su sistema de coordenadas.",
+    "Usamos ogr2ogr, la herramienta de conversión de GDAL, la referencia en el mundo de los SIG. Con el .prj, las coordenadas se transforman a WGS84 (EPSG:4326), que es lo que exige GeoJSON: un Shapefile en UTM o en ETRS89, como los del Catastro o el IGN, sale bien colocado en el mapa. Si el ZIP trae un .cpg, se respeta la codificación de los atributos.",
+    "Todos los atributos de la tabla .dbf pasan a las propiedades de cada elemento. Si el ZIP tiene varias capas, recibes un GeoJSON por capa, con su nombre. Las coordenadas se escriben con 7 decimales.",
+    "ogr2ogr se ejecuta como programa aparte, sin acceso a la red y con tiempo y memoria limitados, y el ZIP se comprueba antes de abrirlo. Hasta 20 archivos por tanda y 20 capas por ZIP."
+  ],
+  "steps": [
+    "Sube un ZIP con el .shp, el .shx, el .dbf y el .prj de la capa.",
+    "Espera a la conversión.",
+    "Descarga el GeoJSON."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué pasa si no incluyo el .prj?",
+      "a": "Sin él no se sabe en qué sistema están las coordenadas y se usan tal cual. Si estaban en UTM, el mapa saldrá en un sitio que no es; incluye siempre el .prj."
+    },
+    {
+      "q": "¿Puedo subir solo el .shp?",
+      "a": "No: el .shp guarda las geometrías, pero los atributos están en el .dbf y el índice en el .shx. Sin ellos la capa no se puede leer."
+    },
+    {
+      "q": "¿Y para Google Earth?",
+      "a": "Shapefile a KML convierte la misma capa en KML."
+    }
+  ]
+}

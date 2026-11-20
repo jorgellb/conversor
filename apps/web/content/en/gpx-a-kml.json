@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GPX to KML turns the routes, tracks and points of interest in a GPX file, the format exported by Garmin GPS units, sports watches, Strava, Komoot or Wikiloc, into KML, the format of Google Earth and Google My Maps. You can then see your outing in 3D over the terrain, share it on a map or print it.",
+    "Tracks with a time for each point are written as gx:Track, the Google Earth extension that keeps timings: you can replay the route with the slider and go back to GPX without losing anything. Tracks without times are written as lines. Points of interest keep their name, description and elevation, and the separate segments of a track (when you paused the GPS) stay separate.",
+    "Lines come out with a visible style, blue and 3 wide, so they stand out on the map, and each element keeps its name so it appears in Google Earth's side list.",
+    "We convert the GPX on our server with gpxpy. XML files (GPX and KML) are read without loading DTDs or external entities, out-of-range coordinates are discarded and there is a limit of 2 million points and 50 MB per file. You can convert up to 20 files at once and download them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .gpx files.",
+    "Wait for the conversion.",
+    "Download the KML and open it in Google Earth or import it into My Maps."
+  ],
+  "faq": [
+    {
+      "q": "Are elevation and time kept?",
+      "a": "Yes. Elevation goes in the coordinates and each point's time in the gx:Track. If you later go back to GPX with KML to GPX, you get the same points with their times."
+    },
+    {
+      "q": "Can I import it into Google My Maps?",
+      "a": "Yes, My Maps imports KML. It shows the lines and points, though not each point's time."
+    },
+    {
+      "q": "What if I need it for a website?",
+      "a": "For web maps such as Leaflet or Mapbox, GeoJSON is better: use GPX to GeoJSON."
+    }
+  ]
+}

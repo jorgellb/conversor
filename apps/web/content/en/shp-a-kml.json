@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Shapefile to KML turns Shapefile layers into KML to view them in Google Earth or Google My Maps, with no GIS software needed. It is handy for showing anyone a land parcel, municipal boundaries, a path network or the result of a study done in QGIS or ArcGIS.",
+    "Upload the layer in a ZIP with the .shp, .shx, .dbf and .prj. With GDAL's ogr2ogr we transform the coordinates from their system (UTM, ETRS89, Lambert…) to WGS84, the one Google Earth uses, and then write the KML with its points, lines and polygons.",
+    "Each element's attributes are stored in ExtendedData and appear in the place's info card when clicked; if there is a name field (name or nombre), it is used as the title. Polygons come out with a semi-transparent fill so the terrain shows underneath. If the ZIP holds several layers, you get one KML per layer.",
+    "ogr2ogr works as a separate program, with no network and with time and memory limits; the ZIP is checked before it is opened. You can upload up to 20 files per batch."
+  ],
+  "steps": [
+    "Upload a ZIP with the Shapefile layer's files.",
+    "Wait for the conversion.",
+    "Download the KML and open it in Google Earth."
+  ],
+  "faq": [
+    {
+      "q": "Why does my layer appear in the middle of the ocean?",
+      "a": "The .prj was probably missing and the coordinates could not be transformed. Upload it again with the .prj inside the ZIP."
+    },
+    {
+      "q": "How many elements does it take?",
+      "a": "Up to 2 million points in total. Google Earth can be slow with very large layers; for those, GeoJSON and GIS software work better."
+    },
+    {
+      "q": "Are the layer's colours kept?",
+      "a": "No: a Shapefile does not store styles (they live in the GIS project files). The KML comes out with a common style you can change in Google Earth."
+    }
+  ]
+}

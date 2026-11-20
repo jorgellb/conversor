@@ -109,6 +109,8 @@ class Settings(BaseSettings):
     KOSIT_HOME: Path = Path("/opt/kosit")
     # pandoc estático de infra/pandoc/fetch.sh en workerutils (F6-A, D-212): GPL, solo como proceso externo (11).
     PANDOC_BIN: Path = Path("/usr/local/bin/pandoc")
+    # ogr2ogr de GDAL (gdal-bin) en workerutils para los Shapefile (F6-H1, D-220): siempre como programa externo.
+    OGR2OGR_BIN: Path = Path("/usr/bin/ogr2ogr")
     # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
     # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
     SIGN_VERIFY_EXTRA_ROOTS: str = ""

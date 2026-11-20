@@ -243,15 +243,20 @@ def fix_mojibake(text: str) -> tuple[str, int]:
 
 
 def sniff_separator(text: str) -> str:
-    sample = text[:65536]
-    try:
-        return csv.Sniffer().sniff(sample, delimiters=",;\t|").delimiter
-    except csv.Error:
-        lines = [line for line in sample.splitlines()[:50] if line.strip()]
-        counts = {d: [line.count(d) for line in lines] for d in ",;\t|"}
-        # El que aparece el mismo número de veces (y alguna) en más líneas.
-        best = max(counts, key=lambda d: (Counter(counts[d]).most_common(1)[0][1] if any(counts[d]) else 0, sum(counts[d])))
-        return best if any(counts[best]) else ","
+    """El separador con el que el encabezado tiene más de una columna y más filas tienen ese mismo número de campos (con
+    las comillas del CSV). `csv.Sniffer` elegía la coma en un CSV español con «;» y decimales con coma (D-220)."""
+    lines = [line for line in text[:65536].splitlines()[:50] if line.strip()]
+    if not lines:
+        return ","
+    best, best_key = ",", None
+    for order, sep in enumerate((";", "\t", ",", "|")):
+        counts = [len(row) for row in csv.reader(lines, delimiter=sep)]
+        header = counts[0]
+        same = sum(1 for c in counts if c == header) / len(counts)
+        key = (header > 1, round(same, 2), header if same >= 0.5 else 0, -order)
+        if best_key is None or key > best_key:
+            best, best_key = sep, key
+    return best if best_key and best_key[0] else ","
 
 
 def read_csv(ctx: ToolContext, path: Path, separador: str = "auto") -> tuple[list[list[str]], str, str]:

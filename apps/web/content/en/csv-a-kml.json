@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV to KML turns a CSV list of places, such as shops, customers, pickup points or photos, into KML points to view in Google Earth or import into Google My Maps. All the CSV needs is a latitude column and a longitude column.",
+    "We detect those columns by their name in English or Spanish (lat, latitude, latitud; lon, lng, longitude, longitud) and, if they are called something else, you can set them in the advanced options. The name column (name, nombre, title) gives each point its title, the description column its text, and the rest is stored as the point's data, visible when you click it.",
+    "We read the file's encoding (Windows-1252 too) and separator, comma or semicolon, and accept coordinates with a decimal comma, such as 40,4168. Rows without coordinates or with out-of-range values are skipped and the result's note says how many.",
+    "Coordinates must be in decimal degrees (WGS84), like the ones Google Maps shows when you click a place. You can convert up to 20 files at once, with a limit of 2 million points."
+  ],
+  "steps": [
+    "Upload the CSV with latitude and longitude columns.",
+    "If they are not detected, type their names in the advanced options.",
+    "Download the KML."
+  ],
+  "faq": [
+    {
+      "q": "Do degrees, minutes and seconds work?",
+      "a": "No, they must be decimal degrees (40.4168, -3.7038). Many spreadsheets and online converters switch between formats."
+    },
+    {
+      "q": "Can I import it into My Maps?",
+      "a": "Yes. My Maps also imports the CSV directly, but the KML keeps all the data of each point and opens the same way in Google Earth."
+    },
+    {
+      "q": "What if I have addresses instead of coordinates?",
+      "a": "They have to be geocoded first (each address turned into coordinates); this tool does not do it because it would need to send the addresses to an external service."
+    }
+  ]
+}

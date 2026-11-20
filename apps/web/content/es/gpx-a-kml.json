@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GPX a KML convierte las rutas, pistas y puntos de interés de un archivo GPX, el formato que exportan los GPS de Garmin, los relojes deportivos, Strava, Komoot o Wikiloc, en KML, el formato de Google Earth y de Google My Maps. Así puedes ver tu salida en 3D sobre el relieve, compartirla en un mapa o imprimirla.",
+    "Las pistas que llevan la hora de cada punto se escriben como gx:Track, la extensión de Google Earth que conserva los tiempos: puedes reproducir el recorrido con el control deslizante y volver a GPX sin perder nada. Las que no tienen hora van como líneas. Los puntos de interés conservan su nombre, su descripción y su altura, y los tramos separados de una pista (cuando paras el GPS) siguen separados.",
+    "Las líneas salen con un estilo visible, en azul y con grosor 3, para que destaquen sobre el mapa, y cada elemento conserva su nombre para que aparezca en la lista lateral de Google Earth.",
+    "Convertimos el GPX en nuestro servidor con gpxpy. Los archivos XML (GPX y KML) se leen sin cargar DTD ni entidades externas, se descartan las coordenadas fuera de rango y hay un límite de 2 millones de puntos y 50 MB por archivo. Puedes convertir hasta 20 archivos a la vez y descargarlos en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .gpx.",
+    "Espera a la conversión.",
+    "Descarga el KML y ábrelo en Google Earth o impórtalo en My Maps."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan la altura y la hora?",
+      "a": "Sí. La altura va en las coordenadas y la hora de cada punto en el gx:Track. Si después vuelves a GPX con KML a GPX, recuperas los mismos puntos con sus horas."
+    },
+    {
+      "q": "¿Puedo importarlo en Google My Maps?",
+      "a": "Sí, My Maps importa KML. Muestra las líneas y los puntos, aunque no la hora de cada punto."
+    },
+    {
+      "q": "¿Y si lo necesito para una web?",
+      "a": "Para mapas web como Leaflet o Mapbox es mejor GeoJSON: usa GPX a GeoJSON."
+    }
+  ]
+}

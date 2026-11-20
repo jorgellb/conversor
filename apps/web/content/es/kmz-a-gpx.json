@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "KMZ a GPX convierte archivos KMZ de Google Earth o Google My Maps en GPX para tu GPS, tu reloj o tu aplicación de rutas. Un KMZ es un KML comprimido en un ZIP junto con sus iconos e imágenes; aquí lo abrimos, leemos su documento principal (doc.kml) y convertimos sus puntos, rutas y pistas.",
+    "Los lugares se convierten en waypoints con su nombre y su descripción, y las líneas en pistas, también las que están dentro de carpetas o de un MultiGeometry. Si el KMZ trae pistas gx:Track con la hora de cada punto, esas horas se conservan en el GPX.",
+    "Lo que GPX no puede guardar se queda fuera: los polígonos (te decimos cuántos), los estilos, los iconos y las imágenes del ZIP. El ZIP se comprueba antes de abrirlo, para que un archivo preparado no pueda ocupar el servidor descomprimiéndose sin fin.",
+    "La conversión del KMZ se hace en nuestro servidor. Los archivos XML (GPX y KML) se leen sin cargar DTD ni entidades externas, se descartan las coordenadas fuera de rango y hay un límite de 2 millones de puntos y 50 MB por archivo. Puedes convertir hasta 20 archivos a la vez y descargarlos en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .kmz.",
+    "Espera a la conversión.",
+    "Descarga el GPX."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diferencia hay entre KML y KMZ?",
+      "a": "El KMZ es un KML comprimido que puede llevar dentro sus iconos y fotos. Para GPX solo cuenta el KML; si tienes el .kml suelto, usa KML a GPX."
+    },
+    {
+      "q": "¿Y si el KMZ tiene varios KML?",
+      "a": "Usamos doc.kml, que es el principal; si no existe, el KML de la carpeta menos profunda."
+    },
+    {
+      "q": "¿Puedo pasar el GPX a otro formato después?",
+      "a": "Sí: GPX a GeoJSON para mapas web o GPX a KML para volver a Google Earth."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Shapefile a KML convierte capas Shapefile en KML para verlas en Google Earth o en Google My Maps, sin necesidad de un programa de SIG. Es útil para enseñar a cualquiera una parcela del Catastro, unos límites municipales, una red de caminos o el resultado de un estudio hecho en QGIS o ArcGIS.",
+    "Sube la capa en un ZIP con el .shp, el .shx, el .dbf y el .prj. Con ogr2ogr de GDAL transformamos las coordenadas desde su sistema (UTM, ETRS89, Lambert…) a WGS84, que es el que usa Google Earth, y después escribimos el KML con sus puntos, líneas y polígonos.",
+    "Los atributos de cada elemento se guardan en ExtendedData y aparecen en la ficha del lugar al pulsar sobre él; si hay un campo de nombre (name o nombre), se usa como título. Los polígonos salen con un relleno semitransparente para que se vea el terreno debajo. Si el ZIP tiene varias capas, recibes un KML por capa.",
+    "ogr2ogr trabaja como programa aparte, sin red y con límites de tiempo y memoria; el ZIP se revisa antes de abrirlo. Puedes subir hasta 20 archivos por tanda."
+  ],
+  "steps": [
+    "Sube un ZIP con los archivos de la capa Shapefile.",
+    "Espera a la conversión.",
+    "Descarga el KML y ábrelo en Google Earth."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué mi capa sale en medio del océano?",
+      "a": "Probablemente faltaba el .prj y las coordenadas no se han podido transformar. Súbela de nuevo con el .prj dentro del ZIP."
+    },
+    {
+      "q": "¿Cuántos elementos admite?",
+      "a": "Hasta 2 millones de puntos en total. Google Earth puede ir lento con capas muy grandes; para ellas, GeoJSON y un programa de SIG funcionan mejor."
+    },
+    {
+      "q": "¿Se conservan los colores de la capa?",
+      "a": "No: un Shapefile no guarda estilos (estos van en archivos del programa de SIG). El KML sale con un estilo común que puedes cambiar en Google Earth."
+    }
+  ]
+}

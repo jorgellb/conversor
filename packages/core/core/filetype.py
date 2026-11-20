@@ -12,9 +12,9 @@ EBML = bytes.fromhex("1A45DFA3")
 # Formatos que comparten contenedor: se confía en la extensión declarada solo dentro de su familia.
 OLE2_FAMILY = {"doc", "xls", "ppt", "pps", "msg", "pub", "vsd"}
 TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
-               "xsig", "csig", "p7m", "p7s"}
+               "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
-ZIP_ALIASES = {"cbz", "cbr"}
+ZIP_ALIASES = {"cbz", "cbr", "kmz"}  # kmz: un ZIP con doc.kml (F6-H1)
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
 RAW_TIFF = {"cr2", "nef", "arw", "dng"}
 IWORK = {"pages", "key", "numbers"}
@@ -62,6 +62,9 @@ MIME = {
     # Firmas (F6-G).
     "p7m": "application/pkcs7-mime", "p7s": "application/pkcs7-signature", "csig": "application/pkcs7-mime",
     "xsig": "application/xml",
+    # Mapas (F6-H1).
+    "gpx": "application/gpx+xml", "kml": "application/vnd.google-earth.kml+xml", "kmz": "application/vnd.google-earth.kmz",
+    "geojson": "application/geo+json",
     # Datos (F6-B).
     "json": "application/json", "xml": "application/xml", "yaml": "application/yaml",
 }

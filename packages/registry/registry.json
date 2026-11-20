@@ -31411,6 +31411,343 @@
         "title": "NoOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "gpx-a-kml",
+      "slug_en": "gpx-to-kml",
+      "name_es": "GPX a KML",
+      "name_en": "GPX to KML",
+      "summary_es": "Convierte rutas y puntos GPX de tu GPS, Strava o Wikiloc en KML para Google Earth y Google My Maps, con sus horas.",
+      "summary_en": "Turn GPX routes and waypoints from your GPS, Strava or Wikiloc into KML for Google Earth and My Maps, with their times.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "gpx"
+      ],
+      "outputs": [
+        "kml",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "kml-a-gpx",
+        "gpx-a-geojson"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "kml-a-gpx",
+      "slug_en": "kml-to-gpx",
+      "name_es": "KML a GPX",
+      "name_en": "KML to GPX",
+      "summary_es": "Convierte rutas y lugares KML de Google Earth o My Maps en GPX para tu GPS, reloj o aplicación de rutas.",
+      "summary_en": "Turn KML routes and places from Google Earth or My Maps into GPX for your GPS, watch or route app.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "kml"
+      ],
+      "outputs": [
+        "gpx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "gpx-a-kml",
+        "kmz-a-gpx"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "kmz-a-gpx",
+      "slug_en": "kmz-to-gpx",
+      "name_es": "KMZ a GPX",
+      "name_en": "KMZ to GPX",
+      "summary_es": "Convierte archivos KMZ de Google Earth en GPX con sus rutas, pistas y puntos, listo para el GPS.",
+      "summary_en": "Turn Google Earth KMZ files into GPX with their routes, tracks and points, ready for the GPS.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "kmz"
+      ],
+      "outputs": [
+        "gpx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "kml-a-gpx",
+        "gpx-a-kml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "gpx-a-geojson",
+      "slug_en": "gpx-to-geojson",
+      "name_es": "GPX a GeoJSON",
+      "name_en": "GPX to GeoJSON",
+      "summary_es": "Convierte GPX en GeoJSON para mapas web (Leaflet, Mapbox, QGIS), con altura y hora de cada punto.",
+      "summary_en": "Turn GPX into GeoJSON for web maps (Leaflet, Mapbox, QGIS), with the elevation and time of each point.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "gpx"
+      ],
+      "outputs": [
+        "geojson",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "geojson-a-kml",
+        "gpx-a-kml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "geojson-a-kml",
+      "slug_en": "geojson-to-kml",
+      "name_es": "GeoJSON a KML",
+      "name_en": "GeoJSON to KML",
+      "summary_es": "Convierte GeoJSON en KML para Google Earth, con puntos, líneas, polígonos y sus atributos.",
+      "summary_en": "Turn GeoJSON into KML for Google Earth, with points, lines, polygons and their attributes.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "geojson",
+        "json"
+      ],
+      "outputs": [
+        "kml",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "gpx-a-geojson",
+        "shp-a-kml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "shp-a-geojson",
+      "slug_en": "shp-to-geojson",
+      "name_es": "Shapefile a GeoJSON",
+      "name_en": "Shapefile to GeoJSON",
+      "summary_es": "Convierte capas Shapefile (en un ZIP con .shp, .shx, .dbf y .prj) en GeoJSON en WGS84, con todos sus atributos.",
+      "summary_en": "Turn Shapefile layers (in a ZIP with .shp, .shx, .dbf and .prj) into WGS84 GeoJSON, with all their attributes.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "zip"
+      ],
+      "outputs": [
+        "geojson",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "shp-a-kml",
+        "geojson-a-kml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "shp-a-kml",
+      "slug_en": "shp-to-kml",
+      "name_es": "Shapefile a KML",
+      "name_en": "Shapefile to KML",
+      "summary_es": "Convierte capas Shapefile en KML para verlas en Google Earth, reproyectadas a WGS84 desde su .prj.",
+      "summary_en": "Turn Shapefile layers into KML to view them in Google Earth, reprojected to WGS84 from their .prj.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "zip"
+      ],
+      "outputs": [
+        "kml",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "shp-a-geojson",
+        "geojson-a-kml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "csv-a-kml",
+      "slug_en": "csv-to-kml",
+      "name_es": "CSV a KML",
+      "name_en": "CSV to KML",
+      "summary_es": "Convierte una lista de lugares en CSV, con columnas de latitud y longitud, en puntos KML para Google Earth y My Maps.",
+      "summary_en": "Turn a CSV list of places, with latitude and longitude columns, into KML points for Google Earth and My Maps.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "csv",
+        "txt"
+      ],
+      "outputs": [
+        "kml",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "geojson-a-kml",
+        "kml-a-gpx"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "csv-a-kml (D-220): columnas de latitud y longitud [detectar por el nombre: lat, latitud, lon, lng, longitud…].",
+        "properties": {
+          "columna_latitud": {
+            "default": "",
+            "maxLength": 100,
+            "title": "Columna de latitud (vacío: detectar)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Latitude column (empty: detect)",
+              "es": "Columna de latitud (vacío: detectar)"
+            }
+          },
+          "columna_longitud": {
+            "default": "",
+            "maxLength": 100,
+            "title": "Columna de longitud (vacío: detectar)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Longitude column (empty: detect)",
+              "es": "Columna de longitud (vacío: detectar)"
+            }
+          }
+        },
+        "title": "CsvKmlOptions",
+        "type": "object"
+      }
     }
   ]
 }

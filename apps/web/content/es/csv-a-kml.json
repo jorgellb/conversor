@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV a KML convierte una lista de lugares en CSV, por ejemplo tiendas, clientes, puntos de recogida o fotos, en puntos KML para verlos en Google Earth o importarlos en Google My Maps. Basta con que el CSV tenga una columna de latitud y otra de longitud.",
+    "Detectamos esas columnas por su nombre en español o en inglés (lat, latitud, latitude; lon, lng, longitud, longitude) y, si se llaman de otra forma, puedes indicarlas en las opciones avanzadas. La columna de nombre (nombre, name, título) da el título de cada punto, la de descripción su texto, y el resto se guarda como datos del punto, visibles al pulsarlo.",
+    "Leemos la codificación del archivo (también Windows-1252, con sus tildes) y el separador, coma o punto y coma, y admitimos coordenadas con coma decimal, como 40,4168. Las filas sin coordenadas o con valores fuera de rango se saltan y la nota del resultado dice cuántas.",
+    "Las coordenadas deben estar en grados decimales (WGS84), como las que da Google Maps al pulsar sobre un lugar. Puedes convertir hasta 20 archivos a la vez, con un límite de 2 millones de puntos."
+  ],
+  "steps": [
+    "Sube el CSV con columnas de latitud y longitud.",
+    "Si no se detectan, escribe sus nombres en las opciones avanzadas.",
+    "Descarga el KML."
+  ],
+  "faq": [
+    {
+      "q": "¿Sirven coordenadas en grados, minutos y segundos?",
+      "a": "No, tienen que ser grados decimales (40.4168, -3.7038). Muchas hojas de cálculo y conversores en línea pasan de un formato a otro."
+    },
+    {
+      "q": "¿Puedo importarlo en My Maps?",
+      "a": "Sí. My Maps también importa el CSV directamente, pero el KML conserva todos los datos de cada punto y se abre igual en Google Earth."
+    },
+    {
+      "q": "¿Y si tengo direcciones en lugar de coordenadas?",
+      "a": "Hay que geocodificarlas antes (convertir cada dirección en coordenadas); esta herramienta no lo hace porque necesitaría enviar las direcciones a un servicio externo."
+    }
+  ]
+}

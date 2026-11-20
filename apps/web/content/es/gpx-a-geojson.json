@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GPX a GeoJSON convierte rutas, pistas y puntos GPX en GeoJSON, el formato de los mapas web y de los programas de SIG: Leaflet, Mapbox, OpenLayers, deck.gl, QGIS, geojson.io o una base de datos con PostGIS. Es lo que necesitas para mostrar tus salidas en una página web o analizarlas.",
+    "Cada punto de interés es una Feature de tipo Point, cada ruta una LineString y cada pista una LineString o una MultiLineString si tiene varios tramos. La altura va como tercera coordenada y la hora de cada punto en la propiedad coordTimes, la misma convención que usan herramientas como togeojson, así que no se pierde información.",
+    "El nombre y la descripción pasan a las propiedades name y description. Las coordenadas se escriben en WGS84 (longitud, latitud), con 7 decimales, que es una precisión de un centímetro, como pide el estándar GeoJSON (RFC 7946).",
+    "El GPX se lee en nuestro servidor con gpxpy. Los archivos XML (GPX y KML) se leen sin cargar DTD ni entidades externas, se descartan las coordenadas fuera de rango y hay un límite de 2 millones de puntos y 50 MB por archivo. Puedes convertir hasta 20 archivos a la vez y descargarlos en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .gpx.",
+    "Espera a la conversión.",
+    "Descarga el GeoJSON y cárgalo en tu mapa."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué la longitud va antes que la latitud?",
+      "a": "Es lo que establece GeoJSON: [longitud, latitud, altura]. Las bibliotecas de mapas lo esperan así."
+    },
+    {
+      "q": "¿Puedo abrirlo en QGIS?",
+      "a": "Sí, QGIS abre GeoJSON directamente arrastrando el archivo; cada tipo de geometría aparece como una capa."
+    },
+    {
+      "q": "¿Y de GeoJSON a Google Earth?",
+      "a": "GeoJSON a KML convierte un GeoJSON en KML con sus puntos, líneas, polígonos y atributos."
+    }
+  ]
+}

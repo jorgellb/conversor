@@ -554,6 +554,24 @@
    "b64": "PD94bWwgdmVyc2lvbj0iMS4wIj8+PGRzOlNpZ25hdHVyZSB4bWxuczpkcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyIvPg=="
   },
   {
+   "id": "gpx",
+   "declared": "gpx",
+   "expected": "gpx",
+   "b64": "PD94bWwgdmVyc2lvbj0iMS4wIj8+PGdweCB2ZXJzaW9uPSIxLjEiIGNyZWF0b3I9IngiPjx3cHQgbGF0PSI0MCIgbG9uPSItMyIvPjwvZ3B4Pg=="
+  },
+  {
+   "id": "kml",
+   "declared": "kml",
+   "expected": "kml",
+   "b64": "PD94bWwgdmVyc2lvbj0iMS4wIj8+PGttbCB4bWxucz0iaHR0cDovL3d3dy5vcGVuZ2lzLm5ldC9rbWwvMi4yIj48RG9jdW1lbnQvPjwva21sPg=="
+  },
+  {
+   "id": "geojson",
+   "declared": "geojson",
+   "expected": "geojson",
+   "b64": "eyJ0eXBlIjogIkZlYXR1cmVDb2xsZWN0aW9uIiwgImZlYXR1cmVzIjogW119"
+  },
+  {
    "id": "txt-utf16-texto-unicode-de-excel",
    "declared": "txt",
    "expected": "txt",

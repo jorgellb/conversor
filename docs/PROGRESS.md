@@ -597,9 +597,14 @@ csig-a-pdf, p7m-a-pdf y xsig-a-pdf sacan el documento firmado (byte a byte en CA
 XAdES y PAdES con la lista de la UE (D-219); un documento alterado sale «No válida», en `tests/test_firmados.py` con la PKI de
 certomancer.
 
+## F6-H1 (rutas y mapas)
+
+gpx-a-kml, kml-a-gpx, kmz-a-gpx, gpx-a-geojson, geojson-a-kml, shp-a-geojson, shp-a-kml y csv-a-kml (D-220): GPX ↔ KML
+conserva puntos, alturas y horas (16.5) en `tests/test_geo.py`; los Shapefile con `ogr2ogr` real se comprueban en la CI.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F y F6-G hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G y F6-H1 hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

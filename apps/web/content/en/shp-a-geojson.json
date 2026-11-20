@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Shapefile to GeoJSON turns Shapefile layers, the classic format of ArcGIS and of land registries, councils and mapping agencies, into GeoJSON for web maps and modern applications. Since a Shapefile is several files, upload them in a ZIP: at least the .shp, .shx and .dbf, plus the .prj with its coordinate system.",
+    "We use ogr2ogr, GDAL's conversion tool and the reference in the GIS world. With the .prj, coordinates are transformed to WGS84 (EPSG:4326), which GeoJSON requires: a Shapefile in UTM or ETRS89, such as those from national registries, ends up correctly placed on the map. If the ZIP carries a .cpg, the attributes' encoding is respected.",
+    "Every attribute in the .dbf table becomes a property of each element. If the ZIP holds several layers, you get one GeoJSON per layer, named after it. Coordinates are written with 7 decimals.",
+    "ogr2ogr runs as a separate program, with no network access and limited time and memory, and the ZIP is checked before it is opened. Up to 20 files per batch and 20 layers per ZIP."
+  ],
+  "steps": [
+    "Upload a ZIP with the layer's .shp, .shx, .dbf and .prj.",
+    "Wait for the conversion.",
+    "Download the GeoJSON."
+  ],
+  "faq": [
+    {
+      "q": "What happens if I leave out the .prj?",
+      "a": "Without it the coordinate system is unknown and coordinates are used as they are. If they were in UTM, the map will end up in the wrong place; always include the .prj."
+    },
+    {
+      "q": "Can I upload just the .shp?",
+      "a": "No: the .shp stores the geometries, but the attributes are in the .dbf and the index in the .shx. Without them the layer cannot be read."
+    },
+    {
+      "q": "And for Google Earth?",
+      "a": "Shapefile to KML turns the same layer into KML."
+    }
+  ]
+}

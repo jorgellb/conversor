@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 213 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 35). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 221 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 43). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -219,6 +219,14 @@ Catálogo publicado en esta entrega: 213 herramientas (F1 43, F2 60, F3 10, F4 1
 | `csig-a-pdf` / `csig-to-pdf` | servidor | utils | light | F6 | activa | csig, p7m, p7s → pdf, zip | redactado, sin revisar |
 | `p7m-a-pdf` / `p7m-to-pdf` | servidor | utils | light | F6 | activa | p7m, p7s, csig → pdf, zip | redactado, sin revisar |
 | `xsig-a-pdf` / `xsig-to-pdf` | servidor | utils | light | F6 | activa | xsig, xml → pdf, zip | redactado, sin revisar |
+| `gpx-a-kml` / `gpx-to-kml` | servidor | utils | light | F6 | activa | gpx → kml, zip | redactado, sin revisar |
+| `kml-a-gpx` / `kml-to-gpx` | servidor | utils | light | F6 | activa | kml → gpx, zip | redactado, sin revisar |
+| `kmz-a-gpx` / `kmz-to-gpx` | servidor | utils | light | F6 | activa | kmz → gpx, zip | redactado, sin revisar |
+| `gpx-a-geojson` / `gpx-to-geojson` | servidor | utils | light | F6 | activa | gpx → geojson, zip | redactado, sin revisar |
+| `geojson-a-kml` / `geojson-to-kml` | servidor | utils | light | F6 | activa | geojson, json → kml, zip | redactado, sin revisar |
+| `shp-a-geojson` / `shp-to-geojson` | servidor | utils | light | F6 | activa | zip → geojson, zip | redactado, sin revisar |
+| `shp-a-kml` / `shp-to-kml` | servidor | utils | light | F6 | activa | zip → kml, zip | redactado, sin revisar |
+| `csv-a-kml` / `csv-to-kml` | servidor | utils | light | F6 | activa | csv, txt → kml, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

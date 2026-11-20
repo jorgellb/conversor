@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "KML to GPX turns places and routes from Google Earth or Google My Maps into GPX, the format understood by handheld GPS units, Garmin, Suunto or Coros watches, bike computers and apps such as Komoot, Wikiloc, OsmAnd or Organic Maps. It is the way to take into the field a route you drew on the map.",
+    "Points (Placemark with Point) become waypoints with their name, description and elevation, and lines become tracks with all their segments, including those inside a MultiGeometry or a folder. Google Earth gx:Track tracks keep the time of each point.",
+    "GPX has no polygons: the areas you drew on the map are not included and we tell you how many were left out. A KML's styles, icons and photos have no place in GPX either. We read KML 2.2 and also the older 2.0 and 2.1.",
+    "The KML is converted on our server and the GPX is written with gpxpy in version 1.1. XML files (GPX and KML) are read without loading DTDs or external entities, out-of-range coordinates are discarded and there is a limit of 2 million points and 50 MB per file. You can convert up to 20 files at once and download them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .kml files.",
+    "Wait for the conversion.",
+    "Download the GPX and load it onto your GPS or app."
+  ],
+  "faq": [
+    {
+      "q": "How do I get a KML out of Google My Maps?",
+      "a": "In the map menu choose “Export to KML/KMZ”, tick “Export to a .KML file” and upload that file here. If you download a KMZ, use KMZ to GPX."
+    },
+    {
+      "q": "Why does my route come out as a track and not a route?",
+      "a": "KML does not distinguish the two, so lines become tracks (trk), which is what GPS units and apps understand best."
+    },
+    {
+      "q": "Are elevations lost?",
+      "a": "No, if the KML has them. Many lines drawn by hand in My Maps carry no elevation; the GPS will work it out from its map."
+    }
+  ]
+}

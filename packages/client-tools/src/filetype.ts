@@ -17,7 +17,7 @@ const EBML = [0x1a, 0x45, 0xdf, 0xa3];
 
 export const OLE2_FAMILY = new Set(["doc", "xls", "ppt", "pps", "msg", "pub", "vsd"]);
 export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
-  "xsig", "csig", "p7m", "p7s"]);
+  "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson"]);
 // Firmas CMS (F6-G): DER binario (una SEQUENCE ASN.1) o PEM y Base64 de texto; solo con su extensión declarada.
 const CMS = new Set(["csig", "p7m", "p7s"]);
 const RAW_TIFF = new Set(["cr2", "nef", "arw", "dng"]);

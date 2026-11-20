@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "KML a GPX convierte lugares y rutas de Google Earth o de Google My Maps en GPX, el formato que entienden los GPS de mano, los relojes Garmin, Suunto o Coros, los navegadores de bicicleta y aplicaciones como Komoot, Wikiloc, OsmAnd u Organic Maps. Es la forma de llevarte al campo una ruta que has trazado en el mapa.",
+    "Los puntos (Placemark con Point) se convierten en waypoints con su nombre, su descripción y su altura, y las líneas en pistas con todos sus tramos, también las que van dentro de un MultiGeometry o de una carpeta. Las pistas gx:Track de Google Earth conservan la hora de cada punto.",
+    "GPX no tiene polígonos: las áreas que dibujaste en el mapa no se incluyen y te indicamos cuántas se han quedado fuera. Los estilos, los iconos y las fotos de un KML tampoco tienen sitio en GPX. Leemos KML 2.2 y también los antiguos 2.0 y 2.1.",
+    "El KML se convierte en nuestro servidor y el GPX se escribe con gpxpy en la versión 1.1. Los archivos XML (GPX y KML) se leen sin cargar DTD ni entidades externas, se descartan las coordenadas fuera de rango y hay un límite de 2 millones de puntos y 50 MB por archivo. Puedes convertir hasta 20 archivos a la vez y descargarlos en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .kml.",
+    "Espera a la conversión.",
+    "Descarga el GPX y pásalo a tu GPS o a tu aplicación."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo saco un KML de Google My Maps?",
+      "a": "En el menú del mapa elige «Exportar a KML/KMZ», marca «Exportar a un archivo .KML» y sube aquí ese archivo. Si descargas un KMZ, usa KMZ a GPX."
+    },
+    {
+      "q": "¿Por qué mi ruta sale como pista y no como ruta?",
+      "a": "En KML no hay diferencia entre las dos, así que las líneas se convierten en pistas (trk), que es lo que mejor entienden los GPS y las aplicaciones."
+    },
+    {
+      "q": "¿Se pierden las alturas?",
+      "a": "No, si el KML las trae. Muchas líneas dibujadas a mano en My Maps no llevan altura; el GPS la calculará con su mapa."
+    }
+  ]
+}

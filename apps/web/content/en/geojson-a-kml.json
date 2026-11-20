@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GeoJSON to KML turns GeoJSON geographic data into KML to view it in Google Earth, import it into Google My Maps or share it with people who do not use GIS software. It works for exports from geojson.io, QGIS, open data portals or any application that works with web maps.",
+    "Every geometry type is converted: Point and MultiPoint as places, LineString and MultiLineString as lines, Polygon and MultiPolygon as polygons with their holes, and GeometryCollection by splitting it. The name property gives each place its name, description its text, and the remaining properties are stored in ExtendedData, which Google Earth shows in the place's info card.",
+    "If lines carry the coordTimes property with each point's time, they are written as gx:Track to keep it. Out-of-range coordinates are discarded and the result's note tells you how many. Lines and polygons come out with a visible style.",
+    "The GeoJSON is converted on our server. XML files (GPX and KML) are read without loading DTDs or external entities, out-of-range coordinates are discarded and there is a limit of 2 million points and 50 MB per file. You can convert up to 20 files at once and download them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .geojson or .json files.",
+    "Wait for the conversion.",
+    "Download the KML."
+  ],
+  "faq": [
+    {
+      "q": "Must my GeoJSON be in WGS84?",
+      "a": "Yes, as the standard requires. If your coordinates are in another system (UTM, for example) they will be out of range: convert them first in your GIS software or use a Shapefile with its .prj."
+    },
+    {
+      "q": "Are attributes visible in Google Earth?",
+      "a": "Yes, clicking a place shows a table with all its properties."
+    },
+    {
+      "q": "Does a .json file work?",
+      "a": "Yes, as long as it holds GeoJSON: a FeatureCollection, a Feature or a geometry."
+    }
+  ]
+}

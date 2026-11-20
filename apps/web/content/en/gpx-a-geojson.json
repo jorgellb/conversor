@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GPX to GeoJSON turns GPX routes, tracks and points into GeoJSON, the format of web maps and GIS software: Leaflet, Mapbox, OpenLayers, deck.gl, QGIS, geojson.io or a PostGIS database. It is what you need to show your outings on a web page or to analyse them.",
+    "Each point of interest is a Point Feature, each route a LineString and each track a LineString, or a MultiLineString if it has several segments. Elevation goes as the third coordinate and each point's time in the coordTimes property, the same convention used by tools such as togeojson, so no information is lost.",
+    "Name and description go into the name and description properties. Coordinates are written in WGS84 (longitude, latitude) with 7 decimals, a precision of one centimetre, as the GeoJSON standard (RFC 7946) requires.",
+    "The GPX is read on our server with gpxpy. XML files (GPX and KML) are read without loading DTDs or external entities, out-of-range coordinates are discarded and there is a limit of 2 million points and 50 MB per file. You can convert up to 20 files at once and download them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .gpx files.",
+    "Wait for the conversion.",
+    "Download the GeoJSON and load it into your map."
+  ],
+  "faq": [
+    {
+      "q": "Why does longitude come before latitude?",
+      "a": "That is what GeoJSON specifies: [longitude, latitude, elevation]. Mapping libraries expect it that way."
+    },
+    {
+      "q": "Can I open it in QGIS?",
+      "a": "Yes, QGIS opens GeoJSON directly when you drag the file in; each geometry type appears as a layer."
+    },
+    {
+      "q": "And from GeoJSON to Google Earth?",
+      "a": "GeoJSON to KML turns a GeoJSON into KML with its points, lines, polygons and attributes, ready to open in Google Earth or import into My Maps."
+    }
+  ]
+}

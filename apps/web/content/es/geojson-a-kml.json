@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GeoJSON a KML convierte datos geográficos GeoJSON en KML para verlos en Google Earth, importarlos en Google My Maps o compartirlos con quien no usa programas de SIG. Sirve para exportaciones de geojson.io, QGIS, portales de datos abiertos o cualquier aplicación que trabaje con mapas web.",
+    "Se convierten todos los tipos de geometría: Point y MultiPoint como lugares, LineString y MultiLineString como líneas, Polygon y MultiPolygon como polígonos con sus huecos, y GeometryCollection descomponiéndola. La propiedad name da el nombre de cada lugar, description su descripción y el resto de propiedades se guardan en ExtendedData, que Google Earth muestra en la ficha del lugar.",
+    "Si las líneas llevan la propiedad coordTimes con la hora de cada punto, se escriben como gx:Track para conservarla. Las coordenadas fuera de rango se descartan y la nota del resultado te dice cuántas. Las líneas y los polígonos salen con un estilo visible.",
+    "El GeoJSON se convierte en nuestro servidor. Los archivos XML (GPX y KML) se leen sin cargar DTD ni entidades externas, se descartan las coordenadas fuera de rango y hay un límite de 2 millones de puntos y 50 MB por archivo. Puedes convertir hasta 20 archivos a la vez y descargarlos en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .geojson o .json.",
+    "Espera a la conversión.",
+    "Descarga el KML."
+  ],
+  "faq": [
+    {
+      "q": "¿Mi GeoJSON debe estar en WGS84?",
+      "a": "Sí, como pide el estándar. Si tus coordenadas están en otro sistema (UTM, por ejemplo) saldrán fuera de rango: conviértelo antes en tu programa de SIG o usa un Shapefile con su .prj."
+    },
+    {
+      "q": "¿Se ven los atributos en Google Earth?",
+      "a": "Sí, al pulsar sobre un lugar aparece una tabla con todas sus propiedades."
+    },
+    {
+      "q": "¿Sirve un archivo .json?",
+      "a": "Sí, siempre que dentro haya GeoJSON: una FeatureCollection, una Feature o una geometría."
+    }
+  ]
+}
