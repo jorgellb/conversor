@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AVI to MP4 converts your AVI videos into MP4. AVI is an old Windows format still kept by many cameras, recorders and family archives. Turning it into MP4 makes it compatible with today's phones, TVs and social networks, and usually reduces its size.",
+    "First the tool checks which codecs the video carries. If the AVI carries MPEG-4 (DivX or Xvid) or H.264 with MP3 or AAC sound, it is remuxed without re-encoding. If it carries older codecs, the picture and sound are re-encoded. When no re-encoding is needed, the conversion takes seconds even if the video lasts an hour, and the picture and sound are identical to the original.",
+    "When an AVI needs re-encoding to MP4, H.264 is used if the server has it enabled; otherwise AV1, a modern free codec that plays in browsers, Windows 10 and 11, Android and recent Macs and iPhones. The result note says which one was used. Global file metadata, such as the date, GPS location or the app that recorded it, is removed so you do not share more than you want.",
+    "Converting AVI to MP4 is part of the Pro plan: videos up to one hour and 1 GB, up to five at a time, with a ZIP of all of them at the end. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more AVI videos.",
+    "Press convert: it is copied or re-encoded depending on the codecs.",
+    "Download the MP4 or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Does it lose quality?",
+      "a": "If the AVI is remuxed, no: the MP4 has the same picture and sound. If it is re-encoded, the difference is usually not visible."
+    },
+    {
+      "q": "Why Pro only?",
+      "a": "Because converting AVI video takes a lot of processor time. The free plans include audio, images and documents."
+    },
+    {
+      "q": "Are subtitles kept?",
+      "a": "No: subtitles embedded in the AVI are not copied to the MP4. You can generate or convert them with the subtitle tools."
+    }
+  ]
+}

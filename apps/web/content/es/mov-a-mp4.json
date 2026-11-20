@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MOV a MP4 convierte tus vídeos MOV en MP4. MOV es el formato de los iPhone, los Mac y muchas cámaras. Casi siempre lleva H.264 o HEVC con sonido AAC, que caben en MP4, así que el cambio tarda segundos y la imagen queda exactamente igual, pero el archivo se abre en Windows, Android y cualquier editor.",
+    "Primero se mira qué códecs lleva el vídeo. Los vídeos HEVC de iPhone se remultiplexan sin tocar la imagen. Si hubiera que recodificarlos, eso necesita decodificar HEVC, que depende de una opción del servidor: si no está disponible, la página lo indica. Cuando no hace falta recodificar, la conversión tarda segundos aunque el vídeo dure una hora, y la imagen y el sonido son idénticos a los del original.",
+    "Cuando un MOV hay que recodificarlo a MP4 se usa H.264 si el servidor lo tiene activado; si no, AV1, un códec moderno y libre que reproducen los navegadores, Windows 10 y 11, Android y los Mac y iPhone recientes. La nota del resultado dice cuál se ha usado. Los metadatos globales del archivo, como la fecha, la ubicación GPS o la aplicación que lo grabó, se quitan para que no compartas más de lo que quieres.",
+    "Pasar MOV a MP4 está en el plan Pro: vídeos de hasta una hora y 1 GB, hasta cinco a la vez, con un ZIP con todos al final. Se procesan en nuestro servidor de la Unión Europea y se borran automáticamente cuando caducan."
+  ],
+  "steps": [
+    "Sube uno o varios vídeos MOV.",
+    "Pulsa convertir: se copia o se recodifica según los códecs.",
+    "Descarga el MP4 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierde calidad?",
+      "a": "Si el MOV se remultiplexa, no: el MP4 tiene la misma imagen y el mismo sonido. Si se recodifica, la diferencia no suele notarse a simple vista."
+    },
+    {
+      "q": "¿Por qué solo en Pro?",
+      "a": "Porque convertir vídeo MOV exige mucho tiempo de procesador. Los planes gratuitos tienen audio, imágenes y documentos."
+    },
+    {
+      "q": "¿Se conservan los subtítulos?",
+      "a": "No: los subtítulos incrustados en el MOV no se copian al MP4. Puedes generarlos o convertirlos con las herramientas de subtítulos."
+    }
+  ]
+}

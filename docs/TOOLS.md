@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 257 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 79). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 264 herramientas (F1 43, F2 60, F3 10, F4 15, F5 57, F6 79). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -149,6 +149,13 @@ Catálogo publicado en esta entrega: 257 herramientas (F1 43, F2 60, F3 10, F4 1
 | `mp4-a-mp3` / `mp4-to-mp3` | servidor | av | light | F5 | activa | mp4, m4a → mp3, zip | redactado, sin revisar |
 | `aac-a-mp3` / `aac-to-mp3` | servidor | av | light | F5 | activa | aac, m4a → mp3, zip | redactado, sin revisar |
 | `flac-a-mp3` / `flac-to-mp3` | servidor | av | light | F5 | activa | flac → mp3, zip | redactado, sin revisar |
+| `mp4-a-webm` / `mp4-to-webm` | servidor | av | heavy | F5 | activa | mp4 → webm, zip | redactado, sin revisar |
+| `webm-a-mp4` / `webm-to-mp4` | servidor | av | heavy | F5 | activa | webm → mp4, zip | redactado, sin revisar |
+| `mov-a-mp4` / `mov-to-mp4` | servidor | av | heavy | F5 | activa | mov, m4v → mp4, zip | redactado, sin revisar |
+| `mkv-a-mp4` / `mkv-to-mp4` | servidor | av | heavy | F5 | activa | mkv → mp4, zip | redactado, sin revisar |
+| `avi-a-mp4` / `avi-to-mp4` | servidor | av | heavy | F5 | activa | avi → mp4, zip | redactado, sin revisar |
+| `video-a-gif` / `video-to-gif` | servidor | av | heavy | F5 | activa | mp4, mov, mkv, webm, avi → gif, zip | redactado, sin revisar |
+| `gif-a-mp4` / `gif-to-mp4` | servidor | av | heavy | F5 | activa | gif → mp4, zip | redactado, sin revisar |
 | `pptx-a-video` / `pptx-to-video` | servidor | av | heavy | F6 | activa | pptx, ppt, odp → webm, mp4 | redactado, sin revisar |
 | `midi-a-mp3` / `midi-to-mp3` | servidor | av | light | F6 | activa | mid → mp3, zip | redactado, sin revisar |
 | `midi-a-wav` / `midi-to-wav` | servidor | av | light | F6 | activa | mid → wav, zip | redactado, sin revisar |

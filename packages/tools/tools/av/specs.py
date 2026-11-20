@@ -8,7 +8,7 @@ from typing import Literal
 from pydantic import BaseModel, field_validator
 
 from core.options import opt
-from core.registry import ToolSpec
+from core.registry import NoOptions, ToolSpec
 from tools.office.specs import DiapositivasVideoOptions
 
 CHANNELS = {"original": ("Como el original", "As original"), "mono": ("Mono", "Mono"), "estereo": ("Estéreo", "Stereo")}
@@ -45,6 +45,20 @@ class WavOptions(BaseModel):
                                                 labels={"44100": ("44,1 kHz", "44.1 kHz"), "48000": ("48 kHz", "48 kHz")})
     canales: Literal["original", "mono", "estereo"] = opt("original", "Canales", "Channels", labels=CHANNELS)
     normalizar: bool = opt(False, "Normalizar volumen", "Normalize volume", advanced=True)
+
+
+class VideoGifOptions(BaseModel):
+    """video-a-gif (7.9, F5-V1, D-241): desde [0 s], duración [5 s] (hasta 30), [12] fotogramas por segundo, ancho [480 px],
+    calidad [ligera] | alta y en bucle [sí]."""
+
+    inicio: float = opt(0, "Empezar en (segundos)", "Start at (seconds)", ge=0, le=86400)
+    duracion: float = opt(5, "Duración (segundos, hasta 30)", "Duration (seconds, up to 30)", ge=0.5, le=30)
+    fps: int = opt(12, "Fotogramas por segundo", "Frames per second", ge=5, le=30, advanced=True)
+    ancho: Literal[320, 480, 640, 800] = opt(480, "Ancho", "Width", labels={"320": ("320 px", "320 px"), "480": ("480 px", "480 px"),
+                                                                         "640": ("640 px", "640 px"), "800": ("800 px", "800 px")})
+    calidad: Literal["ligera", "alta"] = opt("ligera", "Calidad", "Quality", advanced=True, labels={
+        "ligera": ("Ligera (128 colores, menos peso)", "Light (128 colours, smaller)"), "alta": ("Alta (256 colores)", "High (256 colours)")})
+    bucle: bool = opt(True, "Repetir en bucle", "Loop", advanced=True)
 
 
 class MidiMp3Options(BaseModel):
@@ -195,10 +209,28 @@ SPECS: list[ToolSpec] = [
     audio("flac-a-mp3", "flac-to-mp3", "FLAC a MP3", "FLAC to MP3", ("flac",),
           "Convierte música FLAC sin pérdida a MP3 para el móvil o el coche.", "Convert lossless FLAC music to MP3 for your phone or car."),
     # 7.13 (F6-L, D-228): FluidSynth (LGPL, externo) con FluidR3_GM (MIT) y FFmpeg LGPL.
+    # 7.9 (F5-V1, D-241): solo Pro (plan.video); sin recodificar cuando los códecs caben en el contenedor de salida.
+    *[ToolSpec(slug_es=f"{a}-a-{b}", slug_en=f"{a}-to-{b}", name_es=f"{a.upper()} a {b.upper()}", name_en=f"{a.upper()} to {b.upper()}",
+               category="video", where="server", inputs=(a,) if a != "mov" else ("mov", "m4v"), outputs=(b, "zip"), options=NoOptions,
+               worker_group="av", cost_class="heavy", queue_kind="heavy", impl="tools.av.video:run", launch=True, needs_video=True, phase="F5", time_limit=3600,
+               max_files=5, summary_es=f"Convierte vídeos {a.upper()} a {b.upper()}; si los códecs caben, sin recodificar y en segundos.",
+               summary_en=f"Convert {a.upper()} videos to {b.upper()}; if the codecs fit, without re-encoding and in seconds.",
+               related=("video-a-gif", "mp4-a-webm" if b == "mp4" else "webm-a-mp4"))
+      for a, b in (("mp4", "webm"), ("webm", "mp4"), ("mov", "mp4"), ("mkv", "mp4"), ("avi", "mp4"))],
+    ToolSpec(slug_es="video-a-gif", slug_en="video-to-gif", name_es="Vídeo a GIF", name_en="Video to GIF", category="video", where="server",
+             inputs=VIDEO_INPUTS, outputs=("gif", "zip"), options=VideoGifOptions, worker_group="av", cost_class="heavy", queue_kind="heavy",
+             impl="tools.av.video:run_gif", launch=True, needs_video=True, phase="F5", time_limit=1200, max_files=5,
+             summary_es="Convierte un trozo de un vídeo en un GIF animado con su propia paleta de colores.",
+             summary_en="Turn part of a video into an animated GIF with its own colour palette.", related=("gif-a-mp4", "gif-a-png")),
+    ToolSpec(slug_es="gif-a-mp4", slug_en="gif-to-mp4", name_es="GIF a MP4", name_en="GIF to MP4", category="video", where="server",
+             inputs=("gif",), outputs=("mp4", "zip"), options=NoOptions, worker_group="av", cost_class="heavy", queue_kind="heavy",
+             impl="tools.av.video:run_gif_mp4", launch=True, needs_video=True, phase="F5", time_limit=1200, max_files=10,
+             summary_es="Convierte GIF animados en MP4, mucho más ligeros y que se reproducen en cualquier sitio.",
+             summary_en="Turn animated GIFs into MP4, much lighter and playable anywhere.", related=("video-a-gif", "gif-a-png")),
     # 7.13 (F6-C, D-237): las diapositivas renderizadas en un vídeo con FFmpeg LGPL (VP9 o AV1, sin H.264); solo Pro (plan.video).
     ToolSpec(slug_es="pptx-a-video", slug_en="pptx-to-video", name_es="PowerPoint a vídeo", name_en="PowerPoint to video", category="video",
              where="server", inputs=("pptx", "ppt", "odp"), outputs=("webm", "mp4"), options=DiapositivasVideoOptions, worker_group="av",
-             cost_class="heavy", queue_kind="heavy", impl="tools.office.diapositivas:run_video", launch=True, phase="F6", time_limit=1800,
+             cost_class="heavy", queue_kind="heavy", impl="tools.office.diapositivas:run_video", launch=True, needs_video=True, phase="F6", time_limit=1800,
              max_files=5, summary_es="Convierte una presentación en un vídeo con un tiempo por diapositiva y fundidos, en WebM o MP4.",
              summary_en="Turn a presentation into a video with a time per slide and fades, as WebM or MP4.", related=("pptx-a-imagenes", "ppt-a-pdf")),
     audio("midi-a-mp3", "midi-to-mp3", "MIDI a MP3", "MIDI to MP3", ("mid",),

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MP4 to WebM converts your MP4 videos into WebM. WebM is the web's open format: Chrome, Firefox, Edge and Android play it without plug-ins, and it is small for the same quality. It is the right choice for embedding a video in a page or uploading it to sites that prefer it.",
+    "First the tool checks which codecs the video carries. If the MP4 already carries VP9 or AV1 with Opus sound, it is copied as is in seconds. Usually it carries H.264 and AAC, and then it is re-encoded to VP9 with Opus sound at a constant quality designed so the difference is not noticeable. When no re-encoding is needed, the conversion takes seconds even if the video lasts an hour, and the picture and sound are identical to the original.",
+    "Re-encoding uses constant quality, not a fixed bitrate: simple scenes take little space and busy ones keep their detail. The resulting video keeps the original resolution, frame rate and rotation. Global file metadata, such as the date, GPS location or the app that recorded it, is removed so you do not share more than you want.",
+    "Converting MP4 to WebM is part of the Pro plan: videos up to one hour and 1 GB, up to five at a time, with a ZIP of all of them at the end. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more MP4 videos.",
+    "Press convert: it is copied or re-encoded depending on the codecs.",
+    "Download the WebM or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Does it lose quality?",
+      "a": "If the MP4 is remuxed, no: the WebM has the same picture and sound. If it is re-encoded, the difference is usually not visible."
+    },
+    {
+      "q": "Why Pro only?",
+      "a": "Because converting MP4 video takes a lot of processor time. The free plans include audio, images and documents."
+    },
+    {
+      "q": "Are subtitles kept?",
+      "a": "No: subtitles embedded in the MP4 are not copied to the WebM. You can generate or convert them with the subtitle tools."
+    }
+  ]
+}

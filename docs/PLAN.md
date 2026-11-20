@@ -139,7 +139,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 
 | Lote | Herramientas | Estado |
 | --- | --- | --- |
-| F5-V1 | mp4-a-webm, webm-a-mp4, mov-a-mp4, mkv-a-mp4, avi-a-mp4, video-a-gif, gif-a-mp4 (solo Pro) | Pendiente (F6-Z) |
+| F5-V1 | mp4-a-webm, webm-a-mp4, mov-a-mp4, mkv-a-mp4, avi-a-mp4, video-a-gif, gif-a-mp4 (solo Pro) | Hecho (D-241) |
 | F5-V2 | comprimir-video, recortar-video, rotar-video, quitar-audio-video | Pendiente (F5-V1) |
 | F5-Z | Cierre de F5: audio, vídeo y carga de ogg-a-mp3 | Pendiente (F5-V2) |
 

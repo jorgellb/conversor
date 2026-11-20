@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AVI a MP4 convierte tus vídeos AVI en MP4. AVI es un formato antiguo de Windows que todavía guardan muchas cámaras, grabadoras y archivos familiares. Pasarlo a MP4 lo hace compatible con los móviles, los televisores y las redes sociales actuales, y suele reducir su tamaño.",
+    "Primero se mira qué códecs lleva el vídeo. Si el AVI lleva MPEG-4 (DivX o Xvid) o H.264 con sonido MP3 o AAC, se remultiplexa sin recodificar. Si lleva códecs más antiguos, se recodifica la imagen y el sonido. Cuando no hace falta recodificar, la conversión tarda segundos aunque el vídeo dure una hora, y la imagen y el sonido son idénticos a los del original.",
+    "Cuando un AVI hay que recodificarlo a MP4 se usa H.264 si el servidor lo tiene activado; si no, AV1, un códec moderno y libre que reproducen los navegadores, Windows 10 y 11, Android y los Mac y iPhone recientes. La nota del resultado dice cuál se ha usado. Los metadatos globales del archivo, como la fecha, la ubicación GPS o la aplicación que lo grabó, se quitan para que no compartas más de lo que quieres.",
+    "Pasar AVI a MP4 está en el plan Pro: vídeos de hasta una hora y 1 GB, hasta cinco a la vez, con un ZIP con todos al final. Se procesan en nuestro servidor de la Unión Europea y se borran automáticamente cuando caducan."
+  ],
+  "steps": [
+    "Sube uno o varios vídeos AVI.",
+    "Pulsa convertir: se copia o se recodifica según los códecs.",
+    "Descarga el MP4 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierde calidad?",
+      "a": "Si el AVI se remultiplexa, no: el MP4 tiene la misma imagen y el mismo sonido. Si se recodifica, la diferencia no suele notarse a simple vista."
+    },
+    {
+      "q": "¿Por qué solo en Pro?",
+      "a": "Porque convertir vídeo AVI exige mucho tiempo de procesador. Los planes gratuitos tienen audio, imágenes y documentos."
+    },
+    {
+      "q": "¿Se conservan los subtítulos?",
+      "a": "No: los subtítulos incrustados en el AVI no se copian al MP4. Puedes generarlos o convertirlos con las herramientas de subtítulos."
+    }
+  ]
+}

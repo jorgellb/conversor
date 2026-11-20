@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GIF to MP4 turns animated GIFs into MP4 videos. An MP4 is usually ten or twenty times smaller than the same GIF, shows more colours and plays on any phone, browser, social network or presentation, which often convert GIFs to video anyway.",
+    "Each frame keeps its duration, so the animation runs at the same pace as the original. If the GIF has an odd width or height, it is adjusted by one pixel, because MP4 videos need even sizes. The video has no sound, just like the GIF.",
+    "H.264 is used if the server has it enabled; otherwise AV1, a modern free codec that plays in current browsers, Windows 10 and 11, Android and recent Macs and iPhones. The result note says which one was used. The MP4 is prepared to start playing while it downloads.",
+    "It is handy for lightening a web page full of animations, for sending a long animation by email or for uploading a meme or a screen recording to a site that rejects large GIFs. You can convert up to ten GIFs at a time and download them together in a ZIP. Video is part of the Pro plan; files are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more GIFs.",
+    "Press convert.",
+    "Download the MP4 or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Does it loop?",
+      "a": "An MP4 does not store looping: the player decides. On a web page it is enabled with the video's loop attribute."
+    },
+    {
+      "q": "Is transparency lost?",
+      "a": "Yes: MP4 has no transparency, so transparent areas get a background."
+    },
+    {
+      "q": "Why AV1 and not H.264?",
+      "a": "Because H.264 depends on a server setting. AV1 is free and plays on current devices."
+    }
+  ]
+}

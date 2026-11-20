@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Video to GIF turns part of an MP4, MOV, MKV, WebM or AVI video into an animated GIF, ready for a chat, an email, a presentation or documentation. You choose the second it starts at and how long it lasts, up to 30 seconds.",
+    "GIF only allows 256 colours per image, so a palette of its own is computed for your video in two passes: first the colours of the chosen part are analysed and then that palette is applied with dithering that smooths gradients. The result looks much better than with a generic palette.",
+    "You can choose the width (320, 480, 640 or 800 pixels, the height adjusts itself), the frames per second (5 to 30), light quality with 128 colours, which is smaller, or high with 256, and whether it loops. A GIF is much heavier than a video: for long or large parts, an MP4 or WebM is better.",
+    "Video is part of the Pro plan. If the chosen start is past the end of the video, the last part is used and the result note says so. Files are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the video.",
+    "Choose the start, the duration and the width.",
+    "Download the GIF."
+  ],
+  "faq": [
+    {
+      "q": "Why is the GIF so heavy?",
+      "a": "Because the GIF format does not compress like a video. Lower the width, frame rate or duration to reduce it."
+    },
+    {
+      "q": "Does it have sound?",
+      "a": "No: the GIF format does not support sound."
+    },
+    {
+      "q": "Can I go back to MP4?",
+      "a": "Yes, with GIF to MP4, which also greatly reduces the size."
+    }
+  ]
+}

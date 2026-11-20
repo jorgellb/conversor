@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Vídeo a GIF convierte un trozo de un vídeo MP4, MOV, MKV, WebM o AVI en un GIF animado, listo para un chat, un correo, una presentación o una documentación. Eliges desde qué segundo empieza y cuánto dura, hasta 30 segundos.",
+    "El GIF solo admite 256 colores por imagen, así que se calcula una paleta propia para tu vídeo en dos pasadas: primero se analizan los colores del trozo elegido y después se aplica esa paleta con un tramado que suaviza los degradados. El resultado se ve mucho mejor que con una paleta genérica.",
+    "Puedes elegir el ancho (320, 480, 640 u 800 píxeles, el alto se ajusta solo), los fotogramas por segundo (de 5 a 30), la calidad ligera de 128 colores, que pesa menos, o la alta de 256, y si se repite en bucle. Un GIF pesa mucho más que un vídeo: para trozos largos o grandes, conviene un MP4 o un WebM.",
+    "El vídeo está en el plan Pro. Si el inicio elegido queda después del final del vídeo, se toma el último trozo y la nota del resultado lo indica. Los archivos se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el vídeo.",
+    "Elige el inicio, la duración y el ancho.",
+    "Descarga el GIF."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué pesa tanto el GIF?",
+      "a": "Porque el formato GIF no comprime como un vídeo. Baja el ancho, los fotogramas por segundo o la duración para reducirlo."
+    },
+    {
+      "q": "¿Tiene sonido?",
+      "a": "No: el formato GIF no admite sonido."
+    },
+    {
+      "q": "¿Puedo volver a MP4?",
+      "a": "Sí, con GIF a MP4, que además reduce mucho el tamaño."
+    }
+  ]
+}

@@ -92,6 +92,8 @@ class ToolSpec:
     # «módulo:función». Recibe (settings, plan, owner_type, opciones, rutas de los archivos, locale=«es»|«en», el de la
     # página) y lanza AppError. Se importa solo al crear el trabajo, así que el registro sigue sin cargar motores.
     precheck: str | None = None
+    # Vídeo (9.3): solo en planes con `video` (Pro). La API lo rechaza antes de encolar y la página lo avisa (D-241).
+    needs_video: bool = False
 
     @property
     def slug(self) -> str:
@@ -144,6 +146,7 @@ class ToolSpec:
             "default_enabled": self.default_enabled,
             "indexable": self.indexable,
             "max_files": self.max_files,
+            "needs_video": self.needs_video,
             "secret_fields": list(self.secret_fields),
             "related": list(self.related),
             "canonical_of": self.canonical_of,

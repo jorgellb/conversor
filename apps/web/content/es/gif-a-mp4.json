@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GIF a MP4 convierte GIF animados en vídeos MP4. Un MP4 suele pesar diez o veinte veces menos que el mismo GIF, se ve con más colores y se reproduce en cualquier móvil, navegador, red social o presentación, que a menudo convierten los GIF a vídeo de todos modos.",
+    "Cada fotograma conserva su duración, así que la animación va al mismo ritmo que el original. Si el GIF tiene un ancho o un alto impar, se ajusta en un píxel, porque los vídeos MP4 los necesitan pares. El vídeo no lleva sonido, igual que el GIF.",
+    "Se usa H.264 si el servidor lo tiene activado; si no, AV1, un códec moderno y libre que reproducen los navegadores actuales, Windows 10 y 11, Android y los Mac y iPhone recientes. La nota del resultado indica cuál se ha usado. El MP4 va preparado para empezar a verse mientras se descarga.",
+    "Puedes convertir hasta diez GIF a la vez y descargarlos juntos en un ZIP. El vídeo está en el plan Pro; los archivos se procesan en nuestro servidor de la Unión Europea y se borran solos cuando caducan."
+  ],
+  "steps": [
+    "Sube uno o varios GIF.",
+    "Pulsa convertir.",
+    "Descarga el MP4 o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Se repite en bucle?",
+      "a": "Un MP4 no guarda el bucle: es el reproductor el que decide. En una web se activa con el atributo loop del vídeo."
+    },
+    {
+      "q": "¿Se pierde la transparencia?",
+      "a": "Sí: el MP4 no tiene transparencia, así que las zonas transparentes salen con fondo."
+    },
+    {
+      "q": "¿Por qué AV1 y no H.264?",
+      "a": "Porque H.264 depende de una opción del servidor. AV1 es libre y se reproduce en los dispositivos actuales."
+    }
+  ]
+}

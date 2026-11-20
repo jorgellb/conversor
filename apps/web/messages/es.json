@@ -107,7 +107,8 @@
     "letterRole": "Carta de presentación",
     "cvRole": "Currículum",
     "attachmentRole": "Adjunto",
-    "convertToPdfa": "Convertir a PDF/A"
+    "convertToPdfa": "Convertir a PDF/A",
+    "videoPro": "Solo para el plan Pro: el vídeo no está en los planes gratuitos."
   },
   "faq": {
     "privacyQ": "¿Dónde se procesan mis archivos?",

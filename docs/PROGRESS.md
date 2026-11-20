@@ -686,6 +686,12 @@ traducir-word, traducir-excel y traducir-powerpoint cambiando solo los textos de
 intactos) y manuscrito-a-texto con un modelo que admite imágenes, que se apaga solo si no hay ninguno (D-239), en
 `tests/test_ia_oficina.py` con el proveedor falso.
 
+## F5-V1 (conversores de vídeo, solo Pro)
+
+mp4-a-webm, webm-a-mp4, mov-a-mp4, mkv-a-mp4, avi-a-mp4, video-a-gif y gif-a-mp4: remultiplexado sin recodificar cuando los
+códecs caben, VP9, H.264 con su interruptor o AV1 cuando no, y el vídeo rechazado en la API fuera del plan Pro (D-241), en
+`tests/test_video.py` con el FFmpeg real y ffprobe.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

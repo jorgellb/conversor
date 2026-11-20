@@ -49,6 +49,8 @@ export interface ToolSpec {
   default_enabled: boolean;
   indexable: boolean;
   max_files: number;
+  /** Vídeo (9.3, D-241): solo en planes con vídeo (Pro); la API lo rechaza antes de encolar. */
+  needs_video?: boolean;
   secret_fields: string[];
   related: string[];
   /** Alias (como pub-a-pdf): la página existe, pero su URL canónica es la de esta herramienta y no sale en listados. */
@@ -106,6 +108,7 @@ export function clientSpec(tool: ToolSpec, locale: Locale) {
     inputs: tool.inputs,
     outputs: tool.outputs,
     maxFiles: tool.max_files,
+    needsVideo: Boolean(tool.needs_video),
     secretFields: tool.secret_fields,
     schema: tool.options_schema,
   };

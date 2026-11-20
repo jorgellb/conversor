@@ -107,7 +107,8 @@
     "letterRole": "Cover letter",
     "cvRole": "CV",
     "attachmentRole": "Attachment",
-    "convertToPdfa": "Convert to PDF/A"
+    "convertToPdfa": "Convert to PDF/A",
+    "videoPro": "Pro plan only: video is not included in the free plans."
   },
   "faq": {
     "privacyQ": "Where are my files processed?",

@@ -109,6 +109,8 @@ def create_job(
     options, secrets = validate_options(spec, raw_options)
     plan = load_plan(session, owner.plan_id, settings)
 
+    if spec.needs_video and not plan.video:
+        raise AppError(ErrorCode.LIMIT_EXCEEDED, status=403, detail="video_plan")
     if spec.inputs and not upload_ids:
         raise AppError(ErrorCode.INVALID_OPTIONS, status=400, detail="Faltan archivos")
     if not spec.inputs and upload_ids:

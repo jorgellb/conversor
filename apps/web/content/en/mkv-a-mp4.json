@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MKV to MP4 converts your MKV videos into MP4. MKV (Matroska) is a very flexible container used by many recordings and downloads, but some TVs, phones and editors do not open it. MP4 is the format they all understand.",
+    "First the tool checks which codecs the video carries. An MKV with H.264, HEVC or AV1 and AAC, MP3, Opus or AC-3 sound is turned into MP4 without re-encoding. If the sound is another type (for example DTS), only the sound is re-encoded to AAC and the picture is copied as is. When no re-encoding is needed, the conversion takes seconds even if the video lasts an hour, and the picture and sound are identical to the original.",
+    "When an MKV needs re-encoding to MP4, H.264 is used if the server has it enabled; otherwise AV1, a modern free codec that plays in browsers, Windows 10 and 11, Android and recent Macs and iPhones. The result note says which one was used. Global file metadata, such as the date, GPS location or the app that recorded it, is removed so you do not share more than you want.",
+    "Converting MKV to MP4 is part of the Pro plan: videos up to one hour and 1 GB, up to five at a time, with a ZIP of all of them at the end. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more MKV videos.",
+    "Press convert: it is copied or re-encoded depending on the codecs.",
+    "Download the MP4 or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Does it lose quality?",
+      "a": "If the MKV is remuxed, no: the MP4 has the same picture and sound. If it is re-encoded, the difference is usually not visible."
+    },
+    {
+      "q": "Why Pro only?",
+      "a": "Because converting MKV video takes a lot of processor time. The free plans include audio, images and documents."
+    },
+    {
+      "q": "Are subtitles kept?",
+      "a": "No: subtitles embedded in the MKV are not copied to the MP4. You can generate or convert them with the subtitle tools."
+    }
+  ]
+}

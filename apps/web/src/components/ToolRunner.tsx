@@ -258,6 +258,7 @@ export function ToolRunner({ spec, retentionHours, nextTools, enabled, pdfaHref,
           </label>
           <p className="muted text-sm">{t("paste")}</p>
           <CloudOpen accept={spec.inputs} multiple={spec.maxFiles !== 1} onFiles={addFiles} />
+          {spec.needsVideo && <p className="text-sm" role="note">{t("videoPro")}</p>}
           <p className="text-sm font-medium" style={{ color: "var(--color-brand-700)" }}>
             {spec.where === "client" ? t("clientNotice") : t("serverNotice", { hours: retentionHours })}
           </p>

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MP4 a WebM convierte tus vídeos MP4 en WebM. WebM es el formato abierto de la web: lo reproducen Chrome, Firefox, Edge y Android sin complementos, y pesa poco con la misma calidad. Es el que conviene para incrustar un vídeo en una página o subirlo a sitios que lo prefieren.",
+    "Primero se mira qué códecs lleva el vídeo. Si el MP4 ya lleva VP9 o AV1 con sonido Opus, se copia tal cual en segundos. Lo habitual es que lleve H.264 y AAC, y entonces se recodifica a VP9 con sonido Opus con una calidad constante pensada para que no se note la diferencia. Cuando no hace falta recodificar, la conversión tarda segundos aunque el vídeo dure una hora, y la imagen y el sonido son idénticos a los del original.",
+    "La recodificación usa una calidad constante, no una tasa fija: las escenas sencillas ocupan poco y las de mucho movimiento conservan el detalle. El vídeo resultante mantiene la resolución, los fotogramas por segundo y el giro del original. Los metadatos globales del archivo, como la fecha, la ubicación GPS o la aplicación que lo grabó, se quitan para que no compartas más de lo que quieres.",
+    "Pasar MP4 a WebM está en el plan Pro: vídeos de hasta una hora y 1 GB, hasta cinco a la vez, con un ZIP con todos al final. Se procesan en nuestro servidor de la Unión Europea y se borran automáticamente cuando caducan."
+  ],
+  "steps": [
+    "Sube uno o varios vídeos MP4.",
+    "Pulsa convertir: se copia o se recodifica según los códecs.",
+    "Descarga el WebM o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Pierde calidad?",
+      "a": "Si el MP4 se remultiplexa, no: el WebM tiene la misma imagen y el mismo sonido. Si se recodifica, la diferencia no suele notarse a simple vista."
+    },
+    {
+      "q": "¿Por qué solo en Pro?",
+      "a": "Porque convertir vídeo MP4 exige mucho tiempo de procesador. Los planes gratuitos tienen audio, imágenes y documentos."
+    },
+    {
+      "q": "¿Se conservan los subtítulos?",
+      "a": "No: los subtítulos incrustados en el MP4 no se copian al WebM. Puedes generarlos o convertirlos con las herramientas de subtítulos."
+    }
+  ]
+}
