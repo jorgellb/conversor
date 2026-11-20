@@ -110,6 +110,28 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F4-F | word-a-pdf-accesible (office → ocr, veraPDF) | Hecho (D-182 y D-184); veraPDF y el PDF/UA de LibreOffice reales, en la CI |
 | F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | Pendiente (F4-A a F4-F). Para el cierre: imagen de la firma dentro de la apariencia PAdES y .p12 con 3DES o RC2 en el navegador (D-201) |
 
+Diseño de F4-C2 (solicitar-firmas, en curso; se anotará como D-202 al cerrarlo):
+
+- Página del propietario (con cuenta): PDF, firmantes (nombre, correo, orden; hasta 10), campo de cada uno (uno vacío
+  del PDF, de hacer-pdf-rellenable, o uno nuevo apilado al final de la última página), mensaje, caducidad (1 a 30 días)
+  y orden secuencial o en paralelo. Trabajo `solicitar-firmas` (fase `preparar`, `workerpdf`): comprueba el PDF y añade
+  con pyHanko los campos que falten. Después la página llama a `POST /v1/signature-requests` (la API, que es la única
+  que escribe en `signature_requests`, `signers` y `audit_events`): copia el PDF a `/srv/files/requests/<id>/`, crea
+  los firmantes con el hash de su token y manda las invitaciones (Turnstile y cupo diario).
+- Firmante (sin cuenta, con el enlace del correo; el token va en el fragmento de la URL): `GET /v1/sign/{token}` con el
+  documento por `/r/<id>/<archivo>?t=…` (files/authorize con el token del firmante), `POST /v1/sign/{token}/code` manda
+  un código de 6 cifras (hash con caducidad de 15 min, 5 intentos y tope por hora) y `POST /v1/sign/{token}` con el
+  código, la imagen de la firma (dibujada o escrita en el navegador) y el consentimiento: la API guarda la imagen y crea
+  un trabajo `solicitar-firmas` fase `firmante` en `workersign` (sello de la plataforma en el campo del firmante, con la
+  imagen y «Firmado por … verificado por correo», B-T).
+- beat (`signature_requests.advance`, cada minuto): pasa los resultados de esos trabajos al documento de la solicitud,
+  marca al firmante, escribe la auditoría, avisa al siguiente (secuencial) y, al firmar todos, crea el trabajo final
+  (fase `final`: sello invisible B-LT y certificado de auditoría en PDF, generado con el Chromium de Gotenberg y
+  sellado); al terminar, enlaces de descarga para el propietario y los firmantes. También caduca las solicitudes y
+  borra su carpeta 30 días después de terminar. Migración 0007: `signers.job_id`, `signature_requests` con nombre del
+  documento, opciones, idioma, correo del propietario, `completed_at` y trabajo final.
+
+
 ## F6: formatos, datos y documentos (pendiente)
 
 | Lote | Herramientas | Estado |
