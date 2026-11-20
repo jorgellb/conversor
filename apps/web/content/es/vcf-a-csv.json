@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "VCF a CSV convierte contactos en formato vCard (.vcf), el que exportan el iPhone, Android, iCloud, Google Contacts, Outlook y casi cualquier agenda, en una tabla CSV. Sirve para pasar tus contactos a Google o a Outlook, revisarlos o limpiarlos en una hoja de cálculo, o importarlos en un programa de gestión o de envío de correos.",
+    "Puedes elegir las columnas. La plantilla de Google Contacts usa los nombres que Google espera al importar (First Name, E-mail 1 - Value, Phone 1 - Label…), con tantas columnas de correo, teléfono, dirección y web como necesite el contacto que más tenga, y sus grupos como etiquetas. La de Outlook usa las columnas fijas de importación de Outlook (Mobile Phone, Business Phone, Home Street…). La tercera opción da una columna por dato con títulos en tu idioma, pensada para leerla.",
+    "Leemos vCard 2.1, 3.0 y 4.0, con nombre, empresa, cargo, correos, teléfonos con su tipo (móvil, trabajo, casa), direcciones, webs, cumpleaños, notas y grupos. Las fotos de contacto no caben en una tabla y se dejan fuera, y te decimos cuántas. El CSV sale en UTF-8 con BOM, para que Excel muestre bien los acentos.",
+    "Los contactos se convierten en nuestro servidor y nunca se envían a ningún servicio de inteligencia artificial. Un texto que empieza por «=» o «@» lleva un apóstrofo delante, para que una hoja de cálculo no lo ejecute como fórmula; los teléfonos con «+» se quedan como están."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .vcf.",
+    "Elige la plantilla de Google, la de Outlook o la propia.",
+    "Descarga el CSV e impórtalo donde lo necesites."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo exporto los contactos del iPhone?",
+      "a": "Desde iCloud.com, en Contactos, selecciónalos todos y elige «Exportar vCard». En Android, la aplicación Contactos tiene «Exportar a archivo .vcf» en sus ajustes."
+    },
+    {
+      "q": "¿Puedo importar el CSV en Google Contacts?",
+      "a": "Sí: elige la plantilla de Google y, en contacts.google.com, usa «Importar». Los contactos llegan con sus etiquetas."
+    },
+    {
+      "q": "¿Y volver a vCard?",
+      "a": "CSV a VCF reconoce las tres plantillas y vuelve a crear los contactos con sus correos, teléfonos y direcciones."
+    }
+  ]
+}

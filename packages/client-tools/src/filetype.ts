@@ -17,7 +17,7 @@ const EBML = [0x1a, 0x45, 0xdf, 0xa3];
 
 export const OLE2_FAMILY = new Set(["doc", "xls", "ppt", "pps", "msg", "pub", "vsd"]);
 export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
-  "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx"]);
+  "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics"]);
 // Firmas CMS (F6-G): DER binario (una SEQUENCE ASN.1) o PEM y Base64 de texto; solo con su extensión declarada.
 const CMS = new Set(["csig", "p7m", "p7s"]);
 const RAW_TIFF = new Set(["cr2", "nef", "arw", "dng"]);
@@ -29,7 +29,7 @@ const WIDE_BOMS: [number[], number, boolean][] = [
   [[0xff, 0xfe, 0x00, 0x00], 4, true], [[0x00, 0x00, 0xfe, 0xff], 4, false], [[0xff, 0xfe], 2, true], [[0xfe, 0xff], 2, false],
 ];
 const EXT_ALIASES: Record<string, string> = { jpeg: "jpg", tif: "tiff", htm: "html", markdown: "md", oga: "ogg", aif: "aiff", ssa: "ass", yml: "yaml",
-  tgz: "gz", tbz2: "bz2", tbz: "bz2", txz: "xz" };
+  tgz: "gz", tbz2: "bz2", tbz: "bz2", txz: "xz", vcard: "vcf", ical: "ics", ifb: "ics" };
 const ODF: Record<string, string> = {
   "application/vnd.oasis.opendocument.text": "odt",
   "application/vnd.oasis.opendocument.spreadsheet": "ods",

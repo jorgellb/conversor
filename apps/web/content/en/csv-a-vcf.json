@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV to VCF turns a CSV contact list into vCard (.vcf), the format imported by iPhone, Android, iCloud, Google, Outlook and Thunderbird. It is the way to put on your phone the contacts you keep in a spreadsheet, in business software or in a Google or Outlook export.",
+    "We recognise on our own the columns of Google Contacts exports (E-mail 1 - Value, Phone 1 - Label…) and Outlook exports (E-mail Address, Mobile Phone, Business Street…), and also your own sheet with titles such as Name, Last name, Company, Email, Phone or Address, in English or Spanish. Phone and email types (mobile, work, home), addresses, company and job title, birthday, notes and groups are kept.",
+    "If a cell holds several emails or phones separated by semicolons, each one becomes an entry of the contact. Rows with no name, email or phone are skipped, and the result's note says how many. We detect the file's encoding and separator, so Excel CSV files in Windows-1252 with accents come out right.",
+    "The vCard is written in version 3.0, the most compatible one, in UTF-8 and with every contact in a single file. Data is processed on our server and never sent to artificial intelligence services."
+  ],
+  "steps": [
+    "Upload the CSV with your contacts.",
+    "Wait for the conversion.",
+    "Download the .vcf and import it into your phone, iCloud or Google."
+  ],
+  "faq": [
+    {
+      "q": "How do I get it onto my iPhone?",
+      "a": "Email yourself the .vcf and open it on the iPhone, or upload it at iCloud.com, in Contacts, with “Import vCard”."
+    },
+    {
+      "q": "What columns does my sheet need?",
+      "a": "A name (or first and last name) and some contact detail are enough. Titles such as Name, Last name, Email, Phone, Company or Address are recognised automatically."
+    },
+    {
+      "q": "Can I convert an Excel file?",
+      "a": "Save it as CSV first, or convert it with Excel to CSV, and upload it here."
+    }
+  ]
+}

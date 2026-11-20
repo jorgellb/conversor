@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV to ICS turns a CSV list of events into an iCalendar (.ics) calendar that Google Calendar, Outlook, Apple Calendar and Thunderbird import. It is useful for putting into your calendar a class timetable, a fixture list, project dates, work shifts or any list of appointments you keep in a sheet.",
+    "We recognise columns in English and Spanish: title or subject, start date and time, end date and time, all day, location, description and categories, and also the Google Calendar and Outlook export templates. Dates can be ISO (2026-04-03) or day/month/year; if the columns are in English they are read as month/day, unless you choose another order.",
+    "You choose the time zone of the CSV times (Madrid by default) and the calendar includes it with its definition, so every app places the events correctly even when opened in another country. An event with no time is all day, and one with no end time lasts an hour. Rows without a valid start date are skipped and we tell you how many.",
+    "Each event gets a unique identifier, so you can import the file without it mixing with others. Data is processed on our server, without sending it to artificial intelligence services."
+  ],
+  "steps": [
+    "Upload the CSV with your events.",
+    "Choose the time zone and, if needed, the date order.",
+    "Download the .ics and import it into your calendar."
+  ],
+  "faq": [
+    {
+      "q": "How do I import it into Google Calendar?",
+      "a": "In Settings, “Import & export”, choose the .ics and the target calendar. It is wise to create a new calendar first so you can delete it entirely if something does not come out as expected."
+    },
+    {
+      "q": "Can I create recurring events?",
+      "a": "Not from a CSV: each row is one event. If you need recurrence, add the dates as rows or set up the recurrence in your calendar."
+    },
+    {
+      "q": "What about 03/04/2026?",
+      "a": "It is read as 3 April if the columns are in Spanish and as March 4 if they are in English. You can set the order in the options."
+    }
+  ]
+}

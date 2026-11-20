@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 224 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 46). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 230 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 52). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -230,6 +230,12 @@ Catálogo publicado en esta entrega: 224 herramientas (F1 43, F2 60, F3 10, F4 1
 | `tcx-a-gpx` / `tcx-to-gpx` | servidor | utils | light | F6 | activa | tcx → gpx, zip | redactado, sin revisar |
 | `fit-a-gpx` / `fit-to-gpx` | servidor | utils | light | F6 | activa | fit → gpx, zip | redactado, sin revisar |
 | `fit-a-csv` / `fit-to-csv` | servidor | utils | light | F6 | activa | fit → csv, zip | redactado, sin revisar |
+| `vcf-a-csv` / `vcf-to-csv` | servidor | utils | light | F6 | activa | vcf → csv, zip | redactado, sin revisar |
+| `csv-a-vcf` / `csv-to-vcf` | servidor | utils | light | F6 | activa | csv, txt → vcf, zip | redactado, sin revisar |
+| `vcf-a-excel` / `vcf-to-excel` | servidor | utils | light | F6 | activa | vcf → xlsx, zip | redactado, sin revisar |
+| `ics-a-csv` / `ics-to-csv` | servidor | utils | light | F6 | activa | ics → csv, zip | redactado, sin revisar |
+| `csv-a-ics` / `csv-to-ics` | servidor | utils | light | F6 | activa | csv, txt → ics, zip | redactado, sin revisar |
+| `ics-a-excel` / `ics-to-excel` | servidor | utils | light | F6 | activa | ics → xlsx, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

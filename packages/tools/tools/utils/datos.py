@@ -119,10 +119,20 @@ def _with_newline(chunks):
 RISKY_START = ("=", "+", "@", "\t", "\r")
 
 
+PHONE_OR_NUMBER = re.compile(r"[+-][\d\s().,/-]*")
+
+
 def guard_formula(value: str) -> str:
-    if value[:1] in RISKY_START or (value[:1] == "-" and not re.fullmatch(r"-\d[\d.,]*(?:[eE][-+]?\d+)?", value)):
+    """Un «+» o un «-» seguidos solo de cifras, espacios y signos de un teléfono o un número («+34 600 111 222», «-5,2») no
+    son peligrosos y no llevan apóstrofo: estropearía los teléfonos al importar contactos en Google u Outlook."""
+    if value[:1] in ("=", "@", "\t", "\r") or (value[:1] in "+-" and value[:1] and not PHONE_OR_NUMBER.fullmatch(value)):
         return "'" + value
     return value
+
+
+def unguard(value: str) -> str:
+    """Lo contrario de `guard_formula` al leer un CSV hecho aquí."""
+    return value[1:] if value[:1] == "'" and value[1:2] in ("=", "@", "+", "-", "\t", "\r") else value
 
 
 # --- Texto y codificaciones ---------------------------------------------------------------------------------------

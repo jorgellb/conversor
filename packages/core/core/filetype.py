@@ -12,7 +12,7 @@ EBML = bytes.fromhex("1A45DFA3")
 # Formatos que comparten contenedor: se confía en la extensión declarada solo dentro de su familia.
 OLE2_FAMILY = {"doc", "xls", "ppt", "pps", "msg", "pub", "vsd"}
 TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
-               "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx"}
+               "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr", "kmz"}  # kmz: un ZIP con doc.kml (F6-H1)
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
@@ -65,12 +65,13 @@ MIME = {
     # Mapas (F6-H1).
     "gpx": "application/gpx+xml", "kml": "application/vnd.google-earth.kml+xml", "kmz": "application/vnd.google-earth.kmz",
     "geojson": "application/geo+json", "tcx": "application/vnd.garmin.tcx+xml", "fit": "application/vnd.ant.fit",
+    "vcf": "text/vcard", "ics": "text/calendar",
     # Datos (F6-B).
     "json": "application/json", "xml": "application/xml", "yaml": "application/yaml",
 }
 
 EXT_ALIASES = {"jpeg": "jpg", "tif": "tiff", "htm": "html", "markdown": "md", "oga": "ogg", "aif": "aiff", "ssa": "ass", "yml": "yaml",
-               "tgz": "gz", "tbz2": "bz2", "tbz": "bz2", "txz": "xz"}
+               "tgz": "gz", "tbz2": "bz2", "tbz": "bz2", "txz": "xz", "vcard": "vcf", "ical": "ics", "ifb": "ics"}
 
 
 @dataclass(frozen=True)

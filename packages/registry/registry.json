@@ -31865,6 +31865,475 @@
         "title": "NoOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "vcf-a-csv",
+      "slug_en": "vcf-to-csv",
+      "name_es": "VCF a CSV",
+      "name_en": "VCF to CSV",
+      "summary_es": "Convierte contactos vCard (.vcf) del móvil, iCloud o Google en CSV con las columnas de Google Contacts u Outlook.",
+      "summary_en": "Turn vCard contacts (.vcf) from your phone, iCloud or Google into CSV with Google Contacts or Outlook columns.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "vcf"
+      ],
+      "outputs": [
+        "csv",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "csv-a-vcf",
+        "vcf-a-excel"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "vcf-a-csv y vcf-a-excel (D-224): plantilla [Google Contacts] | Outlook | propia (7.13).",
+        "properties": {
+          "plantilla": {
+            "default": "google",
+            "enum": [
+              "google",
+              "outlook",
+              "generico"
+            ],
+            "title": "Columnas",
+            "type": "string",
+            "x-labels": {
+              "generico": {
+                "en": "One column per field, in your language",
+                "es": "Una columna por dato, en tu idioma"
+              },
+              "google": {
+                "en": "Google Contacts template",
+                "es": "Plantilla de Google Contacts"
+              },
+              "outlook": {
+                "en": "Outlook template",
+                "es": "Plantilla de Outlook"
+              }
+            },
+            "x-title": {
+              "en": "Columns",
+              "es": "Columnas"
+            }
+          }
+        },
+        "title": "VcfOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "csv-a-vcf",
+      "slug_en": "csv-to-vcf",
+      "name_es": "CSV a VCF",
+      "name_en": "CSV to VCF",
+      "summary_es": "Convierte una lista de contactos en CSV (de Google, Outlook o tu hoja) en vCard para importarla en el móvil o en iCloud.",
+      "summary_en": "Turn a CSV contact list (from Google, Outlook or your own sheet) into vCard to import it into your phone or iCloud.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "csv",
+        "txt"
+      ],
+      "outputs": [
+        "vcf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "vcf-a-csv",
+        "vcf-a-excel"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "vcf-a-excel",
+      "slug_en": "vcf-to-excel",
+      "name_es": "VCF a Excel",
+      "name_en": "VCF to Excel",
+      "summary_es": "Convierte contactos vCard en una hoja de Excel con nombre, correos, teléfonos, direcciones y empresa de cada uno.",
+      "summary_en": "Turn vCard contacts into an Excel sheet with each contact's name, emails, phones, addresses and company.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "vcf"
+      ],
+      "outputs": [
+        "xlsx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "vcf-a-csv",
+        "csv-a-vcf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "vcf-a-csv y vcf-a-excel (D-224): plantilla [Google Contacts] | Outlook | propia (7.13).",
+        "properties": {
+          "plantilla": {
+            "default": "google",
+            "enum": [
+              "google",
+              "outlook",
+              "generico"
+            ],
+            "title": "Columnas",
+            "type": "string",
+            "x-labels": {
+              "generico": {
+                "en": "One column per field, in your language",
+                "es": "Una columna por dato, en tu idioma"
+              },
+              "google": {
+                "en": "Google Contacts template",
+                "es": "Plantilla de Google Contacts"
+              },
+              "outlook": {
+                "en": "Outlook template",
+                "es": "Plantilla de Outlook"
+              }
+            },
+            "x-title": {
+              "en": "Columns",
+              "es": "Columnas"
+            }
+          }
+        },
+        "title": "VcfOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "ics-a-csv",
+      "slug_en": "ics-to-csv",
+      "name_es": "ICS a CSV",
+      "name_en": "ICS to CSV",
+      "summary_es": "Convierte un calendario ICS de Google, Outlook o Apple en CSV: un evento por fila con fechas, horas, lugar y descripción.",
+      "summary_en": "Turn an ICS calendar from Google, Outlook or Apple into CSV: one event per row with dates, times, place and description.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "ics"
+      ],
+      "outputs": [
+        "csv",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "csv-a-ics",
+        "ics-a-excel"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "ics-a-csv e ics-a-excel (D-224): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook.",
+        "properties": {
+          "plantilla": {
+            "default": "completo",
+            "enum": [
+              "completo",
+              "google",
+              "outlook"
+            ],
+            "title": "Columnas",
+            "type": "string",
+            "x-labels": {
+              "completo": {
+                "en": "Full (time zone, attendees, recurrence)",
+                "es": "Completas (zona horaria, asistentes, repetición)"
+              },
+              "google": {
+                "en": "Google Calendar template",
+                "es": "Plantilla de Google Calendar"
+              },
+              "outlook": {
+                "en": "Outlook template",
+                "es": "Plantilla de Outlook"
+              }
+            },
+            "x-title": {
+              "en": "Columns",
+              "es": "Columnas"
+            }
+          }
+        },
+        "title": "IcsOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "csv-a-ics",
+      "slug_en": "csv-to-ics",
+      "name_es": "CSV a ICS",
+      "name_en": "CSV to ICS",
+      "summary_es": "Convierte una lista de eventos en CSV en un calendario ICS para importarlo en Google Calendar, Outlook o el iPhone.",
+      "summary_en": "Turn a CSV list of events into an ICS calendar to import into Google Calendar, Outlook or the iPhone.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "csv",
+        "txt"
+      ],
+      "outputs": [
+        "ics",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "ics-a-csv",
+        "ics-a-excel"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "csv-a-ics (D-224): zona horaria [Europe/Madrid] y orden de las fechas [detectar: mes/día con columnas en inglés].",
+        "properties": {
+          "zona": {
+            "default": "Europe/Madrid",
+            "enum": [
+              "Europe/Madrid",
+              "Atlantic/Canary",
+              "Europe/Lisbon",
+              "Europe/London",
+              "Europe/Paris",
+              "UTC",
+              "America/Mexico_City",
+              "America/Bogota",
+              "America/Lima",
+              "America/Santiago",
+              "America/Argentina/Buenos_Aires",
+              "America/Caracas",
+              "America/New_York",
+              "America/Chicago",
+              "America/Los_Angeles"
+            ],
+            "title": "Zona horaria de las horas del CSV",
+            "type": "string",
+            "x-labels": {
+              "America/Argentina/Buenos_Aires": {
+                "en": "America/Argentina/Buenos Aires",
+                "es": "America/Argentina/Buenos Aires"
+              },
+              "America/Bogota": {
+                "en": "America/Bogota",
+                "es": "America/Bogota"
+              },
+              "America/Caracas": {
+                "en": "America/Caracas",
+                "es": "America/Caracas"
+              },
+              "America/Chicago": {
+                "en": "America/Chicago",
+                "es": "America/Chicago"
+              },
+              "America/Lima": {
+                "en": "America/Lima",
+                "es": "America/Lima"
+              },
+              "America/Los_Angeles": {
+                "en": "America/Los Angeles",
+                "es": "America/Los Angeles"
+              },
+              "America/Mexico_City": {
+                "en": "America/Mexico City",
+                "es": "America/Mexico City"
+              },
+              "America/New_York": {
+                "en": "America/New York",
+                "es": "America/New York"
+              },
+              "America/Santiago": {
+                "en": "America/Santiago",
+                "es": "America/Santiago"
+              },
+              "Atlantic/Canary": {
+                "en": "Atlantic/Canary",
+                "es": "Atlantic/Canary"
+              },
+              "Europe/Lisbon": {
+                "en": "Europe/Lisbon",
+                "es": "Europe/Lisbon"
+              },
+              "Europe/London": {
+                "en": "Europe/London",
+                "es": "Europe/London"
+              },
+              "Europe/Madrid": {
+                "en": "Europe/Madrid",
+                "es": "Europe/Madrid"
+              },
+              "Europe/Paris": {
+                "en": "Europe/Paris",
+                "es": "Europe/Paris"
+              },
+              "UTC": {
+                "en": "UTC",
+                "es": "UTC"
+              }
+            },
+            "x-title": {
+              "en": "Time zone of the CSV times",
+              "es": "Zona horaria de las horas del CSV"
+            }
+          },
+          "formato_fecha": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "dia_mes",
+              "mes_dia"
+            ],
+            "title": "Fechas como 03/04/2026",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Detect (month/day if the columns are in English)",
+                "es": "Detectar (mes/día si las columnas están en inglés)"
+              },
+              "dia_mes": {
+                "en": "Day/month (3 April)",
+                "es": "Día/mes (3 de abril)"
+              },
+              "mes_dia": {
+                "en": "Month/day (March 4)",
+                "es": "Mes/día (4 de marzo)"
+              }
+            },
+            "x-title": {
+              "en": "Dates such as 03/04/2026",
+              "es": "Fechas como 03/04/2026"
+            }
+          }
+        },
+        "title": "CsvIcsOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "ics-a-excel",
+      "slug_en": "ics-to-excel",
+      "name_es": "ICS a Excel",
+      "name_en": "ICS to Excel",
+      "summary_es": "Convierte un calendario ICS en una hoja de Excel con todos sus eventos, para revisarlos, filtrarlos o imprimirlos.",
+      "summary_en": "Turn an ICS calendar into an Excel sheet with all its events, to review, filter or print them.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "ics"
+      ],
+      "outputs": [
+        "xlsx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "ics-a-csv",
+        "csv-a-ics"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "ics-a-csv e ics-a-excel (D-224): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook.",
+        "properties": {
+          "plantilla": {
+            "default": "completo",
+            "enum": [
+              "completo",
+              "google",
+              "outlook"
+            ],
+            "title": "Columnas",
+            "type": "string",
+            "x-labels": {
+              "completo": {
+                "en": "Full (time zone, attendees, recurrence)",
+                "es": "Completas (zona horaria, asistentes, repetición)"
+              },
+              "google": {
+                "en": "Google Calendar template",
+                "es": "Plantilla de Google Calendar"
+              },
+              "outlook": {
+                "en": "Outlook template",
+                "es": "Plantilla de Outlook"
+              }
+            },
+            "x-title": {
+              "en": "Columns",
+              "es": "Columnas"
+            }
+          }
+        },
+        "title": "IcsOptions",
+        "type": "object"
+      }
     }
   ]
 }

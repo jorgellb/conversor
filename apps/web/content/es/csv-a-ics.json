@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV a ICS convierte una lista de eventos en CSV en un calendario iCalendar (.ics) que importan Google Calendar, Outlook, Apple Calendar y Thunderbird. Es útil para pasar al calendario un horario de clases, un calendario de partidos, las fechas de un proyecto, unos turnos de trabajo o cualquier lista de citas que tengas en una hoja.",
+    "Reconocemos columnas en español y en inglés: título o asunto, fecha y hora de inicio, fecha y hora de fin, todo el día, lugar, descripción y categorías, y también la plantilla de exportación de Google Calendar y de Outlook. Las fechas pueden ir en formato ISO (2026-04-03) o como día/mes/año; si las columnas están en inglés se entienden como mes/día, salvo que elijas otro orden.",
+    "Eliges la zona horaria de las horas del CSV (Madrid por defecto) y el calendario la incluye con su definición, para que cada aplicación coloque bien los eventos aunque se abra en otro país. Un evento sin hora es de todo el día, y uno sin hora de fin dura una hora. Las filas sin una fecha de inicio válida se saltan y te decimos cuántas.",
+    "Cada evento recibe un identificador único, así que puedes importar el archivo sin que se mezcle con otros. Los datos se tratan en nuestro servidor, sin enviarlos a servicios de inteligencia artificial."
+  ],
+  "steps": [
+    "Sube el CSV con tus eventos.",
+    "Elige la zona horaria y, si hace falta, el orden de las fechas.",
+    "Descarga el .ics e impórtalo en tu calendario."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo lo importo en Google Calendar?",
+      "a": "En Configuración, «Importar y exportar», elige el .ics y el calendario de destino. Conviene crear antes un calendario nuevo para poder borrarlo entero si algo no sale como esperabas."
+    },
+    {
+      "q": "¿Puedo crear eventos que se repiten?",
+      "a": "Desde un CSV, no: cada fila es un evento. Si necesitas repeticiones, añade las fechas como filas o crea la repetición en tu calendario."
+    },
+    {
+      "q": "¿Qué pasa con 03/04/2026?",
+      "a": "Se lee como 3 de abril si las columnas están en español y como 4 de marzo si están en inglés. Puedes fijar el orden en las opciones."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ICS a Excel convierte un calendario iCalendar (.ics) en una hoja de Excel con todos sus eventos. Es la forma más rápida de revisar una agenda completa, filtrar por fechas o por lugar, sumar las horas dedicadas a un cliente o imprimir el calendario de un curso.",
+    "Con las columnas completas, cada evento tiene su título, su inicio y su fin, si es de todo el día, su zona horaria, el lugar, la descripción, el organizador, los asistentes, el estado, las categorías, la regla de repetición y su identificador. También puedes elegir las plantillas de Google Calendar o de Outlook si vas a importar la hoja en uno de ellos.",
+    "La primera fila queda fija y todas las celdas se guardan como texto, así que nada se convierte en una fórmula. Los eventos que se repiten aparecen una vez, con su regla de repetición en las columnas completas; las plantillas de Google y Outlook no la admiten y te avisamos.",
+    "Leemos calendarios de Google, Outlook, Apple, Thunderbird y de cualquier programa que exporte iCalendar, con varios calendarios en un mismo archivo. Los eventos se tratan en nuestro servidor, sin enviarlos a servicios de inteligencia artificial, con hasta 100 000 por archivo."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .ics.",
+    "Elige las columnas.",
+    "Descarga el libro de Excel."
+  ],
+  "faq": [
+    {
+      "q": "¿Las horas salen en mi zona horaria?",
+      "a": "Salen en la del propio evento, que aparece en su columna. Si el calendario es de otro país, las horas son las de allí."
+    },
+    {
+      "q": "¿Puedo convertir un calendario de Outlook?",
+      "a": "Sí: guárdalo como .ics desde Outlook (Archivo, Guardar calendario) y súbelo aquí."
+    },
+    {
+      "q": "¿Se incluyen los recordatorios?",
+      "a": "No, solo los datos de cada evento; las alarmas no tienen columna en la hoja."
+    }
+  ]
+}

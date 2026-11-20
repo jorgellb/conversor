@@ -607,9 +607,14 @@ conserva puntos, alturas y horas (16.5) en `tests/test_geo.py`; los Shapefile co
 tcx-a-gpx, fit-a-gpx y fit-a-csv (D-223) con pulso, cadencia y potencia en la extensión de Garmin, en `tests/test_deportes.py`
 con un FIT de prueba escrito con su CRC.
 
+## F6-I (contactos y calendarios)
+
+vcf-a-csv, csv-a-vcf, vcf-a-excel, ics-a-csv, csv-a-ics e ics-a-excel (D-224) con las plantillas de Google y Outlook; VCF → CSV
+→ VCF conserva los contactos (16.5), en `tests/test_agenda.py`.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1 y F6-H2 hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2 y F6-I hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

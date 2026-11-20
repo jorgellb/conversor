@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSV a VCF convierte una lista de contactos en CSV en vCard (.vcf), el formato que importan el iPhone, Android, iCloud, Google, Outlook y Thunderbird. Es la forma de pasar al móvil los contactos que tienes en una hoja de cálculo, en un programa de gestión o en una exportación de Google o de Outlook.",
+    "Reconocemos solas las columnas de las exportaciones de Google Contacts (E-mail 1 - Value, Phone 1 - Label…) y de Outlook (E-mail Address, Mobile Phone, Business Street…), y también una hoja propia con títulos como Nombre, Apellidos, Empresa, Correo, Teléfono o Dirección, en español o en inglés. Se conservan los tipos de teléfono y de correo (móvil, trabajo, casa), las direcciones, la empresa y el cargo, el cumpleaños, las notas y los grupos.",
+    "Si una celda tiene varios correos o teléfonos separados por punto y coma, cada uno se convierte en una entrada del contacto. Las filas sin nombre, sin correo y sin teléfono se saltan, y la nota del resultado dice cuántas. Detectamos la codificación del archivo y el separador, así que los CSV de Excel en Windows-1252 con tildes salen bien.",
+    "El vCard se escribe en la versión 3.0, la más compatible, en UTF-8 y con todos los contactos en un solo archivo. Los datos se tratan en nuestro servidor y nunca se envían a servicios de inteligencia artificial."
+  ],
+  "steps": [
+    "Sube el CSV con tus contactos.",
+    "Espera a la conversión.",
+    "Descarga el .vcf e impórtalo en el móvil, iCloud o Google."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo lo paso al iPhone?",
+      "a": "Envíate el .vcf por correo y ábrelo en el iPhone, o súbelo en iCloud.com, en Contactos, con «Importar vCard»."
+    },
+    {
+      "q": "¿Qué columnas necesita mi hoja?",
+      "a": "Basta con un nombre (o nombre y apellidos) y algún dato de contacto. Títulos como Nombre, Apellidos, Correo, Teléfono, Empresa o Dirección se reconocen solos."
+    },
+    {
+      "q": "¿Puedo convertir un Excel?",
+      "a": "Guárdalo antes como CSV, o conviértelo con Excel a CSV, y súbelo aquí."
+    }
+  ]
+}

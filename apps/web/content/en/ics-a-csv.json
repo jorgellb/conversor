@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ICS to CSV turns an iCalendar (.ics) calendar, the format exported by Google Calendar, Outlook, Apple Calendar, Thunderbird and booking systems, into a CSV table with one event per row. It is for reviewing a schedule in a spreadsheet, counting hours, preparing a report or moving events to another program.",
+    "With the full columns you get the title, start and end with their time, whether it is all day, the time zone, location, description, organiser, attendees, status, categories, recurrence rule and event identifier. Times are shown in the event's own time zone.",
+    "You can also choose the import templates of Google Calendar (Subject, Start Date, Start Time…) and Outlook, with dates as month/day/year and 12-hour times, which is what they expect. Those templates do not support recurring events: each one appears once and we tell you how many there are; with the full columns, the recurrence rule is kept.",
+    "The CSV is written in UTF-8 with BOM so Excel opens it properly. Calendars are processed on our server and never sent to artificial intelligence services."
+  ],
+  "steps": [
+    "Upload one or more .ics files.",
+    "Choose the full columns or an import template.",
+    "Download the CSV."
+  ],
+  "faq": [
+    {
+      "q": "How do I export my Google calendar?",
+      "a": "In Google Calendar, Settings, “Import & export”, “Export” downloads a ZIP with one .ics per calendar."
+    },
+    {
+      "q": "Why does an all-day event end on the same day?",
+      "a": "In iCalendar the end of an all-day event is the next day; the Google and Outlook templates show the event's last day, as they expect on import."
+    },
+    {
+      "q": "And the other way?",
+      "a": "CSV to ICS turns a list of events into a calendar you can import."
+    }
+  ]
+}

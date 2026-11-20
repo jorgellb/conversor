@@ -124,7 +124,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F6-G | csig-a-pdf, p7m-a-pdf, xsig-a-pdf, verificar-firma | Hecho (D-219); sellos de tiempo de XAdES sin comprobar (anotado) |
 | F6-H1 | gpx-a-kml, kml-a-gpx, kmz-a-gpx, gpx-a-geojson, geojson-a-kml, shp-a-geojson, shp-a-kml, csv-a-kml | Hecho (D-220); Shapefile con ogr2ogr real, en la CI |
 | F6-H2 | tcx-a-gpx, fit-a-gpx, fit-a-csv | Hecho (D-223) |
-| F6-I | vcf-a-csv, csv-a-vcf, vcf-a-excel, ics-a-csv, csv-a-ics, ics-a-excel | Pendiente (F4-Z) |
+| F6-I | vcf-a-csv, csv-a-vcf, vcf-a-excel, ics-a-csv, csv-a-ics, ics-a-excel | Hecho (D-224) |
 | F6-J | mbox-a-eml, mbox-a-pdf, pst-a-mbox, pst-a-pdf | Pendiente (F4-Z) |
 | F6-K | drawio-a-pdf, drawio-a-png, latex-a-pdf | Pendiente (F4-Z) |
 | F6-L | midi-a-mp3, midi-a-wav, musicxml-a-pdf, midi-a-pdf | Pendiente (F4-Z) |

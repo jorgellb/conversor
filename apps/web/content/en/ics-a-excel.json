@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ICS to Excel turns an iCalendar (.ics) calendar into an Excel sheet with all its events. It is the quickest way to review a whole schedule, filter by date or place, add up the hours spent on a client or print a course calendar.",
+    "With the full columns, each event has its title, start and end, whether it is all day, its time zone, location, description, organiser, attendees, status, categories, recurrence rule and identifier. You can also choose the Google Calendar or Outlook templates if you will import the sheet into one of them.",
+    "The first row stays frozen and every cell is stored as text, so nothing becomes a formula. Recurring events appear once, with their recurrence rule in the full columns; the Google and Outlook templates do not support it and we warn you.",
+    "We read calendars from Google, Outlook, Apple, Thunderbird and any program that exports iCalendar, including several calendars in one file. Events are processed on our server, without sending them to artificial intelligence services, with up to 100,000 per file."
+  ],
+  "steps": [
+    "Upload one or more .ics files.",
+    "Choose the columns.",
+    "Download the Excel workbook."
+  ],
+  "faq": [
+    {
+      "q": "Are times shown in my time zone?",
+      "a": "They are shown in the event's own time zone, which appears in its column. If the calendar is from another country, the times are local to it."
+    },
+    {
+      "q": "Can I convert an Outlook calendar?",
+      "a": "Yes: save it as .ics from Outlook (File, Save calendar) and upload it here."
+    },
+    {
+      "q": "Are reminders included?",
+      "a": "No, only each event's data; alarms and reminders have no column in the sheet, so set them again in your calendar if you import the events back."
+    }
+  ]
+}

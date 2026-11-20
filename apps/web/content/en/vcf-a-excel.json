@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "VCF to Excel turns vCard contacts into an Excel sheet with one row per contact. It is the most comfortable way to see your whole address book at a glance, spot duplicates, fill in details, filter by company or prepare a mailing list.",
+    "As in VCF to CSV, you choose the columns: the Google Contacts template, the Outlook template or one column per field with titles in your language. Each contact keeps its first and last name, company and job title, its emails and phones with their type, its addresses, websites, birthday, notes and groups.",
+    "The first row stays frozen as you scroll and every cell is stored as text: phone numbers keep their “+” and leading zeros, and nothing becomes a formula even if it starts with “=”. Contact photos are not included and we tell you how many there were.",
+    "We read vCard 2.1, 3.0 and 4.0 and detect their encoding. The conversion runs on our server, without sending your contacts to artificial intelligence services, with up to 100,000 contacts per file and 20 files per batch."
+  ],
+  "steps": [
+    "Upload one or more .vcf files.",
+    "Choose the columns.",
+    "Download the Excel workbook."
+  ],
+  "faq": [
+    {
+      "q": "Can I edit the Excel file and go back to vCard?",
+      "a": "Yes: save it as CSV and convert it with CSV to VCF, which recognises the same columns."
+    },
+    {
+      "q": "Why do phone numbers come out as text?",
+      "a": "So Excel does not strip their prefix or leading zeros or turn them into numbers in scientific notation."
+    },
+    {
+      "q": "Are accented letters shown?",
+      "a": "Yes, Excel stores text in Unicode, so names with accents or other alphabets display correctly."
+    }
+  ]
+}

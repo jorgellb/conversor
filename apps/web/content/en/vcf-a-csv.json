@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "VCF to CSV turns vCard (.vcf) contacts, the format exported by iPhone, Android, iCloud, Google Contacts, Outlook and almost any address book, into a CSV table. It is for moving your contacts to Google or Outlook, reviewing or cleaning them in a spreadsheet, or importing them into business or mailing software.",
+    "You can choose the columns. The Google Contacts template uses the names Google expects on import (First Name, E-mail 1 - Value, Phone 1 - Label…), with as many email, phone, address and website columns as the contact with the most needs, and its groups as labels. The Outlook template uses Outlook's fixed import columns (Mobile Phone, Business Phone, Home Street…). The third option gives one column per field with titles in your language, meant for reading.",
+    "We read vCard 2.1, 3.0 and 4.0, with name, company, job title, emails, phones with their type (mobile, work, home), addresses, websites, birthday, notes and groups. Contact photos do not fit in a table and are left out, and we tell you how many. The CSV is written in UTF-8 with BOM, so Excel shows accented letters correctly.",
+    "Contacts are converted on our server and never sent to any artificial intelligence service. Text starting with “=” or “@” gets an apostrophe in front so a spreadsheet does not run it as a formula; phone numbers with “+” are left as they are."
+  ],
+  "steps": [
+    "Upload one or more .vcf files.",
+    "Choose the Google, Outlook or own template.",
+    "Download the CSV and import it where you need it."
+  ],
+  "faq": [
+    {
+      "q": "How do I export my iPhone contacts?",
+      "a": "From iCloud.com, in Contacts, select them all and choose “Export vCard”. On Android, the Contacts app has “Export to .vcf file” in its settings."
+    },
+    {
+      "q": "Can I import the CSV into Google Contacts?",
+      "a": "Yes: choose the Google template and, at contacts.google.com, use “Import”. Contacts arrive with their labels."
+    },
+    {
+      "q": "And back to vCard?",
+      "a": "CSV to VCF recognises the three templates and rebuilds the contacts with their emails, phones and addresses."
+    }
+  ]
+}

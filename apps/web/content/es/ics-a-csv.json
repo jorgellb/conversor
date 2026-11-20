@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "ICS a CSV convierte un calendario en formato iCalendar (.ics), el que exportan Google Calendar, Outlook, Apple Calendar, Thunderbird y los sistemas de reservas, en una tabla CSV con un evento por fila. Sirve para revisar una agenda en una hoja de cálculo, contar horas, preparar un informe o pasar los eventos a otro programa.",
+    "Con las columnas completas obtienes el título, el inicio y el fin con su hora, si es de todo el día, la zona horaria, el lugar, la descripción, el organizador, los asistentes, el estado, las categorías, la regla de repetición y el identificador del evento. Las horas se muestran en la zona horaria del propio evento.",
+    "También puedes elegir las plantillas de importación de Google Calendar (Subject, Start Date, Start Time…) y de Outlook, con las fechas como mes/día/año y las horas en formato de 12 horas, que es lo que esperan. Esas plantillas no admiten eventos que se repiten: cada uno aparece una sola vez y te avisamos de cuántos hay; con las columnas completas, la regla de repetición se conserva.",
+    "El CSV sale en UTF-8 con BOM para que Excel lo abra bien. Los calendarios se tratan en nuestro servidor y nunca se envían a servicios de inteligencia artificial."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .ics.",
+    "Elige las columnas completas o una plantilla de importación.",
+    "Descarga el CSV."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo exporto mi calendario de Google?",
+      "a": "En Google Calendar, en Configuración, «Importar y exportar», «Exportar» descarga un ZIP con un .ics por calendario."
+    },
+    {
+      "q": "¿Por qué un evento de todo el día termina el mismo día?",
+      "a": "En iCalendar el fin de un evento de día completo es el día siguiente; en las plantillas de Google y Outlook se muestra el último día del evento, como esperan al importar."
+    },
+    {
+      "q": "¿Y al revés?",
+      "a": "CSV a ICS convierte una lista de eventos en un calendario que puedes importar."
+    }
+  ]
+}

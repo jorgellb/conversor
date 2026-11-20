@@ -590,6 +590,18 @@
    "b64": "PD94bWwgdmVyc2lvbj0iMS4wIj8+PFRyYWluaW5nQ2VudGVyRGF0YWJhc2UgeG1sbnM9Imh0dHA6Ly93d3cuZ2FybWluLmNvbS94bWxzY2hlbWFzL1RyYWluaW5nQ2VudGVyRGF0YWJhc2UvdjIiLz4="
   },
   {
+   "id": "vcf",
+   "declared": "vcf",
+   "expected": "vcf",
+   "b64": "QkVHSU46VkNBUkQNClZFUlNJT046My4wDQpGTjpBbmENCkVORDpWQ0FSRA0K"
+  },
+  {
+   "id": "ics",
+   "declared": "ics",
+   "expected": "ics",
+   "b64": "QkVHSU46VkNBTEVOREFSDQpWRVJTSU9OOjIuMA0KRU5EOlZDQUxFTkRBUg0K"
+  },
+  {
    "id": "txt-utf16-texto-unicode-de-excel",
    "declared": "txt",
    "expected": "txt",

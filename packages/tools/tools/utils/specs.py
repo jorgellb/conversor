@@ -306,6 +306,39 @@ class CsvKmlOptions(BaseModel):
                                 max_length=100)
 
 
+# --- F6-I (7.13, D-224): contactos y calendarios. El Anexo A no fija opciones. ----------------------------------------
+
+ZONES = {z: (z.replace("_", " "), z.replace("_", " ")) for z in (
+    "Europe/Madrid", "Atlantic/Canary", "Europe/Lisbon", "Europe/London", "Europe/Paris", "UTC", "America/Mexico_City",
+    "America/Bogota", "America/Lima", "America/Santiago", "America/Argentina/Buenos_Aires", "America/Caracas",
+    "America/New_York", "America/Chicago", "America/Los_Angeles")}
+
+
+class VcfOptions(BaseModel):
+    """vcf-a-csv y vcf-a-excel (D-224): plantilla [Google Contacts] | Outlook | propia (7.13)."""
+
+    plantilla: Literal["google", "outlook", "generico"] = opt("google", "Columnas", "Columns", labels={
+        "google": ("Plantilla de Google Contacts", "Google Contacts template"), "outlook": ("Plantilla de Outlook", "Outlook template"),
+        "generico": ("Una columna por dato, en tu idioma", "One column per field, in your language")})
+
+
+class IcsOptions(BaseModel):
+    """ics-a-csv e ics-a-excel (D-224): columnas [completas, con zona horaria y repetición] | Google Calendar | Outlook."""
+
+    plantilla: Literal["completo", "google", "outlook"] = opt("completo", "Columnas", "Columns", labels={
+        "completo": ("Completas (zona horaria, asistentes, repetición)", "Full (time zone, attendees, recurrence)"),
+        "google": ("Plantilla de Google Calendar", "Google Calendar template"), "outlook": ("Plantilla de Outlook", "Outlook template")})
+
+
+class CsvIcsOptions(BaseModel):
+    """csv-a-ics (D-224): zona horaria [Europe/Madrid] y orden de las fechas [detectar: mes/día con columnas en inglés]."""
+
+    zona: Literal[tuple(ZONES)] = opt("Europe/Madrid", "Zona horaria de las horas del CSV", "Time zone of the CSV times", labels=ZONES)
+    formato_fecha: Literal["auto", "dia_mes", "mes_dia"] = opt("auto", "Fechas como 03/04/2026", "Dates such as 03/04/2026", labels={
+        "auto": ("Detectar (mes/día si las columnas están en inglés)", "Detect (month/day if the columns are in English)"),
+        "dia_mes": ("Día/mes (3 de abril)", "Day/month (3 April)"), "mes_dia": ("Mes/día (4 de marzo)", "Month/day (March 4)")})
+
+
 SPECS: list[ToolSpec] = [
     # A.2 (F4-E3, D-208): genera facturas, así que va detrás de INVOICING_ES_ENABLED y apagada por defecto (7.23). La
     # extracción con IA es una petición con consentimiento (6.6); la categoría invoice puede usar IA, la sign no.
@@ -547,4 +580,29 @@ SPECS: list[ToolSpec] = [
           "Exporta todos los registros de una actividad FIT a CSV: hora, posición, altura, velocidad, pulso, cadencia y potencia.",
           "Export every record of a FIT activity to CSV: time, position, elevation, speed, heart rate, cadence and power.",
           ("fit-a-gpx", "csv-a-xlsx"), impl="tools.utils.deportes:run"),
+    # 7.13 (F6-I, D-224): vobject e icalendar; categoría data con «vcf» o «ics» en el nombre: nunca IA (6.6 y 16.3).
+    datos("vcf-a-csv", "vcf-to-csv", "VCF a CSV", "VCF to CSV", ("vcf",), ("csv",),
+          "Convierte contactos vCard (.vcf) del móvil, iCloud o Google en CSV con las columnas de Google Contacts u Outlook.",
+          "Turn vCard contacts (.vcf) from your phone, iCloud or Google into CSV with Google Contacts or Outlook columns.",
+          ("csv-a-vcf", "vcf-a-excel"), VcfOptions, impl="tools.utils.agenda:run"),
+    datos("csv-a-vcf", "csv-to-vcf", "CSV a VCF", "CSV to VCF", ("csv", "txt"), ("vcf",),
+          "Convierte una lista de contactos en CSV (de Google, Outlook o tu hoja) en vCard para importarla en el móvil o en iCloud.",
+          "Turn a CSV contact list (from Google, Outlook or your own sheet) into vCard to import it into your phone or iCloud.",
+          ("vcf-a-csv", "vcf-a-excel"), impl="tools.utils.agenda:run"),
+    datos("vcf-a-excel", "vcf-to-excel", "VCF a Excel", "VCF to Excel", ("vcf",), ("xlsx",),
+          "Convierte contactos vCard en una hoja de Excel con nombre, correos, teléfonos, direcciones y empresa de cada uno.",
+          "Turn vCard contacts into an Excel sheet with each contact's name, emails, phones, addresses and company.",
+          ("vcf-a-csv", "csv-a-vcf"), VcfOptions, impl="tools.utils.agenda:run"),
+    datos("ics-a-csv", "ics-to-csv", "ICS a CSV", "ICS to CSV", ("ics",), ("csv",),
+          "Convierte un calendario ICS de Google, Outlook o Apple en CSV: un evento por fila con fechas, horas, lugar y descripción.",
+          "Turn an ICS calendar from Google, Outlook or Apple into CSV: one event per row with dates, times, place and description.",
+          ("csv-a-ics", "ics-a-excel"), IcsOptions, impl="tools.utils.agenda:run"),
+    datos("csv-a-ics", "csv-to-ics", "CSV a ICS", "CSV to ICS", ("csv", "txt"), ("ics",),
+          "Convierte una lista de eventos en CSV en un calendario ICS para importarlo en Google Calendar, Outlook o el iPhone.",
+          "Turn a CSV list of events into an ICS calendar to import into Google Calendar, Outlook or the iPhone.",
+          ("ics-a-csv", "ics-a-excel"), CsvIcsOptions, impl="tools.utils.agenda:run"),
+    datos("ics-a-excel", "ics-to-excel", "ICS a Excel", "ICS to Excel", ("ics",), ("xlsx",),
+          "Convierte un calendario ICS en una hoja de Excel con todos sus eventos, para revisarlos, filtrarlos o imprimirlos.",
+          "Turn an ICS calendar into an Excel sheet with all its events, to review, filter or print them.",
+          ("ics-a-csv", "csv-a-ics"), IcsOptions, impl="tools.utils.agenda:run"),
 ]

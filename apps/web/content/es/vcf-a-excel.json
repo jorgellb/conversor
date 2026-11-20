@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "VCF a Excel convierte contactos vCard en una hoja de Excel con una fila por contacto. Es la forma más cómoda de ver de un vistazo toda tu agenda, encontrar duplicados, completar datos, filtrar por empresa o preparar una lista para un envío.",
+    "Como en VCF a CSV, eliges las columnas: la plantilla de Google Contacts, la de Outlook o una columna por dato con títulos en tu idioma. Cada contacto conserva su nombre y apellidos, empresa y cargo, sus correos y teléfonos con su tipo, sus direcciones, webs, cumpleaños, notas y grupos.",
+    "La primera fila queda fija al desplazarte y todas las celdas se guardan como texto: los teléfonos no pierden el «+» ni los ceros de delante, y nada se convierte en una fórmula aunque empiece por «=». Las fotos de los contactos no se incluyen y te indicamos cuántas había.",
+    "Leemos vCard 2.1, 3.0 y 4.0 y detectamos su codificación. La conversión se hace en nuestro servidor, sin enviar tus contactos a servicios de inteligencia artificial, con hasta 100 000 contactos por archivo y 20 archivos por tanda."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .vcf.",
+    "Elige las columnas.",
+    "Descarga el libro de Excel."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo editar el Excel y volver a vCard?",
+      "a": "Sí: guárdalo como CSV y conviértelo con CSV a VCF, que reconoce las mismas columnas."
+    },
+    {
+      "q": "¿Por qué los teléfonos salen como texto?",
+      "a": "Para que Excel no les quite el prefijo ni los ceros iniciales ni los convierta en números en notación científica."
+    },
+    {
+      "q": "¿Se ven los acentos?",
+      "a": "Sí, Excel guarda el texto en Unicode, así que los nombres con tildes, eñes u otros alfabetos se ven bien."
+    }
+  ]
+}
