@@ -92,6 +92,8 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | readpst de libpst (pst-utils, Debian) en `workermedia` | GPL-2.0-or-later | pst-a-mbox y pst-a-pdf como programa externo (F6-J, D-225) |
 | Tectonic 0.17.0 (binario oficial musl) y los paquetes de TeX de su caché | MIT; licencias libres de TeX Live (LPPL, GPL, OFL y otras) | latex-a-pdf en `workerutils`, aislado con Landlock (F6-K, D-227) |
 | Visor de draw.io `viewer-static.min.js` v32.6.10 (jgraph/drawio) | Apache-2.0 | drawio-a-pdf y drawio-a-png en el Chromium de Gotenberg (F6-K, D-227) |
+| mammoth 1.13.0 (npm) | BSD-2-Clause | abrir Word en escribir-pdf; jszip (MIT o GPL-3.0, se usa con MIT); argparse no se empaqueta (F6-O2, D-236) |
+| marked 18.1.3 (npm) | MIT | abrir Markdown en escribir-pdf |
 | TipTap 3.33.0 (@tiptap/*, npm) | MIT | editor de escribir-pdf; solo paquetes del registro público, sin Pages ni la conversión a DOCX de pago (F6-O1, D-234) |
 | KaTeX 0.18.10 (npm) | MIT | fórmulas de escribir-pdf (en el editor y como MathML en el PDF) |
 | docx 9.15.2 (npm) | MIT | exportación de escribir-pdf a Word en el navegador |

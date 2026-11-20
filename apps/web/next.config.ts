@@ -19,9 +19,22 @@ const nextConfig: NextConfig = {
   },
   images: { unoptimized: true },
   // D-231: elkjs (EPL-2.0) solo lo usa la disposición «elk» de Mermaid, que la web no ofrece: no se empaqueta.
-  turbopack: { resolveAlias: { "elkjs/lib/elk.bundled.js": "./src/lib/elk-stub.ts" } },
+  // D-236: en el navegador, `stream` vacío (jszip solo lo pide para su salida de Node; su polyfill traía un `Function(...)`
+  // que la CSP anota) e is-generator-function sin construir funciones a partir de texto.
+  turbopack: {
+    resolveAlias: {
+      "elkjs/lib/elk.bundled.js": "./src/lib/elk-stub.ts",
+      "is-generator-function": "./src/lib/is-generator-function.js",
+      stream: { browser: "./src/lib/stream-stub.js" },
+    },
+  },
   webpack: (config) => {
-    config.resolve.alias = { ...config.resolve.alias, "elkjs/lib/elk.bundled.js": path.join(import.meta.dirname, "src/lib/elk-stub.ts") };
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "elkjs/lib/elk.bundled.js": path.join(import.meta.dirname, "src/lib/elk-stub.ts"),
+      "is-generator-function": path.join(import.meta.dirname, "src/lib/is-generator-function.js"),
+    };
+    if (!config.target || config.target === "web") config.resolve.fallback = { ...config.resolve.fallback, stream: path.join(import.meta.dirname, "src/lib/stream-stub.js") };
     return config;
   },
   // URL del WebAssembly con el resumen de su contenido (scripts/copy-wasm.mjs lo copia a public/codecs/).
@@ -56,6 +69,11 @@ const nextConfig: NextConfig = {
         // va después y sustituye a la general.
         source: "/:locale(es|en)/:slug(escaner-pdf|pdf-scanner|crear-collage|collage-maker|crear-tarjeta|card-maker|firmar-pdf|sign-pdf)",
         headers: [{ key: "Permissions-Policy", value: "camera=(self), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()" }],
+      },
+      {
+        // El dictado de escribir-pdf usa el micrófono con la Web Speech API del navegador (A.1, D-236).
+        source: "/:locale(es|en)/:slug(escribir-pdf|write-pdf)",
+        headers: [{ key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), payment=(), usb=(), browsing-topics=()" }],
       },
     ];
   },

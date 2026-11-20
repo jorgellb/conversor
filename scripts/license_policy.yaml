@@ -13,6 +13,7 @@ forbidden_packages: [ghostscript, mupdf, pymupdf, fitz, pdf2docx, babeldoc, eboo
                      pillow-heif, av, "@ffmpeg/core", "@ffmpeg/ffmpeg"]
 # Equivalencias de nombres que publican los paquetes (texto libre → SPDX).
 aliases:
+  "(MIT OR GPL-3.0-or-later)": MIT  # jszip (dependencia de mammoth): doble licencia, se usa con MIT
   "MIT License": MIT
   "MIT license": MIT
   "The MIT License": MIT
@@ -80,4 +81,4 @@ overrides:
 # Paquetes que solo se usan en desarrollo y pruebas y nunca llegan a una imagen.
 dev_only: [pytest, respx, pip-licenses, prettytable, wcwidth, iniconfig, pluggy, pygments, fpdf2]
 # Dependencias de npm que se instalan pero nunca llegan al navegador: next.config.ts las sustituye al empaquetar (D-231).
-not_bundled: [elkjs]
+not_bundled: [elkjs, argparse]  # argparse solo lo usa la línea de órdenes de mammoth (bin/), no su biblioteca

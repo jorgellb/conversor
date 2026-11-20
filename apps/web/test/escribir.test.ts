@@ -3,6 +3,8 @@ import { DOMParser as LinkedomParser } from "linkedom";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { exportHtml } from "../src/lib/escribir/html";
+import { mergedHtml, rowFileNames } from "../src/lib/escribir/merge";
+import { OpenError, htmlFromFile } from "../src/lib/escribir/open";
 import { toMarkdown } from "../src/lib/escribir/markdown";
 import type { PMNode } from "../src/lib/escribir/model";
 
@@ -85,3 +87,34 @@ describe("escribir-pdf: Markdown y Word", () => {
     expect(Object.keys(files).some((k) => k.startsWith("word/footer"))).toBe(true);
   });
 });
+
+describe("escribir-pdf: combinación de correspondencia y abrir documentos", () => {
+  it("una sección por fila con sus campos, ids propios y el enlace oculto a cada fila", () => {
+    const list = { headers: ["Nombre", "Ciudad"], rows: [["Ana <b>", "Lugo"], ["Luis", "Vigo"]] };
+    const html = mergedHtml('<h1>Hola {nombre}</h1><nav data-type="indice" class="indice-editor"></nav><p>De {CIUDAD}.</p>', list, { toc: "Índice", notes: "Notas" });
+    expect(html).toContain('<a href="#fila-1">1</a><a href="#fila-2">2</a>');
+    expect(html).toContain('<section class="fila" id="fila-1"><h1 id="f1-h-1">Hola Ana &lt;b&gt;</h1>');
+    expect(html).toContain('id="f2-h-1">Hola Luis</h1>');
+    expect(html).toMatch(/data-toc="f2-h-1"/);
+    expect(html).toContain('href="#f2-h-1"');
+    expect(html).toContain("De Vigo.");
+    expect(html.split('<hr class="salto-pagina">')).toHaveLength(2);
+    expect(rowFileNames(list, 0, "carta")).toEqual(["Ana b.pdf", "Luis.pdf"]);
+    expect(rowFileNames({ headers: ["N"], rows: [["X"], ["X"], [""]] }, 0, "carta")).toEqual(["X.pdf", "X (2).pdf", "carta-003.pdf"]);
+  });
+
+  it("abre Markdown, texto, HTML y Word; ODT y PDF pasan por el servidor", async () => {
+    const run = async (tool: string) => new Blob([tool === "pdf-a-html" ? "<html><body><h1>Del PDF</h1><script>x()</script></body></html>" : ""]);
+    expect(await htmlFromFile(new File(["# Hola\n\n- uno\n- [x] dos"], "a.md"), run)).toContain("<h1>Hola</h1>");
+    expect(await htmlFromFile(new File(["Uno\n\nDos <b>"], "a.txt"), run)).toBe("<p>Uno</p><p>Dos &lt;b></p>");
+    expect(await htmlFromFile(new File(["<html><body><p>Hola</p><script>x()</script></body></html>"], "a.html"), run)).toBe("<p>Hola</p>");
+    expect(await htmlFromFile(new File(["x"], "a.pdf"), run)).toBe("<h1>Del PDF</h1>");
+    const { Document, Packer, Paragraph, HeadingLevel, TextRun } = await import("docx");
+    const docx = await Packer.toBlob(new Document({ sections: [{ children: [new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("Título Word")] }), new Paragraph({ children: [new TextRun({ text: "negrita", bold: true })] })] }] }));
+    const html = await htmlFromFile(new File([await docx.arrayBuffer()], "a.docx"), run);
+    expect(html).toContain("<h1>Título Word</h1>");
+    expect(html).toContain("<strong>negrita</strong>");
+    await expect(htmlFromFile(new File(["x"], "a.exe"), run)).rejects.toBeInstanceOf(OpenError);
+  });
+});
+

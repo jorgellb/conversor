@@ -1,7 +1,7 @@
 // escribir-pdf (A.1, F6-O1, D-234): tras la conversión en el servidor, los campos rellenables se crean con pdf-lib donde
 // Chromium dejó los enlaces https://campo.invalid/<tipo>/<nombre> (su rectángulo es el hueco del campo): texto, casilla o
 // fecha (texto con el formato dd/mm/aaaa). El enlace se quita.
-import { PDFArray, PDFDict, PDFDocument, PDFName, PDFNumber, PDFString, PDFHexString } from "@cantoo/pdf-lib";
+import { PDFArray, PDFDict, PDFDocument, PDFName, PDFNumber, PDFRef, PDFString, PDFHexString } from "@cantoo/pdf-lib";
 
 export const FIELD_HOST = "campo.invalid";
 
@@ -76,4 +76,45 @@ export async function addFieldsFromLinks(bytes: Uint8Array, locale: "es" | "en" 
   if (!fields) return { bytes, fields: 0 };
   form.updateFieldAppearances();
   return { bytes: await pdf.save({ useObjectStreams: true }), fields };
+}
+
+/** Página (desde 0) de cada destino con nombre del catálogo (/Dests), como los crea Chromium para los enlaces internos. */
+export function destinationPages(pdf: PDFDocument): Map<string, number> {
+  const out = new Map<string, number>();
+  const refs = new Map(pdf.getPages().map((p, i) => [p.ref.toString(), i]));
+  const dests = pdf.catalog.lookup(PDFName.of("Dests"));
+  if (!(dests instanceof PDFDict)) return out;
+  for (const [key, value] of dests.entries()) {
+    const dest = value instanceof PDFRef ? pdf.context.lookup(value) : value;
+    const arr = dest instanceof PDFDict ? dest.lookup(PDFName.of("D")) : dest;
+    if (!(arr instanceof PDFArray) || !arr.size()) continue;
+    const page = arr.get(0);
+    const index = page instanceof PDFRef ? refs.get(page.toString()) : undefined;
+    if (index !== undefined) out.set(key.decodeText(), index);
+  }
+  return out;
+}
+
+/**
+ * Combinación de correspondencia (F6-O2, D-236): el PDF de todas las filas se parte en un PDF por fila, desde la página
+ * del destino «fila-N» de cada una hasta la anterior a la siguiente. Los campos rellenables se crean en cada parte.
+ */
+export async function splitByRows(bytes: Uint8Array, rows: number, locale: "es" | "en" = "es"): Promise<Uint8Array[]> {
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false });
+  const dests = destinationPages(pdf);
+  const starts = Array.from({ length: rows }, (_, i) => dests.get(`fila-${i + 1}`));
+  if (starts.some((s) => s === undefined)) throw new Error("filas");
+  const total = pdf.getPageCount();
+  const parts: Uint8Array[] = [];
+  for (let i = 0; i < rows; i += 1) {
+    const from = starts[i]!;
+    const to = i + 1 < rows ? starts[i + 1]! - 1 : total - 1;
+    const part = await PDFDocument.create({ updateMetadata: false });
+    const title = pdf.getTitle();
+    if (title) part.setTitle(title);
+    const pages = await part.copyPages(pdf, Array.from({ length: Math.max(1, to - from + 1) }, (_, k) => from + k));
+    pages.forEach((p) => part.addPage(p));
+    parts.push((await addFieldsFromLinks(await part.save({ useObjectStreams: true }), locale)).bytes);
+  }
+  return parts;
 }

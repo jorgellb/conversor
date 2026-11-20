@@ -93,3 +93,21 @@ test("escribir-pdf: buscar y reemplazar, plantillas y borrador que se recupera",
   await expect(page.locator("[data-escribir-editor]")).toContainText("Datos del solicitante");
   await expect(page.locator(".campo-editor").first()).toBeVisible();
 });
+
+test("escribir-pdf: abre un Word y un Markdown, y permite el micrófono para dictar", async ({ page, request }) => {
+  expect((await request.get("/es/escribir-pdf")).headers()["permissions-policy"]).toContain("microphone=(self)");
+  const { Document, HeadingLevel, Packer, Paragraph, TextRun } = await import("docx");
+  const docx = await Packer.toBuffer(new Document({ sections: [{ children: [
+    new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun("Carta desde Word")] }),
+    new Paragraph({ children: [new TextRun({ text: "Texto en negrita", bold: true })] }),
+  ] }] }));
+  const editor = await open(page);
+  await page.locator('input[accept*=".docx"]').setInputFiles({ name: "carta.docx", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", buffer: docx });
+  await expect(editor.locator("h1")).toHaveText("Carta desde Word", { timeout: 20_000 });
+  await expect(editor.locator("strong")).toHaveText("Texto en negrita");
+  await page.locator('input[accept*=".docx"]').setInputFiles({ name: "notas.md", mimeType: "text/markdown", buffer: Buffer.from("# Notas\n\n| A | B |\n|---|---|\n| 1 | 2 |\n") });
+  await expect(editor.locator("h1")).toHaveText("Notas", { timeout: 20_000 });
+  await expect(editor.locator("table td").first()).toHaveText("1");
+  await expect(page.getByRole("button", { name: "Leer en voz alta" })).toBeVisible();
+});
+

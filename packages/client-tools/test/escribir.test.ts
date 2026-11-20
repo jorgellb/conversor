@@ -5,7 +5,7 @@ import path from "node:path";
 import { PDFArray, PDFDocument, PDFName } from "@cantoo/pdf-lib";
 import { describe, expect, it } from "vitest";
 
-import { addFieldsFromLinks } from "../src/escribir";
+import { addFieldsFromLinks, splitByRows } from "../src/escribir";
 
 const CHROMIUM = path.join(import.meta.dirname, "../../../tests/fixtures/escribir-indice.pdf");
 
@@ -38,3 +38,14 @@ describe("escribir-pdf: campos", () => {
     expect(res.bytes).toBe(bytes);
   });
 });
+
+describe("escribir-pdf: combinación de correspondencia", () => {
+  it("parte el PDF de todas las filas por sus destinos (Chromium: fila-1 en la 1, fila-2 en la 3, fila-3 en la 4)", async () => {
+    const bytes = new Uint8Array(readFileSync(path.join(import.meta.dirname, "../../../tests/fixtures/escribir-filas.pdf")));
+    const parts = await splitByRows(bytes, 3);
+    const counts = await Promise.all(parts.map(async (p) => (await PDFDocument.load(p)).getPageCount()));
+    expect(counts).toEqual([2, 1, 1]);
+    await expect(splitByRows(bytes, 4)).rejects.toThrow();
+  });
+});
+

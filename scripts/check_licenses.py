@@ -121,7 +121,7 @@ def npm_packages(workspace: str) -> list[tuple[str, str, str]]:
 
 
 # Firmas del código de las dependencias `not_bundled` (D-231, D-235): si el build de la web las contiene, se ha colado.
-BUNDLE_SIGNATURES = {"elkjs": ("org.eclipse.elk", "ElkLayered", "elk.bundled")}
+BUNDLE_SIGNATURES = {"elkjs": ("org.eclipse.elk", "ElkLayered", "elk.bundled"), "argparse": ("ArgumentParser.prototype",)}
 
 
 def bundled_excluded() -> list[str]:

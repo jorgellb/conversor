@@ -24,9 +24,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ApiError } from "@/lib/api-client";
 import { deleteVersion, listVersions, loadDraft, saveDraft, saveVersion, type SavedDoc } from "@/lib/escribir/drafts";
 import { exportHtml } from "@/lib/escribir/html";
+import { MAX_MERGE_ROWS, mergedHtml, rowFileNames } from "@/lib/escribir/merge";
+import { OPEN_ACCEPT, OpenError, htmlFromFile } from "@/lib/escribir/open";
 import { PAPER_MM, plainText, type PageOptions, type PMNode } from "@/lib/escribir/model";
 import { Columns, Footnote, FormField, PageBreak, SizedImage, TableOfContents } from "@/lib/escribir/nodes";
 import { TEMPLATE_KEYS, template, type TemplateKey } from "@/lib/escribir/templates";
+import type { Recipients } from "@conversor/client-tools/tarjeta/model";
 import { identityToken } from "@/lib/identity";
 import { recordUse, rememberedOptions, rememberOptions } from "@/lib/prefs";
 import type { ClientSpec } from "@/lib/registry";
@@ -50,7 +53,10 @@ const IDLE_STATE = {
 };
 const MM_PX = 96 / 25.4;
 
-type Busy = { kind: "idle" } | { kind: "running"; what: "pdf" | "preview" | "docx" | "md"; phase?: Phase } | { kind: "error"; message: string };
+type Busy = { kind: "idle" } | { kind: "running"; what: "pdf" | "preview" | "docx" | "md" | "odt" | "open" | "merge"; phase?: Phase } | { kind: "error"; message: string };
+
+type Recognition = { lang: string; continuous: boolean; interimResults: boolean; start(): void; stop(): void;
+  onresult: ((e: { resultIndex: number; results: ArrayLike<{ isFinal: boolean; 0: { transcript: string } }> }) => void) | null; onend: (() => void) | null; onerror: (() => void) | null };
 
 /** Índice en el editor: la lista de títulos (en el PDF, con los números de página reales). */
 function TocView({ editor }: NodeViewProps) {
@@ -129,6 +135,19 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
   const [noteText, setNoteText] = useState("");
   const [fieldAttrs, setFieldAttrs] = useState<{ tipo: "texto" | "casilla" | "fecha"; nombre: string; ancho: number }>({ tipo: "texto", nombre: "", ancho: 50 });
   const imageInput = useRef<HTMLInputElement>(null);
+  const openInput = useRef<HTMLInputElement>(null);
+  const listInput = useRef<HTMLInputElement>(null);
+  const [recipients, setRecipients] = useState<Recipients | null>(null);
+  const [mergeMode, setMergeMode] = useState<"zip" | "uno">("zip");
+  const [nameColumn, setNameColumn] = useState(0);
+  const [listening, setListening] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const recognition = useRef<Recognition | null>(null);
+  const speech = useMemo(() => {
+    if (typeof window === "undefined") return { dictate: false, read: false };
+    const w = window as unknown as { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown; speechSynthesis?: unknown };
+    return { dictate: Boolean(w.SpeechRecognition || w.webkitSpeechRecognition), read: Boolean(w.speechSynthesis) };
+  }, []);
   const turnstileBox = useRef<HTMLDivElement>(null);
   const restored = useRef(false);
 
@@ -239,6 +258,146 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
     const code = err instanceof ApiError ? err.code : "INTERNAL";
     setBusy({ kind: "error", message: err instanceof ApiError && err.message ? err.message : te.has(code) ? te(code) : te("INTERNAL") });
   }
+
+  /** Un trabajo de otra herramienta (abrir ODT o PDF, guardar en ODT): el primer archivo que devuelve. */
+  async function serverFile(tool: string, file: File, options: Record<string, unknown>): Promise<Blob> {
+    const job = await runServerJob(tool, [file], options, await token(), (phase) => setBusy((b) => (b.kind === "running" ? { ...b, phase } : b)), new AbortController().signal);
+    if (job.status !== "succeeded" || !job.outputs.length) throw new ApiError(job.error?.code ?? "INTERNAL", job.error?.message ?? "", 0);
+    return (await fetch(job.outputs[0].url)).blob();
+  }
+
+  async function openDocument(file: File | undefined) {
+    if (!file || !editor) return;
+    setBusy({ kind: "running", what: "open" });
+    try {
+      const html = await htmlFromFile(file, serverFile);
+      editor.commands.setContent(html);
+      setValues((v) => ({ ...v, titulo: String(v.titulo ?? "") || file.name.replace(/\.[^.]+$/, "") }));
+      setBusy({ kind: "idle" });
+      setStatus(t("opened", { name: file.name }));
+    } catch (err) {
+      if (err instanceof OpenError) setBusy({ kind: "error", message: t(`openErrors.${err.key}`) });
+      else fail(err);
+    }
+  }
+
+  async function exportOdt() {
+    if (!editor) return;
+    setBusy({ kind: "running", what: "odt" });
+    try {
+      const { toDocx } = await import("@/lib/escribir/docx");
+      const docx = new File([await toDocx(editor.getJSON() as PMNode, page, { toc: t("toc") })], `${fileBase()}.docx`,
+        { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      download(await serverFile("docx-a-odt", docx, {}), `${fileBase()}.odt`);
+      setBusy({ kind: "idle" });
+      setStatus(t("odtReady"));
+    } catch (err) {
+      fail(err);
+    }
+  }
+
+  async function loadList(file: File | undefined) {
+    if (!file) return;
+    try {
+      const { parseRecipients } = await import("@conversor/client-tools/tarjeta/recipients");
+      const list = parseRecipients(file.name, new Uint8Array(await file.arrayBuffer()), locale);
+      setRecipients(list);
+      setNameColumn(0);
+      setStatus(t("listLoaded", { n: list.rows.length }));
+    } catch {
+      setBusy({ kind: "error", message: t("listUnreadable") });
+    }
+  }
+
+  /** Combinación de correspondencia: un solo PDF en el servidor con una sección por fila y, si se pide, partido por filas. */
+  async function exportMerge() {
+    if (!editor || !recipients) return;
+    setBusy({ kind: "running", what: "merge" });
+    try {
+      const body = mergedHtml(editor.getHTML(), recipients, { toc: t("toc"), notes: t("notesTitle") });
+      const files = [new File([body], "documento.html", { type: "text/html" }), ...(letterhead ? [letterhead] : [])];
+      const options = Object.fromEntries(Object.entries(values).filter(([k]) => k in properties));
+      const job = await runServerJob(spec.slug, files, options, await token(), (phase) => setBusy({ kind: "running", what: "merge", phase }), new AbortController().signal);
+      if (job.status !== "succeeded") throw new ApiError(job.error?.code ?? "INTERNAL", job.error?.message ?? "", 0);
+      const out = job.outputs.find((o) => o.name.toLowerCase().endsWith(".pdf"));
+      if (!out) throw new ApiError("INTERNAL", "", 0);
+      const bytes = new Uint8Array(await (await fetch(out.url)).arrayBuffer());
+      const tools = await import("@conversor/client-tools/escribir");
+      const rows = Math.min(recipients.rows.length, MAX_MERGE_ROWS);
+      if (mergeMode === "uno") {
+        download(new Blob([(await tools.addFieldsFromLinks(bytes, locale)).bytes as BlobPart], { type: "application/pdf" }), `${fileBase()}.pdf`);
+      } else {
+        const parts = await tools.splitByRows(bytes, rows, locale);
+        const names = rowFileNames(recipients, nameColumn, fileBase());
+        const { zipSync } = await import("fflate");
+        const zip = zipSync(Object.fromEntries(parts.map((p, i) => [names[i], [p, { level: 0 }]])) as never);
+        download(new Blob([zip as BlobPart], { type: "application/zip" }), `${fileBase()}.zip`);
+      }
+      rememberOptions(spec.slug, values, spec.secretFields);
+      recordUse(spec.slug);
+      setBusy({ kind: "idle" });
+      setStatus([t("mergeReady", { n: rows }), ...(recipients.rows.length > MAX_MERGE_ROWS ? [t("mergeCut", { max: MAX_MERGE_ROWS })] : [])].join(" "));
+    } catch (err) {
+      fail(err);
+    }
+  }
+
+  function insertListField(header: string) {
+    editor?.chain().focus().insertContent(`{${header}}`).run();
+  }
+
+  /** Dictado con la Web Speech API del navegador (no gasta peticiones de IA); el texto reconocido va donde está el cursor. */
+  function toggleDictation() {
+    if (listening) {
+      recognition.current?.stop();
+      return;
+    }
+    const w = window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition };
+    const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
+    if (!Ctor || !editor) return;
+    const rec = new Ctor();
+    rec.lang = locale === "en" ? "en-GB" : "es-ES";
+    rec.continuous = true;
+    rec.interimResults = false;
+    rec.onresult = (e) => {
+      for (let i = e.resultIndex; i < e.results.length; i += 1) {
+        if (e.results[i].isFinal) editor.chain().focus().insertContent(`${e.results[i][0].transcript.trim()} `).run();
+      }
+    };
+    rec.onend = () => setListening(false);
+    rec.onerror = () => {
+      setListening(false);
+      setStatus(t("dictationFailed"));
+    };
+    recognition.current = rec;
+    rec.start();
+    setListening(true);
+  }
+
+  /** Lectura en voz alta de la selección o, si no hay, del documento entero (síntesis de voz del navegador). */
+  function toggleReading() {
+    const synth = window.speechSynthesis;
+    if (speaking) {
+      synth.cancel();
+      setSpeaking(false);
+      return;
+    }
+    if (!editor) return;
+    const { from, to } = editor.state.selection;
+    const text = (from !== to ? editor.state.doc.textBetween(from, to, "\n") : editor.getText()).trim();
+    if (!text) return;
+    const utter = new SpeechSynthesisUtterance(text.slice(0, 30000));
+    utter.lang = locale === "en" ? "en-GB" : "es-ES";
+    utter.onend = () => setSpeaking(false);
+    utter.onerror = () => setSpeaking(false);
+    synth.speak(utter);
+    setSpeaking(true);
+  }
+
+  useEffect(() => () => {
+    recognition.current?.stop();
+    if (typeof window !== "undefined" && window.speechSynthesis) window.speechSynthesis.cancel();
+  }, []);
 
   /** El PDF del servidor con los campos rellenables ya puestos. */
   async function buildPdf(what: "pdf" | "preview"): Promise<{ blob: Blob; name: string; notes: string[] } | null> {
@@ -432,6 +591,8 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
         <Tool label={t("pageBreak")} onClick={() => editor.chain().focus().insertPageBreak().run()} data="salto">⤓</Tool>
         <Tool label={t("special")} onClick={() => setPanel(panel === "chars" ? null : "chars")}>Ω</Tool>
         <Tool label={t("find")} onClick={() => setPanel(panel === "find" ? null : "find")} data="buscar">🔍</Tool>
+        {speech.dictate && <Tool label={listening ? t("dictationStop") : t("dictation")} active={listening} onClick={toggleDictation}>🎤</Tool>}
+        {speech.read && <Tool label={speaking ? t("readStop") : t("readAloud")} active={speaking} onClick={toggleReading}>🔊</Tool>}
         {inTable && (
           <span className="flex flex-wrap gap-1 border-l pl-1" role="group" aria-label={t("tableTools")}>
             <Tool label={t("rowAfter")} onClick={() => editor.chain().focus().addRowAfter().run()}>+⎯</Tool>
@@ -523,6 +684,15 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
             </div>
             <p className="muted text-xs">{t("templateHelp")}</p>
           </section>
+          <section className="card flex flex-col gap-2 p-4" aria-label={t("open")}>
+            <h2 className="font-semibold">{t("open")}</h2>
+            <button type="button" className="btn-secondary btn text-sm" disabled={running} data-abrir onClick={() => openInput.current?.click()}>
+              {busy.kind === "running" && busy.what === "open" ? t("working") : t("openFile")}
+            </button>
+            <input ref={openInput} type="file" className="sr-only" accept={OPEN_ACCEPT} aria-label={t("openFile")}
+              onChange={(e) => { void openDocument(e.target.files?.[0]); e.target.value = ""; }} />
+            <p className="muted text-xs">{t("openHelp")}</p>
+          </section>
           <section className="card flex flex-col gap-2 p-4" aria-label={t("page")}>
             <h2 className="font-semibold">{t("page")}</h2>
             <OptionsForm properties={properties} values={values} onChange={setValues} locale={locale} secretFields={spec.secretFields} moreLabel={t("moreOptions")} />
@@ -538,10 +708,45 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
             <button type="button" className="btn-secondary btn" disabled={running} data-exportar="vista" onClick={() => void exportPdf("preview")}>{busy.kind === "running" && busy.what === "preview" ? t("working") : t("exactPreview")}</button>
             <button type="button" className="btn-secondary btn" disabled={running} data-exportar="docx" onClick={() => void exportDocx()}>{t("exportDocx")}</button>
             <button type="button" className="btn-secondary btn" disabled={running} data-exportar="md" onClick={() => void exportMarkdown()}>{t("exportMd")}</button>
+            <button type="button" className="btn-secondary btn" disabled={running} data-exportar="odt" onClick={() => void exportOdt()}>{busy.kind === "running" && busy.what === "odt" ? t("working") : t("exportOdt")}</button>
             <div ref={turnstileBox} aria-live="polite" />
             {busy.kind === "running" && busy.phase?.kind === "upload" && <p className="muted text-sm">{t("uploading", { p: Math.round(busy.phase.percent) })}</p>}
             {busy.kind === "error" && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{busy.message}</p>}
             <p className="muted text-xs">{t("privacy")}</p>
+          </section>
+          <section className="card flex flex-col gap-2 p-4" aria-label={t("merge")}>
+            <h2 className="font-semibold">{t("merge")}</h2>
+            <p className="muted text-xs">{t("mergeHelp")}</p>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" className="btn-secondary btn text-sm" onClick={() => listInput.current?.click()}>{recipients ? t("changeList") : t("loadList")}</button>
+              <input ref={listInput} type="file" className="sr-only" accept=".csv,.txt,.xlsx" aria-label={t("loadList")}
+                onChange={(e) => { void loadList(e.target.files?.[0]); e.target.value = ""; }} />
+              {recipients && <button type="button" className="btn-secondary btn text-sm" onClick={() => setRecipients(null)}>{t("removeList")}</button>}
+            </div>
+            {recipients && (
+              <>
+                <p className="text-sm" data-combinar-filas>{t("listCount", { n: recipients.rows.length })}</p>
+                <div className="flex flex-wrap gap-1" role="group" aria-label={t("listFields")}>
+                  {recipients.headers.map((h) => <button key={h} type="button" className="btn-secondary btn px-2 py-0.5 text-xs" onClick={() => insertListField(h)}>{`{${h}}`}</button>)}
+                </div>
+                <label className="flex flex-col gap-1 text-sm">{t("mergeMode")}
+                  <select className="input" value={mergeMode} onChange={(e) => setMergeMode(e.target.value as "zip" | "uno")}>
+                    <option value="zip">{t("mergeZip")}</option><option value="uno">{t("mergeOne")}</option>
+                  </select>
+                </label>
+                {mergeMode === "zip" && (
+                  <label className="flex flex-col gap-1 text-sm">{t("mergeNames")}
+                    <select className="input" value={nameColumn} onChange={(e) => setNameColumn(Number(e.target.value))}>
+                      {recipients.headers.map((h, i) => <option key={h} value={i}>{h}</option>)}
+                      <option value={-1}>{t("mergeNumbered")}</option>
+                    </select>
+                  </label>
+                )}
+                <button type="button" className="btn" disabled={running} data-combinar onClick={() => void exportMerge()}>
+                  {busy.kind === "running" && busy.what === "merge" ? t("working") : t("mergeCreate")}
+                </button>
+              </>
+            )}
           </section>
           <section className="card flex flex-col gap-2 p-4" aria-label={t("versions")}>
             <h2 className="font-semibold">{t("versions")}</h2>
