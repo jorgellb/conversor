@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "XSIG a PDF saca el documento original de una firma XAdES con extensión .xsig, la que genera AutoFirma cuando se elige el formato XML. La firma XAdES guarda el documento dentro del propio XML, codificado en Base64, y sin un programa de firma no se puede abrir; aquí lo recuperas con su nombre y su formato.",
+    "Buscamos en la firma la referencia al documento firmado, ya sea un objeto dentro de la firma (firma «enveloping») o un nodo de contenido junto a ella (la firma «internally detached» de AutoFirma), y lo decodificamos. Si era un PDF, descargas el PDF original; si era otro tipo de archivo, lo recibes tal cual con su extensión.",
+    "También admitimos un XML con la firma dentro, como una factura Facturae firmada: en ese caso el documento es el propio XML sin la firma. Como hay que volver a escribirlo, puede diferir del original en espacios o en el orden de los atributos, aunque el contenido es el mismo. Si la firma apunta a un archivo que no va dentro, te lo indicamos.",
+    "El XML se lee de forma segura: los DTD y las entidades externas se rechazan, para que un archivo preparado no pueda leer otros archivos del servidor. Para comprobar si la firma es válida, usa Verificar firma."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .xsig o un XML firmado.",
+    "Espera a la extracción.",
+    "Descarga el documento original."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diferencia hay entre .csig y .xsig?",
+      "a": "Las dos son firmas de AutoFirma: .csig es CAdES, en binario, y .xsig es XAdES, en XML. Para un .csig usa CSIG a PDF."
+    },
+    {
+      "q": "¿Sale el PDF idéntico al original?",
+      "a": "Si el documento iba codificado dentro de la firma, sí, byte a byte. Solo un XML con la firma dentro se vuelve a escribir sin ella."
+    },
+    {
+      "q": "¿Y si la firma es separada?",
+      "a": "Entonces el documento no va dentro y no hay nada que extraer. Sube la firma y el documento a Verificar firma para comprobarla."
+    }
+  ]
+}

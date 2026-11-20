@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "P7M to PDF opens .p7m files, documents digitally signed in the PKCS#7 or CAdES format, and gives you the original document inside. It is the format of many government notifications, signed invoices, deeds and professional association documents, especially in Italy, where e-invoices and contracts are exchanged as .pdf.p7m.",
+    "We read the signature in binary (DER), PEM or Base64 and extract the content as it is, identical byte for byte to what was signed. If the file was signed several times, one signature inside another (file.pdf.p7m.p7m), we unwrap every layer until we reach the document.",
+    "The result's name comes from the file itself: invoice.pdf.p7m becomes invoice.pdf. If what is inside is an XML, a Word file or another format, we deliver it with its extension and tell you it is not a PDF, so you can open it with its program or convert it with another tool on the site.",
+    "The signature is not checked here. If you want to know whether it is valid, whether the document has changed since it was signed and whether the certificate comes from a trusted provider on the EU list, upload the same .p7m to Verify signature."
+  ],
+  "steps": [
+    "Upload one or more .p7m files.",
+    "Wait for the extraction.",
+    "Download the original document."
+  ],
+  "faq": [
+    {
+      "q": "Why won't my .p7m open with a double click?",
+      "a": "Because it is a signed envelope: the document is inside and a signing program is needed to get it out. This tool does it without installing anything."
+    },
+    {
+      "q": "What about a .p7s?",
+      "a": "A .p7s is usually a detached signature, without the document inside. To check it, upload the .p7s and the document together to Verify signature."
+    },
+    {
+      "q": "Does it work for Italian e-invoices?",
+      "a": "Yes: an SdI .xml.p7m gives you the invoice XML, which you can view as a PDF with E-invoice to PDF."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "XSIG to PDF gets the original document out of an XAdES signature with the .xsig extension, the one AutoFirma produces when the XML format is chosen. An XAdES signature stores the document inside the XML itself, Base64-encoded, and it cannot be opened without a signing program; here you recover it with its name and format.",
+    "We look in the signature for the reference to the signed document, whether an object inside the signature (an “enveloping” signature) or a content node next to it (AutoFirma's “internally detached” signature), and decode it. If it was a PDF, you download the original PDF; if it was another kind of file, you get it as it is with its extension.",
+    "We also accept an XML with the signature inside, such as a signed Facturae invoice: in that case the document is the XML itself without the signature. Since it has to be written again, it may differ from the original in whitespace or attribute order, although the content is the same. If the signature points to a file that is not inside, we tell you.",
+    "The XML is read safely: DTDs and external entities are rejected, so a crafted file cannot read other files on the server. To check whether the signature is valid, use Verify signature."
+  ],
+  "steps": [
+    "Upload one or more .xsig files or a signed XML.",
+    "Wait for the extraction.",
+    "Download the original document."
+  ],
+  "faq": [
+    {
+      "q": "What is the difference between .csig and .xsig?",
+      "a": "Both are AutoFirma signatures: .csig is CAdES, in binary, and .xsig is XAdES, in XML. For a .csig use CSIG to PDF."
+    },
+    {
+      "q": "Is the PDF identical to the original?",
+      "a": "If the document was encoded inside the signature, yes, byte for byte. Only an XML with the signature inside is written again without it."
+    },
+    {
+      "q": "What if the signature is detached?",
+      "a": "Then the document is not inside and there is nothing to extract. Upload the signature and the document to Verify signature to check it."
+    }
+  ]
+}

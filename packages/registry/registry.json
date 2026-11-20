@@ -27384,6 +27384,71 @@
       }
     },
     {
+      "slug_es": "verificar-firma",
+      "slug_en": "verify-signature",
+      "name_es": "Verificar firma",
+      "name_en": "Verify signature",
+      "summary_es": "Comprueba firmas CAdES (.csig, .p7m), XAdES (.xsig) y PAdES: firmante, fecha, integridad y lista de confianza de la UE.",
+      "summary_en": "Check CAdES (.csig, .p7m), XAdES (.xsig) and PAdES signatures: signer, date, integrity and the EU trusted list.",
+      "category": "sign",
+      "where": "server",
+      "worker_group": "sign",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "csig",
+        "p7m",
+        "p7s",
+        "xsig",
+        "xml",
+        "pdf",
+        "docx",
+        "xlsx",
+        "pptx",
+        "odt",
+        "ods",
+        "doc",
+        "xls",
+        "txt",
+        "jpg",
+        "png",
+        "zip"
+      ],
+      "outputs": [
+        "html",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 2,
+      "secret_fields": [],
+      "related": [
+        "csig-a-pdf",
+        "verificar-firmas-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "verificar-firmas-pdf (A.7): la revocación en línea solo a petición, por `egressweb`.",
+        "properties": {
+          "revocacion": {
+            "default": false,
+            "title": "Comprobar la revocación en línea (OCSP y CRL)",
+            "type": "boolean",
+            "x-title": {
+              "en": "Check revocation online (OCSP and CRL)",
+              "es": "Comprobar la revocación en línea (OCSP y CRL)"
+            }
+          }
+        },
+        "title": "VerificarOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "pdf-a-factura-electronica",
       "slug_en": "pdf-to-e-invoice",
       "name_es": "PDF a factura electrónica",
@@ -31222,6 +31287,128 @@
           }
         },
         "title": "SubtitulosOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "csig-a-pdf",
+      "slug_en": "csig-to-pdf",
+      "name_es": "CSIG a PDF",
+      "name_en": "CSIG to PDF",
+      "summary_es": "Saca el PDF original de una firma .csig de AutoFirma o Cl@ve, idéntico al que se firmó, para abrirlo e imprimirlo.",
+      "summary_en": "Get the original PDF out of an AutoFirma or Cl@ve .csig signature, identical to the one that was signed.",
+      "category": "sign",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "csig",
+        "p7m",
+        "p7s"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "verificar-firma",
+        "p7m-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "p7m-a-pdf",
+      "slug_en": "p7m-to-pdf",
+      "name_es": "P7M a PDF",
+      "name_en": "P7M to PDF",
+      "summary_es": "Abre archivos .p7m firmados (notificaciones, facturas, escrituras) y descarga el documento original que contienen.",
+      "summary_en": "Open signed .p7m files (notifications, invoices, deeds) and download the original document inside.",
+      "category": "sign",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "p7m",
+        "p7s",
+        "csig"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "verificar-firma",
+        "csig-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "xsig-a-pdf",
+      "slug_en": "xsig-to-pdf",
+      "name_es": "XSIG a PDF",
+      "name_en": "XSIG to PDF",
+      "summary_es": "Saca el documento original de una firma XAdES .xsig de AutoFirma, o el XML sin su firma si iba dentro.",
+      "summary_en": "Get the original document out of an AutoFirma XAdES .xsig signature, or the XML without its signature if it was inside.",
+      "category": "sign",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "xsig",
+        "xml"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "verificar-firma",
+        "csig-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
         "type": "object"
       }
     }

@@ -11,7 +11,8 @@ EBML = bytes.fromhex("1A45DFA3")
 
 # Formatos que comparten contenedor: se confía en la extensión declarada solo dentro de su familia.
 OLE2_FAMILY = {"doc", "xls", "ppt", "pps", "msg", "pub", "vsd"}
-TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf"}
+TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
+               "xsig", "csig", "p7m", "p7s"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr"}
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
@@ -27,6 +28,8 @@ MOBI = {"mobi", "azw3", "azw"}
 # Fuentes (F6-F): un .otf puede llevar contornos TrueType (cabecera 00 01 00 00) y un .ttf, CFF; manda la extensión
 # declarada si es de fuente.
 FONTS = {"ttf", "otf"}
+# Firmas CMS (F6-G): DER binario (una SEQUENCE ASN.1) o PEM y Base64 de texto; solo con su extensión declarada.
+CMS = {"csig", "p7m", "p7s"}
 
 MIME = {
     "pdf": "application/pdf", "jpg": "image/jpeg", "png": "image/png", "gif": "image/gif",
@@ -56,6 +59,9 @@ MIME = {
     # Comprimidos (F6-E).
     "7z": "application/x-7z-compressed", "tar": "application/x-tar", "gz": "application/gzip", "bz2": "application/x-bzip2",
     "xz": "application/x-xz",
+    # Firmas (F6-G).
+    "p7m": "application/pkcs7-mime", "p7s": "application/pkcs7-signature", "csig": "application/pkcs7-mime",
+    "xsig": "application/xml",
     # Datos (F6-B).
     "json": "application/json", "xml": "application/xml", "yaml": "application/yaml",
 }
@@ -261,6 +267,8 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
     if head.startswith(b"Rar!\x1a\x07"):
         return Detected("rar", "archive")
     # Comprimidos de F6-E (D-217): 7z, gzip, bzip2, xz y tar (la marca «ustar» en el byte 257).
+    if declared in CMS and head[:1] == b"\x30" and len(head) > 2 and head[1] in (0x80, 0x81, 0x82, 0x83, 0x84):
+        return Detected(declared, "cms")
     if head.startswith(b"7z\xbc\xaf\x27\x1c"):
         return Detected("7z", "archive")
     if head.startswith(b"\x1f\x8b\x08"):

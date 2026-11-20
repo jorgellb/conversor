@@ -476,4 +476,17 @@ SPECS: list[ToolSpec] = [
           "Convierte subtítulos ASS y SSA (Aegisub, anime) en SRT, ordenados por tiempo y con negrita y cursiva.",
           "Turn ASS and SSA subtitles (Aegisub, anime) into SRT, sorted by time and with bold and italics.",
           ("vtt-a-srt", "srt-a-vtt"), SubtitulosOptions, category="video", impl="tools.utils.subtitulos:run"),
+    # 7.13 (F6-G, D-219): sacan el documento de la firma sin comprobarla (eso es verificar-firma, en `sign.verify`).
+    datos("csig-a-pdf", "csig-to-pdf", "CSIG a PDF", "CSIG to PDF", ("csig", "p7m", "p7s"), ("pdf",),
+          "Saca el PDF original de una firma .csig de AutoFirma o Cl@ve, idéntico al que se firmó, para abrirlo e imprimirlo.",
+          "Get the original PDF out of an AutoFirma or Cl@ve .csig signature, identical to the one that was signed.",
+          ("verificar-firma", "p7m-a-pdf"), category="sign", impl="tools.utils.firmados:run"),
+    datos("p7m-a-pdf", "p7m-to-pdf", "P7M a PDF", "P7M to PDF", ("p7m", "p7s", "csig"), ("pdf",),
+          "Abre archivos .p7m firmados (notificaciones, facturas, escrituras) y descarga el documento original que contienen.",
+          "Open signed .p7m files (notifications, invoices, deeds) and download the original document inside.",
+          ("verificar-firma", "csig-a-pdf"), category="sign", impl="tools.utils.firmados:run"),
+    datos("xsig-a-pdf", "xsig-to-pdf", "XSIG a PDF", "XSIG to PDF", ("xsig", "xml"), ("pdf",),
+          "Saca el documento original de una firma XAdES .xsig de AutoFirma, o el XML sin su firma si iba dentro.",
+          "Get the original document out of an AutoFirma XAdES .xsig signature, or the XML without its signature if it was inside.",
+          ("verificar-firma", "csig-a-pdf"), category="sign", impl="tools.utils.firmados:run"),
 ]

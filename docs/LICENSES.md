@@ -85,6 +85,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | charset-normalizer | MIT | Detección de la codificación en txt-a-pdf y markdown-a-pdf, y de los CSV de F6-B en `workerutils` (D-213) |
 | openpyxl 3.1.5 (y et-xmlfile) en el extra `utils` | MIT | xlsx-a-csv, csv-a-xlsx y excel-a-json (F6-B1, D-213) |
 | fontTools 4.68.0 y brotli 1.2.1 en el extra `utils` | MIT; MIT | Conversiones de fuentes TTF, OTF, WOFF y WOFF2 (F6-F, D-215) |
+| asn1crypto 1.5.1 en el extra `utils`; signxml 5.3.0 y lxml 6.1.3 en el extra `sign` | MIT; Apache-2.0 y BSD-3-Clause | csig-a-pdf, p7m-a-pdf y xsig-a-pdf, y las firmas XAdES de verificar-firma en `sign.verify` (F6-G, D-219) |
 | libarchive-c 5.3 y libarchive13 (Debian) en `workerutils`; pysubs2 1.9.1 en el extra `utils` | CC0-1.0 y BSD-2-Clause; MIT | Comprimidos RAR, 7z y tar y subtítulos SRT, WebVTT y ASS (F6-E, D-217); sin unrar ni p7zip (11) |
 | PyYAML 6.0.3 (con libyaml) y defusedxml 0.7.1 | MIT; PSF-2.0 | yaml-a-json, json-a-yaml y xml-a-json (F6-B2, D-214): `CSafeLoader` y XML sin entidades ni DTD externos |
 | LibreOffice Calc (`libreoffice-calc-nogui`, Debian) en `workeroffice` | MPL-2.0 | ods-a-xlsx y xlsx-a-ods como programa externo (F6-B1) |

@@ -152,4 +152,17 @@ SPECS: list[ToolSpec] = [
         summary_en="Check every signature in a PDF: signer, date, integrity, later changes, level and the EU trusted list.",
         related=("firmar-pdf", "validar-pdfa"),
     ),
+    # 7.13 (F6-G, D-219): CAdES con pyHanko, XAdES con signxml y PAdES con verificar-firmas-pdf, en `sign.verify` como esta.
+    # El segundo archivo, si lo hay, es el documento de una firma separada (cualquier tipo de los habituales).
+    ToolSpec(
+        slug_es="verificar-firma", slug_en="verify-signature", name_es="Verificar firma", name_en="Verify signature",
+        category="sign", where="server",
+        inputs=("csig", "p7m", "p7s", "xsig", "xml", "pdf", "docx", "xlsx", "pptx", "odt", "ods", "doc", "xls", "txt", "jpg", "png",
+                "zip"),
+        outputs=("html", "zip"), options=VerificarOptions, worker_group="sign", queue_kind="verify", cost_class="light",
+        impl="tools.sign.verificar_firma:run", launch=True, phase="F6", time_limit=900, max_files=2,
+        summary_es="Comprueba firmas CAdES (.csig, .p7m), XAdES (.xsig) y PAdES: firmante, fecha, integridad y lista de confianza de la UE.",
+        summary_en="Check CAdES (.csig, .p7m), XAdES (.xsig) and PAdES signatures: signer, date, integrity and the EU trusted list.",
+        related=("csig-a-pdf", "verificar-firmas-pdf"),
+    ),
 ]

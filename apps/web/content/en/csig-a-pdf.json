@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSIG to PDF gets the original document out of a .csig file, the format in which AutoFirma, the Spanish Government's signing application, stores CAdES signatures. When someone signs a PDF with AutoFirma or Cl@ve Firma and sends you the result, you get a file such as contract.pdf.csig that your PDF reader cannot open; here you turn it back into contract.pdf.",
+    "The document you get is exactly the one that was signed, byte for byte: it is not regenerated or recompressed, so you can compare its fingerprint with the original's. If it was signed more than once, one signature inside another, we unwrap them all until we reach the document, and the result's note says who signed each layer.",
+    "We accept signatures in binary (DER), PEM and Base64. If what is inside is not a PDF but another document, such as a Word file, a spreadsheet or an image, we deliver it as it is with its extension and warn you, so you can convert it afterwards with another tool.",
+    "This tool only extracts: it does not check whether the signature is valid or who really signed. That is what Verify signature does, checking integrity, the certificate chain and the EU trusted list. A detached signature (a .p7s without the document inside) cannot be extracted, because the document travels separately."
+  ],
+  "steps": [
+    "Upload one or more .csig files.",
+    "Wait while the document is extracted.",
+    "Download the original PDF."
+  ],
+  "faq": [
+    {
+      "q": "Does extracting the PDF break the signature?",
+      "a": "The PDF you download no longer carries the signature: it is the original document. The .csig remains the proof of the signature; keep it if you need it."
+    },
+    {
+      "q": "Can I see who signed it?",
+      "a": "The note shows the certificate name of each signer. To know whether it is a valid, trusted signature, use Verify signature with the .csig."
+    },
+    {
+      "q": "What if it is a .p7m?",
+      "a": "It is the same kind of signature with another extension: you can upload it here or to P7M to PDF."
+    }
+  ]
+}

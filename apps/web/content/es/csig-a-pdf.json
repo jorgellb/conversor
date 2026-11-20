@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "CSIG a PDF saca el documento original de un archivo .csig, el formato en que AutoFirma, la aplicación de firma del Gobierno de España, guarda las firmas CAdES. Cuando alguien firma un PDF con AutoFirma o con Cl@ve Firma y te envía el resultado, recibes un archivo como contrato.pdf.csig que el lector de PDF no sabe abrir; aquí lo conviertes de nuevo en contrato.pdf.",
+    "El documento que sale es exactamente el que se firmó, byte a byte: no se vuelve a generar ni a comprimir, así que puedes comprobar su huella con la del original. Si se firmó más de una vez, unas firmas dentro de otras, las desenvolvemos todas hasta llegar al documento, y la nota del resultado dice quién firmó cada capa.",
+    "Aceptamos las firmas en binario (DER), en PEM y en Base64. Si dentro no hay un PDF sino otro documento, como un Word, una hoja de cálculo o una imagen, lo entregamos tal cual con su extensión y te avisamos, para que puedas convertirlo después con otra herramienta.",
+    "Esta herramienta solo extrae: no comprueba si la firma es válida ni quién es el firmante de verdad. Para eso está Verificar firma, que revisa la integridad, la cadena del certificado y la lista de confianza de la UE. Una firma separada (.p7s sin el documento dentro) no se puede extraer, porque el documento va aparte."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .csig.",
+    "Espera a que se extraiga el documento.",
+    "Descarga el PDF original."
+  ],
+  "faq": [
+    {
+      "q": "¿Se rompe la firma al extraer el PDF?",
+      "a": "El PDF que descargas ya no lleva la firma: es el documento original. El .csig sigue siendo la prueba de la firma; guárdalo si la necesitas."
+    },
+    {
+      "q": "¿Puedo saber quién lo firmó?",
+      "a": "La nota muestra el nombre del certificado de cada firmante. Para saber si es una firma válida y de confianza, usa Verificar firma con el .csig."
+    },
+    {
+      "q": "¿Y si es un .p7m?",
+      "a": "Es el mismo tipo de firma con otra extensión: puedes subirlo aquí o en P7M a PDF."
+    }
+  ]
+}

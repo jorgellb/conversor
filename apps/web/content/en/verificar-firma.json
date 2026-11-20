@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Verify signature checks electronic signatures of any kind: CAdES (AutoFirma .csig, .p7m, .p7s), XAdES (.xsig, Facturae invoices and other signed XML) and PAdES (signed PDFs). It tells you who signed, when, whether the document has changed since the signature and whether the certificate comes from a trusted provider.",
+    "For each signer we check integrity (that the document is exactly the one that was signed), the certificate and its chain up to a trusted authority on the European Union list, and whether it is a qualified, advanced or simple signature, with the same rules as Verify PDF signatures. If a CAdES signature carries a time stamp, the date is the stamp's and it is validated at that date even if the certificate expired later. Co-signatures, several signatures on the same document, are checked one by one.",
+    "If the signature is separate from the document, upload both files together: the signature (.p7s, .csig or .xsig) and the signed document. If someone has changed even one character of the document, the signature comes out as not valid. Certificate revocation can be checked online with OCSP or CRL if you turn it on.",
+    "The result is an HTML report you can save or print. XML files are read without loading DTDs or external entities, and verification runs on an isolated server with no access to the platform's signing keys."
+  ],
+  "steps": [
+    "Upload the signature and, if it is detached, the signed document too.",
+    "Turn on the online revocation check if you need it.",
+    "Download the signature report."
+  ],
+  "faq": [
+    {
+      "q": "What does “Trusted through a root added in this installation” mean?",
+      "a": "That the certificate leads to an authority that is not on the EU list but that this installation explicitly accepts. It does not carry the same weight as a signature from a listed provider."
+    },
+    {
+      "q": "Why does my signature come out as “simple”?",
+      "a": "Because the document is intact but the certificate does not lead to any trusted provider on the EU list: it may be a self-made certificate or one from an authority that is not on it."
+    },
+    {
+      "q": "Are XAdES time stamps checked?",
+      "a": "Not yet: in XAdES the date is the one the signer claims and the report says so. CAdES and PDF time stamps are validated."
+    }
+  ]
+}

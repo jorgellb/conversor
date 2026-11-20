@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 209 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 31). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 213 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 35). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -177,6 +177,7 @@ Catálogo publicado en esta entrega: 209 herramientas (F1 43, F2 60, F3 10, F4 1
 | `compartir-pdf` / `share-pdf` | servidor | pdf | light | F4 | activa | pdf → pdf | redactado, sin revisar |
 | `solicitar-firmas` / `request-signatures` | servidor | pdf | light | F4 | activa | pdf → pdf | redactado, sin revisar |
 | `verificar-firmas-pdf` / `verify-pdf-signatures` | servidor | sign | light | F4 | activa | pdf → html, zip | redactado, sin revisar |
+| `verificar-firma` / `verify-signature` | servidor | sign | light | F6 | activa | csig, p7m, p7s, xsig, xml, pdf, docx, xlsx, pptx, odt, ods, doc, xls, txt, jpg, png, zip → html, zip | redactado, sin revisar |
 | `pdf-a-factura-electronica` / `pdf-to-e-invoice` | servidor | utils | ai | F4 | apagada | pdf → json, pdf, xml | redactado, sin revisar |
 | `crear-factura-electronica` / `create-e-invoice` | servidor | utils | light | F4 | apagada | — → pdf, xml | redactado, sin revisar |
 | `validar-factura-electronica` / `validate-e-invoice` | servidor | utils | light | F4 | activa | xml, pdf, zip → html, csv, zip | redactado, sin revisar |
@@ -215,6 +216,9 @@ Catálogo publicado en esta entrega: 209 herramientas (F1 43, F2 60, F3 10, F4 1
 | `srt-a-vtt` / `srt-to-vtt` | servidor | utils | light | F6 | activa | srt → vtt, zip | redactado, sin revisar |
 | `vtt-a-srt` / `vtt-to-srt` | servidor | utils | light | F6 | activa | vtt → srt, zip | redactado, sin revisar |
 | `ass-a-srt` / `ass-to-srt` | servidor | utils | light | F6 | activa | ass → srt, zip | redactado, sin revisar |
+| `csig-a-pdf` / `csig-to-pdf` | servidor | utils | light | F6 | activa | csig, p7m, p7s → pdf, zip | redactado, sin revisar |
+| `p7m-a-pdf` / `p7m-to-pdf` | servidor | utils | light | F6 | activa | p7m, p7s, csig → pdf, zip | redactado, sin revisar |
+| `xsig-a-pdf` / `xsig-to-pdf` | servidor | utils | light | F6 | activa | xsig, xml → pdf, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

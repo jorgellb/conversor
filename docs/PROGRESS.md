@@ -591,9 +591,15 @@ Sans real.
 rar-a-zip, 7z-a-zip, tar-a-zip y extraer-archivo-online con libarchive (rutas con «../», enlaces y dispositivos nunca salen de
 la carpeta: 16.4), y srt-a-vtt, vtt-a-srt y ass-a-srt con pysubs2 (D-217), en `tests/test_comprimidos_subtitulos.py`.
 
+## F6-G (firmas)
+
+csig-a-pdf, p7m-a-pdf y xsig-a-pdf sacan el documento firmado (byte a byte en CAdES, 16.5) y verificar-firma comprueba CAdES,
+XAdES y PAdES con la lista de la UE (D-219); un documento alterado sale «No válida», en `tests/test_firmados.py` con la PKI de
+certomancer.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E y F6-F hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F y F6-G hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

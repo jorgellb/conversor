@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "P7M a PDF abre archivos .p7m, documentos firmados digitalmente con el formato PKCS#7 o CAdES, y te da el documento original que contienen. Es el formato de muchas notificaciones de la administración, facturas firmadas, escrituras y documentos de colegios profesionales, sobre todo en Italia, donde la factura electrónica y los contratos se intercambian como .pdf.p7m.",
+    "Leemos la firma en binario (DER), en PEM o en Base64 y sacamos el contenido tal cual, idéntico byte a byte al que se firmó. Si el archivo se firmó varias veces, una firma dentro de otra (archivo.pdf.p7m.p7m), desenvolvemos todas las capas hasta llegar al documento.",
+    "El nombre del resultado sale del propio archivo: factura.pdf.p7m se convierte en factura.pdf. Si dentro hay un XML, un Word u otro formato, lo entregamos con su extensión y te indicamos que no es un PDF, para que lo abras con su programa o lo conviertas con otra herramienta de la web.",
+    "Aquí no se comprueba la firma. Si quieres saber si es válida, si el documento ha cambiado desde que se firmó y si el certificado es de un prestador de confianza de la lista de la UE, sube el mismo .p7m a Verificar firma."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .p7m.",
+    "Espera a la extracción.",
+    "Descarga el documento original."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué no se abre mi .p7m con doble clic?",
+      "a": "Porque es un sobre firmado: el documento va dentro y hace falta un programa de firma para sacarlo. Esta herramienta lo hace sin instalar nada."
+    },
+    {
+      "q": "¿Qué pasa con un .p7s?",
+      "a": "Un .p7s suele ser una firma separada, sin el documento dentro. Para comprobarla, sube el .p7s y el documento juntos a Verificar firma."
+    },
+    {
+      "q": "¿Sirve para facturas electrónicas italianas?",
+      "a": "Sí: de un .xml.p7m del SdI sale el XML de la factura, que puedes ver en PDF con Factura electrónica a PDF."
+    }
+  ]
+}

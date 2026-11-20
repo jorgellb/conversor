@@ -72,6 +72,8 @@ class SignatureInfo:
     problem: str = ""
     tst_ok: bool = False
     notes: list[str] = field(default_factory=list)
+    family: str = "PAdES"  # CAdES y XAdES: verificar-firma (F6-G)
+    ades: str = ""  # su nivel: CAdES-B, CAdES-T, XAdES-B o XMLDSig
 
 
 def _name(cert) -> tuple[str, str, str]:
@@ -512,6 +514,7 @@ TEXT = {
         "error": "No se ha podido validar esta firma ({problem}).",
         "summary": "{n} firma(s): {ok} válida(s) y de confianza.", "summary_none": "Sin firmas digitales.",
         "report": "informe-firmas-{stem}.html", "zip": "informes-firmas.zip",
+        "format": "Formato", "xades_tst": "Trae un sello de tiempo XAdES, que no se ha comprobado: la fecha es la que declara el firmante.",
     },
     "en": {
         "title": "Signature report", "file": "File", "none": "The document has no digital signatures.",
@@ -566,6 +569,7 @@ TEXT = {
         "error": "This signature could not be validated ({problem}).",
         "summary": "{n} signature(s): {ok} valid and trusted.", "summary_none": "No digital signatures.",
         "report": "signature-report-{stem}.html", "zip": "signature-reports.zip",
+        "format": "Format", "xades_tst": "It carries an XAdES time stamp, which was not checked: the date is the one the signer claims.",
     },
 }
 
@@ -592,13 +596,17 @@ def _block(t, n: int, s: SignatureInfo) -> str:
     if s.when:
         rows.append(_row(t["date"], e(f"{s.when:%d/%m/%Y %H:%M:%S %Z}".strip() + ", " + t["when"][s.when_source].format(tsa=s.tsa))))
     rows.append(_row(t["integrity"], e(t["intact"] if s.intact and s.valid else t["broken"])))
-    rows.append(_row(t["changes"], e(t["change"][s.changes] + ("" if s.changes == "ninguno" else t["allowed"] if s.changes_ok else t["forbidden"]))))
+    if s.family == "PAdES":
+        rows.append(_row(t["changes"], e(t["change"][s.changes] + ("" if s.changes == "ninguno" else t["allowed"] if s.changes_ok else t["forbidden"]))))
     if s.certified:
         rows.append(_row(t["certified"], e(t["docmdp"][s.certified])))
     level = t["levels"][s.level] + (t["seal"] if "sello" in s.notes else "")
     extra = f"<br>{e(t['at_ts'][s.at_timestamp])}" if s.at_timestamp else ""
     rows.append(_row(t["level"], f"<b class=\"l-{e(s.level)}\">{e(level)}</b>{extra}"))
-    rows.append(_row(t["pades"], e(t["no_pades"].format(subfilter=s.subfilter or "?") if s.pades == "no_pades" else s.pades)))
+    if s.family == "PAdES":
+        rows.append(_row(t["pades"], e(t["no_pades"].format(subfilter=s.subfilter or "?") if s.pades == "no_pades" else s.pades)))
+    else:
+        rows.append(_row(t["format"], e(s.ades or s.family) + (f"<br>{e(t['xades_tst'])}" if "xades_tst" in s.notes else "")))
     trust = t["trust_yes"] if s.trusted else t["problems"].get(s.problem, t["problems"][""])
     if s.qualified_service:
         trust += " " + t["qualified_by"].format(service=s.qualified_service, country=f" ({s.country})" if s.country else "")
