@@ -21,11 +21,13 @@ log = logging.getLogger("worker")
 XML_NAME = "factur-x.xml"
 TEXTS = {
     "es": {"valid": "Validada con KoSIT ({spec}): sin errores.", "facturae": "Cumple el XSD oficial de Facturae 3.2.2. Sin firmar: "
-           "fírmala con tu certificado antes de enviarla a FACe o a tu cliente.", "warnings": "{n} avisos del validador.",
-           "file": "factura"},
+           "fírmala con tu certificado antes de enviarla a tu cliente o a FACe.", "dir3": "Para FACe faltan los códigos DIR3 de la "
+           "Administración destinataria.", "warnings": "{n} avisos del validador.", "file": "factura",
+           "embedded": "PDF/A-3 con la factura electrónica generada incrustada ({name})."},
     "en": {"valid": "Validated with KoSIT ({spec}): no errors.", "facturae": "Meets the official Facturae 3.2.2 XSD. Not signed: "
-           "sign it with your certificate before sending it to FACe or your customer.", "warnings": "{n} validator warnings.",
-           "file": "invoice"},
+           "sign it with your certificate before sending it to your customer or to FACe.", "dir3": "For FACe, the receiving "
+           "administration's DIR3 codes are missing.", "warnings": "{n} validator warnings.", "file": "invoice",
+           "embedded": "PDF/A-3 with the generated e-invoice embedded ({name})."},
 }
 
 
@@ -68,6 +70,8 @@ def _utils_stage(ctx: ToolContext) -> list[dict]:
     ctx.report(0.3, None)
     spec, warnings = validate(ctx, data, syntax)
     note = t["facturae"] if syntax == "facturae" else t["valid"].format(spec=spec)
+    if syntax == "facturae" and not o.factura.unidad_tramitadora.strip():
+        note += " " + t["dir3"]
     if warnings:
         note += " " + t["warnings"].format(n=warnings)
     if o.formato != "facturx":
@@ -81,23 +85,57 @@ def _utils_stage(ctx: ToolContext) -> list[dict]:
     root, inv = lectura.read_invoice(data)
     detail = representar.detail_of(root, inv)
     lang = representar.language_of(detail, ctx.locale, o.factura.idioma)
-    pdf = convertir._pdf(ctx, representar.render(detail, lang, spec, XML_NAME), True, 0)
+    xml_name = "xrechnung.xml" if o.perfil == "xrechnung" else XML_NAME
+    pdf = convertir._pdf(ctx, representar.render(detail, lang, spec, xml_name), True, 0)
     relationship = "data" if o.perfil in ("minimum", "basicwl") else "alternative"
     out = facturx.generate_from_binary(pdf.read_bytes(), data, flavor="factur-x", level="autodetect", check_xsd=False,
                                        lang=lang, afrelationship=relationship)
+    if o.perfil == "xrechnung":
+        out = xrechnung_profile(out)
     pdf.write_bytes(out)
     stage = ctx.stage_dir()
     (stage / XML_NAME).write_bytes(data)
     import json
 
-    (stage / convertir.MANIFEST).write_text(json.dumps([{"n": 0, "name": _name(ctx, "pdf"), "xml": XML_NAME, "warnings": [note]}],
+    (stage / convertir.MANIFEST).write_text(json.dumps([{"n": 0, "name": _name(ctx, "pdf"), "xml": xml_name, "warnings": [note]}],
                                                        ensure_ascii=False), encoding="utf-8")
     ctx.handoff("ocr", convertir.STAGE, convertir._texts(ctx)["check"], keep_secrets=False)
     return []  # no se llega: handoff
 
 
+def xrechnung_profile(pdf_bytes: bytes) -> bytes:
+    """Factur-X 1.0.07 y ZUGFeRD 2.3: el perfil XRECHNUNG lleva `xrechnung.xml` y ConformanceLevel XRECHNUNG (la
+    biblioteca factur-x lo trata como EN 16931)."""
+    import io
+
+    import pikepdf
+
+    with pikepdf.open(io.BytesIO(pdf_bytes)) as pdf:
+        spec = pdf.attachments[XML_NAME].obj
+        data = pdf.attachments[XML_NAME].get_file().read_bytes()
+        del pdf.attachments[XML_NAME]
+        new = pikepdf.AttachedFileSpec(pdf, data, filename="xrechnung.xml", description=str(spec.get("/Desc", "")),
+                                       mime_type="text/xml", relationship=pikepdf.Name.Alternative)
+        pdf.attachments["xrechnung.xml"] = new
+        pdf.Root.AF = pikepdf.Array([pdf.attachments["xrechnung.xml"].obj])
+        xmp = pdf.Root.Metadata.read_bytes()
+        xmp = re.sub(rb"(<fx:ConformanceLevel>)[^<]*(</fx:ConformanceLevel>)", rb"\1XRECHNUNG\2", xmp)
+        xmp = re.sub(rb"(<fx:DocumentFileName>)[^<]*(</fx:DocumentFileName>)", rb"\1xrechnung.xml\2", xmp)
+        # PDF/A: el flujo de metadatos va sin filtro.
+        pdf.Root.Metadata = pdf.make_stream(xmp, Type=pikepdf.Name.Metadata, Subtype=pikepdf.Name.XML)
+        buf = io.BytesIO()
+        pdf.save(buf)
+    return buf.getvalue()
+
+
 def _verapdf_stage(ctx: ToolContext) -> list[dict]:
     outputs = convertir._verapdf_stage(ctx)
+    # La nota de factura-electronica-a-pdf dice «el XML original»; aquí el XML se ha generado.
+    original = convertir._texts(ctx)["embedded"]
+    for o in outputs:
+        if o.get("note") and o["name"].endswith(".pdf"):
+            for name in (XML_NAME, "xrechnung.xml"):
+                o["note"] = o["note"].replace(original.format(name=name), _texts(ctx)["embedded"].format(name=name))
     xml = ctx.store.job_dir(ctx.job_id) / "stage" / XML_NAME
     if xml.exists():
         name = _name(ctx, "xml")

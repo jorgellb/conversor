@@ -1453,6 +1453,9 @@
       "read": "Leer la factura",
       "reviewed": "He revisado todos los datos del formulario y son los de la factura.",
       "reviewFirst": "Primero lee la factura y confirma que has revisado los datos."
-    }
+    },
+    "dir3Office": "Oficina contable (DIR3)",
+    "dir3Body": "Órgano gestor (DIR3)",
+    "dir3Unit": "Unidad tramitadora (DIR3)"
   }
 }

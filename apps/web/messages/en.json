@@ -1453,6 +1453,9 @@
       "read": "Read the invoice",
       "reviewed": "I have checked every field of the form and it matches the invoice.",
       "reviewFirst": "First read the invoice and confirm you have checked the data."
-    }
+    },
+    "dir3Office": "Accounting office (DIR3)",
+    "dir3Body": "Managing body (DIR3)",
+    "dir3Unit": "Processing unit (DIR3)"
   }
 }

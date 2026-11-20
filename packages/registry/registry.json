@@ -27501,7 +27501,8 @@
                   "telefono": "",
                   "contacto": "",
                   "endpoint_esquema": "9920",
-                  "endpoint_id": ""
+                  "endpoint_id": "",
+                  "tipo_persona": ""
                 },
                 "title": "Emisor",
                 "x-title": {
@@ -27523,7 +27524,8 @@
                   "telefono": "",
                   "contacto": "",
                   "endpoint_esquema": "9920",
-                  "endpoint_id": ""
+                  "endpoint_id": "",
+                  "tipo_persona": ""
                 },
                 "title": "Cliente",
                 "x-title": {
@@ -27652,6 +27654,90 @@
                   "es": "Motivo de la exención (IVA 0 %)"
                 }
               },
+              "causa_exencion": {
+                "default": "",
+                "enum": [
+                  "",
+                  "art20",
+                  "art21",
+                  "art25",
+                  "isp",
+                  "nosujeta"
+                ],
+                "title": "Causa del IVA 0 %",
+                "type": "string",
+                "x-labels": {
+                  "": {
+                    "en": "Not given (exempt)",
+                    "es": "Sin indicar (exenta)"
+                  },
+                  "art20": {
+                    "en": "Exempt (art. 20)",
+                    "es": "Exenta (art. 20)"
+                  },
+                  "art21": {
+                    "en": "Export (art. 21)",
+                    "es": "Exportación (art. 21)"
+                  },
+                  "art25": {
+                    "en": "Intra-Community supply (art. 25)",
+                    "es": "Entrega intracomunitaria (art. 25)"
+                  },
+                  "isp": {
+                    "en": "Reverse charge (art. 84)",
+                    "es": "Inversión del sujeto pasivo (art. 84)"
+                  },
+                  "nosujeta": {
+                    "en": "Not subject (art. 7)",
+                    "es": "No sujeta (art. 7)"
+                  }
+                },
+                "x-title": {
+                  "en": "Reason for 0 % VAT",
+                  "es": "Causa del IVA 0 %"
+                }
+              },
+              "tipo_cambio": {
+                "default": 0,
+                "maximum": 1000000.0,
+                "minimum": 0,
+                "title": "Euros por unidad de la moneda (otra moneda)",
+                "type": "number",
+                "x-title": {
+                  "en": "Euros per currency unit (other currency)",
+                  "es": "Euros por unidad de la moneda (otra moneda)"
+                }
+              },
+              "oficina_contable": {
+                "default": "",
+                "maxLength": 10,
+                "title": "Oficina contable (DIR3, FACe)",
+                "type": "string",
+                "x-title": {
+                  "en": "Accounting office (DIR3, FACe)",
+                  "es": "Oficina contable (DIR3, FACe)"
+                }
+              },
+              "organo_gestor": {
+                "default": "",
+                "maxLength": 10,
+                "title": "Órgano gestor (DIR3, FACe)",
+                "type": "string",
+                "x-title": {
+                  "en": "Managing body (DIR3, FACe)",
+                  "es": "Órgano gestor (DIR3, FACe)"
+                }
+              },
+              "unidad_tramitadora": {
+                "default": "",
+                "maxLength": 10,
+                "title": "Unidad tramitadora (DIR3, FACe)",
+                "type": "string",
+                "x-title": {
+                  "en": "Processing unit (DIR3, FACe)",
+                  "es": "Unidad tramitadora (DIR3, FACe)"
+                }
+              },
               "texto_descuento": {
                 "default": "Descuento",
                 "maxLength": 100,
@@ -27680,8 +27766,8 @@
               },
               "cantidad": {
                 "default": 1,
-                "exclusiveMinimum": 0,
                 "maximum": 1000000000.0,
+                "minimum": -1000000000.0,
                 "title": "Cantidad",
                 "type": "number",
                 "x-title": {
@@ -27859,6 +27945,34 @@
                   "en": "Electronic address (Peppol, XRechnung)",
                   "es": "Dirección electrónica (Peppol, XRechnung)"
                 }
+              },
+              "tipo_persona": {
+                "default": "",
+                "enum": [
+                  "",
+                  "F",
+                  "J"
+                ],
+                "title": "Persona física o jurídica (Facturae; vacío: según el NIF)",
+                "type": "string",
+                "x-labels": {
+                  "": {
+                    "en": "From the tax ID",
+                    "es": "Según el NIF"
+                  },
+                  "F": {
+                    "en": "Individual",
+                    "es": "Persona física"
+                  },
+                  "J": {
+                    "en": "Legal entity",
+                    "es": "Persona jurídica"
+                  }
+                },
+                "x-title": {
+                  "en": "Individual or legal entity (Facturae; empty: from the tax ID)",
+                  "es": "Persona física o jurídica (Facturae; vacío: según el NIF)"
+                }
               }
             },
             "title": "Parte",
@@ -27944,7 +28058,8 @@
                 "nombre": "",
                 "pais": "ES",
                 "provincia": "",
-                "telefono": ""
+                "telefono": "",
+                "tipo_persona": ""
               },
               "cliente": {
                 "ciudad": "",
@@ -27958,7 +28073,8 @@
                 "nombre": "",
                 "pais": "ES",
                 "provincia": "",
-                "telefono": ""
+                "telefono": "",
+                "tipo_persona": ""
               },
               "lineas": [],
               "recargo": false,
@@ -27968,6 +28084,11 @@
               "condiciones_pago": "",
               "notas": "",
               "motivo_exencion": "",
+              "causa_exencion": "",
+              "tipo_cambio": 0.0,
+              "oficina_contable": "",
+              "organo_gestor": "",
+              "unidad_tramitadora": "",
               "texto_descuento": "Descuento"
             },
             "title": "Factura revisada",
@@ -28118,7 +28239,8 @@
                   "telefono": "",
                   "contacto": "",
                   "endpoint_esquema": "9920",
-                  "endpoint_id": ""
+                  "endpoint_id": "",
+                  "tipo_persona": ""
                 },
                 "title": "Emisor",
                 "x-title": {
@@ -28140,7 +28262,8 @@
                   "telefono": "",
                   "contacto": "",
                   "endpoint_esquema": "9920",
-                  "endpoint_id": ""
+                  "endpoint_id": "",
+                  "tipo_persona": ""
                 },
                 "title": "Cliente",
                 "x-title": {
@@ -28269,6 +28392,90 @@
                   "es": "Motivo de la exención (IVA 0 %)"
                 }
               },
+              "causa_exencion": {
+                "default": "",
+                "enum": [
+                  "",
+                  "art20",
+                  "art21",
+                  "art25",
+                  "isp",
+                  "nosujeta"
+                ],
+                "title": "Causa del IVA 0 %",
+                "type": "string",
+                "x-labels": {
+                  "": {
+                    "en": "Not given (exempt)",
+                    "es": "Sin indicar (exenta)"
+                  },
+                  "art20": {
+                    "en": "Exempt (art. 20)",
+                    "es": "Exenta (art. 20)"
+                  },
+                  "art21": {
+                    "en": "Export (art. 21)",
+                    "es": "Exportación (art. 21)"
+                  },
+                  "art25": {
+                    "en": "Intra-Community supply (art. 25)",
+                    "es": "Entrega intracomunitaria (art. 25)"
+                  },
+                  "isp": {
+                    "en": "Reverse charge (art. 84)",
+                    "es": "Inversión del sujeto pasivo (art. 84)"
+                  },
+                  "nosujeta": {
+                    "en": "Not subject (art. 7)",
+                    "es": "No sujeta (art. 7)"
+                  }
+                },
+                "x-title": {
+                  "en": "Reason for 0 % VAT",
+                  "es": "Causa del IVA 0 %"
+                }
+              },
+              "tipo_cambio": {
+                "default": 0,
+                "maximum": 1000000.0,
+                "minimum": 0,
+                "title": "Euros por unidad de la moneda (otra moneda)",
+                "type": "number",
+                "x-title": {
+                  "en": "Euros per currency unit (other currency)",
+                  "es": "Euros por unidad de la moneda (otra moneda)"
+                }
+              },
+              "oficina_contable": {
+                "default": "",
+                "maxLength": 10,
+                "title": "Oficina contable (DIR3, FACe)",
+                "type": "string",
+                "x-title": {
+                  "en": "Accounting office (DIR3, FACe)",
+                  "es": "Oficina contable (DIR3, FACe)"
+                }
+              },
+              "organo_gestor": {
+                "default": "",
+                "maxLength": 10,
+                "title": "Órgano gestor (DIR3, FACe)",
+                "type": "string",
+                "x-title": {
+                  "en": "Managing body (DIR3, FACe)",
+                  "es": "Órgano gestor (DIR3, FACe)"
+                }
+              },
+              "unidad_tramitadora": {
+                "default": "",
+                "maxLength": 10,
+                "title": "Unidad tramitadora (DIR3, FACe)",
+                "type": "string",
+                "x-title": {
+                  "en": "Processing unit (DIR3, FACe)",
+                  "es": "Unidad tramitadora (DIR3, FACe)"
+                }
+              },
               "texto_descuento": {
                 "default": "Descuento",
                 "maxLength": 100,
@@ -28297,8 +28504,8 @@
               },
               "cantidad": {
                 "default": 1,
-                "exclusiveMinimum": 0,
                 "maximum": 1000000000.0,
+                "minimum": -1000000000.0,
                 "title": "Cantidad",
                 "type": "number",
                 "x-title": {
@@ -28476,6 +28683,34 @@
                   "en": "Electronic address (Peppol, XRechnung)",
                   "es": "Dirección electrónica (Peppol, XRechnung)"
                 }
+              },
+              "tipo_persona": {
+                "default": "",
+                "enum": [
+                  "",
+                  "F",
+                  "J"
+                ],
+                "title": "Persona física o jurídica (Facturae; vacío: según el NIF)",
+                "type": "string",
+                "x-labels": {
+                  "": {
+                    "en": "From the tax ID",
+                    "es": "Según el NIF"
+                  },
+                  "F": {
+                    "en": "Individual",
+                    "es": "Persona física"
+                  },
+                  "J": {
+                    "en": "Legal entity",
+                    "es": "Persona jurídica"
+                  }
+                },
+                "x-title": {
+                  "en": "Individual or legal entity (Facturae; empty: from the tax ID)",
+                  "es": "Persona física o jurídica (Facturae; vacío: según el NIF)"
+                }
               }
             },
             "title": "Parte",
@@ -28598,7 +28833,8 @@
                 "nombre": "",
                 "pais": "ES",
                 "provincia": "",
-                "telefono": ""
+                "telefono": "",
+                "tipo_persona": ""
               },
               "cliente": {
                 "ciudad": "",
@@ -28612,7 +28848,8 @@
                 "nombre": "",
                 "pais": "ES",
                 "provincia": "",
-                "telefono": ""
+                "telefono": "",
+                "tipo_persona": ""
               },
               "lineas": [],
               "recargo": false,
@@ -28622,6 +28859,11 @@
               "condiciones_pago": "",
               "notas": "",
               "motivo_exencion": "",
+              "causa_exencion": "",
+              "tipo_cambio": 0.0,
+              "oficina_contable": "",
+              "organo_gestor": "",
+              "unidad_tramitadora": "",
               "texto_descuento": "Descuento"
             },
             "title": "Factura",

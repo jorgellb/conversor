@@ -241,7 +241,7 @@ def _extract_ai(ctx: ToolContext) -> list[dict]:
         [{"role": "system", "content": SYSTEM}, {"role": "user", "content": f"Texto de la factura:\n<<<\n{text}\n>>>"}],
         needs=Needs(context=estimate_tokens(text) + OUT_TOKENS + 900, output=1500), max_tokens=OUT_TOKENS, schema=SCHEMA, check=clean)
     if not data.get("es_factura", True):
-        raise ToolError(ErrorCode.INVALID_OPTIONS, "not_invoice")
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "pdf_not_invoice")
     merged = {**base["data"], **{k: v for k, v in data.items() if k not in ("es_factura", "total") and v not in ("", None, [], {})}}
     for who in ("emisor", "cliente"):
         merged[who] = {**base["data"].get(who, {}), **{k: v for k, v in (data.get(who) or {}).items() if v}}

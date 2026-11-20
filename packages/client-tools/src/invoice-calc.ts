@@ -114,8 +114,13 @@ export interface InvoiceTotals {
   payable: number;
 }
 
+/** El precio como va en la factura electrónica (6 decimales): el bruto se calcula con él, igual que en el servidor. */
+export function round6(value: number): number {
+  return Math.round(Number((value * 1e6).toFixed(4))) / 1e6;
+}
+
 export function lineTotal(line: InvoiceLine): LineTotal {
-  const gross = round2(line.quantity * line.price);
+  const gross = round2(line.quantity * round6(line.price));
   const discount = round2((gross * (line.discount || 0)) / 100);
   return { gross, discount, net: round2(gross - discount) };
 }
@@ -246,7 +251,7 @@ export function invoiceProblems(inv: Invoice): string[] {
   inv.lines.forEach((l, i) => {
     if (!l.description.trim()) out.push(`line${i}.description`);
     if (!Number.isFinite(l.quantity) || l.quantity === 0) out.push(`line${i}.quantity`);
-    if (!Number.isFinite(l.price)) out.push(`line${i}.price`);
+    if (!Number.isFinite(l.price) || l.price < 0) out.push(`line${i}.price`);  // EN 16931 (BR-27): precio no negativo
     if (!(l.discount >= 0 && l.discount <= 100)) out.push(`line${i}.discount`);
     if (!(l.vat >= 0 && l.vat <= 100)) out.push(`line${i}.vat`);
   });

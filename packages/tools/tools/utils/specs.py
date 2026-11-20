@@ -42,11 +42,14 @@ class Parte(BaseModel):
     contacto: str = opt("", "Persona de contacto", "Contact person", max_length=120)
     endpoint_esquema: str = opt("9920", "Esquema de la dirección electrónica (EAS)", "Electronic address scheme (EAS)", max_length=10)
     endpoint_id: str = opt("", "Dirección electrónica (Peppol, XRechnung)", "Electronic address (Peppol, XRechnung)", max_length=200)
+    tipo_persona: Literal["", "F", "J"] = opt("", "Persona física o jurídica (Facturae; vacío: según el NIF)",
+                                              "Individual or legal entity (Facturae; empty: from the tax ID)", labels={
+        "": ("Según el NIF", "From the tax ID"), "F": ("Persona física", "Individual"), "J": ("Persona jurídica", "Legal entity")})
 
 
 class Linea(BaseModel):
     descripcion: str = opt("", "Descripción", "Description", max_length=1000)
-    cantidad: float = opt(1, "Cantidad", "Quantity", gt=0, le=1e9)
+    cantidad: float = opt(1, "Cantidad", "Quantity", ge=-1e9, le=1e9)  # negativa en una devolución; 0 no (problems)
     unidad: str = opt("ud", "Unidad", "Unit", max_length=20)
     precio: float = opt(0, "Precio sin IVA", "Price excl. VAT", ge=0, le=1e12)
     descuento: float = opt(0, "Descuento (%)", "Discount (%)", ge=0, le=100)
@@ -76,6 +79,15 @@ class FacturaE(BaseModel):
     condiciones_pago: str = opt("", "Condiciones de pago", "Payment terms", max_length=500)
     notas: str = opt("", "Observaciones", "Notes", max_length=2000)
     motivo_exencion: str = opt("", "Motivo de la exención (IVA 0 %)", "Exemption reason (0 % VAT)", max_length=500)
+    causa_exencion: Literal["", "art20", "art21", "art25", "isp", "nosujeta"] = opt(
+        "", "Causa del IVA 0 %", "Reason for 0 % VAT", labels={
+            "": ("Sin indicar (exenta)", "Not given (exempt)"), "art20": ("Exenta (art. 20)", "Exempt (art. 20)"),
+            "art21": ("Exportación (art. 21)", "Export (art. 21)"), "art25": ("Entrega intracomunitaria (art. 25)", "Intra-Community supply (art. 25)"),
+            "isp": ("Inversión del sujeto pasivo (art. 84)", "Reverse charge (art. 84)"), "nosujeta": ("No sujeta (art. 7)", "Not subject (art. 7)")})
+    tipo_cambio: float = opt(0, "Euros por unidad de la moneda (otra moneda)", "Euros per currency unit (other currency)", ge=0, le=1e6)
+    oficina_contable: str = opt("", "Oficina contable (DIR3, FACe)", "Accounting office (DIR3, FACe)", max_length=10)
+    organo_gestor: str = opt("", "Órgano gestor (DIR3, FACe)", "Managing body (DIR3, FACe)", max_length=10)
+    unidad_tramitadora: str = opt("", "Unidad tramitadora (DIR3, FACe)", "Processing unit (DIR3, FACe)", max_length=10)
     texto_descuento: str = opt("Descuento", "Texto de los descuentos", "Discount text", max_length=100)
 
 

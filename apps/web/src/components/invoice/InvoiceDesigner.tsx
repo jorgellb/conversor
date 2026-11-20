@@ -77,17 +77,23 @@ export function nextNumber(series: Record<string, number>, prefer: string): stri
   return p.series + String(top + 1).padStart(p.width, "0");
 }
 
+/** Una cifra en el campo como la escribiría el usuario («1,234» en español), para que al editarla se lea igual. */
+const asRaw = (v: number, locale: "es" | "en") => (locale === "es" ? String(v).replace(".", ",") : String(v));
+
 type Row = InvoiceLine & { uid: number; raw: { quantity: string; price: string; discount: string } };
 let uidSeq = 0;
 const newRow = (vat = 21): Row => ({ uid: ++uidSeq, description: "", quantity: 1, unit: "ud", price: 0, discount: 0, vat,
   raw: { quantity: "1", price: "", discount: "" } });
 
 /** La factura del formulario en las opciones de crear-factura-electronica (FacturaE de tools/utils/specs.py). */
-export function toFacturaE(inv: Invoice, extra: { buyerReference: string; order: string; paymentCode: string }, discountText: string) {
+export interface EinvoiceExtra { buyerReference: string; order: string; paymentCode: string; dir3: [string, string, string] }
+
+export function toFacturaE(inv: Invoice, extra: EinvoiceExtra, discountText: string) {
   const party = (p: Party) => ({
     nombre: p.name, nif: p.taxId, direccion: p.address, cp: p.postcode ?? "", ciudad: p.city ?? "", provincia: p.province ?? "",
     pais: p.country || "ES", correo: p.email ?? "", telefono: p.phone ?? "", contacto: p.contact ?? "",
-    endpoint_esquema: p.endpointScheme || "9920", endpoint_id: p.endpointId ?? "",
+    // 9920 (NIF español) solo tiene sentido en España; fuera, el esquema lo pone quien conoce la dirección.
+    endpoint_esquema: p.endpointScheme || ((p.country || "ES") === "ES" ? "9920" : ""), endpoint_id: p.endpointId ?? "",
   });
   return {
     numero: inv.number, fecha: inv.issueDate, vencimiento: inv.dueDate ?? "", fecha_operacion: inv.operationDate ?? "", moneda: inv.currency,
@@ -95,6 +101,8 @@ export function toFacturaE(inv: Invoice, extra: { buyerReference: string; order:
     lineas: inv.lines.map((l) => ({ descripcion: l.description, cantidad: l.quantity, unidad: l.unit, precio: l.price, descuento: l.discount, iva: l.vat })),
     recargo: inv.surcharge, irpf: inv.irpf, forma_pago: extra.paymentCode, iban: inv.iban ?? "", condiciones_pago: inv.paymentMethod ?? "",
     notas: inv.notes ?? "", motivo_exencion: inv.exemption ? EXEMPTION_TEXT[inv.exemption][inv.locale] : "", texto_descuento: discountText,
+    causa_exencion: inv.exemption ?? "", tipo_cambio: inv.currency !== "EUR" ? inv.exchangeRate ?? 0 : 0,
+    oficina_contable: extra.dir3[0], organo_gestor: extra.dir3[1], unidad_tramitadora: extra.dir3[2],
   };
 }
 
@@ -142,7 +150,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
   const turnstileBox = useRef<HTMLDivElement>(null);
   const [format, setFormat] = useState<Format>("facturx");
   const [profile, setProfile] = useState<(typeof PROFILES)[number]>("en16931");
-  const [extra, setExtra] = useState({ buyerReference: "", order: "", paymentCode: "58" });
+  const [extra, setExtra] = useState<EinvoiceExtra>({ buyerReference: "", order: "", paymentCode: "58", dir3: ["", "", ""] });
   const [files, setFiles] = useState<JobOutput[]>([]);
   const [p12, setP12] = useState<File | null>(null);
   const [p12Password, setP12Password] = useState("");
@@ -170,7 +178,12 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
           window.sessionStorage.removeItem(STORE.handoff);
           const { lines, ...rest } = handed;
           setInv((v) => ({ ...v, ...rest }));
-          setRows(lines.map((l) => ({ ...newRow(l.vat), ...l, raw: { quantity: String(l.quantity), price: String(l.price), discount: l.discount ? String(l.discount) : "" } })));
+          setRows(lines.map((l) => ({ ...newRow(l.vat), ...l, raw: { quantity: asRaw(l.quantity, locale), price: asRaw(l.price, locale), discount: l.discount ? asRaw(l.discount, locale) : "" } })));
+          // El IRPF y el tipo de cambio también se ven en sus campos (no solo se envían).
+          const irpf = rest.irpf ?? 0;
+          setIrpfMode(irpf === 0 ? "0" : irpf === 7 ? "7" : irpf === 15 ? "15" : "custom");
+          if (![0, 7, 15].includes(irpf)) setIrpfRaw(asRaw(irpf, locale));
+          if (rest.exchangeRate) setRateRaw(asRaw(rest.exchangeRate, locale));
           return;
         }
       } catch {
@@ -235,7 +248,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
       const data = (await res.json()) as { factura: Partial<FacturaE> };
       const got = fromFacturaE(data.factura ?? {});
       setInv((v) => ({ ...v, ...got.inv, issuer: { ...v.issuer, ...Object.fromEntries(Object.entries(got.inv.issuer ?? {}).filter(([, x]) => x)) } as Party }));
-      if (got.lines.length) setRows(got.lines.map((l) => ({ ...newRow(l.vat), ...l, raw: { quantity: String(l.quantity), price: String(l.price), discount: l.discount ? String(l.discount) : "" } })));
+      if (got.lines.length) setRows(got.lines.map((l) => ({ ...newRow(l.vat), ...l, raw: { quantity: asRaw(l.quantity, locale), price: asRaw(l.price, locale), discount: l.discount ? asRaw(l.discount, locale) : "" } })));
       if (got.paymentCode) setExtra((e) => ({ ...e, paymentCode: got.paymentCode! }));
       setExtracted({ note: job.outputs[0].note ?? "" });
     } catch (err) {
@@ -366,7 +379,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
           </div>
         )}
         <label className="flex flex-col gap-1 text-sm">{t("name")}
-          <input className="field" value={p.name} onChange={(e) => setParty(who, { name: e.target.value })} aria-invalid={bad(`${prefix}Name`)} />
+          <input className="field" maxLength={200} value={p.name} onChange={(e) => setParty(who, { name: e.target.value })} aria-invalid={bad(`${prefix}Name`)} />
         </label>
         <div className="flex flex-col gap-1 text-sm">
           <label className="flex flex-col gap-1">{t(who === "issuer" ? "taxIdRequired" : "taxIdOptional")}
@@ -376,7 +389,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
           {bad(taxKey) && <span id={`${who}-taxid-error`} className="text-red-700">{t(taxKey === "customerTaxIdRequired" ? "needCustomerTaxId" : "badTaxId")}</span>}
         </div>
         <label className="flex flex-col gap-1 text-sm">{t("address")}
-          <input className="field" value={p.address} onChange={(e) => setParty(who, { address: e.target.value })} aria-invalid={who === "issuer" && bad("issuerAddress")} />
+          <input className="field" maxLength={200} value={p.address} onChange={(e) => setParty(who, { address: e.target.value })} aria-invalid={who === "issuer" && bad("issuerAddress")} />
         </label>
         <div className="flex gap-2">
           <label className="flex w-28 flex-col gap-1 text-sm">{t("postcode")}
@@ -468,6 +481,15 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
                 <label className="flex flex-col gap-1 text-sm">{t("order")}
                   <input className="field" value={extra.order} onChange={(e) => setExtra({ ...extra, order: e.target.value })} />
                 </label>
+                {format === "facturae" && (["dir3Office", "dir3Body", "dir3Unit"] as const).map((key, k) => (
+                  <label key={key} className="flex flex-col gap-1 text-sm">{t(key)}
+                    <input className="field" maxLength={10} value={extra.dir3[k]} onChange={(e) => {
+                      const dir3 = [...extra.dir3] as [string, string, string];
+                      dir3[k] = e.target.value.trim().toUpperCase();
+                      setExtra({ ...extra, dir3 });
+                    }} />
+                  </label>
+                ))}
                 <label className="col-span-2 flex flex-col gap-1 text-sm">{t("paymentCode")}
                   <select className="field" value={extra.paymentCode} onChange={(e) => setExtra({ ...extra, paymentCode: e.target.value })}>
                     {PAYMENT_CODES.map((c) => <option key={c} value={c}>{t(`paymentCodes.${c}`)}</option>)}
@@ -479,7 +501,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
           <div className="grid grid-cols-2 gap-2">
             <div className="flex flex-col gap-1 text-sm">
               <label className="flex flex-col gap-1">{t("number")}
-                <input className="field" value={inv.number} onChange={(e) => set({ number: e.target.value })} aria-invalid={bad("number")}
+                <input className="field" maxLength={60} value={inv.number} onChange={(e) => set({ number: e.target.value })} aria-invalid={bad("number")}
                        aria-describedby={reused ? "number-reused" : undefined} />
               </label>
               {reused && <span id="number-reused" className="text-amber-800">{t("numberUsed")}</span>}
@@ -525,13 +547,13 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
               <fieldset key={r.uid} className="flex flex-wrap items-end gap-2 rounded border p-2" data-line={i}>
                 <legend className="sr-only">{t("lineN", { n: i + 1 })}</legend>
                 <label className="flex min-w-48 flex-1 flex-col gap-1 text-sm">{t("description")}
-                  <input className="field" value={r.description} onChange={(e) => setRow(r.uid, { description: e.target.value })} aria-invalid={bad(`line${i}.description`)} />
+                  <input className="field" maxLength={1000} value={r.description} onChange={(e) => setRow(r.uid, { description: e.target.value })} aria-invalid={bad(`line${i}.description`)} />
                 </label>
                 <label className="flex w-20 flex-col gap-1 text-sm">{t("quantity")}
                   <input className="field" inputMode="decimal" value={r.raw.quantity} onChange={(e) => setRaw(r.uid, "quantity", e.target.value)} aria-invalid={bad(`line${i}.quantity`)} />
                 </label>
                 <label className="flex w-20 flex-col gap-1 text-sm">{t("unit")}
-                  <input className="field" value={r.unit} onChange={(e) => setRow(r.uid, { unit: e.target.value })} />
+                  <input className="field" maxLength={20} value={r.unit} onChange={(e) => setRow(r.uid, { unit: e.target.value })} />
                 </label>
                 <label className="flex w-24 flex-col gap-1 text-sm">{t("price")}
                   <input className="field" inputMode="decimal" value={r.raw.price} onChange={(e) => setRaw(r.uid, "price", e.target.value)} aria-invalid={bad(`line${i}.price`)} />
@@ -579,7 +601,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
             )}
           </div>
           <label className="flex flex-col gap-1 text-sm">{t("paymentMethod")}
-            <input className="field" value={inv.paymentMethod ?? ""} onChange={(e) => set({ paymentMethod: e.target.value })} />
+            <input className="field" maxLength={500} value={inv.paymentMethod ?? ""} onChange={(e) => set({ paymentMethod: e.target.value })} />
           </label>
           <div className="flex flex-col gap-1 text-sm">
             <label className="flex flex-col gap-1">IBAN
@@ -589,7 +611,7 @@ export function InvoiceDesigner({ spec, einvoiceHref, electronic = false, fromPd
             {bad("iban") && <span id="iban-error" className="text-red-700">{t("badIban")}</span>}
           </div>
           <label className="flex flex-col gap-1 text-sm">{t("notes")}
-            <textarea className="field" rows={3} value={inv.notes ?? ""} onChange={(e) => set({ notes: e.target.value })} />
+            <textarea className="field" rows={3} maxLength={2000} value={inv.notes ?? ""} onChange={(e) => set({ notes: e.target.value })} />
           </label>
         </div>
 

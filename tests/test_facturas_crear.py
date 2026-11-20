@@ -100,7 +100,23 @@ def test_format_requirements_are_explained():
         (_options("peppol", cliente={**BASE["cliente"], "endpoint_esquema": "EM", "endpoint_id": "a@b.test"}), "einvoice_endpoint_scheme"),
         (_options("peppol", cliente={**BASE["cliente"], "endpoint_id": ""}), "einvoice_endpoint"),
         (_options("ubl", lineas=[{**BASE["lineas"][0], "iva": 0}]), "einvoice_exemption"),
-        (_options("facturae", moneda="USD"), "einvoice_facturae_currency"),
+        (_options("facturae", moneda="USD", tipo_cambio=0.9), "einvoice_facturae_currency"),
+        (_options("ubl", moneda="USD"), "einvoice_exchange_rate"),
+        (_options("ubl", iban=""), "einvoice_iban"),
+        (_options("xrechnung_cii", forma_pago=""), "einvoice_payment"),
+        (_options("peppol", forma_pago="59"), "einvoice_payment_unsupported"),
+        (_options("ubl", causa_exencion="isp", lineas=[{**BASE["lineas"][0], "iva": 0}], cliente={**BASE["cliente"], "nif": ""}), "einvoice_buyer_vat"),
+        (_options("ubl", causa_exencion="art25", fecha_operacion="", lineas=[{**BASE["lineas"][0], "iva": 0}]), "einvoice_delivery_date"),
+        (_options("ubl", causa_exencion="nosujeta", lineas=[{**BASE["lineas"][0], "iva": 0}, BASE["lineas"][1]]), "einvoice_mixed_o"),
+        (_options("facturae", numero="FACTURA-2026-000000123"), "einvoice_facturae_field:numero"),
+        (_options("facturae", numero="2026/"), "einvoice_facturae_field:numero"),
+        (_options("facturae", emisor={**BASE["emisor"], "provincia": "Santa Cruz de Tenerife"}), "einvoice_facturae_field:provincia"),
+        (_options("facturae", cliente={**BASE["cliente"], "pais": "ES", "cp": "", "nif": "12345678Z", "nombre": "Ana García"}), "einvoice_facturae_field:cp"),
+        (_options("facturae", cliente={**BASE["cliente"], "pais": "ES", "cp": "46001", "nif": "12345678Z", "nombre": "Ana"}), "einvoice_facturae_field:apellidos"),
+        (_options("facturae", oficina_contable="EA0000001"), "einvoice_dir3"),
+        (_options("ubl", cliente={**BASE["cliente"], "pais": "UK"}), "einvoice_country:UK"),
+        (_options("ubl", emisor={**BASE["emisor"], "nombre": ""}), "einvoice_names"),
+        (_options("ubl", lineas=[{**BASE["lineas"][0], "cantidad": 0}]), "einvoice_quantity"),
     ]
     for o, detail in cases:
         with pytest.raises(ToolError) as err:
@@ -171,3 +187,70 @@ def test_facturae_signed_in_the_browser_passes_the_server_check():
     root, _inv = lectura.read_invoice(tampered)
     result = motores.facturae(get_settings(), root, tampered, lectura.facturae_version(root), check_signature=True)
     assert not result.accepted and [f.code for f in result.findings] == ["FIRMA"]
+
+
+
+@needs_kosit
+@pytest.mark.parametrize("cause,category,code", [("art20", "E", ""), ("art21", "G", "VATEX-EU-G"), ("art25", "K", "VATEX-EU-IC"),
+                                                 ("isp", "AE", "VATEX-EU-AE"), ("nosujeta", "O", "VATEX-EU-O")])
+@pytest.mark.parametrize("fmt", ["facturx", "xrechnung_ubl", "peppol", "ubl", "facturae"])
+def test_zero_vat_uses_the_category_of_its_cause(cause, category, code, fmt, make_ctx):
+    """Revisión de F4-E2: el IVA 0 % ya no es siempre E; cada causa lleva su categoría y su código VATEX (BT-121), y en
+    Facturae su SpecialTaxableEvent, y todo pasa el validador."""
+    from tools.utils.facturas import crear, generar
+
+    zero = {"descripcion": "Exento", "cantidad": 1, "unidad": "ud", "precio": 100, "descuento": 0, "iva": 0}
+    o = _options(fmt, causa_exencion=cause, motivo_exencion="Motivo legal",
+                 lineas=[zero] if cause == "nosujeta" else BASE["lineas"] + [zero])
+    data, syntax = generar.build(o.factura, fmt, "en16931")
+    crear.validate(make_ctx(TOOL, [], {"formato": fmt}), data, syntax)
+    if fmt == "facturae":
+        assert b"<SpecialTaxableEventCode>" + (b"02" if cause in ("isp", "nosujeta") else b"01") in data
+    else:
+        assert f">{category}<".encode() in data
+        if code:
+            assert code.encode() in data
+    if cause == "nosujeta" and fmt != "facturae":
+        assert b'schemeID="VA"' not in data and b"<cac:PartyTaxScheme>" not in data  # BR-O-2: sin NIF-IVA
+
+
+def test_facturae_ids_people_countries_and_batch_total():
+    from lxml import etree
+
+    from tools.utils.facturas import generar
+
+    o = _options("facturae", irpf=15, recargo=True,
+                 cliente={"nombre": "María José García López", "nif": "12345678-Z", "direccion": "Av. del Mar 3", "cp": "46001",
+                          "ciudad": "Valencia", "pais": "ES"})
+    root = etree.fromstring(generar.build(o.factura, "facturae", "en16931")[0])
+    assert root.findtext(".//SellerParty//TaxIdentificationNumber") == "B12345674"  # sin «ES» en un NIF español
+    assert [root.findtext(f".//BuyerParty//{t}") for t in ("Name", "FirstSurname", "SecondSurname")] == ["María José", "García", "López"]
+    assert root.findtext(".//Batch/TotalInvoicesAmount/TotalAmount") == root.findtext(".//InvoiceTotals/InvoiceTotal") == "677.39"
+    o = _options("facturae", cliente={"nombre": "Rossi S.p.A.", "nif": "IT12345678901", "direccion": "Via Roma 1", "cp": "00100",
+                                      "ciudad": "Roma", "pais": "IT"})
+    root = etree.fromstring(generar.build(o.factura, "facturae", "en16931")[0])
+    assert root.findtext(".//BuyerParty//PersonTypeCode") == "J" and root.findtext(".//BuyerParty//ResidenceTypeCode") == "U"
+    assert root.findtext(".//BuyerParty//CorporateName") == "Rossi S.p.A." and root.findtext(".//BuyerParty//CountryCode") == "ITA"
+    o = _options("facturae", oficina_contable="EA0000001", organo_gestor="EA0000002", unidad_tramitadora="EA0000003")
+    root = etree.fromstring(generar.build(o.factura, "facturae", "en16931")[0])
+    assert [c.findtext("RoleTypeCode") for c in root.iter("AdministrativeCentre")] == ["01", "02", "03"]
+    assert generar.vat_id("GR", "123456789") == "EL123456789" and generar.vat_id("ES", "B-12345674") == "ESB12345674"
+    # Caracteres de control: fuera, en lugar de un error interno de lxml.
+    assert b"ab" in generar.build(_options("ubl", notas="a\x0bb").factura, "ubl", "en16931")[0]
+
+
+@needs_kosit
+@respx.mock
+def test_facturx_xrechnung_profile_names_its_file(make_ctx, fake_verapdf):
+    from core.settings import get_settings
+    from tools.base import Handoff
+
+    _gotenberg()
+    respx.route(url__startswith=get_settings().KOSIT_URL.rstrip("/")).pass_through()
+    ctx = make_ctx(TOOL, [], {"formato": "facturx", "perfil": "xrechnung", "factura": BASE})
+    with pytest.raises(Handoff):
+        run(TOOL, ctx)
+    with pikepdf.open(ctx.store.job_dir(ctx.job_id) / "stage" / "0.pdf") as pdf:
+        assert list(pdf.attachments) == ["xrechnung.xml"]
+        xmp = pdf.Root.Metadata.read_bytes()
+        assert b"XRECHNUNG" in xmp and b"xrechnung.xml" in xmp
