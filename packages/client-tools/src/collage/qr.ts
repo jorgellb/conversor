@@ -3,6 +3,14 @@
 import qrcode from "qrcode-generator";
 
 export const QR_MAX = 900;
+/** Lo que cabe en la versión 40 con corrección M (2331 bytes), con margen. */
+export const QR_MAX_BYTES = 2200;
+
+export class QrTooLong extends Error {}
+
+export function qrBytes(data: string): number {
+  return new TextEncoder().encode(data).length;
+}
 const QUIET = 4;
 
 export interface QrModules {
@@ -18,7 +26,8 @@ function utf8(text: string): number[] {
 }
 
 export function qrModules(data: string): QrModules {
-  const text = data.slice(0, QR_MAX) || " ";
+  if (qrBytes(data) > QR_MAX_BYTES) throw new QrTooLong("qr");
+  const text = data || " ";
   const hit = cache.get(text);
   if (hit) return hit;
   const qr = qrcode(0, "M");

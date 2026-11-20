@@ -20,6 +20,7 @@ import type { FontStyle } from "../pdfutil";
 import { sniffImage } from "../sniff";
 import { addSvgPage } from "../svgpdf";
 import { renderSvg } from "../wasmcodecs";
+import { QR_MAX_BYTES, qrBytes } from "../collage/qr";
 import { CARD_LIMITS, FACES, cardFor, type CardDoc } from "./model";
 
 export interface CrearTarjetaOptions {
@@ -31,7 +32,8 @@ export interface CrearTarjetaOptions {
 }
 
 const SHEETS = { A4: [210, 297], Letter: [215.9, 279.4] } as const;
-const SHEET_MARGIN = 10;
+// Lo que no imprimen la mayoría de las impresoras de casa; las marcas de corte caben en la separación entre tarjetas.
+export const SHEET_MARGIN = 6;
 const GAP = 8;
 const SLUG = 10;
 const MARK = { offset: 1.5, length: 4, width: 0.25 };
@@ -66,7 +68,7 @@ export function validateCard(doc: CardDoc, files: Map<string, InFile>): void {
   const bad = (why: string) => {
     throw new ToolError("INVALID_OPTIONS", why);
   };
-  if (!doc || doc.version !== 1 || !(doc.format in FACES) || !doc.collage) bad("Tarjeta no válida");
+  if (!doc || doc.version !== 1 || !Object.hasOwn(FACES, doc.format) || !doc.collage) bad("Tarjeta no válida");
   const { width, height } = doc.size ?? {};
   if (!finite(width) || !finite(height) || width < 50 || height < 50 || width > 320 || height > 320) bad("Tamaño no válido");
   const c = doc.collage;
@@ -111,13 +113,25 @@ async function prepare(doc: CollageDoc, byName: Map<string, InFile>, env: Collag
   const assets = new Map<string, PhotoAsset>();
   const notes: string[] = [];
   const sizes = new Map<string, { width: number; height: number }>();
-  // Las celdas con filtro apuntan a una foto «virtual»; el documento se reescribe con esos id.
+  // Las celdas con filtro apuntan a una foto «virtual» (un id propio por foto y filtro, D-235: el nombre del archivo
+  // puede llevar cualquier carácter); el documento se reescribe con esos id.
+  const virtual = new Map<string, { name: string; filter: string | undefined }>();
+  const idFor = (name: string, filter: string) => {
+    const key = `${name}\u0000${filter}`;
+    let id = [...virtual].find(([, v]) => `${v.name}\u0000${v.filter}` === key)?.[0];
+    if (!id) {
+      id = `filtro-${virtual.size + 1}`;
+      while (byName.has(id)) id = `${id}-`;
+      virtual.set(id, { name, filter });
+    }
+    return id;
+  };
   const filtered: CollageDoc = {
     ...doc,
-    pages: doc.pages.map((p) => ({ ...p, cells: p.cells.map((c) => (c.photo && c.filter && c.filter !== "ninguno" ? { ...c, photo: `${c.photo}#${c.filter}` } : c)) })),
+    pages: doc.pages.map((p) => ({ ...p, cells: p.cells.map((c) => (c.photo && c.filter && c.filter !== "ninguno" ? { ...c, photo: idFor(c.photo, c.filter) } : c)) })),
   };
   for (const id of usedPhotos(filtered)) {
-    const [name, filter] = id.split("#") as [string, string | undefined];
+    const { name, filter } = virtual.get(id) ?? { name: id, filter: undefined };
     const file = byName.get(name);
     if (!file) throw new ToolError("INVALID_OPTIONS", `Falta la foto ${name}`);
     const kind = sniffImage(file.bytes);
@@ -154,7 +168,7 @@ async function prepare(doc: CollageDoc, byName: Map<string, InFile>, env: Collag
       assets.set(id, { href: store.add(bytes, alpha ? "png" : "jpg"), ...size, orientation: 1 });
     });
   }
-  return { doc: filtered, store, assets, notes, sizes };
+  return { doc: filtered, store, assets, notes, sizes, virtual };
 }
 
 function neededFor(doc: CollageDoc, id: string, photo: { width: number; height: number }, dpi: number): number {
@@ -170,18 +184,20 @@ function neededFor(doc: CollageDoc, id: string, photo: { width: number; height: 
   return Math.ceil(px) || 2000;
 }
 
-/** Fotos que no llegan a 300 ppp en la tarjeta (imprenta). */
-function lowDpi(doc: CollageDoc, sizes: Map<string, { width: number; height: number }>): string[] {
+/** Fotos que no llegan a 300 ppp en la tarjeta (imprenta), en sus huecos y de fondo. */
+function lowDpi(doc: CollageDoc, sizes: Map<string, { width: number; height: number }>, virtual: Map<string, { name: string }>): string[] {
   const out = new Set<string>();
+  const check = (id: string, box: { x: number; y: number; w: number; h: number; zoom: number; panX: number; panY: number; fit?: "contain" }) => {
+    const name = virtual.get(id)?.name ?? id;
+    const size = sizes.get(name);
+    if (!size) return;
+    const p = coverPlacement(box, size);
+    if ((size.width / p.w) * 25.4 < 295) out.add(name);
+  };
   for (const page of doc.pages) {
-    for (const c of page.cells) {
-      if (!c.photo) continue;
-      const name = c.photo.split("#")[0];
-      const size = sizes.get(name);
-      if (!size) continue;
-      const p = coverPlacement({ ...photoRect(c), zoom: c.zoom, panX: c.panX, panY: c.panY, fit: c.fit }, size);
-      if ((size.width / p.w) * 25.4 < 295) out.add(name);
-    }
+    for (const c of page.cells) if (c.photo) check(c.photo, { ...photoRect(c), zoom: c.zoom, panX: c.panX, panY: c.panY, fit: c.fit });
+    const bg = page.background ?? doc.background;
+    if (bg?.kind === "imagen" && bg.image) check(bg.image, { x: 0, y: 0, w: doc.paper.width, h: doc.paper.height, zoom: 1, panX: 0, panY: 0 });
   }
   return [...out];
 }
@@ -229,10 +245,11 @@ function pieceSvg(c: Compose, doc: CollageDoc, list: Placement[], ox: number, oy
   const body: string[] = [];
   list.forEach((pl, i) => {
     const pre = `${key}f${pl.face}-`;
-    const parts = collageSvgParts(doc, pl.face, c.assets, { target: c.target, idPrefix: pre, measure: c.measure, bleed });
-    // Por el pliegue (entre las dos caras de la díptica) no hay sangrado.
+    // Por el pliegue (entre las dos caras de la díptica) no hay sangrado: ni se recorta ahí ni se alargan las fotos.
     const left = list.length === 2 && i === 1 ? 0 : bleed;
     const right = list.length === 2 && i === 0 ? 0 : bleed;
+    const parts = collageSvgParts(doc, pl.face, c.assets, { target: c.target, idPrefix: pre, measure: c.measure, bleed,
+      bleedEdges: { left: left > 0, right: right > 0, top: true, bottom: true } });
     defs.push(parts.defs, `<clipPath id="${pre}corte"><rect x="${n(-left)}" y="${n(-bleed)}" width="${n(W + left + right)}" height="${n(H + 2 * bleed)}"/></clipPath>`);
     body.push(`<g transform="translate(${n(ox + pl.x)} ${n(oy + pl.y)})"><g clip-path="url(#${pre}corte)">${parts.body}</g></g>`);
   });
@@ -279,6 +296,8 @@ export async function crearTarjeta(files: InFile[], o: CrearTarjetaOptions, env:
   const prepared = await prepare(card.collage, byName, env, target, IMAGE_DPI);
   notes.push(...prepared.notes);
   const docs = chosen.map((row) => cardFor({ ...card, collage: prepared.doc }, row));
+  // Con los campos de cada destinatario, un QR puede pasar de lo que cabe: se avisa en lugar de recortarlo (D-235).
+  for (const d of docs) for (const p of d.pages) for (const it of p.items) if (it.kind === "qr" && qrBytes(it.data) > QR_MAX_BYTES) throw new ToolError("INVALID_OPTIONS", "tarjeta_qr_largo");
   const measure = await measurer(env);
   const c: Compose = { card, docs, assets: prepared.assets, target, measure };
   const piece = pieces(card);
@@ -346,7 +365,7 @@ export async function crearTarjeta(files: InFile[], o: CrearTarjetaOptions, env:
     }
     notes.unshift(t.cards(docs.length));
     if (bleed) notes.push(t.bleed(bleed));
-    const low = lowDpi(prepared.doc, prepared.sizes);
+    const low = lowDpi(prepared.doc, prepared.sizes, prepared.virtual);
     if (low.length) notes.push(t.lowDpi(low.slice(0, 6).join(", ")));
     if (card.format === "diptica") notes.push(t.fold);
     outputs.push({ name: "tarjeta-imprenta.pdf", bytes: await pdf.save({ useObjectStreams: true }), mime: "application/pdf" });

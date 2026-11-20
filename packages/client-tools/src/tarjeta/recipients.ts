@@ -10,6 +10,9 @@ const MAX_BYTES = 5 * 1024 * 1024;
 const MAX_XML = 30 * 1024 * 1024;
 
 export function decodeText(bytes: Uint8Array): string {
+  // «Texto Unicode» de Excel: UTF-16 con su marca de orden de bytes.
+  if (bytes[0] === 0xff && bytes[1] === 0xfe) return new TextDecoder("utf-16le").decode(bytes.subarray(2));
+  if (bytes[0] === 0xfe && bytes[1] === 0xff) return new TextDecoder("utf-16be").decode(bytes.subarray(2));
   try {
     return new TextDecoder("utf-8", { fatal: true }).decode(bytes).replace(/^﻿/, "");
   } catch {
@@ -44,6 +47,7 @@ function parseCsvRows(text: string, sep: string): string[][] {
   let row: string[] = [];
   let cell = "";
   let quoted = false;
+  let filled = 0;
   for (let i = 0; i < text.length; i += 1) {
     const ch = text[i];
     if (quoted) {
@@ -64,9 +68,11 @@ function parseCsvRows(text: string, sep: string): string[][] {
       if (ch === "\r" && text[i + 1] === "\n") i += 1;
       row.push(cell);
       rows.push(row);
+      // Solo cuentan las filas con algo: las vacías no deben dejar fuera destinatarios (D-235).
+      if (row.some((v) => v.trim())) filled += 1;
       row = [];
       cell = "";
-      if (rows.length > CARD_LIMITS.recipients + 1) break;
+      if (filled > CARD_LIMITS.recipients + 1) break;
     } else {
       cell += ch;
     }
@@ -81,20 +87,20 @@ function parseCsvRows(text: string, sep: string): string[][] {
 /** Quita la protección de fórmulas de una celda exportada (un apóstrofo delante de =, +, - o @). */
 const unguard = (v: string) => (/^'[=+\-@]/.test(v) ? v.slice(1) : v);
 
-function tidy(rows: string[][]): Recipients {
+function tidy(rows: string[][], locale: "es" | "en" = "es"): Recipients {
   const clean = rows.map((r) => r.map((v) => unguard(v.trim()).slice(0, CARD_LIMITS.cell))).filter((r) => r.some((v) => v));
   if (clean.length < 2) throw new ToolError("CORRUPT_FILE", "tarjeta_sin_destinatarios");
   const width = Math.min(CARD_LIMITS.headers, Math.max(...clean.map((r) => r.length)));
-  const headers = clean[0].slice(0, width).map((h, i) => h || `Columna ${i + 1}`);
+  const headers = clean[0].slice(0, width).map((h, i) => h || `${locale === "en" ? "Column" : "Columna"} ${i + 1}`);
   const body = clean.slice(1);
   if (body.length > CARD_LIMITS.recipients) throw new ToolError("LIMIT_EXCEEDED", "tarjeta_muchos_destinatarios");
   return { headers, rows: body.map((r) => Array.from({ length: width }, (_, i) => r[i] ?? "")) };
 }
 
-export function parseCsv(bytes: Uint8Array): Recipients {
+export function parseCsv(bytes: Uint8Array, locale: "es" | "en" = "es"): Recipients {
   if (bytes.length > MAX_BYTES) throw new ToolError("LIMIT_EXCEEDED", "CSV de más de 5 MB");
   const text = decodeText(bytes);
-  return tidy(parseCsvRows(text, sniff(text)));
+  return tidy(parseCsvRows(text, sniff(text)), locale);
 }
 
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'" };
@@ -106,17 +112,55 @@ const unxml = (s: string) => s.replace(/&(#x[0-9a-f]+|#\d+|amp|lt|gt|quot|apos);
   return ENTITIES[e.toLowerCase()] ?? "";
 });
 
-/** Texto de los <t> de un fragmento (cadenas con varios tramos de formato incluidas). */
-function texts(fragment: string): string {
-  return [...fragment.matchAll(/<(?:\w+:)?t\b[^>]*>([\s\S]*?)<\/(?:\w+:)?t>/g)].map((m) => unxml(m[1])).join("");
+interface Element {
+  attrs: string;
+  body: string;
 }
+
+/**
+ * Los elementos <tag> (con o sin prefijo) de un fragmento XML, en un solo recorrido: la apertura con una expresión que
+ * no retrocede y el cierre con indexOf. Una etiqueta sin cerrar termina la lectura (D-235: con expresiones perezosas
+ * sobre todo el archivo, un XLSX de pocos KB comprimido tardaba minutos).
+ */
+function elements(xml: string, tag: string): Element[] {
+  const open = new RegExp(`<((?:[A-Za-z_][\\w.-]*:)?${tag})(?=[\\s/>])([^>]*)>`, "g");
+  const out: Element[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = open.exec(xml))) {
+    const attrs = m[2];
+    if (attrs.endsWith("/")) {
+      out.push({ attrs: attrs.slice(0, -1), body: "" });
+      continue;
+    }
+    const close = `</${m[1]}>`;
+    const end = xml.indexOf(close, open.lastIndex);
+    if (end < 0) break;
+    out.push({ attrs, body: xml.slice(open.lastIndex, end) });
+    open.lastIndex = end + close.length;
+  }
+  return out;
+}
+
+/** Texto de los <t> de un fragmento (cadenas con varios tramos de formato), sin las lecturas fonéticas (<rPh>). */
+function texts(fragment: string): string {
+  let clean = fragment;
+  for (let i = clean.indexOf("rPh"); i >= 0; i = clean.indexOf("rPh")) {
+    const start = clean.lastIndexOf("<", i);
+    const end = clean.indexOf("rPh>", clean.indexOf(">", i) + 1);
+    if (start < 0 || end < 0) break;
+    clean = clean.slice(0, start) + clean.slice(end + 4);
+  }
+  return elements(clean, "t").map((e) => unxml(e.body)).join("");
+}
+
+const attr = (attrs: string, name: string) => new RegExp(`(?:^|\\s)${name}="([^"]*)"`).exec(attrs)?.[1];
 
 function columnIndex(ref: string): number {
   const letters = /^[A-Z]+/.exec(ref)?.[0] ?? "A";
   return [...letters].reduce((n, c) => n * 26 + (c.charCodeAt(0) - 64), 0) - 1;
 }
 
-export function parseXlsx(bytes: Uint8Array): Recipients {
+export function parseXlsx(bytes: Uint8Array, locale: "es" | "en" = "es"): Recipients {
   if (bytes.length > MAX_BYTES) throw new ToolError("LIMIT_EXCEEDED", "Excel de más de 5 MB");
   let total = 0;
   let files: Record<string, Uint8Array>;
@@ -133,42 +177,44 @@ export function parseXlsx(bytes: Uint8Array): Recipients {
     throw new ToolError("CORRUPT_FILE", "xlsx");
   }
   const dec = new TextDecoder();
-  const shared = files["xl/sharedStrings.xml"] ? [...dec.decode(files["xl/sharedStrings.xml"]).matchAll(/<(?:\w+:)?si\b[^>]*>([\s\S]*?)<\/(?:\w+:)?si>/g)].map((m) => texts(m[1])) : [];
+  const shared = files["xl/sharedStrings.xml"] ? elements(dec.decode(files["xl/sharedStrings.xml"]), "si").map((e) => texts(e.body)) : [];
   // La primera hoja del libro (por su relación), o sheet1.
   let sheetPath = "xl/worksheets/sheet1.xml";
   const wb = files["xl/workbook.xml"] ? dec.decode(files["xl/workbook.xml"]) : "";
   const rels = files["xl/_rels/workbook.xml.rels"] ? dec.decode(files["xl/_rels/workbook.xml.rels"]) : "";
-  const firstId = /<(?:\w+:)?sheet\b[^>]*\br:id="([^"]+)"/.exec(wb)?.[1];
-  const target = firstId ? new RegExp(`<Relationship\\b[^>]*Id="${firstId}"[^>]*Target="([^"]+)"`).exec(rels)?.[1] ?? new RegExp(`<Relationship\\b[^>]*Target="([^"]+)"[^>]*Id="${firstId}"`).exec(rels)?.[1] : undefined;
-  if (target) sheetPath = target.startsWith("/") ? target.slice(1) : `xl/${target.replace(/^\.\//, "")}`;
+  const firstSheet = elements(wb, "sheet")[0];
+  const firstId = firstSheet ? attr(firstSheet.attrs, "r:id") : undefined;
+  const target = firstId ? elements(rels, "Relationship").map((e) => e.attrs).find((a) => attr(a, "Id") === firstId) : undefined;
+  const path = target ? attr(target, "Target") : undefined;
+  if (path) sheetPath = path.startsWith("/") ? path.slice(1) : `xl/${path.replace(/^\.\//, "")}`;
   const sheet = files[sheetPath] ?? Object.entries(files).find(([k]) => k.startsWith("xl/worksheets/"))?.[1];
   if (!sheet) throw new ToolError("CORRUPT_FILE", "xlsx");
   const rows: string[][] = [];
-  for (const r of dec.decode(sheet).matchAll(/<(?:\w+:)?row\b[^>]*>([\s\S]*?)<\/(?:\w+:)?row>/g)) {
+  let filled = 0;
+  for (const r of elements(dec.decode(sheet), "row")) {
     const row: string[] = [];
-    for (const c of r[1].matchAll(/<(?:\w+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:\w+:)?c>)/g)) {
-      const attrs = c[1];
-      const body = c[2] ?? "";
-      const ref = /\br="([A-Z]+)\d+"/.exec(attrs)?.[1];
+    for (const c of elements(r.body, "c")) {
+      const ref = /^([A-Z]+)\d+$/.exec(attr(c.attrs, "r") ?? "")?.[1];
       const col = ref ? columnIndex(ref) : row.length;
       if (col >= CARD_LIMITS.headers) continue;
-      const type = /\bt="(\w+)"/.exec(attrs)?.[1];
-      const v = /<(?:\w+:)?v>([\s\S]*?)<\/(?:\w+:)?v>/.exec(body)?.[1];
+      const type = attr(c.attrs, "t");
+      const v = elements(c.body, "v")[0]?.body;
       let value = "";
       if (type === "s") value = shared[Number(v)] ?? "";
-      else if (type === "inlineStr") value = texts(body);
+      else if (type === "inlineStr") value = texts(c.body);
       else if (v !== undefined) value = unxml(v);
       while (row.length < col) row.push("");
       row[col] = value;
     }
     rows.push(row);
-    if (rows.length > CARD_LIMITS.recipients + 1) break;
+    if (row.some((x) => x.trim())) filled += 1;
+    if (filled > CARD_LIMITS.recipients + 1) break;
   }
-  return tidy(rows);
+  return tidy(rows, locale);
 }
 
-export function parseRecipients(name: string, bytes: Uint8Array): Recipients {
+export function parseRecipients(name: string, bytes: Uint8Array, locale: "es" | "en" = "es"): Recipients {
   const isZip = bytes[0] === 0x50 && bytes[1] === 0x4b;
-  if (isZip || /\.xlsx$/i.test(name)) return parseXlsx(bytes);
-  return parseCsv(bytes);
+  if (isZip || /\.xlsx$/i.test(name)) return parseXlsx(bytes, locale);
+  return parseCsv(bytes, locale);
 }

@@ -120,6 +120,24 @@ def npm_packages(workspace: str) -> list[tuple[str, str, str]]:
     return list(found.values())
 
 
+# Firmas del código de las dependencias `not_bundled` (D-231, D-235): si el build de la web las contiene, se ha colado.
+BUNDLE_SIGNATURES = {"elkjs": ("org.eclipse.elk", "ElkLayered", "elk.bundled")}
+
+
+def bundled_excluded() -> list[str]:
+    """Busca en el build de la web (apps/web/.next/static, si existe) el código de las dependencias que no se empaquetan."""
+    static = ROOT / "apps" / "web" / ".next" / "static"
+    if not static.is_dir():
+        return []
+    found = []
+    for path in static.rglob("*.js"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for name in POLICY.get("not_bundled", []):
+            if any(sig in text for sig in BUNDLE_SIGNATURES.get(name, ())):
+                found.append(f"frontend: {name} está en el build ({path.relative_to(ROOT)}) aunque no se debe empaquetar")
+    return found
+
+
 def main(argv: list[str]) -> int:
     problems: list[str] = []
     scopes = argv or ["python", "npm"]
@@ -129,6 +147,7 @@ def main(argv: list[str]) -> int:
                 continue
             check("backend", name, version, lic, problems)
     if "npm" in scopes:
+        problems += bundled_excluded()
         for name, version, lic in npm_packages("@conversor/web"):
             if name in POLICY.get("not_bundled", []):
                 continue  # sustituida al empaquetar (next.config.ts); la CI comprueba que no está en el build

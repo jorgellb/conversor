@@ -40,11 +40,18 @@ export function curvedGlyphs(text: string, box: CurveBox, advance: (ch: string) 
     });
   }
   const R = (box.w * box.w) / 4 / (2 * s) + s / 2;
+  // Si el texto es más largo que media circunferencia, se juntan las letras para que quepa (D-235).
+  const room = Math.PI * R * 0.98;
+  if (total > room) {
+    const k = room / total;
+    for (let i = 0; i < widths.length; i += 1) widths[i] *= k;
+  }
+  const fitted = Math.min(total, room);
   const up = c > 0;
   // Arco hacia arriba: el centro queda debajo del punto más alto; sonrisa: encima del más bajo.
   const top = box.y + box.size * 0.8;
   const cy = up ? top + R : top + s - R;
-  let at = -total / 2;
+  let at = -fitted / 2;
   return chars.map((ch, i) => {
     const u = at + widths[i] / 2;
     at += widths[i];

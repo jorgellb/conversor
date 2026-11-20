@@ -8,7 +8,9 @@ import { LIMITS, freshFraming, type Background, type Cell, type CellShape, type 
 import { STICKERS } from "@conversor/client-tools/collage/stickers";
 import { curveHeight } from "@conversor/client-tools/collage/textcurve";
 import { CARD_SIZES, FACES, faceSize, type CardDoc, type CardFormat, type CardSize, type Recipients } from "@conversor/client-tools/tarjeta/model";
+import { QR_MAX_BYTES, qrBytes } from "@conversor/client-tools/collage/qr";
 import { parseRecipients } from "@conversor/client-tools/tarjeta/recipients";
+import { sheetGrid, validateCard } from "@conversor/client-tools/tarjeta/tool";
 import { OCCASIONS, templateDoc, type Occasion } from "@conversor/client-tools/tarjeta/templates";
 import { useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
@@ -284,7 +286,7 @@ export function CardView({ spec }: { spec: ClientSpec }) {
   async function loadRecipients(file: File | undefined) {
     if (!file) return;
     try {
-      const parsed: Recipients = parseRecipients(file.name, new Uint8Array(await file.arrayBuffer()));
+      const parsed: Recipients = parseRecipients(file.name, new Uint8Array(await file.arrayBuffer()), locale);
       card.update((d) => ({ ...d, recipients: parsed }));
       setStatus(t("status.recipients", { n: parsed.rows.length }));
       setProblem(null);
@@ -354,8 +356,13 @@ export function CardView({ spec }: { spec: ClientSpec }) {
       const data = JSON.parse(await file.text()) as { herramienta?: string; version?: number; setup?: Setup; tarjeta?: CardDoc };
       if (data.herramienta !== spec.slug || data.version !== DRAFT_VERSION || !data.tarjeta || data.tarjeta.version !== 1) throw new Error("diseño");
       const ids = new Set(photosRef.current.map((p) => p.id));
-      card.reset(sanitize({ ...data.tarjeta, recipients: doc.recipients }, ids));
-      if (data.setup) setSetup(data.setup);
+      const next = sanitize({ ...data.tarjeta, recipients: doc.recipients }, ids);
+      // Las mismas comprobaciones que hace la exportación: un diseño de otra persona no puede meter nada raro (D-235).
+      validateCard({ ...next, recipients: undefined }, new Map(photosRef.current.map((p) => [p.id, { name: p.id, bytes: new Uint8Array() }])));
+      card.reset(next);
+      const s = data.setup;
+      if (s && Object.hasOwn(CARD_SIZES, s.size) && Object.hasOwn(FACES, s.format) && (OCCASIONS as readonly string[]).includes(s.occasion)
+        && ["horizontal", "vertical"].includes(s.orientation)) setSetup(s);
       setFace(0);
       setStatus(t("status.imported"));
     } catch {
@@ -383,13 +390,20 @@ export function CardView({ spec }: { spec: ClientSpec }) {
       if (print) await printPdf(outputs[0].url);
     } catch (err) {
       const message = err instanceof ClientToolError
-        ? (err.message.includes("tarjeta_no_cabe") ? t("doesNotFit") : te.has(err.code) ? te(err.code) : te("INTERNAL"))
+        ? (err.message.includes("tarjeta_no_cabe") ? t("doesNotFit") : err.message.includes("tarjeta_qr_largo") ? t("qrTooLong")
+          : te.has(err.code) ? te(err.code) : te("INTERNAL"))
         : t("failed");
       setResult({ kind: "error", message });
     }
   }
 
   const faceLabel = (i: number) => t(`faces.${faces[i]}`);
+  // ¿Cabe la tarjeta (abierta, si es díptica) en el papel para imprimir en casa?
+  const homeFits = useMemo(() => {
+    const piece = { width: doc.format === "diptica" ? 2 * doc.size.width : doc.size.width, height: doc.size.height };
+    const grid = sheetGrid(piece, values.papel === "Letter" ? "Letter" : "A4");
+    return grid.cols * grid.rows > 0;
+  }, [doc.format, doc.size, values.papel]);
   const running = result.kind === "running";
 
   return (
@@ -499,6 +513,7 @@ export function CardView({ spec }: { spec: ClientSpec }) {
               {selectedItem.kind === "qr" && (
                 <>
                   <TextArea label={t("qrData")} value={selectedItem.data} maxLength={900} onChange={(data) => updateItem(selectedItem.id, { data }, "qr")} />
+                  {qrBytes(selectedItem.data) > QR_MAX_BYTES && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{t("qrTooLong")}</p>}
                   <ColorInput label={t("color")} value={selectedItem.color} onChange={(color) => updateItem(selectedItem.id, { color }, "color")} />
                   <Check label={t("qrBackground")} checked={Boolean(selectedItem.background)} onChange={(on) => updateItem(selectedItem.id, { background: on ? "#FFFFFF" : null })} />
                   <p className="muted text-xs">{t("qrHelp")}</p>
@@ -588,11 +603,12 @@ export function CardView({ spec }: { spec: ClientSpec }) {
 
           <Section title={t("output")}>
             <OptionsForm properties={properties} values={values} onChange={setValues} locale={locale} secretFields={spec.secretFields} moreLabel={t("moreOptions")} />
+            {!homeFits && <p role="note" data-card-nofit className="text-sm text-amber-700 dark:text-amber-300">{t("homeNoFit")}</p>}
             <div className="flex flex-wrap gap-2">
-              <button type="button" className="btn" data-card-create disabled={running} onClick={() => void create(false)}>
+              <button type="button" className="btn" data-card-create disabled={running || (!homeFits && (values.salida ?? "casa") === "casa")} onClick={() => void create(false)}>
                 {running ? t("creating", { p: Math.round(((result as { progress: number }).progress ?? 0) * 100) }) : t("create")}
               </button>
-              <button type="button" className="btn-secondary btn" disabled={running} onClick={() => void create(true)}>{t("print")}</button>
+              <button type="button" className="btn-secondary btn" disabled={running || !homeFits} onClick={() => void create(true)}>{t("print")}</button>
             </div>
             <div className="flex flex-wrap gap-2">
               <button type="button" className="btn-secondary btn text-xs" onClick={exportDesign}>{t("exportDesign")}</button>

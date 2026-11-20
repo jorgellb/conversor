@@ -653,6 +653,11 @@ MuseScore y de las capturas, lista de bloqueo de Chromium en `gotenbergweb`), en
 Postales y dípticas con plantillas por ocasión sobre el motor del collage, destinatarios de CSV o Excel y salidas para casa, imprenta
 e imagen (D-232), en `packages/client-tools/test/tarjeta.test.ts` y `tests/e2e/tarjeta-f6.spec.ts`.
 
+## Revisión de F6-N
+
+Correcciones de D-235 (fotos con «#», QR por bytes, caracteres no XML, alineación validada, dípticas que caben en casa, lector de XLSX
+lineal, filas vacías en las listas, ELK en Mermaid), en `packages/client-tools/test/tarjeta.test.ts`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1 y F6-N2 hechos); siguen el resto de F6, vídeo

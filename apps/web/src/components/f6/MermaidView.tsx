@@ -106,7 +106,8 @@ export function MermaidView({ spec }: { spec: ClientSpec }) {
       } catch (err) {
         if (cancelled) return;
         if (err instanceof MermaidSyntaxError) {
-          const message = err.message === "empty" ? t("empty") : err.message === "too_long" ? t("tooLong", { max: MAX_CODE.toLocaleString(locale) }) : err.message;
+          const message = err.message === "empty" ? t("empty") : err.message === "too_long" ? t("tooLong", { max: MAX_CODE.toLocaleString(locale) })
+            : err.message === "elk" ? t("elk") : err.message;
           setProblem({ message, line: err.line });
         } else {
           setProblem({ message: t("failed"), line: null });
@@ -122,9 +123,15 @@ export function MermaidView({ spec }: { spec: ClientSpec }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, values.tema]);
 
+  // Al salir se liberan la vista previa y el último resultado (los de ese momento, no los del primer render).
+  const urls = useRef<{ preview: string | null; result: string | null }>({ preview: null, result: null });
+  useEffect(() => {
+    urls.current.preview = preview?.url ?? null;
+    urls.current.result = result.kind === "done" ? result.url : null;
+  }, [preview, result]);
   useEffect(() => () => {
-    if (preview) URL.revokeObjectURL(preview.url);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (urls.current.preview) URL.revokeObjectURL(urls.current.preview);
+    if (urls.current.result) URL.revokeObjectURL(urls.current.result);
   }, []);
 
   async function exportDiagram() {
@@ -214,7 +221,7 @@ export function MermaidView({ spec }: { spec: ClientSpec }) {
           )}
           <p className="muted text-xs">{t("privacy")}</p>
         </section>
-        <button type="button" className="btn" disabled={!preview || Boolean(problem) || result.kind === "running"} onClick={() => void exportDiagram()}>
+        <button type="button" className="btn" disabled={!preview || Boolean(problem) || rendering || result.kind === "running"} onClick={() => void exportDiagram()}>
           {result.kind === "running" ? t("exporting") : t(format === "svg" ? "exportSvg" : "exportPng")}
         </button>
         <div aria-live="polite" className="sr-only">{status}</div>

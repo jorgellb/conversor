@@ -14,7 +14,9 @@ import { collageSvg } from "../src/collage/svg";
 import { curvedGlyphs } from "../src/collage/textcurve";
 import { cardFor, fillFields, usedFields, faceSize, type CardDoc } from "../src/tarjeta/model";
 import { OCCASIONS, templateDoc } from "../src/tarjeta/templates";
-import { parseCsv, parseRecipients } from "../src/tarjeta/recipients";
+import { parseCsv, parseRecipients, parseXlsx } from "../src/tarjeta/recipients";
+import { zipSync } from "fflate";
+import { qrModules } from "../src/collage/qr";
 import { sheetGrid, validateCard } from "../src/tarjeta/tool";
 import { rgba, type Rgba } from "../src/rasters";
 import { nodeCodec, readImage } from "./image-node";
@@ -213,3 +215,67 @@ describe("tarjeta: exportación", () => {
 function y0(): number {
   return (297 - (2 * 105 + 8)) / 2;
 }
+
+describe("tarjeta: revisión (D-235)", () => {
+  it("fotos con # en el nombre, con y sin filtro", async () => {
+    const card = postal();
+    card.collage.pages[0].cells[0].photo = "foto#1.jpg";
+    const files = [{ name: "foto#1.jpg", bytes: await photo([30, 60, 220]) }];
+    for (const filter of [undefined, "byn"] as const) {
+      card.collage.pages[0].cells[0].filter = filter;
+      const res = await runClientTool("crear-tarjeta", files, { doc: card, salida: "imprenta", papel: "A4", sangrado: 3, formato_imagen: "jpg" }, env());
+      expect(res.outputs[0].name).toBe("tarjeta-imprenta.pdf");
+    }
+  });
+
+  it("QR: por bytes, sin recortar, y con los campos de cada destinatario", async () => {
+    expect(() => qrModules("€".repeat(800))).toThrow();
+    const card = postal();
+    card.collage.pages[0].cells[0].photo = null;
+    card.collage.pages[0].items.push({ id: "q", kind: "qr", x: 10, y: 10, w: 30, h: 30, rotation: 0, shadow: false, data: "{A}{B}{C}{A}{B}{C}", color: "#000000", background: null });
+    card.recipients = { headers: ["A", "B", "C"], rows: [["x".repeat(400), "y".repeat(400), "z".repeat(400)]] };
+    await expect(runClientTool("crear-tarjeta", [], { doc: card, salida: "casa", papel: "A4", sangrado: 0, formato_imagen: "jpg" }, env())).rejects.toThrow(/tarjeta_qr_largo/);
+  });
+
+  it("caracteres que XML no admite y alineación inyectada", async () => {
+    const card = postal();
+    card.collage.pages[0].cells[0].photo = null;
+    (card.collage.pages[0].items.find((i) => i.kind === "text") as TextItem).text = "Hola\u0001 \u000B mundo";
+    const res = await runClientTool("crear-tarjeta", [], { doc: card, salida: "imagen", papel: "A4", sangrado: 0, formato_imagen: "png" }, env());
+    expect(res.outputs.length).toBeGreaterThan(1);
+    (card.collage.pages[0].items.find((i) => i.kind === "text") as TextItem).align = 'start"/><rect fill="#FF0000' as never;
+    await expect(runClientTool("crear-tarjeta", [], { doc: card, salida: "casa", papel: "A4", sangrado: 0, formato_imagen: "jpg" }, env())).rejects.toThrow(/Texto no válido/);
+    const bad = { ...postal(), format: "constructor" } as never;
+    await expect(runClientTool("crear-tarjeta", [], { doc: bad, salida: "casa", papel: "A4", sangrado: 0, formato_imagen: "jpg" }, env())).rejects.toThrow(/Tarjeta no válida/);
+  });
+
+  it("dípticas cuadradas y DL caben en casa; las filas vacías no quitan destinatarios", () => {
+    expect(sheetGrid({ width: 280, height: 140 }, "A4").cols).toBeGreaterThan(0);
+    expect(sheetGrid({ width: 198, height: 210 }, "A4").cols).toBeGreaterThan(0);
+    const lines = ["Nombre;Ciudad"];
+    for (let i = 0; i < 520; i += 1) lines.push(i % 20 === 19 ? ";" : `P${i};Lugo`);
+    const r = parseCsv(new TextEncoder().encode(lines.join("\n")));
+    expect(r.rows.length).toBe(494);
+  });
+
+  it("XLSX sin cerrar no se atasca; fonética y <t/> fuera; CSV en UTF-16", () => {
+    const sheet = '<worksheet><sheetData>' + '<row r="2">'.concat("x".repeat(500)).repeat(4000) + "</sheetData></worksheet>";
+    const zip = zipSync({ "xl/worksheets/sheet1.xml": new TextEncoder().encode(sheet) });
+    const t0 = Date.now();
+    expect(() => parseXlsx(zip)).toThrow();
+    expect(Date.now() - t0).toBeLessThan(2000);
+    const sst = '<sst><si><r><t>Ana</t></r><rPh><t>ルビ</t></rPh></si><si><t/></si><si><t>Nombre</t></si></sst>';
+    const ws = '<worksheet><sheetData><row r="1"><c r="A1" t="s"><v>2</v></c><c r="B1" t="s"><v>1</v></c></row><row r="2"><c r="A2" t="s"><v>0</v></c></row></sheetData></worksheet>';
+    const book = zipSync({ "xl/sharedStrings.xml": new TextEncoder().encode(sst), "xl/worksheets/sheet1.xml": new TextEncoder().encode(ws) });
+    expect(parseXlsx(book, "en")).toEqual({ headers: ["Nombre", "Column 2"], rows: [["Ana", ""]] });
+    const utf16 = new Uint8Array([0xff, 0xfe, ...[..."Nombre\nPeña\n"].flatMap((c) => [c.charCodeAt(0) & 0xff, c.charCodeAt(0) >> 8])]);
+    expect(parseCsv(utf16).rows).toEqual([["Peña"]]);
+  });
+
+  it("texto en curva más largo que el arco: las letras no se apilan", () => {
+    const glyphs = curvedGlyphs("x".repeat(36), { x: 0, y: 0, w: 60, size: 10, curve: 1 }, () => 6);
+    const spots = new Set(glyphs.map((g) => `${Math.round(g.x)},${Math.round(g.y)}`));
+    expect(spots.size).toBe(36);
+  });
+});
+

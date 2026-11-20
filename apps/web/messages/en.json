@@ -1501,7 +1501,8 @@
       "mindmap": "Mind map",
       "timeline": "Timeline"
     },
-    "moreOptions": "More options"
+    "moreOptions": "More options",
+    "elk": "This site does not have the ELK layout: remove “layout: elk” from the configuration and the diagram will be drawn with the normal layout."
   },
   "tarjeta": {
     "faces": {
@@ -1677,6 +1678,8 @@
       "recipients": "{n, plural, one {# recipient loaded} other {# recipients loaded}}.",
       "deleted": "Removed.",
       "imported": "Design opened."
-    }
+    },
+    "homeNoFit": "Open, this card does not fit on the paper to print it at home: choose a smaller size, another paper or the print-shop or image output.",
+    "qrTooLong": "The QR code content is too long (with some recipient's data): shorten it."
   }
 }

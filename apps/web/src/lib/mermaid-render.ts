@@ -81,6 +81,7 @@ export async function renderMermaid(code: string, theme: string): Promise<string
   try {
     await mermaid.parse(code);
   } catch (err) {
+    if (/ELK/.test(String((err as Error)?.message ?? err))) throw new MermaidSyntaxError("elk", null);
     throw new MermaidSyntaxError(String((err as Error)?.message ?? err).split("\n").slice(0, 4).join("\n"), lineOf(err));
   }
   counter += 1;
@@ -89,6 +90,7 @@ export async function renderMermaid(code: string, theme: string): Promise<string
     const { svg } = await mermaid.render(id, code);
     return svg;
   } catch (err) {
+    if (/ELK/.test(String((err as Error)?.message ?? err))) throw new MermaidSyntaxError("elk", null);
     throw new MermaidSyntaxError(String((err as Error)?.message ?? err).split("\n").slice(0, 4).join("\n"), lineOf(err));
   } finally {
     document.getElementById(id)?.remove();

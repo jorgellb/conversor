@@ -25,11 +25,16 @@ export interface CollageSvgOptions {
   measure?: (font: FontKind, bold: boolean, italic: boolean, ch: string, size: number) => number;
   /** Sangrado en mm (crear-tarjeta para imprenta): el fondo y las fotos que tocan el borde se alargan hasta él. */
   bleed?: number;
+  /** Bordes con sangrado (por defecto, los cuatro); por el pliegue de una díptica no se alarga nada. */
+  bleedEdges?: { left: boolean; right: boolean; top: boolean; bottom: boolean };
 }
 
 const FAMILY = { sans: "Noto Sans", serif: "Noto Serif", mono: "Noto Sans Mono" } as const;
 
-const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+// Sin los caracteres que XML no admite (controles, U+FFFE/FFFF y sustitutos sueltos): resvg rechazaría el SVG (D-235).
+const NON_XML = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g;
+const esc = (s: string) => s.replace(NON_XML, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const ANCHOR = { start: "start", middle: "middle", end: "end" } as const;
 const n = (v: number) => (Math.round(v * 1000) / 1000).toString();
 const hex = (c: string, fallback: string) => (/^#[0-9a-f]{6}$/i.test(c) ? c : fallback);
 
@@ -65,9 +70,11 @@ function itemSvg(item: Item, o: CollageSvgOptions, pre: string): string {
   const cy = item.y + item.h / 2;
   const rotate = item.rotation ? ` transform="rotate(${n(item.rotation)} ${n(cx)} ${n(cy)})"` : "";
   if (item.kind === "text") {
-    const lines = item.text.split(/\r?\n/).slice(0, 50);
+    // El tabulador vertical (Mayús+Intro de Word y PowerPoint al pegar) es un salto de línea.
+    const lines = item.text.replace(/[\u000B\u2028\u2029]/g, "\n").split(/\r?\n/).slice(0, 50);
+    const anchor = ANCHOR[item.align] ?? "start";
     const x = item.align === "middle" ? item.x + item.w / 2 : item.align === "end" ? item.x + item.w : item.x;
-    const font = `font-family="${FAMILY[item.font] ?? FAMILY.sans}" font-size="${n(item.size)}"${item.bold ? ' font-weight="bold"' : ""}${item.italic ? ' font-style="italic"' : ""} text-anchor="${item.align}"`;
+    const font = `font-family="${FAMILY[item.font] ?? FAMILY.sans}" font-size="${n(item.size)}"${item.bold ? ' font-weight="bold"' : ""}${item.italic ? ' font-style="italic"' : ""} text-anchor="${anchor}"`;
     const line = (dx: number, fill: string, extra = "") => lines.map((t, i) => (t.trim()
       ? `<text x="${n(x + dx)}" y="${n(item.y + item.size * 0.8 + i * item.size * 1.25 + dx)}" ${font} fill="${fill}"${extra}>${esc(t)}</text>`
       : "")).join("");
@@ -123,12 +130,13 @@ export function cellRadius(doc: CollageDoc, cell: Cell): number {
 }
 
 /** Lo que toca el borde (a menos de medio milímetro) se alarga hasta el sangrado, para que no quede un filo blanco al cortar. */
-function bleedBox(box: { x: number; y: number; w: number; h: number }, W: number, H: number, bleed: number) {
+function bleedBox(box: { x: number; y: number; w: number; h: number }, W: number, H: number, bleed: number,
+                  edges = { left: true, right: true, top: true, bottom: true }) {
   if (!bleed) return box;
-  const left = box.x <= 0.5 ? bleed + box.x : 0;
-  const top = box.y <= 0.5 ? bleed + box.y : 0;
-  const right = box.x + box.w >= W - 0.5 ? bleed + (W - box.x - box.w) : 0;
-  const bottom = box.y + box.h >= H - 0.5 ? bleed + (H - box.y - box.h) : 0;
+  const left = edges.left && box.x <= 0.5 ? bleed + box.x : 0;
+  const top = edges.top && box.y <= 0.5 ? bleed + box.y : 0;
+  const right = edges.right && box.x + box.w >= W - 0.5 ? bleed + (W - box.x - box.w) : 0;
+  const bottom = edges.bottom && box.y + box.h >= H - 0.5 ? bleed + (H - box.y - box.h) : 0;
   return { x: box.x - left, y: box.y - top, w: box.w + left + right, h: box.h + top + bottom };
 }
 
@@ -188,7 +196,7 @@ export function collageSvgParts(doc: CollageDoc, pageIndex: number, photos: Map<
     if (!photo) return;
     // Una foto rectangular sin girar que toca el borde llega hasta el sangrado.
     const cell = bleed && original.shape === "rect" && !original.rotation && !original.polaroid && !original.captionHeight
-      ? { ...original, ...bleedBox(original, W, H, bleed) }
+      ? { ...original, ...bleedBox(original, W, H, bleed, o.bleedEdges) }
       : original;
     const ellipse: CellShape = cell.shape === "ellipse" || cell.shape === "rect" ? cell.shape : cell.shape ?? "rect";
     const radius = cellRadius(doc, cell);

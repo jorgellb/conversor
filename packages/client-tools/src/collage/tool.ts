@@ -12,7 +12,10 @@ import { sniffImage } from "../sniff";
 import { addSvgPage } from "../svgpdf";
 import { renderSvg, type WasmLoader } from "../wasmcodecs";
 import { LIMITS, MM_PT, coverPlacement, type CellShape, type CollageDoc, type PhotoFilter } from "./model";
-import { QR_MAX } from "./qr";
+import { QR_MAX, QR_MAX_BYTES, qrBytes } from "./qr";
+
+const ALIGNS = ["start", "middle", "end"];
+const FONT_KINDS = ["sans", "serif", "mono"];
 
 const CELL_SHAPES: CellShape[] = ["rect", "ellipse", "corazon", "estrella", "arco"];
 const FILTERS: PhotoFilter[] = ["ninguno", "byn", "sepia", "calido", "frio", "vintage", "vivo"];
@@ -49,6 +52,7 @@ export function validateDoc(doc: CollageDoc, files: Map<string, InFile>): void {
   const { width, height } = doc.paper ?? {};
   if (!finite(width) || !finite(height) || width < 20 || height < 20 || width > 1200 || height > 1200) bad("Papel no válido");
   if (!doc.pages.length || doc.pages.length > LIMITS.pages) bad("Número de páginas no válido");
+  for (const v of [doc.margin, doc.gap, doc.radius]) if (!finite(v) || v < 0 || v > 100) bad("Medidas no válidas");
   for (const page of doc.pages) {
     if (!Array.isArray(page.cells) || !Array.isArray(page.items)) bad("Página no válida");
     if (page.cells.length > LIMITS.cellsPerPage || page.items.length > LIMITS.itemsPerPage) bad("Demasiados elementos");
@@ -64,7 +68,9 @@ export function validateDoc(doc: CollageDoc, files: Map<string, InFile>): void {
     for (const it of page.items) {
       if (it.kind === "text" && (typeof it.text !== "string" || it.text.length > LIMITS.textLength)) bad("Texto no válido");
       if (it.kind === "text" && ![it.curve ?? 0, it.outlineWidth ?? 0].every(finite)) bad("Texto no válido");
-      if (it.kind === "qr" && (typeof it.data !== "string" || it.data.length > QR_MAX)) bad("Código QR no válido");
+      if (it.kind === "text" && (!finite(it.size) || it.size < 0.5 || it.size > 200 || !ALIGNS.includes(it.align) || !FONT_KINDS.includes(it.font))) bad("Texto no válido");
+      if (it.kind === "shape" && (!finite(it.strokeWidth) || it.strokeWidth < 0 || it.strokeWidth > 20)) bad("Forma no válida");
+      if (it.kind === "qr" && (typeof it.data !== "string" || it.data.length > QR_MAX || qrBytes(it.data) > QR_MAX_BYTES)) bad("Código QR no válido");
       if (!["text", "sticker", "shape", "qr"].includes(it.kind)) bad("Elemento no válido");
     }
     for (const c of page.cells) {

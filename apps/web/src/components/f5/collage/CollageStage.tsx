@@ -229,7 +229,19 @@ function TextShape({ item, fontsVersion }: { item: TextItem; fontsVersion: numbe
 }
 
 function QrShape({ item }: { item: QrItem }) {
-  const qr = qrModules(item.data);
+  let qr: ReturnType<typeof qrModules>;
+  try {
+    qr = qrModules(item.data);
+  } catch {
+    // Demasiado largo para un QR: un aviso en su sitio en lugar de romper el lienzo (D-235).
+    return (
+      <>
+        <Rect width={item.w} height={item.h} fill="#FEF2F2" stroke="#DC2626" strokeWidth={0.6} dash={[2, 1]} />
+        <Line points={[0, 0, item.w, item.h]} stroke="#DC2626" strokeWidth={0.6} listening={false} />
+        <Line points={[item.w, 0, 0, item.h]} stroke="#DC2626" strokeWidth={0.6} listening={false} />
+      </>
+    );
+  }
   const side = Math.min(item.w, item.h);
   const ox = (item.w - side) / 2;
   const oy = (item.h - side) / 2;

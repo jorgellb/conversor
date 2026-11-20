@@ -1501,7 +1501,8 @@
       "mindmap": "Mapa mental",
       "timeline": "Cronología"
     },
-    "moreOptions": "Más opciones"
+    "moreOptions": "Más opciones",
+    "elk": "Esta web no tiene la disposición ELK: quita «layout: elk» de la configuración y el diagrama se dibujará con la disposición normal."
   },
   "tarjeta": {
     "faces": {
@@ -1677,6 +1678,8 @@
       "recipients": "{n, plural, one {# destinatario cargado} other {# destinatarios cargados}}.",
       "deleted": "Quitado.",
       "imported": "Diseño abierto."
-    }
+    },
+    "homeNoFit": "Abierta, esta tarjeta no cabe en el papel para imprimirla en casa: elige un tamaño menor, otro papel o la salida para imprenta o en imagen.",
+    "qrTooLong": "El contenido del código QR es demasiado largo (con los datos de algún destinatario): acórtalo."
   }
 }
