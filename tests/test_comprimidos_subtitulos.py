@@ -177,3 +177,76 @@ def test_bad_subtitles(make_ctx, tmp_path):
     with pytest.raises(ToolError) as err:
         run("srt-a-vtt", make_ctx("srt-a-vtt", [_write(tmp_path, "vacio.srt", "esto no son subtítulos\n")]))
     assert err.value.code == "CORRUPT_FILE"
+
+
+# --- Revisión de F6-E (D-221) -----------------------------------------------------------------------------------------
+
+
+def test_non_utf8_names_long_names_and_display_collisions(make_ctx, tmp_path):
+    cp437 = tmp_path / "viejo.zip"
+    with zipfile.ZipFile(cp437, "w") as zf:
+        zf.writestr("cafX.txt", b"hola")
+    # «café» en CP437 (0x82), sin la marca de UTF-8, como lo guardan el Explorador de Windows y los compresores antiguos.
+    cp437.write_bytes(cp437.read_bytes().replace(b"cafX.txt", b"caf\x82.txt"))
+
+    out = run("extraer-archivo-online", make_ctx("extraer-archivo-online", [cp437]))
+    assert out[0]["name"] == "café.txt"
+    long = tmp_path / "largo.tar"
+    with tarfile.open(long, "w", format=tarfile.PAX_FORMAT) as tf:
+        info = tarfile.TarInfo("d/" + "n" * 3000 + ".txt")
+        info.size = 1
+        tf.addfile(info, io.BytesIO(b"x"))
+    out = run("tar-a-zip", make_ctx("tar-a-zip", [long]))
+    [name] = _names(Path(out[0]["path"]))
+    assert all(len(p.encode()) <= 255 for p in name.split("/")) and name.endswith("~.txt")
+    clash = tmp_path / "choque.zip"
+    with zipfile.ZipFile(clash, "w") as zf:
+        zf.writestr("a/x.txt", b"1")
+        zf.writestr("b/x.txt", b"2")
+        zf.writestr("a_x.txt", b"3")
+    out = run("extraer-archivo-online", make_ctx("extraer-archivo-online", [clash]))
+    shown = [o["name"] for o in out[:-1]]
+    assert len(set(n.lower() for n in shown)) == 3
+
+
+def test_encrypted_7z_and_wrong_formats(make_ctx, tmp_path):
+    seven = tmp_path / "secreto.7z"
+    try:
+        with libarchive.file_writer(str(seven), "7zip", options="encryption=aes256", passphrase="clave") as archive:
+            archive.add_file_from_memory("a.txt", 4, b"hola")
+    except libarchive.ArchiveError:
+        pytest.skip("este libarchive no escribe 7z cifrados")
+    for secrets in ({}, {"contrasena": "clave"}):
+        with pytest.raises(ToolError) as err:
+            run("7z-a-zip", make_ctx("7z-a-zip", [seven], secrets=secrets))
+        assert err.value.detail == "archive_encrypted_unsupported"
+
+
+def test_plain_gz_and_mtree_are_not_archives(make_ctx, tmp_path):
+    import gzip
+
+    plain = _write(tmp_path, "datos.gz", gzip.compress(b"a,b,c\n1,2,3\n"))
+    mtree = _write(tmp_path, "m.gz", gzip.compress(b"#mtree\n./passwd type=file contents=/etc/passwd\n"))
+    for src in (plain, mtree):
+        with pytest.raises(ToolError) as err:
+            run("tar-a-zip", make_ctx("tar-a-zip", [src]))
+        assert err.value.detail == "archive_format"
+    zipped = tmp_path / "z.zip"
+    with zipfile.ZipFile(zipped, "w") as zf:
+        zf.writestr("a.txt", b"x")
+    with pytest.raises(ToolError) as err:
+        run("rar-a-zip", make_ctx("rar-a-zip", [_write(tmp_path, "z.rar", zipped.read_bytes())]))
+    assert err.value.detail == "archive_format"
+
+
+def test_youtube_vtt_entities_and_ass_weights(make_ctx, tmp_path):
+    yt = ("WEBVTT\nKind: captions\n\n00:00:00.030 --> 00:00:02.270 align:start position:0%\n"
+          "hola<00:00:00.539><c> a</c><00:00:00.900><c> todos</c>\n\n"
+          "00:00:02.270 --> 00:00:04.000\nbienvenidos &amp; gracias\n\n00:00:04.000 --> 00:00:05.000\nfin &lt;3\n")
+    out = run("vtt-a-srt", make_ctx("vtt-a-srt", [_write(tmp_path, "yt.vtt", yt)]))
+    srt = Path(out[0]["path"]).read_bytes().decode().replace("\r\n", "\n")
+    assert "hola a todos" in srt and "bienvenidos & gracias" in srt and "fin <3" in srt and out[0]["note"].startswith("3 subtítulos")
+    ass = ASS.replace("Hola {\\b1}mundo{\\b0} & {\\c&H0000FF&}rojo\\Nsegunda", "{\\b700}peso{\\b400} normal {\\b1}neg{\\r}reset")
+    out = run("ass-a-srt", make_ctx("ass-a-srt", [_write(tmp_path, "pesos.ass", ass)]))
+    srt = Path(out[0]["path"]).read_bytes().decode()
+    assert "<b>peso</b> normal <b>neg</b>reset" in srt

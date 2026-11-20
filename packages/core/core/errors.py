@@ -258,6 +258,8 @@ DETAILS: dict[str, dict[str, str]] = {
     "kmz_no_kml": {"es": "El KMZ no contiene ningún archivo KML.", "en": "The KMZ does not contain any KML file."},
     "shp_incomplete": {"es": "El ZIP no tiene un Shapefile completo: hacen falta al menos el .shp, el .shx y el .dbf.",
                        "en": "The ZIP has no complete Shapefile: at least the .shp, .shx and .dbf are needed."},
+    "archive_format": {"es": "No es un comprimido del tipo que admite esta herramienta (o es un .gz suelto, no un .tar.gz).",
+                       "en": "It is not an archive of the kind this tool accepts (or it is a plain .gz, not a .tar.gz)."},
     "archive_empty": {"es": "El archivo comprimido está vacío o dañado.", "en": "The archive is empty or damaged."},
     "archive_password": {"es": "El archivo comprimido está protegido: escribe su contraseña.", "en": "The archive is protected: enter its password."},
     "archive_password_or_cipher": {"es": "La contraseña no es correcta o el cifrado de este ZIP no se admite.",

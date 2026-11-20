@@ -124,3 +124,31 @@ def test_batch(make_ctx, tmp_path):
     shutil.copyfile(NOTO, second)
     out = run("ttf-a-woff2", make_ctx("ttf-a-woff2", [NOTO, second]))
     assert [o["name"] for o in out] == ["NotoSans-Regular.woff2", "Copia.woff2", "ttf-a-woff2.zip"]
+
+
+# --- Revisión de F6-F (D-221) -----------------------------------------------------------------------------------------
+
+
+def test_cff_bbox_and_latin1_names(make_ctx, tmp_path):
+    font = TTFont(NOTO)
+    for record in font["name"].names:
+        if record.nameID in (0, 1, 4):
+            record.string = record.toUnicode() + " ™ — 中文"
+    src = tmp_path / "Rara.ttf"
+    font.save(src)
+    out = run("ttf-a-otf", make_ctx("ttf-a-otf", [src]))
+    cff = TTFont(out[0]["path"])["CFF "].cff
+    top = cff.topDictIndex[0]
+    head = TTFont(NOTO)["head"]
+    assert list(top.FontBBox) == [head.xMin, head.yMin, head.xMax, head.yMax]
+    assert "(TM)" in top.Notice and cff.fontNames[0].isascii()
+
+
+def test_missing_tables_are_corrupt(make_ctx, tmp_path):
+    font = TTFont(NOTO)
+    del font["post"]
+    src = tmp_path / "SinPost.ttf"
+    font.save(src)
+    with pytest.raises(ToolError) as err:
+        run("ttf-a-otf", make_ctx("ttf-a-otf", [src]))
+    assert err.value.code == "CORRUPT_FILE"

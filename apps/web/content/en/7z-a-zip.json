@@ -3,7 +3,7 @@
   "reviewed": false,
   "intro": [
     "7Z to ZIP turns 7z archives, the 7-Zip format, into ZIP so they open on any system. 7z compresses very well, but many computers and phones cannot open it without installing something; Windows, macOS, Linux, Android and iOS extract ZIP out of the box.",
-    "Folders, file names (with accents and other alphabets) and their dates are kept. The ZIP is written with Deflate compression and ZIP64, with no practical limit on size or number of files.",
+    "Folders, file names (with accents and other alphabets) and their dates are kept. The ZIP is written with Deflate compression and ZIP64, up to 2 GB uncompressed and 10,000 files.",
     "As with our other archive conversions, no path can escape the archive's folder: paths with “..”, starting at the root or naming a Windows drive are stored inside, and symbolic links, hard links and device files are not copied. We also limit the number of entries (10,000) and the uncompressed size, so an archive crafted to fill terabytes blocks nothing.",
     "We read the 7z with libarchive, a free library, without using the 7-Zip program. Password-encrypted 7z archives cannot be opened here. It takes up to 20 archives per batch and, if you upload several, a ZIP with all the results."
   ],

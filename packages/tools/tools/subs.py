@@ -26,11 +26,21 @@ def decode(raw: bytes) -> str:
         return raw.decode("cp1252", errors="replace")
 
 
+VTT_INLINE_TIME = re.compile(r"<\d{1,2}:\d{2}(?::\d{2})?\.\d{3}>")
+VTT_CLASS = re.compile(r"</?c(?:\.[\w.-]+)?>")
+
+
 def clean_vtt(text: str) -> str:
-    """Sin los bloques NOTE, STYLE y REGION de WebVTT, que pysubs2 pegaría al subtítulo anterior."""
+    """Sin los bloques NOTE, STYLE y REGION de WebVTT, que pysubs2 pegaría al subtítulo anterior, ni las marcas de tiempo
+    por palabra y las clases `<c>` de los subtítulos automáticos de YouTube (pysubs2 tomaría `<00:00:00.539>` por una línea
+    de tiempos y perdería frases)."""
     blocks = re.split(r"\n[ \t]*\n", text.replace("\r\n", "\n").replace("\r", "\n"))
     keep = [b for b in blocks if not re.match(r"\s*(NOTE|STYLE|REGION)\b", b)]
-    return "\n\n".join(keep)
+    cleaned = []
+    for block in keep:
+        lines = block.split("\n")
+        cleaned.append("\n".join(VTT_CLASS.sub("", VTT_INLINE_TIME.sub("", line)) if "-->" not in line else line for line in lines))
+    return "\n\n".join(cleaned)
 
 
 def parse_text(text: str, ext: str):

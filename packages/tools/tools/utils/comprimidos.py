@@ -8,6 +8,7 @@ barras invertidas; los enlaces simbólicos, los duros y los dispositivos no se e
 from __future__ import annotations
 
 import posixpath
+from collections import Counter
 import re
 import time
 import zipfile
@@ -18,8 +19,14 @@ from core.zipguard import MAX_MEMBERS, MAX_UNCOMPRESSED
 from tools.base import ToolContext, derived_name
 from tools.pdf.common import with_batch_zip
 
-MAX_RATIO = 1000
-RATIO_FLOOR = 200 * 1024 * 1024  # la relación solo cuenta por encima de 200 MB descomprimidos
+MAX_RATIO = 100  # 12.3
+RATIO_FLOOR = 100 * 1024 * 1024  # la relación solo cuenta por encima de 100 MB descomprimidos
+MAX_PART_BYTES = 255  # lo que admiten los sistemas de archivos en cada nombre
+MAX_PATH_BYTES = 1024
+# Formatos que acepta cada herramienta según libarchive (`format_name`): ni mtree, ni cpio, ni ISO, ni un .gz suelto, que
+# libarchive también leería (un mtree puede pedir archivos del propio servidor).
+FORMATS = {"rar-a-zip": ("rar",), "7z-a-zip": ("7-zip",), "tar-a-zip": ("tar", "ustar", "pax"),
+           "extraer-archivo-online": ("zip", "rar", "7-zip", "tar", "ustar", "pax")}
 MAX_LISTED = 50  # extraer-archivo-online: hasta 50 archivos sueltos; más, solo el ZIP
 
 NOTES = {
@@ -32,14 +39,45 @@ NOTES = {
 }
 
 
+def _short(part: str, limit: int) -> str:
+    """Un nombre recortado a `limit` bytes en UTF-8, conservando la extensión."""
+    if len(part.encode("utf-8")) <= limit:
+        return part
+    stem, dot, ext = part.rpartition(".")
+    ext = ext if dot and len(ext) <= 10 else ""
+    stem = part if not ext else stem
+    keep = limit - len(ext.encode()) - 1 - 2
+    cut = stem.encode("utf-8")[:keep].decode("utf-8", errors="ignore")
+    return f"{cut}~" + (f".{ext}" if ext else "")
+
+
 def safe_name(raw: str) -> tuple[str, bool]:
-    """Ruta relativa segura y si ha habido que cambiarla («../../etc/passwd» → «etc/passwd»)."""
+    """Ruta relativa segura y si ha habido que cambiarla («../../etc/passwd» → «etc/passwd»; nombres de más de 255
+    bytes o rutas de más de 1024, recortados)."""
     name = raw.replace("\\", "/")
-    name = re.sub(r"^[A-Za-z]:", "", name)
+    name = re.sub(r"^[A-Za-z]:/", "/", name)  # solo una letra de unidad seguida de barra («a:b.txt» es un nombre)
     parts = [p for p in name.split("/") if p not in ("", ".")]
-    clean = [p for p in parts if p != ".."]
-    changed = name.startswith("/") or len(clean) != len(parts) or name != raw.replace("\\", "/")
-    return "/".join(clean), changed
+    clean = [_short(p.replace("\x00", ""), MAX_PART_BYTES) for p in parts if p != ".." and p.strip(".")]
+    while clean and len("/".join(clean).encode("utf-8")) > MAX_PATH_BYTES:
+        clean = clean[1:] if len(clean) > 1 else [_short(clean[0], MAX_PATH_BYTES)]
+    joined = "/".join(clean)
+    changed = name.startswith("/") or joined != "/".join(parts)
+    return joined, changed
+
+
+def _entry_name(entry, zip_like: bool, n: int) -> str:
+    """El nombre de la entrada; libarchive-c devuelve bytes si no es UTF-8 (CP437 en los ZIP antiguos de Windows,
+    Windows-1252 o Latin-1 en tar y RAR)."""
+    try:
+        raw = entry.pathname
+    except UnicodeError:
+        raw = None
+    if isinstance(raw, bytes):
+        try:
+            raw = raw.decode("utf-8")
+        except UnicodeDecodeError:
+            raw = raw.decode("cp437" if zip_like else "cp1252", errors="replace")
+    return raw if isinstance(raw, str) and raw else f"archivo-{n}"
 
 
 def _zip_time(mtime) -> tuple[int, ...]:
@@ -57,18 +95,25 @@ def extract(ctx: ToolContext, path: Path, zf: zipfile.ZipFile, password: str | N
     limit = min(MAX_UNCOMPRESSED, max(RATIO_FLOOR, path.stat().st_size * MAX_RATIO))
     counts: dict = {"files": 0, "links": 0, "renamed": 0, "names": [], "dirs": set()}
     total = seen = 0
-    used: set[str] = set()
+    used: dict[str, int] = {}  # nombre en minúsculas → siguiente número para las copias
+    allowed = FORMATS.get(ctx.tool, FORMATS["extraer-archivo-online"])
     try:
         with libarchive.file_reader(str(path), passphrase=password or None) as archive:
             for entry in archive:
                 seen += 1
+                if seen == 1:
+                    fmt = (archive.format_name or b"").decode("ascii", "replace").lower() if isinstance(archive.format_name, bytes) \
+                        else str(archive.format_name or "").lower()
+                    if not any(f in fmt for f in allowed):
+                        raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "archive_format")
+                    zip_like = "zip" in fmt and "7-zip" not in fmt
                 if seen > MAX_MEMBERS:
                     raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"Más de {MAX_MEMBERS} entradas")
-                try:
-                    raw = entry.pathname or ""
-                except UnicodeDecodeError:
-                    raw = f"archivo-{seen}"
-                name, changed = safe_name(raw)
+                if not zip_like and libarchive.ffi.libarchive.archive_entry_is_encrypted(entry._entry_p):
+                    # libarchive no descifra RAR ni 7z: con datos cifrados entregaría el texto cifrado como si fuera bueno.
+                    raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "archive_encrypted_unsupported")
+                name, changed = safe_name(_entry_name(entry, zip_like, seen))
+                total += len(name.encode("utf-8")) + 64  # los nombres también ocupan (y pesan en memoria)
                 if entry.isdir:
                     if name:
                         counts["dirs"].add(name)
@@ -79,12 +124,12 @@ def extract(ctx: ToolContext, path: Path, zf: zipfile.ZipFile, password: str | N
                 if not name:
                     name, changed = f"archivo-{seen}", True
                 counts["renamed"] += changed
-                base, n = name, 2
+                base = name
                 while name.lower() in used:
+                    n = used[base.lower()] = used.get(base.lower(), 1) + 1
                     stem, dot, ext = base.rpartition(".")
-                    name = f"{stem} ({n}).{ext}" if dot and stem else f"{base} ({n})"
-                    n += 1
-                used.add(name.lower())
+                    name = f"{stem} ({n}).{ext}" if dot and stem and "/" not in ext else f"{base} ({n})"
+                used.setdefault(name.lower(), 1)
                 if "/" in name:
                     counts["dirs"].add(posixpath.dirname(name))
                 info = zipfile.ZipInfo(name, date_time=_zip_time(entry.mtime))
@@ -99,7 +144,7 @@ def extract(ctx: ToolContext, path: Path, zf: zipfile.ZipFile, password: str | N
                 counts["names"].append(name)
     except libarchive.ArchiveError as exc:
         message = str(exc).lower()
-        if ("encrypt" in message or "crypt" in message) and "unsupported" in message:
+        if "crypt" in message and any(w in message for w in ("unsupported", "not supported", "unavailable")):
             # libarchive no descifra RAR ni 7z (solo ZIP): pedir la contraseña no serviría de nada.
             raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "archive_encrypted_unsupported") from exc
         if "passphrase" in message or "encrypt" in message or "password" in message or "decrypt" in message:
@@ -153,11 +198,19 @@ def run_extract(ctx: ToolContext) -> list[dict]:
     notes = _notes(ctx, counts)
     outputs: list[dict] = []
     if 0 < counts["files"] <= MAX_LISTED:
-        bases = [posixpath.basename(m).lower() for m in counts["names"]]
+        bases = Counter(posixpath.basename(m).lower() for m in counts["names"])
+        shown_used: set[str] = set()
         with zipfile.ZipFile(packed) as zf:
             for member in counts["names"]:
-                # El nombre del archivo; si se repite en otra carpeta, con la carpeta delante («fotos_portada.jpg»).
-                shown = posixpath.basename(member) if bases.count(posixpath.basename(member).lower()) == 1 else member.replace("/", "_")
+                # El nombre del archivo; si se repite en otra carpeta, con la carpeta delante («fotos_portada.jpg»), y
+                # con un número si aun así coincide con otro.
+                shown = posixpath.basename(member) if bases[posixpath.basename(member).lower()] == 1 else member.replace("/", "_")
+                candidate, k = shown, 2
+                while candidate.lower() in shown_used:
+                    stem, dot, ext = shown.rpartition(".")
+                    candidate, k = (f"{stem} ({k}).{ext}" if dot and stem else f"{shown} ({k})"), k + 1
+                shown = candidate
+                shown_used.add(shown.lower())
                 dst = ctx.output(shown)
                 with zf.open(member) as src, open(dst, "wb") as out:
                     while chunk := src.read(1 << 20):
