@@ -157,3 +157,27 @@ describe("escribir-pdf: revisión de Markdown y Word (D-238)", () => {
   });
 });
 
+
+describe("escribir-pdf: correcciones de la revisión de F6-O2 (D-246)", () => {
+  it("la combinación deja tal cual lo que no es una columna y rellena las notas al pie", () => {
+    const list = { headers: ["Nombre"], rows: [["Ana"]] };
+    const html = mergedHtml('<p>Conjunto {a, b} y <code>if (x) { return 1; }</code>, {Nombre}<sup class="nota" data-nota="Para {Nombre}">1</sup></p>', list,
+      { toc: "Índice", notes: "Notas" });
+    expect(html).toContain("Conjunto {a, b}");
+    expect(html).toContain("{ return 1; }");
+    expect(html).toContain('<li id="f1-nota-1">Para Ana</li>');
+    expect(rowFileNames({ headers: ["N"], rows: [["CON"], ["nul.txt"], ["..."]] }, 0, "carta")).toEqual(["_CON.pdf", "_nul.txt.pdf", "carta-003.pdf"]);
+  });
+
+  it("abrir HTML enorme no tarda y el saneado quita esquemas ocultos y animaciones", async () => {
+    const run = async () => new Blob([""]);
+    const t0 = Date.now();
+    const out = await htmlFromFile(new File(["<body>".repeat(80000) + "<p>x</p>"], "a.html"), run);
+    expect(Date.now() - t0).toBeLessThan(2000);
+    expect(out).toContain("<p>x</p>");
+    const html = exportHtml('<p><a href="jav&#x09;ascript:alert(1)">a</a><span style="background:u\\72l(x)">b</span></p>'
+      + '<svg><animate attributeName="href" values="javascript:alert(1)"></animate><image href="file:///etc/passwd"></image></svg>',
+      { toc: "Índice", notes: "Notas" });
+    expect(html).not.toMatch(/javascript|u\\72l|animate|file:/i);
+  });
+});

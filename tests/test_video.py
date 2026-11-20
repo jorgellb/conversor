@@ -131,10 +131,17 @@ def test_video_to_gif_and_back(make_ctx, tmp_path):
     assert abs(float(info["format"]["duration"]) - 2) < 0.3
 
 
-def test_gif_start_past_the_end_is_clamped(make_ctx, tmp_path):
+def test_gif_start_past_the_end_is_an_error_and_it_never_upscales(make_ctx, tmp_path):
+    from PIL import Image
+
     src = _clip(tmp_path, "corto.mp4", "libx264", seconds=2)
-    out = run("video-a-gif", make_ctx("video-a-gif", [src], {"inicio": 60, "duracion": 5}))
-    assert Path(out[0]["path"]).stat().st_size > 0 and out[0]["note"]
+    with pytest.raises(ToolError) as err:
+        run("video-a-gif", make_ctx("video-a-gif", [src], {"inicio": 60, "duracion": 5}))
+    assert err.value.detail == "video_cut_range"
+    out = run("video-a-gif", make_ctx("video-a-gif", [src], {"inicio": 1, "duracion": 5, "ancho": 800}))
+    with Image.open(out[0]["path"]) as im:
+        assert im.size == (320, 240)  # 320 px de origen: no se amplía a 800
+    assert "dura 1 s" in out[0]["note"]
 
 
 @pytest.mark.integration
@@ -146,9 +153,9 @@ def test_api_rejects_video_without_a_video_plan(api, user_token, tus_upload, tmp
 
     token = user_token(user_id=f"video-gratis-{uuid.uuid4().hex[:8]}")
     api.get("/v1/me", headers=auth(token))
-    uid, _ = tus_upload(token, "mp4-a-webm", src)
-    res = api.post("/v1/jobs", json={"tool": "mp4-a-webm", "upload_ids": [uid], "options": {}}, headers=auth(token))
-    assert res.status_code == 403 and res.json()["error"]["code"] == "LIMIT_EXCEEDED"
+    uid, resp = tus_upload(token, "mp4-a-webm", src)
+    # Ni siquiera se sube (D-245); la API lo vuelve a comprobar al crear el trabajo.
+    assert uid is None and resp["HTTPResponse"]["StatusCode"] == 403 and "LIMIT_EXCEEDED" in resp["HTTPResponse"]["Body"]
     tools = {t["slug_es"]: t for t in json.loads((Path(__file__).resolve().parents[1] / "packages/registry/registry.json").read_text(encoding="utf-8"))["tools"]}
     assert tools["mp4-a-webm"]["needs_video"] and tools["pptx-a-video"]["needs_video"] and not tools["srt-a-vtt"]["needs_video"]
 
@@ -156,9 +163,10 @@ def test_api_rejects_video_without_a_video_plan(api, user_token, tus_upload, tmp
 # ——— F5-V2 (D-242): comprimir, recortar, rotar y quitar el audio ———
 
 def _streams_info(path: Path) -> dict:
-    out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_type,codec_name,width,height:stream_side_data=rotation",
+    out = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=codec_type,codec_name,width,height:stream_disposition=attached_pic"
+                          ":stream_side_data=rotation",
                           "-of", "json", str(path)], capture_output=True, check=True).stdout
-    return {s["codec_type"]: s for s in json.loads(out)["streams"]}
+    return {s["codec_type"]: s for s in json.loads(out)["streams"] if not (s.get("disposition") or {}).get("attached_pic")}
 
 
 def test_remove_audio_copies_the_picture(make_ctx, tmp_path):
@@ -221,8 +229,8 @@ def test_compress_reduces_size_and_resolution_and_never_grows(make_ctx, tmp_path
     # Un vídeo ya diminuto: se devuelve el original.
     tiny = _clip(tmp_path, "mini.mp4", "libx264", None, seconds=1, size="64x48")
     out = run("comprimir-video", make_ctx("comprimir-video", [tiny], {"nivel": "ligera"}))
-    if "ya estaba" in out[0]["note"]:
-        assert Path(out[0]["path"]).read_bytes() == tiny.read_bytes()
+    assert "ya estaba" in out[0]["note"]  # se devuelve el original sin recodificar
+    assert _probe(Path(out[0]["path"]))["codecs"] == {"video": "h264"}
 
 
 def test_tiny_gif_to_av1_is_padded(make_ctx, tmp_path, monkeypatch):
@@ -235,3 +243,98 @@ def test_tiny_gif_to_av1_is_padded(make_ctx, tmp_path, monkeypatch):
     out = run("gif-a-mp4", make_ctx("gif-a-mp4", [gif]))
     info = _streams_info(Path(out[0]["path"]))
     assert info["video"]["codec_name"] == "av1" and (info["video"]["width"], info["video"]["height"]) == (64, 64)
+
+
+
+# ——— D-245: correcciones de la revisión de F5-V1 y F5-V2 ———
+
+def _with_cover(tmp_path: Path) -> Path:
+    """MP4 con carátula PNG como primera pista (la que ffprobe lista primero)."""
+    from PIL import Image
+
+    cover = tmp_path / "portada.png"
+    Image.new("RGB", (300, 300), "red").save(cover)
+    clip = _clip(tmp_path, "con-portada-base.mp4", "libx264")
+    out = tmp_path / "con-portada.mp4"
+    subprocess.run([FFMPEG, "-v", "error", "-i", str(cover), "-i", str(clip), "-map", "0", "-map", "1", "-c", "copy",
+                    "-disposition:v:0", "attached_pic", "-y", str(out)], check=True)
+    return out
+
+
+def test_cover_art_is_never_taken_as_the_video(make_ctx, tmp_path):
+    src = _with_cover(tmp_path)
+    out = run("mp4-a-webm", make_ctx("mp4-a-webm", [src]))
+    info = _streams_info(Path(out[0]["path"]))
+    assert (info["video"]["width"], info["video"]["height"]) == (320, 240) and info["video"]["codec_name"] == "vp9"
+    out = run("quitar-audio-video", make_ctx("quitar-audio-video", [src]))
+    info = _streams_info(Path(out[0]["path"]))
+    assert info["video"]["codec_name"] == "h264" and (info["video"]["width"], info["video"]["height"]) == (320, 240)
+
+
+def test_compress_caps_the_short_side_of_rotated_phone_videos(make_ctx, tmp_path, monkeypatch):
+    monkeypatch.delenv("VIDEO_H264_ENCODING_ENABLED", raising=False)
+    flat = _clip(tmp_path, "vertical-base.mp4", "libx264", size="1280x720", seconds=1)
+    rotated = tmp_path / "vertical.mp4"
+    subprocess.run([FFMPEG, "-v", "error", "-display_rotation", "-90", "-i", str(flat), "-c", "copy", "-y", str(rotated)], check=True)
+    out = run("comprimir-video", make_ctx("comprimir-video", [rotated], {"resolucion": "480"}))
+    info = _streams_info(Path(out[0]["path"]))
+    assert (info["video"]["width"], info["video"]["height"]) == (480, 854)
+
+
+def test_compress_fallback_respects_choices_and_drops_metadata(make_ctx, tmp_path):
+    tiny = _clip(tmp_path, "mini.mp4", "libx264", seconds=1, size="48x48")
+    out = run("comprimir-video", make_ctx("comprimir-video", [tiny], {"sonido": False}))
+    info = _probe(Path(out[0]["path"]))
+    assert "ya estaba" in out[0]["note"] and info["codecs"] == {"video": "h264"}
+    assert "location" not in {k.lower() for k in info["format"].get("tags", {})}
+
+
+def test_unknown_duration_is_capped_by_the_plan(make_ctx, tmp_path):
+    # Un MKV escrito a una tubería no guarda su duración.
+    streamed = tmp_path / "directo.mkv"
+    with open(streamed, "wb") as f:
+        subprocess.run([FFMPEG, "-v", "error", "-f", "lavfi", "-i", "testsrc=size=64x64:rate=5:duration=90", "-c:v", "libx264",
+                        "-pix_fmt", "yuv420p", "-f", "matroska", "-"], stdout=f, check=True)
+    ctx = make_ctx("mkv-a-mp4", [streamed])
+    ctx.plan = ctx.plan.model_copy(update={"video_minutes": 1})
+    out = run("mkv-a-mp4", ctx)
+    assert float(_probe(Path(out[0]["path"]))["format"]["duration"]) <= 60.5
+
+
+def test_minutes_count_for_the_whole_task_and_the_work_must_fit_the_time_limit(make_ctx, tmp_path):
+    a = _clip(tmp_path, "a.mp4", "libx264", seconds=2)
+    b = _clip(tmp_path, "b.mp4", "libx264", seconds=2)
+    ctx = make_ctx("mp4-a-webm", [a, b])
+    ctx.plan = ctx.plan.model_copy(update={"video_minutes": 0.05})  # 3 s para toda la tarea
+    with pytest.raises(ToolError) as err:
+        run("mp4-a-webm", ctx)
+    assert err.value.code == "LIMIT_EXCEEDED"
+    from tools.av import video
+
+    ctx = make_ctx("mp4-a-webm", [a])
+    with pytest.raises(ToolError) as err:
+        video.ensure_time(ctx, 4 * 3600, {"width": 1920, "height": 1080}, True)
+    assert err.value.detail == "video_too_long"
+    video.ensure_time(make_ctx("mp4-a-webm", [a]), 3600, {"width": 1920, "height": 1080}, True)  # 1 h de 1080p sí cabe
+    assert video.memory_mb({"width": 3840, "height": 2160}) > video.memory_mb({"width": 1920, "height": 1080})
+
+
+def test_4k_reencode_fits_its_memory(make_ctx, tmp_path, monkeypatch):
+    monkeypatch.delenv("VIDEO_H264_ENCODING_ENABLED", raising=False)
+    src = _clip(tmp_path, "4k.mp4", "libx264", seconds=0.4, size="3840x2160", acodec=None)
+    out = run("webm-a-mp4", make_ctx("webm-a-mp4", [_clip(tmp_path, "4k.webm", "libvpx-vp9", None, seconds=0.4, size="3840x2160")]))
+    assert _streams_info(Path(out[0]["path"]))["video"]["codec_name"] == "av1"
+    out = run("mp4-a-webm", make_ctx("mp4-a-webm", [src]))
+    assert _streams_info(Path(out[0]["path"]))["video"]["width"] == 3840
+
+
+def test_m4v_and_quicktime_branded_mp4_are_accepted(tmp_path):
+    from core.filetype import detect, matches
+
+    m4v = _clip(tmp_path, "clip.m4v", "libx264")
+    subprocess.run([FFMPEG, "-v", "error", "-i", str(m4v), "-c", "copy", "-brand", "M4V ", "-f", "mp4", "-y", str(tmp_path / "b.m4v")], check=True)
+    assert matches(detect(tmp_path / "b.m4v", ".m4v"), ".m4v", ("mov", "m4v"))
+    mov = _clip(tmp_path, "clip.mov", "libx264")
+    renamed = tmp_path / "clip-qt.mp4"
+    renamed.write_bytes(mov.read_bytes())
+    assert matches(detect(renamed, ".mp4"), ".mp4", ("mp4",))

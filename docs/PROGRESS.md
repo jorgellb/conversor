@@ -704,6 +704,12 @@ stl-a-obj, obj-a-stl, stl-a-3mf, 3mf-a-stl, obj-a-3mf, 3mf-a-obj, stl-a-ply, ply
 `workermesh` con trimesh y lib3mf, unidades, escala, piezas y colores, y el límite de triángulos antes de encolar (D-244), en
 `tests/test_mesh.py`.
 
+## Revisiones de vídeo y de escribir-pdf, y cierres de F5 y F6
+
+Correcciones de la revisión de F5-V1 y F5-V2 (D-245: carátulas, duración desconocida, minutos y tiempo de la tarea, 4K, vídeos
+verticales) y de F6-O2 (D-246: `meta refresh` en el HTML que imprime Chromium y lista de bloqueo del Gotenberg principal,
+privacidad de la combinación y del dictado, campos desconocidos, saneado). F5 y F6 cerrados (D-247).
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

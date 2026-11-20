@@ -1,7 +1,9 @@
 """Cliente de Gotenberg (8.x). `gotenberg` no tiene salida a internet (12.2)."""
 from __future__ import annotations
 
+import html
 import mimetypes
+import re
 from pathlib import Path
 
 import httpx
@@ -60,22 +62,46 @@ def libreoffice(base_url: str, path: Path, upload_name: str, fields: dict[str, s
     return _post(f"{base_url.rstrip('/')}/forms/libreoffice/convert", files, fields, timeout)
 
 
+META = re.compile(rb"<meta\b[^>]*>", re.I)
+HTTP_EQUIV = re.compile(rb"""http-equiv\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))""", re.I)
+
+
+def no_refresh(data: bytes) -> bytes:
+    """Sin `<meta http-equiv="refresh">`, escrito como sea (entidades, mayúsculas, sin comillas): la CSP no frena una
+    navegación y Chromium podría ir a `file:///tmp/` e imprimir archivos de otros trabajos (D-246)."""
+
+    def keep(m: re.Match) -> bytes:
+        eq = HTTP_EQUIV.search(m.group(0))
+        if eq is None:
+            return m.group(0)
+        value = next(g for g in eq.groups() if g is not None).decode("latin-1")
+        return b"" if html.unescape(value).strip().lower() == "refresh" else m.group(0)
+
+    return META.sub(keep, data)
+
+
+def _html_part(name: str, data: bytes | str, mime: str) -> tuple[str, bytes | str, str]:
+    if mime.startswith("text/html") or name.lower().endswith((".html", ".htm")):
+        data = no_refresh(data.encode("utf-8") if isinstance(data, str) else data)
+    return name, data, mime
+
+
 def chromium_html(base_url: str, html_path: Path, fields: dict[str, str], timeout: float = 300) -> bytes:
-    files = [("files", ("index.html", html_path.read_bytes(), "text/html"))]
+    files = [("files", _html_part("index.html", html_path.read_bytes(), "text/html"))]
     return _post(f"{base_url.rstrip('/')}/forms/chromium/convert/html", files, fields, timeout)
 
 
 def chromium_html_files(base_url: str, files: list[tuple[str, bytes, str]], fields: dict[str, str], timeout: float = 300,
                         conflict_error: ErrorCode | None = None) -> bytes:
     """`index.html` y sus recursos, todos en el mismo nivel (Gotenberg no conserva carpetas)."""
-    parts = [("files", (name, data, mime)) for name, data, mime in files]
+    parts = [("files", _html_part(name, data, mime)) for name, data, mime in files]
     return _post(f"{base_url.rstrip('/')}/forms/chromium/convert/html", parts, fields, timeout, conflict_error=conflict_error)
 
 
 def chromium_screenshot_files(base_url: str, files: list[tuple[str, bytes, str]], fields: dict[str, str], timeout: float = 300,
                               conflict_error: ErrorCode | None = None) -> bytes:
     """Captura de `index.html` y sus recursos (ruta de capturas de Gotenberg 8: width, height, clip y format)."""
-    parts = [("files", (name, data, mime)) for name, data, mime in files]
+    parts = [("files", _html_part(name, data, mime)) for name, data, mime in files]
     return _post(f"{base_url.rstrip('/')}/forms/chromium/screenshot/html", parts, fields, timeout, conflict_error=conflict_error)
 
 

@@ -93,6 +93,9 @@ def pre_create(event: dict, session: Session, r, settings: Settings, registry: R
     if ext not in {normalize_ext(e) for e in spec.inputs}:
         return _reject(415, ErrorCode.UNSUPPORTED_FORMAT, locale)
     plan = load_plan(session, owner.plan_id, settings)
+    # Vídeo (9.3, D-245): sin plan con vídeo ni siquiera se sube, para no ocupar disco con algo que no se va a procesar.
+    if spec.needs_video and not plan.video:
+        return _reject(403, ErrorCode.LIMIT_EXCEEDED, locale)
     if size > plan.max_file_bytes or size > settings.UPLOAD_MAX_BYTES:
         return _reject(413, ErrorCode.FILE_TOO_LARGE, locale)
     task_class = spec.cost_for({})

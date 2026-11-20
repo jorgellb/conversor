@@ -17,6 +17,11 @@ function fillText(editorHtml: string, headers: string[], row: string[]): string 
         const text = child.textContent ?? "";
         if (text.includes("{")) child.textContent = fillFields(text, headers, row);
       } else {
+        // Las notas al pie guardan su texto en un atributo: también llevan campos (D-246).
+        const el = child as Element;
+        if (child.nodeType === 1 && el.hasAttribute("data-nota")) {
+          el.setAttribute("data-nota", fillFields(el.getAttribute("data-nota") ?? "", headers, row));
+        }
         walk(child);
       }
     }
@@ -47,7 +52,10 @@ export function mergedHtml(editorHtml: string, list: Recipients, t: ExportTexts)
 export function rowFileNames(list: Recipients, column: number, base: string): string[] {
   const used = new Set<string>();
   return list.rows.slice(0, MAX_MERGE_ROWS).map((row, i) => {
-    const raw = (column >= 0 ? row[column] ?? "" : "").replace(/[^\p{L}\p{N} ._-]+/gu, "").trim().slice(0, 60) || `${base}-${String(i + 1).padStart(3, "0")}`;
+    let raw = (column >= 0 ? row[column] ?? "" : "").replace(/[^\p{L}\p{N} ._-]+/gu, "").trim().slice(0, 60).replace(/^[. ]+|[. ]+$/g, "")
+      || `${base}-${String(i + 1).padStart(3, "0")}`;
+    // Nombres que Windows no deja crear (CON, PRN, AUX, NUL, COM1…, LPT1…), D-246.
+    if (/^(con|prn|aux|nul|com\d|lpt\d)(\.|$)/i.test(raw)) raw = `_${raw}`;
     let name = `${raw}.pdf`;
     for (let n = 2; used.has(name.toLowerCase()); n += 1) name = `${raw} (${n}).pdf`;
     used.add(name.toLowerCase());

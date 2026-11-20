@@ -261,7 +261,7 @@ SPECS: list[ToolSpec] = [
     # 7.9 (F5-V1, D-241): solo Pro (plan.video); sin recodificar cuando los códecs caben en el contenedor de salida.
     *[ToolSpec(slug_es=f"{a}-a-{b}", slug_en=f"{a}-to-{b}", name_es=f"{a.upper()} a {b.upper()}", name_en=f"{a.upper()} to {b.upper()}",
                category="video", where="server", inputs=(a,) if a != "mov" else ("mov", "m4v"), outputs=(b, "zip"), options=NoOptions,
-               worker_group="av", cost_class="heavy", queue_kind="heavy", impl="tools.av.video:run", launch=True, needs_video=True, phase="F5", time_limit=3600,
+               worker_group="av", cost_class="heavy", queue_kind="heavy", impl="tools.av.video:run", launch=True, needs_video=True, phase="F5", time_limit=4 * 3600,
                max_files=5, summary_es=f"Convierte vídeos {a.upper()} a {b.upper()}; si los códecs caben, sin recodificar y en segundos.",
                summary_en=f"Convert {a.upper()} videos to {b.upper()}; if the codecs fit, without re-encoding and in seconds.",
                related=("video-a-gif", "mp4-a-webm" if b == "mp4" else "webm-a-mp4"))
@@ -279,7 +279,7 @@ SPECS: list[ToolSpec] = [
     # 7.9 (F5-V2, D-242): sin recodificar cuando la operación lo permite; solo Pro.
     *[ToolSpec(slug_es=es, slug_en=en, name_es=ne, name_en=nn, category="video", where="server", inputs=VIDEO_INPUTS,
                outputs=(*VIDEO_INPUTS, "zip"), options=options, worker_group="av", cost_class="heavy", queue_kind="heavy",
-               impl=f"tools.av.video_edicion:{fn}", launch=True, needs_video=True, phase="F5", time_limit=3600, max_files=5,
+               impl=f"tools.av.video_edicion:{fn}", launch=True, needs_video=True, phase="F5", time_limit=4 * 3600, max_files=5,
                summary_es=se, summary_en=sn, related=rel)
       for es, en, ne, nn, options, fn, se, sn, rel in (
           ("comprimir-video", "compress-video", "Comprimir vídeo", "Compress video", ComprimirVideoOptions, "run_compress",

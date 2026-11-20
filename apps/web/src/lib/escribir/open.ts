@@ -14,12 +14,60 @@ export class OpenError extends Error {
   }
 }
 
+/** Lo de dentro de <body>, buscado con indexOf (sin expresiones que retrocedan: «<body>» repetido 80 000 veces
+ * congelaba la pestaña, D-246). Los guiones y estilos los quita después el esquema del editor. */
 function bodyOf(html: string): string {
-  const m = /<body[^>]*>([\s\S]*)<\/body>/i.exec(html);
-  return (m ? m[1] : html).replace(/<script[\s\S]*?<\/script>/gi, "").replace(/<style[\s\S]*?<\/style>/gi, "");
+  const lower = html.toLowerCase();
+  const start = lower.indexOf("<body");
+  const end = lower.lastIndexOf("</body>");
+  let body = html;
+  if (start >= 0 && end > start) {
+    const close = html.indexOf(">", start);
+    if (close >= 0 && close < end) body = html.slice(close + 1, end);
+  }
+  return dropBlocks(dropBlocks(body, "script"), "style");
+}
+
+/** Quita <tag>…</tag> recorriendo el texto una sola vez (tiempo lineal). */
+function dropBlocks(html: string, tag: string): string {
+  const lower = html.toLowerCase();
+  const open = `<${tag}`;
+  const close = `</${tag}>`;
+  let out = "";
+  let at = 0;
+  for (;;) {
+    const i = lower.indexOf(open, at);
+    if (i < 0) break;
+    const j = lower.indexOf(close, i);
+    out += html.slice(at, i);
+    if (j < 0) return out;
+    at = j + close.length;
+  }
+  return out + html.slice(at);
+}
+
+/** Lo que ocuparía el DOCX descomprimido, leído del directorio central sin descomprimir nada: un DOCX de 300 KB podía
+ * hinchar la pestaña hasta 1 GB dentro de mammoth (D-246). */
+const MAX_DOCX_INFLATED = 100 * 1024 * 1024;
+
+async function checkInflated(data: ArrayBuffer): Promise<void> {
+  const { unzipSync } = await import("fflate");
+  let total = 0;
+  try {
+    unzipSync(new Uint8Array(data), {
+      filter: (file) => {
+        total += file.originalSize;
+        return false;
+      },
+    });
+  } catch {
+    throw new OpenError("unreadable");
+  }
+  if (total > MAX_DOCX_INFLATED) throw new OpenError("too_big");
 }
 
 async function fromDocx(data: ArrayBuffer): Promise<string> {
+  await checkInflated(data);
   const mammoth = (await import("mammoth")).default ?? (await import("mammoth"));
   // En el navegador lee `arrayBuffer`; en Node (las pruebas), `buffer`.
   const result = await mammoth.convertToHtml({ arrayBuffer: data, buffer: data } as never);

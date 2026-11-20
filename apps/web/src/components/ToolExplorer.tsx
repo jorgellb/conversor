@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import { PageLink } from "@/components/PageLink";
 import { useEffect, useMemo, useState } from "react";
 
 import { favorites, frequent, recent, toggleFavorite } from "@/lib/prefs";
@@ -43,7 +43,7 @@ function List({ title, items }: { title: string; items: ToolLink[] }) {
       <ul className="flex flex-wrap gap-2">
         {items.map((tool) => (
           <li key={tool.slug}>
-            <Link href={tool.href} className="card inline-block px-3 py-1 text-sm">{tool.name}</Link>
+            <PageLink href={tool.href} className="card inline-block px-3 py-1 text-sm">{tool.name}</PageLink>
           </li>
         ))}
       </ul>
@@ -86,9 +86,9 @@ export function ToolExplorer({ tools }: { tools: ToolLink[] }) {
           {results.length === 0 && <li className="muted">{t("noResults")}</li>}
           {results.map((tool) => (
             <li key={tool.slug}>
-              <Link href={tool.href} className="block rounded px-2 py-1 hover:underline">
+              <PageLink href={tool.href} className="block rounded px-2 py-1 hover:underline">
                 <span className="font-medium">{tool.name}</span> <span className="muted text-sm">— {tool.summary}</span>
-              </Link>
+              </PageLink>
             </li>
           ))}
         </ul>

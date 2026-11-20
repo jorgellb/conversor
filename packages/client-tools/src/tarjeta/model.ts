@@ -59,13 +59,20 @@ export function usedFields(doc: CardDoc): string[] {
 
 const norm = (s: string) => s.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
-/** Sustituye {Campo} por el valor de la fila (sin distinguir mayúsculas ni tildes); los que no existen quedan vacíos. */
+/** Sustituye {Campo} por el valor de la fila (sin distinguir mayúsculas ni tildes). Lo que no es una columna se queda
+ * tal cual: «{a, b}» o el `{ return 1; }` de un ejemplo de código no se borran (D-246). */
 export function fillFields(text: string, headers: string[], row: string[]): string {
   const index = new Map(headers.map((h, i) => [norm(h), i]));
-  return text.replace(FIELD, (_, name: string) => {
+  return text.replace(FIELD, (whole: string, name: string) => {
     const i = index.get(norm(name));
-    return i === undefined ? "" : (row[i] ?? "").trim();
+    return i === undefined ? whole : (row[i] ?? "").trim();
   });
+}
+
+/** Los {…} del texto que no son ninguna columna (para avisar antes de combinar). */
+export function unknownFields(text: string, headers: string[]): string[] {
+  const known = new Set(headers.map(norm));
+  return [...new Set([...text.matchAll(FIELD)].map((m) => m[1].trim()).filter((name) => !known.has(norm(name))))];
 }
 
 /** La tarjeta de un destinatario: sus textos y QR con los campos de su fila. */

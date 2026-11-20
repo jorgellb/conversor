@@ -69,8 +69,8 @@ rembg viene en la imagen, fijado por SHA-256, sin descargas en ejecución (D-96)
 
 ## Web y descargas
 
-Los modelos locales (rembg, faster-whisper) van dentro de las imágenes con su SHA-256 y los workers no los descargan al ejecutar (`HF_HUB_OFFLINE=1`; no tienen salida a internet). `Permissions-Policy` sin cámara salvo en escaner-pdf y crear-collage (`camera=(self)`, D-76 y D-105). CSP con nonce por petición, `frame-ancestors 'none'`, Turnstile solo en páginas que suben archivos, HSTS con
-`includeSubDomains`, `Permissions-Policy` sin cámara ni micrófono (12.4). `files.` responde con
+Los modelos locales (rembg, faster-whisper) van dentro de las imágenes con su SHA-256 y los workers no los descargan al ejecutar (`HF_HUB_OFFLINE=1`; no tienen salida a internet). `Permissions-Policy` sin cámara salvo en escaner-pdf, crear-collage, crear-tarjeta y firmar-pdf (`camera=(self)`, D-76 y D-105) y sin micrófono salvo en escribir-pdf (`microphone=(self)` para el dictado, D-236); a esas páginas se llega con una carga completa para que el navegador aplique su política (D-246), y el dictado y la voz avisan antes de usarse de que el navegador puede enviar el audio o el texto a su fabricante. CSP con nonce por petición, `frame-ancestors 'none'`, Turnstile solo en páginas que suben archivos, HSTS con
+`includeSubDomains` (12.4). `files.` responde con
 `Content-Security-Policy: default-src 'none'; sandbox`, `Content-Disposition: attachment`, `nosniff`,
 `Cross-Origin-Resource-Policy: same-site` y CORS solo para la web.
 
@@ -134,3 +134,6 @@ entidad se rechazan y KoSIT no se llama (pruebas de XXE y de bomba de entidades 
 archivos de la imagen y se cargan sin red. El CSV del resumen protege las celdas que empiezan por `=`, `+`, `-`, `@`.
 Las entradas se borran al terminar la validación (A.2).
 
+## HTML que imprime Chromium (D-246)
+
+Todo HTML que se envía al Gotenberg principal pierde antes cualquier `<meta http-equiv="refresh">` (escrito con entidades, mayúsculas o sin comillas), porque la CSP no impide una navegación; escribir-pdf además quita del cuerpo `meta`, `base`, `link`, marcos, objetos y guiones aunque se llame a la API sin pasar por el navegador. El Gotenberg principal lleva `--chromium-deny-list=^file:(?!///tmp/[^/]+/[^/]).*`: Chromium solo abre los archivos de la carpeta de su petición, nunca el listado de `/tmp` ni de otra carpeta. Pendiente de comprobar con el Gotenberg real en la CI.

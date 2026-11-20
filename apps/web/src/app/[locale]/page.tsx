@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
+import { PageLink } from "@/components/PageLink";
 
 import { FavoriteStar, ToolExplorer, type ToolLink } from "@/components/ToolExplorer";
 import type { Locale } from "@/i18n/routing";
@@ -45,10 +45,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {popular.map((tool) => (
             <li key={tool.slug} className="card flex items-start gap-2 p-4">
-              <Link href={tool.href} className="flex-1">
+              <PageLink href={tool.href} className="flex-1">
                 <span className="font-semibold">{tool.name}</span>
                 <span className="muted mt-1 block text-sm">{tool.summary}</span>
-              </Link>
+              </PageLink>
               <FavoriteStar slug={tool.slug} name={tool.name} />
             </li>
           ))}
@@ -65,7 +65,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((tool) => (
                   <li key={tool.slug} className="card flex items-center gap-2 px-3 py-2">
-                    <Link href={tool.href} className="flex-1">{tool.name}</Link>
+                    <PageLink href={tool.href} className="flex-1">{tool.name}</PageLink>
                     <FavoriteStar slug={tool.slug} name={tool.name} />
                   </li>
                 ))}

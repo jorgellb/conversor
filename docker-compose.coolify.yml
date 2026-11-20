@@ -517,6 +517,7 @@ services:
     - --chromium-restart-after=10
     - --chromium-deny-public-ips=true
     - --chromium-deny-private-ips=true
+    - --chromium-deny-list=^file:(?!///tmp/[^/]+/[^/]).*
     - --libreoffice-deny-public-ips=true
     - --libreoffice-deny-private-ips=true
     - --api-download-from-deny-public-ips=true

@@ -364,6 +364,10 @@ def matches(detected: Detected | None, declared_ext: str, accepted: tuple[str, .
         return True
     if detected.ext == "mp4" and "m4a" in accepted_n and declared == "m4a":
         return True
+    # MP4, MOV y M4V son el mismo contenedor ISO (D-245): un .m4v (marca M4V) o un .mp4 con marca «qt» valen donde se
+    # admite el que declaran.
+    if detected.ext in ("mp4", "mov") and declared in ("mp4", "mov", "m4v") and declared in accepted_n:
+        return True
     # Cómics (muchos CBR son ZIP renombrados), iWork y Kindle: la extensión declarada decide dentro del grupo.
     if detected.ext in ("zip", "rar") and declared in ZIP_ALIASES and declared in accepted_n:
         return detected.ext == "zip" or declared == "cbr"

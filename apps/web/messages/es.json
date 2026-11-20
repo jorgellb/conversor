@@ -1797,7 +1797,7 @@
     "exportMd": "Descargar Markdown",
     "working": "Preparando…",
     "uploading": "Enviando… {p} %",
-    "privacy": "Word y Markdown se crean en tu navegador. El PDF se hace en nuestro servidor y se borra al caducar.",
+    "privacy": "Word y Markdown se crean en tu navegador. El PDF y el ODT se hacen en nuestro servidor y se borran al caducar.",
     "pdfReady": "PDF listo.",
     "previewReady": "Vista previa lista.",
     "docxReady": "Word listo.",
@@ -1828,7 +1828,7 @@
     "exportOdt": "Descargar ODT",
     "odtReady": "ODT listo.",
     "merge": "Combinar correspondencia",
-    "mergeHelp": "Carga un CSV o un Excel con una fila por persona, pon sus campos en el texto con los botones (como {Nombre}) y crea un PDF por fila o uno con todas. La lista no sale de tu navegador.",
+    "mergeHelp": "Carga un CSV o un Excel con una fila por persona, pon sus campos en el texto con los botones (como {Nombre}) y crea un PDF por fila o uno con todas. La lista se lee en tu navegador; los valores que usa el documento se envían a nuestro servidor para crear el PDF y se borran al caducar.",
     "loadList": "Cargar lista",
     "changeList": "Cambiar lista",
     "removeList": "Quitar lista",
@@ -1849,6 +1849,10 @@
     "dictationFailed": "No se ha podido usar el micrófono para dictar.",
     "readAloud": "Leer en voz alta",
     "readStop": "Parar la lectura",
-    "restoreVersion": "Recuperar la versión {title}"
+    "restoreVersion": "Recuperar la versión {title}",
+    "speechNotice": "El dictado y la lectura en voz alta usan el reconocimiento y las voces de tu navegador, que en Chrome y Edge pueden enviar el audio o el texto a Google o a Microsoft. ¿Continuar?",
+    "mergeZipCaveat": "Con un PDF por fila, el índice y los números de página cuentan todo el conjunto: para que empiecen en 1 en cada fila, crea uno con todas.",
+    "mergeSplitFailed": "No se ha podido partir el PDF por filas: crea uno con todas.",
+    "mergeUnknown": "Se han dejado tal cual porque no son columnas de la lista: {fields}."
   }
 }

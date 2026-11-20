@@ -1797,7 +1797,7 @@
     "exportMd": "Download Markdown",
     "working": "Preparing…",
     "uploading": "Sending… {p}%",
-    "privacy": "Word and Markdown are made in your browser. The PDF is made on our server and deleted when it expires.",
+    "privacy": "Word and Markdown are made in your browser. The PDF and ODT are made on our server and deleted when they expire.",
     "pdfReady": "PDF ready.",
     "previewReady": "Preview ready.",
     "docxReady": "Word ready.",
@@ -1828,7 +1828,7 @@
     "exportOdt": "Download ODT",
     "odtReady": "ODT ready.",
     "merge": "Mail merge",
-    "mergeHelp": "Load a CSV or Excel file with one row per person, put its fields in the text with the buttons (such as {Name}) and create one PDF per row or one with all of them. The list never leaves your browser.",
+    "mergeHelp": "Load a CSV or Excel file with one row per person, put its fields in the text with the buttons (such as {Name}) and create one PDF per row or one with all of them. The list is read in your browser; the values the document uses are sent to our server to create the PDF and deleted when they expire.",
     "loadList": "Load list",
     "changeList": "Change list",
     "removeList": "Remove list",
@@ -1849,6 +1849,10 @@
     "dictationFailed": "The microphone could not be used for dictation.",
     "readAloud": "Read aloud",
     "readStop": "Stop reading",
-    "restoreVersion": "Restore version {title}"
+    "restoreVersion": "Restore version {title}",
+    "speechNotice": "Dictation and reading aloud use your browser's speech recognition and voices, which in Chrome and Edge may send the audio or text to Google or Microsoft. Continue?",
+    "mergeZipCaveat": "With one PDF per row, the contents and page numbers count the whole set: to have them start at 1 for each row, create one with all of them.",
+    "mergeSplitFailed": "The PDF could not be split by rows: create one with all of them.",
+    "mergeUnknown": "Left as they are because they are not list columns: {fields}."
   }
 }

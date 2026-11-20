@@ -142,6 +142,7 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
   const [nameColumn, setNameColumn] = useState(0);
   const [listening, setListening] = useState(false);
   const [speaking, setSpeaking] = useState(false);
+  const speechNotice = useRef(false);
   const recognition = useRef<Recognition | null>(null);
   const speech = useMemo(() => {
     if (typeof window === "undefined") return { dictate: false, read: false };
@@ -260,6 +261,10 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
 
   function fail(err: unknown) {
     if (err instanceof DOMException && err.name === "AbortError") return;
+    if (err instanceof Error && !(err instanceof ApiError) && err.message === "filas") {
+      setBusy({ kind: "error", message: t("mergeSplitFailed") });
+      return;
+    }
     const code = err instanceof ApiError ? err.code : "INTERNAL";
     setBusy({ kind: "error", message: err instanceof ApiError && err.message ? err.message : te.has(code) ? te(code) : te("INTERNAL") });
   }
@@ -329,6 +334,12 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
       const bytes = new Uint8Array(await (await fetch(out.url)).arrayBuffer());
       const tools = await import("@conversor/client-tools/escribir");
       const rows = Math.min(recipients.rows.length, MAX_MERGE_ROWS);
+      const html = editor.getHTML();
+      // Un PDF por fila sale de partir el PDF de todas: el índice y los números de página son los del conjunto (D-246).
+      const { unknownFields } = await import("@conversor/client-tools/tarjeta/model");
+      const unknown = unknownFields(editor.getText(), recipients.headers);
+      const unknownNote = unknown.length ? [t("mergeUnknown", { fields: unknown.slice(0, 5).map((f) => `{${f}}`).join(", ") })] : [];
+      const zipCaveat = mergeMode !== "uno" && (/data-toc/.test(html) || (values.numeros_pagina ?? "pie") !== "ninguno") ? [t("mergeZipCaveat")] : [];
       if (mergeMode === "uno") {
         download(new Blob([(await tools.addFieldsFromLinks(bytes, locale)).bytes as BlobPart], { type: "application/pdf" }), `${fileBase()}.pdf`);
       } else {
@@ -341,14 +352,25 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
       rememberOptions(spec.slug, values, spec.secretFields);
       recordUse(spec.slug);
       setBusy({ kind: "idle" });
-      setStatus([t("mergeReady", { n: rows }), ...(recipients.rows.length > MAX_MERGE_ROWS ? [t("mergeCut", { max: MAX_MERGE_ROWS })] : [])].join(" "));
+      setStatus([t("mergeReady", { n: rows }), ...(recipients.rows.length > MAX_MERGE_ROWS ? [t("mergeCut", { max: MAX_MERGE_ROWS })] : []),
+        ...zipCaveat, ...unknownNote].join(" "));
     } catch (err) {
       fail(err);
     }
   }
 
   function insertListField(header: string) {
-    editor?.chain().focus().insertContent(`{${header}}`).run();
+    // Como texto y no como HTML: una cabecera «Importe <EUR>» o «<b>Nombre</b>» se queda tal cual (D-246).
+    editor?.chain().focus().insertContent({ type: "text", text: `{${header}}` }).run();
+  }
+
+  /** El dictado y la voz del navegador pueden usar un servicio del fabricante (Google en Chrome, Microsoft en Edge): se
+   * avisa una vez antes de usarlos (D-246). */
+  function speechAllowed(): boolean {
+    if (speechNotice.current) return true;
+    if (!window.confirm(t("speechNotice"))) return false;
+    speechNotice.current = true;
+    return true;
   }
 
   /** Dictado con la Web Speech API del navegador (no gasta peticiones de IA); el texto reconocido va donde está el cursor. */
@@ -359,14 +381,14 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
     }
     const w = window as unknown as { SpeechRecognition?: new () => Recognition; webkitSpeechRecognition?: new () => Recognition };
     const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
-    if (!Ctor || !editor) return;
+    if (!Ctor || !editor || !speechAllowed()) return;
     const rec = new Ctor();
     rec.lang = locale === "en" ? "en-GB" : "es-ES";
     rec.continuous = true;
     rec.interimResults = false;
     rec.onresult = (e) => {
       for (let i = e.resultIndex; i < e.results.length; i += 1) {
-        if (e.results[i].isFinal) editor.chain().focus().insertContent(`${e.results[i][0].transcript.trim()} `).run();
+        if (e.results[i].isFinal) editor.chain().focus().insertContent({ type: "text", text: `${e.results[i][0].transcript.trim()} ` }).run();
       }
     };
     rec.onend = () => setListening(false);
@@ -391,8 +413,13 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
     const { from, to } = editor.state.selection;
     const text = (from !== to ? editor.state.doc.textBetween(from, to, "\n") : editor.getText()).trim();
     if (!text) return;
+    const lang = locale === "en" ? "en-GB" : "es-ES";
+    // Mejor una voz del propio dispositivo (localService): las de red mandan el texto al fabricante del navegador.
+    const local = synth.getVoices().find((v) => v.localService && v.lang.toLowerCase().startsWith(lang.slice(0, 2)));
+    if (!local && !speechAllowed()) return;
     const utter = new SpeechSynthesisUtterance(text.slice(0, 30000));
-    utter.lang = locale === "en" ? "en-GB" : "es-ES";
+    utter.lang = lang;
+    if (local) utter.voice = local;
     utter.onend = () => setSpeaking(false);
     utter.onerror = () => setSpeaking(false);
     synth.speak(utter);

@@ -88,7 +88,7 @@ describe("tarjeta: modelo y plantillas", () => {
 
   it("sustituye los campos sin distinguir mayúsculas ni tildes", () => {
     expect(fillFields("Para {nombre} en {CIUDAD} ({Código})", ["Nombre", "Ciudad", "Codigo"], ["Ana", "Lugo", "27001"])).toBe("Para Ana en Lugo (27001)");
-    expect(fillFields("{Falta}!", ["Nombre"], ["Ana"])).toBe("!");
+    expect(fillFields("{Falta}!", ["Nombre"], ["Ana"])).toBe("{Falta}!");  // lo que no es una columna se queda (D-246)
     const card = postal();
     card.recipients = { headers: ["Nombre"], rows: [["Ana"], ["Luis"]] };
     expect(usedFields(card)).toEqual(["Nombre"]);

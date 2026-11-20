@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
+import { PageLink } from "@/components/PageLink";
 
 import type { Locale } from "@/i18n/routing";
 import { disabledByEnv } from "@/lib/flags";
@@ -35,10 +35,10 @@ export async function CreatePdfPage({ locale }: { locale: Locale }) {
           <ul className="grid gap-3 sm:grid-cols-2">
             {g.tools.map((tool) => tool && (
               <li key={tool.slug_es}>
-                <Link href={toolPath(locale, tool)} className="card flex h-full flex-col gap-1 p-4 hover:underline">
+                <PageLink href={toolPath(locale, tool)} className="card flex h-full flex-col gap-1 p-4 hover:underline">
                   <span className="font-semibold">{nameOf(tool, locale)}</span>
                   <span className="muted text-sm">{g.key === "group_blank" ? t("blankHint") : summaryOf(tool, locale)}</span>
-                </Link>
+                </PageLink>
               </li>
             ))}
           </ul>

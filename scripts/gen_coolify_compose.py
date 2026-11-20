@@ -278,6 +278,9 @@ def build() -> dict:
             GOTENBERG,
             command=["gotenberg", "--api-timeout=300s", "--log-format=json", "--libreoffice-restart-after=10",
                      "--chromium-restart-after=10", "--chromium-deny-public-ips=true", "--chromium-deny-private-ips=true",
+                     # D-246: la lista por defecto de Gotenberg deja todo /tmp; así solo los archivos de dentro de la carpeta de
+                     # cada petición (/tmp/<id>/<archivo>), nunca el listado de /tmp ni el de una carpeta.
+                     r"--chromium-deny-list=^file:(?!///tmp/[^/]+/[^/]).*",
                      "--libreoffice-deny-public-ips=true", "--libreoffice-deny-private-ips=true",
                      "--api-download-from-deny-public-ips=true", "--api-download-from-deny-private-ips=true",
                      "--webhook-deny-public-ips=true", "--webhook-deny-private-ips=true"],

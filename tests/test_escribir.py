@@ -123,3 +123,33 @@ def test_review_d238_linear_parsing_csp_and_bad_inputs(make_ctx, tmp_path, fixtu
     with pytest.raises(ToolError) as err:
         run("escribir-pdf", make_ctx("escribir-pdf", [_write(tmp_path, "e.html", "<p>x</p>"), encrypted]))
     assert err.value.code == "PASSWORD_REQUIRED"
+
+
+def test_meta_refresh_and_external_tags_never_reach_chromium():
+    """D-246: un <meta http-equiv="refresh"> en el cuerpo (o en cualquier HTML que va a Chromium) navegaría a file:///tmp/
+    sin que la CSP lo impida."""
+    from tools.office.escribir import BODY_BLOCKED
+    from tools.office.gotenberg import no_refresh
+
+    attacks = [b'<meta http-equiv="refresh" content="0;url=file:///tmp/">', b"<META HTTP-EQUIV=Refresh CONTENT='0;url=file:///etc/'>",
+               b'<meta content="0;url=file:///" http-equiv="&#114;efresh">', b"<meta http-equiv='\trefresh '>"]
+    for attack in attacks:
+        assert b"efresh" not in no_refresh(b"<p>hola</p>" + attack).lower().replace(b"&#114;", b"r")
+    kept = b'<meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'">'
+    assert no_refresh(kept) == kept
+    body = '<p>x</p><meta http-equiv="refresh" content="0"><base href="file:///"><link rel=stylesheet href=x><iframe src=y></iframe>'
+    assert BODY_BLOCKED.sub("", body) == "<p>x</p>"
+
+
+def test_main_gotenberg_denies_listing_tmp():
+    import re
+    from pathlib import Path
+
+    import yaml
+
+    doc = yaml.safe_load((Path(__file__).resolve().parents[1] / "docker-compose.coolify.yml").read_text(encoding="utf-8"))
+    flag = next(a for a in doc["services"]["gotenberg"]["command"] if a.startswith("--chromium-deny-list="))
+    deny = re.compile(flag.split("=", 1)[1])
+    assert not deny.match("file:///tmp/1b2c/index.html") and not deny.match("data:image/png;base64,AA")
+    for url in ("file:///tmp/", "file:///tmp/1b2c/", "file:///etc/passwd", "file:///srv/files/x"):
+        assert deny.match(url), url

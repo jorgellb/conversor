@@ -35,6 +35,7 @@ TOC_CLASS = re.compile(r'\bclass="toc-page"')
 # Lo que imprime Chromium no ejecuta nada ni carga nada de fuera del documento (ni file:///tmp de otros trabajos): solo
 # imágenes y fuentes en data: y estilos en la página. Se pone la primera en <head>: otra en el cuerpo no la relaja (D-238).
 PAGE_CSP = "default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:"
+BODY_BLOCKED = re.compile(r"<\s*/?\s*(?:meta|base|link|iframe|frame|frameset|object|embed|script|portal|noscript)\b[^>]*>", re.I)
 SURROGATES = re.compile(r"[\ud800-\udfff]")
 
 
@@ -231,6 +232,9 @@ def run(ctx: ToolContext) -> list[dict]:
         close = body.find(">", start)
         if 0 <= close < end:
             body = body[close + 1:end]
+    # Lo que el editor nunca produce y no puede ir en un cuerpo (D-246): metadatos, bases, hojas y marcos externos y
+    # guiones. Quien llama a la API directamente se salta el saneado del navegador.
+    body = BODY_BLOCKED.sub("", body)
     ctx.report(0.1, None)
     name = (re.sub(r"[^\w .,()-]+", "", clean(o.titulo).strip(), flags=re.UNICODE).strip(" .")[:80] or "documento") + ".pdf"
     dst = ctx.output(name)

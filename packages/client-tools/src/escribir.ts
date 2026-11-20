@@ -120,19 +120,37 @@ export function destinationPages(pdf: PDFDocument): Map<string, number> {
  * Combinación de correspondencia (F6-O2, D-236): el PDF de todas las filas se parte en un PDF por fila, desde la página
  * del destino «fila-N» de cada una hasta la anterior a la siguiente. Los campos rellenables se crean en cada parte.
  */
+/** El PDF no tiene las filas de la combinación en orden. */
+export class SplitError extends Error {
+  constructor() {
+    super("filas");
+  }
+}
+
 export async function splitByRows(bytes: Uint8Array, rows: number, locale: "es" | "en" = "es"): Promise<Uint8Array[]> {
   const pdf = await PDFDocument.load(bytes, { updateMetadata: false });
   const dests = destinationPages(pdf);
   const starts = Array.from({ length: rows }, (_, i) => dests.get(`fila-${i + 1}`));
-  if (starts.some((s) => s === undefined)) throw new Error("filas");
+  // Cada fila empieza después que la anterior: si no, el PDF no es el de la combinación (D-246).
+  if (starts.some((s, i) => s === undefined || (i > 0 && s <= starts[i - 1]!))) throw new SplitError();
   const total = pdf.getPageCount();
   const parts: Uint8Array[] = [];
+  const lang = pdf.catalog.lookup(PDFName.of("Lang"));
+  const langCopy = lang instanceof PDFString || lang instanceof PDFHexString ? lang : undefined;
   for (let i = 0; i < rows; i += 1) {
     const from = starts[i]!;
     const to = i + 1 < rows ? starts[i + 1]! - 1 : total - 1;
     const part = await PDFDocument.create({ updateMetadata: false });
+    // Los metadatos y el idioma del conjunto (los marcadores y las etiquetas no se pueden partir: D-246).
     const title = pdf.getTitle();
     if (title) part.setTitle(title);
+    const author = pdf.getAuthor();
+    if (author) part.setAuthor(author);
+    const subject = pdf.getSubject();
+    if (subject) part.setSubject(subject);
+    const keywords = pdf.getKeywords();
+    if (keywords) part.setKeywords(keywords.split(/\s*[,;]\s*/));
+    if (langCopy) part.catalog.set(PDFName.of("Lang"), langCopy);
     const pages = await part.copyPages(pdf, Array.from({ length: Math.max(1, to - from + 1) }, (_, k) => from + k));
     pages.forEach((p) => part.addPage(p));
     parts.push((await addFieldsFromLinks(await part.save({ useObjectStreams: true }), locale)).bytes);

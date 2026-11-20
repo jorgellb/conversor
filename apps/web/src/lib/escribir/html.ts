@@ -20,13 +20,18 @@ export function exportHtml(editorHtml: string, t: ExportTexts): string {
   const body = doc.body;
   // Limpieza de lo más evidente (scripts, manejadores, marcos, formularios y recursos de fuera). El límite de confianza es
   // el servidor: la página que imprime Chromium lleva una CSP que no carga nada que no esté en data: (D-238).
-  [...body.querySelectorAll("script,style,iframe,frame,object,embed,link,meta,base,form,input,button,select,textarea,video,audio,source,picture")].forEach((el) => el.remove());
+  [...body.querySelectorAll("script,style,iframe,frame,object,embed,link,meta,base,form,input,button,select,textarea,video,audio,source,picture,"
+    + "noscript,template,portal,animate,animateMotion,animateTransform,set,use,image,foreignObject")].forEach((el) => el.remove());
   [...body.querySelectorAll("*")].forEach((el) => {
     for (const attr of [...el.attributes]) {
       if (/^on/i.test(attr.name) || attr.name === "contenteditable" || attr.name === "draggable") el.removeAttribute(attr.name);
-      if ((attr.name === "href" || attr.name === "src" || attr.name === "xlink:href") && /^\s*(javascript|vbscript|data:text)/i.test(attr.value)) el.removeAttribute(attr.name);
+      // El esquema sin espacios ni caracteres de control («jav&#x09;ascript:» lo lee el navegador como javascript:), D-246.
+      const scheme = attr.value.replace(/[\u0000-\u0020\u007f-\u009f]+/g, "").toLowerCase();
+      if (["href", "src", "xlink:href", "action", "values", "from", "to", "by"].includes(attr.name)
+        && /^(?:javascript:|vbscript:|data:text|data:image\/svg|file:)/.test(scheme)) el.removeAttribute(attr.name);
       if (["srcset", "poster", "background", "srcdoc", "formaction"].includes(attr.name)) el.removeAttribute(attr.name);
-      if (attr.name === "style" && /url\(/i.test(attr.value)) el.removeAttribute(attr.name);
+      // url( también escrito con escapes de CSS (u\\72l() o con comentarios: cualquier barra o «url» fuera.
+      if (attr.name === "style" && (/url|\\|expression|@import|\/\*/i.test(attr.value))) el.removeAttribute(attr.name);
     }
   });
   [...body.querySelectorAll("img")].forEach((img) => {

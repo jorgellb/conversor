@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import Link from "next/link";
+
+import { PageLink } from "@/components/PageLink";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -291,7 +293,7 @@ export default async function SlugPage({ params, searchParams }: Params) {
             <h2 className="mb-2 text-xl font-semibold">{t("related")}</h2>
             <ul className="flex flex-wrap gap-2">
               {related.map((r) => (
-                <li key={r.slug_es}><Link className="card inline-block px-3 py-1" href={toolPath(locale, r)}>{nameOf(r, locale)}</Link></li>
+                <li key={r.slug_es}><PageLink className="card inline-block px-3 py-1" href={toolPath(locale, r)}>{nameOf(r, locale)}</PageLink></li>
               ))}
             </ul>
           </section>

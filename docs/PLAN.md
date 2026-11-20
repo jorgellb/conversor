@@ -133,15 +133,15 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F6-N2 | crear-tarjeta | Hecho (D-232) |
 | F6-O1 | escribir-pdf: editor y exportación | Hecho (D-234) |
 | F6-O2 | escribir-pdf: abrir, ODT, combinación de correspondencia y extras | Hecho (D-236) |
-| F6-Z | Cierre de F6: 16.5 de su ámbito y paridad con PDF24 en `TOOLS.md` | Pendiente (F6-A a F6-O2) |
+| F6-Z | Cierre de F6: 16.5 de su ámbito y paridad con PDF24 en `TOOLS.md` | Hecho (D-247) |
 
 ## F5: vídeo (pendiente, después de F6)
 
 | Lote | Herramientas | Estado |
 | --- | --- | --- |
 | F5-V1 | mp4-a-webm, webm-a-mp4, mov-a-mp4, mkv-a-mp4, avi-a-mp4, video-a-gif, gif-a-mp4 (solo Pro) | Hecho (D-241) |
-| F5-V2 | comprimir-video, recortar-video, rotar-video, quitar-audio-video | Hecho (D-242) |
-| F5-Z | Cierre de F5: audio, vídeo y carga de ogg-a-mp3 | Pendiente (F5-V2) |
+| F5-V2 | comprimir-video, recortar-video, rotar-video, quitar-audio-video | Hecho (D-242, revisión D-245) |
+| F5-Z | Cierre de F5: audio, vídeo y carga de ogg-a-mp3 | Hecho (D-247); la carga, en el VPS |
 
 ## F7: 3D, CAD e impresión 3D (pendiente)
 
