@@ -602,6 +602,18 @@
    "b64": "QkVHSU46VkNBTEVOREFSDQpWRVJTSU9OOjIuMA0KRU5EOlZDQUxFTkRBUg0K"
   },
   {
+   "id": "mbox",
+   "declared": "mbox",
+   "expected": "mbox",
+   "b64": "RnJvbSBhbmFAZWplbXBsby50ZXN0IFRodSBOb3YgMTkgMTA6MDA6MDAgMjAyNgpTdWJqZWN0OiBIb2xhCgpDdWVycG8K"
+  },
+  {
+   "id": "pst",
+   "declared": "pst",
+   "expected": "pst",
+   "b64": "IUJETgAAAABTTRcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  },
+  {
    "id": "txt-utf16-texto-unicode-de-excel",
    "declared": "txt",
    "expected": "txt",

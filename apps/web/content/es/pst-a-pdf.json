@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PST a PDF convierte los correos de un archivo de datos de Outlook (.pst u .ost) en un PDF con todos sus mensajes. Sirve para archivar la correspondencia de un buzón antiguo, entregarla a un tercero o consultarla sin tener Outlook instalado.",
+    "Leemos el PST con readpst, del proyecto libpst, como programa aparte, y maquetamos cada mensaje como en EML a PDF: una página nueva por mensaje con sus cabeceras y su cuerpo saneado, las imágenes incrustadas y sin cargar nada de internet. El PDF lleva un marcador por mensaje con su asunto.",
+    "Los mensajes se ordenan por fecha o en el orden de sus carpetas, y puedes añadir los adjuntos convertibles tras cada mensaje. El PDF incluye hasta 200 mensajes; para buzones grandes, conviértelos antes a MBOX con PST a MBOX y sepáralos.",
+    "Si el PST es muy grande, conviene convertir antes a MBOX y separar los mensajes, porque un PDF de miles de páginas cuesta de abrir y de buscar. Los mensajes cifrados con S/MIME aparecen como un adjunto que no se puede leer.",
+    "Esta herramienta está desactivada mientras la probamos con archivos PST reales, por la misma razón que PST a MBOX. Los correos se tratan en nuestro servidor, se borran al caducar y nunca se envían a servicios de inteligencia artificial."
+  ],
+  "steps": [
+    "Sube el archivo .pst u .ost.",
+    "Elige el orden, el papel y si incluir los adjuntos.",
+    "Descarga el PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Se incluyen todas las carpetas?",
+      "a": "Sí, los mensajes de todas las carpetas de correo del PST, hasta el límite de 200 mensajes por PDF."
+    },
+    {
+      "q": "¿Y los contactos o el calendario?",
+      "a": "No son correo y no se incluyen en el PDF."
+    },
+    {
+      "q": "¿Puedo convertir un .ost?",
+      "a": "Sí, si no está cifrado: los .ost de Exchange son parecidos a los .pst y readpst los lee igual."
+    }
+  ]
+}

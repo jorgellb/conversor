@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PST a MBOX convierte un archivo de datos de Outlook (.pst, y también .ost) en buzones MBOX, uno por carpeta, para abrirlos en Thunderbird, Apple Mail u otro programa que no sea Outlook. Es la manera de recuperar el correo de un Outlook antiguo, de un ordenador que ya no tienes o de una copia de seguridad.",
+    "Usamos readpst, del proyecto libpst, como programa aparte en nuestro servidor. Cada carpeta del PST (Bandeja de entrada, Enviados, tus carpetas propias…) se convierte en un MBOX con sus mensajes y sus adjuntos, y todas se entregan en un ZIP con la misma estructura de carpetas.",
+    "Admitimos archivos de hasta 2 GB. Los PST protegidos con contraseña de Outlook o dañados pueden no leerse por completo. Los contactos y el calendario del PST no son correo y no van en los MBOX.",
+    "Un archivo .ost es la copia local que Outlook guarda de un buzón de Exchange o de Microsoft 365; si no está cifrado, se lee como un .pst. Las carpetas compartidas y los archivos de almacenamiento en línea no viajan en el PST.",
+    "Esta herramienta está desactivada mientras la probamos con archivos PST reales: no hay archivos de prueba libres y no queremos ofrecerla sin comprobarla. Los correos nunca se envían a servicios de inteligencia artificial y se borran al caducar."
+  ],
+  "steps": [
+    "Sube el archivo .pst u .ost.",
+    "Espera a la conversión.",
+    "Descarga el ZIP con un MBOX por carpeta."
+  ],
+  "faq": [
+    {
+      "q": "¿Dónde está el PST de Outlook?",
+      "a": "En Windows suele estar en Documentos\\Archivos de Outlook. Desde Outlook también puedes exportarlo en Archivo, Abrir y exportar, Importar o exportar."
+    },
+    {
+      "q": "¿Cómo abro el MBOX en Thunderbird?",
+      "a": "Con el complemento ImportExportTools NG, que importa archivos MBOX como carpetas."
+    },
+    {
+      "q": "¿Y si solo quiero leer los correos?",
+      "a": "PST a PDF convierte los mensajes del PST en un PDF con un marcador por correo."
+    }
+  ]
+}

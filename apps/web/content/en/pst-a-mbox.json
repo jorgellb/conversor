@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PST to MBOX turns an Outlook data file (.pst, and also .ost) into MBOX mailboxes, one per folder, to open them in Thunderbird, Apple Mail or another program that is not Outlook. It is the way to recover mail from an old Outlook, from a computer you no longer have or from a backup.",
+    "We use readpst, from the libpst project, as a separate program on our server. Each PST folder (Inbox, Sent, your own folders…) becomes an MBOX with its messages and attachments, and all of them are delivered in a ZIP with the same folder structure.",
+    "We accept files of up to 2 GB. PST files protected with an Outlook password or damaged may not be read completely. The PST's contacts and calendar are not mail and do not go into the MBOX files.",
+    "An .ost file is the local copy Outlook keeps of an Exchange or Microsoft 365 mailbox; if it is not encrypted, it is read like a .pst. Shared folders and online archives do not travel in the PST.",
+    "This tool is switched off while we test it with real PST files: there are no free test files and we do not want to offer it unchecked. Emails are never sent to artificial intelligence services and are deleted when they expire."
+  ],
+  "steps": [
+    "Upload the .pst or .ost file.",
+    "Wait for the conversion.",
+    "Download the ZIP with one MBOX per folder."
+  ],
+  "faq": [
+    {
+      "q": "Where is Outlook's PST?",
+      "a": "On Windows it is usually in Documents\\Outlook Files. From Outlook you can also export it under File, Open & Export, Import/Export."
+    },
+    {
+      "q": "How do I open the MBOX in Thunderbird?",
+      "a": "With the ImportExportTools NG add-on, which imports MBOX files as folders."
+    },
+    {
+      "q": "What if I only want to read the emails?",
+      "a": "PST to PDF turns the PST's messages into a PDF with one bookmark per email."
+    }
+  ]
+}

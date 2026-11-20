@@ -89,6 +89,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | gpxpy 1.6.2 en el extra `utils`; GDAL `ogr2ogr` (gdal-bin, Debian) en `workerutils` | Apache-2.0; MIT | GPX de F6-H1 y Shapefile a GeoJSON y KML como programa externo (D-220); nunca `osgeo` en el proceso (11) |
 | fitparse 1.2.0 en el extra `utils` | MIT | FIT de relojes y ciclocomputadores en fit-a-gpx y fit-a-csv (F6-H2, D-223) |
 | vobject 0.9.9 (con pytz y six) e icalendar 7.3.0 (con tzdata) en el extra `utils` | Apache-2.0; BSD-2-Clause | vCard e iCalendar de F6-I (D-224) |
+| readpst de libpst (pst-utils, Debian) en `workermedia` | GPL-2.0-or-later | pst-a-mbox y pst-a-pdf como programa externo (F6-J, D-225) |
 | libarchive-c 5.3 y libarchive13 (Debian) en `workerutils`; pysubs2 1.9.1 en el extra `utils` | CC0-1.0 y BSD-2-Clause; MIT | Comprimidos RAR, 7z y tar y subtítulos SRT, WebVTT y ASS (F6-E, D-217); sin unrar ni p7zip (11) |
 | PyYAML 6.0.3 (con libyaml) y defusedxml 0.7.1 | MIT; PSF-2.0 | yaml-a-json, json-a-yaml y xml-a-json (F6-B2, D-214): `CSafeLoader` y XML sin entidades ni DTD externos |
 | LibreOffice Calc (`libreoffice-calc-nogui`, Debian) en `workeroffice` | MPL-2.0 | ods-a-xlsx y xlsx-a-ods como programa externo (F6-B1) |

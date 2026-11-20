@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MBOX a EML separa un buzón MBOX en archivos EML sueltos, uno por mensaje, dentro de un ZIP. MBOX es el formato en que Thunderbird guarda sus carpetas, en que Google entrega el correo de Gmail con Takeout y en que exportan Apple Mail y muchos programas de correo en Linux. Separarlo es útil para abrir un mensaje concreto con doble clic, adjuntarlo a un expediente o importarlo en otro programa.",
+    "Cada mensaje se guarda exactamente como está en el buzón, con todas sus cabeceras, su cuerpo y sus adjuntos, sin volver a codificarlo. El nombre de cada archivo lleva un número de orden y el asunto del mensaje, para que se encuentren fácilmente y no se pisen aunque varios tengan el mismo asunto.",
+    "Los EML se abren en Outlook, Thunderbird, Apple Mail y en la mayoría de clientes de correo, y también puedes convertir cualquiera de ellos en PDF con EML a PDF. Admitimos buzones de hasta 20 000 mensajes; si el tuyo tiene más, divídelo antes por carpetas o por fechas.",
+    "Los correos se tratan en nuestro servidor, se borran al caducar y nunca se envían a servicios de inteligencia artificial."
+  ],
+  "steps": [
+    "Sube el archivo MBOX.",
+    "Espera a que se separen los mensajes.",
+    "Descarga el ZIP con un EML por mensaje."
+  ],
+  "faq": [
+    {
+      "q": "¿Dónde está el MBOX de Gmail?",
+      "a": "En Google Takeout, elige Gmail y descarga la exportación: dentro hay un archivo .mbox por etiqueta o uno con todo el correo."
+    },
+    {
+      "q": "¿Y los de Thunderbird?",
+      "a": "Cada carpeta de Thunderbird es un archivo sin extensión en la carpeta del perfil (Inbox, Sent…). Añádele .mbox al nombre y súbelo."
+    },
+    {
+      "q": "¿Se pierden los adjuntos?",
+      "a": "No: cada EML contiene el mensaje completo, con sus adjuntos dentro."
+    }
+  ]
+}

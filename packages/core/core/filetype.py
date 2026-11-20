@@ -12,7 +12,7 @@ EBML = bytes.fromhex("1A45DFA3")
 # Formatos que comparten contenedor: se confía en la extensión declarada solo dentro de su familia.
 OLE2_FAMILY = {"doc", "xls", "ppt", "pps", "msg", "pub", "vsd"}
 TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
-               "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics"}
+               "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics", "mbox"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr", "kmz"}  # kmz: un ZIP con doc.kml (F6-H1)
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
@@ -65,7 +65,7 @@ MIME = {
     # Mapas (F6-H1).
     "gpx": "application/gpx+xml", "kml": "application/vnd.google-earth.kml+xml", "kmz": "application/vnd.google-earth.kmz",
     "geojson": "application/geo+json", "tcx": "application/vnd.garmin.tcx+xml", "fit": "application/vnd.ant.fit",
-    "vcf": "text/vcard", "ics": "text/calendar",
+    "vcf": "text/vcard", "ics": "text/calendar", "mbox": "application/mbox", "pst": "application/vnd.ms-outlook-pst",
     # Datos (F6-B).
     "json": "application/json", "xml": "application/xml", "yaml": "application/yaml",
 }
@@ -274,6 +274,9 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
     if head.startswith(b"Rar!\x1a\x07"):
         return Detected("rar", "archive")
     # Comprimidos de F6-E (D-217): 7z, gzip, bzip2, xz y tar (la marca «ustar» en el byte 257).
+    # PST y OST de Outlook (F6-J): «!BDN» al principio; manda la extensión declarada entre las dos.
+    if head.startswith(b"!BDN"):
+        return Detected(declared if declared in ("pst", "ost") else "pst", "mail")
     # FIT (F6-H2): cabecera de 12 o 14 bytes con «.FIT» en el byte 8.
     if len(head) >= 12 and head[0] in (12, 14) and head[8:12] == b".FIT":
         return Detected("fit", "sport")

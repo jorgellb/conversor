@@ -156,3 +156,4 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Lote C de F2 con la pila completa: un EPUB a PDF (índice al principio), un CBR en RAR, un DjVu, un EML con
       adjuntos, un MSG de Outlook real, un DXF de un programa de CAD y un .pages; `workermedia` y `workerofficeheavy`
       sin reinicios por memoria (`docker stats`).
+- [ ] Lote J de F6: pst-a-mbox y pst-a-pdf con un PST real de Outlook (readpst en workermedia); si salen bien, quitar `default_enabled=False` y su motivo en `config/tools-notes.yaml`.

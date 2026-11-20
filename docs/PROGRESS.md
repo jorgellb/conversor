@@ -612,9 +612,14 @@ con un FIT de prueba escrito con su CRC.
 vcf-a-csv, csv-a-vcf, vcf-a-excel, ics-a-csv, csv-a-ics e ics-a-excel (D-224) con las plantillas de Google y Outlook; VCF → CSV
 → VCF conserva los contactos (16.5), en `tests/test_agenda.py`.
 
+## F6-J (buzones)
+
+mbox-a-eml y mbox-a-pdf en `workermedia` con la maquetación de eml-a-pdf; pst-a-mbox y pst-a-pdf con readpst, apagadas hasta
+probarlas con un PST real (D-225), en `tests/test_buzones.py`.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2 y F6-I hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I y F6-J hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

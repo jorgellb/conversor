@@ -23194,6 +23194,272 @@
       }
     },
     {
+      "slug_es": "mbox-a-eml",
+      "slug_en": "mbox-to-eml",
+      "name_es": "MBOX a EML",
+      "name_en": "MBOX to EML",
+      "summary_es": "Separa un buzón MBOX (Thunderbird, Gmail Takeout, Apple Mail) en un ZIP con un archivo EML por mensaje, intactos.",
+      "summary_en": "Split an MBOX mailbox (Thunderbird, Gmail Takeout, Apple Mail) into a ZIP with one untouched EML file per message.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "media",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "mbox"
+      ],
+      "outputs": [
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "mbox-a-pdf",
+        "eml-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "mbox-a-pdf",
+      "slug_en": "mbox-to-pdf",
+      "name_es": "MBOX a PDF",
+      "name_en": "MBOX to PDF",
+      "summary_es": "Convierte un buzón MBOX en un PDF con cada mensaje, sus cabeceras e imágenes, y un marcador por correo.",
+      "summary_en": "Turn an MBOX mailbox into a PDF with each message, its headers and images, and one bookmark per email.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "media",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "mbox"
+      ],
+      "outputs": [
+        "pdf"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "mbox-a-eml",
+        "eml-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "mbox-a-pdf y pst-a-pdf (F6-J, D-225): adjuntos [no: un buzón puede traer cientos], papel [A4] y orden [por fecha].",
+        "properties": {
+          "adjuntos": {
+            "default": false,
+            "title": "Añadir los adjuntos convertibles tras cada mensaje",
+            "type": "boolean",
+            "x-title": {
+              "en": "Add convertible attachments after each message",
+              "es": "Añadir los adjuntos convertibles tras cada mensaje"
+            }
+          },
+          "papel": {
+            "default": "A4",
+            "enum": [
+              "A4",
+              "Letter"
+            ],
+            "title": "Papel",
+            "type": "string",
+            "x-labels": {
+              "A4": {
+                "en": "A4",
+                "es": "A4"
+              },
+              "Letter": {
+                "en": "Letter",
+                "es": "Carta"
+              }
+            },
+            "x-title": {
+              "en": "Paper",
+              "es": "Papel"
+            }
+          },
+          "orden": {
+            "default": "fecha",
+            "enum": [
+              "fecha",
+              "archivo"
+            ],
+            "title": "Orden",
+            "type": "string",
+            "x-labels": {
+              "archivo": {
+                "en": "As they are in the mailbox",
+                "es": "Como están en el buzón"
+              },
+              "fecha": {
+                "en": "By date, oldest first",
+                "es": "Por fecha, del más antiguo al más reciente"
+              }
+            },
+            "x-title": {
+              "en": "Order",
+              "es": "Orden"
+            }
+          }
+        },
+        "title": "BuzonPdfOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "pst-a-mbox",
+      "slug_en": "pst-to-mbox",
+      "name_es": "PST a MBOX",
+      "name_en": "PST to MBOX",
+      "summary_es": "Convierte un archivo de datos de Outlook (PST) en buzones MBOX, uno por carpeta, para Thunderbird o Apple Mail.",
+      "summary_en": "Turn an Outlook data file (PST) into MBOX mailboxes, one per folder, for Thunderbird or Apple Mail.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "media",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pst",
+        "ost"
+      ],
+      "outputs": [
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": false,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "pst-a-pdf",
+        "mbox-a-eml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "pst-a-pdf",
+      "slug_en": "pst-to-pdf",
+      "name_es": "PST a PDF",
+      "name_en": "PST to PDF",
+      "summary_es": "Convierte los correos de un archivo de Outlook (PST) en un PDF con un marcador por mensaje.",
+      "summary_en": "Turn the emails in an Outlook data file (PST) into a PDF with one bookmark per message.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "media",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pst",
+        "ost"
+      ],
+      "outputs": [
+        "pdf"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": false,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "pst-a-mbox",
+        "mbox-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "mbox-a-pdf y pst-a-pdf (F6-J, D-225): adjuntos [no: un buzón puede traer cientos], papel [A4] y orden [por fecha].",
+        "properties": {
+          "adjuntos": {
+            "default": false,
+            "title": "Añadir los adjuntos convertibles tras cada mensaje",
+            "type": "boolean",
+            "x-title": {
+              "en": "Add convertible attachments after each message",
+              "es": "Añadir los adjuntos convertibles tras cada mensaje"
+            }
+          },
+          "papel": {
+            "default": "A4",
+            "enum": [
+              "A4",
+              "Letter"
+            ],
+            "title": "Papel",
+            "type": "string",
+            "x-labels": {
+              "A4": {
+                "en": "A4",
+                "es": "A4"
+              },
+              "Letter": {
+                "en": "Letter",
+                "es": "Carta"
+              }
+            },
+            "x-title": {
+              "en": "Paper",
+              "es": "Papel"
+            }
+          },
+          "orden": {
+            "default": "fecha",
+            "enum": [
+              "fecha",
+              "archivo"
+            ],
+            "title": "Orden",
+            "type": "string",
+            "x-labels": {
+              "archivo": {
+                "en": "As they are in the mailbox",
+                "es": "Como están en el buzón"
+              },
+              "fecha": {
+                "en": "By date, oldest first",
+                "es": "Por fecha, del más antiguo al más reciente"
+              }
+            },
+            "x-title": {
+              "en": "Order",
+              "es": "Orden"
+            }
+          }
+        },
+        "title": "BuzonPdfOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "msg-a-pdf",
       "slug_en": "msg-to-pdf",
       "name_es": "MSG a PDF",

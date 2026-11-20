@@ -36,7 +36,7 @@ jobs:
       - name: Motores del sistema para las pruebas de efecto
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng tesseract-ocr-osd ffmpeg libreoffice-writer-nogui libreoffice-calc-nogui gdal-bin fonts-dejavu postgresql-client restic \
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng tesseract-ocr-osd ffmpeg libreoffice-writer-nogui libreoffice-calc-nogui gdal-bin pst-utils fonts-dejavu postgresql-client restic \
             djvulibre-bin libarchive13 calibre libheif-examples libheif-plugin-libde265 libheif-plugin-x265 espeak-ng softhsm2
       # x265 solo en la CI, para crear la muestra HEIC de la prueba; nunca en las imágenes (D-49).
       - name: Herramientas del lote D (tiffcp, pdftocairo, perfil CMYK) y veraPDF fijado por SHA-256

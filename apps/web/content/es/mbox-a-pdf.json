@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MBOX a PDF convierte un buzón MBOX, de Thunderbird, de una exportación de Gmail con Google Takeout o de Apple Mail, en un único PDF con todos sus mensajes. Es la forma de archivar una correspondencia, entregarla como prueba, imprimirla o guardarla en un formato que se podrá abrir dentro de muchos años.",
+    "Cada mensaje empieza en una página nueva con sus cabeceras (de, para, copia, fecha y asunto) y su cuerpo, con el HTML saneado y las imágenes incrustadas en el propio correo. Las imágenes remotas no se descargan, por seguridad y privacidad. El PDF tiene un marcador por mensaje, con su asunto, para saltar de uno a otro desde el panel lateral del lector.",
+    "Por defecto, los mensajes se ordenan por fecha, del más antiguo al más reciente; también puedes dejarlos en el orden del buzón. Si activas los adjuntos, los que se pueden convertir (PDF, documentos de Office, imágenes…) se añaden tras su mensaje. El PDF incluye hasta 200 mensajes; para buzones más grandes, sepáralos con MBOX a EML.",
+    "La conversión usa la misma maquetación que EML a PDF y se hace en nuestro servidor, sin acceso a internet. Los correos nunca se envían a servicios de inteligencia artificial y se borran al caducar."
+  ],
+  "steps": [
+    "Sube el archivo MBOX.",
+    "Elige el papel, el orden y si incluir los adjuntos.",
+    "Descarga el PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué no se ven algunas imágenes?",
+      "a": "Las imágenes que el correo carga desde internet no se descargan, para no avisar al remitente de que has abierto el mensaje. Las que van dentro del correo sí aparecen."
+    },
+    {
+      "q": "¿Puedo convertir solo unos mensajes?",
+      "a": "Sepáralos con MBOX a EML y convierte los que quieras con EML a PDF."
+    },
+    {
+      "q": "¿Sirve como prueba?",
+      "a": "El PDF reproduce fielmente el mensaje, pero el valor como prueba lo da el original; guarda también el MBOX o los EML."
+    }
+  ]
+}

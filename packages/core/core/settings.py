@@ -111,6 +111,8 @@ class Settings(BaseSettings):
     PANDOC_BIN: Path = Path("/usr/local/bin/pandoc")
     # ogr2ogr de GDAL (gdal-bin) en workerutils para los Shapefile (F6-H1, D-220): siempre como programa externo.
     OGR2OGR_BIN: Path = Path("/usr/bin/ogr2ogr")
+    # readpst de libpst (pst-utils) en workermedia para pst-a-mbox y pst-a-pdf (F6-J, D-225): GPL, solo como programa externo.
+    READPST_BIN: Path = Path("/usr/bin/readpst")
     # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
     # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
     SIGN_VERIFY_EXTRA_ROOTS: str = ""

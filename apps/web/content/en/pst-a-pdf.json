@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "PST to PDF turns the emails in an Outlook data file (.pst or .ost) into a PDF with all its messages. It is for archiving the correspondence of an old mailbox, handing it to someone else or reading it without Outlook installed.",
+    "We read the PST with readpst, from the libpst project, as a separate program, and lay out each message as in EML to PDF: a new page per message with its headers and sanitised body, embedded images and nothing loaded from the internet. The PDF carries one bookmark per message with its subject.",
+    "Messages are sorted by date or in their folder order, and you can add convertible attachments after each message. The PDF includes up to 200 messages; for large mailboxes, convert them to MBOX first with PST to MBOX and split them.",
+    "If the PST is very large, it is better to convert it to MBOX first and split the messages, because a PDF with thousands of pages is hard to open and search. Messages encrypted with S/MIME appear as an attachment that cannot be read.",
+    "This tool is switched off while we test it with real PST files, for the same reason as PST to MBOX. Emails are processed on our server, deleted when they expire and never sent to artificial intelligence services."
+  ],
+  "steps": [
+    "Upload the .pst or .ost file.",
+    "Choose the order, paper and whether to include attachments.",
+    "Download the PDF."
+  ],
+  "faq": [
+    {
+      "q": "Are all folders included?",
+      "a": "Yes, messages from every mail folder in the PST, up to the limit of 200 messages per PDF."
+    },
+    {
+      "q": "What about contacts or the calendar?",
+      "a": "They are not mail and are not included in the PDF."
+    },
+    {
+      "q": "Can I convert an .ost?",
+      "a": "Yes, if it is not encrypted: Exchange .ost files are similar to .pst files and readpst reads them the same way."
+    }
+  ]
+}

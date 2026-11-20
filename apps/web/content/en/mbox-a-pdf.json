@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MBOX to PDF turns an MBOX mailbox, from Thunderbird, a Gmail export through Google Takeout or Apple Mail, into a single PDF with all its messages. It is the way to archive correspondence, hand it over as evidence, print it or keep it in a format that will still open many years from now.",
+    "Each message starts on a new page with its headers (from, to, cc, date and subject) and its body, with the HTML sanitised and the images embedded in the email itself. Remote images are not downloaded, for security and privacy. The PDF has one bookmark per message, with its subject, to jump between them from the reader's side panel.",
+    "By default messages are sorted by date, oldest first; you can also keep the mailbox order. If you turn on attachments, those that can be converted (PDFs, Office documents, images…) are added after their message. The PDF includes up to 200 messages; for larger mailboxes, split them with MBOX to EML.",
+    "The conversion uses the same layout as EML to PDF and runs on our server without internet access. Emails are never sent to artificial intelligence services and are deleted when they expire."
+  ],
+  "steps": [
+    "Upload the MBOX file.",
+    "Choose the paper, order and whether to include attachments.",
+    "Download the PDF."
+  ],
+  "faq": [
+    {
+      "q": "Why are some images missing?",
+      "a": "Images the email loads from the internet are not downloaded, so the sender is not told you opened the message. Images included in the email do appear."
+    },
+    {
+      "q": "Can I convert only some messages?",
+      "a": "Split them with MBOX to EML and convert the ones you want with EML to PDF."
+    },
+    {
+      "q": "Does it work as evidence?",
+      "a": "The PDF faithfully reproduces the message, but the evidential value lies in the original; keep the MBOX or the EML files too."
+    }
+  ]
+}

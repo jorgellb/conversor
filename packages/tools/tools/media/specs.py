@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from core.options import opt
-from core.registry import ToolSpec
+from core.registry import NoOptions, ToolSpec
 from tools.client.specs import ImagenesAPdfOptions
 
 PAPER2 = {"A4": ("A4", "A4"), "Letter": ("Carta", "Letter")}
@@ -27,6 +27,16 @@ class DjvuOptions(BaseModel):
 class CorreoOptions(BaseModel):
     adjuntos: bool = opt(True, "Añadir los adjuntos convertibles como páginas siguientes", "Add convertible attachments as following pages")
     papel: Literal["A4", "Letter"] = opt("A4", "Papel", "Paper", labels=PAPER2)
+
+
+class BuzonPdfOptions(BaseModel):
+    """mbox-a-pdf y pst-a-pdf (F6-J, D-225): adjuntos [no: un buzón puede traer cientos], papel [A4] y orden [por fecha]."""
+
+    adjuntos: bool = opt(False, "Añadir los adjuntos convertibles tras cada mensaje", "Add convertible attachments after each message")
+    papel: Literal["A4", "Letter"] = opt("A4", "Papel", "Paper", labels=PAPER2)
+    orden: Literal["fecha", "archivo"] = opt("fecha", "Orden", "Order", labels={
+        "fecha": ("Por fecha, del más antiguo al más reciente", "By date, oldest first"),
+        "archivo": ("Como están en el buzón", "As they are in the mailbox")})
 
 
 class DxfOptions(BaseModel):
@@ -130,6 +140,24 @@ SPECS: list[ToolSpec] = [
     media("eml-a-pdf", "eml-to-pdf", "EML a PDF", "EML to PDF", CorreoOptions, ("eml",), "tools.media.correo:run",
           "Guarda un correo EML en PDF con sus cabeceras y los adjuntos convertibles.",
           "Save an EML email as PDF with its headers and the attachments that can be converted.", related=("msg-a-pdf",)),
+    # 7.13 (F6-J, D-225): junto a eml-a-pdf, en workermedia, para reutilizar su lectura y su maquetación. readpst (GPL),
+    # siempre aparte (11). pst-a-*: apagadas hasta probarlas con un PST real (no hay muestras con licencia libre).
+    media("mbox-a-eml", "mbox-to-eml", "MBOX a EML", "MBOX to EML", NoOptions, ("mbox",), "tools.media.buzones:run",
+          "Separa un buzón MBOX (Thunderbird, Gmail Takeout, Apple Mail) en un ZIP con un archivo EML por mensaje, intactos.",
+          "Split an MBOX mailbox (Thunderbird, Gmail Takeout, Apple Mail) into a ZIP with one untouched EML file per message.",
+          category="data", outputs=("zip",), phase="F6", max_files=1, related=("mbox-a-pdf", "eml-a-pdf")),
+    media("mbox-a-pdf", "mbox-to-pdf", "MBOX a PDF", "MBOX to PDF", BuzonPdfOptions, ("mbox",), "tools.media.buzones:run",
+          "Convierte un buzón MBOX en un PDF con cada mensaje, sus cabeceras e imágenes, y un marcador por correo.",
+          "Turn an MBOX mailbox into a PDF with each message, its headers and images, and one bookmark per email.",
+          category="data", outputs=("pdf",), phase="F6", max_files=1, time_limit=1800, related=("mbox-a-eml", "eml-a-pdf")),
+    media("pst-a-mbox", "pst-to-mbox", "PST a MBOX", "PST to MBOX", NoOptions, ("pst", "ost"), "tools.media.buzones:run",
+          "Convierte un archivo de datos de Outlook (PST) en buzones MBOX, uno por carpeta, para Thunderbird o Apple Mail.",
+          "Turn an Outlook data file (PST) into MBOX mailboxes, one per folder, for Thunderbird or Apple Mail.",
+          category="data", outputs=("zip",), phase="F6", max_files=1, time_limit=1800, default_enabled=False, related=("pst-a-pdf", "mbox-a-eml")),
+    media("pst-a-pdf", "pst-to-pdf", "PST a PDF", "PST to PDF", BuzonPdfOptions, ("pst", "ost"), "tools.media.buzones:run",
+          "Convierte los correos de un archivo de Outlook (PST) en un PDF con un marcador por mensaje.",
+          "Turn the emails in an Outlook data file (PST) into a PDF with one bookmark per message.",
+          category="data", outputs=("pdf",), phase="F6", max_files=1, time_limit=1800, default_enabled=False, related=("pst-a-mbox", "mbox-a-pdf")),
     media("msg-a-pdf", "msg-to-pdf", "MSG a PDF", "MSG to PDF", CorreoOptions, ("msg",), "tools.media.correo:run",
           "Guarda un mensaje de Outlook (MSG) en PDF con sus cabeceras y adjuntos.",
           "Save an Outlook message (MSG) as PDF with its headers and attachments.", related=("eml-a-pdf",)),

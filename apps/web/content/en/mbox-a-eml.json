@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "MBOX to EML splits an MBOX mailbox into separate EML files, one per message, inside a ZIP. MBOX is the format Thunderbird uses for its folders, the one Google delivers Gmail mail in through Takeout and the one Apple Mail and many Linux mail programs export. Splitting it lets you open a specific message with a double click, attach it to a case file or import it into another program.",
+    "Each message is saved exactly as it is in the mailbox, with all its headers, body and attachments, without re-encoding it. Each file name carries a sequence number and the message subject, so files are easy to find and never overwrite each other even when several share a subject.",
+    "EML files open in Outlook, Thunderbird, Apple Mail and most email clients, and you can also turn any of them into a PDF with EML to PDF. We accept mailboxes of up to 20,000 messages; if yours has more, split it first by folder or by date.",
+    "Emails are processed on our server, deleted when they expire and never sent to artificial intelligence services."
+  ],
+  "steps": [
+    "Upload the MBOX file.",
+    "Wait while the messages are split.",
+    "Download the ZIP with one EML per message."
+  ],
+  "faq": [
+    {
+      "q": "Where is Gmail's MBOX?",
+      "a": "In Google Takeout, choose Gmail and download the export: inside there is one .mbox file per label or one with all the mail."
+    },
+    {
+      "q": "What about Thunderbird's?",
+      "a": "Each Thunderbird folder is a file without an extension in the profile folder (Inbox, Sent…). Add .mbox to its name and upload it."
+    },
+    {
+      "q": "Are attachments lost?",
+      "a": "No: each EML holds the complete message, with its attachments inside."
+    }
+  ]
+}

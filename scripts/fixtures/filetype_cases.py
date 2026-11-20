@@ -161,6 +161,8 @@ def cases() -> list[dict]:
         ("tcx", "tcx", b'<?xml version="1.0"?><TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"/>', "tcx"),
         ("vcf", "vcf", b"BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Ana\r\nEND:VCARD\r\n", "vcf"),
         ("ics", "ics", b"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nEND:VCALENDAR\r\n", "ics"),
+        ("mbox", "mbox", b"From ana@ejemplo.test Thu Nov 19 10:00:00 2026\nSubject: Hola\n\nCuerpo\n", "mbox"),
+        ("pst", "pst", b"!BDN\x00\x00\x00\x00SM\x17\x00" + bytes(40), "pst"),
         ("txt-utf16-texto-unicode-de-excel", "txt", "Nombre\tAño\r\nPeña\t1990\r\n".encode("utf-16"), "txt"),
         ("md-utf16-no-admitido", "md", "# Hola\n".encode("utf-16"), None),
         ("mp3-capa1-ff-fe", "mp3", b"\xff\xfe\x90\x00" + bytes(range(1, 31)), "mp3"),

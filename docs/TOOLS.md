@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 230 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 52). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 234 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 56). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -154,6 +154,10 @@ Catálogo publicado en esta entrega: 230 herramientas (F1 43, F2 60, F3 10, F4 1
 | `cbr-a-pdf` / `cbr-to-pdf` | servidor | media | light | F2 | activa | cbr → pdf, zip | redactado, sin revisar |
 | `djvu-a-pdf` / `djvu-to-pdf` | servidor | media | light | F2 | activa | djvu → pdf, zip | redactado, sin revisar |
 | `eml-a-pdf` / `eml-to-pdf` | servidor | media | light | F2 | activa | eml → pdf, zip | redactado, sin revisar |
+| `mbox-a-eml` / `mbox-to-eml` | servidor | media | light | F6 | activa | mbox → zip | redactado, sin revisar |
+| `mbox-a-pdf` / `mbox-to-pdf` | servidor | media | light | F6 | activa | mbox → pdf | redactado, sin revisar |
+| `pst-a-mbox` / `pst-to-mbox` | servidor | media | light | F6 | apagada | pst, ost → zip | redactado, sin revisar |
+| `pst-a-pdf` / `pst-to-pdf` | servidor | media | light | F6 | apagada | pst, ost → pdf | redactado, sin revisar |
 | `msg-a-pdf` / `msg-to-pdf` | servidor | media | light | F2 | activa | msg → pdf, zip | redactado, sin revisar |
 | `dxf-a-pdf` / `dxf-to-pdf` | servidor | media | light | F2 | activa | dxf → pdf, zip | redactado, sin revisar |
 | `heic-a-jpg` / `heic-to-jpg` | servidor | media | light | F5 | apagada | heic → jpg, zip | redactado, sin revisar |
@@ -247,6 +251,8 @@ Catálogo publicado en esta entrega: 230 herramientas (F1 43, F2 60, F3 10, F4 1
 | `heic-a-pdf` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-png` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `pdf-a-factura-electronica` | Apagada por defecto; se enciende con `TOOL_PDF_A_FACTURA_ELECTRONICA_ENABLED=true`. Genera facturas electrónicas desde un PDF: además de INVOICING_ES_ENABLED necesita TOOL_PDF_A_FACTURA_ELECTRONICA_ENABLED=true, tras la revisión con un asesor de docs/LEGAL.md. |
+| `pst-a-mbox` | Apagada por defecto; se enciende con `TOOL_PST_A_MBOX_ENABLED=true`. readpst (libpst) está en la imagen y la conversión escrita, pero no hay un PST de prueba con licencia libre ni forma libre de generarlo; se enciende tras probarla con un PST real (DEPLOY-CHECKLIST, F6-J). |
+| `pst-a-pdf` | Apagada por defecto; se enciende con `TOOL_PST_A_PDF_ENABLED=true`. Igual que pst-a-mbox: falta probar readpst con un PST real antes de encenderla (DEPLOY-CHECKLIST, F6-J). |
 
 ## Fuera de alcance (7.24)
 

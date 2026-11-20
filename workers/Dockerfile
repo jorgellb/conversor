@@ -137,7 +137,7 @@ FROM base AS worker-media
 ARG REMBG_MODEL=u2net
 # DjVuLibre (`ddjvu`, GPL, solo como proceso externo), libarchive para CBZ y CBR, y heif-dec de la etapa anterior.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends djvulibre-bin libarchive13 libde265-0 libpng16-16 \
+ && apt-get install -y --no-install-recommends djvulibre-bin libarchive13 libde265-0 libpng16-16 pst-utils \
  && rm -rf /var/lib/apt/lists/*
 COPY --from=libheif-build /opt/libheif/lib/ /usr/local/lib/
 COPY --from=libheif-build /opt/libheif/bin/heif-dec /usr/local/bin/heif-dec
