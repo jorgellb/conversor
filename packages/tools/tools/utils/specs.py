@@ -534,4 +534,17 @@ SPECS: list[ToolSpec] = [
           "Convierte una lista de lugares en CSV, con columnas de latitud y longitud, en puntos KML para Google Earth y My Maps.",
           "Turn a CSV list of places, with latitude and longitude columns, into KML points for Google Earth and My Maps.",
           ("geojson-a-kml", "kml-a-gpx"), CsvKmlOptions, impl="tools.utils.geo:run"),
+    # 7.13 (F6-H2, D-223): TCX propio con defusedxml y FIT con fitparse (MIT). El Anexo A no fija opciones.
+    datos("tcx-a-gpx", "tcx-to-gpx", "TCX a GPX", "TCX to GPX", ("tcx",), ("gpx",),
+          "Convierte actividades TCX de Garmin en GPX con su recorrido, altura, hora, pulso y cadencia, para Strava o tu GPS.",
+          "Turn Garmin TCX activities into GPX with their route, elevation, time, heart rate and cadence, for Strava or your GPS.",
+          ("fit-a-gpx", "gpx-a-kml"), impl="tools.utils.deportes:run"),
+    datos("fit-a-gpx", "fit-to-gpx", "FIT a GPX", "FIT to GPX", ("fit",), ("gpx",),
+          "Convierte actividades FIT de Garmin, Wahoo, Coros o Suunto en GPX con el recorrido, el pulso, la cadencia y la potencia.",
+          "Turn FIT activities from Garmin, Wahoo, Coros or Suunto into GPX with the route, heart rate, cadence and power.",
+          ("fit-a-csv", "tcx-a-gpx"), impl="tools.utils.deportes:run"),
+    datos("fit-a-csv", "fit-to-csv", "FIT a CSV", "FIT to CSV", ("fit",), ("csv",),
+          "Exporta todos los registros de una actividad FIT a CSV: hora, posición, altura, velocidad, pulso, cadencia y potencia.",
+          "Export every record of a FIT activity to CSV: time, position, elevation, speed, heart rate, cadence and power.",
+          ("fit-a-gpx", "csv-a-xlsx"), impl="tools.utils.deportes:run"),
 ]

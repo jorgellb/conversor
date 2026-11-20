@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FIT a CSV exporta todos los registros de una actividad FIT a una tabla CSV que se abre en Excel, LibreOffice o Google Sheets, o se analiza con Python o R. Sirve para estudiar tu entrenamiento con detalle, segundo a segundo: ritmo, pulso, potencia, cadencia, altura o temperatura.",
+    "Cada registro del FIT es una fila con su hora en formato ISO, y cada dato que graba el dispositivo es una columna: posición (en grados), altura, distancia acumulada, velocidad, frecuencia cardiaca, cadencia, potencia, temperatura y cualquier otro campo que tenga el FIT, en el orden en que aparecen. Las columnas son la unión de todos los registros, así que ningún dato se pierde aunque el sensor se conecte a mitad de la actividad.",
+    "A diferencia de FIT a GPX, aquí entran también las actividades sin GPS, como las de rodillo, cinta o gimnasio: solo dejan vacías las columnas de posición. El CSV se escribe en UTF-8 con BOM, para que Excel lo abra con doble clic, y separado por comas.",
+    "Leemos el FIT con fitparse comprobando su suma de control, con un límite de 50 MB y 2 millones de registros. Puedes exportar hasta 20 actividades a la vez y descargarlas en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .fit.",
+    "Espera a la exportación.",
+    "Descarga el CSV y ábrelo en tu hoja de cálculo."
+  ],
+  "faq": [
+    {
+      "q": "¿En qué unidades salen los datos?",
+      "a": "En las del propio FIT: metros para la altura y la distancia, metros por segundo para la velocidad, pulsaciones por minuto, vatios y grados centígrados."
+    },
+    {
+      "q": "¿Puedo convertirlo a Excel directamente?",
+      "a": "Convierte el CSV con CSV a Excel, que pone los números como números y la primera fila con filtros."
+    },
+    {
+      "q": "¿Se incluyen las vueltas y el resumen?",
+      "a": "No, solo los registros punto a punto, que son los datos de toda la actividad. Las vueltas y los totales están en otros mensajes del FIT."
+    }
+  ]
+}

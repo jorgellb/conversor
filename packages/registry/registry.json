@@ -31748,6 +31748,123 @@
         "title": "CsvKmlOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "tcx-a-gpx",
+      "slug_en": "tcx-to-gpx",
+      "name_es": "TCX a GPX",
+      "name_en": "TCX to GPX",
+      "summary_es": "Convierte actividades TCX de Garmin en GPX con su recorrido, altura, hora, pulso y cadencia, para Strava o tu GPS.",
+      "summary_en": "Turn Garmin TCX activities into GPX with their route, elevation, time, heart rate and cadence, for Strava or your GPS.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "tcx"
+      ],
+      "outputs": [
+        "gpx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "fit-a-gpx",
+        "gpx-a-kml"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "fit-a-gpx",
+      "slug_en": "fit-to-gpx",
+      "name_es": "FIT a GPX",
+      "name_en": "FIT to GPX",
+      "summary_es": "Convierte actividades FIT de Garmin, Wahoo, Coros o Suunto en GPX con el recorrido, el pulso, la cadencia y la potencia.",
+      "summary_en": "Turn FIT activities from Garmin, Wahoo, Coros or Suunto into GPX with the route, heart rate, cadence and power.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "fit"
+      ],
+      "outputs": [
+        "gpx",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "fit-a-csv",
+        "tcx-a-gpx"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "fit-a-csv",
+      "slug_en": "fit-to-csv",
+      "name_es": "FIT a CSV",
+      "name_en": "FIT to CSV",
+      "summary_es": "Exporta todos los registros de una actividad FIT a CSV: hora, posición, altura, velocidad, pulso, cadencia y potencia.",
+      "summary_en": "Export every record of a FIT activity to CSV: time, position, elevation, speed, heart rate, cadence and power.",
+      "category": "data",
+      "where": "server",
+      "worker_group": "utils",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "fit"
+      ],
+      "outputs": [
+        "csv",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "secret_fields": [],
+      "related": [
+        "fit-a-gpx",
+        "csv-a-xlsx"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
     }
   ]
 }

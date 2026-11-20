@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TCX a GPX convierte actividades en formato TCX (Training Center XML), el que exportan Garmin Connect, los relojes Garmin antiguos, Polar Flow, Zwift y muchas aplicaciones de ciclismo y carrera, en GPX, el formato universal de rutas. Con el GPX puedes subir la actividad a Strava, Komoot o Wikiloc, abrirla en un GPS o compartirla con cualquiera.",
+    "Se conserva el recorrido punto a punto con su latitud, longitud, altura y hora. Además, la frecuencia cardiaca, la cadencia y la potencia de cada punto se escriben en la extensión TrackPointExtension de Garmin, la que leen Strava, Garmin Connect, Golden Cheetah y la mayoría de aplicaciones de entrenamiento, así que no pierdes los datos de los sensores.",
+    "Cada vuelta del TCX se convierte en un tramo de la pista, y la pista lleva el deporte (Biking, Running…) y la fecha de la actividad. Los recorridos (Courses) que exportan algunos GPS también se convierten. Los puntos sin posición, como los de un rodillo, una cinta o una pausa sin señal, se dejan fuera y la nota del resultado dice cuántos.",
+    "El TCX se lee de forma segura, sin cargar DTD ni entidades externas, con un límite de 50 MB y 2 millones de puntos. Puedes convertir hasta 20 actividades a la vez y descargarlas en un ZIP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .tcx.",
+    "Espera a la conversión.",
+    "Descarga el GPX y súbelo a tu aplicación."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conserva el pulso?",
+      "a": "Sí, en la extensión de Garmin de cada punto, junto con la cadencia y la potencia. Strava y Garmin Connect lo leen al importar el GPX."
+    },
+    {
+      "q": "¿Y las calorías y el resumen de cada vuelta?",
+      "a": "No: GPX solo guarda los puntos. Los totales de vuelta y de sesión del TCX no tienen sitio en un GPX."
+    },
+    {
+      "q": "¿Tengo un archivo .fit, no .tcx?",
+      "a": "Usa FIT a GPX, que hace lo mismo con el formato binario de los relojes actuales."
+    }
+  ]
+}

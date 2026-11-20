@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FIT to GPX turns activities in FIT, the format recorded by Garmin, Wahoo, Coros, Suunto, Hammerhead or Bryton watches and bike computers, into GPX. It is useful for uploading a ride to a platform that does not accept FIT, opening it in a mapping program or keeping your routes in an open format anyone understands.",
+    "From the FIT we read the activity records, with their position (which FIT stores in “semicircles” and we convert to degrees), elevation, exact time and sensor data. Heart rate, cadence, power and temperature are written in Garmin's TrackPointExtension, which Strava and training apps read when importing.",
+    "Points without a GPS position, such as those from a trainer, treadmill or indoor session, are left out of the GPX and we tell you how many. If the whole activity is indoors there is no route to convert; to keep its data, use FIT to CSV, which exports every record.",
+    "We read the FIT with fitparse, a free library, checking its checksum to detect damaged files. There is a limit of 50 MB and 2 million records, and you can convert up to 20 activities at once."
+  ],
+  "steps": [
+    "Upload one or more .fit files.",
+    "Wait for the conversion.",
+    "Download the GPX."
+  ],
+  "faq": [
+    {
+      "q": "Where do I find my watch's .fit file?",
+      "a": "In Garmin Connect, on the activity, “Export original” downloads a ZIP with the .fit. With the watch connected by USB, they are in the GARMIN/Activity folder."
+    },
+    {
+      "q": "Are power and heart rate lost?",
+      "a": "No, they go in Garmin's extension on each GPX point. Session totals, such as calories, do not fit in GPX."
+    },
+    {
+      "q": "Why does it say the file is damaged?",
+      "a": "Because the FIT checksum does not match: it usually happens with activities cut short when the watch ran out of battery. Try exporting it again from the watch's app."
+    }
+  ]
+}

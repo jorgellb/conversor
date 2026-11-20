@@ -157,6 +157,8 @@ def cases() -> list[dict]:
         ("gpx", "gpx", b'<?xml version="1.0"?><gpx version="1.1" creator="x"><wpt lat="40" lon="-3"/></gpx>', "gpx"),
         ("kml", "kml", b'<?xml version="1.0"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document/></kml>', "kml"),
         ("geojson", "geojson", b'{"type": "FeatureCollection", "features": []}', "geojson"),
+        ("fit", "fit", b"\x0e\x20\x54\x08\x10\x00\x00\x00.FIT\x00\x00" + bytes(16), "fit"),
+        ("tcx", "tcx", b'<?xml version="1.0"?><TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"/>', "tcx"),
         ("txt-utf16-texto-unicode-de-excel", "txt", "Nombre\tAño\r\nPeña\t1990\r\n".encode("utf-16"), "txt"),
         ("md-utf16-no-admitido", "md", "# Hola\n".encode("utf-16"), None),
         ("mp3-capa1-ff-fe", "mp3", b"\xff\xfe\x90\x00" + bytes(range(1, 31)), "mp3"),

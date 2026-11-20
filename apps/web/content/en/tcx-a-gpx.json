@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "TCX to GPX turns activities in TCX (Training Center XML), the format exported by Garmin Connect, older Garmin watches, Polar Flow, Zwift and many cycling and running apps, into GPX, the universal route format. With the GPX you can upload the activity to Strava, Komoot or Wikiloc, open it on a GPS or share it with anyone.",
+    "The route is kept point by point with its latitude, longitude, elevation and time. On top of that, the heart rate, cadence and power of each point are written in Garmin's TrackPointExtension, which Strava, Garmin Connect, Golden Cheetah and most training apps read, so you do not lose your sensor data.",
+    "Each TCX lap becomes a segment of the track, and the track carries the sport (Biking, Running…) and the activity date. Courses exported by some GPS units are converted too. Points without a position, such as those from a trainer, a treadmill or a pause without signal, are left out and the result's note says how many.",
+    "The TCX is read safely, without loading DTDs or external entities, with a limit of 50 MB and 2 million points. You can convert up to 20 activities at once and download them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .tcx files.",
+    "Wait for the conversion.",
+    "Download the GPX and upload it to your app."
+  ],
+  "faq": [
+    {
+      "q": "Is heart rate kept?",
+      "a": "Yes, in Garmin's extension on each point, together with cadence and power. Strava and Garmin Connect read it when importing the GPX."
+    },
+    {
+      "q": "What about calories and each lap's summary?",
+      "a": "No: GPX only stores points. The TCX lap and session totals have no place in a GPX."
+    },
+    {
+      "q": "I have a .fit file, not a .tcx?",
+      "a": "Use FIT to GPX, which does the same with the binary format of current watches."
+    }
+  ]
+}

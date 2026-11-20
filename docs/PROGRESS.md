@@ -602,9 +602,14 @@ certomancer.
 gpx-a-kml, kml-a-gpx, kmz-a-gpx, gpx-a-geojson, geojson-a-kml, shp-a-geojson, shp-a-kml y csv-a-kml (D-220): GPX ↔ KML
 conserva puntos, alturas y horas (16.5) en `tests/test_geo.py`; los Shapefile con `ogr2ogr` real se comprueban en la CI.
 
+## F6-H2 (actividades deportivas)
+
+tcx-a-gpx, fit-a-gpx y fit-a-csv (D-223) con pulso, cadencia y potencia en la extensión de Garmin, en `tests/test_deportes.py`
+con un FIT de prueba escrito con su CRC.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G y F6-H1 hechos); siguen el resto de F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1 y F6-H2 hechos); siguen el resto de F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

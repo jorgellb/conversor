@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FIT a GPX convierte actividades en formato FIT, el que graban los relojes y ciclocomputadores Garmin, Wahoo, Coros, Suunto, Hammerhead o Bryton, en GPX. Es útil para subir una salida a una plataforma que no acepta FIT, para abrirla en un programa de mapas o para guardar tus rutas en un formato abierto que entiende cualquiera.",
+    "Del FIT leemos los registros de la actividad, con su posición (que el FIT guarda en «semicírculos» y pasamos a grados), su altura, su hora exacta y los datos de los sensores. La frecuencia cardiaca, la cadencia, la potencia y la temperatura se escriben en la extensión TrackPointExtension de Garmin, que Strava y las aplicaciones de entrenamiento leen al importar.",
+    "Los puntos sin posición GPS, como los de una sesión en rodillo, en cinta o en interiores, se dejan fuera del GPX y te indicamos cuántos. Si toda la actividad es en interior no hay recorrido que convertir; para quedarte con sus datos usa FIT a CSV, que exporta todos los registros.",
+    "Leemos el FIT con fitparse, una biblioteca libre, comprobando su suma de control para detectar archivos dañados. Hay un límite de 50 MB y 2 millones de registros, y puedes convertir hasta 20 actividades a la vez."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .fit.",
+    "Espera a la conversión.",
+    "Descarga el GPX."
+  ],
+  "faq": [
+    {
+      "q": "¿Dónde encuentro el .fit de mi reloj?",
+      "a": "En Garmin Connect, en la actividad, «Exportar original» descarga un ZIP con el .fit. Conectando el reloj por USB, están en la carpeta GARMIN/Activity."
+    },
+    {
+      "q": "¿Se pierden la potencia y el pulso?",
+      "a": "No, van en la extensión de Garmin de cada punto del GPX. Los totales de la sesión, como las calorías, no caben en GPX."
+    },
+    {
+      "q": "¿Por qué dice que el archivo está dañado?",
+      "a": "Porque la suma de control del FIT no cuadra: suele pasar con actividades que se cortaron al quedarse el reloj sin batería. Prueba a exportarla de nuevo desde la aplicación del reloj."
+    }
+  ]
+}

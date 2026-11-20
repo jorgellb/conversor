@@ -17,7 +17,7 @@ const EBML = [0x1a, 0x45, 0xdf, 0xa3];
 
 export const OLE2_FAMILY = new Set(["doc", "xls", "ppt", "pps", "msg", "pub", "vsd"]);
 export const TEXT_FAMILY = new Set(["txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
-  "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson"]);
+  "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx"]);
 // Firmas CMS (F6-G): DER binario (una SEQUENCE ASN.1) o PEM y Base64 de texto; solo con su extensión declarada.
 const CMS = new Set(["csig", "p7m", "p7s"]);
 const RAW_TIFF = new Set(["cr2", "nef", "arw", "dng"]);
@@ -251,6 +251,8 @@ export function detectHead(head: Uint8Array, declaredExt = ""): Detected | null 
   if (startsWith(head, [0x50, 0x4b, 0x03, 0x04])) return { ext: "zip", family: "zip" };
   if (startsWith(head, [0x52, 0x61, 0x72, 0x21, 0x1a, 0x07])) return { ext: "rar", family: "archive" };
   // Comprimidos de F6-E (D-217): 7z, gzip, bzip2, xz y tar (la marca «ustar» en el byte 257).
+  // FIT (F6-H2): cabecera de 12 o 14 bytes con «.FIT» en el byte 8.
+  if (head.length >= 12 && (head[0] === 12 || head[0] === 14) && ascii(head, 8, 12) === ".FIT") return { ext: "fit", family: "sport" };
   if (startsWith(head, [0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c])) return { ext: "7z", family: "archive" };
   if (startsWith(head, [0x1f, 0x8b, 0x08])) return { ext: "gz", family: "archive" };
   if (startsWith(head, "BZh") && head[3] >= 0x30 && head[3] <= 0x39 && (ascii(head, 4, 10) === "1AY&SY" || startsWith(head.subarray(4), [0x17, 0x72, 0x45, 0x38, 0x50, 0x90]))) return { ext: "bz2", family: "archive" };

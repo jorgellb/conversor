@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FIT to CSV exports every record of a FIT activity to a CSV table that opens in Excel, LibreOffice or Google Sheets, or can be analysed with Python or R. It is for studying your training in detail, second by second: pace, heart rate, power, cadence, elevation or temperature.",
+    "Each FIT record is a row with its time in ISO format, and each value the device records is a column: position (in degrees), elevation, cumulative distance, speed, heart rate, cadence, power, temperature and any other field the FIT has, in the order they appear. The columns are the union of every record, so no data is lost even if a sensor connects halfway through the activity.",
+    "Unlike FIT to GPX, activities without GPS, such as trainer, treadmill or gym sessions, are included here too: they just leave the position columns empty. The CSV is written in UTF-8 with BOM, so Excel opens it with a double click, and comma-separated.",
+    "We read the FIT with fitparse, checking its checksum, with a limit of 50 MB and 2 million records. You can export up to 20 activities at once and download them in a ZIP."
+  ],
+  "steps": [
+    "Upload one or more .fit files.",
+    "Wait for the export.",
+    "Download the CSV and open it in your spreadsheet."
+  ],
+  "faq": [
+    {
+      "q": "What units are the values in?",
+      "a": "Those of the FIT itself: metres for elevation and distance, metres per second for speed, beats per minute, watts and degrees Celsius."
+    },
+    {
+      "q": "Can I convert it to Excel directly?",
+      "a": "Convert the CSV with CSV to Excel, which turns numbers into numbers and gives the first row filters."
+    },
+    {
+      "q": "Are laps and the summary included?",
+      "a": "No, only the point-by-point records, which hold the data of the whole activity. Laps and totals are in other FIT messages."
+    }
+  ]
+}
