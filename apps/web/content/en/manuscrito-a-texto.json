@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Handwriting to text turns handwriting into text: lecture notes, old letters, family recipes, meeting notes, diaries or forms filled in with a pen. Upload a photo or a scanned PDF and download the transcription as Word, text or Markdown to edit it, search it or copy it.",
+    "The transcription is done by a free AI model that understands images, through OpenRouter. It copies the text word for word, without correcting spelling or summarising, and marks what cannot be read as [illegible]. You can set the language of the text to help the model and choose whether the original line breaks are kept or paragraphs are joined.",
+    "Each page is one AI request and a task accepts up to 10 pages. It works best with sharp, well-lit photos taken straight on; if the handwriting is very hard or the paper very worn, the transcription may contain errors, so check it against the original.",
+    "If at some point there is no free model that accepts images, the tool switches itself off and tells you on this page; it becomes available again as soon as there is one. Images are sent to the model only to transcribe them, with your consent, and are deleted when they expire."
+  ],
+  "steps": [
+    "Upload a photo or a scanned PDF (up to 10 pages).",
+    "Choose the language of the text and the format.",
+    "Download the transcription."
+  ],
+  "faq": [
+    {
+      "q": "Does it work for printed text?",
+      "a": "Yes, but for printed text Image to text or OCR PDF are better, and they do not use AI requests."
+    },
+    {
+      "q": "Why does [illegible] appear?",
+      "a": "Because the model could not read that part reliably. A sharper or closer photo usually helps."
+    },
+    {
+      "q": "Why is it switched off?",
+      "a": "Because right now there is no free model that accepts images. It switches back on when there is one."
+    }
+  ]
+}

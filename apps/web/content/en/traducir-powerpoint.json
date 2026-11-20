@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Translate PowerPoint translates a PowerPoint presentation (PPTX) into another language and gives you back the same file, with the same layout, ready to use. It is useful for sales decks, lessons, talks and training sessions: you do not have to copy the text into a translator and format the result again.",
+    "It translates titles, slide text, tables, text boxes and speaker notes. Images, each slide's layout, animations, transitions and charts are copied as they are. Each piece of text keeps its formatting: if a word was bold, italic or in another colour, its translation is too, even if it moves within the sentence.",
+    "Choose the target language among Spanish, English, French, German, Italian, Portuguese, Catalan, Dutch, Polish, Romanian, Galician and Basque; the original language is detected automatically or you can set it. In “Terms not to translate” you can list brand, product or people's names, one per line, so they stay as they are in the translated presentation.",
+    "The translation is done by a free AI model through OpenRouter, with your consent and within your plan's AI requests; repeated text is translated once and text with no letters (figures, codes) is not sent. Machine translation can contain errors, so review the presentation before sending or publishing it."
+  ],
+  "steps": [
+    "Upload the presentation (PPTX).",
+    "Choose the target language and, optionally, the terms not to translate.",
+    "Download the translated presentation."
+  ],
+  "faq": [
+    {
+      "q": "Is any formatting lost?",
+      "a": "Not in the usual cases: only the text changes. Images, each slide's layout, animations, transitions and charts are copied as they are."
+    },
+    {
+      "q": "How much text can be translated?",
+      "a": "Up to about 400,000 characters per presentation, roughly 150 pages. If it is longer, split it first."
+    },
+    {
+      "q": "What happens to my data?",
+      "a": "The text is sent to the AI model only to translate it, with your consent; the file is deleted when it expires."
+    }
+  ]
+}

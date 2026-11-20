@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Traducir Excel traduce un libro de Excel (XLSX) a otro idioma y te devuelve el mismo archivo, con el mismo diseño, listo para usar. Es útil para catálogos, listas de precios, inventarios, encuestas y presupuestos: no tienes que copiar el texto a un traductor y volver a dar formato al resultado.",
+    "Se traducen el texto de todas las celdas de todas las hojas, también el que tiene partes en negrita o en color. Los números, las fechas, las fórmulas, los nombres de las hojas (las fórmulas los usan), los gráficos, las tablas dinámicas y el formato condicional no se tocan. Cada tramo de texto conserva su formato: si una palabra estaba en negrita, en cursiva o en otro color, su traducción también lo está, aunque cambie de sitio en la frase.",
+    "Elige el idioma de destino entre español, inglés, francés, alemán, italiano, portugués, catalán, neerlandés, polaco, rumano, gallego y euskera; el del original se detecta solo o lo puedes indicar. En «Términos que no se traducen» puedes poner nombres de marcas, productos o personas, uno por línea, para que se queden tal cual en el libro traducido.",
+    "La traducción la hace un modelo de IA gratuito a través de OpenRouter, con tu consentimiento y dentro de las peticiones de IA de tu plan; los textos repetidos se traducen una sola vez y los que no tienen letras (cifras, códigos) no se envían. Las traducciones automáticas pueden tener errores, así que revisa el libro antes de enviarlo o publicarlo."
+  ],
+  "steps": [
+    "Sube el libro (XLSX).",
+    "Elige el idioma de destino y, si quieres, los términos que no se traducen.",
+    "Descarga el libro traducido."
+  ],
+  "faq": [
+    {
+      "q": "¿Se pierde algo del formato?",
+      "a": "No en lo habitual: solo cambia el texto. Los números, las fechas, las fórmulas, los nombres de las hojas (las fórmulas los usan), los gráficos, las tablas dinámicas y el formato condicional no se tocan."
+    },
+    {
+      "q": "¿Cuánto texto se puede traducir?",
+      "a": "Hasta unos 400 000 caracteres por libro, lo que equivale a unas 150 páginas. Si es más largo, divídelo antes."
+    },
+    {
+      "q": "¿Qué pasa con mis datos?",
+      "a": "El texto se envía al modelo de IA solo para traducirlo, con tu consentimiento; el archivo se borra cuando caduca."
+    }
+  ]
+}

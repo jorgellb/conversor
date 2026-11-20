@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 253 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 75). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 257 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 79). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -189,6 +189,10 @@ Catálogo publicado en esta entrega: 253 herramientas (F1 43, F2 60, F3 10, F4 1
 | `pdf-a-fichas` / `pdf-to-flashcards` | servidor | ai | ai | F3 | activa | pdf → txt, csv, docx | redactado, sin revisar |
 | `pdf-a-presentacion` / `pdf-to-presentation` | servidor | ai | ai | F3 | activa | pdf → pptx | redactado, sin revisar |
 | `traducir-pdf` / `translate-pdf` | servidor | ai | ai | F3 | activa | pdf → docx, pdf | redactado, sin revisar |
+| `traducir-word` / `translate-word` | servidor | ai | ai | F6 | activa | docx → docx | redactado, sin revisar |
+| `traducir-excel` / `translate-excel` | servidor | ai | ai | F6 | activa | xlsx → xlsx | redactado, sin revisar |
+| `traducir-powerpoint` / `translate-powerpoint` | servidor | ai | ai | F6 | activa | pptx → pptx | redactado, sin revisar |
+| `manuscrito-a-texto` / `handwriting-to-text` | servidor | ai | ai | F6 | activa | jpg, png, webp, tiff, bmp, gif, pdf → docx, txt, md | redactado, sin revisar |
 | `imagen-a-excel` / `image-to-excel` | servidor | convert | ai | F3 | activa | jpg, png, webp, tiff, bmp, gif → xlsx, csv, zip | redactado, sin revisar |
 | `ticket-a-excel` / `receipt-to-excel` | servidor | ocr | ai | F3 | activa | jpg, png, webp, tiff, bmp, gif → xlsx, csv | redactado, sin revisar |
 | `traducir-subtitulos` / `translate-subtitles` | servidor | ai | ai | F5 | activa | srt, vtt, ass, mp3, wav, ogg, opus, m4a, aac, flac, aiff, wma, amr, mp4, mov, mkv, webm, avi → srt, vtt, ass | redactado, sin revisar |

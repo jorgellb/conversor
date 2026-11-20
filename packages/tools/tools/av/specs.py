@@ -200,7 +200,7 @@ SPECS: list[ToolSpec] = [
              where="server", inputs=("pptx", "ppt", "odp"), outputs=("webm", "mp4"), options=DiapositivasVideoOptions, worker_group="av",
              cost_class="heavy", queue_kind="heavy", impl="tools.office.diapositivas:run_video", launch=True, phase="F6", time_limit=1800,
              max_files=5, summary_es="Convierte una presentación en un vídeo con un tiempo por diapositiva y fundidos, en WebM o MP4.",
-             summary_en="Turn a presentation into a video with a time per slide and fades, as WebM or MP4.", related=("pptx-a-imagenes", "pptx-a-pdf")),
+             summary_en="Turn a presentation into a video with a time per slide and fades, as WebM or MP4.", related=("pptx-a-imagenes", "ppt-a-pdf")),
     audio("midi-a-mp3", "midi-to-mp3", "MIDI a MP3", "MIDI to MP3", ("mid",),
           "Convierte archivos MIDI en MP3 con un banco de sonidos de instrumentos reales, para escucharlos en cualquier sitio.",
           "Turn MIDI files into MP3 with a bank of real instrument sounds, to listen to them anywhere.",

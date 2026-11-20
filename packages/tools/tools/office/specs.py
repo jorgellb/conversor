@@ -317,7 +317,7 @@ SPECS: list[ToolSpec] = [
            "Convierte cada diapositiva de una presentación en una imagen PNG o JPG con la resolución que elijas.",
            "Turn each slide of a presentation into a PNG or JPG image at the resolution you choose.",
            options=DiapositivasImagenesOptions, impl="tools.office.diapositivas:run_images", secret_fields=(), outputs=("png", "jpg", "zip"),
-           phase="F6", category="image", related=("pptx-a-pdf", "pptx-a-video")),
+           phase="F6", category="image", related=("ppt-a-pdf", "pptx-a-video")),
     # A.1 (F6-O1, D-234): el editor está en la página; aquí llega su HTML (y, si se elige, el PDF de membrete).
     office("escribir-pdf", "write-pdf", "Escribir PDF", "Write PDF", ("html", "pdf"),
            "Escribe documentos con títulos, tablas, imágenes, fórmulas e índice y descárgalos en PDF, Word o Markdown.",

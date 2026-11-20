@@ -118,6 +118,27 @@ class TraducirOptions(DocumentoIAOptions):
                         advanced=True, widget="textarea", max_length=1000)
 
 
+class TraducirOficinaOptions(BaseModel):
+    """traducir-word, traducir-excel y traducir-powerpoint (F6-D, D-239): idioma de destino [inglés], del original
+    [detectarlo] y términos que no se traducen. Sale el mismo formato que entra, con su formato conservado."""
+
+    destino: Target = opt("en", "Traducir al", "Translate into", labels=TARGETS)
+    origen: Literal["auto", "es", "en", "fr", "de", "it", "pt", "ca", "nl", "pl", "ro", "gl", "eu"] = opt(
+        "auto", "Idioma del original", "Original language", advanced=True, labels={"auto": ("Detectarlo", "Detect it"), **TARGETS})
+    glosario: str = opt("", "Términos que no se traducen (uno por línea)", "Terms not to translate (one per line)",
+                        advanced=True, widget="textarea", max_length=1000)
+
+
+class ManuscritoOptions(BaseModel):
+    """manuscrito-a-texto (F6-D, D-239): idioma del texto [detectarlo], formato [Word] | TXT | Markdown y saltos de línea."""
+
+    idioma: Literal["auto", "es", "en", "fr", "de", "it", "pt", "ca", "nl", "pl", "ro", "gl", "eu"] = opt(
+        "auto", "Idioma del texto", "Language of the text", labels={"auto": ("Detectarlo", "Detect it"), **TARGETS})
+    formato: Literal["docx", "txt", "md"] = opt("docx", "Formato", "Format", labels={
+        "docx": ("Word (DOCX)", "Word (DOCX)"), "txt": ("Texto (TXT)", "Text (TXT)"), "md": ("Markdown", "Markdown")})
+    conservar_lineas: bool = opt(True, "Conservar los saltos de línea del original", "Keep the original line breaks")
+
+
 DELIMITERS = {"coma": ("Coma (,)", "Comma (,)"), "punto_y_coma": ("Punto y coma (;), para Excel en español",
                                                                   "Semicolon (;), for Excel in Spanish"),
               "tabulador": ("Tabulador", "Tab")}
@@ -287,6 +308,23 @@ SPECS: list[ToolSpec] = [
             "Translate a PDF into another language and get it as Word and PDF with a simple layout.",
             AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=2000), outputs=("docx", "pdf"),
             related=("pdf-a-word", "resumir-pdf", "chat-pdf")),
+    # 6.3 (F6-D, D-239): 1 petición por bloque, con cada tramo de formato marcado; el resto del archivo, byte a byte.
+    *[ai_tool(f"traducir-{slug}", f"translate-{en}", f"Traducir {name}", f"Translate {name_en}", TraducirOficinaOptions,
+              "tools.ai.oficina:run", f"Traduce {what_es} a otro idioma conservando el formato, las imágenes y el diseño.",
+              f"Translate {what_en} into another language keeping the formatting, images and layout.",
+              AiSpec(estimate=lambda o: 1, json=True, min_context=8000, min_output=2000), inputs=(ext,), outputs=(ext,), phase="F6",
+              related=({"word": "word-a-pdf", "excel": "excel-a-pdf", "powerpoint": "ppt-a-pdf"}[slug], "traducir-pdf"))
+      for slug, en, name, name_en, ext, what_es, what_en in (
+          ("word", "word", "Word", "Word", "docx", "un documento de Word", "a Word document"),
+          ("excel", "excel", "Excel", "Excel", "xlsx", "una hoja de Excel", "an Excel spreadsheet"),
+          ("powerpoint", "powerpoint", "PowerPoint", "PowerPoint", "pptx", "una presentación de PowerPoint", "a PowerPoint presentation"))],
+    # 6.3: 1 petición por página (como mucho 10). Sin modelo gratuito con imágenes, la herramienta se apaga sola (6.2).
+    ai_tool("manuscrito-a-texto", "handwriting-to-text", "Manuscrito a texto", "Handwriting to text", ManuscritoOptions,
+            "tools.ai.manuscrito:run", "Pasa a texto lo escrito a mano en una foto o un PDF escaneado, con IA.",
+            "Turn handwriting in a photo or a scanned PDF into text, with AI.",
+            AiSpec(estimate=lambda o: 1, json=False, images=True, min_context=8000, min_output=2000),
+            inputs=(*IMAGE_INPUTS, "pdf"), outputs=("docx", "txt", "md"), phase="F6",
+            related=("imagen-a-texto", "ocr-pdf", "escaner-pdf")),
     # 6.3 no fija su coste: se reserva 1 petición al encolar y se devuelve si Docling reconoce la tabla en `workerconvert`
     # sin la IA (D-160). Con «usar IA» apagado no pide cuenta, consentimiento ni peticiones (D-161).
     ai_tool("imagen-a-excel", "image-to-excel", "Imagen a Excel", "Image to Excel", ImagenExcelOptions, "tools.ai.imagen_excel:run",

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Manuscrito a texto pasa a texto lo escrito a mano: apuntes de clase, cartas antiguas, recetas de la familia, notas de una reunión, diarios o formularios rellenados a bolígrafo. Sube una foto o un PDF escaneado y descarga la transcripción en Word, en texto o en Markdown para editarla, buscar en ella o copiarla.",
+    "La transcripción la hace un modelo de IA gratuito que entiende imágenes, a través de OpenRouter. Copia el texto palabra por palabra, sin corregir la ortografía ni resumir, y marca como [ilegible] lo que no se puede leer. Puedes indicar el idioma del texto para ayudar al modelo y elegir si se respetan los saltos de línea del original o se unen los párrafos.",
+    "Cada página es una petición de IA y una tarea admite hasta 10 páginas. Funciona mejor con fotos nítidas, bien iluminadas y de frente; si la letra es muy difícil o el papel está muy deteriorado, la transcripción puede tener errores, así que conviene revisarla con el original delante.",
+    "Si en un momento dado no hay ningún modelo gratuito que admita imágenes, la herramienta se desactiva sola y te lo indica en esta página; vuelve a estar disponible en cuanto lo hay. Las imágenes se envían al modelo solo para transcribirlas, con tu consentimiento, y se borran al caducar."
+  ],
+  "steps": [
+    "Sube una foto o un PDF escaneado (hasta 10 páginas).",
+    "Elige el idioma del texto y el formato.",
+    "Descarga la transcripción."
+  ],
+  "faq": [
+    {
+      "q": "¿Sirve para texto impreso?",
+      "a": "Sí, pero para texto impreso es mejor Imagen a texto u OCR PDF, que no gastan peticiones de IA."
+    },
+    {
+      "q": "¿Por qué aparece [ilegible]?",
+      "a": "Porque el modelo no ha podido leer esa parte con seguridad. Una foto más nítida o más cercana suele ayudar."
+    },
+    {
+      "q": "¿Por qué está desactivada?",
+      "a": "Porque ahora mismo no hay ningún modelo gratuito que admita imágenes. Se activa sola cuando vuelve a haberlo."
+    }
+  ]
+}

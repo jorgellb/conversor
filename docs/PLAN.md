@@ -118,7 +118,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F6-B1 | xlsx-a-csv, csv-a-xlsx, ods-a-xlsx, xlsx-a-ods, excel-a-json, arreglar-codificacion-csv | Hecho (D-213), con la revisión corregida (D-218); ods-a-xlsx y xlsx-a-ods con LibreOffice Calc real, en la CI |
 | F6-B2 | csv-a-json, json-a-csv, json-a-xml, xml-a-json, yaml-a-json, json-a-yaml | Hecho (D-214), con la revisión corregida (D-218) |
 | F6-C | epub-a-mobi, epub-a-azw3, mobi-a-epub, azw3-a-epub, pptx-a-imagenes, pptx-a-video | Hecho (D-237); Calibre real, en la CI |
-| F6-D | traducir-word, traducir-excel, traducir-powerpoint, manuscrito-a-texto | Pendiente (F4-Z) |
+| F6-D | traducir-word, traducir-excel, traducir-powerpoint, manuscrito-a-texto | Hecho (D-239) |
 | F6-E | rar-a-zip, 7z-a-zip, tar-a-zip, extraer-archivo-online, srt-a-vtt, vtt-a-srt, ass-a-srt | Hecho (D-217) |
 | F6-F | ttf-a-woff2, otf-a-woff2, woff2-a-ttf, woff-a-ttf, ttf-a-otf, otf-a-ttf | Hecho (D-215) |
 | F6-G | csig-a-pdf, p7m-a-pdf, xsig-a-pdf, verificar-firma | Hecho (D-219); sellos de tiempo de XAdES sin comprobar (anotado) |

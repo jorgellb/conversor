@@ -17693,7 +17693,7 @@
       "max_files": null,
       "secret_fields": [],
       "related": [
-        "pptx-a-pdf",
+        "ppt-a-pdf",
         "pptx-a-video"
       ],
       "canonical_of": null,
@@ -22592,7 +22592,7 @@
       "secret_fields": [],
       "related": [
         "pptx-a-imagenes",
-        "pptx-a-pdf"
+        "ppt-a-pdf"
       ],
       "canonical_of": null,
       "ai": false,
@@ -27801,6 +27801,778 @@
           }
         },
         "title": "TraducirOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "traducir-word",
+      "slug_en": "translate-word",
+      "name_es": "Traducir Word",
+      "name_en": "Translate Word",
+      "summary_es": "Traduce un documento de Word a otro idioma conservando el formato, las imágenes y el diseño.",
+      "summary_en": "Translate a Word document into another language keeping the formatting, images and layout.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "ai",
+      "cost_class": "ai",
+      "task_class": "ai",
+      "inputs": [
+        "docx"
+      ],
+      "outputs": [
+        "docx"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "word-a-pdf",
+        "traducir-pdf"
+      ],
+      "canonical_of": null,
+      "ai": true,
+      "ai_option": null,
+      "options_schema": {
+        "description": "traducir-word, traducir-excel y traducir-powerpoint (F6-D, D-239): idioma de destino [inglés], del original\n[detectarlo] y términos que no se traducen. Sale el mismo formato que entra, con su formato conservado.",
+        "properties": {
+          "destino": {
+            "default": "en",
+            "enum": [
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Traducir al",
+            "type": "string",
+            "x-labels": {
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Translate into",
+              "es": "Traducir al"
+            }
+          },
+          "origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Idioma del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "Detect it",
+                "es": "Detectarlo"
+              },
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Original language",
+              "es": "Idioma del original"
+            }
+          },
+          "glosario": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Términos que no se traducen (uno por línea)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Terms not to translate (one per line)",
+              "es": "Términos que no se traducen (uno por línea)"
+            },
+            "x-widget": "textarea"
+          }
+        },
+        "title": "TraducirOficinaOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "traducir-excel",
+      "slug_en": "translate-excel",
+      "name_es": "Traducir Excel",
+      "name_en": "Translate Excel",
+      "summary_es": "Traduce una hoja de Excel a otro idioma conservando el formato, las imágenes y el diseño.",
+      "summary_en": "Translate an Excel spreadsheet into another language keeping the formatting, images and layout.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "ai",
+      "cost_class": "ai",
+      "task_class": "ai",
+      "inputs": [
+        "xlsx"
+      ],
+      "outputs": [
+        "xlsx"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "excel-a-pdf",
+        "traducir-pdf"
+      ],
+      "canonical_of": null,
+      "ai": true,
+      "ai_option": null,
+      "options_schema": {
+        "description": "traducir-word, traducir-excel y traducir-powerpoint (F6-D, D-239): idioma de destino [inglés], del original\n[detectarlo] y términos que no se traducen. Sale el mismo formato que entra, con su formato conservado.",
+        "properties": {
+          "destino": {
+            "default": "en",
+            "enum": [
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Traducir al",
+            "type": "string",
+            "x-labels": {
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Translate into",
+              "es": "Traducir al"
+            }
+          },
+          "origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Idioma del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "Detect it",
+                "es": "Detectarlo"
+              },
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Original language",
+              "es": "Idioma del original"
+            }
+          },
+          "glosario": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Términos que no se traducen (uno por línea)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Terms not to translate (one per line)",
+              "es": "Términos que no se traducen (uno por línea)"
+            },
+            "x-widget": "textarea"
+          }
+        },
+        "title": "TraducirOficinaOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "traducir-powerpoint",
+      "slug_en": "translate-powerpoint",
+      "name_es": "Traducir PowerPoint",
+      "name_en": "Translate PowerPoint",
+      "summary_es": "Traduce una presentación de PowerPoint a otro idioma conservando el formato, las imágenes y el diseño.",
+      "summary_en": "Translate a PowerPoint presentation into another language keeping the formatting, images and layout.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "ai",
+      "cost_class": "ai",
+      "task_class": "ai",
+      "inputs": [
+        "pptx"
+      ],
+      "outputs": [
+        "pptx"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "ppt-a-pdf",
+        "traducir-pdf"
+      ],
+      "canonical_of": null,
+      "ai": true,
+      "ai_option": null,
+      "options_schema": {
+        "description": "traducir-word, traducir-excel y traducir-powerpoint (F6-D, D-239): idioma de destino [inglés], del original\n[detectarlo] y términos que no se traducen. Sale el mismo formato que entra, con su formato conservado.",
+        "properties": {
+          "destino": {
+            "default": "en",
+            "enum": [
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Traducir al",
+            "type": "string",
+            "x-labels": {
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Translate into",
+              "es": "Traducir al"
+            }
+          },
+          "origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Idioma del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "Detect it",
+                "es": "Detectarlo"
+              },
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Original language",
+              "es": "Idioma del original"
+            }
+          },
+          "glosario": {
+            "default": "",
+            "maxLength": 1000,
+            "title": "Términos que no se traducen (uno por línea)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Terms not to translate (one per line)",
+              "es": "Términos que no se traducen (uno por línea)"
+            },
+            "x-widget": "textarea"
+          }
+        },
+        "title": "TraducirOficinaOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "manuscrito-a-texto",
+      "slug_en": "handwriting-to-text",
+      "name_es": "Manuscrito a texto",
+      "name_en": "Handwriting to text",
+      "summary_es": "Pasa a texto lo escrito a mano en una foto o un PDF escaneado, con IA.",
+      "summary_en": "Turn handwriting in a photo or a scanned PDF into text, with AI.",
+      "category": "ai",
+      "where": "server",
+      "worker_group": "ai",
+      "cost_class": "ai",
+      "task_class": "ai",
+      "inputs": [
+        "jpg",
+        "png",
+        "webp",
+        "tiff",
+        "bmp",
+        "gif",
+        "pdf"
+      ],
+      "outputs": [
+        "docx",
+        "txt",
+        "md"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "imagen-a-texto",
+        "ocr-pdf",
+        "escaner-pdf"
+      ],
+      "canonical_of": null,
+      "ai": true,
+      "ai_option": null,
+      "options_schema": {
+        "description": "manuscrito-a-texto (F6-D, D-239): idioma del texto [detectarlo], formato [Word] | TXT | Markdown y saltos de línea.",
+        "properties": {
+          "idioma": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "es",
+              "en",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "ca",
+              "nl",
+              "pl",
+              "ro",
+              "gl",
+              "eu"
+            ],
+            "title": "Idioma del texto",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Detect it",
+                "es": "Detectarlo"
+              },
+              "ca": {
+                "en": "Catalan",
+                "es": "Catalán"
+              },
+              "de": {
+                "en": "German",
+                "es": "Alemán"
+              },
+              "en": {
+                "en": "English",
+                "es": "Inglés"
+              },
+              "es": {
+                "en": "Spanish",
+                "es": "Español"
+              },
+              "eu": {
+                "en": "Basque",
+                "es": "Euskera"
+              },
+              "fr": {
+                "en": "French",
+                "es": "Francés"
+              },
+              "gl": {
+                "en": "Galician",
+                "es": "Gallego"
+              },
+              "it": {
+                "en": "Italian",
+                "es": "Italiano"
+              },
+              "nl": {
+                "en": "Dutch",
+                "es": "Neerlandés"
+              },
+              "pl": {
+                "en": "Polish",
+                "es": "Polaco"
+              },
+              "pt": {
+                "en": "Portuguese",
+                "es": "Portugués"
+              },
+              "ro": {
+                "en": "Romanian",
+                "es": "Rumano"
+              }
+            },
+            "x-title": {
+              "en": "Language of the text",
+              "es": "Idioma del texto"
+            }
+          },
+          "formato": {
+            "default": "docx",
+            "enum": [
+              "docx",
+              "txt",
+              "md"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "docx": {
+                "en": "Word (DOCX)",
+                "es": "Word (DOCX)"
+              },
+              "md": {
+                "en": "Markdown",
+                "es": "Markdown"
+              },
+              "txt": {
+                "en": "Text (TXT)",
+                "es": "Texto (TXT)"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "conservar_lineas": {
+            "default": true,
+            "title": "Conservar los saltos de línea del original",
+            "type": "boolean",
+            "x-title": {
+              "en": "Keep the original line breaks",
+              "es": "Conservar los saltos de línea del original"
+            }
+          }
+        },
+        "title": "ManuscritoOptions",
         "type": "object"
       }
     },
