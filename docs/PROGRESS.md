@@ -710,6 +710,11 @@ Correcciones de la revisión de F5-V1 y F5-V2 (D-245: carátulas, duración desc
 verticales) y de F6-O2 (D-246: `meta refresh` en el HTML que imprime Chromium y lista de bloqueo del Gotenberg principal,
 privacidad de la combinación y del dictado, campos desconocidos, saneado). F5 y F6 cerrados (D-247).
 
+## F7-B (AMF, glTF y formatos de intercambio)
+
+amf-a-stl, stl-a-amf, amf-a-3mf, glb-a-stl, stl-a-glb, gltf-a-stl, fbx-a-stl, fbx-a-obj, dae-a-stl y 3ds-a-stl con AMF propio,
+trimesh para glTF y assimp en un proceso hijo aislado, con ejes y unidades de cada formato (D-248), en `tests/test_mesh.py`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

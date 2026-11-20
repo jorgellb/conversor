@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AMF to 3MF converts 3D models from AMF to 3MF on the server, with nothing to install. It is useful, for example, to move a coloured AMF project to the format today's slicers use. 3MF is the modern 3D printing format, with units, named parts and colours, opened directly by PrusaSlicer, Bambu Studio, Cura and Windows.",
+    "AMF (ISO/ASTM 52915) is the additive manufacturing XML format: it stores units, several parts, coloured materials and copies of one object, and PrusaSlicer and Cura open it. AMF and 3MF both use the Z axis up, like 3D printing, so the model is not turned; the AMF's units are read from the file and you can choose those of the 3MF.",
+    "You can apply a scale, choose the original's units if the AMF does not store them and decide what to do with the parts: keep them separate inside the 3MF when the format allows it, merge them into one mesh or get one file per part in a ZIP.",
+    "The AMF geometry reaches the 3MF without being simplified or repaired. Up to one million triangles are accepted without an account, two million with a free account and ten million with Pro, and up to ten files per task; they are processed on our server in the European Union and deleted when they expire."
+  ],
+  "steps": [
+    "Upload one or more AMF files.",
+    "Choose the units and, optionally, the scale and parts.",
+    "Download the 3MF."
+  ],
+  "faq": [
+    {
+      "q": "Why does the 3MF come out rotated or on its side?",
+      "a": "Because AMF and 3MF may use different axes. Try ticking or unticking “Keep the original axes” in the advanced options."
+    },
+    {
+      "q": "Are the AMF colours kept?",
+      "a": "The AMF material colours go into the 3MF if the format supports them; STL stores no colours and the note says so."
+    },
+    {
+      "q": "What if the model has holes?",
+      "a": "The 3MF has the same geometry as the AMF. To close them before printing, use Repair STL."
+    }
+  ]
+}

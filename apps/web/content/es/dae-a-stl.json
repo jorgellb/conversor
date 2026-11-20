@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DAE a STL convierte modelos 3D de DAE a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir un modelo de SketchUp o del 3D Warehouse. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores.",
+    "DAE (Collada) es el formato XML de intercambio de SketchUp, Blender y muchos motores y visores, con sus unidades declaradas. Como DAE usa el eje Y hacia arriba y la impresión 3D el Z, el modelo se gira para que salga de pie en el laminador; si no lo quieres, marca «Conservar los ejes» en las opciones avanzadas. La lectura de DAE la hace assimp en un proceso aislado, sin acceso al resto del servidor: las texturas y las animaciones no se convierten, solo la geometría y el color de cada material.",
+    "Puedes aplicar una escala, elegir las unidades del original si el DAE no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del DAE llega al STL sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos DAE.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el STL sale girado o de lado?",
+      "a": "Porque DAE y STL pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del DAE?",
+      "a": "Los colores de los materiales del DAE pasan al STL si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El STL tiene la misma geometría que el DAE. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}

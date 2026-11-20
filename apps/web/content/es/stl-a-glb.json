@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL a GLB convierte modelos 3D de STL a GLB en el servidor, sin instalar nada. Sirve, por ejemplo, para enseñar una pieza en una web, en un catálogo o en realidad aumentada sin instalar nada. GLB es la versión binaria de glTF, el formato 3D de la web: lo muestran los navegadores, el visor 3D de Windows, la realidad aumentada de Android y los editores como Blender, siempre en metros y con el eje Y hacia arriba.",
+    "STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores. Como glTF usa metros y el eje Y hacia arriba, el modelo se pasa a metros y se gira para que se vea de pie en los visores; las opciones avanzadas permiten conservar los ejes.",
+    "Puedes aplicar una escala, elegir las unidades del original si el STL no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del GLB cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del STL llega al GLB sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos STL.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el GLB."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el GLB sale girado o de lado?",
+      "a": "Porque STL y GLB pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del STL?",
+      "a": "Los colores de los materiales del STL pasan al GLB si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El GLB tiene la misma geometría que el STL. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}

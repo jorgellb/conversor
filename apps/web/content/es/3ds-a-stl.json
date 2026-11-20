@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "3DS a STL convierte modelos 3D de 3DS a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir un modelo antiguo de 3D Studio o de una biblioteca de modelos. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores.",
+    "3DS es el formato clásico de 3D Studio, que siguen usando muchas bibliotecas de modelos y programas antiguos. Como 3DS usa el eje Y hacia arriba y la impresión 3D el Z, el modelo se gira para que salga de pie en el laminador; si no lo quieres, marca «Conservar los ejes» en las opciones avanzadas. La lectura de 3DS la hace assimp en un proceso aislado, sin acceso al resto del servidor: las texturas y las animaciones no se convierten, solo la geometría y el color de cada material.",
+    "Puedes aplicar una escala, elegir las unidades del original si el 3DS no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del 3DS llega al STL sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos 3DS.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el STL sale girado o de lado?",
+      "a": "Porque 3DS y STL pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del 3DS?",
+      "a": "Los colores de los materiales del 3DS pasan al STL si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El STL tiene la misma geometría que el 3DS. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}

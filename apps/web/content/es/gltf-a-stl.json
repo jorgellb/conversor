@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "glTF a STL convierte modelos 3D de glTF a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir un modelo glTF exportado de un editor o de un motor de juegos. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores.",
+    "glTF es el formato 3D abierto de Khronos para la web y las aplicaciones; un .gltf es un JSON que puede llevar sus datos incrustados o en archivos .bin aparte. Como glTF usa el eje Y hacia arriba y la impresión 3D el Z, el modelo se gira para que salga de pie en el laminador; si no lo quieres, marca «Conservar los ejes» en las opciones avanzadas. El .gltf tiene que llevar sus datos incrustados: si usa un .bin aparte, súbelo como GLB, que lo junta todo en un archivo.",
+    "Puedes aplicar una escala, elegir las unidades del original si el glTF no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del glTF llega al STL sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos glTF.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el STL sale girado o de lado?",
+      "a": "Porque glTF y STL pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del glTF?",
+      "a": "Los colores de los materiales del glTF pasan al STL si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El STL tiene la misma geometría que el glTF. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}

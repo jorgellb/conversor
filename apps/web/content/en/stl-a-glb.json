@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL to GLB converts 3D models from STL to GLB on the server, with nothing to install. It is useful, for example, to show a part on a website, in a catalogue or in augmented reality without installing anything. GLB is the binary version of glTF, the web's 3D format: browsers, the Windows 3D viewer, Android augmented reality and editors such as Blender show it, always in metres and with the Y axis up.",
+    "STL is the format every slicer reads (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): it only stores triangles, with no units or colours. As glTF uses metres and the Y axis up, the model is converted to metres and turned so it stands upright in viewers; the advanced options let you keep the axes.",
+    "You can apply a scale, choose the original's units if the STL does not store them and decide what to do with the parts: keep them separate inside the GLB when the format allows it, merge them into one mesh or get one file per part in a ZIP.",
+    "The STL geometry reaches the GLB without being simplified or repaired. Up to one million triangles are accepted without an account, two million with a free account and ten million with Pro, and up to ten files per task; they are processed on our server in the European Union and deleted when they expire."
+  ],
+  "steps": [
+    "Upload one or more STL files.",
+    "Choose the units and, optionally, the scale and parts.",
+    "Download the GLB."
+  ],
+  "faq": [
+    {
+      "q": "Why does the GLB come out rotated or on its side?",
+      "a": "Because STL and GLB may use different axes. Try ticking or unticking “Keep the original axes” in the advanced options."
+    },
+    {
+      "q": "Are the STL colours kept?",
+      "a": "The STL material colours go into the GLB if the format supports them; STL stores no colours and the note says so."
+    },
+    {
+      "q": "What if the model has holes?",
+      "a": "The GLB has the same geometry as the STL. To close them before printing, use Repair STL."
+    }
+  ]
+}

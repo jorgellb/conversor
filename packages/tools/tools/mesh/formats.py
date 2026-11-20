@@ -44,6 +44,7 @@ class Model:
     parts: list[Part]
     unit_mm: float | None = None  # None: el archivo no guarda unidades
     lost: set[str] = field(default_factory=set)  # lo que no se ha podido leer: «textures», «materials»
+    up: str | None = "z"  # eje vertical: «z» (impresión 3D) o «y» (glTF, FBX, DAE y 3DS), D-248
 
     @property
     def triangles(self) -> int:
@@ -103,7 +104,21 @@ def _from_trimesh(path: Path, ext: str) -> Model:
         if visual is not None and visual.kind in ("face", "vertex") and getattr(visual, "defined", False):
             colors = np.asarray(visual.face_colors, dtype=np.uint8)
         elif visual is not None and visual.kind == "texture":
-            model.lost.add("textures")
+            # El color base de un material glTF sin textura, tal cual; una textura, a un color por cara aproximado, y se avisa.
+            material = getattr(visual, "material", None)
+            base = getattr(material, "baseColorFactor", None)
+            if base is not None and getattr(material, "baseColorTexture", None) is None:
+                rgba = np.asarray(base, dtype=np.float64).reshape(-1)[:4]
+                rgba = rgba * 255 if rgba.max() <= 1.0 else rgba
+                colors = np.tile(np.clip(np.round(rgba), 0, 255).astype(np.uint8), (len(mesh.faces), 1))
+            else:
+                try:
+                    as_color = visual.to_color()
+                    colors = np.asarray(as_color.face_colors, dtype=np.uint8) if getattr(as_color, "defined", False) else None
+                except Exception:  # noqa: BLE001
+                    colors = None
+            if getattr(getattr(visual, "material", None), "image", None) is not None or getattr(getattr(visual, "material", None), "baseColorTexture", None) is not None:
+                model.lost.add("textures")
         model.parts.append(Part(str(node if node != gname else gname), np.asarray(mesh.vertices, dtype=np.float64),
                                 np.asarray(mesh.faces, dtype=np.int64), colors))
     if not model.parts:
@@ -245,9 +260,17 @@ def _read_3mf(path: Path) -> Model:
     return model
 
 
-def load(path: Path, ext: str, max_triangles: int) -> Model:
+def load(path: Path, ext: str, max_triangles: int, ctx=None) -> Model:
+    from tools.mesh import extra
+
+    if ext in ("fbx", "dae", "3ds"):
+        return extra.read_assimp(ctx, path, ext, max_triangles)  # cuenta los triángulos el proceso hijo
     check_limit(path, ext, max_triangles)
-    if ext == "3mf":
+    if ext == "amf":
+        return extra.read_amf(path, max_triangles)
+    if ext in ("glb", "gltf"):
+        model = extra.read_gltf(path, ext)
+    elif ext == "3mf":
         model = _from_3mf(path)
     elif ext == "stl" and stl_is_binary(path):
         model = _stl_binary(path)
@@ -278,7 +301,8 @@ def merged(model: Model, name: str = "modelo") -> Model:
         offset += len(p.vertices)
         if any_colors:
             colors.append(p.colors if p.colors is not None else np.full((len(p.faces), 4), (200, 200, 200, 255), np.uint8))
-    return Model([Part(name, np.vstack(verts), np.vstack(faces), np.vstack(colors) if any_colors else None)], model.unit_mm, model.lost)
+    return Model([Part(name, np.vstack(verts), np.vstack(faces), np.vstack(colors) if any_colors else None)], model.unit_mm, model.lost,
+                 model.up)
 
 
 # ——— Escritura ———

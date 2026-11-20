@@ -13,12 +13,16 @@ from pathlib import Path
 
 from core.errors import ErrorCode, ToolError
 from tools.base import ToolContext, derived_name
-from tools.mesh import formats
+from tools.mesh import extra, formats
 from tools.pdf.common import with_batch_zip
 
 TARGET = {"stl-a-obj": "obj", "obj-a-stl": "stl", "stl-a-3mf": "3mf", "3mf-a-stl": "stl", "obj-a-3mf": "3mf",
-          "3mf-a-obj": "obj", "stl-a-ply": "ply", "ply-a-stl": "stl", "stl-ascii-a-binario": "stl"}
-MULTI = {"obj", "3mf"}  # formatos con varias piezas en un archivo
+          "3mf-a-obj": "obj", "stl-a-ply": "ply", "ply-a-stl": "stl", "stl-ascii-a-binario": "stl",
+          # F7-B (D-248)
+          "amf-a-stl": "stl", "stl-a-amf": "amf", "amf-a-3mf": "3mf", "glb-a-stl": "stl", "stl-a-glb": "glb", "gltf-a-stl": "stl",
+          "fbx-a-stl": "stl", "fbx-a-obj": "obj", "dae-a-stl": "stl", "3ds-a-stl": "stl"}
+MULTI = {"obj", "3mf", "amf", "glb"}  # formatos con varias piezas en un archivo
+UP = {"glb": "y"}  # eje vertical de cada formato de salida; el resto, Z (impresión 3D)
 
 TEXTS = {
     "es": {"colors_lost": "El STL no guarda colores: el modelo sale sin ellos.",
@@ -27,14 +31,18 @@ TEXTS = {
            "assumed": "El archivo de origen no guarda unidades: se ha tomado como {src}.",
            "parts": "{n} piezas.", "separated": "Una pieza por archivo, en un ZIP.",
            "already_binary": "El STL ya era binario: se ha vuelto a guardar igual de compacto.",
-           "triangles": "{n} triángulos."},
+           "triangles": "{n} triángulos.",
+           "axes_z": "Se ha pasado del eje Y vertical del original al Z vertical de la impresión 3D.",
+           "axes_y": "Se ha pasado del eje Z vertical al Y vertical de glTF."},
     "en": {"colors_lost": "STL does not store colours: the model comes out without them.",
            "textures_lost": "Textures are not converted: the model keeps its geometry and colours, if any.",
            "units": "Units: {src} → {dst}{scale}.", "scale": ", scale × {f:g}",
            "assumed": "The source file does not store units: it was taken as {src}.",
            "parts": "{n} parts.", "separated": "One part per file, in a ZIP.",
            "already_binary": "The STL was already binary: it was saved again just as compact.",
-           "triangles": "{n} triangles."},
+           "triangles": "{n} triangles.",
+           "axes_z": "Converted from the original's Y-up axis to the Z-up axis of 3D printing.",
+           "axes_y": "Converted from Z-up to glTF's Y-up axis."},
 }
 
 
@@ -60,6 +68,10 @@ def write(model: formats.Model, target: str, dst: Path, unit: str, ascii: bool) 
         formats.write_ply(model, dst)
     elif target == "3mf":
         formats.write_3mf(model, dst, unit)
+    elif target == "amf":
+        extra.write_amf(model, dst, unit)
+    elif target == "glb":
+        extra.write_glb(model, dst)
     else:
         raise ToolError(ErrorCode.UNSUPPORTED_FORMAT)
 
@@ -91,18 +103,21 @@ def run(ctx: ToolContext) -> list[dict]:
     for n, inp in enumerate(ctx.inputs):
         ctx.report(n / len(ctx.inputs), None)
         ext = (inp.ext or Path(inp.name).suffix.lstrip(".")).lower()
-        model = formats.load(inp.path, ext, ctx.plan.mesh_triangles)
+        model = formats.load(inp.path, ext, ctx.plan.mesh_triangles, ctx=ctx)
         notes = []
+        if not getattr(o, "conservar_ejes", False) and extra.reorient(model, UP.get(target, "z")):
+            notes.append(t["axes_z" if UP.get(target, "z") == "z" else "axes_y"])
         if ctx.tool == "stl-ascii-a-binario" and formats.stl_is_binary(inp.path):
             notes.append(t["already_binary"])
         src_mm, src_name, assumed = _source_unit(model, o.unidades_origen)
-        dst_mm = formats.UNITS_MM[o.unidades_destino]
+        dst_unit = getattr(o, "unidades_destino", "m")  # GLB: siempre metros (glTF)
+        dst_mm = formats.UNITS_MM[dst_unit]
         factor = src_mm / dst_mm * o.escala
         formats.scaled(model, factor)
-        if assumed and target == "3mf":
+        if assumed and target in ("3mf", "amf", "glb"):
             notes.append(t["assumed"].format(src=_unit_label(src_name, ctx.locale)))
-        if src_name != o.unidades_destino or o.escala != 1:
-            notes.append(t["units"].format(src=_unit_label(src_name, ctx.locale), dst=_unit_label(o.unidades_destino, ctx.locale),
+        if src_name != dst_unit or o.escala != 1:
+            notes.append(t["units"].format(src=_unit_label(src_name, ctx.locale), dst=_unit_label(dst_unit, ctx.locale),
                                            scale=t["scale"].format(f=o.escala) if o.escala != 1 else ""))
         if target == "stl" and model.has_colors:
             notes.append(t["colors_lost"])
@@ -113,7 +128,7 @@ def run(ctx: ToolContext) -> list[dict]:
         if o.piezas == "fusionar" or (o.piezas == "mantener" and target not in MULTI):
             pieces = [formats.merged(model, stem)]
         elif o.piezas == "separar" and len(model.parts) > 1:
-            pieces = [formats.Model([p], model.unit_mm, model.lost) for p in model.parts]
+            pieces = [formats.Model([p], model.unit_mm, model.lost, model.up) for p in model.parts]
             notes.append(t["separated"])
         files = []
         for k, piece in enumerate(pieces):
@@ -123,7 +138,7 @@ def run(ctx: ToolContext) -> list[dict]:
             else:
                 name = f"{name_stem}.{target}"
                 dst = ctx.output(name)
-                write(piece, target, dst, o.unidades_destino, ascii)
+                write(piece, target, dst, dst_unit, ascii)
             files.append({"path": str(dst), "name": name})
         if len(model.parts) > 1 and len(pieces) == 1 and len(pieces[0].parts) > 1:
             notes.append(t["parts"].format(n=len(model.parts)))

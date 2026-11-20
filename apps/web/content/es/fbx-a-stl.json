@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "FBX a STL convierte modelos 3D de FBX a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir un personaje, una figura o un objeto de un juego o una animación. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores.",
+    "FBX es el formato de Autodesk que usan Maya, 3ds Max, Blender, Unity y Unreal para intercambiar modelos y escenas. Como FBX usa el eje Y hacia arriba y la impresión 3D el Z, el modelo se gira para que salga de pie en el laminador; si no lo quieres, marca «Conservar los ejes» en las opciones avanzadas. La lectura de FBX la hace assimp en un proceso aislado, sin acceso al resto del servidor: las texturas y las animaciones no se convierten, solo la geometría y el color de cada material.",
+    "Puedes aplicar una escala, elegir las unidades del original si el FBX no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del FBX llega al STL sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos FBX.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el STL sale girado o de lado?",
+      "a": "Porque FBX y STL pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del FBX?",
+      "a": "Los colores de los materiales del FBX pasan al STL si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El STL tiene la misma geometría que el FBX. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}

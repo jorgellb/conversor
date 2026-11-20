@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AMF a STL convierte modelos 3D de AMF a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir un AMF en una impresora o un laminador que solo admite STL. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores.",
+    "AMF (ISO/ASTM 52915) es el formato XML de fabricación aditiva: guarda unidades, varias piezas, materiales con color y copias de un mismo objeto, y lo abren PrusaSlicer y Cura. AMF y STL usan el eje Z hacia arriba, como la impresión 3D, así que el modelo no se gira; las unidades del AMF se leen del archivo y puedes elegir las del STL.",
+    "Puedes aplicar una escala, elegir las unidades del original si el AMF no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del AMF llega al STL sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos AMF.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el STL sale girado o de lado?",
+      "a": "Porque AMF y STL pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del AMF?",
+      "a": "Los colores de los materiales del AMF pasan al STL si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El STL tiene la misma geometría que el AMF. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}

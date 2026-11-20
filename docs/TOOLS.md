@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 277 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 9). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 287 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 19). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -283,6 +283,16 @@ Catálogo publicado en esta entrega: 277 herramientas (F1 43, F2 60, F3 10, F4 1
 | `stl-a-ply` / `stl-to-ply` | servidor | mesh | light | F7 | activa | stl → ply, zip | redactado, sin revisar |
 | `ply-a-stl` / `ply-to-stl` | servidor | mesh | light | F7 | activa | ply → stl, zip | redactado, sin revisar |
 | `stl-ascii-a-binario` / `stl-ascii-to-binary` | servidor | mesh | light | F7 | activa | stl → stl, zip | redactado, sin revisar |
+| `amf-a-stl` / `amf-to-stl` | servidor | mesh | light | F7 | activa | amf → stl, zip | redactado, sin revisar |
+| `stl-a-amf` / `stl-to-amf` | servidor | mesh | light | F7 | activa | stl → amf, zip | redactado, sin revisar |
+| `amf-a-3mf` / `amf-to-3mf` | servidor | mesh | light | F7 | activa | amf → 3mf, zip | redactado, sin revisar |
+| `glb-a-stl` / `glb-to-stl` | servidor | mesh | light | F7 | activa | glb → stl, zip | redactado, sin revisar |
+| `stl-a-glb` / `stl-to-glb` | servidor | mesh | light | F7 | activa | stl → glb, zip | redactado, sin revisar |
+| `gltf-a-stl` / `gltf-to-stl` | servidor | mesh | light | F7 | activa | gltf → stl, zip | redactado, sin revisar |
+| `fbx-a-stl` / `fbx-to-stl` | servidor | mesh | light | F7 | activa | fbx → stl, zip | redactado, sin revisar |
+| `fbx-a-obj` / `fbx-to-obj` | servidor | mesh | light | F7 | activa | fbx → obj, zip | redactado, sin revisar |
+| `dae-a-stl` / `dae-to-stl` | servidor | mesh | light | F7 | activa | dae → stl, zip | redactado, sin revisar |
+| `3ds-a-stl` / `3ds-to-stl` | servidor | mesh | light | F7 | activa | 3ds → stl, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

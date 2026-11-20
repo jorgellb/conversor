@@ -193,3 +193,140 @@ def test_lib3mf_does_not_change_the_process_locale(tmp_path):
 
     formats.load(tmp_path / "piezas.3mf", "3mf", 10**6)
     assert locale.getencoding() == before
+
+
+# ——— F7-B (D-248): AMF, GLB, glTF, FBX, DAE y 3DS ———
+
+def _assimp_export(tmp_path: Path, mesh: trimesh.Trimesh, fmt: str, ext: str) -> Path:
+    """Muestra creada con el propio assimp en un subproceso (necesita libassimp; si no está, la prueba se salta)."""
+    import os
+    import subprocess
+    import sys
+
+    from core.settings import get_settings
+
+    src = tmp_path / "base.obj"
+    mesh.export(src)
+    out = tmp_path / f"modelo.{ext}"
+    env = {**os.environ, "LD_LIBRARY_PATH": get_settings().ENGINES_LIBRARY_PATH or os.environ.get("LD_LIBRARY_PATH", "")}
+    code = ("import sys, pyassimp\nwith pyassimp.load(sys.argv[1]) as s:\n    pyassimp.export(s, sys.argv[2], file_type=sys.argv[3])\n")
+    res = subprocess.run([sys.executable, "-c", code, str(src), str(out), fmt], env=env, capture_output=True)
+    if res.returncode or not out.exists():
+        pytest.skip("assimp no disponible: " + res.stderr.decode()[-200:])
+    return out
+
+
+def test_amf_roundtrip_with_units_colors_and_instances(make_ctx, tmp_path):
+    src = _two_parts_3mf(tmp_path)
+    out = run("3mf-a-stl", make_ctx("3mf-a-stl", [src]))  # solo para tener un STL de referencia
+    stl = Path(out[0]["path"])
+    amf_out = run("stl-a-amf", make_ctx("stl-a-amf", [stl], {"unidades_destino": "in"}))
+    amf = Path(amf_out[0]["path"])
+    assert amf.name == "piezas.amf" and zipfile.is_zipfile(amf)
+    from tools.mesh import extra
+
+    model = extra.read_amf(amf, 10**6)
+    assert model.unit_mm == 25.4 and model.triangles == 332
+    back = run("amf-a-stl", make_ctx("amf-a-stl", [amf]))
+    assert abs(_load(Path(back[0]["path"])).volume - _load(stl).volume) < 1e-2
+    # AMF a mano: material con color, constelación con dos instancias desplazadas y unidad en pulgadas.
+    xml = ('<?xml version="1.0"?><amf unit="inch"><material id="7"><color><r>1</r><g>0</g><b>0</b></color></material>'
+           '<object id="1"><mesh><vertices>' + "".join(f"<vertex><coordinates><x>{x}</x><y>{y}</y><z>{z}</z></coordinates></vertex>"
+                                                     for x, y, z in ((0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1)))
+           + '</vertices><volume materialid="7"><triangle><v1>0</v1><v2>2</v2><v3>1</v3></triangle><triangle><v1>0</v1><v2>1</v2><v3>3</v3></triangle>'
+           '<triangle><v1>0</v1><v2>3</v2><v3>2</v3></triangle><triangle><v1>1</v1><v2>2</v2><v3>3</v3></triangle></volume></mesh></object>'
+           '<constellation id="2"><instance objectid="1"><deltax>0</deltax></instance><instance objectid="1"><deltax>5</deltax><rz>90</rz></instance></constellation></amf>')
+    hand = tmp_path / "mano.amf"
+    hand.write_text(xml)
+    model = extra.read_amf(hand, 100)
+    assert len(model.parts) == 2 and model.triangles == 8 and tuple(model.parts[0].colors[0]) == (255, 0, 0, 255)
+    assert np.allclose(model.parts[1].vertices[1], (5, 1, 0))  # (1, 0, 0) girado 90° en Z y desplazado 5
+    out = run("amf-a-3mf", make_ctx("amf-a-3mf", [hand], {"unidades_destino": "mm"}))
+    from tools.mesh import formats
+
+    tmf = formats.load(Path(out[0]["path"]), "3mf", 100)
+    assert np.isclose(tmf.parts[1].vertices[:, 0].max(), 5 * 25.4) and tmf.has_colors
+
+
+def test_glb_is_y_up_in_metres_and_keeps_colours(make_ctx, tmp_path):
+    src = _two_parts_3mf(tmp_path)
+    stl = Path(run("3mf-a-stl", make_ctx("3mf-a-stl", [src]))[0]["path"])
+    out = run("stl-a-glb", make_ctx("stl-a-glb", [stl]))
+    glb = Path(out[0]["path"])
+    assert glb.read_bytes()[:4] == b"glTF" and "Y vertical de glTF" in out[0]["note"] and "milímetros → metros" in out[0]["note"]
+    scene = trimesh.load(glb)
+    # Cubo de 10 mm en el origen y bola de radio 4 en x = 20: de −5 a 24 mm, en metros; Z vertical pasa a Y.
+    assert np.allclose(scene.extents, (0.029, 0.01, 0.01), atol=1e-4)
+    # De vuelta a STL: milímetros y Z vertical otra vez, con la misma caja.
+    back = run("glb-a-stl", make_ctx("glb-a-stl", [glb]))
+    assert np.allclose(_load(Path(back[0]["path"])).extents, _load(stl).extents, atol=1e-3)
+    # Colores: un material por color.
+    from tools.mesh import extra, formats
+
+    model = formats.load(src, "3mf", 10**6)
+    extra.write_glb(model, tmp_path / "c.glb")
+    again = formats.load(tmp_path / "c.glb", "glb", 10**6)
+    assert again.has_colors and {tuple(c) for p in again.parts for c in np.unique(p.colors, axis=0)} >= {(255, 0, 0, 255), (0, 0, 255, 255)}
+
+
+def test_gltf_needs_embedded_buffers(make_ctx, tmp_path):
+    import base64
+    import json
+
+    from tools.mesh.recuento import count_triangles
+
+    box = trimesh.creation.box((1, 2, 3))
+    files = box.export(file_type="gltf")
+    doc = json.loads(files["model.gltf"])
+    external = tmp_path / "fuera.gltf"
+    external.write_text(json.dumps(doc))
+    with pytest.raises(ToolError) as err:
+        run("gltf-a-stl", make_ctx("gltf-a-stl", [external]))
+    assert err.value.detail == "gltf_external"
+    for buf in doc["buffers"]:
+        buf["uri"] = "data:application/octet-stream;base64," + base64.b64encode(files[buf["uri"]]).decode()
+    embedded = tmp_path / "dentro.gltf"
+    embedded.write_text(json.dumps(doc))
+    assert count_triangles(embedded, "gltf") == 12
+    out = run("gltf-a-stl", make_ctx("gltf-a-stl", [embedded]))
+    assert np.allclose(sorted(_load(Path(out[0]["path"])).extents), [1000, 2000, 3000])  # metros a milímetros
+
+
+@pytest.mark.parametrize("fmt,ext,tool", [("fbx", "fbx", "fbx-a-stl"), ("collada", "dae", "dae-a-stl"), ("3ds", "3ds", "3ds-a-stl"),
+                                          ("fbx", "fbx", "fbx-a-obj")])
+def test_assimp_formats_in_a_sandboxed_child(make_ctx, tmp_path, fmt, ext, tool):
+    box = trimesh.creation.box((10, 20, 30))
+    src = _assimp_export(tmp_path, box, fmt, ext)
+    out = run(tool, make_ctx(tool, [src], {"conservar_ejes": True, "unidades_origen": "mm"}))
+    mesh = _load(Path(out[0]["path"]))
+    assert len(mesh.faces) == 12
+    extents = sorted(np.round(mesh.extents, 3))
+    assert extents == [10, 20, 30] or extents == [0.01, 0.02, 0.03] or ext == "3ds"
+
+
+def test_assimp_child_limit_and_crash_isolation(make_ctx, tmp_path):
+    src = _assimp_export(tmp_path, trimesh.creation.icosphere(3), "collada", "dae")
+    ctx = make_ctx("dae-a-stl", [src])
+    ctx.plan = ctx.plan.model_copy(update={"mesh_triangles": 100})
+    with pytest.raises(ToolError) as err:
+        run("dae-a-stl", ctx)
+    assert err.value.code == "LIMIT_EXCEEDED"
+    junk = tmp_path / "basura.fbx"
+    junk.write_bytes(b"Kaydara FBX Binary  \x00\x1a\x00" + b"\xff" * 4000)
+    with pytest.raises(ToolError):
+        run("fbx-a-stl", make_ctx("fbx-a-stl", [junk]))
+
+
+def test_detection_of_f7b_files(tmp_path):
+    from core.filetype import detect
+
+    glb = tmp_path / "a.glb"
+    glb.write_bytes(trimesh.creation.box().export(file_type="glb"))
+    assert detect(glb, ".glb").ext == "glb"
+    fbx = tmp_path / "a.fbx"
+    fbx.write_bytes(b"Kaydara FBX Binary  \x00\x1a\x00" + b"\x00" * 100)
+    assert detect(fbx, ".fbx").ext == "fbx"
+    amf = tmp_path / "z.amf"
+    with zipfile.ZipFile(amf, "w") as zf:
+        zf.writestr("z.amf", "<amf/>")
+    assert detect(amf, ".amf").ext == "amf"

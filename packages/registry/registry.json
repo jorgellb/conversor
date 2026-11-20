@@ -38271,6 +38271,1712 @@
         "title": "MeshOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "amf-a-stl",
+      "slug_en": "amf-to-stl",
+      "name_es": "AMF a STL",
+      "name_en": "AMF to STL",
+      "summary_es": "Convierte modelos AMF a STL, el formato de malla de las impresoras 3D, con unidades y escala.",
+      "summary_en": "Convert AMF models to STL, the mesh format of 3D printers, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "amf"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "stl-a-amf",
+        "amf-a-3mf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Las de 7.18 más STL [binario] | ASCII.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          }
+        },
+        "title": "MeshStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "stl-a-amf",
+      "slug_en": "stl-to-amf",
+      "name_es": "STL a AMF",
+      "name_en": "STL to AMF",
+      "summary_es": "Convierte modelos STL a AMF, el formato XML de fabricación aditiva con unidades y colores, con unidades y escala.",
+      "summary_en": "Convert STL models to AMF, the additive manufacturing XML format with units and colours, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl"
+      ],
+      "outputs": [
+        "amf",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "amf-a-stl",
+        "stl-a-3mf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "7.18 (F7-A, D-244): unidades de origen [automáticas] y destino [mm], escala [1] y piezas [mantener].",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          }
+        },
+        "title": "MeshOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "amf-a-3mf",
+      "slug_en": "amf-to-3mf",
+      "name_es": "AMF a 3MF",
+      "name_en": "AMF to 3MF",
+      "summary_es": "Convierte modelos AMF a 3MF, el formato moderno de impresión 3D, con unidades y colores, con unidades y escala.",
+      "summary_en": "Convert AMF models to 3MF, the modern 3D printing format, with units and colours, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "amf"
+      ],
+      "outputs": [
+        "3mf",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "amf-a-stl",
+        "3mf-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "7.18 (F7-A, D-244): unidades de origen [automáticas] y destino [mm], escala [1] y piezas [mantener].",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          }
+        },
+        "title": "MeshOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "glb-a-stl",
+      "slug_en": "glb-to-stl",
+      "name_es": "GLB a STL",
+      "name_en": "GLB to STL",
+      "summary_es": "Convierte modelos GLB a STL, el formato de malla de las impresoras 3D, con unidades y escala.",
+      "summary_en": "Convert GLB models to STL, the mesh format of 3D printers, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "glb"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "stl-a-glb",
+        "gltf-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "conservar_ejes": {
+            "default": false,
+            "title": "Conservar los ejes del original (no girar de Y vertical a Z vertical)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the original axes (do not turn Y-up into Z-up)",
+              "es": "Conservar los ejes del original (no girar de Y vertical a Z vertical)"
+            }
+          }
+        },
+        "title": "MeshAxesStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "stl-a-glb",
+      "slug_en": "stl-to-glb",
+      "name_es": "STL a GLB",
+      "name_en": "STL to GLB",
+      "summary_es": "Convierte modelos STL a GLB, el formato 3D de la web, la realidad aumentada y los visores, con unidades y escala.",
+      "summary_en": "Convert STL models to GLB, the 3D format of the web, augmented reality and viewers, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl"
+      ],
+      "outputs": [
+        "glb",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "glb-a-stl",
+        "stl-a-obj"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "A GLB (F7-B, D-248): siempre en metros, como pide glTF; unidades del original, escala, piezas y ejes.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them",
+                "es": "Mantenerlas"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "conservar_ejes": {
+            "default": false,
+            "title": "Conservar los ejes (no girar de Z vertical a Y vertical)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the axes (do not turn Z-up into Y-up)",
+              "es": "Conservar los ejes (no girar de Z vertical a Y vertical)"
+            }
+          }
+        },
+        "title": "MeshGlbOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "gltf-a-stl",
+      "slug_en": "gltf-to-stl",
+      "name_es": "glTF a STL",
+      "name_en": "glTF to STL",
+      "summary_es": "Convierte modelos glTF (con sus datos incrustados) a STL para imprimirlos en 3D.",
+      "summary_en": "Convert glTF models (with embedded data) to STL for 3D printing.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "gltf"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "glb-a-stl",
+        "stl-a-glb"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "conservar_ejes": {
+            "default": false,
+            "title": "Conservar los ejes del original (no girar de Y vertical a Z vertical)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the original axes (do not turn Y-up into Z-up)",
+              "es": "Conservar los ejes del original (no girar de Y vertical a Z vertical)"
+            }
+          }
+        },
+        "title": "MeshAxesStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "fbx-a-stl",
+      "slug_en": "fbx-to-stl",
+      "name_es": "FBX a STL",
+      "name_en": "FBX to STL",
+      "summary_es": "Convierte modelos FBX a STL, el formato de malla de las impresoras 3D, con unidades y escala.",
+      "summary_en": "Convert FBX models to STL, the mesh format of 3D printers, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "fbx"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "fbx-a-obj",
+        "obj-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "conservar_ejes": {
+            "default": false,
+            "title": "Conservar los ejes del original (no girar de Y vertical a Z vertical)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the original axes (do not turn Y-up into Z-up)",
+              "es": "Conservar los ejes del original (no girar de Y vertical a Z vertical)"
+            }
+          }
+        },
+        "title": "MeshAxesStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "fbx-a-obj",
+      "slug_en": "fbx-to-obj",
+      "name_es": "FBX a OBJ",
+      "name_en": "FBX to OBJ",
+      "summary_es": "Convierte modelos FBX a OBJ, el formato de modelos 3D de Blender, Maya y los visores, con unidades y escala.",
+      "summary_en": "Convert FBX models to OBJ, the 3D model format of Blender, Maya and viewers, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "fbx"
+      ],
+      "outputs": [
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "fbx-a-stl",
+        "obj-a-3mf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Las de 7.18 más conservar los ejes (F7-B, D-248): sin marcar, Y vertical (glTF, FBX, DAE, 3DS) pasa a Z vertical.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "conservar_ejes": {
+            "default": false,
+            "title": "Conservar los ejes del original (no girar de Y vertical a Z vertical)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the original axes (do not turn Y-up into Z-up)",
+              "es": "Conservar los ejes del original (no girar de Y vertical a Z vertical)"
+            }
+          }
+        },
+        "title": "MeshAxesOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "dae-a-stl",
+      "slug_en": "dae-to-stl",
+      "name_es": "DAE a STL",
+      "name_en": "DAE to STL",
+      "summary_es": "Convierte modelos DAE a STL, el formato de malla de las impresoras 3D, con unidades y escala.",
+      "summary_en": "Convert DAE models to STL, the mesh format of 3D printers, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "dae"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "stl-a-obj",
+        "fbx-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "conservar_ejes": {
+            "default": false,
+            "title": "Conservar los ejes del original (no girar de Y vertical a Z vertical)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the original axes (do not turn Y-up into Z-up)",
+              "es": "Conservar los ejes del original (no girar de Y vertical a Z vertical)"
+            }
+          }
+        },
+        "title": "MeshAxesStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "3ds-a-stl",
+      "slug_en": "3ds-to-stl",
+      "name_es": "3DS a STL",
+      "name_en": "3DS to STL",
+      "summary_es": "Convierte modelos 3DS a STL, el formato de malla de las impresoras 3D, con unidades y escala.",
+      "summary_en": "Convert 3DS models to STL, the mesh format of 3D printers, with units and scale.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "3ds"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "stl-a-obj",
+        "fbx-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "conservar_ejes": {
+            "default": false,
+            "title": "Conservar los ejes del original (no girar de Y vertical a Z vertical)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the original axes (do not turn Y-up into Z-up)",
+              "es": "Conservar los ejes del original (no girar de Y vertical a Z vertical)"
+            }
+          }
+        },
+        "title": "MeshAxesStlOptions",
+        "type": "object"
+      }
     }
   ]
 }

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "AMF a 3MF convierte modelos 3D de AMF a 3MF en el servidor, sin instalar nada. Sirve, por ejemplo, para pasar un proyecto AMF con colores al formato que usan los laminadores actuales. 3MF es el formato moderno de impresión 3D, con unidades, piezas con nombre y colores, que abren directamente PrusaSlicer, Bambu Studio, Cura y Windows.",
+    "AMF (ISO/ASTM 52915) es el formato XML de fabricación aditiva: guarda unidades, varias piezas, materiales con color y copias de un mismo objeto, y lo abren PrusaSlicer y Cura. AMF y 3MF usan el eje Z hacia arriba, como la impresión 3D, así que el modelo no se gira; las unidades del AMF se leen del archivo y puedes elegir las del 3MF.",
+    "Puedes aplicar una escala, elegir las unidades del original si el AMF no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del 3MF cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del AMF llega al 3MF sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos AMF.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el 3MF."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el 3MF sale girado o de lado?",
+      "a": "Porque AMF y 3MF pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del AMF?",
+      "a": "Los colores de los materiales del AMF pasan al 3MF si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El 3MF tiene la misma geometría que el AMF. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}

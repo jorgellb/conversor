@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL a AMF convierte modelos 3D de STL a AMF en el servidor, sin instalar nada. Sirve, por ejemplo, para guardar una pieza con sus unidades reales en un formato abierto de fabricación. AMF (ISO/ASTM 52915) es el formato XML de fabricación aditiva: guarda unidades, varias piezas, materiales con color y copias de un mismo objeto, y lo abren PrusaSlicer y Cura.",
+    "STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores. STL y AMF usan el eje Z hacia arriba, como la impresión 3D, así que el modelo no se gira; las unidades del STL se leen del archivo y puedes elegir las del AMF.",
+    "Puedes aplicar una escala, elegir las unidades del original si el STL no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del AMF cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del STL llega al AMF sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos STL.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el AMF."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el AMF sale girado o de lado?",
+      "a": "Porque STL y AMF pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del STL?",
+      "a": "Los colores de los materiales del STL pasan al AMF si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El AMF tiene la misma geometría que el STL. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}

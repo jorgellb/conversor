@@ -276,6 +276,7 @@ DETAILS: dict[str, dict[str, str]] = {
     "video_sin_imagen": {"es": "El archivo no tiene pista de vídeo.", "en": "The file has no video track."},
     "video_cut_range": {"es": "El inicio tiene que quedar dentro del vídeo y antes del final.", "en": "The start must be inside the video and before the end."},
     "video_rotate_nothing": {"es": "Elige un giro o un volteo.", "en": "Choose a rotation or a flip."},
+    "gltf_external": {"es": "Este glTF usa archivos aparte (.bin o imágenes) que no se han subido: súbelo como GLB o con los datos incrustados.", "en": "This glTF uses separate files (.bin or images) that were not uploaded: upload it as GLB or with embedded data."},
     "mesh_triangles": {"es": "El modelo tiene más triángulos de los que admite tu plan.", "en": "The model has more triangles than your plan allows."},
     "midi_unsupported": {"es": "Este MIDI no se puede sintetizar: usa el formato 2, tiempos SMPTE o eventos que FluidSynth no entiende. Guárdalo como MIDI de formato 1 desde tu programa.", "en": "This MIDI cannot be synthesised: it uses format 2, SMPTE timing or events FluidSynth does not understand. Save it as a format 1 MIDI from your program."},
     "udf_no_content": {"es": "El archivo no es un documento UDF de UYAP (falta content.xml).", "en": "The file is not a UYAP UDF document (content.xml is missing)."},

@@ -65,7 +65,52 @@ def count_triangles(path: Path, ext: str) -> int:
                     with zf.open(info) as f:
                         total += _stream_count(f, TRIANGLE_RE)
         return total
+    if ext == "amf":
+        if zipfile.is_zipfile(path):
+            check_zip(path)
+            with zipfile.ZipFile(path) as zf:
+                return sum(_stream_count(zf.open(i), TRIANGLE_RE) for i in zf.infolist() if not i.is_dir())
+        with open(path, "rb") as f:
+            return _stream_count(f, TRIANGLE_RE)
+    if ext in ("glb", "gltf"):
+        return _gltf_triangles(path, ext)
     raise ToolError(ErrorCode.UNSUPPORTED_FORMAT)
+
+
+def _gltf_triangles(path: Path, ext: str) -> int:
+    """Triángulos que declara el JSON de un glTF o un GLB (índices / 3, o posiciones / 3 sin índices), por cada vez que
+    un nodo usa la malla: las instancias multiplican (D-248)."""
+    import json
+
+    with open(path, "rb") as f:
+        if ext == "glb":
+            head = f.read(20)
+            if len(head) < 20 or head[:4] != b"glTF":
+                raise ToolError(ErrorCode.CORRUPT_FILE, "GLB no válido")
+            (length, kind) = struct.unpack("<II", head[12:20])
+            if kind != 0x4E4F534A or length > 64 * 1024 * 1024:
+                raise ToolError(ErrorCode.CORRUPT_FILE, "GLB no válido")
+            raw = f.read(length)
+        else:
+            raw = f.read(64 * 1024 * 1024 + 1)
+            if len(raw) > 64 * 1024 * 1024:
+                raise ToolError(ErrorCode.LIMIT_EXCEEDED, "glTF de más de 64 MB")
+    try:
+        doc = json.loads(raw)
+        accessors = doc.get("accessors", [])
+        per_mesh = []
+        for mesh in doc.get("meshes", []):
+            n = 0
+            for prim in mesh.get("primitives", []):
+                if prim.get("mode", 4) not in (4, 5, 6):
+                    continue
+                acc = accessors[prim["indices"]] if "indices" in prim else accessors[prim["attributes"]["POSITION"]]
+                n += int(acc.get("count", 0)) // 3 if prim.get("mode", 4) == 4 else max(0, int(acc.get("count", 0)) - 2)
+            per_mesh.append(n)
+        uses = [node["mesh"] for node in doc.get("nodes", []) if isinstance(node, dict) and "mesh" in node]
+        return sum(per_mesh[m] for m in uses if 0 <= m < len(per_mesh)) if uses else sum(per_mesh)
+    except (ValueError, KeyError, IndexError, TypeError, AttributeError) as exc:
+        raise ToolError(ErrorCode.CORRUPT_FILE, "glTF ilegible") from exc
 
 
 def check_limit(path: Path, ext: str, limit: int) -> int:
@@ -82,7 +127,7 @@ def precheck(settings, plan, owner_type: str, options: dict, paths: list[Path], 
 
     for path in paths:
         found = detect(path, "")
-        ext = found.ext if found is not None and found.ext in ("ply", "3mf") else None
+        ext = found.ext if found is not None and found.ext in ("ply", "3mf", "amf", "glb") else None
         if ext is None:
             ext = "stl" if stl_is_binary(path) else _text_kind(path)
         if ext is None:

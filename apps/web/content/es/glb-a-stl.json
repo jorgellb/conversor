@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "GLB a STL convierte modelos 3D de GLB a STL en el servidor, sin instalar nada. Sirve, por ejemplo, para imprimir un modelo descargado de Sketchfab, de un configurador web o de una aplicación de realidad aumentada. STL es el formato que leen todos los laminadores (PrusaSlicer, Cura, Bambu Studio, OrcaSlicer): solo guarda triángulos, sin unidades ni colores.",
+    "GLB es la versión binaria de glTF, el formato 3D de la web: lo muestran los navegadores, el visor 3D de Windows, la realidad aumentada de Android y los editores como Blender, siempre en metros y con el eje Y hacia arriba. Como GLB usa el eje Y hacia arriba y la impresión 3D el Z, el modelo se gira para que salga de pie en el laminador; si no lo quieres, marca «Conservar los ejes» en las opciones avanzadas. Las texturas de un GLB se aproximan a un color por cara y el color base de cada material se conserva cuando el destino lo admite.",
+    "Puedes aplicar una escala, elegir las unidades del original si el GLB no las guarda y decidir qué hacer con las piezas: mantenerlas separadas dentro del STL cuando el formato lo admite, fusionarlas en una sola malla o sacar un archivo por pieza en un ZIP.",
+    "La geometría del GLB llega al STL sin simplificarse ni repararse. Se admiten hasta un millón de triángulos sin cuenta, dos millones con la cuenta gratuita y diez millones en Pro, y hasta diez archivos por tarea; se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos GLB.",
+    "Elige las unidades y, si quieres, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el STL sale girado o de lado?",
+      "a": "Porque GLB y STL pueden usar ejes distintos. Prueba a marcar o desmarcar «Conservar los ejes» en las opciones avanzadas."
+    },
+    {
+      "q": "¿Se conservan los colores del GLB?",
+      "a": "Los colores de los materiales del GLB pasan al STL si el formato los admite; el STL no guarda colores y la nota lo avisa."
+    },
+    {
+      "q": "¿Y si el modelo tiene agujeros?",
+      "a": "El STL tiene la misma geometría que el GLB. Para cerrarlos antes de imprimir, usa Reparar STL."
+    }
+  ]
+}
