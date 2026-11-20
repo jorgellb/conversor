@@ -98,7 +98,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | G1-A. Huecos | redactar-pdf (eliminar bajo el área, D-25), lector-pdf (enlaces, D-23), MozJPEG y oxipng (D-04 y D-79), notas en inglés (D-42 y D-54); fallos de la primera CI (perfil FOGRA39, Smokescreen y muestras sin FFmpeg) | Hecho (D-150 a D-158) |
 | G2-C01 a G2-C15. Contenido 8.2 | Contenido propio es/en de las 145 páginas que no lo tienen, en lotes de unas 10 | Hecho; los borradores de D-77 (copiar-de-pdf y escaner-pdf) y crear-collage, completos en D-180. Falta la revisión del propietario (D-15) |
 
-## F4: firma, formularios, facturas y accesibilidad (pendiente)
+## F4: firma, formularios, facturas y accesibilidad (en curso)
 
 | Lote | Herramientas | Estado |
 | --- | --- | --- |
@@ -108,7 +108,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F4-D | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf (`workerutils`, KoSIT) | Hecho: validar-factura-electronica y `workerutils` con KoSIT (F4-D1, D-191) y la representación en PDF/A-3 con el XML incrustado (F4-D2, D-192) |
 | F4-E | crear-factura, crear-factura-electronica y pdf-a-factura-electronica (detrás de `INVOICING_ES_ENABLED`) | Pendiente (F4-D y F4-B) |
 | F4-F | word-a-pdf-accesible (office → ocr, veraPDF) | Hecho (D-182 y D-184); veraPDF y el PDF/UA de LibreOffice reales, en la CI |
-| F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | Pendiente (F4-A a F4-F) |
+| F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | Pendiente (F4-A a F4-F). Para el cierre: imagen de la firma dentro de la apariencia PAdES y .p12 con 3DES o RC2 en el navegador (D-201) |
 
 ## F6: formatos, datos y documentos (pendiente)
 

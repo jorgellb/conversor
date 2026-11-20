@@ -56,7 +56,24 @@ async function canvasToImage(canvas: HTMLCanvasElement): Promise<PreparedImage> 
  * Quita el fondo claro de una foto o un escaneo de firma (A.6): los píxeles más claros que el umbral pasan a
  * transparentes y el resto se suaviza en el borde. El papel suele ser mucho más claro que la tinta.
  */
-export function removeBackground(rgba: Uint8ClampedArray, threshold = 200): void {
+/** Umbral según el papel de la foto: el percentil 90 de la luminosidad menos un margen (una foto de interior no es blanca). */
+export function paperThreshold(rgba: Uint8ClampedArray): number {
+  const hist = new Uint32Array(256);
+  let n = 0;
+  for (let i = 0; i < rgba.length; i += 16) {
+    hist[Math.round((rgba[i] + rgba[i + 1] + rgba[i + 2]) / 3)] += 1;
+    n += 1;
+  }
+  let acc = 0;
+  let p90 = 255;
+  for (let v = 0; v < 256; v += 1) {
+    acc += hist[v];
+    if (acc >= n * 0.9) { p90 = v; break; }
+  }
+  return Math.max(110, Math.min(225, p90 - 25));
+}
+
+export function removeBackground(rgba: Uint8ClampedArray, threshold = paperThreshold(rgba)): void {
   for (let i = 0; i < rgba.length; i += 4) {
     const light = (rgba[i] + rgba[i + 1] + rgba[i + 2]) / 3;
     if (light >= threshold) rgba[i + 3] = 0;
@@ -97,6 +114,7 @@ export function SignatureDialog({ onDone, onCancel, initials = false, camera = f
   const [font, setFont] = useState<string>(SIGNATURE_FONTS[0].family);
   const [clean, setClean] = useState(true);
   const [cameraError, setCameraError] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
   const canvas = useRef<HTMLCanvasElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
@@ -233,11 +251,17 @@ export function SignatureDialog({ onDone, onCancel, initials = false, camera = f
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={clean} onChange={(e) => setClean(e.target.checked)} />{t("sig_removeBackground")}
             </label>
+            {uploadError && <p role="alert" className="text-sm text-red-700">{t("sig_uploadError")}</p>}
             <input type="file" accept=".png,.jpg,.jpeg,.webp" aria-label={t("sig_upload")} className="field" onChange={async (e) => {
+              setUploadError(false);
               const file = e.target.files?.[0];
               if (!file) return;
-              const bitmap = await createImageBitmap(file);
-              onDone(await bitmapToImage(bitmap, bitmap.width, bitmap.height, clean));
+              try {
+                const bitmap = await createImageBitmap(file);
+                onDone(await bitmapToImage(bitmap, bitmap.width, bitmap.height, clean));
+              } catch {
+                setUploadError(true);
+              }
             }} />
           </div>
         )}

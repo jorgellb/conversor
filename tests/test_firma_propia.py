@@ -150,3 +150,49 @@ def test_p1363_signature_starting_with_0x30_is_not_taken_for_der(arch):
     raw = b"\x30" + b"\x11" * 31 + b"\x22" * 32
     assert algos.DSASignature.load(_signature_value(cert, raw)).to_p1363() == raw
 
+
+
+def test_second_own_signature_and_encrypted_input(arch, make_ctx, tmp_path, tsa):
+    """Dos firmantes seguidos (Firma1 y Firma2) y un PDF con solo contraseña de propietario (D-201)."""
+    out, _ = _sign(arch, make_ctx, tmp_path)
+    first = tmp_path / "uno.pdf"
+    first.write_bytes(Path(out[0]["path"]).read_bytes())
+    chain = _pem(arch.get_cert("signer1"), arch.get_cert("interm"), arch.get_cert("root"))
+    base = {"certificado": "propio", "cadena": chain}
+    prep = _stage(make_ctx(TOOL, [first], {**base, "fase": "preparar"}))
+    state = json.loads(Path(prep[1]["path"]).read_text())
+    assert state["field"] == "Firma2"
+    enc = tmp_path / "cifrado.pdf"
+    with pikepdf.open(_pdf(tmp_path, name="c.pdf")) as pdf:
+        pdf.save(enc, encryption=pikepdf.Encryption(owner="dueno", user="", R=6))
+    prep = _stage(make_ctx(TOOL, [enc], {**base, "fase": "preparar", "nivel": "B-LT"}))
+    state = json.loads(Path(prep[1]["path"]).read_text())
+    second = tmp_path / "cifrado-preparado.pdf"
+    second.write_bytes(Path(prep[0]["path"]).read_bytes())
+    done = _stage(make_ctx(TOOL, [second], {**base, "fase": "completar", "nivel": "B-LT", "estado": json.dumps(state),
+                                            "firma": _browser_sign(arch, "signer1", state["attrs"])}))
+    assert done[0]["note"] == "Firmado con tu certificado (B-LT)."
+
+
+def test_certificate_without_signing_key_usage_is_rejected():
+    import datetime
+
+    from cryptography import x509
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import ec
+    from cryptography.x509.oid import NameOID
+
+    from core.errors import ToolError
+    from tools.sign.propio import load_chain
+
+    key = ec.generate_private_key(ec.SECP256R1())
+    name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Solo cifrar")])
+    now = datetime.datetime.now(datetime.timezone.utc)
+    cert = (x509.CertificateBuilder().subject_name(name).issuer_name(name).public_key(key.public_key()).serial_number(1)
+            .not_valid_before(now).not_valid_after(now + datetime.timedelta(days=1))
+            .add_extension(x509.KeyUsage(digital_signature=False, content_commitment=False, key_encipherment=True, data_encipherment=False,
+                                         key_agreement=True, key_cert_sign=False, crl_sign=False, encipher_only=False, decipher_only=False), critical=True)
+            .sign(key, hashes.SHA256()))
+    with pytest.raises(ToolError) as err:
+        load_chain(cert.public_bytes(serialization.Encoding.PEM).decode())
+    assert err.value.detail == "own_key_usage"

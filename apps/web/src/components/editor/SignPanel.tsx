@@ -61,14 +61,18 @@ export async function signDigitally(file: File, options: DigitalOptions, locale:
   let outputs;
   if (rest.certificado === "propio") {
     if (!own) throw new ApiError("INVALID_OPTIONS", "", 0);
-    const { signAttributes } = await import("@/lib/p12");
+    const { checkAttributes, signAttributes } = await import("@/lib/p12");
     const base = { ...rest, cadena: own.chainPem };
     const first = await job(file, { ...base, fase: "preparar" }, token, (f) => onProgress(f / 2));
     const preparedOut = first.find((o) => o.name.toLowerCase().endsWith(".pdf"));
     const stateOut = first.find((o) => o.name.toLowerCase().endsWith(".json"));
     if (!preparedOut || !stateOut) throw new ApiError("INTERNAL", "", 0);
-    const [prepared, stateText] = await Promise.all([(await fetch(preparedOut.url)).blob(), (await fetch(stateOut.url)).text()]);
-    const state = JSON.parse(stateText) as { attrs: string };
+    const [pdfRes, stateRes] = await Promise.all([fetch(preparedOut.url), fetch(stateOut.url)]);
+    if (!pdfRes.ok || !stateRes.ok) throw new ApiError("INTERNAL", "", pdfRes.ok ? stateRes.status : pdfRes.status);
+    const [prepared, stateText] = await Promise.all([pdfRes.blob(), stateRes.text()]);
+    const state = JSON.parse(stateText) as { attrs: string; start: number; end: number };
+    // La clave solo firma si los atributos son los de este PDF y este certificado (D-201).
+    await checkAttributes(own, state.attrs, new Uint8Array(await prepared.arrayBuffer()), state.start, state.end);
     const firma = await signAttributes(own, state.attrs);
     outputs = await job(new File([prepared], preparedOut.name, { type: "application/pdf" }), { ...base, fase: "completar", estado: stateText, firma },
       token, (f) => onProgress(0.5 + f / 2));
@@ -109,17 +113,25 @@ export function SignPanel({ form, pageCount, selected, onRepeat, onDigital }: {
       setOpening(false);
     }
   }
-  const fields = (form?.fields ?? []).filter((f) => f.type === "signature").map((f) => f.name);
+  const fields = (form?.fields ?? []).filter((f) => f.type === "signature" && !f.signed).map((f) => f.name);
 
   useEffect(() => {
     onDigital(mode === "digital" ? options : null);
   }, [mode, options, onDigital]);
 
   const set = (change: Partial<DigitalOptions>) => setOptions((o) => ({ ...o, ...change }));
-  const targets = parsePageRanges(repeat, pageCount);
+  // parsePageRanges lanza con un rango mal escrito: aquí no puede romper el editor (D-201).
+  let targets: number[] = [];
+  let repeatError = false;
+  try {
+    targets = parsePageRanges(repeat, pageCount);
+  } catch {
+    repeatError = true;
+  }
 
   return (
     <aside className="flex flex-col gap-3 text-sm lg:sticky lg:top-32 lg:max-h-[80vh] lg:w-80 lg:self-start lg:overflow-y-auto" aria-label={t("panel")}>
+      {form?.signed && <p className="card p-3" role="alert">{t("alreadySigned")}</p>}
       <fieldset className="card flex flex-col gap-2 p-3">
         <legend className="font-semibold">{t("mode")}</legend>
         <label className="flex items-center gap-2"><input type="radio" name="modo-firma" checked={mode === "insertar"} onChange={() => setMode("insertar")} />{t("insert")}</label>
@@ -135,6 +147,7 @@ export function SignPanel({ form, pageCount, selected, onRepeat, onDigital }: {
         <button type="button" className="btn-secondary btn self-start" disabled={!selected || !targets.length} onClick={() => onRepeat(targets)}>
           {t("repeatButton")}
         </button>
+        {repeatError && <p role="alert" className="text-red-700">{t("repeatInvalid", { n: pageCount })}</p>}
         {!selected && <p className="muted">{t("repeatHint")}</p>}
       </div>
 
@@ -151,7 +164,7 @@ export function SignPanel({ form, pageCount, selected, onRepeat, onDigital }: {
               {options.own ? (
                 <>
                   <p>{t("ownOpened", { subject: options.own.subject, date: options.own.notAfter.toLocaleDateString() })}</p>
-                  <button type="button" className="btn-secondary btn self-start" onClick={() => set({ own: undefined })}>{t("ownChange")}</button>
+                  <button type="button" className="btn-secondary btn self-start" onClick={() => { set({ own: undefined }); setP12(null); }}>{t("ownChange")}</button>
                 </>
               ) : (
                 <>

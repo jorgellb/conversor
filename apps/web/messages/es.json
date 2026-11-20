@@ -374,7 +374,8 @@
     "sig_cameraError": "No se ha podido abrir la cámara. Revisa el permiso del navegador o sube una foto.",
     "sig_cameraHint": "Firma en un papel blanco, acércalo a la cámara y pulsa «Hacer la foto»: se quita el fondo.",
     "sig_capture": "Hacer la foto",
-    "tool_initials": "Iniciales"
+    "tool_initials": "Iniciales",
+    "sig_uploadError": "No se ha podido leer la imagen: prueba con un PNG o un JPG."
   },
   "viewer": {
     "dropFile": "Arrastra aquí un PDF o un documento",
@@ -1156,7 +1157,11 @@
     "p12_legacy": "Este archivo usa un cifrado antiguo (3DES o RC2) que los navegadores no admiten. Vuelve a exportarlo con cifrado AES (por ejemplo, en Windows elige «AES256-SHA256» al exportar).",
     "p12_invalid": "No es un archivo .p12 o .pfx válido.",
     "p12_no_key": "El archivo no trae la clave privada junto con su certificado.",
-    "p12_key_type": "El certificado usa un tipo de clave que no se admite (solo RSA y EC)."
+    "p12_key_type": "El certificado usa un tipo de clave que no se admite (solo RSA y EC).",
+    "repeatInvalid": "Escribe páginas entre 1 y {n}, como 1-3,5, o «todas», «pares» o «impares».",
+    "alreadySigned": "Este PDF ya está firmado digitalmente. Insertar una firma lo reescribe y esas firmas dejarían de ser válidas: firma digitalmente sin insertar nada.",
+    "ownMissing": "Abre antes tu certificado (.p12 o .pfx) con su contraseña.",
+    "p12_mismatch": "La firma preparada por el servidor no corresponde a este PDF o a tu certificado: no se ha firmado nada."
   },
   "linkShare": {
     "title": "Enlace para compartir",

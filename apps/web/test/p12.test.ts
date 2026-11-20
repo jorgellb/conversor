@@ -29,3 +29,19 @@ describe("certificado propio en el navegador (PKI.js y WebCrypto)", () => {
     await expect(openP12(new TextEncoder().encode("hola").buffer as ArrayBuffer, "clave")).rejects.toMatchObject({ code: "p12_invalid" });
   });
 });
+
+describe("comprobar los atributos antes de firmar (D-201)", () => {
+  it("acepta los del PDF y el certificado y rechaza un PDF cambiado o un certificado ajeno", async () => {
+    const { checkAttributes } = await import("../src/lib/p12");
+    const state = JSON.parse(readFileSync(new URL("./fixtures/preparado.json", import.meta.url), "utf-8")) as { start: number; end: number; attrs: string };
+    const pdf = new Uint8Array(readFileSync(new URL("./fixtures/preparado.pdf", import.meta.url)));
+    const mine = await openP12(load("ec.p12"), "clave");
+    await expect(checkAttributes(mine, state.attrs, pdf, state.start, state.end)).resolves.toBeUndefined();
+    const changed = pdf.slice();
+    changed[10] ^= 1;
+    await expect(checkAttributes(mine, state.attrs, changed, state.start, state.end)).rejects.toMatchObject({ code: "p12_mismatch" });
+    const other = await openP12(load("rsa.p12"), "clave");
+    await expect(checkAttributes(other, state.attrs, pdf, state.start, state.end)).rejects.toMatchObject({ code: "p12_mismatch" });
+    await expect(checkAttributes(mine, state.attrs, pdf, 0, state.end)).rejects.toMatchObject({ code: "p12_mismatch" });
+  });
+});

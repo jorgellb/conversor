@@ -374,7 +374,8 @@
     "sig_cameraError": "The camera could not be opened. Check the browser permission or upload a photo.",
     "sig_cameraHint": "Sign on white paper, hold it up to the camera and press “Take the photo”: the background is removed.",
     "sig_capture": "Take the photo",
-    "tool_initials": "Initials"
+    "tool_initials": "Initials",
+    "sig_uploadError": "The image could not be read: try a PNG or a JPG."
   },
   "viewer": {
     "dropFile": "Drop a PDF or a document here",
@@ -1156,7 +1157,11 @@
     "p12_legacy": "This file uses an old encryption (3DES or RC2) that browsers do not support. Export it again with AES encryption (for example, choose “AES256-SHA256” when exporting on Windows).",
     "p12_invalid": "It is not a valid .p12 or .pfx file.",
     "p12_no_key": "The file does not carry the private key together with its certificate.",
-    "p12_key_type": "The certificate uses an unsupported key type (only RSA and EC)."
+    "p12_key_type": "The certificate uses an unsupported key type (only RSA and EC).",
+    "repeatInvalid": "Type pages between 1 and {n}, like 1-3,5, or “all”, “even” or “odd”.",
+    "alreadySigned": "This PDF is already digitally signed. Inserting a signature rewrites it and those signatures would no longer be valid: sign digitally without inserting anything.",
+    "ownMissing": "Open your certificate (.p12 or .pfx) with its password first.",
+    "p12_mismatch": "The signature prepared by the server does not match this PDF or your certificate: nothing was signed."
   },
   "linkShare": {
     "title": "Link to share",

@@ -267,7 +267,7 @@ def prepare(ctx: ToolContext, path: Path, name: str) -> Prepared:
             raise ToolError(ErrorCode.INVALID_OPTIONS, "seal_field_missing" if o.campo not in used else "seal_field_signed")
         return Prepared(name, data, o.campo, None, None, existing=True)
     n = 1
-    while f"Sello{n}" in used:
+    while f"Sello{n}" in used or f"Firma{n}" in used:  # Firma{n}: el nombre de la firma con certificado propio (D-201)
         n += 1
     page_index = box = None
     if o.visible:

@@ -27,7 +27,7 @@ type Status =
   | { kind: "ready" }
   | { kind: "saving"; progress: number }
   | { kind: "done"; url: string; name: string; size: number; notes: string[] }
-  | { kind: "error"; code: string };
+  | { kind: "error"; code: string; message?: string };
 
 interface Drag {
   mode: "move" | "resize" | "p1" | "p2" | "draft";
@@ -67,6 +67,7 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
   const t = useTranslations("editor");
   const tt = useTranslations("tool");
   const te = useTranslations("errors");
+  const tsign = useTranslations("signPdf");
   const locale = useLocale();
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
@@ -456,7 +457,8 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
         rotate: p.rotate || undefined,
         objects: p.objects.filter((o) => o.type !== "text" || o.text.trim()).map(toEditObject),
       })),
-      fields: form?.fields.length ? values : undefined,
+      // Solo al editar o rellenar: al firmar o anotar no se reescriben los campos ni se quita el XFA (D-201).
+      fields: form?.fields.length && (mode === "editar" || mode === "rellenar") ? values : undefined,
     };
     const areas = pages.flatMap((p) => p.objects.filter((o) => o.type === "whiteout")
       .map((o) => ({ page: p.source ?? 0, x: (o as { x: number }).x, y: (o as { y: number }).y, width: (o as { width: number }).width, height: (o as { height: number }).height })));
@@ -472,7 +474,8 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
     if (mode === "firmar" && digital) {
       // Firmar digitalmente: la firma insertada se aplica antes en el navegador y el PDF va al servidor (sello).
       try {
-        if (!file) return;
+        if (!file) { setStatus({ kind: "ready" }); return; }
+        if (digital.certificado === "propio" && !digital.own) { setStatus({ kind: "error", code: "INVALID_OPTIONS", message: tsign("ownMissing") }); return; }
         const objects = pages.some((p) => p.objects.length);
         const inserted = objects ? (await runInBrowser(spec.slug, [file], { model }, (progress) => setStatus({ kind: "saving", progress: progress / 2 }), passwords)).outputs[0] : null;
         const pdf = inserted ? new File([new Uint8Array(inserted.bytes)], file.name, { type: "application/pdf" }) : file;
@@ -480,7 +483,10 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
         setStatus({ kind: "done", url: done.url, name: done.name, size: done.size, notes: done.notes });
         recordUse(spec.slug);
       } catch (err) {
-        setStatus({ kind: "error", code: err instanceof ClientToolError || (err as { code?: string }).code ? (err as { code: string }).code : "INTERNAL" });
+        // El texto de la API ya viene traducido y con el detalle (certificado caducado, campo firmado, límite del día…).
+        const code = (err as { code?: string }).code ?? "INTERNAL";
+        const message = (err as { message?: string }).message || (code.startsWith("p12_") ? tsign(code) : undefined);
+        setStatus({ kind: "error", code: code.startsWith("p12_") ? "INVALID_OPTIONS" : code, message });
       }
       return;
     }
@@ -597,7 +603,7 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
             <button type="button" className="btn-secondary btn" onClick={startBlank}>{t("startBlank")}</button>
           </div>
         )}
-        {status.kind === "error" && <p role="alert" className="card p-4 text-red-700">{te.has(status.code) ? te(status.code) : te("INTERNAL")}</p>}
+        {status.kind === "error" && <p role="alert" className="card p-4 text-red-700">{status.message ?? (te.has(status.code) ? te(status.code) : te("INTERNAL"))}</p>}
       </div>
     );
   }
@@ -935,7 +941,7 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
       </div>
 
       {status.kind === "saving" && <progress className="w-full" max={1} value={status.progress} aria-label={tt("progress")} />}
-      {status.kind === "error" && <p role="alert" className="card p-4 text-red-700">{te.has(status.code) ? te(status.code) : te("INTERNAL")}</p>}
+      {status.kind === "error" && <p role="alert" className="card p-4 text-red-700">{status.message ?? (te.has(status.code) ? te(status.code) : te("INTERNAL"))}</p>}
       {status.kind === "done" && (
         <section className="card flex flex-col gap-3 p-4" aria-label={tt("result")}>
           <a className="btn self-start" href={status.url} download={status.name}>{tt("download")} · {status.name}</a>

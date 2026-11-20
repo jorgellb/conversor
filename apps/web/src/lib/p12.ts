@@ -17,7 +17,7 @@ const CURVES: Record<string, "P-256" | "P-384" | "P-521"> = {
 const LEGACY = ["1.2.840.113549.1.12.1."];
 
 export class P12Error extends Error {
-  constructor(readonly code: "p12_password" | "p12_legacy" | "p12_invalid" | "p12_no_key" | "p12_key_type") {
+  constructor(readonly code: "p12_password" | "p12_legacy" | "p12_invalid" | "p12_no_key" | "p12_key_type" | "p12_mismatch") {
     super(code);
   }
 }
@@ -29,6 +29,8 @@ export interface OwnCertificate {
   algorithm: "RSASSA-PKCS1-v1_5" | "ECDSA";
   subject: string;
   notAfter: Date;
+  /** DER del certificado del firmante (para comprobar el atributo signing-certificate-v2). */
+  leafDer: Uint8Array;
 }
 
 function toPem(cert: pkijs.Certificate): string {
@@ -148,6 +150,7 @@ export async function openP12(data: ArrayBuffer, password: string): Promise<OwnC
     algorithm: algorithm.name as OwnCertificate["algorithm"],
     subject: commonName(leaf),
     notAfter: leaf.notAfter.value,
+    leafDer: new Uint8Array(leaf.toSchema().toBER(false)),
   };
 }
 
@@ -160,3 +163,49 @@ export async function signAttributes(cert: OwnCertificate, attrsB64: string): Pr
   for (const b of signature) bin += String.fromCharCode(b);
   return btoa(bin);
 }
+
+const MESSAGE_DIGEST = "1.2.840.113549.1.9.4";
+const SIGNING_CERT_V2 = "1.2.840.113549.1.9.16.2.47";
+
+function equal(a: Uint8Array, b: Uint8Array): boolean {
+  return a.length === b.length && a.every((v, i) => v === b[i]);
+}
+
+/**
+ * Antes de firmar (D-201): los atributos que manda el servidor tienen que ser los de este PDF y este certificado. El
+ * `messageDigest` es el SHA-256 del PDF preparado fuera del hueco reservado, y `signing-certificate-v2` lleva el hash
+ * del certificado del firmante. Si no, la clave firmaría lo que el servidor quisiera.
+ */
+export async function checkAttributes(cert: OwnCertificate, attrsB64: string, prepared: Uint8Array, start: number, end: number): Promise<void> {
+  if (!(start > 0 && start < end && end <= prepared.length)) throw new P12Error("p12_mismatch");
+  const outside = new Uint8Array(prepared.length - (end - start));
+  outside.set(prepared.subarray(0, start), 0);
+  outside.set(prepared.subarray(end), start);
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", outside));
+  const certHash = new Uint8Array(await crypto.subtle.digest("SHA-256", cert.leafDer as BufferSource));
+  const der = Uint8Array.from(atob(attrsB64), (c) => c.charCodeAt(0));
+  const parsed = asn1js.fromBER(der);
+  if (parsed.offset === -1 || !(parsed.result instanceof asn1js.Set)) throw new P12Error("p12_mismatch");
+  let digestOk = false;
+  let certOk = false;
+  for (const attr of parsed.result.valueBlock.value) {
+    if (!(attr instanceof asn1js.Sequence)) continue;
+    const [type, values] = attr.valueBlock.value;
+    if (!(type instanceof asn1js.ObjectIdentifier) || !(values instanceof asn1js.Set)) continue;
+    const oid = type.valueBlock.toString();
+    const first = values.valueBlock.value[0];
+    if (oid === MESSAGE_DIGEST && first instanceof asn1js.OctetString) {
+      digestOk = equal(new Uint8Array(first.valueBlock.valueHexView), digest);
+    } else if (oid === SIGNING_CERT_V2 && first instanceof asn1js.Sequence) {
+      // SigningCertificateV2 ::= SEQUENCE { certs SEQUENCE OF ESSCertIDv2 }; ESSCertIDv2 ::= SEQUENCE { [hashAlgorithm], certHash, ... }
+      const certs = first.valueBlock.value[0];
+      const id = certs instanceof asn1js.Sequence ? certs.valueBlock.value[0] : undefined;
+      if (id instanceof asn1js.Sequence) {
+        const hash = id.valueBlock.value.find((v) => v instanceof asn1js.OctetString) as asn1js.OctetString | undefined;
+        certOk = Boolean(hash && equal(new Uint8Array(hash.valueBlock.valueHexView), certHash));
+      }
+    }
+  }
+  if (!digestOk || !certOk) throw new P12Error("p12_mismatch");
+}
+

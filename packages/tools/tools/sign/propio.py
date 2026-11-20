@@ -25,6 +25,8 @@ from core.errors import ErrorCode, ToolError
 from tools.base import ToolContext, derived_name
 
 STAGE = "propio"
+CURVES = {"secp256r1": "P-256", "secp384r1": "P-384", "secp521r1": "P-521"}
+MAX_CHAIN_BYTES = 12000  # la cadena va dentro del CMS, con el sello de tiempo, en los 32 KB reservados
 STATE_NAME = "firma-pendiente.json"
 RESERVED = 32768  # CMS con la cadena del usuario y el sello de tiempo
 TEXTS = {
@@ -47,11 +49,22 @@ def load_chain(pem: str):
             _ = certs[-1].subject  # fuerza el análisis
     except Exception as exc:  # noqa: BLE001 - PEM o DER que no es un certificado
         raise ToolError(ErrorCode.INVALID_OPTIONS, "own_chain_invalid") from exc
-    if not certs or len(certs) > 10:
+    if not certs or len(certs) > 10 or sum(len(c.dump()) for c in certs) > MAX_CHAIN_BYTES:
         raise ToolError(ErrorCode.INVALID_OPTIONS, "own_chain_invalid")
     algo = certs[0].public_key.algorithm
     if algo not in ("rsa", "ec"):
         raise ToolError(ErrorCode.INVALID_OPTIONS, "own_key_unsupported")
+    if algo == "ec":
+        try:
+            curve = certs[0].public_key.curve
+        except Exception as exc:  # noqa: BLE001 - parámetros de curva explícitos
+            raise ToolError(ErrorCode.INVALID_OPTIONS, "own_key_unsupported") from exc
+        if curve[0] != "named" or curve[1] not in CURVES:
+            raise ToolError(ErrorCode.INVALID_OPTIONS, "own_key_unsupported")
+    # Uso de la clave: firma digital o no repudio; con solo cifrado, los validadores rechazarían la firma.
+    usage = certs[0].key_usage_value
+    if usage is not None and not ({"digital_signature", "non_repudiation"} & set(usage.native)):
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "own_key_usage")
     return certs
 
 
@@ -129,7 +142,7 @@ def _prepare(ctx: ToolContext) -> list[dict]:
         "v": 1, "digest": base64.b64encode(prep.document_digest).decode(), "start": prep.reserved_region_start,
         "end": prep.reserved_region_end, "attrs": base64.b64encode(attrs).decode(), "hash": "SHA-256",
         "algorithm": "RSASSA-PKCS1-v1_5" if pub.algorithm == "rsa" else "ECDSA",
-        "curve": {"secp256r1": "P-256", "secp384r1": "P-384", "secp521r1": "P-521"}.get(pub.curve[1], "") if pub.algorithm == "ec" else "",
+        "curve": CURVES.get(pub.curve[1], "") if pub.algorithm == "ec" else "",
         "field": field, "name": inp.name,
     }
     state_out = ctx.output(STATE_NAME)
@@ -166,6 +179,25 @@ def _verify_signature(cert, attrs: bytes, value: bytes) -> None:
             key.verify(value, attrs, ec.ECDSA(hashes.SHA256()))
     except (InvalidSignature, ValueError) as exc:
         raise ToolError(ErrorCode.INVALID_OPTIONS, "own_signature_invalid") from exc
+
+
+def _reader(data: bytes):
+    """Lector de pyHanko del resultado; los PDF con solo contraseña de propietario se descifran con la vacía."""
+    from pyhanko.pdf_utils.reader import PdfFileReader
+
+    reader = PdfFileReader(io.BytesIO(data), strict=False)
+    if reader.encrypted:
+        reader.decrypt("")
+    return reader
+
+
+def _own_error(err: ToolError) -> ToolError:
+    """Los fallos de la TSA y de revocación con la cadena del usuario, con sus propios textos (no los del sello)."""
+    mapping = {"seal_revinfo": "own_revinfo", "seal_config": "own_chain_path"}
+    if err.detail in mapping:
+        return ToolError(ErrorCode.ENGINE_FAILED if err.detail == "seal_revinfo" else ErrorCode.INVALID_OPTIONS, mapping[err.detail],
+                         transient=err.transient)
+    return err
 
 
 def open_session(ctx: ToolContext):
@@ -244,14 +276,20 @@ def _complete(ctx: ToolContext) -> list[dict]:
                 from pyhanko_certvalidator.fetchers.aiohttp_fetchers import AIOHttpFetcherBackend
 
                 roots = [certs[-1], *await _tsa_roots(timestamper, ctx.settings)]
+                # Cadena del usuario: el mismo tope de descargas que verificar-firmas-pdf (no 1000 peticiones a donde diga).
+                from pyhanko_certvalidator.fetchers.api import FetchLimits
+
                 vc = ValidationContext(trust_roots=roots, other_certs=certs[1:], allow_fetching=True, revocation_mode="soft-fail",
-                                       fetcher_backend=AIOHttpFetcherBackend(session=session, per_request_timeout=20))
-                reader = PdfFileReader(io.BytesIO(result), strict=False)
+                                       fetcher_backend=AIOHttpFetcherBackend(session=session, per_request_timeout=20,
+                                                                             limits=FetchLimits(max_requests=30, max_cert_requests=10, max_aia_urls_per_object=3)))
+                reader = _reader(result)
                 buf = io.BytesIO()
                 await async_add_validation_info(reader.embedded_signatures[-1], vc, output=buf)
                 result = buf.getvalue()
                 if level == "B-LTA":
                     writer = IncrementalPdfFileWriter(io.BytesIO(result), strict=False)
+                    if writer.prev.encrypted:
+                        writer.encrypt("")
                     buf = io.BytesIO()
                     await PdfTimeStamper(timestamper).async_timestamp_pdf(writer, "sha256", validation_context=vc, output=buf)
                     result = buf.getvalue()
@@ -262,8 +300,8 @@ def _complete(ctx: ToolContext) -> list[dict]:
     except ToolError:
         raise
     except Exception as exc:  # noqa: BLE001 - TSA, OCSP o CRL sin respuesta
-        raise _map_error(exc) from exc
-    reader = PdfFileReader(io.BytesIO(result), strict=False)
+        raise _own_error(_map_error(exc)) from exc
+    reader = _reader(result)
     mine = next((s for s in reader.embedded_signatures if s.field_name == state.get("field")), None)
     if mine is None:
         raise ToolError(ErrorCode.ENGINE_FAILED, "own_output_invalid")
