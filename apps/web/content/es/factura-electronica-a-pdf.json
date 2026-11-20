@@ -22,7 +22,7 @@
     },
     {
       "q": "¿Cuenta en mis límites?",
-      "a": "Cuenta como una tarea ligera: 20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro. En cada tarea caben hasta 100 facturas y los PDF se borran a la hora sin cuenta o al día con cuenta."
+      "a": "Cuenta como una tarea ligera: 20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro. En cada tarea caben hasta 5 facturas sin cuenta, 20 con cuenta gratuita y 100 en Pro, y los PDF se borran a la hora sin cuenta o al día con cuenta."
     }
   ]
 }

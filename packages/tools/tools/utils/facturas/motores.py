@@ -153,7 +153,7 @@ def _schema(settings, version: str):
     return schema
 
 
-def facturae(settings, root, data: bytes, version: str) -> Result:
+def facturae(settings, root, data: bytes, version: str, check_signature: bool = True) -> Result:
     from lxml import etree
 
     result = Result("facturae", scenario=f"Facturae {version.replace('_', '.')}")
@@ -167,7 +167,9 @@ def facturae(settings, root, data: bytes, version: str) -> Result:
             result.findings.append(Finding(code="XSD", level="error", text=f"Línea {err.line}: {err.message}"[:1000],
                                            location=err.path or ""))
     signature = root.find("{http://www.w3.org/2000/09/xmldsig#}Signature")
-    if signature is None:
+    if not check_signature:  # factura-electronica-a-pdf solo necesita el XSD (la firma va intacta en el XML incrustado)
+        result.signature = ""
+    elif signature is None:
         result.signature = "sin_firma"
     else:
         result.signature = _signature(data, root.tag)
@@ -221,3 +223,29 @@ def _signature(data: bytes, root_tag: str) -> str:
         return "valida_dsig" if old else "valida"
     except Exception:  # noqa: BLE001 - firma rota, referencias que no cuadran o algoritmo no admitido
         return "no_valida"
+
+
+SYNTAX_XSD = {
+    "ubl-invoice": "xrechnung/resources/ubl/2.1/xsd/maindoc/UBL-Invoice-2.1.xsd",
+    "ubl-credit": "xrechnung/resources/ubl/2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd",
+    "cii": "xrechnung/resources/cii/16b/xsd/CrossIndustryInvoice_100pD16B.xsd",
+}
+
+
+def syntax_errors(settings, root, syntax: str) -> list[str]:
+    """Fallos del XSD oficial de la sintaxis (UBL 2.1 o CII D16B, los de la configuración de KoSIT en la imagen; 7.14):
+    lista vacía si cumple. Los XSD son archivos propios de la imagen, sin red; el XML del usuario ya viene leído sin DTD."""
+    from lxml import etree
+
+    key = syntax if syntax == "cii" else ("ubl-credit" if root.tag.endswith("}CreditNote") else "ubl-invoice")
+    if key not in _SCHEMAS:
+        path = Path(settings.KOSIT_HOME) / SYNTAX_XSD[key]
+        if not path.exists():
+            raise ToolError(ErrorCode.ENGINE_FAILED, "xsd de la sintaxis")
+        parser = etree.XMLParser(resolve_entities=False, no_network=True, load_dtd=False)
+        _SCHEMAS[key] = etree.XMLSchema(etree.parse(str(path), parser=parser))
+    schema = _SCHEMAS[key]
+    if schema.validate(root):
+        return []
+    return [f"Línea {err.line}: {err.message}"[:500] for err in list(schema.error_log)[:20]]
+

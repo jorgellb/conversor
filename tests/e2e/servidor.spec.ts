@@ -61,6 +61,12 @@ test("word-a-pdf con Gotenberg", async ({ page }) => {
   expect(body.subarray(0, 5).toString()).toBe("%PDF-");
 });
 
+test("factura-electronica-a-pdf: PDF/A-3b de Gotenberg con el XML incrustado y veraPDF (F4-D2)", async ({ page }) => {
+  const body = await runServerTool(page, "factura-electronica-a-pdf", ["facturas/ubl-peppol.xml"]);
+  expect(body.subarray(0, 5).toString()).toBe("%PDF-");
+  await expect(page.getByText(/PDF\/A-3 con el XML original incrustado sin cambios \(ubl-peppol\.xml\)\. Cumple: PDF\/A-3b\./)).toBeVisible();
+});
+
 test("pdf-a-word", async ({ page }) => {
   const body = await runServerTool(page, "pdf-a-word", ["texto.pdf"]);
   expect(body.subarray(0, 2).toString()).toBe("PK");

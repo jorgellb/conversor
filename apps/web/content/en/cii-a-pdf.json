@@ -3,7 +3,7 @@
   "reviewed": false,
   "intro": [
     "CII to PDF turns UN/CEFACT Cross Industry Invoice files, the syntax Factur-X and ZUGFeRD use inside and XRechnung in its CII variant, into a readable PDF with seller, customer, lines, tax breakdown, totals and IBAN.",
-    "It is what you need when you only have the XML of a CII invoice, for example the one you extract from a Factur-X PDF or the one a German supplier sends you, and want a copy to read or file. The invoice profile (EN 16931, BASIC, EXTENDED or XRechnung) appears in the PDF header.",
+    "It is what you need when you only have the XML of a CII invoice, for example the one you extract from a Factur-X PDF or the one a German supplier sends you, and want a copy to read or file. The invoice profile (EN 16931, BASIC, EXTENDED or XRechnung) appears in the PDF header. Before drawing it, it is checked against the official CII D16B schema: if it does not meet it, the page says so and suggests checking it with “Validate e-invoice”.",
     "With the PDF/A-3 output, the CII XML is embedded unchanged and the PDF is validated with veraPDF. That PDF is not a Factur-X: a Factur-X also carries its own metadata and a fixed attachment name, and is created with the invoicing tools.",
     "The Factur-X MINIMUM and BASIC WL profiles carry little data (no lines), so their representation is short."
   ],
@@ -22,7 +22,7 @@
     },
     {
       "q": "Does it count towards my limits?",
-      "a": "It uses your plan's light tasks, which are 20 a day without signing up, 50 with a free account and 1,000 with Pro; you can upload up to 100 CII XML files per task."
+      "a": "It uses your plan's light tasks, which are 20 a day without signing up, 50 with a free account and 1,000 with Pro; you can upload up to 5 CII XML files per task without an account, 20 with a free one and 100 on Pro."
     }
   ]
 }

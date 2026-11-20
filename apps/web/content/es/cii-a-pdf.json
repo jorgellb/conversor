@@ -3,7 +3,7 @@
   "reviewed": false,
   "intro": [
     "CII a PDF convierte facturas en Cross Industry Invoice de UN/CEFACT, la sintaxis que usan Factur-X y ZUGFeRD por dentro y XRechnung en su variante CII, en un PDF legible con emisor, cliente, líneas, desglose de impuestos, totales e IBAN.",
-    "Es lo que necesitas cuando tienes solo el XML de una factura CII, por ejemplo el que extraes de un PDF Factur-X o el que te envía un proveedor alemán, y quieres una copia para leer o archivar. El perfil de la factura (EN 16931, BASIC, EXTENDED o XRechnung) aparece en la cabecera del PDF.",
+    "Es lo que necesitas cuando tienes solo el XML de una factura CII, por ejemplo el que extraes de un PDF Factur-X o el que te envía un proveedor alemán, y quieres una copia para leer o archivar. El perfil de la factura (EN 16931, BASIC, EXTENDED o XRechnung) aparece en la cabecera del PDF. Antes de dibujarla se comprueba con el esquema oficial de CII D16B: si no lo cumple, la página lo dice y propone revisarla con «Validar factura electrónica».",
     "Con la salida PDF/A-3, el XML CII se incrusta sin cambios y el PDF se valida con veraPDF. Ese PDF no es un Factur-X: un Factur-X lleva además metadatos propios y un nombre de adjunto fijo, y se crea con las herramientas de facturación.",
     "Los perfiles MINIMUM y BASIC WL de Factur-X tienen pocos datos (no llevan líneas), así que su representación es breve."
   ],
@@ -22,7 +22,7 @@
     },
     {
       "q": "¿Cuenta en mis límites?",
-      "a": "Usa las tareas ligeras de tu plan, que son 20 al día sin registrarte, 50 con una cuenta gratuita y 1.000 con Pro; puedes subir hasta 100 XML CII por tarea."
+      "a": "Usa las tareas ligeras de tu plan, que son 20 al día sin registrarte, 50 con una cuenta gratuita y 1.000 con Pro; puedes subir hasta 5 XML CII por tarea sin cuenta, 20 con la gratuita y 100 en Pro."
     }
   ]
 }

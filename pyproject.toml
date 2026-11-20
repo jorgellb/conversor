@@ -24,7 +24,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-pdf = ["pikepdf==10.17.0", "pypdfium2==5.14.0", "pillow==13.0.0", "img2pdf==0.6.3"]
+# hacer-pdf-rellenable (F4-B1): pyHanko (MIT) crea los campos de firma; workerpdf no firma ni tiene el token.
+pdf = ["pikepdf==10.17.0", "pypdfium2==5.14.0", "pillow==13.0.0", "img2pdf==0.6.3", "pyHanko==0.38.1", "pyhanko-certvalidator==0.33.0"]
 office = [
   "pikepdf==10.17.0",
   "pypdfium2==5.14.0",

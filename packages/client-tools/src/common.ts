@@ -19,6 +19,8 @@ export interface ToolResult {
   notes: string[];
   /** Texto que se muestra en pantalla en vez de descargarse (p. ej. contraseñas generadas). */
   display?: string[];
+  /** Datos para la página (p. ej. los campos de firma que hacer-pdf-rellenable pide al servidor). */
+  data?: Record<string, unknown>;
 }
 
 export type Progress = (fraction: number) => void;

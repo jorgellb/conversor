@@ -22,7 +22,7 @@
     },
     {
       "q": "Does it count towards my limits?",
-      "a": "It is a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro, with up to 100 invoices per task."
+      "a": "It is a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro, with up to 5 invoices per task without an account, 20 with a free account and 100 on Pro."
     }
   ]
 }

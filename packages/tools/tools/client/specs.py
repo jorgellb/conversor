@@ -137,6 +137,24 @@ class RellenarOptions(BaseModel):
                                                             "aplanado": ("Aplanado (los campos dejan de poder editarse)", "Flattened (fields can no longer be edited)")})
 
 
+class CampoFirma(BaseModel):
+    """Un campo de firma vacío que añade pyHanko (A.3): página desde 1 y rectángulo en el espacio de usuario."""
+
+    nombre: str = opt("Firma", "Nombre del campo", "Field name", min_length=1, max_length=120, pattern=r"^[^.\x00-\x1f]+$")
+    pagina: int = opt(1, "Página", "Page", ge=1, le=10000)
+    x1: float = opt(0, "x1", "x1", ge=-14400, le=14400)
+    y1: float = opt(0, "y1", "y1", ge=-14400, le=14400)
+    x2: float = opt(100, "x2", "x2", ge=-14400, le=14400)
+    y2: float = opt(40, "y2", "y2", ge=-14400, le=14400)
+
+
+class HacerRellenableOptions(BaseModel):
+    """hacer-pdf-rellenable y crear-formulario-pdf (A.3, F4-B1): los campos se diseñan en pantalla y pdf-lib los crea en
+    el navegador; la ruta de servidor solo recibe los campos de firma, que crea pyHanko."""
+
+    firmas: list[CampoFirma] = opt([], "Campos de firma", "Signature fields", advanced=True, max_length=50)
+
+
 class RecortarOptions(BaseModel):
     izquierda: float = opt(0, "Izquierda (mm)", "Left (mm)", ge=0, le=1000, show_if={"automatico": (False,)})
     superior: float = opt(0, "Superior (mm)", "Top (mm)", ge=0, le=1000, show_if={"automatico": (False,)})
@@ -673,6 +691,19 @@ SPECS: list[ToolSpec] = [
     client("aplanar-pdf", "flatten-pdf", "Aplanar PDF", "Flatten PDF", AplanarOptions, PDF, ("pdf", "zip"),
            "Convierte formularios y anotaciones en contenido fijo que ya no se puede cambiar.",
            "Turn forms and annotations into fixed content that can no longer be changed.", related=("rellenar-pdf", "proteger-pdf")),
+    # A.3 (F4-B1): diseñador de campos en el navegador (pdf-lib); los campos de firma, con pyHanko en `workerpdf`.
+    client("hacer-pdf-rellenable", "make-pdf-fillable", "Hacer un PDF rellenable", "Make a PDF fillable", HacerRellenableOptions, PDF, PDF,
+           "Añade campos de texto, casillas, opciones, listas, botones y firmas a un PDF para que se pueda rellenar.",
+           "Add text fields, checkboxes, options, lists, buttons and signatures to a PDF so it can be filled in.",
+           where="hybrid", worker_group="pdf", impl="tools.pdf.campos_firma:run", cost_class="light", phase="F4", time_limit=300,
+           default_enabled=False,  # hasta que llegue el diseñador de campos (F4-B1, en curso)
+           max_files=1, related=("crear-formulario-pdf", "rellenar-pdf", "firmar-pdf")),
+    client("crear-formulario-pdf", "create-pdf-form", "Crear un formulario PDF", "Create a PDF form", HacerRellenableOptions, PDF, PDF,
+           "Diseña un formulario PDF rellenable desde una página en blanco o a partir de un PDF que ya tengas.",
+           "Design a fillable PDF form from a blank page or from a PDF you already have.",
+           where="hybrid", worker_group="pdf", impl="tools.pdf.campos_firma:run", cost_class="light", phase="F4", time_limit=300,
+           default_enabled=False,  # hasta que llegue el diseñador de campos (F4-B1, en curso)
+           max_files=1, related=("hacer-pdf-rellenable", "rellenar-pdf", "firmar-pdf")),
     client("anotar-pdf", "annotate-pdf", "Anotar PDF", "Annotate PDF", AnotarOptions, PDF, PDF,
            "Resalta, subraya, tacha y añade notas, flechas y dibujos; se guardan como comentarios estándar.",
            "Highlight, underline, strike out and add notes, arrows and drawings, saved as standard comments.",

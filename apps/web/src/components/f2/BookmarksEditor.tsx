@@ -44,7 +44,10 @@ export function BookmarksEditor({ spec }: { spec: ClientSpec }) {
   const [error, setError] = useState<string | null>(null);
   const { doc } = useWorkerDoc(file);
 
-  const [loaded, setLoaded] = useState(false);
+  const [outlineLoaded, setLoaded] = useState(false);
+  // El árbol se lee antes de que el visor abra el documento: sin esperar a los dos, la página de destino se recortaba a
+  // la 1 porque aún no se sabía cuántas páginas hay (fallo intermitente de la CI, D-194).
+  const loaded = outlineLoaded && Boolean(doc);
 
   useEffect(() => {
     if (!file) return;

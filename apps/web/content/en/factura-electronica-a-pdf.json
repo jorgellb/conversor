@@ -22,7 +22,7 @@
     },
     {
       "q": "Does it count towards my limits?",
-      "a": "It counts as a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro. Each task takes up to 100 invoices and the PDFs are deleted after an hour without an account or after a day with one."
+      "a": "It counts as a light task: 20 a day without an account, 50 with a free account and 1,000 on Pro. Each task takes up to 5 invoices without an account, 20 with a free one and 100 on Pro, and the PDFs are deleted after an hour without an account or after a day with one."
     }
   ]
 }

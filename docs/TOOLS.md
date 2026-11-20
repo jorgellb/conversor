@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 171 herramientas (F1 43, F2 60, F3 10, F4 8, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 173 herramientas (F1 43, F2 60, F3 10, F4 10, F5 50). Fases cerradas: F1, F2 y F5 sin vídeo; en curso: F3 y F4. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -21,6 +21,8 @@ Catálogo publicado en esta entrega: 171 herramientas (F1 43, F2 60, F3 10, F4 8
 | `varias-paginas-por-hoja` / `n-up-pdf` | navegador | — | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `folleto-pdf` / `booklet-pdf` | navegador | — | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `aplanar-pdf` / `flatten-pdf` | navegador | — | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
+| `hacer-pdf-rellenable` / `make-pdf-fillable` | híbrida | pdf | light | F4 | apagada | pdf → pdf | pendiente |
+| `crear-formulario-pdf` / `create-pdf-form` | híbrida | pdf | light | F4 | apagada | pdf → pdf | pendiente |
 | `anotar-pdf` / `annotate-pdf` | navegador | — | light | F1 | activa | pdf → pdf | redactado, sin revisar |
 | `lector-pdf` / `pdf-reader` | híbrida | office | light | F1 | activa | pdf, doc, docx, rtf, odt, txt, xls, xlsx, ods, csv, ppt, pptx, pps, odp, odg, jpg, png, gif, bmp, tiff, webp → pdf | redactado, sin revisar |
 | `cortar-paginas-por-la-mitad` / `split-pages-in-half` | navegador | — | light | F2 | activa | pdf → pdf, zip | redactado, sin revisar |
@@ -182,7 +184,9 @@ Catálogo publicado en esta entrega: 171 herramientas (F1 43, F2 60, F3 10, F4 8
 
 | Herramienta | Motivo |
 | --- | --- |
+| `crear-formulario-pdf` | Apagada por defecto; se enciende con `TOOL_CREAR_FORMULARIO_PDF_ENABLED=true`. Apagada mientras se termina F4-B1, como hacer-pdf-rellenable, que es la misma herramienta empezando en blanco. |
 | `firmar-pdf` | Apagada por defecto; se enciende con `TOOL_FIRMAR_PDF_ENABLED=true`. Apagada hasta F4-B: el sello de la plataforma en servidor (PAdES B-T a B-LTA, DocMDP, firma visible) ya funciona en `workersign` (F4-A2, D-188), pero A.6 pide además la firma dibujada, escrita, subida o con la cámara en el navegador y la firma interrumpida con certificado propio, que llegan en F4-B. Para probar el sello antes: TOOL_FIRMAR_PDF_ENABLED=true, con el token, SIGN_CERT_PATH y TSA_URL configurados (DEPLOY-CHECKLIST). |
+| `hacer-pdf-rellenable` | Apagada por defecto; se enciende con `TOOL_HACER_PDF_RELLENABLE_ENABLED=true`. Apagada mientras se termina F4-B1: el motor de campos del navegador (pdf-lib) y los campos de firma con pyHanko en `workerpdf` ya están, falta el diseñador en la página. |
 | `heic-a-jpg` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-pdf` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
 | `heic-a-png` | Apagada mientras `HEVC_DECODE_ENABLED` no esté a `true`. Decodificar HEVC (HEIC y vídeo H.265) puede necesitar licencia de patentes, también como servicio en la nube (7.2 y 11). Apagado hasta la revisión legal anotada en docs/LEGAL.md; mientras tanto, la página explica cómo exportar a JPEG desde el iPhone o el Mac y lleva noindex. |
@@ -220,7 +224,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | Webpage to PDF (`/en/webpage-to-pdf`) | `web-a-pdf` | disponible |  |
 | Create photo collage (`/en/create-photo-collage`) | `crear-collage` | disponible |  |
 | Create card (`/en/create-card`) | `crear-tarjeta` | pendiente (F6) |  |
-| Create PDF form (`/en/create-fillable-pdf-form`) | `crear-formulario-pdf`, `hacer-pdf-rellenable` | pendiente (F4) |  |
+| Create PDF form (`/en/create-fillable-pdf-form`) | `crear-formulario-pdf`, `hacer-pdf-rellenable` | disponible, apagada (ver «Desactivadas») |  |
 | Create PDF job application (`/en/create-job-application`) | `solicitud-de-empleo-pdf` | disponible |  |
 | Generate QR code (`/en/generate-qr-code`) | `generar-codigo-qr` | disponible |  |
 | Create invoice (`/en/create-invoice`) | `crear-factura` | pendiente (F4) |  |
@@ -231,7 +235,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | Validate e-invoice (`/en/validate-e-invoice`) | `validar-factura-electronica` | disponible |  |
 | Annotate PDF (`/en/annotate-pdf`) | `anotar-pdf` | disponible |  |
 | Fill out PDF (`/en/fill-out-pdf`) | `rellenar-pdf` | disponible |  |
-| Make PDF fillable (`/en/make-pdf-fillable`) | `hacer-pdf-rellenable` | pendiente (F4) |  |
+| Make PDF fillable (`/en/make-pdf-fillable`) | `hacer-pdf-rellenable` | disponible, apagada (ver «Desactivadas») |  |
 | Add watermark (`/en/add-watermark`) | `marca-de-agua-pdf` | disponible |  |
 | Add page numbers (`/en/add-page-numbers`) | `numerar-paginas-pdf` | disponible |  |
 | PDF Overlay (`/en/overlay-pdf`) | `superponer-pdf` | disponible |  |
@@ -330,7 +334,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Printer (`/en/pdf-printer`) | — | sin equivalente | No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3). |
 | PDF Reader (`/en/pdf-reader`) | — | sin equivalente | No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf. |
 
-Resumen: 109 disponibles, 9 pendientes de su fase y 6 sin equivalente (con su explicación).
+Resumen: 111 disponibles, 7 pendientes de su fase y 6 sin equivalente (con su explicación).
 
 ## Mejoras posteriores
 

@@ -155,6 +155,10 @@ def generate(out: Path) -> dict[str, Path]:
     from lectura_pdf import generate as reading_pdfs
 
     files.update(reading_pdfs(out))
+    # F4, lote D: facturas UBL, CII y Facturae para factura-electronica-a-pdf (Gotenberg y veraPDF reales en e2e-compose).
+    from facturas import generate as invoice_samples
+
+    files.update(invoice_samples(out))
     # F3, lote E: subtítulos SRT, VTT y ASS para traducir-subtitulos.
     from subtitulos import generate as subtitle_samples
 

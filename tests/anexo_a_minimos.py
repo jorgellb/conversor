@@ -123,6 +123,8 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     "editar-pdf": {"tamano_pagina_nueva": E(ANY, *PAPERS)},
     "anotar-pdf": {"guardar": E("anotaciones", "anotaciones", "aplanadas")},
     "rellenar-pdf": {"guardar": E("editable", "editable", "aplanado")},
+    # A.3 (F4-B1): el diseño de campos es del editor; la ruta de servidor solo recibe los campos de firma.
+    "hacer-pdf-rellenable": {}, "crear-formulario-pdf": {},
     "marca-de-agua-pdf": {
         "tipo": E("texto", "texto", "imagen"), "escala_imagen": D(50), "texto": D("CONFIDENCIAL"), "fuente": E(ANY, *FONTS),
         "tamano": R(40, 1, 500), "color": D("#E67610"), "opacidad": R(0.4, 0, 1), "angulo": D(-45),

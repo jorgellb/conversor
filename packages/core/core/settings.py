@@ -99,6 +99,9 @@ class Settings(BaseSettings):
     KOSIT_URL: str = "http://127.0.0.1:8081/"
     KOSIT_TIMEOUT: float = 120
     FACTURAE_XSD_DIR: Path = Path("/opt/facturae")
+    # Configuraciones de KoSIT en la imagen worker-utils: sus XSD de UBL 2.1 y CII D16B validan la sintaxis en las
+    # páginas ubl-a-pdf y cii-a-pdf (7.14, D-194).
+    KOSIT_HOME: Path = Path("/opt/kosit")
     # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
     # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
     SIGN_VERIFY_EXTRA_ROOTS: str = ""

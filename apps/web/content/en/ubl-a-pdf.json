@@ -3,7 +3,7 @@
   "reviewed": false,
   "intro": [
     "UBL to PDF turns UBL 2.1 invoices and credit notes, the syntax of the Peppol network, of XRechnung in UBL and of the Spanish public B2B e-invoicing solution, into a clear PDF with all their data: parties, lines, taxes, totals, payment terms, notes and the buyer reference.",
-    "The page recognises the specification from its CustomizationID and shows it in the PDF header (for example Peppol BIS Billing 3.0 or XRechnung), so you know what kind of invoice you have. The document is printed in A4 by a server browser with no internet access.",
+    "The page recognises the specification from its CustomizationID and shows it in the PDF header (for example Peppol BIS Billing 3.0 or XRechnung), so you know what kind of invoice you have. The document is printed in A4 by a server browser with no internet access. Before drawing it, it is checked against the official UBL 2.1 schema: if it does not meet it, the page says so and suggests checking it with “Validate e-invoice”.",
     "With the PDF/A-3 output, the UBL XML goes inside the PDF as is, as an associated file, and veraPDF checks that the result meets the standard. With “Plain PDF” you get only the representation, which is lighter.",
     "If you are not sure whether your file is UBL or CII, use “E-invoice to PDF”, which accepts both syntaxes and Facturae."
   ],
@@ -22,7 +22,7 @@
     },
     {
       "q": "Does it count towards my limits?",
-      "a": "Each conversion is a light task of your plan (20 a day without an account, 50 with the free account and 1,000 on Pro), with up to 100 UBL files at once."
+      "a": "Each conversion is a light task of your plan (20 a day without an account, 50 with the free account and 1,000 on Pro), with up to 5 UBL files at once without an account, 20 with the free one and 100 on Pro."
     }
   ]
 }

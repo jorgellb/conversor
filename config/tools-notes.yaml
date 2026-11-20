@@ -21,6 +21,11 @@ temas:
     tocan la factura electrónica obligatoria (RD 238/2026). Apagado hasta la revisión con un asesor anotada en
     docs/LEGAL.md (7.23). Las que validan o muestran facturas no dependen de este flag.
 herramientas:
+  hacer-pdf-rellenable: >-
+    Apagada mientras se termina F4-B1: el motor de campos del navegador (pdf-lib) y los campos de firma con pyHanko en
+    `workerpdf` ya están, falta el diseñador en la página.
+  crear-formulario-pdf: >-
+    Apagada mientras se termina F4-B1, como hacer-pdf-rellenable, que es la misma herramienta empezando en blanco.
   firmar-pdf: >-
     Apagada hasta F4-B: el sello de la plataforma en servidor (PAdES B-T a B-LTA, DocMDP, firma visible) ya funciona
     en `workersign` (F4-A2, D-188), pero A.6 pide además la firma dibujada, escrita, subida o con la cámara en el

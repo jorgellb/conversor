@@ -269,7 +269,7 @@ def _facturae(root, version: str) -> Invoice:
 
 
 def read_invoice(data: bytes):
-    """(árbol, datos) de una factura; `INVALID_OPTIONS` `not_invoice` si el XML no es de una sintaxis conocida."""
+    """(árbol, datos) de una factura; `UNSUPPORTED_FORMAT` `not_invoice` si el XML no es de una sintaxis conocida."""
     root = parse_xml(data)
     ns = root.tag[1:].split("}", 1)[0] if root.tag.startswith("{") else ""
     if ns in (UBL_INVOICE, UBL_CREDIT):

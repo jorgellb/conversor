@@ -2505,6 +2505,266 @@
       }
     },
     {
+      "slug_es": "hacer-pdf-rellenable",
+      "slug_en": "make-pdf-fillable",
+      "name_es": "Hacer un PDF rellenable",
+      "name_en": "Make a PDF fillable",
+      "summary_es": "Añade campos de texto, casillas, opciones, listas, botones y firmas a un PDF para que se pueda rellenar.",
+      "summary_en": "Add text fields, checkboxes, options, lists, buttons and signatures to a PDF so it can be filled in.",
+      "category": "pdf",
+      "where": "hybrid",
+      "worker_group": "pdf",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pdf"
+      ],
+      "outputs": [
+        "pdf"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": false,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "crear-formulario-pdf",
+        "rellenar-pdf",
+        "firmar-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "$defs": {
+          "CampoFirma": {
+            "description": "Un campo de firma vacío que añade pyHanko (A.3): página desde 1 y rectángulo en el espacio de usuario.",
+            "properties": {
+              "nombre": {
+                "default": "Firma",
+                "maxLength": 120,
+                "minLength": 1,
+                "pattern": "^[^.\\x00-\\x1f]+$",
+                "title": "Nombre del campo",
+                "type": "string",
+                "x-title": {
+                  "en": "Field name",
+                  "es": "Nombre del campo"
+                }
+              },
+              "pagina": {
+                "default": 1,
+                "maximum": 10000,
+                "minimum": 1,
+                "title": "Página",
+                "type": "integer",
+                "x-title": {
+                  "en": "Page",
+                  "es": "Página"
+                }
+              },
+              "x1": {
+                "default": 0,
+                "maximum": 14400,
+                "minimum": -14400,
+                "title": "x1",
+                "type": "number",
+                "x-title": {
+                  "en": "x1",
+                  "es": "x1"
+                }
+              },
+              "y1": {
+                "default": 0,
+                "maximum": 14400,
+                "minimum": -14400,
+                "title": "y1",
+                "type": "number",
+                "x-title": {
+                  "en": "y1",
+                  "es": "y1"
+                }
+              },
+              "x2": {
+                "default": 100,
+                "maximum": 14400,
+                "minimum": -14400,
+                "title": "x2",
+                "type": "number",
+                "x-title": {
+                  "en": "x2",
+                  "es": "x2"
+                }
+              },
+              "y2": {
+                "default": 40,
+                "maximum": 14400,
+                "minimum": -14400,
+                "title": "y2",
+                "type": "number",
+                "x-title": {
+                  "en": "y2",
+                  "es": "y2"
+                }
+              }
+            },
+            "title": "CampoFirma",
+            "type": "object"
+          }
+        },
+        "description": "hacer-pdf-rellenable y crear-formulario-pdf (A.3, F4-B1): los campos se diseñan en pantalla y pdf-lib los crea en\nel navegador; la ruta de servidor solo recibe los campos de firma, que crea pyHanko.",
+        "properties": {
+          "firmas": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/CampoFirma"
+            },
+            "maxItems": 50,
+            "title": "Campos de firma",
+            "type": "array",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Signature fields",
+              "es": "Campos de firma"
+            }
+          }
+        },
+        "title": "HacerRellenableOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "crear-formulario-pdf",
+      "slug_en": "create-pdf-form",
+      "name_es": "Crear un formulario PDF",
+      "name_en": "Create a PDF form",
+      "summary_es": "Diseña un formulario PDF rellenable desde una página en blanco o a partir de un PDF que ya tengas.",
+      "summary_en": "Design a fillable PDF form from a blank page or from a PDF you already have.",
+      "category": "pdf",
+      "where": "hybrid",
+      "worker_group": "pdf",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pdf"
+      ],
+      "outputs": [
+        "pdf"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": false,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "hacer-pdf-rellenable",
+        "rellenar-pdf",
+        "firmar-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "$defs": {
+          "CampoFirma": {
+            "description": "Un campo de firma vacío que añade pyHanko (A.3): página desde 1 y rectángulo en el espacio de usuario.",
+            "properties": {
+              "nombre": {
+                "default": "Firma",
+                "maxLength": 120,
+                "minLength": 1,
+                "pattern": "^[^.\\x00-\\x1f]+$",
+                "title": "Nombre del campo",
+                "type": "string",
+                "x-title": {
+                  "en": "Field name",
+                  "es": "Nombre del campo"
+                }
+              },
+              "pagina": {
+                "default": 1,
+                "maximum": 10000,
+                "minimum": 1,
+                "title": "Página",
+                "type": "integer",
+                "x-title": {
+                  "en": "Page",
+                  "es": "Página"
+                }
+              },
+              "x1": {
+                "default": 0,
+                "maximum": 14400,
+                "minimum": -14400,
+                "title": "x1",
+                "type": "number",
+                "x-title": {
+                  "en": "x1",
+                  "es": "x1"
+                }
+              },
+              "y1": {
+                "default": 0,
+                "maximum": 14400,
+                "minimum": -14400,
+                "title": "y1",
+                "type": "number",
+                "x-title": {
+                  "en": "y1",
+                  "es": "y1"
+                }
+              },
+              "x2": {
+                "default": 100,
+                "maximum": 14400,
+                "minimum": -14400,
+                "title": "x2",
+                "type": "number",
+                "x-title": {
+                  "en": "x2",
+                  "es": "x2"
+                }
+              },
+              "y2": {
+                "default": 40,
+                "maximum": 14400,
+                "minimum": -14400,
+                "title": "y2",
+                "type": "number",
+                "x-title": {
+                  "en": "y2",
+                  "es": "y2"
+                }
+              }
+            },
+            "title": "CampoFirma",
+            "type": "object"
+          }
+        },
+        "description": "hacer-pdf-rellenable y crear-formulario-pdf (A.3, F4-B1): los campos se diseñan en pantalla y pdf-lib los crea en\nel navegador; la ruta de servidor solo recibe los campos de firma, que crea pyHanko.",
+        "properties": {
+          "firmas": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/CampoFirma"
+            },
+            "maxItems": 50,
+            "title": "Campos de firma",
+            "type": "array",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Signature fields",
+              "es": "Campos de firma"
+            }
+          }
+        },
+        "title": "HacerRellenableOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "anotar-pdf",
       "slug_en": "annotate-pdf",
       "name_es": "Anotar PDF",

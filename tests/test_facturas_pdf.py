@@ -25,11 +25,22 @@ from test_tools import make_ctx, run  # noqa: E402,F401 - fixture compartida
 CHROMIUM = "/forms/chromium/convert/html"
 
 
+LOCAL_KOSIT = Path.home() / ".cache" / "conversor-motores" / "kosit" / "root"
+
+
 @pytest.fixture(autouse=True)
 def facturae_xsd(monkeypatch):
+    """XSD de Facturae del repositorio y de UBL y CII de la configuración de KoSIT (KOSIT_HOME en la CI, la caché local
+    de motores aquí)."""
+    import os
+
     from core.settings import get_settings
 
     monkeypatch.setattr(get_settings(), "FACTURAE_XSD_DIR", ROOT / "infra" / "facturae")
+    home = Path(os.environ.get("KOSIT_HOME") or LOCAL_KOSIT)
+    if not (home / "xrechnung" / "resources" / "ubl").exists():
+        pytest.skip("sin los XSD de UBL y CII de KoSIT (KOSIT_HOME)")
+    monkeypatch.setattr(get_settings(), "KOSIT_HOME", home)
 
 
 def _blank() -> bytes:
@@ -144,3 +155,149 @@ def test_batch_produces_a_zip(make_ctx, tmp_path, fake_verapdf):
     ctx.stage = step.stage
     out = run("factura-electronica-a-pdf", ctx)
     assert [o["name"] for o in out] == ["a.pdf", "b.pdf", "facturas-pdf.zip"]
+
+
+# --- Revisión de F4-D2 (D-194) ---------------------------------------------------------------------------------------
+
+
+def _facturae_tree(data: bytes):
+    from lxml import etree
+
+    return etree.fromstring(data)
+
+
+def _el(tag: str, text: str | None = None, *children):
+    from lxml import etree
+
+    el = etree.Element(tag)
+    el.text = text
+    el.extend(children)
+    return el
+
+
+def _withheld(rate: str, base: str, amount: str):
+    return _el("TaxesWithheld", None, _el("Tax", None, _el("TaxTypeCode", "04"), _el("TaxRate", rate),
+                                         _el("TaxableBase", None, _el("TotalAmount", base)), _el("TaxAmount", None, _el("TotalAmount", amount))))
+
+
+def _irpf_facturae() -> bytes:
+    """Facturae de un profesional con IRPF del 15 %: TaxesWithheld en cada línea (antes de TaxesOutputs) y en la
+    factura (después), y TotalTaxesWithheld."""
+    from lxml import etree
+
+    root = _facturae_tree(facturas.facturae())
+    for line in root.iter("InvoiceLine"):
+        line.find("TaxesOutputs").addprevious(_withheld("15.00", line.findtext("TotalCost"), "0.00"))
+    invoice = root.find("Invoices/Invoice")
+    invoice.find("TaxesOutputs").addnext(_withheld("15.00", "1655.00", "248.25"))
+    invoice.find("InvoiceTotals/TotalTaxesWithheld").text = "248.25"
+    return etree.tostring(root, xml_declaration=True, encoding="UTF-8")
+
+
+def test_facturae_irpf_is_not_taken_for_vat_and_withholdings_are_shown():
+    from tools.utils.facturas import representar
+
+    data = _irpf_facturae()
+    d = representar.detail(data)
+    assert {line["iva"] for line in d.lines} == {"21.00"}
+    assert d.withheld == [{"categoria": "04", "tipo": "15.00", "base": "1655.00", "cuota": "248.25"}]
+    assert d.withheld_total == "248.25"
+    page = representar.render(d, "es", "Facturae 3.2.2", "f.xml")
+    assert "<h2>Retenciones</h2>" in page and "<th>Retenciones</th><td class=\"r\">248.25 EUR</td>" in page
+    assert "Retenciones" not in representar.render(representar.detail(facturas.facturae()), "es", "", "f.xml")  # 0.00 no se enseña
+
+
+def test_facturae_parties_ignore_administrative_centres_and_join_surnames():
+    from lxml import etree
+
+    from tools.utils.facturas import representar
+
+    root = _facturae_tree(facturas.facturae())
+    buyer = root.find("Parties/BuyerParty")
+    centre = _el("AdministrativeCentres", None, _el("AdministrativeCentre", None, _el("CentreCode", "L01"), _el("RoleTypeCode", "01"),
+                                                         _el("Name", "Oficina contable"),
+                                                         _el("AddressInSpain", None, _el("Address", "Plaza Oficina 9"), _el("PostCode", "41001"),
+                                                             _el("Town", "Sevilla"), _el("Province", "Sevilla"), _el("CountryCode", "ESP"))))
+    buyer.find("LegalEntity").addprevious(centre)
+    seller = root.find("Parties/SellerParty")
+    legal = seller.find("LegalEntity")
+    address = legal.find("AddressInSpain")
+    person = _el("Individual", None, _el("Name", "Juan"), _el("FirstSurname", "Pérez"), _el("SecondSurname", "García"), address)
+    legal.addprevious(person)
+    seller.remove(legal)
+    seller.find("TaxIdentification/PersonTypeCode").text = "F"
+    data = etree.tostring(root, xml_declaration=True, encoding="UTF-8")
+    d = representar.detail(data)
+    assert d.seller.name == "Juan Pérez García" and d.seller.address[0] == "Calle Mayor 1"
+    assert d.buyer.name == "Cliente Pruebas SA" and "Plaza Oficina 9" not in d.buyer.address
+
+
+def test_truncated_lines_and_facturae_batch_are_said():
+    import re
+
+    from lxml import etree
+
+    from tools.utils.facturas import representar
+
+    base = facturas.ubl_invoice()
+    line = re.search(rb"<cac:InvoiceLine>.*?</cac:InvoiceLine>", base, re.S).group(0)
+    many = base.replace(line, line * 600, 1)  # 2 líneas de muestra: 600 copias de la primera + la segunda = 601
+    d = representar.detail(many)
+    assert len(d.lines) == 500 and representar.warnings(d, "es") == ["Se muestran 500 de 601 líneas; el XML incrustado las tiene todas."]
+    root = _facturae_tree(facturas.facturae())
+    invoices = root.find("Invoices")
+    invoices.append(etree.fromstring(etree.tostring(invoices.find("Invoice"))))
+    d = representar.detail(etree.tostring(root))
+    assert representar.warnings(d, "en") == ["This file contains 2 invoices; the first one is represented."]
+
+
+@respx.mock
+def test_one_bad_file_does_not_stop_the_batch(make_ctx, tmp_path, fake_verapdf):
+    _gotenberg()
+    files = [_file(tmp_path, "buena.xml", facturas.facturae()), _file(tmp_path, "ubl.xml", facturas.ubl_invoice()),
+             _file(tmp_path, "nada.xml", b"<pedido/>")]
+    ctx, step = _first_stage(make_ctx, "facturae-a-pdf", files)
+    ctx.stage = step.stage
+    out = run("facturae-a-pdf", ctx)
+    names = [o["name"] for o in out]
+    assert names == ["buena.pdf", "no-convertidas.txt", "facturas-pdf.zip"]
+    text = Path(out[1]["path"]).read_text(encoding="utf-8")
+    assert "- ubl.xml: Esta página convierte otra sintaxis" in text and "- nada.xml: El archivo no es una factura" in text
+    assert out[1]["note"] == "2 archivo(s) no se han convertido: mira el motivo en este archivo."
+
+
+@respx.mock
+def test_ubl_and_cii_are_checked_against_their_xsd(make_ctx, tmp_path):
+    from core.errors import ToolError
+
+    _gotenberg()
+    bad = facturas.ubl_invoice().replace(b"<cbc:IssueDate>", b"<cbc:Basura>x</cbc:Basura><cbc:IssueDate>", 1)
+    with pytest.raises(ToolError) as err:
+        run("ubl-a-pdf", make_ctx("ubl-a-pdf", [_file(tmp_path, "mal.xml", bad)], {"salida": "pdf"}))
+    assert (err.value.code, err.value.detail) == ("CORRUPT_FILE", "invoice_xsd_invalid")
+    out = run("cii-a-pdf", make_ctx("cii-a-pdf", [_file(tmp_path, "c.xml", facturas.cii_invoice(facturas.CII_MINIMUM))], {"salida": "pdf"}))
+    assert out[0]["name"] == "c.pdf"
+
+
+@respx.mock
+def test_verapdf_failure_still_delivers_the_pdf_and_a_failed_check_brings_the_report(make_ctx, tmp_path, fake_verapdf, monkeypatch):
+    from core.errors import ErrorCode, ToolError
+    from test_desde_pdf import mrr as make_mrr
+
+    _gotenberg()
+    ctx, step = _first_stage(make_ctx, "factura-electronica-a-pdf", [_file(tmp_path, "a.xml", facturas.ubl_invoice())])
+    ctx.stage = step.stage
+
+    def broken(*_a, **_k):
+        raise ToolError(ErrorCode.ENGINE_FAILED, "veraPDF")
+
+    with monkeypatch.context() as m:
+        m.setattr("tools.ocr.verapdf.run_verapdf", broken)
+        out = run("factura-electronica-a-pdf", ctx)
+    assert [o["name"] for o in out] == ["a.pdf"] and out[0]["note"].endswith("No se ha podido comprobar con veraPDF.")
+    ctx, step = _first_stage(make_ctx, "factura-electronica-a-pdf", [_file(tmp_path, "b.xml", facturas.ubl_invoice())])
+    ctx.stage = step.stage
+    fake_verapdf[1]["xml"] = make_mrr(False)
+    out = run("factura-electronica-a-pdf", ctx)
+    assert out[0]["note"].startswith("PDF/A-3 con el XML original") and "No cumple" in out[0]["note"]
+    assert any(o["name"].endswith(".html") for o in out)

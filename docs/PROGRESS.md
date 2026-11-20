@@ -492,6 +492,10 @@ Verificado aquí: pytest con Gotenberg y veraPDF simulados (petición PDF/A-3b, 
 `Source`, escapado, idioma y errores). Sin verificar aquí: el PDF/A-3b real de Gotenberg con el XML incrustado y su
 validación con veraPDF (e2e-compose y el VPS).
 
+Revisión adversarial (D-194): IRPF y partes de Facturae, retenciones y descuentos, recortes avisados, XSD de UBL y CII,
+lotes con archivos malos y veraPDF que falla. Ya hay prueba de extremo a extremo en e2e-compose (Gotenberg y veraPDF
+reales).
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4: F4-F, F4-A y F4-D hechos; siguen después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo

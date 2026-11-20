@@ -1,6 +1,7 @@
 // Punto de entrada: ejecuta una herramienta de navegador por su slug (se usa dentro de un Web Worker).
 import { ToolError, extOf, loadPdf, type InFile, type Progress, type ToolResult } from "./common";
 import { editarPdf, rellenarPdf } from "./edit";
+import { hacerRellenable } from "./forms";
 import { aplanar, cambiarTamano, folleto, recortar, variasPorHoja } from "./layout";
 import type { PdfiumRenderer } from "./pdfium";
 import { redactarPdf } from "./redact";
@@ -36,6 +37,7 @@ export { organizedOrder } from "./pages";
 export { formatNumber, tilePositions } from "./stamp";
 export { targetSize, wasmEncoding } from "./imagetools";
 export { applyEdits, inspectForm, newPageSize, readMetadata, wrapText } from "./edit";
+export { designForm, detectFields, hacerRellenable, userRect, type DesignField, type DesignFieldType, type FieldMove, type FormDesign, type SignatureBox, type Suggestion } from "./forms";
 export { exportXfdf, importXfdf, writeAnnotations } from "./annotate";
 export { cortarMitad, halves, imprimir, montar, printAllowed } from "./f2pages";
 export type { CortarMitadOptions, ImprimirOptions, MontarOptions, MontarPage } from "./f2pages";
@@ -88,7 +90,7 @@ export const CLIENT_TOOLS = [
   "numerar-paginas-pdf", "marca-de-agua-pdf", "imagenes-a-pdf", "jpg-a-pdf", "png-a-pdf", "pdf-a-jpg", "pdf-a-png",
   "pdf-a-webp", "pdf-a-imagenes", "generar-contrasena", "png-a-jpg", "webp-a-jpg", "comprimir-imagen", "redimensionar-imagen",
   "editar-pdf", "rellenar-pdf", "webp-a-pdf", "gif-a-pdf", "bmp-a-pdf", "recortar-pdf", "cambiar-tamano-pagina-pdf",
-  "varias-paginas-por-hoja", "folleto-pdf", "aplanar-pdf", "redactar-pdf", "anotar-pdf",
+  "varias-paginas-por-hoja", "folleto-pdf", "aplanar-pdf", "redactar-pdf", "anotar-pdf", "hacer-pdf-rellenable", "crear-formulario-pdf",
   "cortar-paginas-por-la-mitad", "imprimir-pdf", "montar-pdf", "marcadores-pdf", "comparar-pdf", "buscar-en-pdf",
   "jpg-a-png", "webp-a-png", "gif-a-png", "jpg-a-webp", "png-a-webp", "avif-a-jpg", "bmp-a-jpg", "tiff-a-jpg", "jpg-a-avif",
   "png-a-ico", "convertir-imagen", "svg-a-png", "svg-a-jpg", "crear-favicon", "quitar-metadatos-foto", "imagen-a-base64",
@@ -208,6 +210,9 @@ export async function runClientTool(slug: string, inputs: InFile[], options: Any
     }
     case "rellenar-pdf":
       return rellenarPdf(files, options, env.fonts, {}, env.locale);
+    case "hacer-pdf-rellenable":
+    case "crear-formulario-pdf":
+      return hacerRellenable(files, options, env.fonts, {}, env.locale);
     case "anotar-pdf":
       return anotarPdf(files, options, env.fonts, {}, env.locale);
     case "cortar-paginas-por-la-mitad":

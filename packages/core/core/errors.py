@@ -128,8 +128,10 @@ DETAILS: dict[str, dict[str, str]] = {
                   "en": "This PDF has too much text or is too complex to prepare for reading in time: split it first with “Split PDF”."},
     "tts_empty": {"es": "No hay texto que leer en las páginas elegidas.", "en": "There is no text to read in the selected pages."},
     # Facturas electrónicas (F4-D2): «invoice_syntax:ubl>facturae» es la sintaxis del archivo y la de la página.
-    "invoice_syntax": {"es": "Esta página convierte otra sintaxis de factura: usa «Factura electrónica a PDF», que admite UBL, CII y Facturae.",
+    "invoice_syntax": {"es": "Esta página convierte otra sintaxis de factura (el archivo es de otra): usa «Factura electrónica a PDF», que admite UBL, CII y Facturae.",
                        "en": "This page converts another invoice syntax: use “E-invoice to PDF”, which accepts UBL, CII and Facturae."},
+    "invoice_xsd_invalid": {"es": "La factura no cumple el esquema oficial de UBL 2.1 o CII D16B: compruébala antes con «Validar factura electrónica».",
+                            "en": "The invoice does not meet the official UBL 2.1 or CII D16B schema: check it first with “Validate e-invoice”."},
     "facturae_xsd_invalid": {"es": "La factura Facturae no cumple su esquema oficial: compruébala antes con «Validar factura electrónica».",
                              "en": "The Facturae invoice does not meet its official schema: check it first with “Validate e-invoice”."},
     "not_invoice": {"es": "El archivo no es una factura UBL, CII ni Facturae.", "en": "The file is not a UBL, CII or Facturae invoice."},

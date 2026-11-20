@@ -54,7 +54,7 @@ herramientas:
     equivalentes: [crear-tarjeta:F6]
   - pdf24: "Create PDF form"
     ruta: /en/create-fillable-pdf-form
-    equivalentes: [crear-formulario-pdf:F4, hacer-pdf-rellenable:F4]
+    equivalentes: [crear-formulario-pdf, hacer-pdf-rellenable]
   - pdf24: "Create PDF job application"
     ruta: /en/create-job-application
     equivalentes: [solicitud-de-empleo-pdf]
@@ -88,7 +88,7 @@ herramientas:
     equivalentes: [rellenar-pdf]
   - pdf24: "Make PDF fillable"
     ruta: /en/make-pdf-fillable
-    equivalentes: [hacer-pdf-rellenable:F4]
+    equivalentes: [hacer-pdf-rellenable]
   - pdf24: "Add watermark"
     ruta: /en/add-watermark
     equivalentes: [marca-de-agua-pdf]
