@@ -330,3 +330,97 @@ def test_detection_of_f7b_files(tmp_path):
     with zipfile.ZipFile(amf, "w") as zf:
         zf.writestr("z.amf", "<amf/>")
     assert detect(amf, ".amf").ext == "amf"
+
+
+# ——— D-249: correcciones de la revisión de F7-A ———
+
+def _3mf_instances(tmp_path: Path, items: int, mirror: bool = False) -> Path:
+    import lib3mf
+
+    from tools.mesh import formats
+
+    w = lib3mf.get_wrapper()
+    model = w.CreateModel()
+    box = trimesh.creation.box((10, 10, 10))
+    mesh = model.AddMeshObject()
+    mesh.SetGeometry([lib3mf.Position((lib3mf.ctypes.c_float * 3)(*v)) for v in box.vertices.astype(np.float32)],
+                     [lib3mf.Triangle((lib3mf.ctypes.c_uint32 * 3)(*f)) for f in box.faces.astype(np.uint32)])
+    for i in range(items):
+        t = w.GetIdentityTransform()
+        if mirror:
+            t.Fields[0][0] = -1.0
+        t.Fields[3][0] = 20.0 * i
+        model.AddBuildItem(mesh, t)
+    path = tmp_path / f"instancias-{items}.3mf"
+    with formats.keep_locale():
+        model.QueryWriter("3mf").WriteToFile(str(path))
+    return path
+
+
+def test_3mf_instances_count_before_copying(tmp_path):
+    from tools.mesh import formats
+
+    many = _3mf_instances(tmp_path, 50)  # 12 triángulos × 50 elementos
+    with pytest.raises(ToolError) as err:
+        formats.load(many, "3mf", 500)
+    assert err.value.code == "LIMIT_EXCEEDED"
+    assert formats.load(many, "3mf", 600).triangles == 600
+
+
+def test_mirrored_3mf_keeps_outward_faces(tmp_path):
+    from tools.mesh import formats
+
+    model = formats.load(_3mf_instances(tmp_path, 1, mirror=True), "3mf", 100)
+    part = model.parts[0]
+    assert trimesh.Trimesh(part.vertices, part.faces, process=False).volume > 0
+
+
+def test_counts_that_used_to_be_bypassed(tmp_path):
+    from tools.mesh.recuento import count_triangles
+
+    ply = tmp_path / "trampa.ply"
+    ply.write_bytes(b"ply\nformat ascii 1.0\ncomment element face 1\nelement vertex 3000\nproperty float x\nproperty float y\n"
+                    b"property float z\nelement face 2000\nproperty list uchar int vertex_indices\nend_header\n")
+    assert count_triangles(ply, "ply") == 2000
+    stl = tmp_path / "MAYUS.stl"
+    stl.write_text("SOLID A\n" + "FACET NORMAL 0 0 1\n OUTER LOOP\n" + "  VERTEX 0 0 0\n  VERTEX 1 0 0\n  VERTEX 0 1 0\n ENDLOOP\nENDFACET\n" * 7)
+    assert count_triangles(stl, "stl") == 7
+    obj = tmp_path / "vertices.obj"
+    obj.write_text("v 0 0 0\n" * 3000 + "f 1 2 3\n")
+    assert count_triangles(obj, "obj") == 1000
+
+
+def test_memory_blowup_kills_the_child_not_the_worker(make_ctx, tmp_path, monkeypatch):
+    big = tmp_path / "bola.stl"
+    big.write_bytes(trimesh.creation.icosphere(subdivisions=7).export(file_type="stl"))
+    ctx = make_ctx("stl-a-3mf", [big])
+    monkeypatch.setattr(ctx.settings, "MESH_MEMORY_MB", 90)
+    with pytest.raises(ToolError) as err:
+        run("stl-a-3mf", ctx)
+    assert err.value.code in ("LIMIT_EXCEEDED", "ENGINE_FAILED")
+
+
+def test_obj_material_next_to_it_is_not_read(tmp_path):
+    from tools.mesh import formats
+
+    (tmp_path / "mat.mtl").write_text("newmtl rojo\nKd 1 0 0\n")
+    obj = tmp_path / "ataque.obj"
+    obj.write_text("mtllib mat.mtl\nusemtl rojo\nv 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2 3\n")
+    model = formats._from_trimesh(obj, "obj")
+    assert not model.has_colors and "textures" not in model.lost
+
+
+def test_obj_palette_keeps_alpha_and_uncoloured_parts_are_grey(tmp_path):
+    from tools.mesh import formats
+
+    box = trimesh.creation.box()
+    rng = np.random.default_rng(1)
+    colors = np.c_[rng.integers(0, 255, (len(box.faces), 3)), np.full(len(box.faces), 255)].astype(np.uint8)
+    colors = np.repeat(colors, 30, axis=0)[: len(box.faces)]
+    many = trimesh.creation.icosphere(4)
+    many_colors = np.c_[rng.integers(0, 255, (len(many.faces), 3)), np.full(len(many.faces), 255)].astype(np.uint8)
+    model = formats.Model([formats.Part("color", many.vertices, many.faces, many_colors), formats.Part("liso", box.vertices, box.faces)])
+    mtl = formats.write_obj(model, tmp_path / "a.obj", "a.mtl")
+    assert "d 0.9412" not in mtl and mtl.count("newmtl") <= 217
+    text = (tmp_path / "a.obj").read_text()
+    assert text.split("\no liso\n", 1)[1].split("\nf ", 1)[0].endswith("usemtl sin_color")

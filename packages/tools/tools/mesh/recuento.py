@@ -33,37 +33,67 @@ def stl_is_binary(path: Path) -> bool:
     return 84 + 50 * n == size
 
 
-def count_triangles(path: Path, ext: str) -> int:
-    """Triángulos del archivo sin cargarlo (para el límite del plan antes de gastar memoria)."""
+def _ply_header(path: Path) -> list[tuple[str, int]]:
+    """Los elementos de la cabecera de un PLY (sin comentarios), hasta `end_header`; una cabecera de más de 64 KB no es
+    de un PLY normal (D-249)."""
+    with open(path, "rb") as f:
+        header = f.read(65536)
+    if not header.startswith(b"ply"):
+        raise ToolError(ErrorCode.CORRUPT_FILE, "PLY no válido")
+    end = header.find(b"end_header")
+    if end < 0:
+        raise ToolError(ErrorCode.CORRUPT_FILE, "PLY con una cabecera demasiado larga o sin terminar")
+    out = []
+    for line in header[:end].splitlines():
+        words = line.split()
+        if len(words) == 3 and words[0] == b"element" and words[2].isdigit():
+            out.append((words[1].decode("ascii", "replace"), int(words[2])))
+    return out
+
+
+def count_triangles(path: Path, ext: str, limit: int | None = None) -> int:
+    """Triángulos del archivo sin cargarlo (para el límite del plan antes de gastar memoria). Los vértices de sobra también
+    pesan: se cuentan como triángulos a razón de 3 por triángulo (un OBJ con 2 millones de vértices y una cara contaba 1,
+    D-249). Con `limit`, deja de contar en cuanto lo supera."""
     if ext == "stl":
         if stl_is_binary(path):
             with open(path, "rb") as f:
                 f.seek(80)
                 return struct.unpack("<I", f.read(4))[0]
         with open(path, "rb") as f:
-            return _stream_count(f, re.compile(rb"\bfacet\b"))
+            return -(-_stream_count(f, re.compile(rb"(?i)\bvertex\b")) // 3)
     if ext == "obj":
-        total = 0
+        faces = vertices = 0
         with open(path, "rb") as f:
             for line in f:
-                if line[:2] == b"f " or line[:2] == b"f\t":
-                    total += max(1, len(line.split()) - 3)
-        return total
+                head = line[:2]
+                if head in (b"f ", b"f\t"):
+                    faces += max(1, len(line.split()) - 3)
+                elif head in (b"v ", b"v\t"):
+                    vertices += 1
+                if limit is not None and max(faces, vertices // 3) > limit:
+                    break
+        return max(faces, vertices // 3)
     if ext == "ply":
-        with open(path, "rb") as f:
-            header = f.read(65536)
-        if not header.startswith(b"ply"):
-            raise ToolError(ErrorCode.CORRUPT_FILE, "PLY no válido")
-        m = re.search(rb"element\s+face\s+(\d+)", header)
-        return int(m.group(1)) if m else 0
+        # Las caras de más de 3 lados triangulan en más: lo frenan el recuento tras leer y la memoria del proceso hijo.
+        elements = dict(_ply_header(path))
+        return max(elements.get("face", 0), elements.get("vertex", 0) // 3)
     if ext == "3mf":
         check_zip(path)
-        total = 0
+        total, scanned = 0, 0
+        cap = None if limit is None else 200 * limit + 64 * 1024 * 1024
         with zipfile.ZipFile(path) as zf:
             for info in zf.infolist():
-                if info.filename.lower().endswith(".model"):
-                    with zf.open(info) as f:
-                        total += _stream_count(f, TRIANGLE_RE)
+                name = info.filename.lower()
+                if info.is_dir() or name.endswith((".png", ".jpg", ".jpeg", ".rels", ".gcode", ".config")) or name == "[content_types].xml":
+                    continue
+                scanned += info.file_size
+                if cap is not None and scanned > cap:
+                    return limit + 1  # demasiado XML para lo que permite el plan
+                with zf.open(info) as f:
+                    total += _stream_count(f, TRIANGLE_RE)
+                if limit is not None and total > limit:
+                    return total
         return total
     if ext == "amf":
         if zipfile.is_zipfile(path):
@@ -114,7 +144,7 @@ def _gltf_triangles(path: Path, ext: str) -> int:
 
 
 def check_limit(path: Path, ext: str, limit: int) -> int:
-    n = count_triangles(path, ext)
+    n = count_triangles(path, ext, limit)
     if n > limit:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{n} triángulos; como mucho {limit}")
     return n
@@ -133,7 +163,7 @@ def precheck(settings, plan, owner_type: str, options: dict, paths: list[Path], 
         if ext is None:
             continue
         try:
-            n = count_triangles(path, ext)
+            n = count_triangles(path, ext, plan.mesh_triangles)
         except ToolError:
             continue  # el trabajador dará el error concreto
         if n > plan.mesh_triangles:

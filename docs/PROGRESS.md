@@ -715,6 +715,11 @@ privacidad de la combinación y del dictado, campos desconocidos, saneado). F5 y
 amf-a-stl, stl-a-amf, amf-a-3mf, glb-a-stl, stl-a-glb, gltf-a-stl, fbx-a-stl, fbx-a-obj, dae-a-stl y 3ds-a-stl con AMF propio,
 trimesh para glTF y assimp en un proceso hijo aislado, con ejes y unidades de cada formato (D-248), en `tests/test_mesh.py`.
 
+## Revisión de F7-A
+
+Mallas convertidas en un proceso hijo con memoria y tiempo acotados, 3MF con instancias contadas antes de copiar, recuentos que ya no se
+saltan y STL leído y escrito por bloques (D-249), en `tests/test_mesh.py`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

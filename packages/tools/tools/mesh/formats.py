@@ -25,8 +25,11 @@ from core.zipguard import check_zip
 from tools.mesh.recuento import check_limit, stl_is_binary  # noqa: F401 - stl_is_binary se usa en convert
 
 UNITS_MM = {"mm": 1.0, "cm": 10.0, "m": 1000.0, "in": 25.4}
+UNITS_ALL_MM = {**UNITS_MM, "ft": 304.8, "um": 0.001}  # las que puede traer un 3MF o un AMF (D-249)
 UNIT_NAMES = {"mm": ("milímetros", "millimetres"), "cm": ("centímetros", "centimetres"), "m": ("metros", "metres"),
-              "in": ("pulgadas", "inches")}
+              "in": ("pulgadas", "inches"), "ft": ("pies", "feet"), "um": ("micras", "microns")}
+MAX_PARTS = 10_000  # piezas (instancias incluidas) de un modelo, D-249
+DEFAULT_GREY = (200, 200, 200, 255)
 MESH_EXTS = ("stl", "obj", "ply", "3mf")
 MAX_COLORS_OBJ = 256
 
@@ -81,12 +84,70 @@ def _stl_binary(path: Path) -> Model:
     return Model(parts=[Part(path.stem or "modelo", vertices, faces)])
 
 
+class _NoFiles:
+    """Resolvedor que no lee nada: con `resolver=None`, trimesh crea uno en la carpeta del archivo (la de las entradas del
+    trabajo) y un OBJ podía leer como MTL otra entrada suya (D-249)."""
+
+    def get(self, name):
+        raise FileNotFoundError(name)
+
+    def get_base(self):
+        return ""
+
+    def namespaced(self, namespace):
+        return self
+
+    def keys(self):
+        return iter(())
+
+    def write(self, name, data):
+        raise PermissionError(name)
+
+
+VERTEX_RE = re.compile(rb"(?i)\bvertex\s+(\S+)\s+(\S+)\s+(\S+)")
+
+
+def _stl_ascii(path: Path, max_triangles: int) -> Model:
+    """STL ASCII leído por bloques de 16 MB (los `vertex` sin distinguir mayúsculas) y fusionado como el binario: trimesh
+    necesitaba unas 8 veces el tamaño del archivo (D-249)."""
+    chunks, tail, total = [], b"", 0
+    with open(path, "rb") as f:
+        while block := f.read(16 * 1024 * 1024):
+            data = tail + block
+            cut = data.rfind(b"\n")
+            data, tail = (data[:cut + 1], data[cut + 1:]) if cut >= 0 else (b"", data)
+            found = VERTEX_RE.findall(data)
+            if found:
+                try:
+                    chunks.append(np.array(found, dtype=np.float32))
+                except ValueError as exc:
+                    raise ToolError(ErrorCode.CORRUPT_FILE, "STL con coordenadas no válidas") from exc
+                total += len(found)
+                if total > 3 * max_triangles:
+                    raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_triangles")
+        if tail:
+            found = VERTEX_RE.findall(tail)
+            if found:
+                chunks.append(np.array(found, dtype=np.float32))
+    if not chunks:
+        raise ToolError(ErrorCode.CORRUPT_FILE, "El STL no tiene ninguna malla")
+    corners = np.concatenate(chunks)
+    del chunks
+    corners = corners[: len(corners) // 3 * 3]
+    if not np.isfinite(corners).all() or not len(corners):
+        raise ToolError(ErrorCode.CORRUPT_FILE, "STL con coordenadas no válidas")
+    keys = np.ascontiguousarray(corners).view(np.dtype((np.void, 12))).reshape(-1)
+    unique, inverse = np.unique(keys, return_inverse=True)
+    vertices = unique.view(np.float32).reshape(-1, 3).astype(np.float64)
+    return Model(parts=[Part(path.stem or "modelo", vertices, inverse.reshape(-1, 3).astype(np.int64))])
+
+
 def _from_trimesh(path: Path, ext: str) -> Model:
     import trimesh
 
     try:
         with open(path, "rb") as f:
-            scene = trimesh.load(file_obj=f, file_type=ext, force="scene", resolver=None, process=True)
+            scene = trimesh.load(file_obj=f, file_type=ext, force="scene", resolver=_NoFiles(), process=True)
     except ToolError:
         raise
     except Exception as exc:  # noqa: BLE001 - trimesh lanza de todo con archivos rotos
@@ -189,10 +250,11 @@ def _mesh_colors(model3mf, w, mesh, nt: int) -> np.ndarray | None:
         props[missing, 0], props[missing, 1] = rid, pid
     if not props[:, 0].any():
         return None
-    colors = np.full((nt, 4), (200, 200, 200, 255), dtype=np.uint8)
-    cache: dict[tuple[int, int], tuple[int, int, int, int] | None] = {}
-    for key in {(int(a), int(b)) for a, b in props[:, :2]}:
-        resource, prop = key
+    # Una búsqueda por combinación distinta (recurso, propiedad) y una tabla: con una máscara por color, un escaneo con un
+    # color por cara tardaba minutos (D-249).
+    keys, inverse = np.unique(props[:, :2], axis=0, return_inverse=True)
+    table = np.tile(np.array(DEFAULT_GREY, dtype=np.uint8), (len(keys), 1))
+    for index, (resource, prop) in enumerate(keys.tolist()):
         value = None
         if resource:
             try:
@@ -205,22 +267,20 @@ def _mesh_colors(model3mf, w, mesh, nt: int) -> np.ndarray | None:
                     value = (c.Red, c.Green, c.Blue, c.Alpha)
             except Exception:  # noqa: BLE001 - propiedad de tipo no admitido (texturas, compuestos)
                 value = None
-        cache[key] = value
-    for key, value in cache.items():
         if value is not None:
-            mask = (props[:, 0] == key[0]) & (props[:, 1] == key[1])
-            colors[mask] = value
-    return colors
+            table[index] = value
+    return table[inverse.reshape(-1)]
 
 
-def _from_3mf(path: Path) -> Model:
+def _from_3mf(path: Path, max_triangles: int = 10**9) -> Model:
     with keep_locale():
-        return _read_3mf(path)
+        return _read_3mf(path, max_triangles)
 
 
-def _read_3mf(path: Path) -> Model:
+def _read_3mf(path: Path, max_triangles: int = 10**9) -> Model:
     lib3mf, w = _lib3mf()
-    check_zip(path)
+    # Descomprimido, unos 200 bytes por triángulo permitido más 64 MB: un 3MF de 42 MB con 2 GB de adjuntos no pasa (D-249).
+    check_zip(path, max_uncompressed=min(2 * 1024**3, 200 * max_triangles + 64 * 1024**2))
     model3mf = w.CreateModel()
     try:
         reader = model3mf.QueryReader("3mf")
@@ -232,6 +292,40 @@ def _read_3mf(path: Path) -> Model:
     if model3mf.GetTexture2DGroups().MoveNext():
         model.lost.add("textures")
 
+    # Antes de copiar nada: triángulos y piezas que saldrán, contando cada vez que una malla se usa (elementos de
+    # construcción y componentes multiplican). Con solo contar `<triangle`, mil instancias de una malla pasaban (D-249).
+    counts: dict[int, tuple[int, int]] = {}
+
+    def count(obj, depth: int) -> tuple[int, int]:
+        rid = obj.GetResourceID()
+        if rid in counts:
+            return counts[rid]
+        if depth > 16:
+            raise ToolError(ErrorCode.CORRUPT_FILE, "Componentes anidados en exceso")
+        if obj.IsMeshObject():
+            result = (int(model3mf.GetMeshObjectByID(rid).GetTriangleCount()), 1)
+        elif obj.IsComponentsObject():
+            comps = model3mf.GetComponentsObjectByID(rid)
+            tri = parts = 0
+            for i in range(comps.GetComponentCount()):
+                a, b = count(comps.GetComponent(i).GetObjectResource(), depth + 1)
+                tri, parts = tri + a, parts + b
+                if tri > max_triangles or parts > MAX_PARTS:
+                    raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_triangles")
+            result = (tri, parts)
+        else:
+            result = (0, 0)
+        counts[rid] = result
+        return result
+
+    total = total_parts = 0
+    items = model3mf.GetBuildItems()
+    while items.MoveNext():
+        a, b = count(items.GetCurrent().GetObjectResource(), 0)
+        total, total_parts = total + a, total_parts + b
+        if total > max_triangles or total_parts > MAX_PARTS:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_triangles")
+
     def add(obj, transform: np.ndarray, depth: int) -> None:
         if depth > 16:
             raise ToolError(ErrorCode.CORRUPT_FILE, "Componentes anidados en exceso")
@@ -240,6 +334,8 @@ def _read_3mf(path: Path) -> Model:
             verts, tris = _mesh_arrays(w, mesh)
             if not len(tris):
                 return
+            if np.linalg.det(transform[:3, :3]) < 0:
+                tris = tris[:, ::-1]  # una simetría (espejo del laminador) invierte las caras: se vuelven a girar (D-249)
             v = np.c_[verts.astype(np.float64), np.ones(len(verts))] @ transform.T
             colors = _mesh_colors(model3mf, w, mesh, len(tris))
             model.parts.append(Part(mesh.GetName() or f"objeto-{len(model.parts) + 1}", v[:, :3], tris.astype(np.int64), colors))
@@ -260,10 +356,13 @@ def _read_3mf(path: Path) -> Model:
     return model
 
 
-def load(path: Path, ext: str, max_triangles: int, ctx=None) -> Model:
+def load(path: Path, ext: str, max_triangles: int, ctx=None, inline: bool = False) -> Model:
+    """`inline`: ya dentro del proceso hijo de las mallas (D-249), assimp se usa en el mismo proceso."""
     from tools.mesh import extra
 
     if ext in ("fbx", "dae", "3ds"):
+        if inline:
+            return extra.read_assimp_inline(path, ext, max_triangles)
         return extra.read_assimp(ctx, path, ext, max_triangles)  # cuenta los triángulos el proceso hijo
     check_limit(path, ext, max_triangles)
     if ext == "amf":
@@ -271,9 +370,11 @@ def load(path: Path, ext: str, max_triangles: int, ctx=None) -> Model:
     if ext in ("glb", "gltf"):
         model = extra.read_gltf(path, ext)
     elif ext == "3mf":
-        model = _from_3mf(path)
+        model = _from_3mf(path, max_triangles)
     elif ext == "stl" and stl_is_binary(path):
         model = _stl_binary(path)
+    elif ext == "stl":
+        model = _stl_ascii(path, max_triangles)
     else:
         model = _from_trimesh(path, ext)
     if model.triangles > max_triangles:  # los polígonos de más de 3 lados se triangulan al leer
@@ -282,6 +383,13 @@ def load(path: Path, ext: str, max_triangles: int, ctx=None) -> Model:
 
 
 # ——— Transformaciones ———
+
+def check_finite(model: Model) -> None:
+    """Coordenadas finitas tras transformar y escalar (un 1e36 en una transformación de 3MF daba infinitos, D-249)."""
+    for part in model.parts:
+        if not np.isfinite(part.vertices).all():
+            raise ToolError(ErrorCode.CORRUPT_FILE, "Coordenadas fuera de rango")
+
 
 def scaled(model: Model, factor: float) -> Model:
     if factor != 1.0:
@@ -316,10 +424,38 @@ def _trimesh(part: Part):
     return mesh
 
 
+def _normals(tri: np.ndarray) -> np.ndarray:
+    n = np.cross(tri[:, 1] - tri[:, 0], tri[:, 2] - tri[:, 0])
+    length = np.linalg.norm(n, axis=1, keepdims=True)
+    return np.divide(n, length, out=np.zeros_like(n), where=length > 0)
+
+
 def write_stl(model: Model, dst: Path, ascii: bool) -> None:
-    mesh = _trimesh(merged(model).parts[0])
-    data = mesh.export(file_type="stl_ascii" if ascii else "stl")
-    dst.write_bytes(data.encode("ascii") if isinstance(data, str) else data)
+    """STL escrito por bloques de 1 millón de triángulos (50 bytes por triángulo en binario, sin la cadena entera del
+    ASCII en memoria): con trimesh, 2 millones en ASCII llegaban a 2,3 GB (D-249)."""
+    total = sum(len(p.faces) for p in model.parts)
+    step = 1_000_000
+    with open(dst, "wb") as out:
+        if ascii:
+            out.write(b"solid modelo\n")
+        else:
+            out.write(b"Conversor 3D".ljust(80, b" ") + np.uint32(total).tobytes())
+        for part in model.parts:
+            verts = part.vertices.astype(np.float32)
+            for start in range(0, len(part.faces), step):
+                tri = verts[part.faces[start:start + step]]
+                normals = _normals(tri)
+                if ascii:
+                    rows = np.concatenate([normals[:, None, :], tri], axis=1).reshape(-1, 12)
+                    lines = [("facet normal %.6e %.6e %.6e\n outer loop\n  vertex %.6e %.6e %.6e\n  vertex %.6e %.6e %.6e\n"
+                              "  vertex %.6e %.6e %.6e\n endloop\nendfacet\n") % tuple(r) for r in rows.tolist()]
+                    out.write("".join(lines).encode("ascii"))
+                else:
+                    records = np.zeros(len(tri), dtype=STL_RECORD)
+                    records["normal"], records["v"] = normals, tri
+                    out.write(records.tobytes())
+        if ascii:
+            out.write(b"endsolid modelo\n")
 
 
 def write_ply(model: Model, dst: Path) -> None:
@@ -343,13 +479,15 @@ def write_obj(model: Model, dst: Path, mtl_name: str | None) -> str | None:
         offset = 0
         for part in model.parts:
             out.write(f"o {_obj_name(part.name)}\n")
-            np.savetxt(out, part.vertices, fmt="v %.6f %.6f %.6f")
+            np.savetxt(out, part.vertices, fmt="v %.9g %.9g %.9g")
             faces = part.faces + offset + 1
             if colors and part.colors is not None:
                 cols = part.colors
                 unique, inverse = np.unique(cols, axis=0, return_inverse=True)
                 if len(unique) > MAX_COLORS_OBJ:
-                    cols = (cols // 32) * 32 + 16  # paleta reducida de 8 niveles por canal (512 como mucho)
+                    # Paleta reducida a 6 niveles por canal de color (216 como mucho); la transparencia se conserva.
+                    cols = cols.copy()
+                    cols[:, :3] = np.round(cols[:, :3] / 51).astype(np.uint8) * 51
                     unique, inverse = np.unique(cols, axis=0, return_inverse=True)
                 inverse = inverse.reshape(-1)
                 for index in range(len(unique)):
@@ -362,6 +500,11 @@ def write_obj(model: Model, dst: Path, mtl_name: str | None) -> str | None:
                     out.write(f"usemtl {palette[key]}\n")
                     np.savetxt(out, faces[inverse == index], fmt="f %d %d %d")
             else:
+                if colors:  # una pieza sin color tras otras con color no hereda su material: gris (D-249)
+                    if DEFAULT_GREY not in palette:
+                        palette[DEFAULT_GREY] = "sin_color"
+                        lines_mtl += ["newmtl sin_color", "Kd 0.7843 0.7843 0.7843", "d 1.0000", "illum 1", ""]
+                    out.write(f"usemtl {palette[DEFAULT_GREY]}\n")
                 np.savetxt(out, faces, fmt="f %d %d %d")
             offset += len(part.vertices)
     return "\n".join(lines_mtl) + "\n" if lines_mtl else None

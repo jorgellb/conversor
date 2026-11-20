@@ -274,23 +274,22 @@ def _child_landlock(work: Path, settings) -> list[tuple[Path, str]]:
     return [(work, "rw"), *((p, "rx") for p in sorted(read) if p.exists())]
 
 
-def read_assimp(ctx, path: Path, ext: str, max_triangles: int) -> Model:
-    from tools.base import run_engine
+def read_assimp_inline(path: Path, ext: str, max_triangles: int) -> Model:
+    """assimp en el mismo proceso: solo dentro del hijo de las mallas, que ya está aislado y acotado (D-249)."""
+    from tools.mesh import assimp_child
 
-    work = ctx.work / f"assimp-{path.stem[:20]}"
-    work.mkdir(parents=True, exist_ok=True)
-    src = work / f"modelo.{ext}"
-    shutil.copyfile(path, src)
-    env = {"LD_LIBRARY_PATH": ctx.settings.ENGINES_LIBRARY_PATH} if ctx.settings.ENGINES_LIBRARY_PATH else None
-    child = Path(__file__).with_name("assimp_child.py")
-    res = run_engine([sys.executable, "-I", str(child), src.name, "salida.npz", str(max_triangles)], cwd=work, timeout=300,
-                     mem_mb=2048, extra_env=env, ok_codes=(0, 3, 4), max_file_mb=2048, landlock=_child_landlock(work, ctx.settings))
-    if res.returncode == 3:
+    npz = path.with_name("assimp.npz")
+    code = assimp_child.main(str(path), str(npz), max_triangles)
+    return _from_npz(npz, ext, code, max_triangles)
+
+
+def _from_npz(npz: Path, ext: str, code: int, max_triangles: int) -> Model:
+    if code == 3:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"Más de {max_triangles} triángulos")
-    if res.returncode == 4:
+    if code == 4:
         raise ToolError(ErrorCode.CORRUPT_FILE, f"El {ext.upper()} no tiene ninguna malla")
     try:
-        data = np.load(work / "salida.npz", allow_pickle=False)
+        data = np.load(npz, allow_pickle=False)
         names = json.loads(str(data["names"]))
         meta = json.loads(str(data["meta"]))
         parts = []
@@ -309,3 +308,17 @@ def read_assimp(ctx, path: Path, ext: str, max_triangles: int) -> Model:
     model = Model(parts, unit_mm)
     model.up = "y"
     return model
+
+
+def read_assimp(ctx, path: Path, ext: str, max_triangles: int) -> Model:
+    from tools.base import run_engine
+
+    work = ctx.work / f"assimp-{path.stem[:20]}"
+    work.mkdir(parents=True, exist_ok=True)
+    src = work / f"modelo.{ext}"
+    shutil.copyfile(path, src)
+    env = {"LD_LIBRARY_PATH": ctx.settings.ENGINES_LIBRARY_PATH} if ctx.settings.ENGINES_LIBRARY_PATH else None
+    child = Path(__file__).with_name("assimp_child.py")
+    res = run_engine([sys.executable, "-I", str(child), src.name, "salida.npz", str(max_triangles)], cwd=work, timeout=300,
+                     mem_mb=2048, extra_env=env, ok_codes=(0, 3, 4), max_file_mb=2048, landlock=_child_landlock(work, ctx.settings))
+    return _from_npz(work / "salida.npz", ext, res.returncode, max_triangles)
