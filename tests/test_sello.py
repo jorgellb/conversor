@@ -131,7 +131,7 @@ def test_options_and_errors(arch, make_ctx, tmp_path, monkeypatch):
     assert spec.queue == "sign" and spec.category == "sign" and spec.default_enabled is True and spec.ai is None
     defaults = spec.options().model_dump()
     assert defaults == {"certificado": "plataforma", "visible": True, "pagina": "ultima", "posicion": "abajo_derecha",
-                        "fase": "preparar", "cadena": "", "estado": "", "firma": "", "campo": "", "nombre": "", "motivo": "", "lugar": "", "sello_tiempo": True, "nivel": "B-T", "certificacion": "no"}
+                        "fase": "preparar", "cadena": "", "estado": "", "firma": "", "campo": "", "nombre": "", "imagen": "", "motivo": "", "lugar": "", "sello_tiempo": True, "nivel": "B-T", "certificacion": "no"}
     settings = get_settings()
     with pytest.raises(AppError) as err:
         firmar.precheck(settings, None, "anon", {}, [])
@@ -347,3 +347,49 @@ def test_seal_into_an_empty_field_made_by_hacer_pdf_rellenable(arch, make_ctx, t
         with pytest.raises(ToolError) as err:
             _seal(arch, make_ctx, signed, {"campo": name})
         assert err.value.detail == detail
+
+
+def _signature_png_b64() -> str:
+    import base64
+
+    from PIL import Image, ImageDraw
+
+    img = Image.new("RGBA", (400, 150), (255, 255, 255, 0))
+    ImageDraw.Draw(img).line([(20, 120), (120, 30), (220, 110), (380, 40)], fill=(10, 20, 120, 255), width=6)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return base64.b64encode(buf.getvalue()).decode()
+
+
+def _appearance_images(data: bytes, field: str) -> list:
+    with pikepdf.open(io.BytesIO(data)) as pdf:
+        widget = next(a for p in pdf.pages for a in (p.obj.get("/Annots") or []) if a.get("/T") == field)
+        found = []
+
+        def walk(xobj, depth=0):
+            res = xobj.get("/Resources") or {}
+            if "/XObject" in res and depth < 4:
+                for k in res.XObject.keys():
+                    sub = res.XObject[k]
+                    if sub.get("/Subtype") == "/Image":
+                        found.append(("/SMask" in sub, float(widget.Rect[3]) - float(widget.Rect[1])))
+                    else:
+                        walk(sub, depth + 1)
+
+        walk(widget.AP.N)
+        return found
+
+
+def test_signature_image_inside_the_seal_appearance(arch, make_ctx, tmp_path):
+    """F4-Z (D-210): la firma dibujada o escrita va dentro de la apariencia PAdES (A.6: «visible, con imagen»)."""
+    from core.errors import ToolError
+
+    data = _seal(arch, make_ctx, _pdf(tmp_path), {"imagen": _signature_png_b64(), "nombre": "Ana Pérez"})
+    [(alpha, height)] = _appearance_images(data, "Sello1")
+    assert alpha and height == 120
+    [seal] = analyse(data, roots=[arch.get_cert("root"), arch.get_cert("seal")])
+    assert seal.intact and seal.valid
+    assert _appearance_images(_seal(arch, make_ctx, _pdf(tmp_path, name="b.pdf")), "Sello1") == []
+    with pytest.raises(ToolError) as err:
+        _seal(arch, make_ctx, _pdf(tmp_path, name="c.pdf"), {"imagen": "bm8gZXMgdW5hIGltYWdlbg=="})
+    assert err.value.detail == "seal_image"

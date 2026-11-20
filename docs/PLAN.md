@@ -108,7 +108,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F4-D | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf (`workerutils`, KoSIT) | Hecho: validar-factura-electronica y `workerutils` con KoSIT (F4-D1, D-191) y la representación en PDF/A-3 con el XML incrustado (F4-D2, D-192) |
 | F4-E | crear-factura, crear-factura-electronica y pdf-a-factura-electronica (detrás de `INVOICING_ES_ENABLED`) | En curso: crear-factura (F4-E1, D-204 y D-206) y crear-factura-electronica (F4-E2, D-205) hechas; la firma XAdES-EPES de Facturae en el navegador (F4-E2b, D-207) y pdf-a-factura-electronica (F4-E3, D-208) hechas, con la revisión de F4-E2 corregida (D-209) |
 | F4-F | word-a-pdf-accesible (office → ocr, veraPDF) | Hecho (D-182 y D-184); veraPDF y el PDF/UA de LibreOffice reales, en la CI |
-| F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | Pendiente (F4-A a F4-F). Para el cierre: imagen de la firma dentro de la apariencia PAdES y .p12 con 3DES o RC2 en el navegador (D-201) |
+| F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | En curso: imagen de la firma dentro de la apariencia PAdES y .p12 con 3DES o RC2 hechos (D-210); falta corregir la revisión de F4-E3 y la e2e de servidor con Mailpit en la CI |
 
 ## F6: formatos, datos y documentos (pendiente)
 

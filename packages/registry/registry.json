@@ -26823,6 +26823,22 @@
               "es": "Nombre que aparece"
             }
           },
+          "imagen": {
+            "default": "",
+            "maxLength": 560000,
+            "title": "Imagen de la firma en el sello (PNG en base64)",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "visible": [
+                true
+              ]
+            },
+            "x-title": {
+              "en": "Signature image in the seal (base64 PNG)",
+              "es": "Imagen de la firma en el sello (PNG en base64)"
+            }
+          },
           "motivo": {
             "default": "",
             "maxLength": 200,

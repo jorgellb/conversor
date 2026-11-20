@@ -22,10 +22,28 @@ describe("certificado propio en el navegador (PKI.js y WebCrypto)", () => {
       expect(sig.length).toBe(algorithm === "ECDSA" ? 64 : 256); // ECDSA en r‖s (P1363), como WebCrypto
     });
 
+  it("cifrado antiguo de PKCS#12 (3DES, como las exportaciones de Windows): se abre y firma (D-210)", async () => {
+    const cert = await openP12(load("legacy.p12"), "clave");
+    expect(cert.algorithm).toBe("ECDSA");
+    expect(cert.subject).toBe("Firmante antiguo");
+    expect(cert.key.extractable).toBe(false);
+    expect(cert.chainPem.match(/BEGIN CERTIFICATE/g)).toHaveLength(2);
+    const sig = atob(await signAttributes(cert, btoa("atributos")));
+    expect(sig.length).toBe(64);
+  });
+
+  it("RC2 de 40 bits y 3DES, como las exportaciones antiguas de Windows (D-210)", async () => {
+    // rc2.p12 sale de rsa.p12 con: openssl pkcs12 -export -legacy -certpbe PBE-SHA1-RC2-40 -keypbe PBE-SHA1-3DES -macalg sha1
+    const cert = await openP12(load("rc2.p12"), "clave");
+    expect(cert.algorithm).toBe("RSASSA-PKCS1-v1_5");
+    expect(cert.subject).toBe("Firmante RSA");
+    expect(atob(await signAttributes(cert, btoa("atributos"))).length).toBe(256);
+    await expect(openP12(load("rc2.p12"), "mala")).rejects.toMatchObject({ code: "p12_password" });
+  });
+
   it("contraseña incorrecta, cifrado antiguo y archivo que no es un .p12", async () => {
     await expect(openP12(load("ec.p12"), "otra")).rejects.toMatchObject({ code: "p12_password" });
-    await expect(openP12(load("legacy.p12"), "clave")).rejects.toBeInstanceOf(P12Error);
-    await expect(openP12(load("legacy.p12"), "clave")).rejects.toMatchObject({ code: "p12_legacy" });
+    await expect(openP12(load("legacy.p12"), "otra")).rejects.toMatchObject({ code: "p12_password" });
     await expect(openP12(new TextEncoder().encode("hola").buffer as ArrayBuffer, "clave")).rejects.toMatchObject({ code: "p12_invalid" });
   });
 });

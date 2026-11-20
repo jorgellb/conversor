@@ -44,3 +44,21 @@ test("firmar-pdf: firma escrita repetida en todas las páginas, sin subir nada",
   }
   expect(sent).toEqual([]);
 });
+
+// F4-Z (D-210): la firma dibujada o escrita puede ir dentro de la apariencia del sello digital.
+test("firmar-pdf: la firma escrita se puede añadir al sello digital", async ({ page }) => {
+  const src = await PDFDocument.create();
+  src.addPage([400, 500]);
+  await page.goto("/es/firmar-pdf");
+  await page.locator('input[type="file"]').setInputFiles({ name: "contrato.pdf", mimeType: "application/pdf", buffer: Buffer.from(await src.save()) });
+  await page.getByRole("radio", { name: "Firmar digitalmente" }).check();
+  const box = page.locator("[data-seal-image]");
+  await box.getByRole("button", { name: "Añadir mi firma al sello" }).click();
+  const dialog = page.getByRole("dialog", { name: "Firma" });
+  await dialog.getByRole("tab", { name: "Escribir" }).click();
+  await dialog.getByLabel("Tu nombre").fill("Ana Pérez");
+  await dialog.getByRole("button", { name: "Usar la firma" }).click();
+  await expect(box.getByRole("img", { name: "Firma del sello" })).toHaveAttribute("src", /^data:image\/png;base64,/);
+  await box.getByRole("button", { name: "Quitar la firma del sello" }).click();
+  await expect(box.getByRole("img")).toHaveCount(0);
+});

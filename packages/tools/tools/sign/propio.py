@@ -90,13 +90,10 @@ def _check_validity(ctx: ToolContext, cert) -> None:
 
 
 def _prepare(ctx: ToolContext) -> list[dict]:
-    from pyhanko.pdf_utils.font.opentype import GlyphAccumulatorFactory
     from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
-    from pyhanko.pdf_utils.text import TextBoxStyle
     from pyhanko.sign import fields, signers
-    from pyhanko.stamp import TextStampStyle
 
-    from tools.sign.firmar import DOCMDP, FONT, _lines, prepare
+    from tools.sign.firmar import DOCMDP, _lines, prepare
 
     o = ctx.options
     t = TEXTS.get(ctx.locale, TEXTS["es"])
@@ -116,8 +113,11 @@ def _prepare(ctx: ToolContext) -> list[dict]:
     if item.box is not None or item.existing:
         if item.box is not None:
             field_spec = fields.SigFieldSpec(field, on_page=item.page, box=item.box)
+        from tools.sign.firmar import BOX_IMAGE, signature_image, stamp_style
+
         text = "\n".join([t["by"], t["date"], *_lines("{v}", o.nombre), *_lines("{v}", o.motivo), *_lines("{v}", o.lugar)])
-        style = TextStampStyle(stamp_text=text, border_width=1, text_box_style=TextBoxStyle(font=GlyphAccumulatorFactory(FONT), font_size=7))
+        height = (item.box[3] - item.box[1]) if item.box is not None else BOX_IMAGE[1]
+        style = stamp_style(text, signature_image(o.imagen), height)
     writer = IncrementalPdfFileWriter(io.BytesIO(item.data), strict=False)
     if writer.prev.encrypted:
         writer.encrypt("")

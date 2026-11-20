@@ -13,6 +13,17 @@ export interface PreparedImage {
 
 type Mode = "draw" | "type" | "upload" | "camera";
 
+/** La firma en PNG (data URL) de un tamaño razonable, para mandarla al servidor (sello de firmar-pdf, solicitar-firmas). */
+export async function toPngDataUrl(img: PreparedImage, maxWidth = 1200, maxHeight = 500): Promise<string> {
+  const bitmap = await createImageBitmap(new Blob([new Uint8Array(img.data)], { type: img.format === "png" ? "image/png" : "image/jpeg" }));
+  const scale = Math.min(1, maxWidth / bitmap.width, maxHeight / bitmap.height);
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(20, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(10, Math.round(bitmap.height * scale));
+  canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/png");
+}
+
 /** Fuentes caligráficas OFL para la firma escrita (A.6); se cargan solo al abrir esta pestaña. */
 export const SIGNATURE_FONTS = [
   { family: "FirmaDancingScript", file: "DancingScript.ttf", label: "Dancing Script" },

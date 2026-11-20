@@ -14,6 +14,7 @@ import { getConfig } from "@/lib/runtime";
 import { runServerJob } from "@/lib/server-job";
 
 import { solveTurnstile } from "../turnstile";
+import { SignatureDialog, toPngDataUrl } from "./SignatureDialog";
 
 export interface DigitalOptions {
   certificado: "plataforma" | "propio";
@@ -29,6 +30,8 @@ export interface DigitalOptions {
   sello_tiempo: boolean;
   nivel: "B-T" | "B-LT" | "B-LTA";
   certificacion: "no" | "sin_cambios" | "formularios" | "formularios_anotaciones";
+  /** Firma dibujada, escrita o subida dentro de la apariencia del sello (PNG en data URL; D-210). */
+  imagen?: string;
 }
 
 const DEFAULTS: DigitalOptions = {
@@ -89,6 +92,7 @@ export function SignPanel({ form, pageCount, selected, onRepeat, onDigital }: {
   onRepeat: (pages: number[]) => void; onDigital: (options: DigitalOptions | null) => void;
 }) {
   const t = useTranslations("signPdf");
+  const [drawingSeal, setDrawingSeal] = useState(false);
   const [mode, setMode] = useState<"insertar" | "digital">("insertar");
   const [options, setOptions] = useState<DigitalOptions>(DEFAULTS);
   const [repeat, setRepeat] = useState("todas");
@@ -207,6 +211,22 @@ export function SignPanel({ form, pageCount, selected, onRepeat, onDigital }: {
                 </>
               )}
             </>
+          )}
+          {(options.visible || options.campo) && (
+            <div className="flex flex-col gap-1" data-seal-image>
+              <span>{t("sealImage")}</span>
+              {options.imagen && <img src={options.imagen} alt={t("sealImagePreview")} className="max-h-16 w-auto self-start rounded border bg-white p-1" />}
+              <div className="flex flex-wrap gap-2">
+                <button type="button" className="btn-secondary btn" onClick={() => setDrawingSeal(true)}>{options.imagen ? t("sealImageChange") : t("sealImageAdd")}</button>
+                {options.imagen && <button type="button" className="btn-secondary btn" onClick={() => set({ imagen: undefined })}>{t("sealImageRemove")}</button>}
+              </div>
+            </div>
+          )}
+          {drawingSeal && (
+            <SignatureDialog onCancel={() => setDrawingSeal(false)} onDone={(img) => {
+              setDrawingSeal(false);
+              void toPngDataUrl(img, 800, 300).then((imagen) => set({ imagen }));
+            }} />
           )}
           <label className="flex flex-col gap-1">{t("name")}
             <input className="field" value={options.nombre} maxLength={120} onChange={(e) => set({ nombre: e.target.value })} />

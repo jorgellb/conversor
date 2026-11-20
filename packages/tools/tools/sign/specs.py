@@ -49,6 +49,9 @@ class FirmarOptions(BaseModel):
     campo: str = opt("", "Campo de firma vacío del PDF (vacío: uno nuevo)", "Empty signature field of the PDF (empty: a new one)",
                      max_length=120, advanced=True)
     nombre: str = opt("", "Nombre que aparece", "Name shown", max_length=120)
+    # F4-Z (D-210): la firma dibujada, escrita o subida dentro de la apariencia del sello visible (A.6: «visible, con imagen»).
+    imagen: str = opt("", "Imagen de la firma en el sello (PNG en base64)", "Signature image in the seal (base64 PNG)",
+                      max_length=560_000, advanced=True, show_if={"visible": (True,)})
     motivo: str = opt("", "Motivo", "Reason", max_length=200)
     lugar: str = opt("", "Lugar", "Location", max_length=120)
     sello_tiempo: bool = opt(True, "Sello de tiempo", "Time stamp")

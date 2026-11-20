@@ -13,7 +13,8 @@ const EC = "1.2.840.10045.2.1";
 const CURVES: Record<string, "P-256" | "P-384" | "P-521"> = {
   "1.2.840.10045.3.1.7": "P-256", "1.3.132.0.34": "P-384", "1.3.132.0.35": "P-521",
 };
-// Cifrados de PKCS#12 antiguos (PKCS#12 PBE con SHA-1: 3DES, RC2 y RC4), que WebCrypto no tiene.
+// Cifrados de PKCS#12 antiguos (PKCS#12 PBE con SHA-1: 3DES, RC2 y RC4), que WebCrypto no tiene: 3DES y RC2 los
+// descifra p12-legacy.ts; RC4 sigue sin admitirse (p12_legacy).
 const LEGACY = ["1.2.840.113549.1.12.1."];
 
 export class P12Error extends Error {
@@ -84,17 +85,38 @@ export async function openP12(data: ArrayBuffer, password: string): Promise<OwnC
   }
   const safe = pfx.parsedValue?.authenticatedSafe;
   if (!safe) throw new P12Error("p12_invalid");
-  try {
-    await safe.parseInternalValues({ safeContents: safe.safeContents.map(() => ({ password: pass })) });
-  } catch {
-    throw new P12Error(LEGACY.some((oid) => text.includes(oid)) ? "p12_legacy" : "p12_password");
+  // La contraseña ya está comprobada con el MAC; el cifrado antiguo (3DES o RC2) lo descifra p12-legacy (D-210).
+  const legacy = LEGACY.some((oid) => text.includes(oid));
+  let contents: pkijs.SafeContents[];
+  if (legacy) {
+    // Antes de que PKI.js lo intente: tras su fallo, el nodo de asn1js queda marcado y ya no se puede volver a leer.
+    const { legacySafeContents } = await import("./p12-legacy");
+    try {
+      contents = await legacySafeContents(safe, password);
+    } catch (err) {
+      throw new P12Error(err instanceof Error && err.message === "p12_password" ? "p12_password" : "p12_legacy");
+    }
+  } else {
+    try {
+      await safe.parseInternalValues({ safeContents: safe.safeContents.map(() => ({ password: pass })) });
+    } catch {
+      throw new P12Error("p12_password");
+    }
+    contents = (safe.parsedValue?.safeContents ?? []).map((c: { value: unknown }) => c.value as pkijs.SafeContents);
   }
   const certs: pkijs.Certificate[] = [];
   let keyInfo: pkijs.PrivateKeyInfo | null = null;
-  for (const content of safe.parsedValue?.safeContents ?? []) {
-    for (const bag of (content.value as pkijs.SafeContents).safeBags) {
+  for (const content of contents) {
+    for (const bag of content.safeBags) {
       if (bag.bagId === PKCS8_SHROUDED) {
         const shrouded = bag.bagValue as pkijs.PKCS8ShroudedKeyBag;
+        const { decryptLegacy, isLegacyPbe, octets } = await import("./p12-legacy");
+        if (isLegacyPbe(shrouded.encryptionAlgorithm.algorithmId)) {
+          const plain = await decryptLegacy(shrouded.encryptionAlgorithm, octets(shrouded.encryptedData), password);
+          if (!plain) throw new P12Error("p12_password");
+          keyInfo = pkijs.PrivateKeyInfo.fromBER(plain.buffer.slice(plain.byteOffset, plain.byteOffset + plain.byteLength) as ArrayBuffer);
+          continue;
+        }
         try {
           // Protegido en los tipos de PKI.js 3, pero es la forma documentada de descifrar la bolsa.
           await (shrouded as unknown as { parseInternalValues(p: { password: ArrayBuffer }): Promise<void> }).parseInternalValues({ password: pass });

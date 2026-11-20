@@ -17,8 +17,8 @@
       "a": "No. El archivo .p12 se abre en tu navegador con su contraseña y la clave se queda allí, sin poder exportarse. Al servidor solo llegan el certificado público, el PDF y el resultado de la firma."
     },
     {
-      "q": "Mi .p12 da un error de cifrado antiguo, ¿qué hago?",
-      "a": "Algunos certificados exportados hace años usan 3DES o RC2, que los navegadores no admiten. Vuelve a exportarlo eligiendo cifrado AES; en Windows, la opción «AES256-SHA256» del asistente de exportación."
+      "q": "¿Sirve un certificado exportado hace años?",
+      "a": "Sí: también se abren los .p12 y .pfx con el cifrado antiguo de PKCS#12 (3DES o RC2), habitual en exportaciones de Windows y de la FNMT de hace años. Solo los que usan RC4, muy poco frecuentes, hay que volver a exportarlos con cifrado AES (en Windows, la opción «AES256-SHA256»)."
     },
     {
       "q": "¿Cuenta en mis límites?",

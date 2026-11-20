@@ -37,6 +37,8 @@ log = logging.getLogger("worker")
 # unidades de la fuente y solo acierta con 1000 por em; con DejaVu (2048) el texto del sello salía espaciado y cortado.
 FONT = str(Path(__file__).with_name("fonts") / "NotoSans-Regular.ttf")
 BOX = (210.0, 72.0)  # ancho y alto de la firma visible, en puntos
+BOX_IMAGE = (210.0, 120.0)  # con la imagen de la firma encima del texto
+MAX_IMAGE = 400_000
 MARGIN = 36.0
 MADRID = ZoneInfo("Europe/Madrid")
 DOCMDP = {"sin_cambios": 1, "formularios": 2, "formularios_anotaciones": 3}
@@ -207,11 +209,56 @@ def _inherited(page, key: str):
     return None
 
 
-def visual_box(rect: list[float], rotate: int, position: str) -> tuple[float, float, float, float]:
+def signature_image(value: str):
+    """La imagen de la firma (PNG en base64) comprobada, para el fondo de la apariencia; vacía, None."""
+    import base64
+
+    from PIL import Image
+
+    if not value:
+        return None
+    try:
+        raw = base64.b64decode(value.split(",", 1)[-1], validate=True)
+        if len(raw) > MAX_IMAGE:
+            raise ValueError("grande")
+        img = Image.open(io.BytesIO(raw))
+        if img.format != "PNG" or not (10 <= img.width <= 2000 and 5 <= img.height <= 1000):
+            raise ValueError("tamaño")
+        img.load()
+        return img.convert("RGBA")
+    except Exception as exc:  # noqa: BLE001 - base64 o PNG rotos
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "seal_image") from exc
+
+
+def stamp_style(text: str, image=None, height: float = 72.0, font_size: float = 7):
+    """Apariencia del sello: solo texto, o la firma arriba y el texto debajo (también en solicitar-firmas)."""
+    from pyhanko.pdf_utils.font.opentype import GlyphAccumulatorFactory
+    from pyhanko.pdf_utils.images import PdfImage
+    from pyhanko.pdf_utils.layout import AxisAlignment, InnerScaling, Margins, SimpleBoxLayoutRule
+    from pyhanko.pdf_utils.text import TextBoxStyle
+    from pyhanko.stamp import TextStampStyle
+
+    box_style = TextBoxStyle(font=GlyphAccumulatorFactory(FONT), font_size=font_size)
+    if image is None:
+        return TextStampStyle(stamp_text=text, border_width=1, text_box_style=box_style)
+    lines = text.count("\n") + 1
+    text_room = min(height * 0.6, lines * font_size * 1.25 + 6)
+    return TextStampStyle(
+        stamp_text=text, border_width=0, background=PdfImage(image), background_opacity=1,
+        background_layout=SimpleBoxLayoutRule(x_align=AxisAlignment.ALIGN_MID, y_align=AxisAlignment.ALIGN_MAX,
+                                              margins=Margins(left=2, right=2, top=2, bottom=text_room),
+                                              inner_content_scaling=InnerScaling.SHRINK_TO_FIT),
+        inner_content_layout=SimpleBoxLayoutRule(x_align=AxisAlignment.ALIGN_MIN, y_align=AxisAlignment.ALIGN_MIN,
+                                                 margins=Margins(left=3, right=3, top=3, bottom=2),
+                                                 inner_content_scaling=InnerScaling.SHRINK_TO_FIT),
+        text_box_style=box_style)
+
+
+def visual_box(rect: list[float], rotate: int, position: str, size: tuple[float, float] = BOX) -> tuple[float, float, float, float]:
     """Recuadro de la firma en la esquina que se ve en pantalla, en coordenadas de la página (con su /Rotate)."""
     x0, y0, x1, y1 = rect
     rotate %= 360
-    width, height = BOX
+    width, height = size
     vw, vh = (y1 - y0, x1 - x0) if rotate in (90, 270) else (x1 - x0, y1 - y0)
     left = MARGIN if position.endswith("izquierda") else vw - MARGIN - width
     bottom = MARGIN if position.startswith("abajo") else vh - MARGIN - height
@@ -285,7 +332,7 @@ def prepare(ctx: ToolContext, path: Path, name: str) -> Prepared:
         page = reader.find_page_for_modification(page_index)[0].get_object()
         rect = _inherited(page, "/CropBox") or _inherited(page, "/MediaBox")
         rotate = int(_inherited(page, "/Rotate") or 0)
-        box = visual_box([float(v) for v in rect], rotate, o.posicion)
+        box = visual_box([float(v) for v in rect], rotate, o.posicion, BOX_IMAGE if o.imagen else BOX)
     return Prepared(name, data, f"Sello{n}", page_index, box)
 
 
@@ -341,11 +388,8 @@ def _map_error(exc: BaseException) -> ToolError:
 
 
 async def _sign(ctx: ToolContext, item: Prepared, signer, chain, session, timestamper) -> bytes:
-    from pyhanko.pdf_utils.font.opentype import GlyphAccumulatorFactory
     from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
-    from pyhanko.pdf_utils.text import TextBoxStyle
     from pyhanko.sign import fields, signers
-    from pyhanko.stamp import TextStampStyle
     from pyhanko_certvalidator import ValidationContext
     from pyhanko_certvalidator.fetchers.aiohttp_fetchers import AIOHttpFetcherBackend
 
@@ -369,8 +413,8 @@ async def _sign(ctx: ToolContext, item: Prepared, signer, chain, session, timest
     if item.box is not None or item.existing:
         if item.box is not None:
             field_spec = fields.SigFieldSpec(item.field, on_page=item.page, box=item.box)
-        style = TextStampStyle(stamp_text=stamp_text(ctx), border_width=1,
-                               text_box_style=TextBoxStyle(font=GlyphAccumulatorFactory(FONT), font_size=7))
+        height = (item.box[3] - item.box[1]) if item.box is not None else BOX_IMAGE[1]
+        style = stamp_style(stamp_text(ctx), signature_image(o.imagen), height)
     pdf_signer = signers.PdfSigner(meta, signer=signer, timestamper=timestamper if o.sello_tiempo else None,
                                    stamp_style=style, new_field_spec=field_spec)
     try:

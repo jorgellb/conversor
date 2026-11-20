@@ -196,3 +196,15 @@ def test_certificate_without_signing_key_usage_is_rejected():
     with pytest.raises(ToolError) as err:
         load_chain(cert.public_bytes(serialization.Encoding.PEM).decode())
     assert err.value.detail == "own_key_usage"
+
+
+def test_own_certificate_with_the_signature_image(arch, make_ctx, tmp_path, tsa):
+    """F4-Z (D-210): con certificado propio, la imagen también va dentro de la apariencia."""
+    from test_sello import _appearance_images, _signature_png_b64
+
+    out, state = _sign(arch, make_ctx, tmp_path, options={"imagen": _signature_png_b64()})
+    data = Path(out[0]["path"]).read_bytes()
+    [(alpha, height)] = _appearance_images(data, state["field"])
+    assert alpha and height == 120
+    [sig] = analyse(data, roots=[arch.get_cert("root")])
+    assert sig.intact and sig.valid

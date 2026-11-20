@@ -172,6 +172,7 @@ DETAILS: dict[str, dict[str, str]] = {
                             "en": "Only an unsigned document can be certified: turn off certification or use the unsigned original."},
     "seal_lta_existing": {"es": "El documento ya tiene sellos de tiempo de documento: elige el nivel B-LT.",
                           "en": "The document already has document time stamps: choose level B-LT."},
+    "seal_image": {"es": "La imagen de la firma no es válida: vuelve a dibujarla o a escribirla.", "en": "The signature image is not valid: draw or type it again."},
     "seal_invalid": {"es": "El sello no se ha podido completar correctamente.", "en": "The seal could not be completed correctly."},
     "seal_size": {"es": "Para el sello, el PDF puede tener hasta {max} MB y este tiene {need} MB.",
                   "en": "For the seal, the PDF can be up to {max} MB and this one is {need} MB."},

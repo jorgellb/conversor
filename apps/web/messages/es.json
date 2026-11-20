@@ -1154,14 +1154,19 @@
     "ownOpened": "Certificado de {subject}, válido hasta el {date}.",
     "ownPrivacy": "El certificado se abre en tu navegador y la clave privada no sale de él: nuestro servidor solo recibe la parte pública y prepara el PDF; la firma la hace tu navegador.",
     "p12_password": "La contraseña no es correcta.",
-    "p12_legacy": "Este archivo usa un cifrado antiguo (3DES o RC2) que los navegadores no admiten. Vuelve a exportarlo con cifrado AES (por ejemplo, en Windows elige «AES256-SHA256» al exportar).",
+    "p12_legacy": "Este archivo usa un cifrado (RC4) que no se admite. Vuelve a exportarlo con cifrado AES (por ejemplo, en Windows elige «AES256-SHA256» al exportar).",
     "p12_invalid": "No es un archivo .p12 o .pfx válido.",
     "p12_no_key": "El archivo no trae la clave privada junto con su certificado.",
     "p12_key_type": "El certificado usa un tipo de clave que no se admite (solo RSA y EC).",
     "repeatInvalid": "Escribe páginas entre 1 y {n}, como 1-3,5, o «todas», «pares» o «impares».",
     "alreadySigned": "Este PDF ya está firmado digitalmente. Insertar una firma lo reescribe y esas firmas dejarían de ser válidas: firma digitalmente sin insertar nada.",
     "ownMissing": "Abre antes tu certificado (.p12 o .pfx) con su contraseña.",
-    "p12_mismatch": "La firma preparada por el servidor no corresponde a este PDF o a tu certificado: no se ha firmado nada."
+    "p12_mismatch": "La firma preparada por el servidor no corresponde a este PDF o a tu certificado: no se ha firmado nada.",
+    "sealImage": "Tu firma dentro del sello (opcional)",
+    "sealImagePreview": "Firma del sello",
+    "sealImageAdd": "Añadir mi firma al sello",
+    "sealImageChange": "Cambiar la firma del sello",
+    "sealImageRemove": "Quitar la firma del sello"
   },
   "linkShare": {
     "title": "Enlace para compartir",
@@ -1441,7 +1446,7 @@
       "xades_failed": "No se ha podido firmar el Facturae.",
       "download": "No se ha podido descargar el Facturae para firmarlo.",
       "p12_password": "La contraseña del certificado no es correcta.",
-      "p12_legacy": "El certificado usa un cifrado antiguo (3DES o RC2): vuelve a exportarlo con AES.",
+      "p12_legacy": "El certificado usa un cifrado (RC4) que no se admite: vuelve a exportarlo con AES.",
       "p12_invalid": "El archivo no es un certificado .p12 o .pfx.",
       "p12_no_key": "El archivo no trae la clave privada del certificado.",
       "p12_key_type": "El certificado usa un tipo de clave que no se admite."
