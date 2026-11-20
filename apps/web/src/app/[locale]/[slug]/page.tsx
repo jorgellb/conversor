@@ -24,8 +24,8 @@ type Params = { params: Promise<{ locale: string; slug: string }>; searchParams:
 /** Editores que necesitan más ancho que el resto de páginas (paneles a los lados del lienzo). */
 const WIDE_TOOLS = ["crear-collage"];
 
-const EDITORS: Record<string, "editar" | "rellenar" | "redactar" | "anotar"> = {
-  "editar-pdf": "editar", "rellenar-pdf": "rellenar", "redactar-pdf": "redactar", "anotar-pdf": "anotar",
+const EDITORS: Record<string, "editar" | "rellenar" | "redactar" | "anotar" | "firmar"> = {
+  "editar-pdf": "editar", "rellenar-pdf": "rellenar", "redactar-pdf": "redactar", "anotar-pdf": "anotar", "firmar-pdf": "firmar",
 };
 
 /** Diseñador de campos (A.3, F4-B1): crear-formulario-pdf es la misma herramienta empezando en blanco. */

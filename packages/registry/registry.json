@@ -26423,7 +26423,7 @@
       "summary_es": "Firma un PDF con el sello de la plataforma (PAdES con sello de tiempo), visible o invisible.",
       "summary_en": "Sign a PDF with the platform seal (PAdES with a time stamp), visible or invisible.",
       "category": "sign",
-      "where": "server",
+      "where": "hybrid",
       "worker_group": "sign",
       "cost_class": "light",
       "task_class": "light",
@@ -26526,6 +26526,17 @@
             "x-title": {
               "en": "Position",
               "es": "Posición"
+            }
+          },
+          "campo": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Campo de firma vacío del PDF (vacío: uno nuevo)",
+            "type": "string",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Empty signature field of the PDF (empty: a new one)",
+              "es": "Campo de firma vacío del PDF (vacío: uno nuevo)"
             }
           },
           "nombre": {

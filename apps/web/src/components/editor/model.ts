@@ -3,7 +3,7 @@ import type { EditObject } from "@conversor/client-tools";
 
 export type Tool =
   | "select" | "text" | "rect" | "ellipse" | "line" | "arrow" | "polygon" | "ink"
-  | "image" | "signature" | "note" | "whiteout" | "check" | "cross" | "date" | "highlight" | "underline" | "strikeout";
+  | "image" | "signature" | "initials" | "note" | "whiteout" | "check" | "cross" | "date" | "highlight" | "underline" | "strikeout";
 
 export type Obj = EditObject & { id: string; imageUrl?: string };
 

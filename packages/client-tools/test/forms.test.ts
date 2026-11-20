@@ -136,3 +136,21 @@ describe("detección de campos (A.3, Extra)", () => {
     ]);
   });
 });
+
+describe("firmar-pdf, insertar firma (A.6)", () => {
+  it("pone la imagen de la firma y la fecha en las páginas elegidas y nombra el resultado", async () => {
+    const { PNG_30x30, b64 } = await import("./images.fixture");
+    const src = await PDFDocument.create();
+    src.addPage([400, 400]);
+    src.addPage([400, 400]);
+    const png = b64(PNG_30x30);
+    const sig = { type: "image" as const, x: 250, y: 300, width: 120, height: 40, data: png, format: "png" as const };
+    const date = { type: "text" as const, x: 250, y: 350, width: 100, text: "20/11/2026", font: "sans" as const, size: 10, color: "#000000" };
+    const result = await runClientTool("firmar-pdf", [{ name: "contrato.pdf", bytes: await src.save() }],
+      { model: { pages: [{ source: 0, objects: [sig] }, { source: 1, objects: [sig, date] }] } }, {});
+    expect(result.outputs[0].name).toBe("contrato-firmado.pdf");
+    const out = await PDFDocument.load(result.outputs[0].bytes);
+    expect(out.getPageCount()).toBe(2);
+    for (const page of out.getPages()) expect(page.node.Resources()?.toString()).toContain("/XObject");
+  });
+});

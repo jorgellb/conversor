@@ -505,6 +505,14 @@ Verificado aquí: vitest del motor (tipos, propiedades, páginas giradas, fuente
 firma (incluida una firma de pyHanko dentro del campo) y la e2e del diseñador. Sin verificar aquí: los campos de firma
 desde la página contra la pila completa (e2e-compose) y la firma con Acrobat Reader.
 
+## F4-B2a (firmar-pdf en el navegador: insertar firma y sello desde la página)
+
+Modo «firmar» del editor: firma e iniciales dibujadas, escritas con fuentes caligráficas OFL, subidas sin fondo o con la
+cámara; fecha y marcas; repetir en varias páginas; «Firmar digitalmente» con el sello de la plataforma, también dentro
+de un campo vacío. Sigue apagada hasta F4-B2b. Salvedades en D-196.
+Verificado aquí: vitest de la inserción, pytest del sello dentro del campo y e2e de la página (encendida por entorno).
+Sin verificar aquí: el sello desde la página contra la pila completa y la cámara en un móvil.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4: F4-F, F4-A y F4-D hechos; siguen después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo

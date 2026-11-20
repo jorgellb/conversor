@@ -570,6 +570,15 @@ export async function editarPdf(files: InFile[], options: EditarOptions, loader?
   return { outputs: [pdfOut(file ? derivedName(file.name, "-editado", "pdf") : "documento.pdf", res.bytes)], notes: res.notes };
 }
 
+/** firmar-pdf, modo «Insertar firma» (A.6): firma, iniciales, fecha y marcas como contenido de la página. */
+export async function insertarFirma(files: InFile[], options: { model?: EditModel }, loader?: FontLoader, passwords: Record<string, string> = {},
+                                    locale?: Locale): Promise<ToolResult> {
+  const file = files[0];
+  if (!file) throw new ToolError("INVALID_OPTIONS", "Falta el PDF");
+  const { bytes, notes } = await applyEdits(file, options.model ?? {}, loader, passwords[file.name], locale);
+  return { outputs: [pdfOut(derivedName(file.name, "-firmado", "pdf"), bytes)], notes };
+}
+
 export async function rellenarPdf(files: InFile[], options: RellenarOptions, loader?: FontLoader, passwords: Record<string, string> = {},
                                   locale?: Locale): Promise<ToolResult> {
   const file = files[0];

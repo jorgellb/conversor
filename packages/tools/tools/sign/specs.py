@@ -35,6 +35,8 @@ class FirmarOptions(BaseModel):
     pagina: str = opt("ultima", "Página de la firma (última, primera o un número)", "Signature page (last, first or a number)",
                       max_length=10, show_if={"visible": (True,)})
     posicion: Literal[tuple(POSITIONS)] = opt("abajo_derecha", "Posición", "Position", labels=POSITIONS, show_if={"visible": (True,)})
+    campo: str = opt("", "Campo de firma vacío del PDF (vacío: uno nuevo)", "Empty signature field of the PDF (empty: a new one)",
+                     max_length=120, advanced=True)
     nombre: str = opt("", "Nombre que aparece", "Name shown", max_length=120)
     motivo: str = opt("", "Motivo", "Reason", max_length=200)
     lugar: str = opt("", "Lugar", "Location", max_length=120)
@@ -45,11 +47,12 @@ class FirmarOptions(BaseModel):
 
 
 SPECS: list[ToolSpec] = [
-    # A.6 y 10 (F4-A2): el sello de la plataforma en `workersign`, el único con el token y el PIN. Apagada hasta F4-B,
-    # que añade la firma en el navegador (config/tools-notes.yaml). Solo con cuenta (precheck).
+    # A.6 y 10 (F4-A2): el sello de la plataforma en `workersign`, el único con el token y el PIN; «Insertar firma» en el
+    # navegador (F4-B2a, D-196). Apagada hasta el certificado propio con firma interrumpida (F4-B2b,
+    # config/tools-notes.yaml). El sello, solo con cuenta (precheck).
     ToolSpec(
         slug_es="firmar-pdf", slug_en="sign-pdf", name_es="Firmar PDF", name_en="Sign PDF", category="sign",
-        where="server", inputs=("pdf",), outputs=("pdf", "zip"), options=FirmarOptions, worker_group="sign",
+        where="hybrid", inputs=("pdf",), outputs=("pdf", "zip"), options=FirmarOptions, worker_group="sign",
         cost_class="light", impl="tools.sign.firmar:run", precheck="tools.sign.firmar:precheck", launch=True,
         phase="F4", time_limit=600, default_enabled=False, max_files=10,
         summary_es="Firma un PDF con el sello de la plataforma (PAdES con sello de tiempo), visible o invisible.",

@@ -184,6 +184,7 @@ class Prepared:
     field: str
     page: int | None
     box: tuple[float, float, float, float] | None
+    existing: bool = False  # se firma dentro de un campo vacío del PDF (hacer-pdf-rellenable, D-196)
 
 
 def _inherited(page, key: str):
@@ -241,6 +242,7 @@ def prepare(ctx: ToolContext, path: Path, name: str) -> Prepared:
         signed = [e for e in reader.embedded_signatures]
         certification = read_certification_data(reader)
         used = {field_name for field_name, _value, _ref in enumerate_sig_fields(reader)}
+        empty = {field_name for field_name, _value, _ref in enumerate_sig_fields(reader, filled_status=False)}
     except ToolError:
         raise
     except Exception as exc:  # noqa: BLE001
@@ -253,6 +255,11 @@ def prepare(ctx: ToolContext, path: Path, name: str) -> Prepared:
         raise ToolError(ErrorCode.INVALID_OPTIONS, "seal_certify_signed")
     if o.sello_tiempo and o.nivel == "B-LTA" and any(s.sig_object_type == "/DocTimeStamp" for s in signed):
         raise ToolError(ErrorCode.INVALID_OPTIONS, "seal_lta_existing")
+    if o.campo:
+        # Campo de firma vacío del propio PDF (A.3: compatibles con firmar-pdf): su recuadro y su página mandan.
+        if o.campo not in empty:
+            raise ToolError(ErrorCode.INVALID_OPTIONS, "seal_field_missing" if o.campo not in used else "seal_field_signed")
+        return Prepared(name, data, o.campo, None, None, existing=True)
     n = 1
     while f"Sello{n}" in used:
         n += 1
@@ -351,8 +358,9 @@ async def _sign(ctx: ToolContext, item: Prepared, signer, chain, session, timest
         certify=o.certificacion != "no", docmdp_permissions=fields.MDPPerm(DOCMDP.get(o.certificacion, 2)),
         embed_validation_info=vc is not None, use_pades_lta=level == "B-LTA", validation_context=vc)
     field_spec = style = None
-    if item.box is not None:
-        field_spec = fields.SigFieldSpec(item.field, on_page=item.page, box=item.box)
+    if item.box is not None or item.existing:
+        if item.box is not None:
+            field_spec = fields.SigFieldSpec(item.field, on_page=item.page, box=item.box)
         style = TextStampStyle(stamp_text=stamp_text(ctx), border_width=1,
                                text_box_style=TextBoxStyle(font=GlyphAccumulatorFactory(FONT), font_size=7))
     pdf_signer = signers.PdfSigner(meta, signer=signer, timestamper=timestamper if o.sello_tiempo else None,

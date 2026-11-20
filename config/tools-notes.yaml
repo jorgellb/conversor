@@ -22,9 +22,10 @@ temas:
     docs/LEGAL.md (7.23). Las que validan o muestran facturas no dependen de este flag.
 herramientas:
   firmar-pdf: >-
-    Apagada hasta F4-B: el sello de la plataforma en servidor (PAdES B-T a B-LTA, DocMDP, firma visible) ya funciona
-    en `workersign` (F4-A2, D-188), pero A.6 pide además la firma dibujada, escrita, subida o con la cámara en el
-    navegador y la firma interrumpida con certificado propio, que llegan en F4-B. Para probar el sello antes:
+    Apagada hasta F4-B2b: el sello de la plataforma en servidor (PAdES B-T a B-LTA, DocMDP, firma visible, también
+    dentro de un campo vacío) ya funciona en `workersign` (F4-A2, D-188) y «Insertar firma» (dibujada, escrita, subida
+    o con la cámara, iniciales, fecha, repetir en varias páginas) en el navegador (F4-B2a, D-196), pero A.6 pide además
+    la firma interrumpida con certificado propio (.p12/.pfx con PKI.js y WebCrypto), que llega en F4-B2b. Para probar el sello antes:
     TOOL_FIRMAR_PDF_ENABLED=true, con el token, SIGN_CERT_PATH y TSA_URL configurados (DEPLOY-CHECKLIST).
 fuera_de_alcance:
   - formato: XPS, PostScript/EPS y PDF/X

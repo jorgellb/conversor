@@ -18,6 +18,7 @@ import {
 } from "./model";
 import { fontCss, ObjectView, SelectionView } from "./ObjectView";
 import { SignatureDialog, type PreparedImage } from "./SignatureDialog";
+import { SignPanel, signDigitally, type DigitalOptions } from "./SignPanel";
 
 type Values = Record<string, string | boolean | string[]>;
 type Status =
@@ -39,11 +40,13 @@ interface Drag {
 const EDIT_TOOLS: Tool[] = ["select", "text", "rect", "ellipse", "line", "arrow", "polygon", "ink", "image", "signature", "note", "whiteout", "check", "cross", "date"];
 const FILL_TOOLS: Tool[] = ["select", "text", "check", "cross", "date", "signature", "image"];
 const REDACT_TOOLS: Tool[] = ["select", "whiteout"];
+// firmar-pdf, «Insertar firma» (A.6): firma, iniciales, fecha, texto y marcas.
+const SIGN_TOOLS: Tool[] = ["select", "signature", "initials", "date", "text", "check", "cross"];
 const ANNOTATE_TOOLS: Tool[] = ["select", "highlight", "underline", "strikeout", "note", "text", "arrow", "rect", "ellipse", "ink", "image"];
 const MARKUP: Tool[] = ["highlight", "underline", "strikeout"];
 const PATTERN_NAMES: PatternName[] = ["dni", "nie", "iban", "email", "telefono"];
 const ICON: Record<Tool, string> = {
-  select: "↖", text: "T", rect: "▭", ellipse: "◯", line: "╱", arrow: "→", polygon: "⬠", ink: "✎", image: "🖼", signature: "✍",
+  select: "↖", text: "T", rect: "▭", ellipse: "◯", line: "╱", arrow: "→", polygon: "⬠", ink: "✎", image: "🖼", signature: "✍", initials: "Aa",
   note: "🗒", whiteout: "⬜", check: "✓", cross: "✗", date: "📅", highlight: "🖍", underline: "U̲", strikeout: "S̶",
 };
 const KEEP_TOOL: Tool[] = ["rect", "ellipse", "line", "arrow", "polygon", "ink", "whiteout", "check", "cross", "highlight", "underline", "strikeout"];
@@ -60,7 +63,7 @@ function initialValues(fields: FormFieldInfo[]): Values {
   return Object.fromEntries(fields.filter((f) => ["text", "checkbox", "radio", "dropdown", "optionlist"].includes(f.type)).map((f) => [f.name, f.value]));
 }
 
-export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellenar" | "redactar" | "anotar"; spec: ClientSpec; nextTools: NextTool[] }) {
+export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellenar" | "redactar" | "anotar" | "firmar"; spec: ClientSpec; nextTools: NextTool[] }) {
   const t = useTranslations("editor");
   const tt = useTranslations("tool");
   const te = useTranslations("errors");
@@ -80,12 +83,15 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
   const [passwords, setPasswords] = useState<Record<string, string>>({});
   const [askPassword, setAskPassword] = useState<string | null>(null);
   const [password, setPassword] = useState("");
-  const [dialog, setDialog] = useState<"signature" | null>(null);
+  const [dialog, setDialog] = useState<"signature" | "initials" | null>(null);
+  // firmar-pdf (A.6): insertar la firma en el navegador o firmar digitalmente en el servidor.
+  const [digital, setDigital] = useState<DigitalOptions | null>(null);
   const [paper, setPaper] = useState({ size: "A4", orientation: "vertical" });
   const [saveMode, setSaveMode] = useState<"editable" | "aplanado">("editable");
   const drag = useRef<Drag | null>(null);
   const imageInput = useRef<HTMLInputElement>(null);
-  const tools = mode === "editar" ? EDIT_TOOLS : mode === "redactar" ? REDACT_TOOLS : mode === "anotar" ? ANNOTATE_TOOLS : FILL_TOOLS;
+  const tools = mode === "editar" ? EDIT_TOOLS : mode === "redactar" ? REDACT_TOOLS : mode === "anotar" ? ANNOTATE_TOOLS
+    : mode === "firmar" ? SIGN_TOOLS : FILL_TOOLS;
   // anotar-pdf: guardar como anotaciones estándar o aplanadas, autor y XFDF.
   const [annotMode, setAnnotMode] = useState<"anotaciones" | "aplanadas">("anotaciones");
   const [author, setAuthor] = useState("");
@@ -232,7 +238,7 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
     const page = pages[current] ?? pages[0];
     if (!page) return;
     const { width: W, height: H } = shownSize(page);
-    const scale = Math.min(1, (W * 0.4) / img.width, (H * 0.4) / img.height);
+    const scale = Math.min(1, (W * (dialog === "initials" ? 0.12 : 0.4)) / img.width, (H * (dialog === "initials" ? 0.06 : 0.4)) / img.height);
     const w = img.width * scale;
     const h = img.height * scale;
     place(pages.indexOf(page), { id: newId(), type: "image", x: (W - w) / 2, y: (H - h) / 2, width: w, height: h, data: img.data, format: img.format, imageUrl: img.url });
@@ -289,7 +295,8 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
         imageInput.current?.click();
         return;
       case "signature":
-        setDialog("signature");
+      case "initials":
+        setDialog(tool);
         return;
       case "polygon": {
         const draft = page.objects.find((o) => o.id === drag.current?.id && o.type === "polygon");
@@ -459,7 +466,24 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
         ? { color: redactColor, texto: redactLabel, metodo: redactMethod, model: { areas, terminos: terms } }
         : mode === "anotar"
           ? { guardar: annotMode, autor: author, model }
-          : { guardar: saveMode, model };
+          : mode === "firmar"
+            ? { model }
+            : { guardar: saveMode, model };
+    if (mode === "firmar" && digital) {
+      // Firmar digitalmente: la firma insertada se aplica antes en el navegador y el PDF va al servidor (sello).
+      try {
+        if (!file) return;
+        const objects = pages.some((p) => p.objects.length);
+        const inserted = objects ? (await runInBrowser(spec.slug, [file], { model }, (progress) => setStatus({ kind: "saving", progress: progress / 2 }), passwords)).outputs[0] : null;
+        const pdf = inserted ? new File([new Uint8Array(inserted.bytes)], file.name, { type: "application/pdf" }) : file;
+        const done = await signDigitally(pdf, digital, locale, (progress) => setStatus({ kind: "saving", progress: 0.5 + progress / 2 }));
+        setStatus({ kind: "done", url: done.url, name: done.name, size: done.size, notes: done.notes });
+        recordUse(spec.slug);
+      } catch (err) {
+        setStatus({ kind: "error", code: err instanceof ClientToolError || (err as { code?: string }).code ? (err as { code: string }).code : "INTERNAL" });
+      }
+      return;
+    }
     try {
       const result = await runInBrowser(spec.slug, file ? [file] : [], options, (progress) => setStatus({ kind: "saving", progress }), passwords);
       const out = result.outputs[0];
@@ -469,6 +493,19 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
     } catch (err) {
       setStatus({ kind: "error", code: err instanceof ClientToolError ? err.code : "INTERNAL" });
     }
+  }
+
+  /** A.6: repite el objeto elegido (una firma o unas iniciales) en esas páginas, en el mismo sitio. */
+  function repeatSelected(targets: number[]) {
+    if (!selected || !selectedObj) return;
+    const next = pages.map((p, i) => {
+      if (i === selected.page || !targets.includes(i)) return p;
+      const { width: W, height: H } = shownSize(p);
+      const b = bbox(selectedObj);
+      const copy = moveObj({ ...selectedObj, id: newId() }, Math.min(0, W - (b.x + b.width)), Math.min(0, H - (b.y + b.height)));
+      return { ...p, objects: [...p.objects, copy] };
+    });
+    commit(next);
   }
 
   const currentModel = () => ({
@@ -587,14 +624,14 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
         const bitmap = await createImageBitmap(f);
         placeImage({ data: new Uint8Array(await f.arrayBuffer()), format: f.type === "image/png" ? "png" : "jpg", width: bitmap.width, height: bitmap.height, url: URL.createObjectURL(f) });
       }} />
-      {dialog === "signature" && <SignatureDialog onDone={placeImage} onCancel={() => setDialog(null)} />}
+      {dialog && <SignatureDialog key={dialog} initials={dialog === "initials"} camera={mode === "firmar"} onDone={placeImage} onCancel={() => setDialog(null)} />}
 
       <div className="card sticky top-0 z-20 flex flex-wrap items-center gap-2 p-2" role="toolbar" aria-label={t("tools")} style={{ background: "var(--bg)" }}>
         {tools.map((tl) => (
           <button key={tl} type="button" title={t(mode === "redactar" && tl === "whiteout" ? "tool_redact" : `tool_${tl}`)}
             aria-label={t(mode === "redactar" && tl === "whiteout" ? "tool_redact" : `tool_${tl}`)} aria-pressed={tool === tl}
             className={`${tool === tl ? "btn" : "btn-secondary btn"} min-w-9 px-2 py-1`}
-            onClick={() => { setTool(tl); setEditing(null); if (tl === "image") imageInput.current?.click(); if (tl === "signature") setDialog("signature"); }}>
+            onClick={() => { setTool(tl); setEditing(null); if (tl === "image") imageInput.current?.click(); if (tl === "signature" || tl === "initials") setDialog(tl); }}>
             <span aria-hidden>{ICON[tl]}</span>
           </button>
         ))}
@@ -723,6 +760,11 @@ export function PdfEditor({ mode, spec, nextTools }: { mode: "editar" | "rellena
             <button type="button" className="btn-secondary btn" onClick={() => pageOp(pages.length - 1, "blank")}>{t("addBlank")}</button>
           )}
         </div>
+
+        {mode === "firmar" && (
+          <SignPanel form={form} pageCount={pages.length} selected={selectedObj ? { page: selected!.page } : null} onRepeat={repeatSelected}
+            onDigital={setDigital} />
+        )}
 
         {mode === "anotar" && (
           <aside className="flex flex-col gap-3 lg:sticky lg:top-32 lg:max-h-[80vh] lg:w-72 lg:self-start lg:overflow-y-auto" aria-label={t("comments")}>

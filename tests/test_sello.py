@@ -131,7 +131,7 @@ def test_options_and_errors(arch, make_ctx, tmp_path, monkeypatch):
     assert spec.queue == "sign" and spec.category == "sign" and spec.default_enabled is False and spec.ai is None
     defaults = spec.options().model_dump()
     assert defaults == {"certificado": "plataforma", "visible": True, "pagina": "ultima", "posicion": "abajo_derecha",
-                        "nombre": "", "motivo": "", "lugar": "", "sello_tiempo": True, "nivel": "B-T", "certificacion": "no"}
+                        "campo": "", "nombre": "", "motivo": "", "lugar": "", "sello_tiempo": True, "nivel": "B-T", "certificacion": "no"}
     settings = get_settings()
     with pytest.raises(AppError) as err:
         firmar.precheck(settings, None, "anon", {}, [])
@@ -325,3 +325,25 @@ def test_output_check_rejects_a_certificate_that_is_not_the_key(arch, make_ctx, 
     with pytest.raises(ToolError) as err:
         asyncio.run(firmar.check_output(data, wrong))
     assert err.value.detail == "seal_invalid"
+
+
+def test_seal_into_an_empty_field_made_by_hacer_pdf_rellenable(arch, make_ctx, tmp_path):
+    """A.3: los campos de firma de hacer-pdf-rellenable se firman con firmar-pdf (campo, D-196)."""
+    from core.errors import ToolError
+    from test_tools import run
+
+    tool = "hacer-pdf-rellenable"
+    form = run(tool, make_ctx(tool, [_pdf(tmp_path, name="ficha.pdf")], {"firmas": [
+        {"nombre": "Firma cliente", "pagina": 2, "x1": 300, "y1": 100, "x2": 500, "y2": 160}]}))[0]["path"]
+    data = _seal(arch, make_ctx, Path(form), {"campo": "Firma cliente"})
+    [seal] = analyse(data, roots=[arch.get_cert("root")])
+    assert seal.field == "Firma cliente" and seal.level == "propia"
+    with pikepdf.open(io.BytesIO(data)) as pdf:
+        widget = next(a for a in (pdf.pages[1].obj.get("/Annots") or []) if a.get("/FT") == "/Sig")
+        assert [round(float(v)) for v in widget.Rect] == [300, 100, 500, 160] and "/AP" in widget
+    signed = tmp_path / "firmado.pdf"
+    signed.write_bytes(data)
+    for name, detail in (("Firma cliente", "seal_field_signed"), ("No existe", "seal_field_missing")):
+        with pytest.raises(ToolError) as err:
+            _seal(arch, make_ctx, signed, {"campo": name})
+        assert err.value.detail == detail

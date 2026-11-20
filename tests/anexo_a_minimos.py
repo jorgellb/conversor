@@ -241,7 +241,7 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     # certificado propio llegan con F4-B (D-188).
     "firmar-pdf": {"certificado": E("plataforma", "plataforma"), "visible": D(True), "nivel": E("B-T", "B-T", "B-LT", "B-LTA"),
                    "certificacion": E("no", "no", "sin_cambios", "formularios", "formularios_anotaciones"),
-                   "sello_tiempo": D(True), "nombre": X, "motivo": X, "lugar": X},
+                   "sello_tiempo": D(True), "nombre": X, "motivo": X, "lugar": X, "campo": X},
     # A.7 (F4): revocación OCSP y CRL «bajo petición» (apagada por defecto).
     "verificar-firmas-pdf": {"revocacion": D(False)},
     "preferencias-visor-pdf": {
