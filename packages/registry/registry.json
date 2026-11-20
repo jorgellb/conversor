@@ -16984,6 +16984,225 @@
       }
     },
     {
+      "slug_es": "captura-web",
+      "slug_en": "website-screenshot",
+      "name_es": "Captura web",
+      "name_en": "Website screenshot",
+      "summary_es": "Haz una captura de una página web entera, a partir de su dirección, en PNG o JPG, como en móvil o en ordenador.",
+      "summary_en": "Take a screenshot of a whole web page from its address, as PNG or JPG, as on a phone or a computer.",
+      "category": "image",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [],
+      "outputs": [
+        "png",
+        "jpg"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "web-a-pdf",
+        "comprimir-imagen"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "captura-web (7.13, F6-M, D-229): formato [PNG] | JPG, ancho de ventana [1280], alto [800], página completa [sí],\nespera [1 s], esquema [claro] y calidad del JPG [85]. La URL se comprueba en la API (12.2).",
+        "properties": {
+          "url": {
+            "maxLength": 2048,
+            "title": "Dirección de la página",
+            "type": "string",
+            "x-title": {
+              "en": "Page address",
+              "es": "Dirección de la página"
+            }
+          },
+          "formato": {
+            "default": "png",
+            "enum": [
+              "png",
+              "jpg"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "jpg": {
+                "en": "JPG (lighter)",
+                "es": "JPG (más ligero)"
+              },
+              "png": {
+                "en": "PNG (lossless)",
+                "es": "PNG (sin pérdida)"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "ancho": {
+            "default": 1280,
+            "enum": [
+              375,
+              768,
+              1280,
+              1920
+            ],
+            "title": "Ancho de la ventana",
+            "type": "integer",
+            "x-labels": {
+              "1280": {
+                "en": "1280 px (laptop)",
+                "es": "1280 px (portátil)"
+              },
+              "1920": {
+                "en": "1920 px (large screen)",
+                "es": "1920 px (pantalla grande)"
+              },
+              "375": {
+                "en": "375 px (phone)",
+                "es": "375 px (móvil)"
+              },
+              "768": {
+                "en": "768 px (tablet)",
+                "es": "768 px (tableta)"
+              }
+            },
+            "x-title": {
+              "en": "Window width",
+              "es": "Ancho de la ventana"
+            }
+          },
+          "alto": {
+            "default": 800,
+            "maximum": 4000,
+            "minimum": 300,
+            "title": "Alto de la ventana (px)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Window height (px)",
+              "es": "Alto de la ventana (px)"
+            }
+          },
+          "pagina_completa": {
+            "default": true,
+            "title": "Toda la página, no solo lo visible",
+            "type": "boolean",
+            "x-title": {
+              "en": "The whole page, not just what is visible",
+              "es": "Toda la página, no solo lo visible"
+            }
+          },
+          "espera_s": {
+            "default": 1,
+            "maximum": 10,
+            "minimum": 0,
+            "title": "Espera antes de capturar (s)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Wait before capture (s)",
+              "es": "Espera antes de capturar (s)"
+            }
+          },
+          "esquema": {
+            "default": "claro",
+            "enum": [
+              "claro",
+              "oscuro"
+            ],
+            "title": "Esquema de color",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "claro": {
+                "en": "Light",
+                "es": "Claro"
+              },
+              "oscuro": {
+                "en": "Dark",
+                "es": "Oscuro"
+              }
+            },
+            "x-title": {
+              "en": "Colour scheme",
+              "es": "Esquema de color"
+            }
+          },
+          "calidad": {
+            "default": 85,
+            "maximum": 100,
+            "minimum": 40,
+            "title": "Calidad del JPG",
+            "type": "integer",
+            "x-advanced": true,
+            "x-show-if": {
+              "formato": [
+                "jpg"
+              ]
+            },
+            "x-title": {
+              "en": "JPG quality",
+              "es": "Calidad del JPG"
+            }
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "title": "CapturaOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "udf-a-pdf",
+      "slug_en": "udf-to-pdf",
+      "name_es": "UDF a PDF",
+      "name_en": "UDF to PDF",
+      "summary_es": "Convierte documentos UDF del editor de UYAP (Turquía) en PDF, con su texto, formato y tablas.",
+      "summary_en": "Turn UDF documents from the UYAP editor (Turkey) into PDF, with their text, formatting and tables.",
+      "category": "office",
+      "where": "server",
+      "worker_group": "office",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "udf"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F6",
+      "launch": true,
+      "default_enabled": false,
+      "indexable": true,
+      "max_files": null,
+      "secret_fields": [],
+      "related": [
+        "word-a-pdf",
+        "convertir-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "word-a-pdf-accesible",
       "slug_en": "accessible-word-to-pdf",
       "name_es": "Word a PDF accesible",

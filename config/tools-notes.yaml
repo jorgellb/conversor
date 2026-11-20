@@ -21,6 +21,7 @@ temas:
     tocan la factura electrónica obligatoria (RD 238/2026). Apagado hasta la revisión con un asesor anotada en
     docs/LEGAL.md (7.23). Las que validan o muestran facturas no dependen de este flag.
 herramientas:
+  udf-a-pdf: "7.23 la quiere detrás de un interruptor apagado: el formato UDF de UYAP no tiene especificación pública; la conversión sigue su estructura conocida (content.xml con el texto y los trozos con formato) y se enciende tras probarla con documentos reales (DEPLOY-CHECKLIST, F6-M)."
   pst-a-mbox: "readpst (libpst) está en la imagen y la conversión escrita, pero no hay un PST de prueba con licencia libre ni forma libre de generarlo; se enciende tras probarla con un PST real (DEPLOY-CHECKLIST, F6-J)."
   pst-a-pdf: "Igual que pst-a-mbox: falta probar readpst con un PST real antes de encenderla (DEPLOY-CHECKLIST, F6-J)."
   crear-factura: >-

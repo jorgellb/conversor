@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Captura web hace una captura de pantalla de una página web a partir de su dirección, en PNG o JPG. Sirve para guardar cómo era una página en un momento dado, documentar una incidencia, preparar una presentación o un informe, revisar un diseño o enseñar a alguien una web sin que tenga que abrirla.",
+    "Puedes capturar la página entera, de arriba abajo, aunque haya que desplazarse para verla, o solo lo que se ve en la ventana. Eliges el ancho de la ventana para ver la web como en un móvil (375 px), una tableta (768 px), un portátil (1280 px) o una pantalla grande (1920 px), y también su alto y si se muestra en modo claro u oscuro, para las webs que lo admiten.",
+    "Esperamos un momento a que la página termine de cargar sus imágenes y animaciones antes de capturar; si la web tarda más, puedes aumentar la espera en las opciones avanzadas. PNG conserva todos los detalles sin pérdida; JPG ocupa menos y permite elegir la calidad.",
+    "La página la abre un navegador en nuestro servidor que solo puede salir a internet público: las direcciones locales, privadas o de servicios internos se rechazan, también si la página redirige a ellas. Las páginas que exigen iniciar sesión se capturan tal como las vería un visitante sin cuenta."
+  ],
+  "steps": [
+    "Escribe la dirección de la página.",
+    "Elige el formato, el ancho y si quieres la página completa.",
+    "Descarga la captura."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué la captura sale con un aviso de cookies?",
+      "a": "Porque el navegador entra como un visitante nuevo y la web le muestra su aviso. Algunas lo tapan todo; en esos casos prueba Web a PDF o haz la captura en tu equipo."
+    },
+    {
+      "q": "¿Puedo capturar una página con usuario y contraseña?",
+      "a": "No: el navegador no inicia sesión por ti. Solo se capturan páginas públicas."
+    },
+    {
+      "q": "¿Y si quiero un PDF?",
+      "a": "Web a PDF guarda la misma página como PDF, con el texto seleccionable y enlaces."
+    }
+  ]
+}

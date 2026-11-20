@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from core.options import PAPERS, WebUrl, opt
-from core.registry import ToolSpec
+from core.registry import NoOptions, ToolSpec
 
 WORD = ("doc", "docx", "rtf", "odt", "txt")
 EXCEL = ("xls", "xlsx", "ods", "csv")
@@ -78,6 +78,24 @@ class WebAPdfOptions(BaseModel):
     espera_s: float = opt(1, "Espera antes de capturar (s)", "Wait before capture (s)", ge=0, le=10, advanced=True)
     esquema: Literal["claro", "oscuro"] = opt("claro", "Esquema de color", "Colour scheme", advanced=True,
                                               labels={"claro": ("Claro", "Light"), "oscuro": ("Oscuro", "Dark")})
+
+
+class CapturaOptions(BaseModel):
+    """captura-web (7.13, F6-M, D-229): formato [PNG] | JPG, ancho de ventana [1280], alto [800], página completa [sí],
+    espera [1 s], esquema [claro] y calidad del JPG [85]. La URL se comprueba en la API (12.2)."""
+
+    url: WebUrl = opt(..., "Dirección de la página", "Page address", max_length=2048)
+    formato: Literal["png", "jpg"] = opt("png", "Formato", "Format", labels={"png": ("PNG (sin pérdida)", "PNG (lossless)"),
+                                                                        "jpg": ("JPG (más ligero)", "JPG (lighter)")})
+    ancho: Literal[375, 768, 1280, 1920] = opt(1280, "Ancho de la ventana", "Window width", labels={
+        375: ("375 px (móvil)", "375 px (phone)"), 768: ("768 px (tableta)", "768 px (tablet)"),
+        1280: ("1280 px (portátil)", "1280 px (laptop)"), 1920: ("1920 px (pantalla grande)", "1920 px (large screen)")})
+    alto: int = opt(800, "Alto de la ventana (px)", "Window height (px)", ge=300, le=4000, advanced=True)
+    pagina_completa: bool = opt(True, "Toda la página, no solo lo visible", "The whole page, not just what is visible")
+    espera_s: float = opt(1, "Espera antes de capturar (s)", "Wait before capture (s)", ge=0, le=10, advanced=True)
+    esquema: Literal["claro", "oscuro"] = opt("claro", "Esquema de color", "Colour scheme", advanced=True,
+                                              labels={"claro": ("Claro", "Light"), "oscuro": ("Oscuro", "Dark")})
+    calidad: int = opt(85, "Calidad del JPG", "JPG quality", ge=40, le=100, advanced=True, show_if={"formato": ("jpg",)})
 
 
 LANGS_UA = {"documento": ("El que declara el documento", "The one the document declares"), "es-ES": ("Español", "Spanish"),
@@ -228,6 +246,18 @@ SPECS: list[ToolSpec] = [
            "Save a web page as PDF from its address. If the address is a document, it is converted.",
            options=WebAPdfOptions, impl="tools.office.web_a_pdf:run", secret_fields=(), outputs=("pdf",),
            time_limit=300, related=("html-a-pdf", "convertir-a-pdf")),
+    # 7.13 (F6-M, D-229): como web-a-pdf, por gotenbergweb y egressweb; nunca recibe archivos de usuarios.
+    office("captura-web", "website-screenshot", "Captura web", "Website screenshot", (),
+           "Haz una captura de una página web entera, a partir de su dirección, en PNG o JPG, como en móvil o en ordenador.",
+           "Take a screenshot of a whole web page from its address, as PNG or JPG, as on a phone or a computer.",
+           options=CapturaOptions, impl="tools.office.captura:run", secret_fields=(), outputs=("png", "jpg"), phase="F6",
+           category="image", time_limit=300, related=("web-a-pdf", "comprimir-imagen")),
+    # 7.23 (F6-M, D-229): formato sin especificación pública; apagada hasta probarla con documentos reales de UYAP.
+    office("udf-a-pdf", "udf-to-pdf", "UDF a PDF", "UDF to PDF", ("udf",),
+           "Convierte documentos UDF del editor de UYAP (Turquía) en PDF, con su texto, formato y tablas.",
+           "Turn UDF documents from the UYAP editor (Turkey) into PDF, with their text, formatting and tables.",
+           options=NoOptions, impl="tools.office.udf:run", secret_fields=(), phase="F6", default_enabled=False,
+           related=("word-a-pdf", "convertir-a-pdf")),
     # 7.5 (F4): LibreOffice de Gotenberg con `pdfua` en `office` y, después, veraPDF (solo en la imagen worker-ocr) en `ocr`.
     office("word-a-pdf-accesible", "accessible-word-to-pdf", "Word a PDF accesible", "Accessible Word to PDF",
            ("doc", "docx", "odt", "rtf"),

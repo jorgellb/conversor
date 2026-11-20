@@ -14,7 +14,7 @@ OLE2_FAMILY = {"doc", "xls", "ppt", "pps", "msg", "pub", "vsd"}
 TEXT_FAMILY = {"txt", "csv", "md", "markdown", "html", "htm", "svg", "xml", "json", "yaml", "srt", "vtt", "ass", "eml", "fb2", "dxf",
                "xsig", "csig", "p7m", "p7s", "gpx", "kml", "geojson", "tcx", "vcf", "ics", "mbox", "drawio", "tex", "musicxml"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
-ZIP_ALIASES = {"cbz", "cbr", "kmz", "mxl"}  # kmz: un ZIP con doc.kml (F6-H1)
+ZIP_ALIASES = {"cbz", "cbr", "kmz", "mxl", "udf"}  # kmz: un ZIP con doc.kml (F6-H1)
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
 RAW_TIFF = {"cr2", "nef", "arw", "dng"}
 IWORK = {"pages", "key", "numbers"}

@@ -296,7 +296,7 @@ herramientas:
     equivalentes: [pub-a-pdf]
   - pdf24: "UDF to PDF"
     ruta: /en/udf-to-pdf
-    equivalentes: [udf-a-pdf:F6]
+    equivalentes: [udf-a-pdf]
   - pdf24: "OFD to PDF"
     ruta: /en/ofd-to-pdf
     equivalentes: []

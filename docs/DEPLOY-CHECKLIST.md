@@ -158,3 +158,4 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       sin reinicios por memoria (`docker stats`).
 - [ ] Lote J de F6: pst-a-mbox y pst-a-pdf con un PST real de Outlook (readpst en workermedia); si salen bien, quitar `default_enabled=False` y su motivo en `config/tools-notes.yaml`.
 - [ ] Lote K de F6: Landlock disponible dentro de `workerutils` en el Docker del VPS (perfil seccomp por defecto de Docker 23 o posterior); si no, latex-a-pdf falla con `ENGINE_FAILED sandbox` y hay que actualizar Docker. Comprobar latex-a-pdf y drawio-a-pdf y drawio-a-png con Gotenberg real.
+- [ ] Lote M de F6: captura-web contra páginas reales con `gotenbergweb` y `egressweb` (y bloqueada contra 169.254.169.254, localhost y una IP privada tras redirección, 16.4); udf-a-pdf con documentos UDF reales de UYAP antes de encenderla (`TOOL_UDF_A_PDF_ENABLED=true` y quitar `default_enabled=False`).

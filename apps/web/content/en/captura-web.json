@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Website screenshot takes a screenshot of a web page from its address, as PNG or JPG. It is for keeping a record of how a page looked at a given moment, documenting an issue, preparing a presentation or a report, reviewing a design or showing someone a website without them having to open it.",
+    "You can capture the whole page, top to bottom, even if you would have to scroll to see it, or only what is visible in the window. You choose the window width to see the site as on a phone (375 px), a tablet (768 px), a laptop (1280 px) or a large screen (1920 px), plus its height and whether it is shown in light or dark mode, for sites that support it.",
+    "We wait a moment for the page to finish loading its images and animations before capturing; if the site takes longer, you can increase the wait in the advanced options. PNG keeps every detail losslessly; JPG is smaller and lets you choose the quality.",
+    "The page is opened by a browser on our server that can only reach the public internet: local, private or internal service addresses are rejected, even if the page redirects to them. Pages that require signing in are captured as a visitor without an account would see them."
+  ],
+  "steps": [
+    "Type the page address.",
+    "Choose the format, width and whether you want the whole page.",
+    "Download the screenshot."
+  ],
+  "faq": [
+    {
+      "q": "Why does the screenshot show a cookie banner?",
+      "a": "Because the browser arrives as a new visitor and the site shows its notice. Some cover everything; in those cases try Web to PDF or take the screenshot on your computer."
+    },
+    {
+      "q": "Can I capture a page behind a username and password?",
+      "a": "No: the browser does not sign in for you. Only public pages are captured."
+    },
+    {
+      "q": "What if I want a PDF?",
+      "a": "Web to PDF saves the same page as a PDF, with selectable text and links."
+    }
+  ]
+}

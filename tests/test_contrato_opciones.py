@@ -194,7 +194,8 @@ def test_published_schema_is_the_model(slug, published):
 
 
 # Un valor válido para cada opción obligatoria (sin valor por defecto en el esquema).
-REQUIRED_SAMPLES = {("web-a-pdf", "url"): "https://example.com/", ("eliminar-paginas-pdf", "paginas"): "1"}
+REQUIRED_SAMPLES = {("web-a-pdf", "url"): "https://example.com/", ("eliminar-paginas-pdf", "paginas"): "1",
+                    ("captura-web", "url"): "https://example.com/"}
 
 
 @pytest.mark.parametrize("slug", IDS)

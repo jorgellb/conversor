@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 241 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 63). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 243 herramientas (F1 43, F2 60, F3 10, F4 15, F5 50, F6 65). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -110,6 +110,8 @@ Catálogo publicado en esta entrega: 241 herramientas (F1 43, F2 60, F3 10, F4 1
 | `fb2-a-pdf` / `fb2-to-pdf` | servidor | office | light | F2 | activa | fb2 → pdf, zip | redactado, sin revisar |
 | `solicitud-de-empleo-pdf` / `job-application-pdf` | servidor | office | light | F2 | activa | pdf, doc, docx, rtf, odt, txt, xls, xlsx, ods, csv, ppt, pptx, pps, odp, odg, jpg, png, gif, bmp, tiff, webp → pdf, zip | redactado, sin revisar |
 | `web-a-pdf` / `web-to-pdf` | servidor | office | light | F1 | activa | — → pdf | redactado, sin revisar |
+| `captura-web` / `website-screenshot` | servidor | office | light | F6 | activa | — → png, jpg | redactado, sin revisar |
+| `udf-a-pdf` / `udf-to-pdf` | servidor | office | light | F6 | apagada | udf → pdf, zip | redactado, sin revisar |
 | `word-a-pdf-accesible` / `accessible-word-to-pdf` | servidor | office | light | F4 | activa | doc, docx, odt, rtf → pdf, html, zip | redactado, sin revisar |
 | `csv-a-pdf` / `csv-to-pdf` | servidor | office | light | F1 | activa | csv → pdf, zip | redactado, sin revisar |
 | `musicxml-a-pdf` / `musicxml-to-pdf` | servidor | office | light | F6 | activa | musicxml, mxl, xml → pdf, zip | redactado, sin revisar |
@@ -260,6 +262,7 @@ Catálogo publicado en esta entrega: 241 herramientas (F1 43, F2 60, F3 10, F4 1
 | `pdf-a-factura-electronica` | Apagada por defecto; se enciende con `TOOL_PDF_A_FACTURA_ELECTRONICA_ENABLED=true`. Genera facturas electrónicas desde un PDF: además de INVOICING_ES_ENABLED necesita TOOL_PDF_A_FACTURA_ELECTRONICA_ENABLED=true, tras la revisión con un asesor de docs/LEGAL.md. |
 | `pst-a-mbox` | Apagada por defecto; se enciende con `TOOL_PST_A_MBOX_ENABLED=true`. readpst (libpst) está en la imagen y la conversión escrita, pero no hay un PST de prueba con licencia libre ni forma libre de generarlo; se enciende tras probarla con un PST real (DEPLOY-CHECKLIST, F6-J). |
 | `pst-a-pdf` | Apagada por defecto; se enciende con `TOOL_PST_A_PDF_ENABLED=true`. Igual que pst-a-mbox: falta probar readpst con un PST real antes de encenderla (DEPLOY-CHECKLIST, F6-J). |
+| `udf-a-pdf` | Apagada por defecto; se enciende con `TOOL_UDF_A_PDF_ENABLED=true`. 7.23 la quiere detrás de un interruptor apagado: el formato UDF de UYAP no tiene especificación pública; la conversión sigue su estructura conocida (content.xml con el texto y los trozos con formato) y se enciende tras probarla con documentos reales (DEPLOY-CHECKLIST, F6-M). |
 
 ## Fuera de alcance (7.24)
 
@@ -370,7 +373,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PS to PDF (`/en/ps-to-pdf`) | — | sin equivalente | Fuera de alcance (7.24): PostScript depende de Ghostscript (AGPL). Posible con licencia comercial o tras revisión legal. |
 | Markdown to PDF (`/en/markdown-to-pdf`) | `markdown-a-pdf` | disponible |  |
 | PUB to PDF (`/en/pub-to-pdf`) | `pub-a-pdf` | disponible |  |
-| UDF to PDF (`/en/udf-to-pdf`) | `udf-a-pdf` | pendiente (F6) |  |
+| UDF to PDF (`/en/udf-to-pdf`) | `udf-a-pdf` | disponible, apagada (ver «Desactivadas») |  |
 | OFD to PDF (`/en/ofd-to-pdf`) | — | sin equivalente | No está en el catálogo de 7 ni en 7.23 (formato OFD chino). Pendiente de decisión del propietario; sin motor libre conocido revisado contra 11. |
 | Convert PDF to ... (`/en/convert-from-pdf`) | `convertir-desde-pdf` | disponible |  |
 | PDF to Word (`/en/pdf-to-word`) | `pdf-a-word` | disponible |  |
@@ -402,7 +405,7 @@ Cada herramienta web de tools.pdf24.org (lista revisada el 2026-11-14, `config/p
 | PDF Printer (`/en/pdf-printer`) | — | sin equivalente | No aplica (7.23): impresora virtual de escritorio; el equivalente es la PWA instalable (8.3). |
 | PDF Reader (`/en/pdf-reader`) | — | sin equivalente | No aplica (7.23): lector de escritorio; el equivalente es la PWA instalable (8.3) con lector-pdf. |
 
-Resumen: 115 disponibles, 3 pendientes de su fase y 6 sin equivalente (con su explicación).
+Resumen: 116 disponibles, 2 pendientes de su fase y 6 sin equivalente (con su explicación).
 
 ## Mejoras posteriores
 

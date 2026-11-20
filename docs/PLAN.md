@@ -128,7 +128,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F6-J | mbox-a-eml, mbox-a-pdf, pst-a-mbox, pst-a-pdf | Hecho (D-225); pst-a-mbox y pst-a-pdf apagadas hasta probarlas con un PST real |
 | F6-K | drawio-a-pdf, drawio-a-png, latex-a-pdf | Hecho (D-227); Landlock en el Docker del VPS, en DEPLOY-CHECKLIST |
 | F6-L | midi-a-mp3, midi-a-wav, musicxml-a-pdf, midi-a-pdf | Hecho (D-228) |
-| F6-M | captura-web, udf-a-pdf (`default_enabled=False`) | Pendiente (F4-Z) |
+| F6-M | captura-web, udf-a-pdf (`default_enabled=False`) | Hecho (D-229); udf-a-pdf apagada hasta probarla con documentos reales |
 | F6-N | mermaid-a-png, mermaid-a-svg, crear-tarjeta | Pendiente (F4-Z) |
 | F6-O1 | escribir-pdf: editor y exportación | Pendiente (F4-Z) |
 | F6-O2 | escribir-pdf: abrir, ODT, combinación de correspondencia y extras | Pendiente (F6-O1 y F6-A) |

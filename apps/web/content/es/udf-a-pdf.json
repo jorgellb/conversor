@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "UDF a PDF convierte documentos UDF, el formato del editor de documentos de UYAP, el sistema informático de la justicia de Turquía, en PDF. Los abogados, los juzgados y los ciudadanos turcos intercambian escritos y resoluciones en .udf, un formato que no se abre en Word ni en los lectores habituales.",
+    "Un documento UDF es un ZIP con un archivo content.xml que guarda todo el texto y, aparte, los párrafos, las tablas y las imágenes con su formato: negrita, cursiva, subrayado, tamaño y tipo de letra y alineación. Reconstruimos el documento a partir de esa estructura y lo imprimimos en A4, con las letras turcas (ğ, ü, ş, ı, ö, ç) correctas.",
+    "El formato no tiene una especificación pública, así que la conversión sigue la estructura conocida de los documentos UDF. Por eso esta herramienta está desactivada mientras la probamos con documentos reales de UYAP: no queremos ofrecer un resultado que pueda dejar fuera parte de un escrito judicial.",
+    "El XML del documento se lee de forma segura, sin cargar DTD ni entidades externas, y el PDF se genera en un navegador de nuestro servidor sin acceso a internet. Los documentos se borran al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios archivos .udf.",
+    "Espera a la conversión.",
+    "Descarga el PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿Se conservan las firmas electrónicas del UDF?",
+      "a": "No: el PDF reproduce el contenido del documento, pero la firma electrónica de UYAP no se traslada. Guarda el .udf original si necesitas la firma."
+    },
+    {
+      "q": "¿Por qué está desactivada?",
+      "a": "Porque el formato UDF no está documentado públicamente y queremos comprobarla con documentos reales antes de ofrecerla."
+    },
+    {
+      "q": "¿Puedo convertir un Word a UDF?",
+      "a": "No, solo de UDF a PDF."
+    }
+  ]
+}
