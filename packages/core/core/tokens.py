@@ -48,6 +48,23 @@ def verify_download(secret: str, job_id: str, filename: str, token: str, now: fl
     return hmac.compare_digest(expected, sig)
 
 
+def sign_request_file(secret: str, request_id: str, filename: str, who: str, ttl_seconds: int, now: float | None = None) -> str:
+    """Descarga de un archivo de una solicitud de firmas (/r/<id>/<archivo>, F4-C2): otro prefijo que las de /d/."""
+    exp = int((now or time.time()) + ttl_seconds)
+    who = who.replace(".", "")[:40]
+    return f"{exp}.{who}.{_mac(secret, f'r|{request_id}|{filename}|{exp}|{who}')}"
+
+
+def verify_request_file(secret: str, request_id: str, filename: str, token: str, now: float | None = None) -> bool:
+    try:
+        exp_s, who, sig = token.split(".", 2)
+    except ValueError:
+        return False
+    if not (exp_s.isascii() and exp_s.isdigit()) or exp_s != str(int(exp_s)) or int(exp_s) < (now or time.time()):
+        return False
+    return hmac.compare_digest(_mac(secret, f"r|{request_id}|{filename}|{exp_s}|{who}"), sig)
+
+
 def issue_anon_token(secret: str, client_id: str, ttl_seconds: int = 86400, now: float | None = None) -> str:
     payload = _b64(json.dumps({"sub": client_id, "exp": int((now or time.time()) + ttl_seconds)}, separators=(",", ":")).encode())
     return f"anon.{payload}.{_mac(secret, 'a|' + payload)}"

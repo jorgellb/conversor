@@ -1,0 +1,32 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Solicitar firmas te permite pedir a otras personas que firmen un PDF sin que tengan que instalar nada ni crearse una cuenta. Subes el documento, escribes el nombre y el correo de cada firmante y eliges si firman en orden (cada uno recibe el aviso cuando firma el anterior) o todos a la vez.",
+    "Cada firmante tiene su campo de firma: puedes usar los campos vacíos que ya tenga el PDF (por ejemplo, los que crees con «Hacer PDF rellenable») o dejar que añadamos una página de firmas al final, con un recuadro para cada persona.",
+    "El firmante recibe un enlace personal, abre el documento, pide un código de 6 cifras que le llega a su correo y firma dibujando o escribiendo su firma. Su firma queda en el PDF con el sello de la plataforma (PAdES B-T con sello de tiempo), que acredita la integridad del documento, la fecha y que firmó desde esa dirección de correo.",
+    "Cuando han firmado todos, el documento recibe un sello final PAdES B-LT, con la información de validación a largo plazo, y un certificado de auditoría en PDF con cada paso: creación, invitaciones, aperturas, códigos, consentimientos y firmas, con la huella SHA-256 del documento. Tú y los firmantes recibís por correo los enlaces de descarga."
+  ],
+  "faq": [
+    {
+      "q": "¿Los firmantes necesitan una cuenta?",
+      "a": "No. Solo quien pide las firmas necesita una cuenta, gratuita o Pro. Los firmantes firman desde el enlace de su correo."
+    },
+    {
+      "q": "¿Qué validez tiene esta firma?",
+      "a": "Es una firma electrónica simple acompañada del sello de la plataforma y de un registro de auditoría: acredita que el documento no ha cambiado, la fecha y que se firmó desde cada correo. No es una firma electrónica cualificada; si necesitas una, usa «Firmar PDF» con tu propio certificado."
+    },
+    {
+      "q": "¿Cuántos firmantes puedo añadir?",
+      "a": "Hasta 3 por solicitud y 3 solicitudes al día con la cuenta gratuita, y hasta 10 firmantes con Pro."
+    },
+    {
+      "q": "¿Qué pasa si alguien no firma?",
+      "a": "Puedes enviarle un recordatorio desde tu lista de solicitudes, que lleva un enlace nuevo. Si la solicitud caduca, si un firmante la rechaza o si la cancelas, se cierra y el documento se borra de nuestro servidor."
+    },
+    {
+      "q": "¿Cuánto tiempo guardáis el documento?",
+      "a": "Mientras la solicitud está abierta (de 3 a 30 días, lo eliges tú) y 30 días después de que firmen todos. Pasado ese tiempo se borran el documento firmado y el certificado, así que descárgalos y guárdalos."
+    }
+  ]
+}

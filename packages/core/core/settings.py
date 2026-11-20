@@ -51,6 +51,8 @@ class Settings(BaseSettings):
     ADMIN_EMAILS: str = "admin@ejemplo.test"
     SMTP_URL: str = ""
     MAIL_SHARE_DAILY_LIMIT: int = 10
+    # solicitar-firmas (7.7, F4-C2): solicitudes por cuenta Pro y día (gratis, FREE_SIGN_REQUESTS_PER_DAY en signreq).
+    SIGN_REQUEST_DAILY_LIMIT: int = 20
     MAIL_FROM: str = "no-responder@ejemplo.test"
 
     TURNSTILE_SITE_KEY: str = ""

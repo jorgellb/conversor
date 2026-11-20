@@ -94,6 +94,30 @@ plan y por clase de coste, IPv6 agrupada por /64 y `CF-Connecting-IP` solo desde
 - Google Drive y Dropbox: el navegador habla directamente con ellos (ámbito `drive.file`); ninguna credencial pasa por
   el servidor. Sus dominios solo entran en la CSP de las páginas de herramientas cuando su flag está activo y hay claves.
 
+## Solicitar firmas (F4-C2, D-202)
+
+- Solo pide firmas una cuenta con el correo verificado: Turnstile al crear, 3 solicitudes al día y 3 firmantes con la
+  cuenta gratuita (Pro: `SIGN_REQUEST_DAILY_LIMIT` y 10 firmantes), contadas en Valkey (borrar no devuelve el cupo), 5
+  abiertas a la vez (Pro, 50) y el documento preparado de un solo uso. Una dirección recibe como mucho 10 invitaciones o
+  recordatorios al día de cualquier cuenta; los recordatorios, uno por firmante y día y tres en total. Los sellos de la
+  solicitud cuentan para `SEAL_ACCOUNT_DAILY_LIMIT` al crearla. Cada invitación lleva «Informar de abuso».
+- El firmante entra con un token aleatorio de 32 bytes que viaja en el fragmento de la URL (#…, no llega al servidor web);
+  la base de datos solo guarda su hash y un recordatorio emite otro (el anterior deja de valer). Para firmar hace falta
+  un código de 6 cifras enviado a su correo: se guarda como HMAC con un secreto del servidor, caduca a los 15 minutos,
+  admite 5 intentos (el fallo se cuenta aunque la respuesta sea un error) y como mucho 5 códigos por hora y 20 en total,
+  con Turnstile. Rechazar también pide el código. El token va en la ruta de `/v1/sign/{token}` (9.1) y un filtro lo
+  quita de los logs de acceso de uvicorn.
+- Las fases `firmante` y `final` aplican el sello de la plataforma con el nombre del firmante y la auditoría: solo las
+  crean la API y beat, como trabajos de la solicitud (propietario «request»). POST /v1/jobs solo admite `preparar`
+  (`precheck`) y el worker vuelve a comprobar el propietario.
+- `files./r/<id>/<archivo>`: el documento en curso solo con el token de un firmante de esa solicitud mientras sigue
+  abierta; el firmado y el certificado, con enlaces HMAC (prefijo propio, distinto de `/d/`) que caducan con los archivos
+  (30 días). Rechazar, cancelar o caducar borra el documento al momento.
+- La imagen de la firma se decodifica, se limita (400 KB, 2000 × 1000) y se vuelve a codificar en PNG; el certificado de
+  auditoría escapa todo lo que viene de usuarios y Chromium (Gotenberg) no sale a la red.
+- Los firmantes ven los nombres de los demás, no sus correos; el certificado de auditoría (que reciben todos) sí lleva
+  los correos y la huella de la IP de cada paso, como prueba de la firma.
+
 ## Redacción y enlaces de PDF en el navegador (G1-A)
 
 - redactar-pdf, con los dos métodos, borra del archivo los objetos a los que ya no llega nada (el contenido sustituido

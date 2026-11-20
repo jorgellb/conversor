@@ -14,6 +14,9 @@ describe("CSP por petición (12.4)", () => {
     // Los conversores pueden acabar en una herramienta de servidor.
     expect(buildCsp("abc", "/es/convertir-archivo")).toContain("challenges.cloudflare.com");
     expect(buildCsp("abc", "/en/file-converter")).toContain("challenges.cloudflare.com");
+    // Página del firmante de solicitar-firmas: el código lleva Turnstile.
+    expect(buildCsp("abc", "/es/firmar-documento")).toContain("challenges.cloudflare.com");
+    expect(buildCsp("abc", "/en/sign-document")).toContain("challenges.cloudflare.com");
     expect(client).toContain("worker-src 'self' blob:");
   });
 });

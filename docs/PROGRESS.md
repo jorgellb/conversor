@@ -529,9 +529,20 @@ y anulación inmediata (`/v1/shares`). Contenido 8.2 es/en. Salvedades en D-200.
 Verificado aquí: pytest de integración (límites por plan, anulación, lista, sin cuenta). Sin verificar aquí: la página
 contra la pila completa.
 
+## F4-C2 (solicitar-firmas) y cierre de F4-C
+
+Página del propietario (firmantes, campos, orden, mensaje, caducidad y su lista con recordatorio, cancelar y descargas) y página
+privada del firmante (código por correo, firma, consentimiento, rechazo). `core/signreq.py` con la API y beat; sello B-T por
+firmante con la imagen dentro de la apariencia, sello final B-LT y certificado de auditoría. Revisión adversarial corregida
+(D-203). Salvedades en D-202.
+Verificado aquí: pytest del worker (fases, página de firmas, firmas válidas con pyHanko, fuente) y de integración de la API con
+PostgreSQL y Valkey (en orden, en paralelo, límites, códigos, rechazo, recordatorios, cancelación, caducidad, reintentos, nombre
+largo, exportación y borrado de cuenta) y e2e del navegador con la API simulada. Sin verificar aquí: la e2e de servidor con
+Mailpit y SoftHSM2 (escrita en `servidor.spec.ts`, en la CI, que sigue sin arrancar por la facturación de GitHub).
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4: F4-F, F4-A y F4-D hechos; siguen después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo
+- F3: cierre (F3-Z, `PLAN.md`). F4: F4-A, F4-B, F4-C, F4-D y F4-F hechos; siguen F4-E y F4-Z; luego F6, vídeo
   de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).

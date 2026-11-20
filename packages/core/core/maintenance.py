@@ -67,6 +67,16 @@ def cleanup_expired() -> dict:
     return counts
 
 
+@celery_app.task(name="core.maintenance.signature_requests")
+def signature_requests() -> dict:
+    """solicitar-firmas (F4-C2, D-202): pasa los resultados de los trabajos a cada solicitud, avisa al siguiente
+    firmante, crea el sellado final, caduca las solicitudes y borra los archivos de las terminadas hace 30 días."""
+    from core import signreq
+    from core.registry import load_registry
+
+    return signreq.tick(get_settings(), load_registry())
+
+
 @celery_app.task(name="core.maintenance.requeue_stale")
 def requeue_stale() -> int:
     """Reencola (intento nuevo) los trabajos `running` sin latido; al tercer intento, WORKER_LOST."""

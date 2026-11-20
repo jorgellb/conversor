@@ -306,9 +306,23 @@ class SignatureRequest(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
     owner_id: Mapped[str] = mapped_column(String(64), index=True)
     job_output_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("job_outputs.id", ondelete="SET NULL"))
-    status: Mapped[str] = mapped_column(String(16))
+    status: Mapped[str] = mapped_column(String(16), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    # Migración 0007 (F4-C2, D-202).
+    document_name: Mapped[str] = mapped_column(String(200), default="")
+    filename: Mapped[str] = mapped_column(String(130), default="")  # el documento en curso, en requests/<id>/
+    message: Mapped[str | None] = mapped_column(Text)
+    sequential: Mapped[bool] = mapped_column(Boolean, default=True)
+    locale: Mapped[str] = mapped_column(String(2), default="es")
+    owner_email: Mapped[str] = mapped_column(String(320), default="")
+    original_sha256: Mapped[str | None] = mapped_column(String(64))
+    document_sha256: Mapped[str | None] = mapped_column(String(64))
+    final_job_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
+    final_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    final_files: Mapped[list] = mapped_column(JSONB, default=list)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    purged_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class Signer(Base):
@@ -322,6 +336,14 @@ class Signer(Base):
     code_hash: Mapped[str | None] = mapped_column(String(128))
     status: Mapped[str] = mapped_column(String(16))
     signed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # Migración 0007 (F4-C2, D-202).
+    field: Mapped[str] = mapped_column(String(120), default="")
+    job_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
+    job_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    code_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    code_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    invited_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    viewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class AuditEvent(Base):
@@ -335,6 +357,7 @@ class AuditEvent(Base):
     ip_hash: Mapped[str | None] = mapped_column(String(64))
     user_agent: Mapped[str | None] = mapped_column(Text)
     document_sha256: Mapped[str | None] = mapped_column(String(64))
+    detail: Mapped[str | None] = mapped_column(Text)  # migración 0007: motivo del rechazo, campo firmado...
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 

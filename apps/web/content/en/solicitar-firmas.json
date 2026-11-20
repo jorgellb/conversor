@@ -1,0 +1,32 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Request signatures lets you ask other people to sign a PDF without them installing anything or creating an account. You upload the document, type each signer's name and email and choose whether they sign in order (each one is notified when the previous one signs) or all at once.",
+    "Each signer gets their own signature field: you can use the empty fields the PDF already has (for example, the ones you create with “Make PDF fillable”) or let us add a signature page at the end, with a box for each person.",
+    "The signer gets a personal link, opens the document, asks for a 6-digit code sent to their email and signs by drawing or typing their signature. Their signature goes into the PDF with the platform seal (PAdES B-T with a time stamp), which proves the integrity of the document, the date and that they signed from that email address.",
+    "Once everyone has signed, the document gets a final PAdES B-LT seal, with long-term validation data, and a PDF audit certificate with every step: creation, invitations, views, codes, consents and signatures, with the SHA-256 fingerprint of the document. You and the signers get the download links by email."
+  ],
+  "faq": [
+    {
+      "q": "Do signers need an account?",
+      "a": "No. Only the person requesting the signatures needs an account, free or Pro. Signers sign from the link in their email."
+    },
+    {
+      "q": "How valid is this signature?",
+      "a": "It is a simple electronic signature together with the platform seal and an audit trail: it proves that the document has not changed, the date and that it was signed from each email address. It is not a qualified electronic signature; if you need one, use “Sign PDF” with your own certificate."
+    },
+    {
+      "q": "How many signers can I add?",
+      "a": "Up to 3 per request and 3 requests a day with a free account, and up to 10 signers with Pro."
+    },
+    {
+      "q": "What if someone does not sign?",
+      "a": "You can send them a reminder from your list of requests, with a new link. If the request expires, a signer declines it or you cancel it, it is closed and the document is deleted from our server."
+    },
+    {
+      "q": "How long do you keep the document?",
+      "a": "While the request is open (3 to 30 days, your choice) and for 30 days after everyone signs. After that the signed document and the certificate are deleted, so download and keep them."
+    }
+  ]
+}

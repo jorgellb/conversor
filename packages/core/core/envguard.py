@@ -17,7 +17,8 @@ ALLOWED: dict[str, set[str]] = {
     "api": {"FILE_TOKEN_SECRET", "ANON_TOKEN_SECRET", "JOB_SECRETS_KEY", "STRIPE_SECRET_KEY",
             "STRIPE_WEBHOOK_SECRET", "SMTP_URL", "TURNSTILE_SECRET_KEY", "DATABASE_URL"},
     "apiint": {"FILE_TOKEN_SECRET", "ANON_TOKEN_SECRET", "DATABASE_URL", "SMTP_URL", "BACKUP_RESTIC_PASSWORD"},
-    "beat": {"DATABASE_URL", "SMTP_URL"},
+    # FILE_TOKEN_SECRET: los enlaces de descarga del correo final de solicitar-firmas (F4-C2, D-202).
+    "beat": {"DATABASE_URL", "SMTP_URL", "FILE_TOKEN_SECRET"},
     "migrate": {"DATABASE_URL"},
     "worker-pdf": {"JOB_SECRETS_KEY"},
     "worker-office": {"JOB_SECRETS_KEY"},

@@ -33,7 +33,9 @@ from tools.base import ToolContext, derived_name
 from tools.pdf.common import with_batch_zip
 
 log = logging.getLogger("worker")
-FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+# Noto Sans (OFL, en el propio paquete): pyHanko 0.38 escribe las anchuras de los glifos y los ajustes de TJ en
+# unidades de la fuente y solo acierta con 1000 por em; con DejaVu (2048) el texto del sello salía espaciado y cortado.
+FONT = str(Path(__file__).with_name("fonts") / "NotoSans-Regular.ttf")
 BOX = (210.0, 72.0)  # ancho y alto de la firma visible, en puntos
 MARGIN = 36.0
 MADRID = ZoneInfo("Europe/Madrid")

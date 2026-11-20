@@ -22,16 +22,17 @@ from core.errors import AppError, ErrorCode, message
 from core.filetype import detect, matches, normalize_ext
 from core.jobs import load_plan
 from core.logs import setup_logging
-from core.models import Share, Upload
+from core.models import SignatureRequest, Share, Signer, Upload
 from core.quotas import usage
 from core.registry import Registry
 from core.settings import Settings, get_settings
 from core.storage import Store
-from core.tokens import hash_token, verify_download
+from core.tokens import hash_token, verify_download, verify_request_file
 from tools.base import sha256_file
 
 DOWNLOAD_RE = re.compile(r"^/d/([0-9a-f-]{36})/([A-Za-z0-9._-]{1,130})$")
 SHARE_RE = re.compile(r"^/s/([0-9a-f-]{36})/([A-Za-z0-9._-]{1,130})$")
+REQUEST_RE = re.compile(r"^/r/([0-9a-f-]{36})/([A-Za-z0-9._-]{1,130})$")
 
 
 def _first(headers: dict, name: str) -> str | None:
@@ -170,7 +171,40 @@ def authorize_uri(uri: str, method: str, session: Session, settings: Settings) -
             return False
         share.downloads += 1
         return True
+    m = REQUEST_RE.match(parts.path)
+    if m and token:
+        return _authorize_request(session, settings, m.group(1), m.group(2), token)
     return False
+
+
+def _authorize_request(session: Session, settings: Settings, request_id: str, name: str, token: str) -> bool:
+    """solicitar-firmas (F4-C2, D-202): el documento en curso con el token del firmante mientras la solicitud sigue
+    abierta, y el documento firmado y el certificado con los enlaces firmados (HMAC) del correo final."""
+    from sqlalchemy import select
+
+    from core.signreq import ACTIVE
+
+    try:
+        req = session.get(SignatureRequest, uuid.UUID(request_id))
+    except ValueError:
+        return False
+    if req is None or req.purged_at is not None:
+        return False
+    if token.count(".") == 2:
+        return (req.status == "completed" and name in (req.final_files or [])
+                and verify_request_file(settings.FILE_TOKEN_SECRET, str(req.id), name, token))
+    if req.status not in ACTIVE or name != req.filename:
+        return False
+    signer = session.scalars(select(Signer).where(Signer.request_id == req.id, Signer.token_hash == hash_token(token))).first()
+    if signer is None or signer.status == "declined":
+        return False
+    if signer.viewed_at is None:
+        # El certificado distingue abrir la página de descargar el documento (la primera vez).
+        from core.signreq import audit
+
+        signer.viewed_at = datetime.now(timezone.utc)
+        audit(session, req, "viewed", signer.email, sha256=req.document_sha256)
+    return True
 
 
 def create_internal_app() -> FastAPI:

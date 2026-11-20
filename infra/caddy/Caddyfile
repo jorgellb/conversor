@@ -1,5 +1,6 @@
 # files.{{DOMINIO}} (4.4): descargas firmadas desde disco. Caddy pregunta a apiint (forward_auth) antes de servir
-# y nunca lista directorios. /d/<job>/<archivo> → jobs/<job>/out/<archivo>; /s/<id>/<archivo> → shares/<id>/<archivo>.
+# y nunca lista directorios. /d/<job>/<archivo> → jobs/<job>/out/<archivo>; /s/<id>/<archivo> → shares/<id>/<archivo>;
+# /r/<id>/<archivo> → requests/<id>/<archivo> (solicitar-firmas, D-202).
 {
 	admin off
 	auto_https off
@@ -69,6 +70,19 @@
 			}
 			import cabeceras_descarga
 			rewrite * /shares/{re.sh.1}/{re.sh.2}
+			root * /srv/files
+			file_server
+		}
+	}
+
+	@solicitud path_regexp rq ^/r/([0-9a-f-]{36})/([A-Za-z0-9._-]{1,130})$
+	handle @solicitud {
+		route {
+			forward_auth apiint:8001 {
+				uri /files/authorize
+			}
+			import cabeceras_descarga
+			rewrite * /requests/{re.rq.1}/{re.rq.2}
 			root * /srv/files
 			file_server
 		}

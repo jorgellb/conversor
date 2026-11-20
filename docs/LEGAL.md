@@ -39,3 +39,9 @@ Borrador para revisar con un especialista en protección de datos antes de anunc
 - La lista de confianza se descarga de la Comisión Europea y de los Estados miembros; el informe indica la fecha de la
   copia usada y avisa si está desactualizada.
 - El sello de la plataforma (F4-A2) no es cualificado con un token software y no se anuncia como tal (10).
+- solicitar-firmas (F4-C2, D-202) se presenta como firma electrónica simple con el sello de la plataforma y un registro
+  de auditoría (verificación por un código enviado al correo), nunca como avanzada ni cualificada; la página, el correo y
+  el certificado lo dicen. Por revisar con el asesor antes del lanzamiento: el texto del consentimiento que acepta el
+  firmante, el plazo de conservación de `audit_events` (hoy se borran, con los trabajos internos que los copian, al borrar la
+  solicitud o la cuenta del propietario;
+  12.5 deja el plazo al asesor) y los 30 días que se guardan el documento firmado y el certificado.

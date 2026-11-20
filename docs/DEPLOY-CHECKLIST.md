@@ -96,6 +96,10 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       con el XML dentro (D-192).
 - [ ] firmar-pdf con un certificado propio real (FNMT o de empresa, .p12 exportado con AES): la página lo abre, la firma sale
       PAdES B-T y Adobe Acrobat Reader y verificar-firmas-pdf la dan por buena con la identidad del titular (D-199).
+- [ ] solicitar-firmas con la pila real (F4-C2): la invitación, el código y el correo final llegan (SPF/DKIM del
+      dominio) sin ir a spam; el firmante firma desde el móvil; el documento final pasa por verificar-firmas-pdf y por
+      Adobe Reader con las firmas válidas; beat avanza una solicitud con la página cerrada. Revisar con el asesor el
+      consentimiento y la conservación de la auditoría (LEGAL).
 - [ ] Confirmar con OpenPeppol las condiciones de redistribución del Schematron de Peppol BIS 3.0 dentro de la imagen worker-utils (su repositorio no declara licencia; D-191 y LICENSES).
 - [ ] Con «Comprobar la revocación en línea», un PDF firmado con un certificado de la FNMT consulta su OCSP por `egressweb`
       (en el log de Smokescreen) y el informe dice «Comprobada en línea».

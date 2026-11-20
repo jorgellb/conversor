@@ -57,6 +57,52 @@ class FirmarOptions(BaseModel):
                                                        labels=CERTIFICATION, advanced=True)
 
 
+class Firmante(BaseModel):
+    """Un firmante de solicitar-firmas: en `preparar`, su campo (vacío: uno nuevo en la página de firmas); en `final`,
+    también su correo y cuándo firmó, para el certificado de auditoría."""
+
+    nombre: str = opt("", "Nombre", "Name", min_length=1, max_length=120)
+    campo: str = opt("", "Campo de firma vacío del PDF (vacío: uno nuevo)", "Empty signature field of the PDF (empty: a new one)",
+                     max_length=120, pattern=r"^[^.\x00-\x1f]*$")
+    correo: str = opt("", "Correo", "Email", max_length=320)
+    firmado: str = opt("", "Firmado", "Signed", max_length=40)
+
+
+class Evento(BaseModel):
+    evento: str = opt("", "Evento", "Event", max_length=40)
+    actor: str = opt("", "Quién", "Who", max_length=320)
+    fecha: str = opt("", "Fecha", "Date", max_length=40)
+    ip: str = opt("", "IP (hash)", "IP (hash)", max_length=32)
+    agente: str = opt("", "Navegador", "Browser", max_length=400)
+    sha256: str = opt("", "SHA-256 del documento", "Document SHA-256", max_length=64)
+    detalle: str = opt("", "Detalle", "Detail", max_length=500)
+
+
+def _solicitar_route(options: dict) -> tuple[str, str]:
+    """`preparar` añade campos en `workerpdf`; `firmante` y `final` sellan en `workersign`, el único con la clave."""
+    return ("pdf", "pdf") if options.get("fase", "preparar") == "preparar" else ("sign", "sign")
+
+
+class SolicitarOptions(BaseModel):
+    """solicitar-firmas (7.7, F4-C2, D-202). La página solo crea la fase `preparar`; `firmante` y `final` los crea la API
+    o beat para la solicitud (propietario «request»), nunca POST /v1/jobs."""
+
+    fase: Literal["preparar", "firmante", "final"] = opt("preparar", "Fase", "Step", advanced=True, labels={
+        "preparar": ("Preparar el documento", "Prepare the document"), "firmante": ("Firma de un firmante", "One signer's signature"),
+        "final": ("Sello final y certificado", "Final seal and certificate")})
+    firmantes: list[Firmante] = opt([], "Firmantes", "Signers", advanced=True, max_length=10)
+    campo: str = opt("", "Campo del firmante", "Signer field", max_length=120, advanced=True, show_if={"fase": ("firmante",)})
+    nombre: str = opt("", "Nombre del firmante", "Signer name", max_length=120, advanced=True, show_if={"fase": ("firmante",)})
+    correo: str = opt("", "Correo verificado del firmante", "Signer's verified email", max_length=320, advanced=True,
+                      show_if={"fase": ("firmante",)})
+    documento: str = opt("", "Documento", "Document", max_length=200, advanced=True, show_if={"fase": ("final",)})
+    solicitud: str = opt("", "Solicitud", "Request", max_length=40, advanced=True, show_if={"fase": ("final",)})
+    propietario: str = opt("", "Quién la pidió", "Requested by", max_length=320, advanced=True, show_if={"fase": ("final",)})
+    creada: str = opt("", "Creada", "Created", max_length=40, advanced=True, show_if={"fase": ("final",)})
+    original_sha256: str = opt("", "SHA-256 del original", "Original SHA-256", max_length=64, advanced=True, show_if={"fase": ("final",)})
+    eventos: list[Evento] = opt([], "Eventos", "Events", advanced=True, max_length=300, show_if={"fase": ("final",)})
+
+
 SPECS: list[ToolSpec] = [
     # A.6 y 10 (F4-A2): el sello de la plataforma en `workersign`, el único con el token y el PIN; «Insertar firma» en el
     # navegador (F4-B2a, D-196) y el certificado propio con firma interrumpida en `sign.verify` (F4-B2b, D-199). El sello,
@@ -79,6 +125,18 @@ SPECS: list[ToolSpec] = [
         summary_es="Comparte un PDF con un enlace privado que caduca cuando elijas y que puedes anular en cualquier momento.",
         summary_en="Share a PDF with a private link that expires when you choose and that you can revoke at any time.",
         related=("firmar-pdf", "proteger-pdf"),
+    ),
+    # 7.7 (F4-C2, D-202): flujo propio con pyHanko (nada de Documenso ni DocuSeal, AGPL). La página prepara el PDF con
+    # sus campos (fase `preparar`, `workerpdf`) y crea la solicitud con POST /v1/signature-requests; cada firmante sella
+    # su campo y, al final, el sello B-LT y el certificado de auditoría (fases `firmante` y `final`, `workersign`).
+    ToolSpec(
+        slug_es="solicitar-firmas", slug_en="request-signatures", name_es="Solicitar firmas", name_en="Request signatures",
+        category="sign", where="server", inputs=("pdf",), outputs=("pdf",), options=SolicitarOptions, worker_group="pdf",
+        cost_class="light", impl="tools.sign.solicitar:run", precheck="tools.sign.solicitar:precheck", launch=True,
+        phase="F4", time_limit=600, max_files=1, route=_solicitar_route,
+        summary_es="Pide a otras personas que firmen un PDF: invitación por correo, código de verificación, sello final y certificado de auditoría.",
+        summary_en="Ask other people to sign a PDF: email invitation, verification code, final seal and audit certificate.",
+        related=("firmar-pdf", "verificar-firmas-pdf"),
     ),
     # 7.23: en `sign.verify`, un contenedor de la imagen worker-sign sin el volumen del token ni el PIN, para que un PDF
     # hostil no conviva con la clave del sello (D-185). Categoría `sign`: nunca crea cliente de IA (6.6).

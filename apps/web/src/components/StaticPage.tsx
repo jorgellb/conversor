@@ -9,7 +9,7 @@ import { disabledByEnv } from "@/lib/flags";
 import { PLANS, TOOLS, clientSpec, nameOf, toolBySlugEs } from "@/lib/registry";
 import { SITE_NAME, pagePath, toolPath, type StaticKey } from "@/lib/site";
 
-import { AccountPage, AdminPage, AuthPage, ConverterPage, FileConverter } from "./LazyViews";
+import { AccountPage, AdminPage, AuthPage, ConverterPage, FileConverter, SignerPage } from "./LazyViews";
 import { ToolRunner } from "./ToolRunner";
 import { CreatePdfPage } from "./CreatePdfPage";
 import { LEGAL } from "./legal";
@@ -34,6 +34,8 @@ export async function StaticPage({ pageKey, locale, search = {} }: {
       return wrap(<ViewMessages namespaces={["admin", "adminAi"]}><AdminPage tools={TOOLS.map((t) => ({ slug: t.slug_es, name: nameOf(t, locale) }))} /></ViewMessages>);
     case "entrar":
       return wrap(<AuthPage mode="signIn" />);
+    case "firmarDocumento":
+      return <div className="mx-auto max-w-3xl px-4 py-8"><ViewMessages namespaces={["signerPage", "editor"]}><SignerPage /></ViewMessages></div>;
     case "registro":
       return wrap(<AuthPage mode="signUp" />);
     case "crearPdf":

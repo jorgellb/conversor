@@ -6,8 +6,10 @@ import { CLOUD_CSP, cloudConfig } from "./cloud-config";
 const TURNSTILE = "https://challenges.cloudflare.com";
 
 // Páginas con Turnstile: herramientas que pueden subir archivos (servidor o híbridas), los dos conversores (pueden acabar
-// en una herramienta de servidor) y escaner-pdf (su OCR opcional al terminar sube el PDF a ocr-pdf).
-const TURNSTILE_SLUGS = new Set<string>(["conversor-pdf", "pdf-converter", "convertir-archivo", "file-converter", "escaner-pdf", "pdf-scanner"]);
+// en una herramienta de servidor), escaner-pdf (su OCR opcional al terminar sube el PDF a ocr-pdf) y la página del
+// firmante de solicitar-firmas (el código de verificación lleva Turnstile, D-202).
+const TURNSTILE_SLUGS = new Set<string>(["conversor-pdf", "pdf-converter", "convertir-archivo", "file-converter", "escaner-pdf", "pdf-scanner",
+  "firmar-documento", "sign-document"]);
 const TOOL_SLUGS = new Set<string>();
 for (const tool of (registry as { tools: { slug_es: string; slug_en: string; where: string }[] }).tools) {
   TOOL_SLUGS.add(tool.slug_es);

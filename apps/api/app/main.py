@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.deps import client_ip, locale_of
-from app.routers import admin, ai, billing, health, jobs, me, session, share, tools
+from app.routers import admin, ai, billing, health, jobs, me, session, share, signreq, tools
 from core.errors import AppError, ErrorCode, message
 from core.logs import setup_logging
 from core.settings import get_settings
@@ -59,7 +59,7 @@ def create_app() -> FastAPI:
                           "errors": [{"loc": list(e.get("loc", [])), "msg": e.get("msg")} for e in exc.errors()]}}
         return JSONResponse(body, status_code=422)
 
-    for module in (health, tools, session, jobs, me, admin, billing, share, ai):
+    for module in (health, tools, session, jobs, me, admin, billing, share, signreq, ai):
         app.include_router(module.router)
     return app
 

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.deps import current_owner, current_user, db, settings_dep
 from core.jobs import Owner, load_plan
-from core.models import Job, Profile, Subscription, ToolFeedback, UsageDaily, UserToolPrefs
+from core.models import Job, Profile, SignatureRequest, Subscription, ToolFeedback, UsageDaily, UserToolPrefs
 from core.quotas import usage
 from core.settings import Settings
 from core.storage import Store
@@ -63,12 +63,37 @@ def export(owner: Owner = Depends(current_user), session: Session = Depends(db))
         "jobs": [{"id": str(j.id), "tool": j.tool, "status": j.status, "created_at": j.created_at.isoformat() if j.created_at else None} for j in jobs],
         "usage": [{"date": u.date.isoformat(), "class": u.cost_class, "tasks": u.tasks}
                   for u in session.scalars(select(UsageDaily).where(UsageDaily.owner_type == "user", UsageDaily.owner_id == owner.id)).all()],
+        "signature_requests": [_request_export(session, r) for r in session.scalars(
+            select(SignatureRequest).where(SignatureRequest.owner_id == owner.id)).all()],
+    }
+
+
+def _request_export(session: Session, req) -> dict:
+    """solicitar-firmas (D-202): la solicitud, sus firmantes y su auditoría, sin hashes de tokens ni de códigos."""
+    from core.models import AuditEvent, Signer
+
+    return {
+        "id": str(req.id), "document_name": req.document_name, "status": req.status,
+        "created_at": req.created_at.isoformat() if req.created_at else None,
+        "signers": [{"name": s.name, "email": s.email, "status": s.status, "signed_at": s.signed_at.isoformat() if s.signed_at else None}
+                    for s in session.scalars(select(Signer).where(Signer.request_id == req.id)).all()],
+        "events": [{"event": e.event, "actor": e.actor, "at": e.created_at.isoformat() if e.created_at else None}
+                   for e in session.scalars(select(AuditEvent).where(AuditEvent.request_id == req.id).order_by(AuditEvent.id)).all()],
     }
 
 
 @router.delete("")
 def delete_me(owner: Owner = Depends(current_user), session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
     store = Store(settings.FILESTORE_PATH)
+    # solicitar-firmas (D-202): sus solicitudes, con firmantes, auditoría y archivos; los trabajos de cada una también.
+    for req in session.scalars(select(SignatureRequest).where(SignatureRequest.owner_id == owner.id)).all():
+        for job in session.scalars(select(Job).where(Job.owner_type == "request", Job.owner_id == str(req.id))).all():
+            store.remove_job(str(job.id))
+            session.delete(job)
+        import shutil
+
+        shutil.rmtree(store.request_dir(str(req.id)), ignore_errors=True)
+        session.delete(req)
     for job in session.scalars(select(Job).where(Job.owner_type == "user", Job.owner_id == owner.id)).all():
         store.remove_job(str(job.id))
         session.delete(job)

@@ -26773,6 +26773,362 @@
       }
     },
     {
+      "slug_es": "solicitar-firmas",
+      "slug_en": "request-signatures",
+      "name_es": "Solicitar firmas",
+      "name_en": "Request signatures",
+      "summary_es": "Pide a otras personas que firmen un PDF: invitación por correo, código de verificación, sello final y certificado de auditoría.",
+      "summary_en": "Ask other people to sign a PDF: email invitation, verification code, final seal and audit certificate.",
+      "category": "sign",
+      "where": "server",
+      "worker_group": "pdf",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "pdf"
+      ],
+      "outputs": [
+        "pdf"
+      ],
+      "phase": "F4",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "secret_fields": [],
+      "related": [
+        "firmar-pdf",
+        "verificar-firmas-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "$defs": {
+          "Evento": {
+            "properties": {
+              "evento": {
+                "default": "",
+                "maxLength": 40,
+                "title": "Evento",
+                "type": "string",
+                "x-title": {
+                  "en": "Event",
+                  "es": "Evento"
+                }
+              },
+              "actor": {
+                "default": "",
+                "maxLength": 320,
+                "title": "Quién",
+                "type": "string",
+                "x-title": {
+                  "en": "Who",
+                  "es": "Quién"
+                }
+              },
+              "fecha": {
+                "default": "",
+                "maxLength": 40,
+                "title": "Fecha",
+                "type": "string",
+                "x-title": {
+                  "en": "Date",
+                  "es": "Fecha"
+                }
+              },
+              "ip": {
+                "default": "",
+                "maxLength": 32,
+                "title": "IP (hash)",
+                "type": "string",
+                "x-title": {
+                  "en": "IP (hash)",
+                  "es": "IP (hash)"
+                }
+              },
+              "agente": {
+                "default": "",
+                "maxLength": 400,
+                "title": "Navegador",
+                "type": "string",
+                "x-title": {
+                  "en": "Browser",
+                  "es": "Navegador"
+                }
+              },
+              "sha256": {
+                "default": "",
+                "maxLength": 64,
+                "title": "SHA-256 del documento",
+                "type": "string",
+                "x-title": {
+                  "en": "Document SHA-256",
+                  "es": "SHA-256 del documento"
+                }
+              },
+              "detalle": {
+                "default": "",
+                "maxLength": 500,
+                "title": "Detalle",
+                "type": "string",
+                "x-title": {
+                  "en": "Detail",
+                  "es": "Detalle"
+                }
+              }
+            },
+            "title": "Evento",
+            "type": "object"
+          },
+          "Firmante": {
+            "description": "Un firmante de solicitar-firmas: en `preparar`, su campo (vacío: uno nuevo en la página de firmas); en `final`,\ntambién su correo y cuándo firmó, para el certificado de auditoría.",
+            "properties": {
+              "nombre": {
+                "default": "",
+                "maxLength": 120,
+                "minLength": 1,
+                "title": "Nombre",
+                "type": "string",
+                "x-title": {
+                  "en": "Name",
+                  "es": "Nombre"
+                }
+              },
+              "campo": {
+                "default": "",
+                "maxLength": 120,
+                "pattern": "^[^.\\x00-\\x1f]*$",
+                "title": "Campo de firma vacío del PDF (vacío: uno nuevo)",
+                "type": "string",
+                "x-title": {
+                  "en": "Empty signature field of the PDF (empty: a new one)",
+                  "es": "Campo de firma vacío del PDF (vacío: uno nuevo)"
+                }
+              },
+              "correo": {
+                "default": "",
+                "maxLength": 320,
+                "title": "Correo",
+                "type": "string",
+                "x-title": {
+                  "en": "Email",
+                  "es": "Correo"
+                }
+              },
+              "firmado": {
+                "default": "",
+                "maxLength": 40,
+                "title": "Firmado",
+                "type": "string",
+                "x-title": {
+                  "en": "Signed",
+                  "es": "Firmado"
+                }
+              }
+            },
+            "title": "Firmante",
+            "type": "object"
+          }
+        },
+        "description": "solicitar-firmas (7.7, F4-C2, D-202). La página solo crea la fase `preparar`; `firmante` y `final` los crea la API\no beat para la solicitud (propietario «request»), nunca POST /v1/jobs.",
+        "properties": {
+          "fase": {
+            "default": "preparar",
+            "enum": [
+              "preparar",
+              "firmante",
+              "final"
+            ],
+            "title": "Fase",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "final": {
+                "en": "Final seal and certificate",
+                "es": "Sello final y certificado"
+              },
+              "firmante": {
+                "en": "One signer's signature",
+                "es": "Firma de un firmante"
+              },
+              "preparar": {
+                "en": "Prepare the document",
+                "es": "Preparar el documento"
+              }
+            },
+            "x-title": {
+              "en": "Step",
+              "es": "Fase"
+            }
+          },
+          "firmantes": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Firmante"
+            },
+            "maxItems": 10,
+            "title": "Firmantes",
+            "type": "array",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Signers",
+              "es": "Firmantes"
+            }
+          },
+          "campo": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Campo del firmante",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "firmante"
+              ]
+            },
+            "x-title": {
+              "en": "Signer field",
+              "es": "Campo del firmante"
+            }
+          },
+          "nombre": {
+            "default": "",
+            "maxLength": 120,
+            "title": "Nombre del firmante",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "firmante"
+              ]
+            },
+            "x-title": {
+              "en": "Signer name",
+              "es": "Nombre del firmante"
+            }
+          },
+          "correo": {
+            "default": "",
+            "maxLength": 320,
+            "title": "Correo verificado del firmante",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "firmante"
+              ]
+            },
+            "x-title": {
+              "en": "Signer's verified email",
+              "es": "Correo verificado del firmante"
+            }
+          },
+          "documento": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Documento",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "final"
+              ]
+            },
+            "x-title": {
+              "en": "Document",
+              "es": "Documento"
+            }
+          },
+          "solicitud": {
+            "default": "",
+            "maxLength": 40,
+            "title": "Solicitud",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "final"
+              ]
+            },
+            "x-title": {
+              "en": "Request",
+              "es": "Solicitud"
+            }
+          },
+          "propietario": {
+            "default": "",
+            "maxLength": 320,
+            "title": "Quién la pidió",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "final"
+              ]
+            },
+            "x-title": {
+              "en": "Requested by",
+              "es": "Quién la pidió"
+            }
+          },
+          "creada": {
+            "default": "",
+            "maxLength": 40,
+            "title": "Creada",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "final"
+              ]
+            },
+            "x-title": {
+              "en": "Created",
+              "es": "Creada"
+            }
+          },
+          "original_sha256": {
+            "default": "",
+            "maxLength": 64,
+            "title": "SHA-256 del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "final"
+              ]
+            },
+            "x-title": {
+              "en": "Original SHA-256",
+              "es": "SHA-256 del original"
+            }
+          },
+          "eventos": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Evento"
+            },
+            "maxItems": 300,
+            "title": "Eventos",
+            "type": "array",
+            "x-advanced": true,
+            "x-show-if": {
+              "fase": [
+                "final"
+              ]
+            },
+            "x-title": {
+              "en": "Events",
+              "es": "Eventos"
+            }
+          }
+        },
+        "title": "SolicitarOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "verificar-firmas-pdf",
       "slug_en": "verify-pdf-signatures",
       "name_es": "Verificar firmas de PDF",

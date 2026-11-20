@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { BoardEditor, BookmarksEditor, ChatPdfView, CollageView, CompareView, CopyView, FormDesigner, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
-  SearchView } from "@/components/LazyViews";
+  SearchView, SignatureRequestView } from "@/components/LazyViews";
 import { Feedback } from "@/components/Feedback";
 import { StaticPage } from "@/components/StaticPage";
 import { ViewMessages, type ViewNamespace } from "@/components/ViewMessages";
@@ -38,6 +38,7 @@ const VIEW_OF: Record<string, readonly ViewNamespace[]> = {
   "generar-codigo-qr": ["qr"], "crear-collage": ["collage"], "chat-pdf": ["chatPdf"], "lector-pdf": ["viewer"], "imprimir-pdf": ["printjob"],
   "hacer-pdf-rellenable": ["formDesigner"], "crear-formulario-pdf": ["formDesigner"],
   "editar-pdf": ["editor"], "rellenar-pdf": ["editor"], "redactar-pdf": ["editor"], "anotar-pdf": ["editor"], "firmar-pdf": ["editor", "signPdf"],
+  "solicitar-firmas": ["signRequest"],
 };
 
 function isIndexable(tool: ToolSpec, locale: Locale): boolean {
@@ -86,7 +87,7 @@ export async function generateMetadata({ params, searchParams }: Params): Promis
       ...(shared ? { robots: { index: false, follow: true } } : { alternates: alternates(locale, slug) }),
     };
   }
-  const namespace = key === "crearPdf" ? "createPdf" : key === "conversorPdf" ? "converter" : null;
+  const namespace = key === "crearPdf" ? "createPdf" : key === "conversorPdf" ? "converter" : key === "firmarDocumento" ? "signerPage" : null;
   const titled = namespace ? await getTranslations({ locale, namespace }) : null;
   return {
     ...(titled ? { title: titled("title"), description: titled("description") } : {}),
@@ -209,6 +210,8 @@ export default async function SlugPage({ params, searchParams }: Params) {
           <ChatPdfView spec={clientSpec(tool, locale)} />
         ) : tool.slug_es === "lector-pdf" && !disabledByEnv(tool.slug_es) ? (
           <PdfViewer spec={clientSpec(tool, locale)} nextTools={nextTools} />
+        ) : tool.slug_es === "solicitar-firmas" && !disabledByEnv(tool.slug_es) ? (
+          <SignatureRequestView spec={clientSpec(tool, locale)} />
         ) : FORM_DESIGNERS.includes(tool.slug_es) && !disabledByEnv(tool.slug_es) ? (
           <FormDesigner spec={clientSpec(tool, locale)} startBlank={tool.slug_es === "crear-formulario-pdf"} />
         ) : EDITORS[tool.slug_es] && !disabledByEnv(tool.slug_es) ? (

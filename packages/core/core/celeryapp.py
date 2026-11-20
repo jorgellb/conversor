@@ -45,6 +45,8 @@ def make_celery() -> Celery:
         beat_schedule={
             "cleanup-expired": {"task": "core.maintenance.cleanup_expired", "schedule": 300.0},
             "requeue-stale": {"task": "core.maintenance.requeue_stale", "schedule": 60.0},
+            # solicitar-firmas (F4-C2): la API también avanza cada solicitud al consultarla; esto es lo que no espera a nadie.
+            "signature-requests": {"task": "core.maintenance.signature_requests", "schedule": 60.0, "options": {"expires": 55}},
             "disk-alert": {"task": "core.maintenance.disk_alert", "schedule": 300.0},
             "find-orphans": {"task": "core.maintenance.find_orphans", "schedule": crontab(hour=4, minute=17)},
             "ai-models": {"task": "core.ai.tasks.refresh_models", "schedule": max(1, settings.LLM_MODELS_REFRESH_HOURS) * 3600.0},

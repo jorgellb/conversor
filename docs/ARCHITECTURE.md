@@ -14,7 +14,7 @@ workeraiembed (cola ai.embed, embeddings locales, sin salida) ─▶ PostgreSQL 
 workerutils (cola utils.light, KoSIT en 127.0.0.1:8081 dentro del contenedor, sin salida)
 workersign (cola sign, token SoftHSM2 y PIN) ─(webrender)─▶ egressweb ─▶ TSA, OCSP y CRL del sello
 workersignverify (cola sign.verify, sin token ni PIN) ─(webrender)─▶ egressweb ─▶ lista de confianza de la UE, OCSP y CRL
-PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files) · volumen backups (/srv/backups) · volumen eutl (/srv/eutl) · volumen softhsm (solo workersign)
+PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files, con requests/ de solicitar-firmas) · volumen backups (/srv/backups) · volumen eutl (/srv/eutl) · volumen softhsm (solo workersign)
 ```
 
 ## Dónde se procesa (5.1)
@@ -76,6 +76,18 @@ y al tercer intento los deja en `WORKER_LOST`. Los errores transitorios (Gotenbe
 sobre cifrado. Las colas `office` y `av` tienen procesos `light` y `heavy`; Calibre va en `office.heavy`.
 Cada trabajo guarda el idioma de la página que lo creó (`jobs.locale`, migración 0003) y la herramienta lo recibe en
 `ToolContext.locale` para los textos que van dentro del resultado (D-54).
+
+### Solicitudes de firma (F4-C2, D-202)
+
+solicitar-firmas encadena trabajos sin que nadie los espere: la página crea la fase `preparar` (`workerpdf`, campos de
+firma) y `POST /v1/signature-requests` guarda la solicitud y copia el PDF a `/srv/files/requests/<id>/` (desviación de
+4.1: dura más que la retención de 24 h). `core/signreq.py` es la máquina de estados que usan la API (al crear, al firmar y
+en cada consulta) y beat (`core.maintenance.signature_requests`, cada minuto): crea los trabajos de la solicitud
+(propietario «request»; fase `firmante` por firmante y `final`, en `workersign`), uno a la vez porque cada firma se
+apoya en la anterior; pasa cada resultado al documento de la solicitud con copia y `rename`; invita al siguiente
+firmante en orden; caduca las solicitudes, reintenta un trabajo fallido hasta tres veces con espera creciente y borra
+los archivos 30 días después de terminar. Los correos y el encolado van después del commit. `files./r/<id>/<archivo>`
+sirve el documento y el resultado final con la autorización de `apiint`.
 
 ## Datos
 

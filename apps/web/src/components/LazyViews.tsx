@@ -8,6 +8,8 @@ import dynamic from "next/dynamic";
 
 export const PdfEditor = dynamic(() => import("./editor/PdfEditor").then((m) => m.PdfEditor));
 export const FormDesigner = dynamic(() => import("./editor/FormDesigner").then((m) => m.FormDesigner));
+export const SignatureRequestView = dynamic(() => import("./sign/SignatureRequestView").then((m) => m.SignatureRequestView));
+export const SignerPage = dynamic(() => import("./sign/SignerPage").then((m) => m.SignerPage));
 export const PdfViewer = dynamic(() => import("./viewer/PdfViewer").then((m) => m.PdfViewer));
 export const BoardEditor = dynamic(() => import("./f2/BoardEditor").then((m) => m.BoardEditor));
 export const BookmarksEditor = dynamic(() => import("./f2/BookmarksEditor").then((m) => m.BookmarksEditor));

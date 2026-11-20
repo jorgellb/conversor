@@ -18,13 +18,15 @@ export const STATIC_PAGES = {
   registro: { es: "registro", en: "sign-up" },
   conversorPdf: { es: "conversor-pdf", en: "pdf-converter" },
   convertirArchivo: { es: "convertir-archivo", en: "file-converter" },
+  // Página del firmante de solicitar-firmas (D-202): privada, con el token en el fragmento.
+  firmarDocumento: { es: "firmar-documento", en: "sign-document" },
   crearPdf: { es: "crear-pdf", en: "create-pdf" },
 } as const;
 
 export type StaticKey = keyof typeof STATIC_PAGES;
 
 /** Páginas privadas o de servicio: nunca indexables. */
-export const PRIVATE_PAGES: StaticKey[] = ["cuenta", "admin", "entrar", "registro"];
+export const PRIVATE_PAGES: StaticKey[] = ["cuenta", "admin", "entrar", "registro", "firmarDocumento"];
 
 export function staticKeyOf(slug: string, locale: Locale): StaticKey | undefined {
   return (Object.keys(STATIC_PAGES) as StaticKey[]).find((k) => STATIC_PAGES[k][locale] === slug);

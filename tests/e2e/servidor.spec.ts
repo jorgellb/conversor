@@ -116,3 +116,64 @@ test("chat-pdf con el LLM falso", async ({ page }) => {
   await page.getByRole("button", { name: "Preguntar", exact: true }).click();
   await expect(page.locator('[data-chat-message="assistant"]').last()).toContainText("Respuesta de prueba", { timeout: 60_000 });
 });
+
+/** Último correo que recibe `email` en Mailpit con `subject` en el asunto (texto plano). */
+async function mailText(page: Page, email: string, subject: string): Promise<string> {
+  let id = "";
+  await expect.poll(async () => {
+    const found = await (await page.request.get(`http://localhost:8025/api/v1/search?query=${encodeURIComponent(`to:${email} subject:"${subject}"`)}`)).json();
+    id = found.messages?.[0]?.ID ?? "";
+    return id;
+  }, { timeout: 60_000 }).not.toBe("");
+  return (await (await page.request.get(`http://localhost:8025/api/v1/message/${id}`)).json()).Text as string;
+}
+
+// 7.7 y cierre de F4 (17): solicitar-firmas de extremo a extremo con Mailpit, el sello de desarrollo de SoftHSM2 y la
+// TSA de certomancer: invitación, código, firma, sello final B-LT, certificado de auditoría y descarga.
+test("solicitar-firmas: invitación, código por correo, firma y documento sellado", async ({ page, browser }) => {
+  test.setTimeout(300_000);
+  const owner = `e2e-pide-${Date.now()}@ejemplo.test`;
+  const signer = `e2e-firma-${Date.now()}@ejemplo.test`;
+  await page.goto("/es/registro");
+  await page.getByLabel("Correo electrónico").fill(owner);
+  await page.getByLabel("Contraseña").fill("contrasena-de-prueba");
+  await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
+  await expect(page.getByText("Te hemos enviado un correo")).toBeVisible();
+  await page.goto(await verificationLink(page, owner));
+  await page.goto("/es/solicitar-firmas");
+  await page.getByLabel("Documento PDF").setInputFiles(path.join(FIXTURES, "texto.pdf"));
+  const row = page.locator("[data-signer='0']");
+  await row.getByLabel("Nombre").fill("Eva Firmante");
+  await row.getByLabel("Correo").fill(signer);
+  await page.getByRole("button", { name: "Preparar y enviar las invitaciones" }).click();
+  await expect(page.getByRole("status")).toContainText("Solicitud de «texto.pdf» creada", { timeout: 120_000 });
+
+  const invite = await mailText(page, signer, "te pide que firmes");
+  const link = /https?:\/\/\S+#[A-Za-z0-9_-]+/.exec(invite)![0];
+  const other = await browser.newContext();
+  const sp = await other.newPage();
+  await sp.goto(link);
+  await expect(sp.getByText(`${owner} te pide que firmes este documento, Eva Firmante.`)).toBeVisible();
+  await sp.getByRole("button", { name: "Enviar el código" }).click();
+  const code = /\b(\d{6})\b/.exec(await mailText(page, signer, "Tu código para firmar"))![1];
+  await sp.getByLabel("Código").fill(code);
+  await sp.getByRole("button", { name: "Dibujar o escribir la firma" }).click();
+  const dialog = sp.getByRole("dialog", { name: "Firma" });
+  await dialog.getByRole("tab", { name: "Escribir" }).click();
+  await dialog.getByLabel("Tu nombre").fill("Eva Firmante");
+  await dialog.getByRole("button", { name: "Usar la firma" }).click();
+  await sp.getByRole("checkbox", { name: /Acepto firmar electrónicamente/ }).check();
+  await sp.getByRole("button", { name: "Firmar", exact: true }).click();
+  await expect(sp.getByText("Todos han firmado.")).toBeVisible({ timeout: 180_000 });
+  const files = sp.locator("a[download]");
+  await expect(files).toHaveCount(2);
+  const signed = await sp.request.get((await files.nth(0).getAttribute("href"))!);
+  expect(signed.status()).toBe(200);
+  // Los diccionarios de firma nunca van comprimidos (su /Contents se rellena en el sitio): el del firmante y el final.
+  const body = (await signed.body()).toString("latin1");
+  expect(body.match(/\/ByteRange/g)?.length).toBe(2);
+  const certificate = await sp.request.get((await files.nth(1).getAttribute("href"))!);
+  expect(certificate.status()).toBe(200);
+  expect((await mailText(page, owner, "ya está firmado por todos"))).toContain("/r/");
+  await other.close();
+});

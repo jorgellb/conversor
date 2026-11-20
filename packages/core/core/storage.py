@@ -63,8 +63,15 @@ class Store:
             raise ValueError("Identificador de compartición no válido")
         return self.root / "shares" / str(share_id)
 
+    def request_dir(self, request_id: str) -> Path:
+        """solicitar-firmas (F4-C2): el documento vive aquí mientras dura la solicitud, fuera de la retención de 24 h
+        de los trabajos (desviación de 4.1, D-202)."""
+        if not re.fullmatch(r"[0-9a-f-]{36}", str(request_id)):
+            raise ValueError("Identificador de solicitud no válido")
+        return self.root / "requests" / str(request_id)
+
     def ensure_layout(self) -> None:
-        for sub in ("uploads", "jobs", "shares"):
+        for sub in ("uploads", "jobs", "shares", "requests"):
             (self.root / sub).mkdir(parents=True, exist_ok=True)
 
     def ensure_job_dirs(self, job_id: str) -> None:
