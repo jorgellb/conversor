@@ -63,7 +63,7 @@ describe("escribir-pdf: Markdown y Word", () => {
   it("Markdown con índice, notas, fórmulas, tareas y tablas", () => {
     const md = toMarkdown(DOC, { toc: "Índice", notes: "Notas" });
     expect(md).toContain("# Título \\*uno\\*");
-    expect(md).toContain("- [Título \\*uno\\*](#titulo-uno)");
+    expect(md).toContain("- [Título \\*uno\\*](#título-uno)");
     expect(md).toContain("**negrita** y [enlace](https://ejemplo.test)[^1]$x^2$");
     expect(md).toContain("- [x] hecho");
     expect(md).toContain("| A | B\\|C |\n| --- | --- |\n| 1 | 2 |");
@@ -115,6 +115,45 @@ describe("escribir-pdf: combinación de correspondencia y abrir documentos", () 
     expect(html).toContain("<h1>Título Word</h1>");
     expect(html).toContain("<strong>negrita</strong>");
     await expect(htmlFromFile(new File(["x"], "a.exe"), run)).rejects.toBeInstanceOf(OpenError);
+  });
+});
+
+describe("escribir-pdf: revisión de Markdown y Word (D-238)", () => {
+  it("código sin escapes, listas anidadas, principio de línea, $ y anclas duplicadas", () => {
+    const md = toMarkdown({ type: "doc", content: [
+      { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: "Datos del año" }] },
+      { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: "Datos del año" }] },
+      { type: "tableOfContents" },
+      { type: "paragraph", content: [{ type: "text", text: "usa my_var y a*b", marks: [{ type: "code" }] }, { type: "text", text: " cuesta $5 y " },
+        { type: "text", text: "neg ", marks: [{ type: "bold" }] }, { type: "text", text: "rita" }] },
+      { type: "paragraph", content: [{ type: "text", text: "1. no es una lista" }] },
+      { type: "orderedList", attrs: { start: 1 }, content: [{ type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "uno" }] },
+        { type: "bulletList", content: [{ type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "hijo" }] }] }] }] }] },
+      { type: "codeBlock", content: [{ type: "text", text: "a ``` b" }] },
+    ] }, { toc: "Índice", notes: "Notas" });
+    expect(md).toContain("`usa my_var y a*b`");
+    expect(md).toContain("cuesta \\$5 y **neg** rita");
+    expect(md).toContain("1\\. no es una lista");
+    expect(md).toContain("1. uno\n   - hijo");
+    expect(md).toContain("(#datos-del-año)");
+    expect(md).toContain("(#datos-del-año-1)");
+    expect(md).toContain("````\na ``` b\n````");
+  });
+
+  it("Word: cada lista numerada con su instancia y su inicio", async () => {
+    const { toDocx } = await import("../src/lib/escribir/docx");
+    const item = (text: string) => ({ type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text }] }] });
+    const blob = await toDocx({ type: "doc", content: [
+      { type: "orderedList", attrs: { start: 1 }, content: [item("a"), item("b")] },
+      { type: "paragraph", content: [{ type: "text", text: "entre medias" }] },
+      { type: "orderedList", attrs: { start: 5 }, content: [item("c")] },
+    ] }, { papel: "A4", orientacion: "vertical", margenes_mm: 25, fuente: "serif", encabezado: "", pie: "", numeros_pagina: "ninguno",
+      formato_numero: "n", titulo: "", autor: "", asunto: "", palabras_clave: "", idioma: "es" }, { toc: "Índice" });
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const files = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    const ids = [...strFromU8(files["word/document.xml"]).matchAll(/<w:numId w:val="(\d+)"\/>/g)].map((m) => m[1]);
+    expect(new Set(ids).size).toBe(2);
+    expect(strFromU8(files["word/numbering.xml"])).toContain('w:start w:val="5"');
   });
 });
 

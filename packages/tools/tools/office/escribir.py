@@ -27,8 +27,34 @@ from tools.office.office_a_pdf import select_pages
 MAX_HTML = 25 * 1024 * 1024
 FONTS = {"sans": '"Noto Sans", "Liberation Sans", sans-serif', "serif": '"Noto Serif", "Liberation Serif", serif',
          "mono": '"Noto Sans Mono", "Liberation Mono", monospace'}
-# La casilla del número de cada entrada del índice, con sus atributos en cualquier orden.
-TOC_SPAN = re.compile(r'(<span\b(?=[^>]*\bclass="toc-page")(?=[^>]*\bdata-toc="([A-Za-z][\w-]{0,80})")[^>]*>)[^<]*(</span>)')
+# La casilla del número de cada entrada del índice. Expresión sin anticipaciones (D-238: con ellas, un HTML con muchos
+# «<span » tardaba un tiempo cuadrático); los atributos se miran después, en el texto capturado.
+SPAN = re.compile(r"(<span\b([^<>]{0,2000})>)([^<]{0,40})(</span>)")
+TOC_ID = re.compile(r'\bdata-toc="([A-Za-z][\w-]{0,80})"')
+TOC_CLASS = re.compile(r'\bclass="toc-page"')
+# Lo que imprime Chromium no ejecuta nada ni carga nada de fuera del documento (ni file:///tmp de otros trabajos): solo
+# imágenes y fuentes en data: y estilos en la página. Se pone la primera en <head>: otra en el cuerpo no la relaja (D-238).
+PAGE_CSP = "default-src 'none'; img-src data:; style-src 'unsafe-inline'; font-src data:"
+SURROGATES = re.compile(r"[\ud800-\udfff]")
+
+
+def toc_entries(body: str) -> list[str]:
+    return [m.group(1) for span in SPAN.finditer(body) if TOC_CLASS.search(span.group(2)) for m in [TOC_ID.search(span.group(2))] if m]
+
+
+def fill_toc(body: str, number) -> str:
+    def sub(span: re.Match) -> str:
+        attrs = span.group(2)
+        m = TOC_ID.search(attrs)
+        if not m or not TOC_CLASS.search(attrs):
+            return span.group(0)
+        return f"{span.group(1)}{number(m.group(1))}{span.group(4)}"
+    return SPAN.sub(sub, body)
+
+
+def clean(text: str) -> str:
+    """Sin sustitutos sueltos (llegan en JSON y no se pueden codificar en UTF-8)."""
+    return SURROGATES.sub("", text or "")
 
 BASE_CSS = """
 html{font-size:11pt}
@@ -63,18 +89,20 @@ math[display="block"]{display:block;margin:6pt 0}
 """
 
 
-def _band(text: str, numbers: str, where: str, size_pt: float = 9) -> bytes:
+def _band(text: str, numbers: str, where: str, margin_mm: float = 25, size_pt: float = 9) -> bytes:
     """header.html o footer.html de Gotenberg: el texto propio y, si se piden, los números de página."""
     number = {"n": '<span class="pageNumber"></span>',
               "n_de_total": '<span class="pageNumber"></span> / <span class="totalPages"></span>'}.get(numbers, "")
-    left = html.escape(text or "")
+    left = html.escape(clean(text))
+    # Con los mismos márgenes laterales que el texto, para que el encabezado y el pie queden alineados con él.
     style = (f"html,body{{margin:0;padding:0}}body{{font-family:{FONTS['sans']};font-size:{size_pt}pt;color:#4b5563;"
-             "width:100%;padding:0 25mm;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center}")
+             f"width:100%;padding:0 {margin_mm:g}mm;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center}}")
     if where == "top":
         style += "body{padding-top:8mm}"
     else:
         style += "body{padding-bottom:8mm}"
-    return (f'<!doctype html><html><head><meta charset="utf-8"><style>{style}</style></head><body>'
+    return (f'<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{PAGE_CSP}">'
+            f'<style>{style}</style></head><body>'
             f"<span>{left}</span><span>{number}</span></body></html>").encode("utf-8")
 
 
@@ -83,19 +111,22 @@ def page_html(body: str, o, toc_numbers: dict[str, int] | None = None, placehold
     css = BASE_CSS % {"font": font, "mono": FONTS["mono"]}
     extra = ""
     if o.marca_agua.strip():
-        extra += f'<div class="marca-agua" aria-hidden="true">{html.escape(o.marca_agua.strip())}</div>'
+        extra += f'<div class="marca-agua" aria-hidden="true">{html.escape(clean(o.marca_agua.strip()))}</div>'
     if o.borde != "ninguno":
         extra += f'<div class="borde-pagina {o.borde}" aria-hidden="true"></div>'
         # El borde va en el límite del área de texto (Chromium recorta lo que sale de ella): el texto se separa de él.
-        css += "body{padding:2mm 4mm}"
+        # box-decoration-break: el relleno se repite en cada página, no solo en la primera.
+        css += "body{padding:2mm 4mm;box-decoration-break:clone;-webkit-box-decoration-break:clone}"
     if placeholder:
-        # Primera pasada: «000» reserva el sitio del número para que el índice ocupe lo mismo en las dos.
-        body = TOC_SPAN.sub(lambda m: f"{m.group(1)}000{m.group(3)}", body)
+        # Primera pasada: «0000» reserva el sitio del número (hasta 9999 páginas) para que el índice ocupe lo mismo en las dos.
+        body = fill_toc(body, lambda _key: "0000")
     elif toc_numbers is not None:
-        body = TOC_SPAN.sub(lambda m: f"{m.group(1)}{toc_numbers.get(m.group(2), '')}{m.group(3)}", body)
+        body = fill_toc(body, lambda key: str(toc_numbers.get(key, "")))
     lang = "en" if o.idioma == "en" else "es"
-    title = html.escape(o.titulo.strip() or "Documento")
-    return (f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><title>{title}</title><style>{css}</style></head>'
+    title = html.escape(clean(o.titulo.strip()) or "Documento")
+    body = clean(body)
+    return (f'<!doctype html><html lang="{lang}"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{PAGE_CSP}">'
+            f'<title>{title}</title><style>{css}</style></head>'
             f"<body>{extra}{body}</body></html>").encode("utf-8")
 
 
@@ -138,14 +169,17 @@ def _convert(ctx: ToolContext, page: bytes, o, dst: Path) -> None:
     footer = bool(o.pie.strip()) or o.numeros_pagina == "pie"
     files = [("index.html", page, "text/html")]
     if header:
-        files.append(("header.html", _band(o.encabezado, o.formato_numero if o.numeros_pagina == "encabezado" else "", "top"), "text/html"))
+        files.append(("header.html", _band(o.encabezado, o.formato_numero if o.numeros_pagina == "encabezado" else "", "top", o.margenes_mm), "text/html"))
     if footer:
-        files.append(("footer.html", _band(o.pie, o.formato_numero if o.numeros_pagina == "pie" else "", "bottom"), "text/html"))
+        files.append(("footer.html", _band(o.pie, o.formato_numero if o.numeros_pagina == "pie" else "", "bottom", o.margenes_mm), "text/html"))
     dst.write_bytes(gotenberg.chromium_html_files(ctx.settings.GOTENBERG_URL, files, _fields(o, header, footer)))
 
 
 def _letterhead(ctx: ToolContext, pdf_path: Path, letterhead: Path, first_only: bool) -> None:
-    with pikepdf.open(letterhead) as over, pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
+    from tools.pdf.common import open_pdf
+
+    # Con open_pdf: un membrete cifrado o dañado da su error (contraseña, archivo dañado), no uno interno (D-238).
+    with open_pdf(letterhead, None, 50) as over, pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
         if not len(over.pages):
             raise ToolError(ErrorCode.CORRUPT_FILE, "El membrete no tiene páginas")
         form = pdf.copy_foreign(over.pages[0].as_form_xobject())
@@ -161,18 +195,18 @@ def _letterhead(ctx: ToolContext, pdf_path: Path, letterhead: Path, first_only: 
 def _metadata(pdf_path: Path, o) -> None:
     with pikepdf.open(pdf_path, allow_overwriting_input=True) as pdf:
         with pdf.open_metadata(set_pikepdf_as_editor=False) as meta:
-            if o.titulo.strip():
-                meta["dc:title"] = o.titulo.strip()
-            if o.autor.strip():
-                meta["dc:creator"] = [o.autor.strip()]
-            if o.asunto.strip():
-                meta["dc:description"] = o.asunto.strip()
-            if o.palabras_clave.strip():
-                meta["pdf:Keywords"] = o.palabras_clave.strip()
+            if clean(o.titulo).strip():
+                meta["dc:title"] = clean(o.titulo).strip()
+            if clean(o.autor).strip():
+                meta["dc:creator"] = [clean(o.autor).strip()]
+            if clean(o.asunto).strip():
+                meta["dc:description"] = clean(o.asunto).strip()
+            if clean(o.palabras_clave).strip():
+                meta["pdf:Keywords"] = clean(o.palabras_clave).strip()
         info = pdf.docinfo
         for key, value in (("/Title", o.titulo), ("/Author", o.autor), ("/Subject", o.asunto), ("/Keywords", o.palabras_clave)):
-            if value.strip():
-                info[key] = value.strip()
+            if clean(value).strip():
+                info[key] = clean(value).strip()
         pdf.Root.Lang = pikepdf.String("en" if o.idioma == "en" else "es")
         if o.titulo.strip():
             pdf.Root.ViewerPreferences = pikepdf.Dictionary(DisplayDocTitle=True)
@@ -189,22 +223,29 @@ def run(ctx: ToolContext) -> list[dict]:
     if src.path.stat().st_size > MAX_HTML:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Documento de más de 25 MB")
     body = src.path.read_text(encoding="utf-8", errors="replace")
-    # Solo el cuerpo: si llega una página entera, se toma lo de dentro de <body>.
-    m = re.search(r"<body[^>]*>(.*)</body>", body, re.S | re.I)
-    if m:
-        body = m.group(1)
+    # Solo el cuerpo: si llega una página entera, lo de dentro de <body>, buscado sin expresiones que retrocedan (D-238).
+    lower = body.lower()
+    start = lower.find("<body")
+    end = lower.rfind("</body>")
+    if start >= 0 and end > start:
+        close = body.find(">", start)
+        if 0 <= close < end:
+            body = body[close + 1:end]
     ctx.report(0.1, None)
-    name = (re.sub(r"[^\w .,()-]+", "", o.titulo.strip(), flags=re.UNICODE).strip(" .")[:80] or "documento") + ".pdf"
+    name = (re.sub(r"[^\w .,()-]+", "", clean(o.titulo).strip(), flags=re.UNICODE).strip(" .")[:80] or "documento") + ".pdf"
     dst = ctx.output(name)
-    has_toc = bool(TOC_SPAN.search(body))
+    entries = toc_entries(body)
+    has_toc = bool(entries)
     _convert(ctx, page_html(body, o, placeholder=has_toc), o, dst)
+    # El límite de páginas del plan, ya tras la primera pasada: un documento demasiado largo no paga la segunda.
+    select_pages(dst, "todas", ctx.plan.pdf_pages)
     note = None
     if has_toc:
         # Segunda pasada: cada entrada del índice (data-toc = su orden) con la página de su título en el esquema.
         ctx.report(0.5, None)
         numbers = destination_pages(dst)
         _convert(ctx, page_html(body, o, numbers), o, dst)
-        if any(key not in numbers for _, key, _ in TOC_SPAN.findall(body)):
+        if any(key not in numbers for key in entries):
             note = {"es": "Algunos títulos del índice no tienen número: revisa que no haya títulos vacíos.",
                     "en": "Some table of contents entries have no number: check there are no empty headings."}.get(ctx.locale)
     ctx.report(0.8, None)

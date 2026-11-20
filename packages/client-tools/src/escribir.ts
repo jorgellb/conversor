@@ -5,6 +5,11 @@ import { PDFArray, PDFDict, PDFDocument, PDFName, PDFNumber, PDFRef, PDFString, 
 
 export const FIELD_HOST = "campo.invalid";
 
+/** pdf-lib usa el punto para la jerarquía de campos («a.b»): en el nombre interno va un punto medio (D-238). */
+export function fieldName(text: string): string {
+  return text.replace(/\./g, "·").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, 60) || "campo";
+}
+
 export interface FieldResult {
   bytes: Uint8Array;
   fields: number;
@@ -42,35 +47,51 @@ export async function addFieldsFromLinks(bytes: Uint8Array, locale: "es" | "en" 
       }
       const rect = annot.lookup(PDFName.of("Rect"));
       if (!(rect instanceof PDFArray) || rect.size() !== 4) continue;
-      found.push({ tipo: m[1], nombre: decodeURIComponent(m[2]).slice(0, 60), rect: [0, 1, 2, 3].map((k) => (rect.lookup(k) as PDFNumber).asNumber()) });
+      let label: string;
+      try {
+        label = decodeURIComponent(m[2]);
+      } catch {
+        label = m[2];
+      }
+      found.push({ tipo: m[1], nombre: label.slice(0, 60), rect: [0, 1, 2, 3].map((k) => (rect.lookup(k) as PDFNumber).asNumber()) });
     }
     if (!found.length) continue;
     const rest = pdf.context.obj(keep.map((i) => annots.get(i)));
     page.node.set(PDFName.of("Annots"), rest);
     for (const f of found) {
-      let name = f.nombre || "campo";
-      for (let n = 2; used.has(name); n += 1) name = `${f.nombre} ${n}`;
+      const base = fieldName(f.nombre);
+      let name = base;
+      for (let n = 2; used.has(name); n += 1) name = `${base} ${n}`;
       used.add(name);
       const [x1, y1, x2, y2] = f.rect;
       const x = Math.min(x1, x2);
       const y = Math.min(y1, y2);
       const width = Math.max(8, Math.abs(x2 - x1));
       const height = Math.max(8, Math.abs(y2 - y1));
-      if (f.tipo === "casilla") {
-        const box = form.createCheckBox(name);
-        const side = Math.min(width, height);
-        box.addToPage(page, { x, y, width: side, height: side, borderWidth: 0.6 });
-      } else {
-        const text = form.createTextField(name);
-        text.addToPage(page, { x, y, width, height, borderWidth: 0 });
-        text.setFontSize(Math.max(6, Math.min(11, height * 0.7)));
-        if (f.tipo === "fecha") {
-          text.setMaxLength(10);
-          // Sugerencia de formato para el lector de PDF.
-          (text.acroField.dict as PDFDict).set(PDFName.of("TU"), PDFString.of(locale === "en" ? "Date (dd/mm/yyyy)" : "Fecha (dd/mm/aaaa)"));
+      // Un campo que pdf-lib no acepte no tira el PDF entero: se queda con un nombre genérico o, si tampoco, sin campo.
+      for (const candidate of [name, `campo ${fields + 1}-${found.indexOf(f) + 1}`]) {
+        try {
+          const tooltip = f.tipo === "fecha" ? `${f.nombre} (${locale === "en" ? "dd/mm/yyyy" : "dd/mm/aaaa"})` : f.nombre;
+          if (f.tipo === "casilla") {
+            const box = form.createCheckBox(candidate);
+            const side = Math.min(width, height);
+            box.addToPage(page, { x, y, width: side, height: side, borderWidth: 0.6 });
+            (box.acroField.dict as PDFDict).set(PDFName.of("TU"), PDFHexString.fromText(tooltip));
+          } else {
+            const text = form.createTextField(candidate);
+            text.addToPage(page, { x, y, width, height, borderWidth: 0 });
+            text.setFontSize(Math.max(6, Math.min(11, height * 0.7)));
+            if (f.tipo === "fecha") text.setMaxLength(10);
+            // El nombre tal como lo escribió el usuario, como ayuda del lector de PDF.
+            (text.acroField.dict as PDFDict).set(PDFName.of("TU"), PDFHexString.fromText(tooltip));
+          }
+          used.add(candidate);
+          fields += 1;
+          break;
+        } catch {
+          // siguiente nombre
         }
       }
-      fields += 1;
     }
   }
   if (!fields) return { bytes, fields: 0 };

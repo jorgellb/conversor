@@ -15,6 +15,10 @@ type Ctx = {
   font: string;
   contentWidthPx: number;
   tocTitle: string;
+  /** Cada lista numerada con su propia instancia (si no, Word continúa la numeración de la anterior, D-238). */
+  instances: number;
+  /** Números de inicio distintos de 1: una definición de numeración por cada uno. */
+  starts: Set<number>;
 };
 
 const HEADINGS = [HeadingLevel.HEADING_1, HeadingLevel.HEADING_2, HeadingLevel.HEADING_3, HeadingLevel.HEADING_4, HeadingLevel.HEADING_5, HeadingLevel.HEADING_6];
@@ -108,20 +112,24 @@ function image(n: PMNode, ctx: Ctx): ImageRun | null {
   return new ImageRun({ type: bytes.type, data: bytes.data, transformation: { width: Math.round(width), height: Math.round(height) } });
 }
 
-function block(n: PMNode, ctx: Ctx, list?: { ref: string; level: number }): (Paragraph | Table | TableOfContents)[] {
+function block(n: PMNode, ctx: Ctx, list?: { ref: string; level: number; instance?: number }): (Paragraph | Table | TableOfContents)[] {
   const align = ALIGN[String(n.attrs?.textAlign ?? "")];
   switch (n.type) {
     case "paragraph":
-      return [new Paragraph({ children: inline(n.content, ctx), alignment: align, ...(list ? { numbering: { reference: list.ref, level: list.level } } : {}) })];
+      return [new Paragraph({ children: inline(n.content, ctx), alignment: align,
+        ...(list ? { numbering: { reference: list.ref, level: list.level, ...(list.instance ? { instance: list.instance } : {}) } } : {}) })];
     case "heading":
       return [new Paragraph({ heading: HEADINGS[Math.max(1, Math.min(6, Number(n.attrs?.level ?? 1))) - 1], alignment: align, children: inline(n.content, ctx) })];
     case "bulletList":
     case "orderedList": {
-      const ref = n.type === "bulletList" ? "vinetas" : "numerada";
+      const start = Math.max(1, Math.min(9999, Number(n.attrs?.start ?? 1) || 1));
+      if (n.type === "orderedList" && start !== 1) ctx.starts.add(start);
+      const ref = n.type === "bulletList" ? "vinetas" : start === 1 ? "numerada" : `numerada-${start}`;
       const level = list ? Math.min(8, list.level + 1) : 0;
+      const instance = n.type === "orderedList" ? (ctx.instances += 1) : list?.instance;
       return (n.content ?? []).flatMap((item) => (item.content ?? []).flatMap((child, i) => (child.type === "paragraph"
-        ? (i === 0 ? block(child, ctx, { ref, level }) : [new Paragraph({ children: inline(child.content, ctx), indent: { left: 720 * (level + 1) } })])
-        : block(child, ctx, { ref, level }))));
+        ? (i === 0 ? block(child, ctx, { ref, level, instance }) : [new Paragraph({ children: inline(child.content, ctx), indent: { left: 720 * (level + 1) } })])
+        : block(child, ctx, { ref, level, instance }))));
     }
     case "taskList":
       return (n.content ?? []).flatMap((item) => {
@@ -193,7 +201,7 @@ export async function toDocx(doc: PMNode, o: PageOptions, texts: { toc: string }
   const widthMm = landscape ? ph : pw;
   const ctx: Ctx = {
     footnotes: {}, images: await imageSizes(doc), font: FONT_NAMES[o.fuente] ?? FONT_NAMES.serif,
-    contentWidthPx: ((widthMm - 2 * o.margenes_mm) / 25.4) * 96, tocTitle: texts.toc,
+    contentWidthPx: ((widthMm - 2 * o.margenes_mm) / 25.4) * 96, tocTitle: texts.toc, instances: 0, starts: new Set(),
   };
   const children = (doc.content ?? []).flatMap((n) => block(n, ctx));
   const number = (): TextRun => new TextRun({ children: o.formato_numero === "n" ? [PageNumber.CURRENT] : [PageNumber.CURRENT, " / ", PageNumber.TOTAL_PAGES], size: 18, color: "4B5563" });
@@ -203,8 +211,8 @@ export async function toDocx(doc: PMNode, o: PageOptions, texts: { toc: string }
   });
   const header = o.encabezado.trim() || o.numeros_pagina === "encabezado" ? new Header({ children: [band(o.encabezado.trim(), o.numeros_pagina === "encabezado")] }) : undefined;
   const footer = o.pie.trim() || o.numeros_pagina === "pie" ? new Footer({ children: [band(o.pie.trim(), o.numeros_pagina === "pie")] }) : undefined;
-  const levels = (format: (typeof LevelFormat)[keyof typeof LevelFormat], text: (l: number) => string) => Array.from({ length: 9 }, (_, level) => ({
-    level, format, text: text(level), alignment: AlignmentType.LEFT,
+  const levels = (format: (typeof LevelFormat)[keyof typeof LevelFormat], text: (l: number) => string, start = 1) => Array.from({ length: 9 }, (_, level) => ({
+    level, format, text: text(level), alignment: AlignmentType.LEFT, start: level === 0 ? start : 1,
     style: { paragraph: { indent: { left: 720 * (level + 1), hanging: 360 } } },
   }));
   const document = new Document({
@@ -218,6 +226,7 @@ export async function toDocx(doc: PMNode, o: PageOptions, texts: { toc: string }
       config: [
         { reference: "vinetas", levels: levels(LevelFormat.BULLET, (l) => ["•", "◦", "▪"][l % 3]) },
         { reference: "numerada", levels: levels(LevelFormat.DECIMAL, (l) => `%${l + 1}.`) },
+        ...[...ctx.starts].map((start) => ({ reference: `numerada-${start}`, levels: levels(LevelFormat.DECIMAL, (l) => `%${l + 1}.`, start) })),
       ],
     },
     footnotes: ctx.footnotes,

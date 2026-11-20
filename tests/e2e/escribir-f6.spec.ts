@@ -62,7 +62,7 @@ test("escribir-pdf: títulos, tabla, índice, nota, fórmula y campo, a Word y a
   const text = md.bytes.toString("utf-8");
   expect(md.name).toBe("Informe de prueba.md");
   expect(text).toContain("# Informe de prueba");
-  expect(text).toContain("- [Datos del año](#datos-del-ano)");
+  expect(text).toContain("- [Datos del año](#datos-del-año)");
   expect(text).toContain("**negrita**[^1]$E=mc^2$");
   expect(text).toContain("[^1]: Fuente propia");
   expect(text).toMatch(/\| Columna A \|/);

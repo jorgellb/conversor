@@ -1847,6 +1847,7 @@
     "dictationStop": "Dejar de dictar",
     "dictationFailed": "No se ha podido usar el micrófono para dictar.",
     "readAloud": "Leer en voz alta",
-    "readStop": "Parar la lectura"
+    "readStop": "Parar la lectura",
+    "restoreVersion": "Recuperar la versión {title}"
   }
 }

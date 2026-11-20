@@ -47,7 +47,7 @@ def test_two_passes_fill_the_table_of_contents(make_ctx, tmp_path, fixtures_dir)
     out = run("escribir-pdf", make_ctx("escribir-pdf", [_write(tmp_path, "documento.html", BODY)], options))
     assert route.call_count == 2 and out[0]["name"] == "Informe anual.pdf" and out[0]["note"] is None
     first, second = (_parts(c.request) for c in route.calls)
-    assert b'data-toc="h-uno">000</span>' in first["index.html"]
+    assert b'data-toc="h-uno">0000</span>' in first["index.html"]
     assert b'data-toc="h-uno">1</span>' in second["index.html"] and b'data-toc="h-dos">2</span>' in second["index.html"]
     page = second["index.html"]
     assert b'lang="es"' in page and b"BORRADOR" in page and b"borde-pagina doble" in page and b"<title>Informe anual</title>" in page
@@ -91,3 +91,35 @@ def test_missing_destination_is_noted(make_ctx, tmp_path, fixtures_dir):
 def test_inputs_are_checked(make_ctx, tmp_path, fixtures_dir):
     with pytest.raises(ToolError):
         run("escribir-pdf", make_ctx("escribir-pdf", [fixtures_dir / "texto.pdf"]))
+
+
+@respx.mock
+def test_review_d238_linear_parsing_csp_and_bad_inputs(make_ctx, tmp_path, fixtures_dir):
+    """D-238: HTML con miles de «<span » o «<body>» se lee en tiempo lineal; la página lleva su CSP; un título con un
+    sustituto suelto no rompe nada y un membrete cifrado da su error."""
+    import time
+
+    from tools.office.escribir import fill_toc, toc_entries
+
+    t0 = time.monotonic()
+    assert toc_entries("<span " * 200_000) == [] and toc_entries('<span class="toc-page" ' * 30_000) == []
+    fill_toc("<body>" * 200_000, lambda _k: "1")
+    assert time.monotonic() - t0 < 3
+    route = respx.post(_gotenberg("/forms/chromium/convert/html")).mock(return_value=Response(200, content=CHROMIUM_PDF.read_bytes()))
+    out = run("escribir-pdf", make_ctx("escribir-pdf", [_write(tmp_path, "d.html", "<body>" * 5000 + "<p>x</p>")],
+                                       {"titulo": "Informe final", "pie": "pie", "numeros_pagina": "pie", "margenes_mm": 15}))
+    parts = _parts(route.calls.last.request)
+    assert b"Content-Security-Policy" in parts["index.html"] and b"default-src 'none'" in parts["index.html"]
+    assert b"padding:0 15mm" in parts["footer.html"] and out[0]["name"] == "Informe final.pdf"
+    # Un sustituto suelto no llega aquí: la validación de las opciones ya lo rechaza (INVALID_OPTIONS en la API).
+    from tools.office.specs import EscribirOptions
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        EscribirOptions(titulo="mal \ud800")
+    encrypted = tmp_path / "membrete.pdf"
+    with pikepdf.open(CHROMIUM_PDF) as pdf:
+        pdf.save(encrypted, encryption=pikepdf.Encryption(user="secreta", owner="secreta"))
+    with pytest.raises(ToolError) as err:
+        run("escribir-pdf", make_ctx("escribir-pdf", [_write(tmp_path, "e.html", "<p>x</p>"), encrypted]))
+    assert err.value.code == "PASSWORD_REQUIRED"

@@ -150,6 +150,8 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
   }, []);
   const turnstileBox = useRef<HTMLDivElement>(null);
   const restored = useRef(false);
+  // El borrador no se guarda hasta haber recuperado el anterior (si no, lo escrito antes de cargarlo lo pisaría).
+  const [ready, setReady] = useState(false);
 
   const extensions = useMemo(() => [
     StarterKit.configure({ link: { openOnClick: false, autolink: true, protocols: ["http", "https", "mailto"] }, heading: { levels: [1, 2, 3, 4, 5, 6] } }),
@@ -212,25 +214,28 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
         setValues((v) => ({ ...v, ...remembered }));
       }
       setVersions(await listVersions());
+      setReady(true);
     })();
   }, [editor, spec.slug, t]);
 
-  // Guardado automático del borrador al poco de dejar de escribir.
+  // Guardado automático del borrador al poco de dejar de escribir o de cambiar una opción de la página.
   useEffect(() => {
-    if (!editor) return;
+    if (!editor || !ready) return;
     let timer: ReturnType<typeof setTimeout> | null = null;
     const save = () => {
       if (timer) clearTimeout(timer);
       timer = setTimeout(async () => {
         if (await saveDraft(editor.getJSON() as PMNode, values, String(values.titulo ?? ""))) setSaved(Date.now());
+        else setSaved(null); // sin sitio o sin almacenamiento: no se dice que está guardado
       }, 1500);
     };
     editor.on("update", save);
+    save();
     return () => {
       editor.off("update", save);
       if (timer) clearTimeout(timer);
     };
-  }, [editor, values]);
+  }, [editor, values, ready]);
 
   useEffect(() => () => {
     if (preview) URL.revokeObjectURL(preview);
@@ -457,9 +462,13 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
 
   async function exportMarkdown() {
     if (!editor) return;
-    const { toMarkdown } = await import("@/lib/escribir/markdown");
-    download(new Blob([toMarkdown(editor.getJSON() as PMNode, { toc: t("toc"), notes: t("notesTitle") })], { type: "text/markdown" }), `${fileBase()}.md`);
-    setStatus(t("mdReady"));
+    try {
+      const { toMarkdown } = await import("@/lib/escribir/markdown");
+      download(new Blob([toMarkdown(editor.getJSON() as PMNode, { toc: t("toc"), notes: t("notesTitle") })], { type: "text/markdown" }), `${fileBase()}.md`);
+      setStatus(t("mdReady"));
+    } catch {
+      setBusy({ kind: "error", message: t("exportFailed") });
+    }
   }
 
   function fileBase(): string {
@@ -481,11 +490,11 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
   function matches(): { from: number; to: number }[] {
     if (!editor || !find.text) return [];
     const out: { from: number; to: number }[] = [];
-    const needle = find.caseSensitive ? find.text : find.text.toLowerCase();
+    // Con una expresión sobre el texto original: pasar a minúsculas puede cambiar la longitud («İ») y desplazar el reemplazo.
+    const re = new RegExp(find.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), find.caseSensitive ? "gu" : "giu");
     editor.state.doc.descendants((node, pos) => {
       if (!node.isText || !node.text) return;
-      const hay = find.caseSensitive ? node.text : node.text.toLowerCase();
-      for (let i = hay.indexOf(needle); i >= 0; i = hay.indexOf(needle, i + needle.length)) out.push({ from: pos + i, to: pos + i + needle.length });
+      for (const m of node.text.matchAll(re)) out.push({ from: pos + (m.index ?? 0), to: pos + (m.index ?? 0) + m[0].length });
     });
     return out;
   }
@@ -757,7 +766,7 @@ export function WriterView({ spec }: { spec: ClientSpec }) {
                 {versions.map((v) => (
                   <li key={v.id} className="flex items-center gap-2">
                     <span className="flex-1 truncate" title={v.title}>{v.title} · {new Date(v.savedAt).toLocaleString(locale)}</span>
-                    <button type="button" className="btn-secondary btn px-2 py-0.5 text-xs" onClick={() => restoreVersion(v)}>{t("restore")}</button>
+                    <button type="button" className="btn-secondary btn px-2 py-0.5 text-xs" aria-label={t("restoreVersion", { title: v.title })} onClick={() => restoreVersion(v)}>{t("restore")}</button>
                     <button type="button" className="btn-secondary btn px-2 py-0.5 text-xs" aria-label={t("deleteVersion", { title: v.title })}
                       onClick={() => void deleteVersion(v.id).then(async () => setVersions(await listVersions()))}>×</button>
                   </li>

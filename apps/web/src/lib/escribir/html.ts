@@ -18,12 +18,15 @@ function mathml(latex: string, display: boolean): string {
 export function exportHtml(editorHtml: string, t: ExportTexts): string {
   const doc = new DOMParser().parseFromString(`<!doctype html><html><body>${editorHtml}</body></html>`, "text/html");
   const body = doc.body;
-  // Nada de scripts, manejadores ni recursos de fuera (lo que no sea data: se quita).
-  [...body.querySelectorAll("script,style,iframe,object,embed,link,meta")].forEach((el) => el.remove());
+  // Limpieza de lo más evidente (scripts, manejadores, marcos, formularios y recursos de fuera). El límite de confianza es
+  // el servidor: la página que imprime Chromium lleva una CSP que no carga nada que no esté en data: (D-238).
+  [...body.querySelectorAll("script,style,iframe,frame,object,embed,link,meta,base,form,input,button,select,textarea,video,audio,source,picture")].forEach((el) => el.remove());
   [...body.querySelectorAll("*")].forEach((el) => {
     for (const attr of [...el.attributes]) {
       if (/^on/i.test(attr.name) || attr.name === "contenteditable" || attr.name === "draggable") el.removeAttribute(attr.name);
-      if ((attr.name === "href" || attr.name === "src") && /^\s*javascript:/i.test(attr.value)) el.removeAttribute(attr.name);
+      if ((attr.name === "href" || attr.name === "src" || attr.name === "xlink:href") && /^\s*(javascript|vbscript|data:text)/i.test(attr.value)) el.removeAttribute(attr.name);
+      if (["srcset", "poster", "background", "srcdoc", "formaction"].includes(attr.name)) el.removeAttribute(attr.name);
+      if (attr.name === "style" && /url\(/i.test(attr.value)) el.removeAttribute(attr.name);
     }
   });
   [...body.querySelectorAll("img")].forEach((img) => {
@@ -100,7 +103,8 @@ export function exportHtml(editorHtml: string, t: ExportTexts): string {
   const used = new Map<string, number>();
   [...body.querySelectorAll("span.campo-editor")].forEach((span) => {
     const tipo = ["texto", "casilla", "fecha"].includes(span.getAttribute("data-tipo") ?? "") ? span.getAttribute("data-tipo")! : "texto";
-    let name = (span.getAttribute("data-nombre") ?? "campo").trim().slice(0, 60) || "campo";
+    // Sin puntos: en un PDF separan los niveles del nombre del campo (D-238).
+    let name = (span.getAttribute("data-nombre") ?? "campo").replace(/\./g, "·").trim().slice(0, 60) || "campo";
     // Nombres únicos: dos campos con el mismo nombre en un PDF comparten valor.
     const count = (used.get(name) ?? 0) + 1;
     used.set(name, count);

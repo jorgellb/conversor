@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-import { PDFArray, PDFDocument, PDFName } from "@cantoo/pdf-lib";
+import { PDFArray, PDFDocument, PDFName, PDFString } from "@cantoo/pdf-lib";
 import { describe, expect, it } from "vitest";
 
 import { addFieldsFromLinks, splitByRows } from "../src/escribir";
@@ -46,6 +46,25 @@ describe("escribir-pdf: combinación de correspondencia", () => {
     const counts = await Promise.all(parts.map(async (p) => (await PDFDocument.load(p)).getPageCount()));
     expect(counts).toEqual([2, 1, 1]);
     await expect(splitByRows(bytes, 4)).rejects.toThrow();
+  });
+});
+
+describe("escribir-pdf: nombres de campo (D-238)", () => {
+  it("nombres con puntos y uno prefijo de otro no tiran el PDF", async () => {
+    const pdf = await PDFDocument.create();
+    const page = pdf.addPage([400, 400]);
+    const link = (uri: string, y: number) => pdf.context.register(pdf.context.obj({
+      Type: "Annot", Subtype: "Link", Rect: [50, y, 200, y + 14], A: { S: "URI", URI: PDFString.of(uri) },
+    }));
+    page.node.set(PDFName.of("Annots"), pdf.context.obj([
+      link("https://campo.invalid/texto/D.N.I.", 300), link("https://campo.invalid/texto/a", 260),
+      link("https://campo.invalid/texto/a.b", 220), link("https://campo.invalid/fecha/%E0%A4%A", 180),
+    ]));
+    const res = await addFieldsFromLinks(await pdf.save());
+    expect(res.fields).toBe(4);
+    const names = (await PDFDocument.load(res.bytes)).getForm().getFields().map((f) => f.getName());
+    expect(names).toContain("D·N·I·");
+    expect(names).toContain("a·b");
   });
 });
 

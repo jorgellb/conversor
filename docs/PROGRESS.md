@@ -674,6 +674,12 @@ alta (D-236), en `apps/web/test/escribir.test.ts`, `packages/client-tools/test/e
 Conversión entre EPUB, MOBI y AZW3 con Calibre y el DRM detectado antes, y presentaciones a imágenes y a vídeo VP9 o AV1 (D-237),
 en `tests/test_libros_diapositivas.py` (Calibre simulado; el vídeo con FFmpeg real y ffprobe).
 
+## Revisión de F6-O1
+
+Correcciones de D-238 (nombres de campo con puntos, lectura lineal del HTML, CSP en la página que imprime Chromium, borde en todas
+las páginas, Markdown comprobado con CommonMark, numeración de Word por lista), en `tests/test_escribir.py`,
+`packages/client-tools/test/escribir.test.ts` y `apps/web/test/escribir.test.ts`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

@@ -1847,6 +1847,7 @@
     "dictationStop": "Stop dictating",
     "dictationFailed": "The microphone could not be used for dictation.",
     "readAloud": "Read aloud",
-    "readStop": "Stop reading"
+    "readStop": "Stop reading",
+    "restoreVersion": "Restore version {title}"
   }
 }
