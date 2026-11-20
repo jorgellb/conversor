@@ -340,7 +340,16 @@ export function detectFields(rgba: Uint8ClampedArray, width: number, height: num
         while (thick < 6 && y + thick < height && darkAt(rgba, width, x + Math.floor(run / 2), y + thick)) thick += 1;
         const gap = Math.round(14 * scale);
         const clear = y - gap > 0 && [2, Math.floor(gap / 2), gap].every((d) => blankRow(rgba, width, y - d, x + 2, end - 2));
-        if (thick <= 3 && clear) {
+        // Lado de una caja (el borde de un campo o de una tabla): sus extremos siguen en vertical.
+        const reach = Math.max(4, Math.round(4 * scale));
+        const vertical = (cx: number) => [-1, 1].some((dir) => {
+          for (let k = 3; k <= reach; k += 1) {
+            const yy = y + dir * (k + (dir > 0 ? thick - 1 : 0));
+            if (yy < 0 || yy >= height || ![cx, cx + 1, cx - 1].some((xx) => xx >= 0 && xx < width && darkAt(rgba, width, xx, yy))) return false;
+          }
+          return true;
+        });
+        if (thick <= 3 && clear && !vertical(x) && !vertical(end - 1)) {
           out.push({ type: "text", x: x / scale, y: (y - gap) / scale, width: run / scale, height: gap / scale });
         }
         for (let t = 0; t < thick; t += 1) for (let k = x; k < end; k += 1) used[(y + t) * width + k] = 1;

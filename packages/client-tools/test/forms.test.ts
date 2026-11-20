@@ -126,6 +126,9 @@ describe("detección de campos (A.3, Extra)", () => {
     for (let x = 100; x < 400; x += 1) dark(x, 200); // línea de 150 pt
     for (let k = 0; k <= 24; k += 1) { dark(100 + k, 300); dark(100 + k, 324); dark(100, 300 + k); dark(124, 300 + k); } // casilla de 12,5 pt
     for (let x = 100; x < 400; x += 3) for (let y = 50; y < 60; y += 1) dark(x, y); // «texto»: trazos cortos, no línea
+    // Una caja de 200 × 30 pt (el borde de un campo): ni su lado de arriba ni el de abajo son líneas para escribir.
+    for (let x = 300; x <= 500; x += 1) { dark(x, 320); dark(x, 380); }
+    for (let y = 320; y <= 380; y += 1) { dark(300, y); dark(500, y); }
     const found = detectFields(rgba, 600, 400, scale);
     expect(found).toEqual([
       { type: "text", x: 50, y: 86, width: 150, height: 14 },

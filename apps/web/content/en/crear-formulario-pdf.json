@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Create a PDF form lets you design a fillable form from a blank page, without paid software: a registration sheet, an order form, a paper survey you want to make digital or an authorisation several people will sign. You choose the paper size and orientation, add the pages you need and place the fields wherever you like.",
+    "There are single-line and multi-line text fields, checkboxes, mutually exclusive option groups, dropdowns where people can pick or type, multiple-selection lists, buttons to clear the form or open a web address, and signature fields. Each field has its name, default value, whether it is required or read only, maximum length, alignment, font size, border and background.",
+    "Fields can be duplicated and aligned with each other so the form looks tidy, and moved or deleted at any time before saving. If you would rather start from a document you already have, for example one made in Word and saved as PDF, open it right here and add the fields on top.",
+    "The form is created in your browser with pdf-lib. Only signature fields go through our server, where pyHanko adds them empty and ready to sign with “Sign PDF” or any reader that signs."
+  ],
+  "faq": [
+    {
+      "q": "Can I write fixed text as well as fields?",
+      "a": "The form's text (titles, questions, instructions) is best added with “Edit PDF” before or after, or by preparing the document in Word and opening it here. This page focuses on the fields."
+    },
+    {
+      "q": "Do PDF readers enforce required fields?",
+      "a": "Fields are marked as required following the PDF standard. Acrobat Reader and others warn when submitting or printing depending on their settings; some simple readers do not check."
+    },
+    {
+      "q": "Can I use letters from other alphabets in the options?",
+      "a": "Yes. If you type characters that do not fit the basic form font, a full font is embedded so they display and can be typed."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "Only if the form has signature fields, which are added on the server as a light task (20 a day without an account, 50 with a free account and 1,000 on Pro). Without them, everything stays in your browser."
+    }
+  ]
+}

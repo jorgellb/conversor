@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Crear un formulario PDF te deja diseñar un formulario rellenable desde una página en blanco, sin programas de pago: una hoja de inscripción, un pedido, una encuesta en papel que quieres pasar a digital o una autorización que firmarán varias personas. Eliges el tamaño del papel y la orientación, añades las páginas que necesites y colocas los campos donde quieras.",
+    "Hay campos de texto de una línea y de varias, casillas, grupos de opciones excluyentes, desplegables en los que se puede elegir o escribir, listas con selección múltiple, botones para borrar el formulario o abrir una dirección web, y campos de firma. Cada campo tiene su nombre, valor por defecto, si es obligatorio o de solo lectura, longitud máxima, alineación, tamaño de letra, borde y fondo.",
+    "Los campos se duplican y se alinean entre sí para que el formulario quede ordenado, y se pueden mover o borrar en cualquier momento antes de guardar. Si prefieres partir de un documento que ya tienes, por ejemplo uno hecho en Word y guardado como PDF, ábrelo aquí mismo y añade los campos encima.",
+    "El formulario se crea en tu navegador con pdf-lib. Solo los campos de firma pasan por nuestro servidor, donde pyHanko los añade vacíos y listos para firmar con «Firmar PDF» o con cualquier lector que firme."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo escribir textos fijos además de los campos?",
+      "a": "Los textos del formulario (títulos, preguntas, instrucciones) se añaden mejor con «Editar PDF» antes o después, o preparando el documento en Word y abriéndolo aquí. Esta página se centra en los campos."
+    },
+    {
+      "q": "¿Los lectores de PDF respetan los campos obligatorios?",
+      "a": "Los campos se marcan como obligatorios según la norma PDF. Acrobat Reader y otros avisan al enviar o al imprimir según su configuración; algunos lectores sencillos no lo comprueban."
+    },
+    {
+      "q": "¿Puedo usar letras de otros alfabetos en las opciones?",
+      "a": "Sí. Si escribes caracteres que no caben en la fuente básica de los formularios, se incrusta una fuente completa para que se vean y se puedan escribir."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Solo si el formulario lleva campos de firma, que se añaden en el servidor como tarea ligera (20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro). Sin ellos, todo queda en tu navegador."
+    }
+  ]
+}

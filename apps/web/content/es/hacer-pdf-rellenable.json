@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Hacer un PDF rellenable añade campos de formulario a un PDF que ya tienes, como una solicitud, un contrato o una ficha de inscripción escaneada, para que otras personas lo rellenen en su lector de PDF sin imprimirlo. Puedes colocar campos de texto de una línea o de varias, casillas, grupos de opciones, desplegables, listas de selección múltiple, botones y campos de firma.",
+    "Cada campo se coloca haciendo clic o arrastrando sobre la página, y se mueve, se cambia de tamaño, se duplica o se alinea con otros. En el panel de propiedades eliges su nombre, el valor por defecto, si es obligatorio o de solo lectura, la longitud máxima, la alineación, el tamaño de letra (automático si no eliges otro), el borde y el fondo. Los botones restablecen el formulario o abren una dirección web.",
+    "Si el PDF ya tenía campos, aparecen sobre la página y también puedes moverlos, cambiarlos o borrarlos. Con «Detectar campos» la página busca líneas para escribir y casillas vacías y te propone campos en esos sitios; quedan marcados en naranja hasta que los revisas, porque una detección automática siempre se equivoca en algo.",
+    "Todo ocurre en tu navegador con pdf-lib, salvo los campos de firma: esos los crea pyHanko en nuestro servidor para que sean compatibles con «Firmar PDF» y con los lectores que firman, y el archivo se borra con el resto de resultados."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diferencia hay con «Rellenar formulario PDF»?",
+      "a": "Esta herramienta crea los campos; «Rellenar formulario PDF» escribe en los campos que ya existen. Lo normal es preparar aquí el formulario y que cada persona lo rellene después con su lector o con esa otra página."
+    },
+    {
+      "q": "¿Funciona con un PDF escaneado?",
+      "a": "Sí. Los campos se colocan encima de la imagen de la página. «Detectar campos» busca las líneas y casillas dibujadas en el escaneo, así que funciona mejor cuanto más limpio sea."
+    },
+    {
+      "q": "¿Puedo firmar después en el campo de firma?",
+      "a": "Sí. El campo queda vacío y se puede firmar con «Firmar PDF», con Adobe Acrobat Reader o con AutoFirma. La firma no se hace aquí."
+    },
+    {
+      "q": "¿Cuenta en mis límites?",
+      "a": "Sin campos de firma no cuenta: todo se hace en tu navegador. Con campos de firma es una tarea ligera del servidor: 20 al día sin cuenta, 50 con cuenta gratuita y 1.000 en Pro."
+    }
+  ]
+}

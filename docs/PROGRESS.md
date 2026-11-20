@@ -496,6 +496,15 @@ Revisión adversarial (D-194): IRPF y partes de Facturae, retenciones y descuent
 lotes con archivos malos y veraPDF que falla. Ya hay prueba de extremo a extremo en e2e-compose (Gotenberg y veraPDF
 reales).
 
+## F4-B1 (hacer-pdf-rellenable y crear-formulario-pdf)
+
+Diseñador de campos en el navegador (texto, multilínea, casilla, opciones, desplegable, lista, botón y firma, con sus
+propiedades; mover, duplicar, alinear y borrar, también los campos existentes; detección de líneas y casillas) y campos
+de firma con pyHanko en `workerpdf`. Contenido 8.2 es/en de las dos páginas. Salvedades en D-195.
+Verificado aquí: vitest del motor (tipos, propiedades, páginas giradas, fuentes, detección), pytest de los campos de
+firma (incluida una firma de pyHanko dentro del campo) y la e2e del diseñador. Sin verificar aquí: los campos de firma
+desde la página contra la pila completa (e2e-compose) y la firma con Acrobat Reader.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4: F4-F, F4-A y F4-D hechos; siguen después F4-B, F4-C, F4-E y F4-Z; luego F6, vídeo

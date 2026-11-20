@@ -696,13 +696,11 @@ SPECS: list[ToolSpec] = [
            "Añade campos de texto, casillas, opciones, listas, botones y firmas a un PDF para que se pueda rellenar.",
            "Add text fields, checkboxes, options, lists, buttons and signatures to a PDF so it can be filled in.",
            where="hybrid", worker_group="pdf", impl="tools.pdf.campos_firma:run", cost_class="light", phase="F4", time_limit=300,
-           default_enabled=False,  # hasta que llegue el diseñador de campos (F4-B1, en curso)
            max_files=1, related=("crear-formulario-pdf", "rellenar-pdf", "firmar-pdf")),
     client("crear-formulario-pdf", "create-pdf-form", "Crear un formulario PDF", "Create a PDF form", HacerRellenableOptions, PDF, PDF,
            "Diseña un formulario PDF rellenable desde una página en blanco o a partir de un PDF que ya tengas.",
            "Design a fillable PDF form from a blank page or from a PDF you already have.",
            where="hybrid", worker_group="pdf", impl="tools.pdf.campos_firma:run", cost_class="light", phase="F4", time_limit=300,
-           default_enabled=False,  # hasta que llegue el diseñador de campos (F4-B1, en curso)
            max_files=1, related=("hacer-pdf-rellenable", "rellenar-pdf", "firmar-pdf")),
     client("anotar-pdf", "annotate-pdf", "Anotar PDF", "Annotate PDF", AnotarOptions, PDF, PDF,
            "Resalta, subraya, tacha y añade notas, flechas y dibujos; se guardan como comentarios estándar.",

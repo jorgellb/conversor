@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Make a PDF fillable adds form fields to a PDF you already have, such as an application, a contract or a scanned registration sheet, so other people can fill it in with their PDF reader without printing it. You can place single-line and multi-line text fields, checkboxes, option groups, dropdowns, multiple-selection lists, buttons and signature fields.",
+    "Each field is placed by clicking or dragging on the page, and it can be moved, resized, duplicated or aligned with others. In the properties panel you choose its name, default value, whether it is required or read only, maximum length, alignment, font size (automatic unless you choose another), border and background. Buttons reset the form or open a web address.",
+    "If the PDF already had fields, they appear on the page and you can also move, change or delete them. With “Detect fields” the page looks for lines to write on and empty boxes and suggests fields there; they stay marked in orange until you review them, because automatic detection always gets something wrong.",
+    "Everything happens in your browser with pdf-lib, except signature fields: pyHanko creates those on our server so they work with “Sign PDF” and with readers that sign, and the file is deleted with the rest of the results."
+  ],
+  "faq": [
+    {
+      "q": "How is it different from “Fill PDF form”?",
+      "a": "This tool creates the fields; “Fill PDF form” writes into fields that already exist. The usual flow is to prepare the form here and let each person fill it in later with their reader or with that other page."
+    },
+    {
+      "q": "Does it work with a scanned PDF?",
+      "a": "Yes. The fields are placed over the page image. “Detect fields” looks for the lines and boxes drawn in the scan, so it works better the cleaner the scan is."
+    },
+    {
+      "q": "Can I sign the signature field later?",
+      "a": "Yes. The field is left empty and can be signed with “Sign PDF”, Adobe Acrobat Reader or any reader that signs. Signing does not happen here."
+    },
+    {
+      "q": "Does it count towards my limits?",
+      "a": "Without signature fields it does not count: everything runs in your browser. With signature fields it is a light server task: 20 a day without an account, 50 with a free account and 1,000 on Pro."
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import { BoardEditor, BookmarksEditor, ChatPdfView, CollageView, CompareView, CopyView, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
+import { BoardEditor, BookmarksEditor, ChatPdfView, CollageView, CompareView, CopyView, FormDesigner, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
   SearchView } from "@/components/LazyViews";
 import { Feedback } from "@/components/Feedback";
 import { StaticPage } from "@/components/StaticPage";
@@ -27,6 +27,9 @@ const WIDE_TOOLS = ["crear-collage"];
 const EDITORS: Record<string, "editar" | "rellenar" | "redactar" | "anotar"> = {
   "editar-pdf": "editar", "rellenar-pdf": "rellenar", "redactar-pdf": "redactar", "anotar-pdf": "anotar",
 };
+
+/** Diseñador de campos (A.3, F4-B1): crear-formulario-pdf es la misma herramienta empezando en blanco. */
+const FORM_DESIGNERS = ["hacer-pdf-rellenable", "crear-formulario-pdf"];
 
 function isIndexable(tool: ToolSpec, locale: Locale): boolean {
   return tool.indexable && tool.launch && !disabledByEnv(tool.slug_es) && contentReady(locale, tool.slug_es);
@@ -196,6 +199,8 @@ export default async function SlugPage({ params, searchParams }: Params) {
           <ChatPdfView spec={clientSpec(tool, locale)} />
         ) : tool.slug_es === "lector-pdf" && !disabledByEnv(tool.slug_es) ? (
           <PdfViewer spec={clientSpec(tool, locale)} nextTools={nextTools} />
+        ) : FORM_DESIGNERS.includes(tool.slug_es) && !disabledByEnv(tool.slug_es) ? (
+          <FormDesigner spec={clientSpec(tool, locale)} startBlank={tool.slug_es === "crear-formulario-pdf"} />
         ) : EDITORS[tool.slug_es] && !disabledByEnv(tool.slug_es) ? (
           <PdfEditor mode={EDITORS[tool.slug_es]} spec={clientSpec(tool, locale)} nextTools={nextTools} />
         ) : (
