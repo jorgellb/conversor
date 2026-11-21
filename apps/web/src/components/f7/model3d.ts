@@ -26,6 +26,8 @@ export interface LoadedModel {
   triangles: number;
   vertices: number;
   meshes: number;
+  /** Puntos de una nube de puntos (PLY sin caras). */
+  points: number;
   /** Milímetros por unidad del archivo (glTF: 1000). */
   mmPerUnit: number;
   up: "y" | "z";
@@ -35,7 +37,7 @@ export interface LoadedModel {
 }
 
 export class ModelError extends Error {
-  constructor(readonly code: "UNSUPPORTED_FORMAT" | "CORRUPT_FILE" | "LIMIT_EXCEEDED" | "EMPTY", detail = "") {
+  constructor(readonly code: "UNSUPPORTED_FORMAT" | "CORRUPT_FILE" | "LIMIT_EXCEEDED" | "EMPTY" | "MISSING" | "KTX2" | "NO_WEBGL", detail = "") {
     super(detail || code);
   }
 }
@@ -61,14 +63,42 @@ function meshOf(geometry: THREE.BufferGeometry): THREE.Mesh {
   return new THREE.Mesh(geometry, defaultMaterial(colors));
 }
 
-/** Rutas enlazadas por el modelo → URL blob: de los archivos elegidos con el mismo nombre (sin carpetas ni mayúsculas). */
-function linkedFiles(files: File[], warnings: string[], missingText: (name: string) => string): { manager: THREE.LoadingManager; revoke: () => void } {
+/** `data:[tipo][;base64],datos` a bytes (sin fetch: la CSP no deja leer `data:` con connect-src). */
+export function dataUriBytes(uri: string): { bytes: Uint8Array; type: string } | null {
+  const m = /^data:([^,;]*)((?:;[^,;]*)*?)(;base64)?,(.*)$/s.exec(uri);
+  if (!m) return null;
+  if (m[3]) {
+    const bin = atob(m[4].replace(/\s+/g, ""));
+    const bytes = new Uint8Array(bin.length);
+    for (let k = 0; k < bin.length; k++) bytes[k] = bin.charCodeAt(k);
+    return { bytes, type: m[1] || "application/octet-stream" };
+  }
+  return { bytes: new TextEncoder().encode(decodeURIComponent(m[4])), type: m[1] || "text/plain" };
+}
+
+/**
+ * Rutas enlazadas por el modelo → URL blob: de los archivos elegidos con el mismo nombre (sin carpetas ni mayúsculas).
+ * Los `data:` incrustados pasan también a blob: (D-260: three.js los pedía con fetch y la CSP los bloqueaba). Lo que
+ * falta se apunta en `missing` y se sirve vacío; si era imprescindible (el .bin), la carga falla con ese aviso.
+ */
+function linkedFiles(files: File[], warnings: string[], missingText: (name: string) => string): {
+  manager: THREE.LoadingManager; revoke: () => void; missing: Set<string>;
+} {
   const byName = new Map(files.map((f) => [f.name.toLowerCase(), f]));
   const urls: string[] = [];
   const missing = new Set<string>();
   const manager = new THREE.LoadingManager();
+  const blobUrl = (blob: Blob) => {
+    const url = URL.createObjectURL(blob);
+    urls.push(url);
+    return url;
+  };
   manager.setURLModifier((url) => {
-    if (url.startsWith("data:") || url.startsWith("blob:")) return url;
+    if (url.startsWith("blob:")) return url;
+    if (url.startsWith("data:")) {
+      const data = dataUriBytes(url);
+      return blobUrl(data ? new Blob([new Uint8Array(data.bytes)], { type: data.type }) : new Blob());
+    }
     const base = decodeURIComponent(url.split(/[?#]/)[0]).split(/[\\/]/).pop()!.toLowerCase();
     const file = byName.get(base);
     if (!file) {
@@ -76,13 +106,25 @@ function linkedFiles(files: File[], warnings: string[], missingText: (name: stri
         missing.add(base);
         warnings.push(missingText(base));
       }
-      return "data:,";
+      return blobUrl(new Blob());
     }
-    const blob = URL.createObjectURL(file);
-    urls.push(blob);
-    return blob;
+    return blobUrl(file);
   });
-  return { manager, revoke: () => urls.forEach((u) => URL.revokeObjectURL(u)) };
+  return { manager, revoke: () => urls.forEach((u) => URL.revokeObjectURL(u)), missing };
+}
+
+/** Milímetros por unidad del 3MF (`unit` del modelo, que el cargador de three.js lee pero no aplica). */
+async function threeMfUnit(buffer: ArrayBuffer): Promise<number> {
+  const { unzipSync } = await import("three/examples/jsm/libs/fflate.module.js");
+  try {
+    const files = unzipSync(new Uint8Array(buffer), { filter: (f) => /^3d\/[^/]+\.model$/i.test(f.name) });
+    const xml = Object.values(files)[0];
+    const head = xml ? new TextDecoder().decode(xml.subarray(0, 4096)) : "";
+    const unit = /<model[^>]*\bunit="([a-z]+)"/i.exec(head)?.[1]?.toLowerCase() ?? "millimeter";
+    return { micron: 0.001, millimeter: 1, centimeter: 10, inch: 25.4, foot: 304.8, meter: 1000 }[unit] ?? 1;
+  } catch {
+    return 1;
+  }
 }
 
 function gltfExtensions(bytes: Uint8Array): string[] {
@@ -98,10 +140,15 @@ function gltfExtensions(bytes: Uint8Array): string[] {
   }
 }
 
-function countGeometry(root: THREE.Object3D): { triangles: number; vertices: number; meshes: number } {
-  let triangles = 0, vertices = 0, meshes = 0;
+function countGeometry(root: THREE.Object3D): { triangles: number; vertices: number; meshes: number; points: number } {
+  let triangles = 0, vertices = 0, meshes = 0, points = 0;
   root.traverse((o) => {
     const mesh = o as THREE.Mesh;
+    if ((o as THREE.Points).isPoints) {
+      meshes += 1;
+      points += (o as THREE.Points).geometry.getAttribute("position")?.count ?? 0;
+      return;
+    }
     if (!mesh.isMesh) return;
     meshes += 1;
     const g = mesh.geometry;
@@ -109,13 +156,15 @@ function countGeometry(root: THREE.Object3D): { triangles: number; vertices: num
     vertices += count;
     triangles += g.index ? g.index.count / 3 : count / 3;
   });
-  return { triangles: Math.round(triangles), vertices, meshes };
+  return { triangles: Math.round(triangles), vertices, meshes, points };
 }
 
 export function disposeObject(root: THREE.Object3D): void {
   root.traverse((o) => {
     const mesh = o as THREE.Mesh;
-    if (!mesh.isMesh && !(o as THREE.LineSegments).isLineSegments) return;
+    if (!mesh.isMesh && !(o as THREE.LineSegments).isLineSegments && !(o as THREE.Points).isPoints) return;
+    const original = (mesh.userData as { original?: THREE.Material | THREE.Material[] }).original;
+    if (original) (Array.isArray(original) ? original : [original]).forEach((m) => m.dispose());
     mesh.geometry?.dispose();
     for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
       if (!m) continue;
@@ -139,7 +188,7 @@ export async function loadModel(main: File, others: File[], texts: LoadTexts, up
   if (!(MODEL_EXTS as readonly string[]).includes(ext)) throw new ModelError("UNSUPPORTED_FORMAT");
   if (main.size > MAX_MODEL_BYTES) throw new ModelError("LIMIT_EXCEEDED");
   const warnings: string[] = [];
-  const { manager, revoke } = linkedFiles(others, warnings, texts.missing);
+  const { manager, revoke, missing } = linkedFiles(others, warnings, texts.missing);
   const content = new THREE.Group();
   let mmPerUnit = 1;
   let fileUp: "y" | "z" = "z";
@@ -154,7 +203,15 @@ export async function loadModel(main: File, others: File[], texts: LoadTexts, up
       case "ply": {
         const { PLYLoader } = await import("three/examples/jsm/loaders/PLYLoader.js");
         const geometry = new PLYLoader().parse(buffer);
-        if (!geometry.index && !geometry.getAttribute("position")?.count) throw new ModelError("EMPTY");
+        if (!geometry.getAttribute("position")?.count) throw new ModelError("EMPTY");
+        if (!geometry.index) {
+          // Sin caras: es una nube de puntos (un escaneo), no una malla (D-260).
+          const colors = Boolean(geometry.getAttribute("color"));
+          geometry.computeBoundingSphere();
+          const size = Math.max((geometry.boundingSphere?.radius ?? 1) / 400, 0.01);
+          content.add(new THREE.Points(geometry, new THREE.PointsMaterial({ size, vertexColors: colors, color: colors ? 0xffffff : 0x6b7280 })));
+          break;
+        }
         content.add(meshOf(geometry));
         break;
       }
@@ -179,6 +236,7 @@ export async function loadModel(main: File, others: File[], texts: LoadTexts, up
       case "3mf": {
         const { ThreeMFLoader } = await import("three/examples/jsm/loaders/3MFLoader.js");
         content.add(new ThreeMFLoader(manager).parse(buffer));
+        mmPerUnit = await threeMfUnit(buffer);
         break;
       }
       case "amf": {
@@ -197,7 +255,12 @@ export async function loadModel(main: File, others: File[], texts: LoadTexts, up
         }
         const loader = new GLTFLoader(manager).setMeshoptDecoder(MeshoptDecoder);
         const data = ext === "glb" || bytes[0] !== 0x7b ? bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) : new TextDecoder().decode(bytes);
-        const gltf = await new Promise<{ scene: THREE.Group }>((resolve, reject) => loader.parse(data as ArrayBuffer, "", resolve as never, reject));
+        const gltf = await new Promise<{ scene: THREE.Group }>((resolve, reject) => loader.parse(data as ArrayBuffer, "", resolve as never, reject))
+          .catch((err) => {
+            // KTX2 obligatorio sin su decodificador (Basis no se incluye en la web): se dice, no «dañado» (D-260).
+            if (/ktx2|basisu/i.test(String((err as Error)?.message ?? err))) throw new ModelError("KTX2");
+            throw err;
+          });
         content.add(gltf.scene);
         mmPerUnit = 1000;
         fileUp = "y";
@@ -207,13 +270,14 @@ export async function loadModel(main: File, others: File[], texts: LoadTexts, up
   } catch (err) {
     revoke();
     if (err instanceof ModelError) throw err;
+    if (missing.size) throw new ModelError("MISSING", [...missing].join(", "));
     throw new ModelError("CORRUPT_FILE", String((err as Error)?.message ?? err).slice(0, 200));
   }
   // Las texturas enlazadas se cargan después; las URL blob: se sueltan cuando el gestor termina.
   manager.onLoad = revoke;
   setTimeout(revoke, 60_000);
   const counts = countGeometry(content);
-  if (!counts.meshes || !counts.triangles) {
+  if (!counts.meshes || (!counts.triangles && !counts.points)) {
     disposeObject(content);
     throw new ModelError("EMPTY");
   }
@@ -270,7 +334,17 @@ export function frameCamera(camera: THREE.PerspectiveCamera, box: THREE.Box3, an
   return center;
 }
 
-/** Luces de estudio: ambiente, hemisférica y dos direccionales (no hace falta mapa de entorno). */
+/** Mapa de entorno de estudio generado en el navegador (sin descargar nada): sin él, los materiales metálicos de glTF salen
+ * casi negros (D-260). */
+export async function addEnvironment(scene: THREE.Scene, renderer: THREE.WebGLRenderer): Promise<void> {
+  const { RoomEnvironment } = await import("three/examples/jsm/environments/RoomEnvironment.js");
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.6;
+  pmrem.dispose();
+}
+
+/** Luces de estudio: ambiente, hemisférica y dos direccionales. */
 export function addLights(scene: THREE.Scene): void {
   scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f99, 1.4));
   const key = new THREE.DirectionalLight(0xffffff, 2.2);

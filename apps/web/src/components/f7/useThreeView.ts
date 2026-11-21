@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import { addLights } from "./model3d";
+import { addEnvironment, addLights } from "./model3d";
 
 export interface ThreeView {
   renderer: THREE.WebGLRenderer;
@@ -41,6 +41,10 @@ export function useThreeView(): { mountRef: React.RefObject<HTMLDivElement | nul
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10000);
     camera.position.set(200, 160, 200);
     const controls = new OrbitControls(camera, renderer.domElement);
+    // También con el teclado: el lienzo se puede enfocar y las flechas desplazan la vista (D-260).
+    renderer.domElement.tabIndex = 0;
+    controls.listenToKeyEvents(renderer.domElement);
+    controls.keyPanSpeed = 20;
     controls.enableDamping = true;
     controls.dampingFactor = 0.12;
     let frame = 0;
@@ -66,6 +70,7 @@ export function useThreeView(): { mountRef: React.RefObject<HTMLDivElement | nul
     const observer = new ResizeObserver(resize);
     observer.observe(mount);
     resize();
+    addEnvironment(scene, renderer).then(invalidate, () => undefined); // sin entorno se ve igual, solo más plano
     setView({ renderer, scene, camera, controls, invalidate });
     return () => {
       observer.disconnect();

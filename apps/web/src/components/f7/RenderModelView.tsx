@@ -11,7 +11,7 @@ import { recordUse, rememberedOptions, rememberOptions } from "@/lib/prefs";
 import type { ClientSpec } from "@/lib/registry";
 
 import { OptionsForm, defaultsOf } from "../OptionsForm";
-import { addLights, canvasPng, frameCamera, isModel, loadModel, ModelError, overrideColor, placeOnFloor, type ViewAngle } from "./model3d";
+import { addEnvironment, addLights, canvasPng, frameCamera, isModel, loadModel, ModelError, overrideColor, placeOnFloor, type ViewAngle } from "./model3d";
 
 type Values = Record<string, unknown>;
 interface Rendered {
@@ -35,7 +35,12 @@ export async function renderToPng(root: THREE.Object3D, o: RenderOptions): Promi
   const size = Math.max(64, Math.min(2048, Number(o.tamano) || 1024));
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = size;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+  let renderer: THREE.WebGLRenderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+  } catch {
+    throw new ModelError("NO_WEBGL");
+  }
   try {
     renderer.setPixelRatio(1);
     renderer.setSize(size, size, false);
@@ -43,6 +48,7 @@ export async function renderToPng(root: THREE.Object3D, o: RenderOptions): Promi
     const scene = new THREE.Scene();
     if (o.fondo !== "transparente") scene.background = new THREE.Color(o.fondo === "blanco" ? "#ffffff" : o.color_fondo);
     addLights(scene);
+    await addEnvironment(scene, renderer);
     scene.add(root);
     const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 10000);
     frameCamera(camera, new THREE.Box3().setFromObject(root, true), o.angulo, 1.05);
@@ -103,7 +109,11 @@ export function RenderModelView({ spec }: { spec: ClientSpec }) {
           loaded.dispose();
         }
       } catch (err) {
-        failed.push(`${main.name}: ${t(`error.${err instanceof ModelError ? err.code : "CORRUPT_FILE"}`)}`);
+        if (err instanceof ModelError && err.code === "NO_WEBGL") {
+          failed.push(t("noWebgl"));
+          break;
+        }
+        failed.push(`${main.name}: ${err instanceof ModelError && err.code === "MISSING" ? t("error.MISSING", { names: err.message }) : t(`error.${err instanceof ModelError ? err.code : "CORRUPT_FILE"}`)}`);
       }
     }
     setResults(done);

@@ -153,3 +153,41 @@ describe("comprimir-glb: carga", () => {
     expect(index).not.toMatch(/@gltf-transform/);
   });
 });
+
+describe("comprimir-glb: revisión de F7-H (D-260)", () => {
+  async function texturedGlb(mime: string, image: Uint8Array): Promise<Uint8Array> {
+    const doc = new Document();
+    const buffer = doc.createBuffer();
+    const prim = doc.createPrimitive()
+      .setAttribute("POSITION", doc.createAccessor().setType("VEC3").setArray(new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0])).setBuffer(buffer))
+      .setAttribute("TEXCOORD_0", doc.createAccessor().setType("VEC2").setArray(new Float32Array([0, 0, 1, 0, 0, 1])).setBuffer(buffer))
+      .setMaterial(doc.createMaterial("m").setBaseColorTexture(doc.createTexture("t").setImage(image).setMimeType(mime)));
+    const scene = doc.createScene();
+    scene.addChild(doc.createNode("pieza").setMesh(doc.createMesh().addPrimitive(prim)));
+    scene.addChild(doc.createNode("anclaje").setExtras({ socket: "tornillo" })); // nodo vacío con datos propios
+    return new WebIO().writeBinary(doc);
+  }
+
+  it("deja como están las texturas KTX2 y las que tienen transparencia, y conserva los nodos vacíos con extras", async () => {
+    const ktx = new Uint8Array([0xab, 0x4b, 0x54, 0x58, 0x20, 0x32, 0x30, 0xbb, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3, 4]);
+    const size = 64;
+    const data = new Uint8ClampedArray(size * size * 4);
+    for (let k = 0; k < size * size; k++) data.set([200, 30, 30, k % 2 ? 0 : 255], k * 4); // alfa a medias: canal de verdad
+    const alpha = await encodePng(nodeWasm, { data, width: size, height: size });
+    for (const [mime, image] of [["image/ktx2", ktx], ["image/png", alpha]] as const) {
+      const input = await texturedGlb(mime, image);
+      const out = (await runClientTool("comprimir-glb", [{ name: "t.glb", bytes: input }], { metodo: "ninguno", texturas: "webp", tamano_textura: 32 }, env)).outputs[0];
+      const doc = await read(out.bytes);
+      expect(doc.getRoot().listTextures()[0].getMimeType()).toBe(mime);
+      expect(Array.from(doc.getRoot().listTextures()[0].getImage()!)).toEqual(Array.from(image));
+      expect(doc.getRoot().listNodes().map((n) => n.getName())).toContain("anclaje");
+    }
+  });
+
+  it("un modelo diminuto que Draco no reduce sale tal cual, con el aviso", async () => {
+    const tiny = await texturedGlb("image/png", await encodePng(nodeWasm, { data: new Uint8ClampedArray(4 * 4 * 4).fill(255), width: 4, height: 4 }));
+    const out = (await runClientTool("comprimir-glb", [{ name: "mini.glb", bytes: tiny }], { metodo: "draco" }, env)).outputs[0];
+    expect(Array.from(out.bytes)).toEqual(Array.from(tiny));
+    expect(out.note).toMatch(/original sin cambios/);
+  });
+});

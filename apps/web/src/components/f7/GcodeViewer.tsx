@@ -25,15 +25,19 @@ export const FEATURE_COLORS: Record<Feature, number> = {
 const TOOL_COLORS = [0xf59e0b, 0x2563eb, 0x16a34a, 0xdc2626, 0x7c3aed, 0x0891b2, 0xdb2777, 0x4b5563];
 type ColorMode = "tipo" | "herramienta" | "velocidad";
 
-function rgb(hex: number): [number, number, number] {
-  return [(hex >> 16) & 255, (hex >> 8) & 255, hex & 255];
+/** Color de los vértices en el espacio lineal: three.js los trata como lineales y los pasa a sRGB al pintar (D-260: con
+ * los bytes sRGB tal cual salían más claros que la leyenda). */
+function linear(color: THREE.Color): [number, number, number] {
+  return [Math.round(color.r * 255), Math.round(color.g * 255), Math.round(color.b * 255)];
 }
 
-/** Del azul (lento) al rojo (rápido). */
-function speedColor(t: number): [number, number, number] {
-  const c = new THREE.Color().setHSL((1 - Math.min(1, Math.max(0, t))) * 0.66, 0.85, 0.5);
-  return [Math.round(c.r * 255), Math.round(c.g * 255), Math.round(c.b * 255)];
+function rgb(hex: number): [number, number, number] {
+  return linear(new THREE.Color(hex));
 }
+
+/** Del azul (lento) al rojo (rápido), en una tabla de 256 colores. */
+const SPEED_LUT: [number, number, number][] = Array.from({ length: 256 }, (_, k) =>
+  linear(new THREE.Color().setHSL((1 - k / 255) * 0.66, 0.85, 0.5, THREE.SRGBColorSpace)));
 
 function colorsFor(model: GcodeModel, mode: ColorMode): Uint8Array {
   const n = model.stats.segments;
@@ -47,9 +51,11 @@ function colorsFor(model: GcodeModel, mode: ColorMode): Uint8Array {
     lo = sample[Math.floor(sample.length * 0.02)];
     hi = Math.max(lo + 1, sample[Math.floor(sample.length * 0.98)]);
   }
+  const span = 255 / (hi - lo);
   for (let i = 0; i < n; i++) {
     const c = mode === "tipo" ? featureRgb[model.kinds[i]] ?? featureRgb[14]
-      : mode === "herramienta" ? toolRgb[model.tools[i] % toolRgb.length] : speedColor((model.speeds[i] - lo) / (hi - lo));
+      : mode === "herramienta" ? toolRgb[model.tools[i] % toolRgb.length]
+        : SPEED_LUT[Math.max(0, Math.min(255, Math.round((model.speeds[i] - lo) * span)))];
     out[i * 6] = out[i * 6 + 3] = c[0];
     out[i * 6 + 1] = out[i * 6 + 4] = c[1];
     out[i * 6 + 2] = out[i * 6 + 5] = c[2];
@@ -80,15 +86,21 @@ export function GcodeViewer({ spec }: { spec: ClientSpec }) {
   const [progress, setProgress] = useState(1);
   const [status, setStatus] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const modeRef = useRef(mode);
+  const shownMode = useRef<{ model: GcodeModel | null; mode: ColorMode }>({ model: null, mode });
   const objects = useRef<{ root: THREE.Group; lines: THREE.LineSegments; travel: THREE.LineSegments; nozzle: THREE.Mesh } | null>(null);
+
+  const request = useRef(0);
 
   async function open(file: File | undefined) {
     if (!file || !view) return;
+    const mine = ++request.current; // si se abre otro mientras tanto, este resultado ya no cuenta (D-260)
     setError("");
     setPlaying(false);
     setLoading(0);
     try {
       const parsed = await askWorker<GcodeModel>("__gcode", file, {}, undefined, (f) => setLoading(f));
+      if (mine !== request.current) return;
       setModel(parsed);
       setName(file.name);
       setRange([0, parsed.layers.length - 1]);
@@ -96,11 +108,12 @@ export function GcodeViewer({ spec }: { spec: ClientSpec }) {
       setStatus(t("gcodeOpened", { name: file.name, layers: parsed.layers.length }));
       recordUse(spec.slug);
     } catch (err) {
+      if (mine !== request.current) return;
       const code = err instanceof ClientToolError ? err.code : "INTERNAL";
       const detail = err instanceof Error ? err.message : "";
       setError(/gcode_empty/.test(detail) ? t("gcodeEmpty") : /bgcode_crc|bgcode_/.test(detail) ? t("bgcodeDamaged") : te.has(code) ? te(code) : te("INTERNAL"));
     } finally {
-      setLoading(null);
+      if (mine === request.current) setLoading(null);
     }
   }
 
@@ -111,7 +124,8 @@ export function GcodeViewer({ spec }: { spec: ClientSpec }) {
     root.rotation.x = -Math.PI / 2;
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute("position", new THREE.BufferAttribute(model.segments, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colorsFor(model, "tipo"), 3, true));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colorsFor(model, modeRef.current), 3, true));
+    shownMode.current = { model, mode: modeRef.current };
     const lines = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({ vertexColors: true }));
     lines.frustumCulled = false;
     const tGeometry = new THREE.BufferGeometry();
@@ -150,9 +164,14 @@ export function GcodeViewer({ spec }: { spec: ClientSpec }) {
   }, [view, model]);
 
   useEffect(() => {
+    modeRef.current = mode;
     const o = objects.current;
     if (!o || !model) return;
-    o.lines.geometry.setAttribute("color", new THREE.BufferAttribute(colorsFor(model, mode), 3, true));
+    if (shownMode.current.model === model && shownMode.current.mode === mode) return; // ya calculado al cargar
+    shownMode.current = { model, mode };
+    const attr = o.lines.geometry.getAttribute("color") as THREE.BufferAttribute;
+    (attr.array as Uint8Array).set(colorsFor(model, mode));
+    attr.needsUpdate = true;
     view?.invalidate();
   }, [mode, model, view]);
 
@@ -216,7 +235,7 @@ export function GcodeViewer({ spec }: { spec: ClientSpec }) {
     const blob = await canvasPng(view.renderer.domElement);
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `${name.replace(/\.[^.]+$/, "") || "gcode"}-capa-${range[1] + 1}.png`;
+    a.download = `${name.replace(/\.[^.]+$/, "") || "gcode"}-${locale === "en" ? "layer" : "capa"}-${range[1] + 1}.png`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 30_000);
   }

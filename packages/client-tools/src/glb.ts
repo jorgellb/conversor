@@ -42,7 +42,8 @@ export const DRACO_BITS = {
   media: { quantizePosition: 12, quantizeNormal: 8, quantizeTexcoord: 10, quantizeColor: 8, quantizeGeneric: 10 },
   baja: { quantizePosition: 11, quantizeNormal: 7, quantizeTexcoord: 9, quantizeColor: 7, quantizeGeneric: 8 },
 } as const;
-const MESHOPT_LEVEL = { alta: "medium", media: "medium", baja: "high" } as const;
+// meshopt: «alta» sin cuantizar más de lo que ya esté; «media» y «baja» con el filtro alto (más pequeño).
+const MESHOPT_LEVEL = { alta: "medium", media: "high", baja: "high" } as const;
 
 const MAX_INPUT = 512 * 1024 * 1024;
 const GLB_MAGIC = 0x46546c67; // «glTF»
@@ -150,7 +151,7 @@ export async function readGltf(io: WebIO, file: InFile): Promise<Document> {
   if (file.bytes.length > MAX_INPUT) throw new ToolError("LIMIT_EXCEEDED", "glb_too_big");
   const json = gltfJson(file.bytes);
   const external = [...(json.buffers ?? []), ...(json.images ?? [])].some((r) => r.uri && !r.uri.startsWith("data:"));
-  if (!isGlb(file.bytes) && external) throw new ToolError("UNSUPPORTED_FORMAT", "gltf_external");
+  if (external) throw new ToolError("UNSUPPORTED_FORMAT", "gltf_external"); // también un GLB que enlaza archivos de fuera
   try {
     if (isGlb(file.bytes)) return await io.readBinary(file.bytes);
     return await io.readJSON({ json: json as never, resources: {} });
@@ -166,7 +167,15 @@ async function textureToWebp(texture: Texture, env: GlbEnv, maxSide: number, qua
   const mime = texture.getMimeType();
   if (!image || !env.codec?.rgba) return false;
   if (!toWebp && !maxSide) return false;
-  const decoded = await env.codec.decode({ name: `textura.${mime.split("/")[1] ?? "png"}`, bytes: image });
+  // Solo PNG, JPEG y WebP sin transparencia: KTX2 no se decodifica aquí, y el lienzo premultiplica el alfa y perdería el
+  // color bajo las zonas transparentes (o un canal empaquetado en el alfa) (D-260).
+  if (!["image/png", "image/jpeg", "image/webp"].includes(mime) || hasAlpha(image, mime)) return false;
+  let decoded;
+  try {
+    decoded = await env.codec.decode({ name: `textura.${mime.split("/")[1] ?? "png"}`, bytes: image });
+  } catch {
+    return false; // una textura que el navegador no abre se deja como está
+  }
   try {
     const side = Math.max(decoded.width, decoded.height);
     const scale = maxSide && side > maxSide ? maxSide / side : 1;
@@ -191,6 +200,21 @@ async function textureToWebp(texture: Texture, env: GlbEnv, maxSide: number, qua
   }
 }
 
+/** ¿La imagen tiene canal alfa? PNG por su tipo de color (4 o 6, o un bloque tRNS); WebP por VP8L o la marca de VP8X. */
+export function hasAlpha(bytes: Uint8Array, mime: string): boolean {
+  if (mime === "image/png") {
+    if (bytes.length < 26) return false;
+    if (bytes[25] === 4 || bytes[25] === 6) return true;
+    const head = new TextDecoder("latin1").decode(bytes.subarray(0, Math.min(bytes.length, 65536)));
+    return head.includes("tRNS");
+  }
+  if (mime === "image/webp") {
+    const tag = new TextDecoder("latin1").decode(bytes.subarray(12, 16));
+    return tag === "VP8L" || (tag === "VP8X" && (bytes[20] & 0x10) !== 0);
+  }
+  return false;
+}
+
 async function compressOne(file: InFile, o: ComprimirGlbOptions, env: GlbEnv): Promise<OutFile> {
   const t = TEXTS[env.locale === "en" ? "en" : "es"];
   const method = o.metodo ?? "draco";
@@ -204,7 +228,9 @@ async function compressOne(file: InFile, o: ComprimirGlbOptions, env: GlbEnv): P
   for (const ext of root.listExtensionsUsed()) {
     if (ext.extensionName === "KHR_draco_mesh_compression" || ext.extensionName === "EXT_meshopt_compression") ext.dispose();
   }
-  const transforms = [dedup(), prune({ keepAttributes: false, keepLeaves: false })];
+  // keepLeaves y keepExtras: los nodos vacíos con datos propios (anclajes, puntos de montaje) se conservan (D-260);
+  // keepSolidTextures: no hace falta decodificar cada textura para ver si es de un solo color.
+  const transforms = [dedup(), prune({ keepAttributes: false, keepLeaves: true, keepExtras: true, keepSolidTextures: true })];
   if (o.soldar ?? true) transforms.push(weld());
   await doc.transform(...transforms);
   let changedTextures = 0;
@@ -230,8 +256,9 @@ async function compressOne(file: InFile, o: ComprimirGlbOptions, env: GlbEnv): P
   const notes = [method === "draco" ? t.draco : method === "meshopt" ? t.meshopt : t.plain];
   if (changedTextures) notes.push(t.textures(changedTextures));
   // Quitar la compresión (ninguno) puede agrandar el archivo a propósito; en los otros casos, nunca se devuelve uno mayor.
-  if (method !== "ninguno" && bytes.length >= file.bytes.length && isGlb(file.bytes)) {
-    return { name, bytes: file.bytes, mime: GLB_MIME, note: t.noGain };
+  if (method !== "ninguno" && bytes.length >= file.bytes.length) {
+    return isGlb(file.bytes) ? { name, bytes: file.bytes, mime: GLB_MIME, note: t.noGain }
+      : { name: file.name, bytes: file.bytes, mime: "model/gltf+json", note: t.noGain };
   }
   const pct = Math.round((1 - bytes.length / file.bytes.length) * 100);
   if (pct > 0) notes.unshift(t.result(humanSize(file.bytes.length, env.locale), humanSize(bytes.length, env.locale), pct));

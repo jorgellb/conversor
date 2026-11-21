@@ -170,3 +170,42 @@ test("render-modelo-3d: PNG transparente del tamaño pedido y ZIP con varios mod
   expect(png[25]).toBe(6); // RGBA: con transparencia
   expect(sent).toEqual([]);
 });
+
+
+/** glTF de texto con un triángulo de 1 × 1 m; el búfer incrustado en `data:` o aparte («modelo.bin»). */
+function triangleGltf(embedded: boolean): { gltf: Buffer; bin: Buffer } {
+  const bin = Buffer.from(new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]).buffer);
+  const uri = embedded ? `data:application/octet-stream;base64,${bin.toString("base64")}` : "modelo.bin";
+  const json = {
+    asset: { version: "2.0" }, scene: 0, scenes: [{ nodes: [0] }], nodes: [{ mesh: 0 }], meshes: [{ primitives: [{ attributes: { POSITION: 0 } }] }],
+    buffers: [{ byteLength: bin.length, uri }], bufferViews: [{ buffer: 0, byteOffset: 0, byteLength: bin.length }],
+    accessors: [{ bufferView: 0, componentType: 5126, count: 3, type: "VEC3", min: [0, 0, 0], max: [1, 1, 0] }],
+  };
+  return { gltf: Buffer.from(JSON.stringify(json)), bin };
+}
+
+test("visor-3d: glTF con los datos incrustados, con su .bin aparte y sin él (D-260)", async ({ page }) => {
+  const sent = watchUploads(page);
+  await page.goto("/es/visor-3d");
+  const embedded = triangleGltf(true);
+  await page.locator("[data-visor-input]").setInputFiles({ name: "incrustado.gltf", mimeType: "model/gltf+json", buffer: embedded.gltf });
+  await expect(page.locator("[data-visor-size]")).toHaveText("1000 mm × 0 mm × 1000 mm", { timeout: 30_000 }); // en español, 1000 sin separador
+  const apart = triangleGltf(false);
+  await page.locator("[data-visor-input]").setInputFiles([
+    { name: "aparte.gltf", mimeType: "model/gltf+json", buffer: apart.gltf },
+    { name: "modelo.bin", mimeType: "application/octet-stream", buffer: apart.bin },
+  ]);
+  await expect(page.locator("[data-visor-info]")).toContainText("aparte.gltf", { timeout: 30_000 });
+  await expect(page.locator("[data-visor-info]")).toContainText("1 triángulos");
+  await page.locator("[data-visor-input]").setInputFiles({ name: "solo.gltf", mimeType: "model/gltf+json", buffer: apart.gltf });
+  await expect(page.locator("[data-visor-error]")).toContainText("modelo.bin", { timeout: 30_000 });
+  expect(sent).toEqual([]);
+});
+
+test("visor-3d: un PLY sin caras se ve como nube de puntos", async ({ page }) => {
+  await page.goto("/es/visor-3d");
+  const ply = ["ply", "format ascii 1.0", "element vertex 4", "property float x", "property float y", "property float z", "end_header",
+    "0 0 0", "10 0 0", "0 10 0", "0 0 10", ""].join("\n");
+  await page.locator("[data-visor-input]").setInputFiles({ name: "escaneo.ply", mimeType: "application/octet-stream", buffer: Buffer.from(ply) });
+  await expect(page.locator("[data-visor-info]")).toContainText("4 puntos", { timeout: 30_000 });
+});

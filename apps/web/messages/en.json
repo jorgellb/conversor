@@ -1902,7 +1902,10 @@
       "UNSUPPORTED_FORMAT": "That file is not a model the viewer can open (STL, OBJ, 3MF, PLY, GLB, glTF or AMF).",
       "CORRUPT_FILE": "The model could not be read: it may be damaged or in an unusual format.",
       "LIMIT_EXCEEDED": "The model is over 512 MB, too much to open in the browser.",
-      "EMPTY": "The file has no mesh to show."
+      "EMPTY": "The file has no mesh to show.",
+      "MISSING": "Files the model needs are missing: {names}. Choose them together with the model and open it again.",
+      "KTX2": "The model uses KTX2 (Basis) textures, which cannot be opened here. Switch it to PNG or JPG textures in your 3D program.",
+      "NO_WEBGL": "Your browser does not allow WebGL, which is needed to render 3D models."
     },
     "openGcode": "Open G-code",
     "gcodeFormats": "G-code from any slicer and Prusa bgcode.",
@@ -1954,6 +1957,7 @@
     "rendered": "{n, plural, one {# image ready} other {# images ready}}.",
     "downloadAll": "Download all (ZIP)",
     "download": "Download {name}",
-    "moreOptions": "More options"
+    "moreOptions": "More options",
+    "points": "{n} points (point cloud, no faces)"
   }
 }

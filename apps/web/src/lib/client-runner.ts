@@ -57,6 +57,11 @@ export async function askWorker<T>(kind: "__render" | "__inspect" | "__text" | "
       }
     };
     w.addEventListener("message", onMessage);
+    // Si el worker se cae (sin memoria), la página no se queda «abriendo» para siempre (D-260).
+    w.addEventListener("error", () => {
+      w.removeEventListener("message", onMessage);
+      reject(new ClientToolError("INTERNAL", "worker"));
+    }, { once: true });
     w.postMessage({ id, slug: kind, files: [input], options, passwords }, [input.bytes.buffer as ArrayBuffer]);
   });
 }

@@ -1902,7 +1902,10 @@
       "UNSUPPORTED_FORMAT": "Ese archivo no es un modelo que el visor sepa abrir (STL, OBJ, 3MF, PLY, GLB, glTF o AMF).",
       "CORRUPT_FILE": "No se ha podido leer el modelo: puede estar dañado o tener un formato raro.",
       "LIMIT_EXCEEDED": "El modelo pasa de 512 MB, demasiado para abrirlo en el navegador.",
-      "EMPTY": "El archivo no tiene ninguna malla que mostrar."
+      "EMPTY": "El archivo no tiene ninguna malla que mostrar.",
+      "MISSING": "Faltan archivos que el modelo necesita: {names}. Elígelos junto al modelo y vuelve a abrirlo.",
+      "KTX2": "El modelo usa texturas KTX2 (Basis), que no se pueden abrir aquí. Pásalo a texturas PNG o JPG en tu programa de 3D.",
+      "NO_WEBGL": "Tu navegador no permite WebGL, que hace falta para pintar modelos 3D."
     },
     "openGcode": "Abrir G-code",
     "gcodeFormats": "G-code de cualquier laminador y bgcode de Prusa.",
@@ -1954,6 +1957,7 @@
     "rendered": "{n, plural, one {# imagen lista} other {# imágenes listas}}.",
     "downloadAll": "Descargar todas (ZIP)",
     "download": "Descargar {name}",
-    "moreOptions": "Más opciones"
+    "moreOptions": "Más opciones",
+    "points": "{n} puntos (nube de puntos, sin caras)"
   }
 }

@@ -51,6 +51,9 @@ export function Viewer3D({ spec }: { spec: ClientSpec }) {
     setLoading(true);
     setError("");
     setDistance(null);
+    // Una medida no puede unir puntos de dos modelos (D-260).
+    measure.current.points = [];
+    measure.current.group.clear();
     (async () => {
       try {
         const loaded = await loadModel(main, files.filter((f) => f !== main), { missing: (name) => t("missing", { name }), ktx2: t("ktx2") }, up);
@@ -75,7 +78,10 @@ export function Viewer3D({ spec }: { spec: ClientSpec }) {
         setStatus(t("opened", { name: main.name }));
         recordUse(spec.slug);
       } catch (err) {
-        if (!cancelled) setError(t(`error.${err instanceof ModelError ? err.code : "CORRUPT_FILE"}`));
+        if (!cancelled) {
+          setError(err instanceof ModelError && err.code === "MISSING" ? t("error.MISSING", { names: err.message })
+            : t(`error.${err instanceof ModelError ? err.code : "CORRUPT_FILE"}`));
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -90,6 +96,13 @@ export function Viewer3D({ spec }: { spec: ClientSpec }) {
   useEffect(() => {
     if (!view || !box) return;
     const group = helpers.current;
+    group.remove(measure.current.group);
+    group.traverse((o) => {
+      const helper = o as THREE.LineSegments;
+      if (helper.geometry) helper.geometry.dispose();
+      const mat = helper.material as THREE.Material | THREE.Material[] | undefined;
+      if (mat) (Array.isArray(mat) ? mat : [mat]).forEach((m) => m.dispose());
+    });
     group.clear();
     view.scene.add(group);
     const size = box.getSize(new THREE.Vector3());
@@ -134,8 +147,10 @@ export function Viewer3D({ spec }: { spec: ClientSpec }) {
       plane.current.constant = lo + ((hi - lo) * sectionAt) / 100;
     }
     eachMaterial(model.root, (m) => {
+      const data = m.userData as { side?: THREE.Side };
+      data.side ??= m.side; // se devuelve al quitar la sección
       m.clippingPlanes = axis ? [plane.current] : null;
-      if (axis) m.side = THREE.DoubleSide;
+      m.side = axis ? THREE.DoubleSide : data.side;
       m.needsUpdate = true;
     });
     view.invalidate();
@@ -166,6 +181,11 @@ export function Viewer3D({ spec }: { spec: ClientSpec }) {
       const m = measure.current;
       if (m.points.length >= 2) {
         m.points = [];
+        m.group.traverse((o) => {
+          const obj = o as THREE.Mesh;
+          obj.geometry?.dispose();
+          (obj.material as THREE.Material | undefined)?.dispose?.();
+        });
         m.group.clear();
       }
       m.points.push(hit.point.clone());
@@ -252,7 +272,7 @@ export function Viewer3D({ spec }: { spec: ClientSpec }) {
               <p className="muted">{t("drop")}</p>
             </div>
           )}
-          {loading && <div className="absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-black/40"><p>{t("loading")}</p></div>}
+          {loading && <div className="absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-black/40"><p role="status">{t("loading")}</p></div>}
           {failed && <p role="alert" className="absolute inset-0 flex items-center justify-center p-6 text-center">{t("noWebgl")}</p>}
         </div>
         <aside className="flex flex-col gap-4" aria-label={t("tools")}>
@@ -261,7 +281,8 @@ export function Viewer3D({ spec }: { spec: ClientSpec }) {
               <h2 className="mb-1 font-semibold">{model.name}</h2>
               <p>{t("size")}: <span data-visor-size>{formatMm(size.x, locale)} × {formatMm(size.z, locale)} × {formatMm(size.y, locale)}</span></p>
               <p className="muted text-xs">{t("sizeHelp")}</p>
-              <p>{t("triangles", { n: model.triangles.toLocaleString(locale) })}</p>
+              {model.points ? <p>{t("points", { n: model.points.toLocaleString(locale) })}</p>
+                : <p>{t("triangles", { n: model.triangles.toLocaleString(locale) })}</p>}
               <p>{t("parts", { n: model.meshes })}</p>
               {distance !== null && <p className="font-semibold" data-visor-distance>{t("distance", { value: formatMm(distance, locale) })}</p>}
               {model.warnings.map((w) => <p key={w} className="text-amber-700 dark:text-amber-300">{w}</p>)}
