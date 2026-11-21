@@ -75,34 +75,64 @@ def read_shapes(path: Path, ext: str, keep: list | None = None) -> list[tuple[st
     from OCP.collections import Sequence_TDF_Label
     from OCP.Quantity import Quantity_Color
     from OCP.TDataStd import TDataStd_Name
-    from OCP.XCAFDoc import XCAFDoc_ColorTool, XCAFDoc_ColorType, XCAFDoc_DocumentTool
+    from OCP.XCAFDoc import XCAFDoc_ColorTool, XCAFDoc_ColorType, XCAFDoc_DocumentTool, XCAFDoc_ShapeTool
 
     doc = _document(path, ext)
     if keep is not None:
         keep.append(doc)
     shapes = XCAFDoc_DocumentTool.ShapeTool_s(doc.Main())
     colors = XCAFDoc_DocumentTool.ColorTool_s(doc.Main())
-    labels = Sequence_TDF_Label()
-    shapes.GetFreeShapes(labels)
-    out = []
-    for i in range(1, labels.Length() + 1):
-        label = labels.Value(i)
-        shape = shapes.GetShape_s(label)
-        if shape.IsNull():
-            continue
-        name = TDataStd_Name()
-        text = name.Get().ToExtString() if label.FindAttribute(TDataStd_Name.GetID_s(), name) else ""
-        color = None
+    from OCP.TopLoc import TopLoc_Location
+
+    def name_of(label) -> str:
+        attr = TDataStd_Name()
+        return attr.Get().ToExtString() if label.FindAttribute(TDataStd_Name.GetID_s(), attr) else ""
+
+    def color_of(label):
         for kind in (XCAFDoc_ColorType.XCAFDoc_ColorSurf, XCAFDoc_ColorType.XCAFDoc_ColorGen):
             col = Quantity_Color()
             try:
-                found = XCAFDoc_ColorTool.GetColor_s(label, kind, col) or colors.GetColor(shape, kind, col)
+                found = XCAFDoc_ColorTool.GetColor_s(label, kind, col)
             except Exception:  # noqa: BLE001 - Standard_NullObject
                 found = False
             if found:
-                color = (round(col.Red() * 255), round(col.Green() * 255), round(col.Blue() * 255), 255)
-                break
-        out.append((text or f"pieza-{i}", shape, color, colors))
+                return (round(col.Red() * 255), round(col.Green() * 255), round(col.Blue() * 255), 255)
+        return None
+
+    out: list = []
+
+    def collect(label, location, name: str, color, depth: int) -> None:
+        """Ensamblajes (D-256): cada componente es una referencia a una pieza con su ubicación; el nombre y el color se
+        toman de la pieza referida y la instancia puede sobrescribirlos."""
+        if depth > 32 or len(out) > 10_000:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "cad_assembly")
+        if XCAFDoc_ShapeTool.IsReference_s(label):
+            from OCP.TDF import TDF_Label
+
+            referred = TDF_Label()
+            if XCAFDoc_ShapeTool.GetReferredShape_s(label, referred):
+                inner = location.Multiplied(XCAFDoc_ShapeTool.GetLocation_s(label))
+                collect(referred, inner, name_of(referred) or name_of(label) or name, color_of(label) or color_of(referred) or color,
+                        depth + 1)
+            return
+        if XCAFDoc_ShapeTool.IsAssembly_s(label):
+            components = Sequence_TDF_Label()
+            XCAFDoc_ShapeTool.GetComponents_s(label, components, False)
+            for i in range(1, components.Length() + 1):
+                collect(components.Value(i), location, name, color_of(label) or color, depth + 1)
+            return
+        shape = shapes.GetShape_s(label)
+        if shape.IsNull():
+            return
+        own = name_of(label)
+        out.append((own or name or f"pieza-{len(out) + 1}", shape.Moved(location) if not location.IsIdentity() else shape,
+                    color_of(label) or color, colors))
+
+    labels = Sequence_TDF_Label()
+    shapes.GetFreeShapes(labels)
+    for i in range(1, labels.Length() + 1):
+        label = labels.Value(i)
+        collect(label, TopLoc_Location(), name_of(label) or f"pieza-{i}", color_of(label), 0)
     if not out:
         raise ToolError(ErrorCode.CORRUPT_FILE, f"El {ext.upper()} no tiene ninguna forma")
     return out

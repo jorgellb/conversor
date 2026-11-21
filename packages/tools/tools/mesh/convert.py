@@ -16,7 +16,7 @@ from pathlib import Path
 import core
 import tools
 from core.errors import ErrorCode, ToolError
-from tools.base import ToolContext, derived_name, run_engine
+from tools.base import ToolContext, derived_name, regular_output, run_engine
 from tools.mesh.extra import _child_landlock
 from tools.mesh.pipeline import TARGET  # noqa: F401 - lo usan las pruebas
 from tools.pdf.common import with_batch_zip
@@ -40,7 +40,7 @@ def convert_path(ctx: ToolContext, n: int, path: Path | None, ext: str, target: 
     if src is not None:
         shutil.copyfile(path, src)
     job = {"paths": _code_paths(), "src": str(src) if src else "", "ext": ext, "tool": tool or ctx.tool, "options": o.model_dump(), "locale": ctx.locale,
-           "max_triangles": ctx.plan.mesh_triangles, "stem": Path(derived_name(name, "", target)).stem,
+           "max_triangles": ctx.plan.mesh_triangles, "stem": Path(derived_name(name, "", target)).stem[:80] or "modelo",
            "out_dir": str(out_dir), "result": str(work / "resultado.json")}
     if extra:
         srcs = []
@@ -63,8 +63,9 @@ def convert_path(ctx: ToolContext, n: int, path: Path | None, ext: str, target: 
         raise ToolError(data["error"]["code"], data["error"].get("detail"))
     outputs = []
     for item in data["outputs"]:
+        source = regular_output(Path(item["file"]), out_dir)
         dst = ctx.output(item["name"])
-        shutil.move(item["file"], dst)
+        shutil.move(source, dst)
         outputs.append({"path": str(dst), "name": item["name"], "note": item["note"]})
     shutil.rmtree(work, ignore_errors=True)
     return outputs

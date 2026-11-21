@@ -392,6 +392,34 @@ def load(path: Path, ext: str, max_triangles: int, ctx=None, inline: bool = Fals
 
 # ——— Transformaciones ———
 
+def color_groups(colors: np.ndarray | None, count: int, max_colors: int = 256):
+    """(color, índices de caras) por color en una sola ordenación; por encima de `max_colors`, paleta reducida a 6 niveles
+    por canal de color (216), conservando la transparencia (D-256)."""
+    if colors is None:
+        yield None, np.arange(count)
+        return
+    unique, inverse = np.unique(colors, axis=0, return_inverse=True)
+    if len(unique) > max_colors:
+        cols = colors.copy()
+        cols[:, :3] = np.round(cols[:, :3] / 51).astype(np.uint8) * 51
+        unique, inverse = np.unique(cols, axis=0, return_inverse=True)
+    inverse = inverse.reshape(-1)
+    order = np.argsort(inverse, kind="stable")
+    splits = np.cumsum(np.bincount(inverse, minlength=len(unique)))[:-1]
+    for color, idx in zip(unique, np.split(order, splits)):
+        yield tuple(int(x) for x in color), idx
+
+
+CONTROL = re.compile(r"[\x00-\x1f\x7f]")
+
+
+def clean_names(model: Model) -> Model:
+    """Nombres de pieza sin caracteres de control (rompen el XML del 3MF y del AMF, D-256) y de longitud razonable."""
+    for n, part in enumerate(model.parts, start=1):
+        part.name = CONTROL.sub("", part.name or "").strip()[:120] or f"pieza-{n}"
+    return model
+
+
 def check_finite(model: Model) -> None:
     """Coordenadas finitas tras transformar y escalar (un 1e36 en una transformación de 3MF daba infinitos, D-249)."""
     for part in model.parts:

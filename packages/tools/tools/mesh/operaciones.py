@@ -78,6 +78,16 @@ def holes(mesh) -> int:
     return len(trimesh.graph.connected_components(boundary, min_len=1))
 
 
+def component_count(mesh) -> int:
+    """Piezas sueltas sin construirlas (D-256: separar un millón de triángulos sueltos costaba minutos y gigas)."""
+    import trimesh
+
+    if not len(mesh.faces):
+        return 0
+    labels = trimesh.graph.connected_component_labels(mesh.face_adjacency, node_count=len(mesh.faces))
+    return int(labels.max()) + 1
+
+
 def edge_stats(mesh) -> tuple[int, int]:
     """(aristas de borde, aristas con más de dos caras)."""
     edges = np.sort(mesh.edges, axis=1)
@@ -100,7 +110,7 @@ def repair(model: Model, options: dict, locale: str, notes: list[str]) -> Model:
     mesh.update_faces(unique)
     mesh.remove_unreferenced_vertices()
     removed_small = 0
-    if options.get("quitar_sueltas", True):
+    if options.get("quitar_sueltas", True) and 1 < component_count(mesh) <= 10_000:
         pieces = mesh.split(only_watertight=False)
         if len(pieces) > 1:
             # Resto pequeño: menos del 1 % de los triángulos o una caja de menos del 2 % de la diagonal de la pieza mayor.
@@ -242,6 +252,8 @@ def cut(model: Model, options: dict, locale: str, notes: list[str]) -> list[tupl
             else:
                 below = piece
     notes.append(t["cut"].format(axis=axis.upper(), pos=round(float(position), 3), capped=t["capped"] if capped else t["not_capped"]))
+    if keep == "ambas" and (below is None or above is None):
+        notes.append(t["empty_cut"])
     out = []
     for piece, suffix in ((below, "debajo" if locale != "en" else "below"), (above, "encima" if locale != "en" else "above")):
         if keep != "ambas" and piece is not None and piece.name != keep:
@@ -261,6 +273,8 @@ def cut(model: Model, options: dict, locale: str, notes: list[str]) -> list[tupl
 def separate(model: Model, options: dict, locale: str, notes: list[str]) -> list[tuple[Model, str]]:
     t = _t(locale)
     mesh = _trimesh(merged(model).parts[0])
+    if component_count(mesh) > 5000:
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_pieces")
     pieces = sorted(mesh.split(only_watertight=False), key=lambda p: -len(p.faces))
     minimum = int(options.get("minimo_triangulos", 4) or 1)
     pieces = [p for p in pieces if len(p.faces) >= minimum] or pieces[:1]
@@ -314,7 +328,7 @@ def analyse(model: Model, options: dict, locale: str) -> tuple[str, dict]:
     t = _t(locale)
     mesh = _trimesh(merged(model).parts[0])
     boundary, nonmanifold = edge_stats(mesh)
-    components = len(mesh.split(only_watertight=False))
+    components = component_count(mesh)
     watertight = bool(mesh.is_watertight)
     volume_mm3 = abs(float(mesh.volume)) if watertight else float("nan")
     area = float(mesh.area)

@@ -14,7 +14,7 @@ import zipfile
 from pathlib import Path
 
 from core.errors import ErrorCode, ToolError
-from tools.base import ToolContext, derived_name, run_engine
+from tools.base import ToolContext, derived_name, regular_output, run_engine
 from tools.office.libros import calibre_landlock, check_book, decode_text
 from tools.pdf.common import with_batch_zip
 
@@ -84,6 +84,8 @@ def run(ctx: ToolContext) -> list[dict]:
         # Memoria de datos y no virtual (D-52) y por debajo del límite del contenedor (D-191), como en epub-a-pdf.
         run_engine(args, cwd=work, timeout=900, mem_mb=1200, extra_env=env, limit_data=True, max_file_mb=1024,
                    landlock=calibre_landlock(work))
+        if tmp.is_symlink() or (tmp.exists() and not tmp.is_file()):
+            regular_output(tmp, work)  # D-256: nunca un enlace que saque un archivo de fuera
         if not tmp.exists() or not tmp.stat().st_size:
             raise ToolError(ErrorCode.ENGINE_FAILED, "Calibre no generó el libro")
         name = derived_name(inp.name, "", target)

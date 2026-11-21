@@ -28,20 +28,28 @@ def read_usd(path: Path, max_triangles: int) -> Model:
         raise ToolError(ErrorCode.CORRUPT_FILE, "USD ilegible") from exc
     if stage is None:
         raise ToolError(ErrorCode.CORRUPT_FILE, "USD ilegible")
+    # Solo capas del propio archivo (o de dentro del USDZ): una subcapa o una referencia a otra ruta del servidor no se lee
+    # (D-256; Landlock ya acota lo que se podría abrir).
+    root = str(path.resolve())
+    for layer in stage.GetUsedLayers():
+        real = layer.realPath or ""
+        if real and not real.startswith(root) and not layer.anonymous:
+            raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "usd_external")
     meters = UsdGeom.GetStageMetersPerUnit(stage) or 0.01
     up = "z" if UsdGeom.GetStageUpAxis(stage) == UsdGeom.Tokens.z else "y"
     model = Model(parts=[], unit_mm=meters * 1000.0, up=up)
     cache = UsdGeom.XformCache()
     total = 0
-    for n, prim in enumerate(stage.Traverse()):
+    for n, prim in enumerate(stage.Traverse(Usd.TraverseInstanceProxies())):
         if n > MAX_PRIMS:
             raise ToolError(ErrorCode.LIMIT_EXCEEDED, "Escena USD demasiado grande")
         if not prim.IsA(UsdGeom.Mesh):
             continue
         mesh = UsdGeom.Mesh(prim)
-        points = mesh.GetPointsAttr().Get()
-        counts = mesh.GetFaceVertexCountsAttr().Get()
-        indices = mesh.GetFaceVertexIndicesAttr().Get()
+        when = Usd.TimeCode.EarliestTime()  # las mallas animadas solo tienen muestras en el tiempo
+        points = mesh.GetPointsAttr().Get(when)
+        counts = mesh.GetFaceVertexCountsAttr().Get(when)
+        indices = mesh.GetFaceVertexIndicesAttr().Get(when)
         if not points or not counts or not indices:
             continue
         verts = np.asarray(points, dtype=np.float64).reshape(-1, 3)
@@ -55,15 +63,16 @@ def read_usd(path: Path, max_triangles: int) -> Model:
             raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_triangles")
         starts = np.concatenate([[0], np.cumsum(counts)[:-1]])
         poly = np.repeat(np.arange(len(counts)), counts - 2)
-        k = np.concatenate([np.arange(1, c - 1) for c in counts]) if len(counts) < 2_000_000 else None
-        if k is None:
-            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_triangles")
+        # Abanico vectorizado: el k-ésimo triángulo de cada polígono usa los vértices 0, k y k+1 (D-256).
+        first_tri = np.concatenate([[0], np.cumsum(counts - 2)[:-1]])
+        k = np.arange(tri_count) - first_tri[poly] + 1
         base = starts[poly]
         faces = np.c_[indices[base], indices[base + k], indices[base + k + 1]]
         if faces.min() < 0 or faces.max() >= len(verts):
             raise ToolError(ErrorCode.CORRUPT_FILE, "Malla USD con índices fuera de rango")
         if mesh.GetOrientationAttr().Get() == UsdGeom.Tokens.leftHanded:
             faces = faces[:, ::-1]
+        cache.SetTime(when)
         matrix = np.array(cache.GetLocalToWorldTransform(prim), dtype=np.float64)  # USD: filas (v · M)
         world = (np.c_[verts, np.ones(len(verts))] @ matrix)[:, :3]
         if np.linalg.det(matrix[:3, :3]) < 0:
@@ -71,13 +80,15 @@ def read_usd(path: Path, max_triangles: int) -> Model:
         colors = None
         primvar = UsdGeom.PrimvarsAPI(prim).GetPrimvar("displayColor")
         if primvar and primvar.HasValue():
-            values = np.asarray(primvar.Get(), dtype=np.float64).reshape(-1, 3)
+            values = np.asarray(primvar.ComputeFlattened(when), dtype=np.float64).reshape(-1, 3)
             interp = primvar.GetInterpolation()
             if len(values):
                 if interp == UsdGeom.Tokens.constant:
                     pick = np.zeros(len(faces), dtype=np.int64)
                 elif interp == UsdGeom.Tokens.uniform:
                     pick = np.clip(poly, 0, len(values) - 1)
+                elif interp == UsdGeom.Tokens.faceVarying:
+                    pick = np.clip(base, 0, len(values) - 1)  # el valor del primer vértice de cada polígono
                 else:
                     pick = np.clip(faces[:, 0], 0, len(values) - 1)
                 rgb = np.clip(values[pick] * 255, 0, 255).round().astype(np.uint8)
@@ -88,8 +99,23 @@ def read_usd(path: Path, max_triangles: int) -> Model:
     return model
 
 
+def _material(stage, path: str, color):
+    from pxr import Gf, Sdf, UsdShade
+
+    material = UsdShade.Material.Define(stage, Sdf.Path(path))
+    shader = UsdShade.Shader.Define(stage, Sdf.Path(path + "/Superficie"))
+    shader.CreateIdAttr("UsdPreviewSurface")
+    shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(Gf.Vec3f(*(c / 255.0 for c in color[:3])))
+    shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(0.6)
+    shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
+    if len(color) > 3 and color[3] < 255:
+        shader.CreateInput("opacity", Sdf.ValueTypeNames.Float).Set(color[3] / 255.0)
+    material.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
+    return material
+
+
 def write_usdz(model: Model, dst: Path, unit: str) -> None:
-    from pxr import Gf, Sdf, Usd, UsdGeom, UsdUtils, Vt
+    from pxr import Gf, Sdf, Usd, UsdGeom, UsdShade, UsdUtils, Vt
 
     usdc = dst.with_suffix(".usdc")
     stage = Usd.Stage.CreateNew(str(usdc))
@@ -116,6 +142,16 @@ def write_usdz(model: Model, dst: Path, unit: str) -> None:
         if part.colors is not None:
             primvar = UsdGeom.PrimvarsAPI(mesh).CreatePrimvar("displayColor", Sdf.ValueTypeNames.Color3fArray, UsdGeom.Tokens.uniform)
             primvar.Set(Vt.Vec3fArray.FromNumpy(np.ascontiguousarray(part.colors[:, :3] / 255.0, dtype=np.float32)))
+            # Quick Look no pinta displayColor: un material UsdPreviewSurface por color, atado a un GeomSubset (D-256).
+            from tools.mesh.formats import color_groups
+
+            for k, (color, idx) in enumerate(color_groups(part.colors, len(part.faces), max_colors=64)):
+                material = _material(stage, f"/Modelo/Materiales/{name}_{k}", color)
+                subset = UsdGeom.Subset.Define(stage, Sdf.Path(f"/Modelo/{name}/color_{k}"))
+                subset.CreateElementTypeAttr(UsdGeom.Tokens.face)
+                subset.CreateFamilyNameAttr("materialBind")
+                subset.CreateIndicesAttr(Vt.IntArray.FromNumpy(np.ascontiguousarray(idx, dtype=np.int32)))
+                UsdShade.MaterialBindingAPI.Apply(subset.GetPrim()).Bind(material)
     stage.GetRootLayer().Save()
     if not UsdUtils.CreateNewUsdzPackage(Sdf.AssetPath(str(usdc)), str(dst)):
         raise ToolError(ErrorCode.ENGINE_FAILED, "No se pudo crear el USDZ")

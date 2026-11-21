@@ -10,7 +10,7 @@ import shutil
 from pathlib import Path
 
 from core.errors import ErrorCode, ToolError
-from tools.base import ToolContext, derived_name, run_engine
+from tools.base import ToolContext, derived_name, regular_output, run_engine
 from tools.pdf.common import with_batch_zip
 
 DWG_VERSIONS = {b"AC1012": "R13", b"AC1014": "R14", b"AC1015": "2000", b"AC1018": "2004", b"AC1021": "2007", b"AC1024": "2010",
@@ -49,7 +49,10 @@ def to_dxf(ctx: ToolContext, n: int, path: Path) -> tuple[Path, str]:
     run_engine([ctx.settings.DWG2DXF_BIN, "-y", "-o", "plano.dxf", "plano.dwg"], cwd=work, timeout=300, mem_mb=2048, extra_env=env,
                ok_codes=tuple(range(256)), max_file_mb=1024, landlock=_landlock(ctx, work))
     dxf = work / "plano.dxf"
-    if not dxf.exists() or dxf.stat().st_size < 64:
+    if not dxf.exists() and not dxf.is_symlink():
+        raise ToolError(ErrorCode.CORRUPT_FILE, "dwg_unreadable")
+    regular_output(dxf, work)
+    if dxf.stat().st_size < 64:
         raise ToolError(ErrorCode.CORRUPT_FILE, "dwg_unreadable")
     import ezdxf
     from ezdxf import recover

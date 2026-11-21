@@ -293,6 +293,8 @@ DETAILS: dict[str, dict[str, str]] = {
     "gcode_no_thumbnails": {"es": "El archivo no tiene miniaturas incrustadas: actívalas en el laminador.", "en": "The file has no embedded thumbnails: enable them in the slicer."},
     "gcode3mf_no_gcode": {"es": "El 3MF no tiene G-code laminado: guárdalo desde Bambu Studio u OrcaSlicer como .gcode.3mf.", "en": "The 3MF has no sliced G-code: save it from Bambu Studio or OrcaSlicer as .gcode.3mf."},
     "gcode3mf_plate": {"es": "El archivo no tiene esa placa.", "en": "The file does not have that plate."},
+    "usd_external": {"es": "El USD usa capas o referencias de otros archivos que no se han subido: sube un USDZ, que lo lleva todo dentro.", "en": "The USD uses layers or references from other files that were not uploaded: upload a USDZ, which carries everything inside."},
+    "engine_output": {"es": "El motor no ha devuelto un archivo válido.", "en": "The engine did not return a valid file."},
     "gen_no_shapes": {"es": "No hay ninguna forma rellena que extruir (los trazos sin relleno y los contornos abiertos no cuentan).", "en": "There is no filled shape to extrude (unfilled strokes and open outlines do not count)."},
     "gen_too_complex": {"es": "El dibujo tiene demasiados contornos o puntos para extruirlo.", "en": "The drawing has too many outlines or points to extrude."},
     "gen_no_text": {"es": "Escribe el texto que quieres en 3D.", "en": "Type the text you want in 3D."},

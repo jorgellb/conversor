@@ -160,6 +160,22 @@ def open_image(src, max_pixels: int):
         img.close()
 
 
+def regular_output(path: Path, root: Path) -> Path:
+    """Un archivo que entrega un motor aislado (D-256): regular, no un enlace, y dentro de su carpeta. Si no, el motor se ha
+    salido de lo previsto y no se entrega nada."""
+    import stat as _stat
+
+    path = Path(path)
+    try:
+        info = os.lstat(path)
+        inside = os.path.realpath(path).startswith(os.path.realpath(root) + os.sep)
+    except OSError as exc:
+        raise ToolError(ErrorCode.ENGINE_FAILED, "engine_output") from exc
+    if not _stat.S_ISREG(info.st_mode) or not inside:
+        raise ToolError(ErrorCode.ENGINE_FAILED, "engine_output")
+    return path
+
+
 PR_SET_PDEATHSIG = 1
 MAX_STDOUT = 256 * 1024 * 1024
 STDERR_KEEP = 2 * 1024 * 1024  # del registro de error se guardan el principio y el final

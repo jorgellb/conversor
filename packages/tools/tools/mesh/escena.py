@@ -19,7 +19,10 @@ from lxml import etree
 from core.errors import ErrorCode, ToolError
 from tools.mesh.formats import DEFAULT_GREY, Model, Part
 
-PARSER = etree.XMLParser(resolve_entities=False, no_network=True, huge_tree=False)
+# huge_tree: el X3D guarda coordenadas e índices en atributos de decenas de MB; las entidades no se resuelven y el DTD
+# interno se rechaza (D-256).
+PARSER = etree.XMLParser(resolve_entities=False, no_network=True, huge_tree=True)
+MAX_VISITS = 1_000_000
 MAX_DEPTH = 64
 MAX_PARTS = 10_000
 
@@ -277,10 +280,27 @@ def _geometry(geom: Node, shape_color) -> tuple[np.ndarray, np.ndarray, np.ndarr
         table = cvals[: len(cvals) // width * width].reshape(-1, width)
         if len(table):
             per_vertex = (geom.fields.get("colorPerVertex", [b"TRUE"])[0] in (b"TRUE", "true", "TRUE"))
+            color_index = _ints(geom.fields.get("colorIndex", [])) if geom.fields.get("colorIndex") else None
             if per_vertex:
-                pick = np.clip(faces[:, 0], 0, len(table) - 1)  # el color del primer vértice de cada triángulo
+                if color_index is not None and geom.kind == "IndexedFaceSet":
+                    # colorIndex va en paralelo a coordIndex: el color del primer vértice de cada polígono (D-256).
+                    firsts, take = [], True
+                    for v in color_index:
+                        if v < 0:
+                            take = True
+                        elif take:
+                            firsts.append(int(v))
+                            take = False
+                    firsts_arr = np.array(firsts or [0], dtype=np.int64)
+                    pick = np.clip(firsts_arr[np.clip(polygon_of, 0, len(firsts_arr) - 1)], 0, len(table) - 1)
+                else:
+                    pick = np.clip(faces[:, 0], 0, len(table) - 1)  # el color del primer vértice de cada triángulo
             else:
-                pick = np.clip(polygon_of, 0, len(table) - 1)
+                if color_index is not None:
+                    by_polygon = color_index[color_index >= 0] if (color_index < 0).any() else color_index
+                    pick = np.clip(by_polygon[np.clip(polygon_of, 0, len(by_polygon) - 1)], 0, len(table) - 1)
+                else:
+                    pick = np.clip(polygon_of, 0, len(table) - 1)
             rgb = np.clip(table[pick][:, :3] * 255, 0, 255).round().astype(np.uint8)
             alpha = (np.clip(table[pick][:, 3] * 255, 0, 255).round().astype(np.uint8) if width == 4
                      else np.full(len(faces), 255, np.uint8))
@@ -293,9 +313,14 @@ def _geometry(geom: Node, shape_color) -> tuple[np.ndarray, np.ndarray, np.ndarr
 def evaluate(nodes: list[Node], max_triangles: int) -> Model:
     model = Model(parts=[], unit_mm=None, up="y")
     total = 0
+    visits = 0
+    geometry_cache: dict[int, tuple] = {}
 
     def walk(node: Node, transform: np.ndarray, depth: int, name: str) -> None:
-        nonlocal total
+        nonlocal total, visits
+        visits += 1
+        if visits > MAX_VISITS:  # USE en abanico de grupos vacíos: sin triángulos pero con trabajo exponencial (D-256)
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "gen_too_complex")
         if depth > MAX_DEPTH:
             raise ToolError(ErrorCode.CORRUPT_FILE, "Escena anidada en exceso")
         if node.kind == "Transform":
@@ -303,7 +328,10 @@ def evaluate(nodes: list[Node], max_triangles: int) -> Model:
         if node.kind == "Shape":
             geom = node.fields.get("geometry")
             if isinstance(geom, Node) and geom.kind in ("IndexedFaceSet", "IndexedTriangleSet"):
-                verts, faces, colors = _geometry(geom, _color(node))
+                key = (id(geom), id(node))
+                if key not in geometry_cache:
+                    geometry_cache[key] = _geometry(geom, _color(node))
+                verts, faces, colors = geometry_cache[key]
                 if len(faces):
                     total += len(faces)
                     if total > max_triangles or len(model.parts) >= MAX_PARTS:

@@ -7,6 +7,7 @@ Unidades: glTF en metros (su especificación), DAE en metros tras aplicar su `<u
 """
 from __future__ import annotations
 
+import io
 import json
 import re
 import shutil
@@ -135,7 +136,7 @@ def read_amf(path: Path, max_triangles: int) -> Model:
             color = _color(volume) or materials.get(volume.get("materialid")) or obj_color
             for tri in _children(volume, "triangle"):
                 total += 1
-                if total > max_triangles:
+                if total > max_triangles and not _children(root, "constellation"):  # con constelaciones cuentan las instancias
                     raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"Más de {max_triangles} triángulos")
                 faces.append((int(_num(tri, "v1", -1)), int(_num(tri, "v2", -1)), int(_num(tri, "v3", -1))))
                 colors.append(color)
@@ -153,6 +154,7 @@ def read_amf(path: Path, max_triangles: int) -> Model:
     parts: list[Part] = []
     constellations = _children(root, "constellation")
     if constellations:
+        total = 0  # se cuentan las instancias, no los objetos (D-256: los AMF de PrusaSlicer siempre tienen constelación)
         for const in constellations:
             for inst in _children(const, "instance"):
                 base = objects.get(inst.get("objectid"))
@@ -173,47 +175,46 @@ def read_amf(path: Path, max_triangles: int) -> Model:
 
 
 def write_amf(model: Model, dst: Path, unit: str) -> None:
-    """AMF comprimido en ZIP (como PrusaSlicer): un objeto por pieza, un volumen por color y un material por color."""
-    amf = etree.Element("amf", unit=UNIT_TO_AMF.get(unit, "millimeter"), version="1.1")
-    if unit == "cm":  # AMF no tiene centímetros: se guarda en milímetros
-        for part in model.parts:
-            part.vertices = part.vertices * 10.0
-    etree.SubElement(amf, "metadata", type="producer").text = "Conversor 3D"
+    """AMF comprimido en ZIP (como PrusaSlicer), escrito por trozos dentro del ZIP: un objeto por pieza, un volumen por
+    color y un material por color (D-256: montar el árbol XML entero costaba 1,7 KB por triángulo)."""
+    from tools.mesh.formats import color_groups
+
+    factor = 10.0 if unit == "cm" else 1.0  # AMF no tiene centímetros: se guarda en milímetros
+    amf_unit = UNIT_TO_AMF.get(unit, "millimeter")
     palette: dict[tuple[int, ...], str] = {}
-    for n, part in enumerate(model.parts, start=1):
-        obj = etree.SubElement(amf, "object", id=str(n))
-        etree.SubElement(obj, "metadata", type="name").text = part.name
-        mesh = etree.SubElement(obj, "mesh")
-        verts = etree.SubElement(mesh, "vertices")
-        for x, y, z in part.vertices:
-            c = etree.SubElement(etree.SubElement(verts, "vertex"), "coordinates")
-            etree.SubElement(c, "x").text = f"{x:.6g}"
-            etree.SubElement(c, "y").text = f"{y:.6g}"
-            etree.SubElement(c, "z").text = f"{z:.6g}"
-        groups = [(None, np.arange(len(part.faces)))]
-        if part.colors is not None:
-            unique, inverse = np.unique(part.colors, axis=0, return_inverse=True)
-            groups = [(tuple(int(x) for x in unique[i]), np.flatnonzero(inverse.reshape(-1) == i)) for i in range(len(unique))]
-        for color, idx in groups:
-            attrs = {}
-            if color is not None:
-                if color not in palette:
-                    palette[color] = str(len(palette) + 1)
-                attrs["materialid"] = palette[color]
-            volume = etree.SubElement(mesh, "volume", **attrs)
-            for a, b, c in part.faces[idx]:
-                tri = etree.SubElement(volume, "triangle")
-                etree.SubElement(tri, "v1").text = str(a)
-                etree.SubElement(tri, "v2").text = str(b)
-                etree.SubElement(tri, "v3").text = str(c)
-    for color, mid in palette.items():
-        mat = etree.SubElement(amf, "material", id=mid)
-        col = etree.SubElement(mat, "color")
-        for key, value in zip("rgba", color):
-            etree.SubElement(col, key).text = f"{value / 255:.4f}"
-    data = etree.tostring(amf, xml_declaration=True, encoding="UTF-8")
-    with zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zf:
-        zf.writestr(dst.stem + ".amf", data)
+    with zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED) as zf, zf.open(dst.stem + ".amf", "w") as raw:
+        out = io.TextIOWrapper(raw, encoding="utf-8", newline="\n")
+        out.write(f'<?xml version="1.0" encoding="UTF-8"?>\n<amf unit="{amf_unit}" version="1.1">\n'
+                  '<metadata type="producer">Conversor 3D</metadata>\n')
+        for n, part in enumerate(model.parts, start=1):
+            out.write(f'<object id="{n}"><metadata type="name">{xml_escape(part.name)}</metadata><mesh><vertices>\n')
+            verts = part.vertices * factor
+            step = 200_000
+            for k in range(0, len(verts), step):
+                out.write("".join(f"<vertex><coordinates><x>{x:.6g}</x><y>{y:.6g}</y><z>{z:.6g}</z></coordinates></vertex>\n"
+                                  for x, y, z in verts[k:k + step].tolist()))
+            out.write("</vertices>\n")
+            for color, idx in color_groups(part.colors, len(part.faces)):
+                attr = ""
+                if color is not None:
+                    palette.setdefault(color, str(len(palette) + 1))
+                    attr = f' materialid="{palette[color]}"'
+                out.write(f"<volume{attr}>\n")
+                faces = part.faces[idx]
+                for k in range(0, len(faces), step):
+                    out.write("".join(f"<triangle><v1>{a}</v1><v2>{b}</v2><v3>{c}</v3></triangle>\n" for a, b, c in faces[k:k + step].tolist()))
+                out.write("</volume>\n")
+            out.write("</mesh></object>\n")
+        for color, mid in palette.items():
+            r, g, b, a = (v / 255 for v in color)
+            out.write(f'<material id="{mid}"><color><r>{r:.4f}</r><g>{g:.4f}</g><b>{b:.4f}</b><a>{a:.4f}</a></color></material>\n')
+        out.write("</amf>\n")
+        out.flush()
+        out.detach()
+
+
+def xml_escape(text: str) -> str:
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
 # ——— glTF y GLB ———
@@ -247,20 +248,21 @@ def write_glb(model: Model, dst: Path) -> None:
     from trimesh.visual.material import PBRMaterial
     from trimesh.visual.texture import TextureVisuals
 
+    from tools.mesh.formats import color_groups
+
     scene = trimesh.Scene()
     for part in model.parts:
         if part.colors is None:
             scene.add_geometry(trimesh.Trimesh(part.vertices, part.faces, process=False), geom_name=part.name)
             continue
-        unique, inverse = np.unique(part.colors, axis=0, return_inverse=True)
-        inverse = inverse.reshape(-1)
-        for i, color in enumerate(unique):
-            faces = part.faces[inverse == i]
+        groups = list(color_groups(part.colors, len(part.faces)))
+        for i, (color, idx) in enumerate(groups):
+            faces = part.faces[idx]
             used, remap = np.unique(faces, return_inverse=True)
             mesh = trimesh.Trimesh(part.vertices[used], remap.reshape(-1, 3), process=False)
             mesh.visual = TextureVisuals(material=PBRMaterial(baseColorFactor=[int(x) for x in color], metallicFactor=0.0,
                                                               roughnessFactor=0.8))
-            scene.add_geometry(mesh, geom_name=f"{part.name}-{i + 1}" if len(unique) > 1 else part.name)
+            scene.add_geometry(mesh, geom_name=f"{part.name}-{i + 1}" if len(groups) > 1 else part.name)
     dst.write_bytes(scene.export(file_type="glb"))
 
 
@@ -306,7 +308,8 @@ def _from_npz(npz: Path, ext: str, code: int, max_triangles: int) -> Model:
     elif ext == "fbx":
         unit_mm = float(meta.get("UnitScaleFactor") or 1.0) * 10.0  # centímetros por unidad
     model = Model(parts, unit_mm)
-    model.up = "y"
+    # FBX con Z vertical (3ds Max): «UpAxis» = 2 (D-256); el resto de lo que lee assimp, Y vertical.
+    model.up = "z" if ext == "fbx" and int(float(meta.get("UpAxis", 1) or 1)) == 2 else "y"
     return model
 
 

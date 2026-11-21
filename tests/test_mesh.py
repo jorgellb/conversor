@@ -713,3 +713,121 @@ def test_heightmap_relief(make_ctx, tmp_path):
     mesh = _load(Path(out[0]["path"]))
     assert mesh.is_watertight and np.isclose(mesh.extents[2], 12.0, atol=0.01)
     assert abs(mesh.volume - (2 + 5) * 64 * mesh.extents[1]) / mesh.volume < 0.05  # rampa: altura media 5 sobre la base
+
+
+# ——— D-256: correcciones de la revisión de F7-B a F7-F ———
+
+def test_child_output_must_be_a_regular_file_inside(make_ctx, tmp_path, monkeypatch):
+    """Un hijo comprometido no puede entregar un enlace ni una ruta de fuera de su carpeta de salida."""
+    import json as _json
+    import os
+
+    from tools.mesh import convert
+
+    secret = tmp_path / "ajeno.txt"
+    secret.write_text("SECRETO DE OTRO USUARIO")
+
+    def fake(args, cwd, **kw):
+        out = Path(cwd) / "salida"
+        mode = fake.mode
+        if mode == "symlink":
+            os.symlink(secret, out / "modelo.stl")
+            target = out / "modelo.stl"
+        else:
+            target = secret
+        (Path(cwd) / "resultado.json").write_text(_json.dumps({"outputs": [{"file": str(target), "name": "modelo.stl", "note": ""}]}))
+        import subprocess
+
+        return subprocess.CompletedProcess(args, 0, b"", b"")
+
+    monkeypatch.setattr(convert, "run_engine", fake)
+    for fake.mode in ("symlink", "outside"):
+        with pytest.raises(ToolError) as err:
+            run("stl-a-3mf", make_ctx("stl-a-3mf", [_box(tmp_path)]))
+        assert err.value.detail == "engine_output"
+    assert secret.read_text() == "SECRETO DE OTRO USUARIO"  # ni movido ni entregado
+
+
+def test_operations_on_glb_keep_metres_and_y_up(make_ctx, tmp_path):
+    glb = Path(run("stl-a-glb", make_ctx("stl-a-glb", [_box(tmp_path)]))[0]["path"])
+    out = run("escalar-modelo-3d", make_ctx("escalar-modelo-3d", [glb], {"factor": 1}))
+    assert out[0]["name"].endswith(".glb")
+    scene = trimesh.load(Path(out[0]["path"]))
+    assert np.allclose(scene.extents, (0.01, 0.03, 0.02), atol=1e-4)  # metros y Y vertical, como el GLB de entrada
+    cut = run("cortar-modelo-3d", make_ctx("cortar-modelo-3d", [glb], {"eje": "z", "conservar": "debajo", "formato_salida": "stl"}))
+    assert np.allclose(sorted(_load(Path(cut[0]["path"])).extents), [10, 15, 20], atol=1e-3)  # cortado a media altura de verdad
+
+
+def test_vrml_colour_index_roundtrip(tmp_path):
+    from tools.mesh import escena, formats
+
+    box = trimesh.creation.box((1, 1, 1))
+    colors = np.array([[0, 0, 255, 255] if i % 3 != 1 else [255, 0, 0, 255] for i in range(len(box.faces))], dtype=np.uint8)
+    model = formats.Model([formats.Part("caja", box.vertices, box.faces, colors)])
+    for ext, writer in (("wrl", escena.write_wrl), ("x3d", escena.write_x3d)):
+        path = tmp_path / f"c.{ext}"
+        writer(model, path)
+        back = escena.read_scene(path, ext, 100)
+        assert np.array_equal(back.parts[0].colors, colors), ext
+
+
+def test_vrml_use_fan_out_is_bounded(tmp_path):
+    from tools.mesh import escena
+
+    lines = ["#VRML V2.0 utf8", "DEF L0 Group { children [ Shape { geometry IndexedFaceSet { coord Coordinate { point [ ] } coordIndex [ ] } } ] }"]
+    for k in range(1, 14):
+        lines.append(f"DEF L{k} Group {{ children [ " + " ".join(f"USE L{k - 1}" for _ in range(4)) + " ] }")
+    path = tmp_path / "bomba.wrl"
+    path.write_text("\n".join(lines) + "\n")
+    import time
+
+    t0 = time.time()
+    with pytest.raises(ToolError):
+        escena.read_scene(path, "wrl", 10**6)
+    assert time.time() - t0 < 30
+
+
+def test_x3d_with_huge_attributes(tmp_path):
+    from tools.mesh import escena, formats
+
+    big = trimesh.creation.icosphere(subdivisions=7)  # atributos de más de 10 MB
+    model = formats.Model([formats.Part("bola", big.vertices, big.faces)])
+    path = tmp_path / "grande.x3d"
+    escena.write_x3d(model, path)
+    assert escena.read_scene(path, "x3d", 10**7).triangles == len(big.faces)
+
+
+def test_amf_constellation_counts_instances_once(tmp_path):
+    from tools.mesh import extra
+
+    xml = ('<?xml version="1.0"?><amf unit="millimeter"><object id="1"><mesh><vertices>'
+           + "".join(f"<vertex><coordinates><x>{x}</x><y>{y}</y><z>{z}</z></coordinates></vertex>" for x, y, z in ((0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1)))
+           + "</vertices><volume>" + "<triangle><v1>0</v1><v2>1</v2><v3>2</v3></triangle>" * 6 + "</volume></mesh></object>"
+           '<constellation id="2"><instance objectid="1"/></constellation></amf>')
+    path = tmp_path / "prusa.amf"
+    path.write_text(xml)
+    assert extra.read_amf(path, 10).triangles == 6  # antes contaba 12
+
+
+def test_usd_external_layers_are_rejected(tmp_path):
+    pytest.importorskip("pxr")
+    from tools.mesh import usd
+
+    outside = tmp_path / "fuera"
+    outside.mkdir()
+    (outside / "otro.usda").write_text('#usda 1.0\ndef Mesh "M"\n{\n    point3f[] points = [(0,0,0),(1,0,0),(0,1,0)]\n'
+                                       '    int[] faceVertexCounts = [3]\n    int[] faceVertexIndices = [0,1,2]\n}\n')
+    main = tmp_path / "principal.usda"
+    main.write_text(f'#usda 1.0\n(\n    subLayers = [@{outside / "otro.usda"}@]\n)\n')
+    with pytest.raises(ToolError) as err:
+        usd.read_usd(main, 100)
+    assert err.value.detail == "usd_external"
+
+
+def test_part_names_without_control_characters(make_ctx, tmp_path):
+    from tools.mesh import formats
+
+    box = trimesh.creation.box()
+    model = formats.Model([formats.Part("nodo\x02raro\x1f", box.vertices, box.faces)])
+    formats.clean_names(model)
+    assert model.parts[0].name == "nodoraro"

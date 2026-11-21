@@ -750,6 +750,12 @@ vtracer y fontTools (D-254), en `tests/test_mesh.py`.
 gcode-a-bgcode, bgcode-a-gcode, analizar-gcode, gcode-a-imagen, extraer-miniatura-gcode y extraer-gcode-3mf con Heatshrink, MeatPack
 y bloques bgcode propios, comprobados con archivos reales de PrusaSlicer (D-255), en `tests/test_gcode.py`.
 
+## Revisión de F7-B a F7-F
+
+Salidas de los motores aislados comprobadas (archivos regulares dentro de su carpeta) y sin enlaces simbólicos en Landlock, operaciones
+sobre GLB en metros y con Y vertical, colorIndex de VRML y X3D, ensamblajes STEP, USD con instancias y sin capas de fuera, y escritores y
+recorridos acotados (D-256), en `tests/test_mesh.py` y `tests/test_cad.py`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

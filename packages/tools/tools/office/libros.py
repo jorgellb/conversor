@@ -18,7 +18,7 @@ import pikepdf
 
 from core.errors import ErrorCode, ToolError
 from core.zipguard import check_zip
-from tools.base import ToolContext, derived_name, run_engine
+from tools.base import ToolContext, derived_name, regular_output, run_engine
 from tools.pdf.common import with_batch_zip
 
 MM_TO_PT = 72 / 25.4
@@ -72,7 +72,7 @@ def calibre_landlock(work: Path) -> list[tuple[Path, str]]:
     QtWebEngine) y lee el sistema, pero no el almacén de archivos, el código del worker ni /run. Landlock también impide
     leer /proc/<pid>/environ de procesos de fuera del aislamiento (comprobación de ptrace)."""
     read = [Path(d) for d in ("/usr", "/lib", "/lib64", "/bin", "/etc", "/proc", "/sys", "/var/cache/fontconfig", "/opt/calibre")]
-    return [(work, "rw"), (Path("/dev"), "rw"), *((d, "rx") for d in read if d.exists())]
+    return [(work, "rws"), (Path("/dev"), "rw"), *((d, "rx") for d in read if d.exists())]
 
 
 def _scan_text(text: str, member: str) -> None:
@@ -200,6 +200,8 @@ def run(ctx: ToolContext) -> list[dict]:
         # Memoria de datos y no virtual: QtWebEngine reserva mucho espacio de direcciones y con RLIMIT_AS no arranca (D-52).
         # 1200 MB: por debajo de los 1536 MB del contenedor (D-191), para que salte este tope y no el OOM del cgroup.
         run_engine(args, cwd=work, timeout=900, mem_mb=1200, extra_env=env, limit_data=True, landlock=calibre_landlock(work))
+        if tmp.is_symlink() or (tmp.exists() and not tmp.is_file()):
+            regular_output(tmp, work)  # D-256: nunca un enlace que saque un archivo de fuera
         if not tmp.exists():
             raise ToolError(ErrorCode.ENGINE_FAILED, "Calibre no generó el PDF")
         with pikepdf.open(tmp) as pdf:

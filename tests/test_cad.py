@@ -196,7 +196,7 @@ def test_scad_to_3mf_with_customizer_variables(make_ctx, tmp_path, monkeypatch):
     out = run("scad-a-3mf", make_ctx("scad-a-3mf", [src], {"variables": "ancho = 12\n$fa = 6\netiqueta = \"A-1\"\nagujeros = [3, 4.5]",
                                                          "resolucion": "alta"}))
     args, kw = seen["scad"]
-    assert args[-1] == "modelo.scad" and ["-D", "ancho=12"] == args[args.index("-D"):args.index("-D") + 2]
+    assert args[-1] == "./modelo.scad" and ["-D", "ancho=12"] == args[args.index("-D"):args.index("-D") + 2]
     assert "-D" in args and "$fn=128" in args and 'etiqueta="A-1"' in args and "agujeros=[3, 4.5]" in args
     rules = dict(kw["landlock"])
     assert any(str(p).endswith("scad-0") for p in rules) and all(mode in ("rx", "rw") for mode in rules.values())
@@ -222,7 +222,7 @@ def test_scad_zip_with_includes_and_escape(make_ctx, tmp_path, monkeypatch):
         zf.writestr("caja.scad", "include <lib/util.scad>\nmodulo();\n")
         zf.writestr("lib/util.scad", "module modulo() { cube(5); }\n")
     out = run("scad-a-stl", make_ctx("scad-a-stl", [ok]))
-    assert seen["scad"][0][-1] == "caja.scad" and out[0]["name"].endswith(".stl")
+    assert seen["scad"][0][-1] == "./caja.scad" and out[0]["name"].endswith(".stl")
     bad = tmp_path / "malo.zip"
     with zipfile.ZipFile(bad, "w") as zf:
         zf.writestr("malo.scad", "cube(1);")
@@ -293,3 +293,48 @@ def test_dwg_detection(tmp_path):
     from core.filetype import detect
 
     assert detect(_dwg(tmp_path), ".dwg").ext == "dwg"
+
+
+def test_step_assembly_keeps_part_names_colours_and_locations(make_ctx, tmp_path):
+    """D-256: en un ensamblaje, el nombre y el color son los de la pieza referida y cada instancia lleva su ubicación."""
+    from OCP.BRepPrimAPI import BRepPrimAPI_MakeBox, BRepPrimAPI_MakeCylinder
+    from OCP.gp import gp_Trsf, gp_Vec
+    from OCP.Quantity import Quantity_Color, Quantity_TypeOfColor
+    from OCP.STEPCAFControl import STEPCAFControl_Writer
+    from OCP.STEPControl import STEPControl_StepModelType
+    from OCP.TCollection import TCollection_ExtendedString
+    from OCP.TDataStd import TDataStd_Name
+    from OCP.TDocStd import TDocStd_Document
+    from OCP.TopLoc import TopLoc_Location
+    from OCP.XCAFDoc import XCAFDoc_ColorType, XCAFDoc_DocumentTool
+
+    from tools.mesh import formats
+
+    doc = TDocStd_Document(TCollection_ExtendedString("XmlOcaf"))
+    shapes = XCAFDoc_DocumentTool.ShapeTool_s(doc.Main())
+    colors = XCAFDoc_DocumentTool.ColorTool_s(doc.Main())
+    assembly = shapes.NewShape()
+    TDataStd_Name.Set_s(assembly, TCollection_ExtendedString("Conjunto"))
+    screw = shapes.AddShape(BRepPrimAPI_MakeCylinder(2, 20).Shape(), False)
+    TDataStd_Name.Set_s(screw, TCollection_ExtendedString("Tornillo"))
+    colors.SetColor(screw, Quantity_Color(1, 0, 0, Quantity_TypeOfColor.Quantity_TOC_RGB), XCAFDoc_ColorType.XCAFDoc_ColorGen)
+    nut = shapes.AddShape(BRepPrimAPI_MakeBox(8, 8, 4).Shape(), False)
+    TDataStd_Name.Set_s(nut, TCollection_ExtendedString("Tuerca"))
+    colors.SetColor(nut, Quantity_Color(0, 0, 1, Quantity_TypeOfColor.Quantity_TOC_RGB), XCAFDoc_ColorType.XCAFDoc_ColorGen)
+    move = gp_Trsf()
+    move.SetTranslation(gp_Vec(50, 0, 0))
+    shapes.AddComponent(assembly, screw, TopLoc_Location())
+    shapes.AddComponent(assembly, nut, TopLoc_Location(move))
+    shapes.UpdateAssemblies()
+    writer = STEPCAFControl_Writer()
+    writer.SetColorMode(True)
+    writer.SetNameMode(True)
+    writer.Transfer(doc, STEPControl_StepModelType.STEPControl_AsIs)
+    path = tmp_path / "conjunto.step"
+    writer.Write(str(path))
+    out = run("step-a-3mf", make_ctx("step-a-3mf", [path]))
+    model = formats.load(Path(out[0]["path"]), "3mf", 10**6)
+    by_name = {p.name: p for p in model.parts}
+    assert set(by_name) == {"Tornillo", "Tuerca"}
+    assert tuple(by_name["Tornillo"].colors[0])[:3] == (255, 0, 0) and tuple(by_name["Tuerca"].colors[0])[:3] == (0, 0, 255)
+    assert by_name["Tuerca"].vertices[:, 0].min() >= 49.9  # su ubicación en el ensamblaje

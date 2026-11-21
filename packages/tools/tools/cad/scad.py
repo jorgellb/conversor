@@ -17,7 +17,7 @@ from pathlib import Path
 
 from core.errors import ErrorCode, ToolError
 from core.zipguard import check_zip
-from tools.base import ToolContext, run_engine
+from tools.base import ToolContext, regular_output, run_engine
 from tools.mesh.convert import convert_path
 from tools.pdf.common import with_batch_zip
 
@@ -98,10 +98,12 @@ def run(ctx: ToolContext) -> list[dict]:
         env = {"OPENSCADPATH": str(work), "HOME": str(work)}
         if ctx.settings.ENGINES_LIBRARY_PATH:
             env["LD_LIBRARY_PATH"] = ctx.settings.ENGINES_LIBRARY_PATH
-        res = run_engine([ctx.settings.OPENSCAD_BIN, "--hardwarnings", "-o", "salida.stl", *defines, str(main.relative_to(work))],
+        res = run_engine([ctx.settings.OPENSCAD_BIN, "--hardwarnings", "-o", "salida.stl", *defines, "./" + str(main.relative_to(work))],
                          cwd=work, timeout=300, mem_mb=3000, limit_data=True, extra_env=env, ok_codes=tuple(range(256)),
                          max_file_mb=2048, landlock=_landlock(ctx, work))
         stl = work / "salida.stl"
+        if stl.exists() or stl.is_symlink():
+            regular_output(stl, work)
         if res.returncode != 0 or not stl.exists() or not stl.stat().st_size:
             log = (res.stderr or b"").decode("utf-8", "replace")
             if "Current top level object is empty" in log or "not a valid 2D or 3D object" in log or "no top level geometry" in log.lower():

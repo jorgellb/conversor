@@ -125,7 +125,8 @@ class Settings(BaseSettings):
     # Solo para probar en local con motores sacados de paquetes .deb sin instalar: LD_LIBRARY_PATH de esos motores.
     ENGINES_LIBRARY_PATH: str = ""
     # Memoria de datos del proceso hijo de cada conversión de mallas (F7, D-249): por debajo del contenedor workermesh.
-    MESH_MEMORY_MB: int = 3000
+    # 2600: con dos trabajos a la vez en el perfil de 16 vCPU (6 GB), dos hijos más los procesos de Celery caben (D-256).
+    MESH_MEMORY_MB: int = 2600
     # F7-E (D-252): programas GPL externos de workercad.
     OPENSCAD_BIN: str = "openscad"
     DWG2DXF_BIN: str = "dwg2dxf"

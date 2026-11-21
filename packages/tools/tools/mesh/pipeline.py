@@ -174,6 +174,7 @@ def convert_file(src: Path, ext: str, tool: str, options: dict, locale: str, max
     del model
     files: list[tuple[Path, str]] = []
     for k, piece in enumerate(pieces):
+        formats.clean_names(piece)
         name_stem = stem if len(pieces) == 1 else f"{stem}-{k + 1:02d}-{formats._obj_name(piece.parts[0].name)}"
         if target == "obj":
             files += _obj_files(piece, out_dir, name_stem)
@@ -217,6 +218,10 @@ def _out_format(options: dict, ext: str) -> str:
 def _write_results(results: list, target: str, stem: str, out_dir: Path, notes: list[str], locale: str) -> list[dict]:
     files: list[tuple[Path, str]] = []
     for model, suffix in results:
+        formats.clean_names(model)
+        if target == "glb":  # glTF: metros e Y vertical (D-256)
+            formats.scaled(model, 0.001)
+            extra.reorient(model, "y")
         name_stem = f"{stem}-{suffix}" if suffix else stem
         if target == "obj":
             files += _obj_files(model, out_dir, name_stem)
@@ -234,7 +239,9 @@ def _write_results(results: list, target: str, stem: str, out_dir: Path, notes: 
 
 
 def _load_mm(src: Path, ext: str, options: dict, max_triangles: int) -> formats.Model:
+    """El modelo en milímetros y con Z vertical, como trabajan todas las operaciones (un GLB llega con Y vertical, D-256)."""
     model = formats.load(src, ext, max_triangles, inline=True)
+    extra.reorient(model, "z")
     src_mm, _name, _assumed = source_unit(model, options.get("unidades_origen", "auto"))
     formats.scaled(model, src_mm)  # todo en milímetros
     formats.check_finite(model)

@@ -27,7 +27,10 @@ NET_BIND_TCP, NET_CONNECT_TCP = 1 << 0, 1 << 1
 MODES = {
     "r": READ_FILE | READ_DIR,
     "rx": READ_FILE | READ_DIR | EXECUTE,
-    "rw": READ_FILE | READ_DIR | WRITE_FILE | REMOVE_DIR | REMOVE_FILE | MAKE_DIR | MAKE_REG | MAKE_SYM | REFER | TRUNCATE,
+    # Sin enlaces simbólicos (D-256): un motor comprometido podría dejar en su salida un enlace a un archivo de fuera que
+    # el trabajador entregaría. «rws» solo para motores que los necesitan (Calibre, que no se puede probar aquí).
+    "rw": READ_FILE | READ_DIR | WRITE_FILE | REMOVE_DIR | REMOVE_FILE | MAKE_DIR | MAKE_REG | REFER | TRUNCATE,
+    "rws": READ_FILE | READ_DIR | WRITE_FILE | REMOVE_DIR | REMOVE_FILE | MAKE_DIR | MAKE_REG | MAKE_SYM | REFER | TRUNCATE,
 }
 
 
