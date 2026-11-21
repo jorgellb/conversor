@@ -22,8 +22,8 @@ describe("visor-gcode: G-code", () => {
     expect(model.stats.segments).toBe(10 * 5 + 72);
     expect(model.min.map((v) => Math.round(v))).toEqual([100, 100, 0]);
     expect(model.max.map((v) => Math.round(v))).toEqual([130, 120, 2]); // el círculo tiene el centro en X125
-    // Relativo (M83): las retracciones y su recuperación se compensan; la extrusión es la suma de los tramos.
-    expect(model.stats.filamentMm).toBeCloseTo(10 * (4 * 0.665 + 0.75) + 1.0 + 10 * 0.8, 3);
+    // Relativo (M83): las retracciones restan y su recuperación suma (D-260): queda la suma de los tramos.
+    expect(model.stats.filamentMm).toBeCloseTo(10 * (4 * 0.665 + 0.75) + 1.0, 3);
     // Los desplazamientos con salto en Z no abren capas.
     expect(model.stats.travels).toBeGreaterThan(0);
     const kinds = new Set(Array.from(model.kinds.subarray(model.layers[5].start, model.layers[5].end)).map((k) => FEATURES[k]));
@@ -117,5 +117,18 @@ describe("visor-gcode: piezas del bgcode", () => {
     expect(parseDuration("1234")).toBe(1234);
     expect(parseDuration("01:02:03")).toBe(3723);
     expect(parseDuration("raro")).toBeNull();
+  });
+});
+
+describe("visor-gcode: revisión de F7-H (D-260)", () => {
+  it("forma compacta, números de línea, purga antes de la primera capa y MeatPack sin espacios largo", () => {
+    const m = parseGcode(enc("M83\nG1 Z0.2 F600\nG1X10Y20E0.5\nG1 X20 Y20 E0.5\n;LAYER_CHANGE\nG1 X30 Y20 E0.5\n;LAYER_CHANGE\nG1 Z0.4\nN12 G1 X40 Y20 E0.5*77\n"));
+    expect(m.layers.map((l) => Number(l.z.toFixed(1)))).toEqual([0.2, 0.4]);
+    expect(m.max[1]).toBeCloseTo(20, 5);
+    expect(m.stats.segments).toBe(4);
+    const on = [0xff, 0xff, 0xfb, 0xff, 0xff, 0xf7];
+    const pair = (a: number, b: number) => a | (b << 4);
+    const body = new Uint8Array([...on, ...Array.from({ length: 1000 }, () => pair(0, 0xb))]);
+    expect(meatpackDecode(body).length).toBe(3000); // «0 E0 E…»: tres caracteres por byte, sin cortar
   });
 });

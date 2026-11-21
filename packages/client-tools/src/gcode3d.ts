@@ -62,6 +62,13 @@ const MAX_INPUT = 1024 * 1024 * 1024;
 
 const MAGIC = [0x47, 0x43, 0x44, 0x45]; // «GCDE»
 const MAX_BLOCK = 64 * 1024 * 1024;
+// Los mismos topes que el lector del servidor (D-258), y en el navegador como mucho 512 MB de G-code descomprimido.
+const MAX_META_BLOCK = 4 * 1024 * 1024;
+const MAX_META_TOTAL = 8 * 1024 * 1024;
+const MAX_META_PAIRS = 50_000;
+const MAX_THUMBS = 16;
+const MAX_THUMB_BYTES = 16 * 1024 * 1024;
+const MAX_DECODED = 512 * 1024 * 1024;
 const TABLE = "0123456789. \nGX";
 
 let crcTable: Uint32Array | null = null;
@@ -117,10 +124,16 @@ export function heatshrinkDecode(data: Uint8Array, window: number, lookahead: nu
 
 /** MeatPack: dos caracteres por byte con la tabla «0-9 . espacio salto G X», nibble bajo primero; 0xF, carácter entero. */
 export function meatpackDecode(data: Uint8Array): Uint8Array {
-  const out = new Uint8Array(Math.max(16, data.length * 2 + 16));
+  // Un byte da hasta tres caracteres (dos más el espacio repuesto del modo sin espacios): el búfer crece si hace falta.
+  let out = new Uint8Array(Math.max(16, data.length * 2 + 16));
   let n = 0;
   let packing = false, nospace = false, comment = false, quoted = false;
   const emit = (ch: number) => {
+    if (n + 2 > out.length) {
+      const next = new Uint8Array(out.length * 2);
+      next.set(out);
+      out = next;
+    }
     if (ch === 10) {
       if (packing && n && out[n - 1] === 10) return; // relleno de una línea de longitud impar
       comment = quoted = false;
@@ -181,6 +194,9 @@ export function readBgcode(bytes: Uint8Array): Bgcode {
   const parts: Uint8Array[] = [];
   let total = 0;
   const meta: Record<string, string> = {};
+  let metaTotal = 0;
+  let pairs = 0;
+  let thumbs = 0;
   let pos = 10;
   while (pos < bytes.length) {
     const start = pos;
@@ -196,6 +212,11 @@ export function readBgcode(bytes: Uint8Array): Bgcode {
       pos += 4;
     }
     if (size > MAX_BLOCK || stored > MAX_BLOCK || kind > 5 || compression > 3) throw new ToolError("CORRUPT_FILE", "bgcode_block");
+    if (kind === 5 && (size > MAX_THUMB_BYTES || ++thumbs > MAX_THUMBS)) throw new ToolError("LIMIT_EXCEEDED", "bgcode_thumbnails");
+    if (kind !== 1 && kind !== 5) {
+      metaTotal += size;
+      if (size > MAX_META_BLOCK || metaTotal > MAX_META_TOTAL) throw new ToolError("LIMIT_EXCEEDED", "bgcode_metadata");
+    }
     const plen = kind === 5 ? 6 : 2;
     let end = pos + plen + stored;
     if (end > bytes.length) throw new ToolError("CORRUPT_FILE", "bgcode_truncated");
@@ -213,7 +234,8 @@ export function readBgcode(bytes: Uint8Array): Bgcode {
     if (compression === 0) raw = payload;
     else if (compression === 1) {
       try {
-        raw = unzlibSync(payload, { out: new Uint8Array(size) });
+        // Un byte de más en el búfer: si Deflate da más de lo declarado, se nota (no se corta sin avisar).
+        raw = unzlibSync(payload, { out: new Uint8Array(size + 1) });
       } catch {
         throw new ToolError("CORRUPT_FILE", "bgcode_deflate");
       }
@@ -223,12 +245,14 @@ export function readBgcode(bytes: Uint8Array): Bgcode {
       const encoding = params[0] | (params[1] << 8);
       const text = encoding === 1 || encoding === 2 ? meatpackDecode(raw) : raw;
       total += text.length;
-      if (total > MAX_INPUT) throw new ToolError("LIMIT_EXCEEDED", "gcode_too_big");
+      if (total > MAX_DECODED) throw new ToolError("LIMIT_EXCEEDED", "gcode_too_big");
       parts.push(text.slice());
     } else {
       for (const line of new TextDecoder().decode(raw).split("\n")) {
         const eq = line.indexOf("=");
-        if (eq > 0) meta[line.slice(0, eq).trim()] = line.slice(eq + 1).trim();
+        if (eq <= 0) continue;
+        if (++pairs > MAX_META_PAIRS) throw new ToolError("LIMIT_EXCEEDED", "bgcode_metadata");
+        meta[line.slice(0, eq).trim()] = line.slice(eq + 1).trim();
       }
     }
   }
@@ -257,7 +281,7 @@ function featureOf(raw: string): Feature {
   if (/interface/.test(s)) return "interfaz_soporte";
   if (/support/.test(s)) return "soporte";
   if (/skirt|brim/.test(s)) return "falda";
-  if (/wipe tower|prime tower|prime-tower|tower/.test(s)) return "torre";
+  if (/wipe tower|prime tower|prime-tower|tower|prime pillar|ooze shield/.test(s)) return "torre";
   if (/ironing/.test(s)) return "planchado";
   return "otro";
 }
@@ -277,8 +301,9 @@ export function parseDuration(text: string): number | null {
   return clock ? Number(clock[1]) * 3600 + Number(clock[2]) * 60 + Number(clock[3]) : null;
 }
 
-const TIME_KEYS = [/^estimated printing time(?: \(normal mode\))?\s*=\s*(.+)$/i, /^TIME:\s*(\d+)\s*$/, /^Build time:\s*(.+)$/i,
-  /^model printing time:\s*([^;]+)/i, /^total estimated time:\s*([^;]+)/i];
+// Por orden de preferencia: Bambu escribe «model printing time» y también «total estimated time», que es el bueno.
+const TIME_KEYS = [/^total estimated time:\s*([^;]+)/i, /^estimated printing time(?: \(normal mode\))?\s*=\s*(.+)$/i, /^TIME:\s*(\d+)\s*$/,
+  /^Build time:\s*(.+)$/i, /^model printing time:\s*([^;]+)/i];
 const SLICER_KEY = /^(?:generated by|Generated with|G-Code generated by)\s*(.+?)(?: on .*)?$/i;
 
 // ——— Recorrido del G-code ———
@@ -333,7 +358,8 @@ class GrowFloat {
   }
 }
 
-/** Número decimal desde `i` (signo, cifras, punto, exponente); `[valor, siguiente índice]` o NaN si no hay número. */
+/** Número decimal desde `i` (signo, cifras y punto); `[valor, siguiente índice]` o NaN si no hay número. Sin exponente: el
+ * G-code no los usa, y en la forma compacta `G1X10Y20E0.5` la E es el eje, no un exponente. */
 function readNumber(b: Uint8Array, i: number, end: number): [number, number] {
   while (i < end && (b[i] === 32 || b[i] === 9)) i++;
   let sign = 1;
@@ -347,10 +373,6 @@ function readNumber(b: Uint8Array, i: number, end: number): [number, number] {
     while (i < end && b[i] >= 48 && b[i] <= 57) { value += (b[i] - 48) * scale; scale /= 10; i++; digits++; }
   }
   if (!digits) return [NaN, i];
-  if ((b[i] === 101 || b[i] === 69) && i + 1 < end && (b[i + 1] === 45 || b[i + 1] === 43 || (b[i + 1] >= 48 && b[i + 1] <= 57))) {
-    const [exp, j] = readNumber(b, i + 1, end);
-    if (!Number.isNaN(exp)) { value *= 10 ** exp; i = j; }
-  }
   return [sign * value, i];
 }
 
@@ -371,9 +393,10 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
   }
   const segs = new Grow(Math.min(MAX_SEGMENTS * 6, Math.max(6 * 1024, (b.length / 8) | 0)));
   const travel = new Grow(Math.min(MAX_TRAVELS * 6, Math.max(6 * 1024, (b.length / 30) | 0)));
-  const kinds = new GrowBytes(Math.max(1024, (b.length / 48) | 0));
-  const tools = new GrowBytes(Math.max(1024, (b.length / 48) | 0));
-  const speeds = new GrowFloat(Math.max(1024, (b.length / 48) | 0));
+  const perSegment = Math.min(MAX_SEGMENTS, Math.max(1024, (b.length / 48) | 0));
+  const kinds = new GrowBytes(perSegment);
+  const tools = new GrowBytes(perSegment);
+  const speeds = new GrowFloat(perSegment);
   const layers: GcodeLayer[] = [];
   const featuresSeen = new Set<number>();
   let x = 0, y = 0, z = 0, e = 0, f = 1800;
@@ -383,6 +406,8 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
   let maxTool = 0;
   let filament = 0;
   let timeSeconds: number | null = null;
+  let timeRank = TIME_KEYS.length;
+  let travelMark = -1; // desplazamientos desde la marca de capa: son de la capa nueva
   let slicer: string | null = null;
   let markers = false; // el laminador marca los cambios de capa
   let pendingLayer = true;
@@ -400,15 +425,17 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
   const travelCount = () => travel.n / 6;
   const openLayer = (atZ: number) => {
     const last = layers[layers.length - 1];
+    const travelAt = travelMark >= 0 ? travelMark : travelCount();
+    travelMark = -1;
     if (last) {
       last.end = segCount();
-      last.travelEnd = travelCount();
+      last.travelEnd = travelAt;
       if (last.end === last.start) { // capa sin extrusión (solo desplazamientos): se reutiliza
         last.z = atZ;
         return;
       }
     }
-    layers.push({ z: atZ, start: segCount(), end: segCount(), travelStart: travelCount(), travelEnd: travelCount() });
+    layers.push({ z: atZ, start: segCount(), end: segCount(), travelStart: travelAt, travelEnd: travelAt });
   };
 
   const move = (nx: number, ny: number, nz: number, ne: number, extruding: boolean) => {
@@ -417,7 +444,16 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
       return;
     }
     if (extruding) {
-      if (segCount() >= MAX_SEGMENTS) { truncated = true; return; }
+      if (segCount() >= MAX_SEGMENTS) {
+        truncated = true;
+        x = nx; y = ny; z = nz; e = ne;
+        return;
+      }
+      if (markers && pendingLayer && layers.length && Math.abs(nz - layerZ) < 0.02) {
+        // La línea de purga va antes de la primera marca, a la altura de la primera capa: es la misma capa.
+        pendingLayer = false;
+        travelMark = -1;
+      }
       if (markers ? pendingLayer : (Number.isNaN(layerZ) || Math.abs(nz - layerZ) >= 0.02)) {
         openLayer(nz);
         layerZ = nz;
@@ -464,11 +500,18 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
       if (t0 === 84 && text.startsWith("TYPE:")) feature = FEATURES.indexOf(featureOf(text.slice(5)));
       else if (t0 === 70 && text.startsWith("FEATURE:")) feature = FEATURES.indexOf(featureOf(text.slice(8)));
       else if (text.startsWith("feature ")) feature = FEATURES.indexOf(featureOf(text.slice(8)));
-      else if (text === "LAYER_CHANGE" || text === "CHANGE_LAYER" || text.startsWith("LAYER:")) pendingLayer = true;
-      else if (timeSeconds === null || slicer === null) {
-        for (const re of TIME_KEYS) {
-          const m = timeSeconds === null ? re.exec(text) : null;
-          if (m) timeSeconds = parseDuration(m[1]);
+      else if (text === "LAYER_CHANGE" || text === "CHANGE_LAYER" || text.startsWith("LAYER:")) {
+        pendingLayer = true;
+        travelMark = travelCount();
+      } else if (timeRank > 0 || slicer === null) {
+        for (let r = 0; r < timeRank; r++) {
+          const m = TIME_KEYS[r].exec(text);
+          const value = m ? parseDuration(m[1]) : null;
+          if (value !== null) {
+            timeSeconds = value;
+            timeRank = r;
+            break;
+          }
         }
         const s: RegExpExecArray | null = slicer === null ? SLICER_KEY.exec(text) : null;
         if (s) slicer = s[1].trim().slice(0, 80);
@@ -476,9 +519,14 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
       }
       continue;
     }
-    const cmd = c0 & 0xdf; // mayúscula
+    let at = p;
+    if ((b[at] & 0xdf) === 78) { // número de línea «N123» (con «*suma» al final): se salta
+      at = readNumber(b, at + 1, lineEnd)[1];
+      while (at < lineEnd && (b[at] === 32 || b[at] === 9)) at++;
+    }
+    const cmd = b[at] & 0xdf; // mayúscula
     if (cmd !== 71 && cmd !== 77 && cmd !== 84) continue;
-    const [num, q] = readNumber(b, p + 1, lineEnd);
+    const [num, q] = readNumber(b, at + 1, lineEnd);
     if (Number.isNaN(num)) continue;
     if (cmd === 84) { // Tn
       tool = Math.max(0, Math.min(255, num | 0));
@@ -495,7 +543,7 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
     let k = q;
     while (k < lineEnd) {
       const ch = b[k] & 0xdf;
-      if (b[k] === 59) break;
+      if (b[k] === 59 || b[k] === 42) break; // comentario o suma de comprobación
       if (ch >= 65 && ch <= 90) {
         const [v, nk] = readNumber(b, k + 1, lineEnd);
         k = nk;
@@ -512,13 +560,14 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
       } else k++;
     }
     if (num === 0 || num === 1 || num === 2 || num === 3) {
+      if (![X, Y, Z, E, F, I, J, R].every((v) => Number.isNaN(v) || Math.abs(v) < 1e7)) continue; // valores absurdos: fuera
       if (!Number.isNaN(F) && F > 0) f = F * scale;
       const nx = Number.isNaN(X) ? x : absXYZ ? X * scale : x + X * scale;
       const ny = Number.isNaN(Y) ? y : absXYZ ? Y * scale : y + Y * scale;
       const nz = Number.isNaN(Z) ? z : absXYZ ? Z * scale : z + Z * scale;
       const ne = Number.isNaN(E) ? e : absE ? E * scale : e + E * scale;
       const extruding = ne - e > 1e-5 && num !== 0 ? true : false;
-      if (extruding) filament += ne - e;
+      if (num !== 0) filament += ne - e; // con signo: las retracciones restan y su recuperación suma
       if (num >= 2 && (nx !== x || ny !== y || !Number.isNaN(I) || !Number.isNaN(R))) {
         // Arco: centro con I/J (relativo al punto de partida) o con el radio R.
         let cx: number, cy: number;
@@ -555,8 +604,8 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
         continue;
       }
       move(nx, ny, nz, ne, extruding);
-    } else if (num === 90) absXYZ = true;
-    else if (num === 91) absXYZ = false;
+    } else if (num === 90) absXYZ = true; // G90 no toca el modo de E (los laminadores escriben M82/M83 aparte)
+    else if (num === 91) absXYZ = absE = false; // G91 lo pone todo en relativo, también E (como Marlin)
     else if (num === 20) scale = 25.4;
     else if (num === 21) scale = 1;
     else if (num === 92) {
