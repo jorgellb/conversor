@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extract G-code thumbnail pulls out the preview images the slicer stores inside the G-code or bgcode, the same ones shown by the printer screen, OctoPrint or PrusaLink. Download them as PNG to use in a catalogue, a product sheet, a job list or a post.",
+    "PNG, JPG and QOI thumbnails from PrusaSlicer, OrcaSlicer, Bambu Studio, SuperSlicer and Cura (with its thumbnail plugin) are read, both in text G-code comments and in bgcode blocks. QOI images, used by Prusa printers, are converted to PNG. Each thumbnail comes with its size in the name, from largest to smallest.",
+    "If the file has none, the slicer does not have them enabled: in PrusaSlicer they are in Printer Settings, G-code, Thumbnails. For an image of the toolpaths instead of the preview, use G-code to image.",
+    "You can process up to ten files per task and download everything in a ZIP. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the G-code or bgcode.",
+    "Press extract.",
+    "Download the thumbnails as PNG."
+  ],
+  "faq": [
+    {
+      "q": "Why are there several thumbnails?",
+      "a": "Because the slicer stores several sizes: a small one for lists and a large one for the screen."
+    },
+    {
+      "q": "Can I set a new thumbnail?",
+      "a": "Not with this tool: generate the G-code again with the thumbnails you want."
+    },
+    {
+      "q": "And in a Bambu .gcode.3mf?",
+      "a": "Use Extract G-code from 3MF, which pulls out each plate's G-code and image."
+    },
+    {
+      "q": "What size do they come out?",
+      "a": "The size the slicer stored them at; it goes in each file's name."
+    },
+    {
+      "q": "Does it work with Klipper or Mainsail files?",
+      "a": "Yes, if the slicer embedded the thumbnails in the G-code in the usual format."
+    }
+  ]
+}

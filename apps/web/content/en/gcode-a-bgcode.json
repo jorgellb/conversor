@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "G-code to bgcode converts a text G-code into Prusa binary G-code (bgcode), the format used by the MK4, MK3.9, XL, CORE One and MINI with current firmware. The file is much smaller, copies faster to USB or over the network and the printer reads its thumbnails and job data from it without going through all of it.",
+    "Commands are packed with MeatPack and compressed with window-12 Heatshrink, as PrusaSlicer does, in 64 KB blocks with their CRC32 check. Thumbnails the slicer stores in comments go into their own blocks, and the header data (printer model, filament, nozzle) and the trailer data (estimated time, filament used, configuration) go into the metadata blocks.",
+    "The conversion is our own, written from the specification Prusa publishes, and has been checked against real PrusaSlicer files. If your G-code comes from another slicer it is converted too, but the printer will only show the data the slicer wrote in PrusaSlicer's format.",
+    "You can convert up to ten files per task. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the G-code.",
+    "Keep compression on, unless your printer does not support it.",
+    "Download the bgcode."
+  ],
+  "faq": [
+    {
+      "q": "Which printers read bgcode?",
+      "a": "Prusa printers with firmware 5.1 or later: MK4, MK3.9, MK3.5, XL, CORE One and MINI."
+    },
+    {
+      "q": "Does anything change in the print?",
+      "a": "No: the commands are the same, only how they are stored changes."
+    },
+    {
+      "q": "How much smaller is it?",
+      "a": "Usually 20 to 40% of the text G-code, depending on the model."
+    },
+    {
+      "q": "Can I send it through PrusaLink or Prusa Connect?",
+      "a": "Yes: the bgcode is uploaded just like text G-code and the printer recognises it by its content."
+    },
+    {
+      "q": "What if my printer is not a Prusa?",
+      "a": "Keep text G-code: only Prusa printers read the binary format."
+    }
+  ]
+}

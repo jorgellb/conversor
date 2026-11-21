@@ -155,7 +155,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F7-F | reparar-stl, reducir-poligonos, escalar-modelo-3d, cambiar-unidades-stl, cortar-modelo-3d, separar-piezas, unir-modelos, analizar-stl | Hecho (D-253) |
 | F7-G | svg-a-stl, dxf-a-stl, imagen-a-stl, logo-a-stl, texto-a-stl, litofania, mapa-de-alturas-a-stl | Hecho (D-254) |
 | F7-H | visor-3d, visor-gcode, comprimir-glb, render-modelo-3d (navegador) | Pendiente (F5-Z) |
-| F7-I | gcode-a-bgcode, bgcode-a-gcode, analizar-gcode, gcode-a-imagen, extraer-miniatura-gcode, extraer-gcode-3mf | Pendiente (F7-A) |
+| F7-I | gcode-a-bgcode, bgcode-a-gcode, analizar-gcode, gcode-a-imagen, extraer-miniatura-gcode, extraer-gcode-3mf | Hecho (D-255) |
 | F7-Z | Cierre de F7 y del proyecto: 16.5 de 3D, criterios de 18 y 16.7 | Pendiente (F7-A a F7-I) |
 
 ## Siguiente paso

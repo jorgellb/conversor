@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "G-code to image draws a G-code's extrusion toolpaths seen from above: of a specific layer, to check the infill, perimeters or a problem area, or of all of them at once, coloured from bottom to top, for a preview of the job without opening the slicer.",
+    "Only moves that extrude are drawn; travel moves without plastic and retractions are ignored. Choose the layer by its number (the result note says its height and how many there are) or 0 for all, and the format: PNG at the size you want or vector SVG in millimetres, which can be enlarged without losing detail or printed to scale.",
+    "It accepts G-code from any slicer and Prusa bgcode. It is useful to document a job, share how a layer looks on a forum or check that the G-code you are about to send is the one you think. To see the part in 3D, use the G-code viewer.",
+    "You can process up to ten files per task. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the G-code or bgcode.",
+    "Choose the layer and format.",
+    "Download the image."
+  ],
+  "faq": [
+    {
+      "q": "How do I know which layer number I want?",
+      "a": "First generate the image of all layers: the note says how many there are; 1 is the first."
+    },
+    {
+      "q": "Are supports shown?",
+      "a": "Yes, everything that is extruded, in the colour of its height."
+    },
+    {
+      "q": "Why is the SVG so heavy?",
+      "a": "Because each segment is a line; for very long G-code, PNG is lighter."
+    },
+    {
+      "q": "Can I see the first layer?",
+      "a": "Yes: choose layer 1 to check adhesion and the brim before printing."
+    },
+    {
+      "q": "Which colours does it use?",
+      "a": "From blue for the bottom layers to red for the top ones, to tell heights apart."
+    }
+  ]
+}

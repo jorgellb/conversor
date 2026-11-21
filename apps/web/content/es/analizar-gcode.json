@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Analizar G-code lee un G-code o un bgcode y te resume el trabajo de impresión: el tiempo estimado, el filamento en metros y en gramos, el número de capas y la altura de la primera, la altura total, las temperaturas de boquilla y de cama, el área de la cama que se usa y el laminador que lo generó.",
+    "El tiempo y los gramos se leen de los comentarios que escriben PrusaSlicer, OrcaSlicer, Bambu Studio, Cura y Simplify3D; si el laminador no los pone, el filamento se calcula a partir de las órdenes de extrusión, teniendo en cuenta el modo absoluto o relativo (M82 y M83) y los reinicios con G92. Las capas y el área salen de los movimientos que extruyen de verdad, no de los desplazamientos.",
+    "El informe sale en texto, para leerlo, o en JSON, para usarlo en una hoja de cálculo o en tus propios programas, por ejemplo para presupuestar trabajos o llevar la cuenta del filamento. La nota del resultado resume el tiempo, el filamento y las capas.",
+    "Puedes analizar hasta diez archivos por tarea. Se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el G-code o el bgcode.",
+    "Elige texto o JSON.",
+    "Descarga el informe."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el tiempo sale desconocido?",
+      "a": "Porque el laminador no escribió su estimación en el G-code. El filamento sí se calcula."
+    },
+    {
+      "q": "¿Coincide con lo que dice la impresora?",
+      "a": "El tiempo es el del laminador; la impresora puede corregirlo según su velocidad real."
+    },
+    {
+      "q": "¿Sirve para impresoras de resina?",
+      "a": "No: solo para G-code de impresoras de filamento."
+    },
+    {
+      "q": "¿Cuenta los gramos de cada color?",
+      "a": "Si el laminador escribe los gramos por extrusor, el informe da la suma; el reparto por color está en los comentarios del G-code."
+    },
+    {
+      "q": "¿Puedo analizar un bgcode?",
+      "a": "Sí: se lee igual que el G-code de texto, con sus metadatos."
+    }
+  ]
+}

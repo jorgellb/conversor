@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "bgcode a G-code convierte el G-code binario de Prusa (.bgcode) en G-code de texto normal. Sirve para leer o editar las órdenes, buscar un cambio de capa, añadir una pausa a mano, revisar las temperaturas o usar el archivo en otra impresora o en un programa que no entiende el formato binario.",
+    "Se descomprimen los bloques (Heatshrink o Deflate), se desempaqueta MeatPack (también el modo sin espacios, reponiendo los espacios entre parámetros) y se comprueba el CRC32 de cada bloque, así que un archivo dañado da error en vez de un G-code corrupto. Las miniaturas y los metadatos vuelven a escribirse como comentarios, igual que los pone PrusaSlicer en el G-code de texto.",
+    "La conversión es propia, hecha a partir de la especificación publicada por Prusa, y se ha comprobado con archivos reales de PrusaSlicer 2.6 y 2.8: las órdenes que salen son idénticas a las del G-code original. Si después quieres volver al formato binario, usa G-code a bgcode.",
+    "Puedes convertir hasta diez archivos por tarea. Se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el .bgcode.",
+    "Pulsa convertir.",
+    "Descarga el G-code."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué el G-code ocupa tanto más?",
+      "a": "Porque el texto no está comprimido: suele ocupar entre dos y cinco veces más que el bgcode."
+    },
+    {
+      "q": "¿Se conservan las miniaturas?",
+      "a": "Sí, como comentarios al principio del G-code, en el formato de PrusaSlicer."
+    },
+    {
+      "q": "¿Y si dice que está dañado?",
+      "a": "Un bloque no pasa su CRC32: el archivo se copió mal. Vuelve a exportarlo o a descargarlo."
+    },
+    {
+      "q": "¿Puedo abrir el resultado en el visor de PrusaSlicer?",
+      "a": "Sí: el G-code de texto se abre en el visor de G-code de PrusaSlicer y en cualquier otro."
+    },
+    {
+      "q": "¿Se puede editar y volver a pasar a bgcode?",
+      "a": "Sí: edita el texto y conviértelo de nuevo con G-code a bgcode."
+    }
+  ]
+}

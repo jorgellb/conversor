@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extraer G-code de 3MF saca el G-code laminado de un archivo .gcode.3mf de Bambu Studio u OrcaSlicer, uno por placa, junto con la miniatura de cada placa. Sirve para mandar el trabajo a una impresora que no es de Bambu, revisarlo con Analizar G-code o G-code a imagen, o guardar solo lo que se va a imprimir.",
+    "Un .gcode.3mf es un ZIP con el proyecto, el modelo y el G-code de cada placa ya laminado. Puedes sacar todas las placas a la vez, en un ZIP, o solo la que elijas por su número. Si el archivo es un 3MF de proyecto sin laminar, no tiene G-code: lamínalo y guárdalo como .gcode.3mf antes.",
+    "El G-code de Bambu lleva órdenes propias de sus impresoras (cambios del AMS, calibraciones); si lo vas a usar en otra máquina, revísalo antes con un editor y cambia el inicio y el final. Las miniaturas salen en PNG.",
+    "Puedes procesar hasta diez archivos por tarea. Se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el .gcode.3mf.",
+    "Elige todas las placas o una.",
+    "Descarga el G-code y las miniaturas."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué dice que no hay G-code?",
+      "a": "Porque es un 3MF de proyecto sin laminar. Lamínalo y exporta la placa como .gcode.3mf."
+    },
+    {
+      "q": "¿Puedo imprimirlo en una Prusa?",
+      "a": "Solo cambiando el G-code de inicio y fin, que son propios de Bambu; mejor lamina el modelo para tu impresora."
+    },
+    {
+      "q": "¿Se conservan los cambios de color?",
+      "a": "Las órdenes del AMS se quedan en el G-code tal cual."
+    },
+    {
+      "q": "¿Cuántas placas puede tener?",
+      "a": "Las que tenga el proyecto; cada placa sale con su número en el nombre."
+    },
+    {
+      "q": "¿Funciona con OrcaSlicer?",
+      "a": "Sí: OrcaSlicer guarda el .gcode.3mf con la misma estructura que Bambu Studio."
+    }
+  ]
+}

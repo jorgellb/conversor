@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel
 
 from core.options import opt
-from core.registry import ToolSpec
+from core.registry import NoOptions, ToolSpec
 
 UNIT_LABELS = {"mm": ("Milímetros", "Millimetres"), "cm": ("Centímetros", "Centimetres"), "m": ("Metros", "Metres"),
                "in": ("Pulgadas", "Inches")}
@@ -414,4 +414,57 @@ SPECS += [
     gen("mapa-de-alturas-a-stl", "heightmap-to-stl", "Mapa de alturas a STL", "Heightmap to STL", IMG_IN, MapaAlturasOptions,
         "Convierte un mapa de alturas en escala de grises en un relieve 3D: terrenos, texturas y maquetas.",
         "Turn a greyscale heightmap into a 3D relief: terrains, textures and scale models.", ("litofania", "imagen-a-stl")),
+]
+
+
+# ——— F7-I (7.21, D-255): G-code ———
+
+class GcodeABgcodeOptions(BaseModel):
+    """gcode-a-bgcode: comprimir [sí] (Heatshrink 12,4 y MeatPack, como PrusaSlicer)."""
+
+    comprimir: bool = opt(True, "Comprimir (Heatshrink y MeatPack, como PrusaSlicer)", "Compress (Heatshrink and MeatPack, like PrusaSlicer)")
+
+
+class AnalizarGcodeOptions(BaseModel):
+    formato: Literal["txt", "json"] = opt("txt", "Formato del informe", "Report format", labels={"txt": ("Texto", "Text"), "json": ("JSON", "JSON")})
+
+
+class GcodeImagenOptions(BaseModel):
+    """gcode-a-imagen: capa [0: todas], formato [PNG] | SVG y tamaño [1600 px]."""
+
+    capa: int = opt(0, "Capa (0: todas, vistas desde arriba)", "Layer (0: all, seen from above)", ge=0, le=100000)
+    formato: Literal["png", "svg"] = opt("png", "Formato", "Format", labels={"png": ("PNG", "PNG"), "svg": ("SVG", "SVG")})
+    tamano: int = opt(1600, "Tamaño del PNG (píxeles)", "PNG size (pixels)", ge=400, le=4000, advanced=True)
+
+
+class ExtraerGcode3mfOptions(BaseModel):
+    placa: int = opt(0, "Placa (0: todas)", "Plate (0: all)", ge=0, le=999)
+
+
+def gc(slug_es, slug_en, name_es, name_en, inputs, outputs, options, impl, summary_es, summary_en, related) -> ToolSpec:
+    return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category="3d", where="server", inputs=inputs,
+                    outputs=(*outputs, "zip"), options=options, worker_group="mesh", cost_class="light", impl=f"tools.mesh.gcode_tools:{impl}",
+                    launch=True, phase="F7", time_limit=600, max_files=10, summary_es=summary_es, summary_en=summary_en, related=related)
+
+
+SPECS += [
+    gc("gcode-a-bgcode", "gcode-to-bgcode", "G-code a bgcode", "G-code to bgcode", ("gcode",), ("bgcode",), GcodeABgcodeOptions, "run_to_bgcode",
+       "Convierte G-code de texto en G-code binario de Prusa (bgcode), más pequeño y con sus miniaturas y metadatos.",
+       "Convert text G-code into Prusa binary G-code (bgcode), smaller and with its thumbnails and metadata.", ("bgcode-a-gcode", "analizar-gcode")),
+    gc("bgcode-a-gcode", "bgcode-to-gcode", "bgcode a G-code", "bgcode to G-code", ("bgcode",), ("gcode",), NoOptions, "run_to_gcode",
+       "Convierte G-code binario de Prusa (bgcode) en G-code de texto para leerlo, editarlo o usarlo en otras impresoras.",
+       "Convert Prusa binary G-code (bgcode) into text G-code to read, edit or use it on other printers.", ("gcode-a-bgcode", "analizar-gcode")),
+    gc("analizar-gcode", "analyse-gcode", "Analizar G-code", "Analyse G-code", ("gcode", "bgcode"), ("txt", "json"), AnalizarGcodeOptions, "run_analyse",
+       "Lee un G-code y te dice el tiempo de impresión, el filamento, las capas, las temperaturas y el laminador.",
+       "Read a G-code and get the print time, filament, layers, temperatures and slicer.", ("gcode-a-imagen", "extraer-miniatura-gcode")),
+    gc("gcode-a-imagen", "gcode-to-image", "G-code a imagen", "G-code to image", ("gcode", "bgcode"), ("png", "svg"), GcodeImagenOptions, "run_image",
+       "Dibuja las trayectorias de un G-code, de una capa o de todas, en una imagen PNG o SVG.",
+       "Draw a G-code's toolpaths, of one layer or all of them, as a PNG or SVG image.", ("analizar-gcode", "extraer-miniatura-gcode")),
+    gc("extraer-miniatura-gcode", "extract-gcode-thumbnail", "Extraer miniatura de G-code", "Extract G-code thumbnail", ("gcode", "bgcode"),
+       ("png", "jpg"), NoOptions, "run_thumbnails",
+       "Saca las miniaturas que el laminador guarda dentro del G-code o del bgcode, en PNG.",
+       "Extract the thumbnails the slicer stores inside the G-code or bgcode, as PNG.", ("gcode-a-imagen", "extraer-gcode-3mf")),
+    gc("extraer-gcode-3mf", "extract-gcode-3mf", "Extraer G-code de 3MF", "Extract G-code from 3MF", ("3mf",), ("gcode", "png"), ExtraerGcode3mfOptions,
+       "run_gcode_3mf", "Saca el G-code y las miniaturas de cada placa de un .gcode.3mf de Bambu Studio u OrcaSlicer.",
+       "Extract the G-code and thumbnails of each plate from a Bambu Studio or OrcaSlicer .gcode.3mf.", ("analizar-gcode", "extraer-miniatura-gcode")),
 ]

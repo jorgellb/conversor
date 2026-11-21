@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "G-code a imagen dibuja las trayectorias de extrusión de un G-code vistas desde arriba: de una capa concreta, para revisar el relleno, los perímetros o una zona problemática, o de todas a la vez, coloreadas de abajo arriba, para tener una vista previa del trabajo sin abrir el laminador.",
+    "Solo se dibujan los movimientos que extruyen; los desplazamientos sin plástico y las retracciones se ignoran. Elige la capa por su número (la nota del resultado dice su altura y cuántas hay) o 0 para todas, y el formato: PNG del tamaño que quieras o SVG vectorial en milímetros, que se puede ampliar sin perder detalle o imprimir a escala.",
+    "Admite G-code de cualquier laminador y bgcode de Prusa. Es útil para documentar un trabajo, compartir cómo queda una capa en un foro o comprobar que el G-code que vas a enviar es el que crees. Para ver la pieza en 3D, usa el visor de G-code.",
+    "Puedes procesar hasta diez archivos por tarea. Se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el G-code o el bgcode.",
+    "Elige la capa y el formato.",
+    "Descarga la imagen."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo sé qué número de capa quiero?",
+      "a": "Genera primero la imagen de todas: la nota dice cuántas capas hay; la 1 es la primera."
+    },
+    {
+      "q": "¿Se ven los soportes?",
+      "a": "Sí, todo lo que se extruye, con el color de su altura."
+    },
+    {
+      "q": "¿Por qué el SVG pesa tanto?",
+      "a": "Porque cada segmento es una línea; para G-code muy largos, el PNG es más ligero."
+    },
+    {
+      "q": "¿Puedo ver la primera capa?",
+      "a": "Sí: elige la capa 1 para revisar la adherencia y el borde antes de imprimir."
+    },
+    {
+      "q": "¿Qué colores usa?",
+      "a": "Del azul de las capas de abajo al rojo de las de arriba, para distinguir alturas."
+    }
+  ]
+}

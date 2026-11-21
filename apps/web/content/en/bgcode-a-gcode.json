@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "bgcode to G-code converts Prusa binary G-code (.bgcode) into normal text G-code. It is useful to read or edit the commands, find a layer change, add a pause by hand, check the temperatures or use the file on another printer or in a program that does not understand the binary format.",
+    "Blocks are decompressed (Heatshrink or Deflate), MeatPack is unpacked (including the no-space mode, putting back the spaces between parameters) and each block's CRC32 is checked, so a damaged file gives an error instead of a corrupt G-code. Thumbnails and metadata are written back as comments, the way PrusaSlicer puts them in text G-code.",
+    "The conversion is our own, built from the specification Prusa publishes, and has been checked against real PrusaSlicer 2.6 and 2.8 files: the commands that come out are identical to the original G-code's. If you later want to go back to the binary format, use G-code to bgcode.",
+    "You can convert up to ten files per task. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the .bgcode.",
+    "Press convert.",
+    "Download the G-code."
+  ],
+  "faq": [
+    {
+      "q": "Why is the G-code so much bigger?",
+      "a": "Because text is not compressed: it is usually two to five times the size of the bgcode."
+    },
+    {
+      "q": "Are thumbnails kept?",
+      "a": "Yes, as comments at the start of the G-code, in PrusaSlicer's format."
+    },
+    {
+      "q": "What if it says it is damaged?",
+      "a": "A block fails its CRC32: the file was copied badly. Export or download it again."
+    },
+    {
+      "q": "Can I open the result in PrusaSlicer's viewer?",
+      "a": "Yes: text G-code opens in PrusaSlicer's G-code viewer and in any other."
+    },
+    {
+      "q": "Can I edit it and turn it back into bgcode?",
+      "a": "Yes: edit the text and convert it again with G-code to bgcode."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extraer miniatura de G-code saca las imágenes de vista previa que el laminador guarda dentro del G-code o del bgcode, las mismas que muestran la pantalla de la impresora, OctoPrint o PrusaLink. Las descargas en PNG para usarlas en un catálogo, una ficha de producto, un listado de trabajos o una publicación.",
+    "Se leen las miniaturas PNG, JPG y QOI de PrusaSlicer, OrcaSlicer, Bambu Studio, SuperSlicer y Cura (con su complemento de miniaturas), tanto en los comentarios del G-code de texto como en los bloques del bgcode. Las QOI, que usan las impresoras de Prusa, se convierten a PNG. Cada miniatura sale con su tamaño en el nombre, de la mayor a la menor.",
+    "Si el archivo no trae ninguna, es que el laminador no las tiene activadas: en PrusaSlicer están en Configuración de la impresora, G-code, Miniaturas. Para una imagen de las trayectorias en vez de la vista previa, usa G-code a imagen.",
+    "Puedes procesar hasta diez archivos por tarea y descargarlo todo en un ZIP. Se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el G-code o el bgcode.",
+    "Pulsa extraer.",
+    "Descarga las miniaturas en PNG."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué hay varias miniaturas?",
+      "a": "Porque el laminador guarda varios tamaños: uno pequeño para listas y otro grande para la pantalla."
+    },
+    {
+      "q": "¿Puedo poner una miniatura nueva?",
+      "a": "No con esta herramienta: genera el G-code otra vez con las miniaturas que quieras."
+    },
+    {
+      "q": "¿Y en un .gcode.3mf de Bambu?",
+      "a": "Usa Extraer G-code de 3MF, que saca el G-code y la imagen de cada placa."
+    },
+    {
+      "q": "¿De qué tamaño salen?",
+      "a": "Del que las guardó el laminador; el tamaño va en el nombre de cada archivo."
+    },
+    {
+      "q": "¿Sirve con archivos de Klipper o Mainsail?",
+      "a": "Sí, si el laminador incrustó las miniaturas en el G-code con el formato habitual."
+    }
+  ]
+}

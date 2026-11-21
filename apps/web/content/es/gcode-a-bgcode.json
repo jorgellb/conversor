@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "G-code a bgcode convierte un G-code de texto en el G-code binario de Prusa (bgcode), el formato que usan la MK4, la MK3.9, la XL, la CORE One y la MINI con su firmware actual. El archivo ocupa mucho menos, se copia antes a la memoria USB o por la red y la impresora lee de él las miniaturas y los datos del trabajo sin tener que recorrerlo entero.",
+    "Las órdenes se empaquetan con MeatPack y se comprimen con Heatshrink de ventana 12, como hace PrusaSlicer, en bloques de 64 KB con su comprobación CRC32. Las miniaturas que el laminador guarda en comentarios pasan a sus propios bloques, y los datos del encabezado (modelo de impresora, filamento, boquilla) y del final (tiempo estimado, filamento usado, configuración) pasan a los bloques de metadatos.",
+    "La conversión está escrita por nosotros a partir de la especificación que publica Prusa y se ha comprobado con archivos reales de PrusaSlicer. Si tu G-code viene de otro laminador, también se convierte, pero la impresora solo mostrará los datos que el laminador haya escrito con el formato de PrusaSlicer.",
+    "Puedes convertir hasta diez archivos por tarea. Se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el G-code.",
+    "Deja activada la compresión, salvo que tu impresora no la admita.",
+    "Descarga el bgcode."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué impresoras leen bgcode?",
+      "a": "Las de Prusa con firmware 5.1 o posterior: MK4, MK3.9, MK3.5, XL, CORE One y MINI."
+    },
+    {
+      "q": "¿Cambia algo de la impresión?",
+      "a": "No: las órdenes son las mismas, solo cambia cómo se guardan."
+    },
+    {
+      "q": "¿Cuánto ocupa menos?",
+      "a": "Suele quedarse entre un 20 y un 40 % del G-code de texto, según el modelo."
+    },
+    {
+      "q": "¿Se puede enviar por PrusaLink o Prusa Connect?",
+      "a": "Sí: el bgcode se sube igual que el G-code de texto y la impresora lo reconoce por su contenido."
+    },
+    {
+      "q": "¿Y si mi impresora no es de Prusa?",
+      "a": "Déjala en G-code de texto: el formato binario solo lo leen las impresoras de Prusa."
+    }
+  ]
+}

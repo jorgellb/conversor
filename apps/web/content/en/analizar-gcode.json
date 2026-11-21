@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Analyse G-code reads a G-code or bgcode and summarises the print job: estimated time, filament in metres and grams, number of layers and the first layer's height, total height, nozzle and bed temperatures, the bed area used and the slicer that generated it.",
+    "Time and grams are read from the comments written by PrusaSlicer, OrcaSlicer, Bambu Studio, Cura and Simplify3D; if the slicer does not write them, filament is calculated from the extrusion commands, taking into account absolute or relative mode (M82 and M83) and resets with G92. Layers and area come from moves that really extrude, not from travel moves.",
+    "The report comes as text, to read it, or as JSON, to use in a spreadsheet or your own programs, for example to quote jobs or keep track of filament. The result note summarises the time, filament and layers.",
+    "You can analyse up to ten files per task. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the G-code or bgcode.",
+    "Choose text or JSON.",
+    "Download the report."
+  ],
+  "faq": [
+    {
+      "q": "Why is the time unknown?",
+      "a": "Because the slicer did not write its estimate in the G-code. Filament is still calculated."
+    },
+    {
+      "q": "Does it match what the printer says?",
+      "a": "The time is the slicer's; the printer may correct it according to its real speed."
+    },
+    {
+      "q": "Does it work for resin printers?",
+      "a": "No: only for filament printer G-code."
+    },
+    {
+      "q": "Does it count grams per colour?",
+      "a": "If the slicer writes grams per extruder, the report gives the total; the split by colour is in the G-code comments."
+    },
+    {
+      "q": "Can I analyse a bgcode?",
+      "a": "Yes: it is read like text G-code, with its metadata."
+    }
+  ]
+}

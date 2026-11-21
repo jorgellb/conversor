@@ -43595,6 +43595,344 @@
       }
     },
     {
+      "slug_es": "gcode-a-bgcode",
+      "slug_en": "gcode-to-bgcode",
+      "name_es": "G-code a bgcode",
+      "name_en": "G-code to bgcode",
+      "summary_es": "Convierte G-code de texto en G-code binario de Prusa (bgcode), más pequeño y con sus miniaturas y metadatos.",
+      "summary_en": "Convert text G-code into Prusa binary G-code (bgcode), smaller and with its thumbnails and metadata.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "gcode"
+      ],
+      "outputs": [
+        "bgcode",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "bgcode-a-gcode",
+        "analizar-gcode"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "gcode-a-bgcode: comprimir [sí] (Heatshrink 12,4 y MeatPack, como PrusaSlicer).",
+        "properties": {
+          "comprimir": {
+            "default": true,
+            "title": "Comprimir (Heatshrink y MeatPack, como PrusaSlicer)",
+            "type": "boolean",
+            "x-title": {
+              "en": "Compress (Heatshrink and MeatPack, like PrusaSlicer)",
+              "es": "Comprimir (Heatshrink y MeatPack, como PrusaSlicer)"
+            }
+          }
+        },
+        "title": "GcodeABgcodeOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "bgcode-a-gcode",
+      "slug_en": "bgcode-to-gcode",
+      "name_es": "bgcode a G-code",
+      "name_en": "bgcode to G-code",
+      "summary_es": "Convierte G-code binario de Prusa (bgcode) en G-code de texto para leerlo, editarlo o usarlo en otras impresoras.",
+      "summary_en": "Convert Prusa binary G-code (bgcode) into text G-code to read, edit or use it on other printers.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "bgcode"
+      ],
+      "outputs": [
+        "gcode",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "gcode-a-bgcode",
+        "analizar-gcode"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "analizar-gcode",
+      "slug_en": "analyse-gcode",
+      "name_es": "Analizar G-code",
+      "name_en": "Analyse G-code",
+      "summary_es": "Lee un G-code y te dice el tiempo de impresión, el filamento, las capas, las temperaturas y el laminador.",
+      "summary_en": "Read a G-code and get the print time, filament, layers, temperatures and slicer.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "gcode",
+        "bgcode"
+      ],
+      "outputs": [
+        "txt",
+        "json",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "gcode-a-imagen",
+        "extraer-miniatura-gcode"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "formato": {
+            "default": "txt",
+            "enum": [
+              "txt",
+              "json"
+            ],
+            "title": "Formato del informe",
+            "type": "string",
+            "x-labels": {
+              "json": {
+                "en": "JSON",
+                "es": "JSON"
+              },
+              "txt": {
+                "en": "Text",
+                "es": "Texto"
+              }
+            },
+            "x-title": {
+              "en": "Report format",
+              "es": "Formato del informe"
+            }
+          }
+        },
+        "title": "AnalizarGcodeOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "gcode-a-imagen",
+      "slug_en": "gcode-to-image",
+      "name_es": "G-code a imagen",
+      "name_en": "G-code to image",
+      "summary_es": "Dibuja las trayectorias de un G-code, de una capa o de todas, en una imagen PNG o SVG.",
+      "summary_en": "Draw a G-code's toolpaths, of one layer or all of them, as a PNG or SVG image.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "gcode",
+        "bgcode"
+      ],
+      "outputs": [
+        "png",
+        "svg",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "analizar-gcode",
+        "extraer-miniatura-gcode"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "gcode-a-imagen: capa [0: todas], formato [PNG] | SVG y tamaño [1600 px].",
+        "properties": {
+          "capa": {
+            "default": 0,
+            "maximum": 100000,
+            "minimum": 0,
+            "title": "Capa (0: todas, vistas desde arriba)",
+            "type": "integer",
+            "x-title": {
+              "en": "Layer (0: all, seen from above)",
+              "es": "Capa (0: todas, vistas desde arriba)"
+            }
+          },
+          "formato": {
+            "default": "png",
+            "enum": [
+              "png",
+              "svg"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-labels": {
+              "png": {
+                "en": "PNG",
+                "es": "PNG"
+              },
+              "svg": {
+                "en": "SVG",
+                "es": "SVG"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          },
+          "tamano": {
+            "default": 1600,
+            "maximum": 4000,
+            "minimum": 400,
+            "title": "Tamaño del PNG (píxeles)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "PNG size (pixels)",
+              "es": "Tamaño del PNG (píxeles)"
+            }
+          }
+        },
+        "title": "GcodeImagenOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "extraer-miniatura-gcode",
+      "slug_en": "extract-gcode-thumbnail",
+      "name_es": "Extraer miniatura de G-code",
+      "name_en": "Extract G-code thumbnail",
+      "summary_es": "Saca las miniaturas que el laminador guarda dentro del G-code o del bgcode, en PNG.",
+      "summary_en": "Extract the thumbnails the slicer stores inside the G-code or bgcode, as PNG.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "gcode",
+        "bgcode"
+      ],
+      "outputs": [
+        "png",
+        "jpg",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "gcode-a-imagen",
+        "extraer-gcode-3mf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "extraer-gcode-3mf",
+      "slug_en": "extract-gcode-3mf",
+      "name_es": "Extraer G-code de 3MF",
+      "name_en": "Extract G-code from 3MF",
+      "summary_es": "Saca el G-code y las miniaturas de cada placa de un .gcode.3mf de Bambu Studio u OrcaSlicer.",
+      "summary_en": "Extract the G-code and thumbnails of each plate from a Bambu Studio or OrcaSlicer .gcode.3mf.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "3mf"
+      ],
+      "outputs": [
+        "gcode",
+        "png",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "analizar-gcode",
+        "extraer-miniatura-gcode"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "placa": {
+            "default": 0,
+            "maximum": 999,
+            "minimum": 0,
+            "title": "Placa (0: todas)",
+            "type": "integer",
+            "x-title": {
+              "en": "Plate (0: all)",
+              "es": "Placa (0: todas)"
+            }
+          }
+        },
+        "title": "ExtraerGcode3mfOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "step-a-stl",
       "slug_en": "step-to-stl",
       "name_es": "STEP a STL",

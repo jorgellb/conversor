@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 323 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 55). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 329 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 61). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -315,6 +315,12 @@ Catálogo publicado en esta entrega: 323 herramientas (F1 43, F2 60, F3 10, F4 1
 | `texto-a-stl` / `text-to-stl` | servidor | mesh | light | F7 | activa | — → stl, 3mf, obj, zip | redactado, sin revisar |
 | `litofania` / `lithophane` | servidor | mesh | light | F7 | activa | png, jpg, webp, bmp, gif, tiff → stl, 3mf, obj, zip | redactado, sin revisar |
 | `mapa-de-alturas-a-stl` / `heightmap-to-stl` | servidor | mesh | light | F7 | activa | png, jpg, webp, bmp, gif, tiff → stl, 3mf, obj, zip | redactado, sin revisar |
+| `gcode-a-bgcode` / `gcode-to-bgcode` | servidor | mesh | light | F7 | activa | gcode → bgcode, zip | redactado, sin revisar |
+| `bgcode-a-gcode` / `bgcode-to-gcode` | servidor | mesh | light | F7 | activa | bgcode → gcode, zip | redactado, sin revisar |
+| `analizar-gcode` / `analyse-gcode` | servidor | mesh | light | F7 | activa | gcode, bgcode → txt, json, zip | redactado, sin revisar |
+| `gcode-a-imagen` / `gcode-to-image` | servidor | mesh | light | F7 | activa | gcode, bgcode → png, svg, zip | redactado, sin revisar |
+| `extraer-miniatura-gcode` / `extract-gcode-thumbnail` | servidor | mesh | light | F7 | activa | gcode, bgcode → png, jpg, zip | redactado, sin revisar |
+| `extraer-gcode-3mf` / `extract-gcode-3mf` | servidor | mesh | light | F7 | activa | 3mf → gcode, png, zip | redactado, sin revisar |
 | `step-a-stl` / `step-to-stl` | servidor | cad | heavy | F7 | activa | step → stl, zip | redactado, sin revisar |
 | `stp-a-stl` / `stp-to-stl` | servidor | cad | heavy | F7 | activa | stp → stl, zip | redactado, sin revisar |
 | `step-a-3mf` / `step-to-3mf` | servidor | cad | heavy | F7 | activa | step → 3mf, zip | redactado, sin revisar |

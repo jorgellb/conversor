@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Extract G-code from 3MF pulls the sliced G-code out of a Bambu Studio or OrcaSlicer .gcode.3mf file, one per plate, together with each plate's thumbnail. It is useful to send the job to a non-Bambu printer, check it with Analyse G-code or G-code to image, or keep only what is going to be printed.",
+    "A .gcode.3mf is a ZIP with the project, the model and each plate's already-sliced G-code. You can extract all plates at once, in a ZIP, or only the one you choose by its number. If the file is an unsliced project 3MF, it has no G-code: slice it and save it as .gcode.3mf first.",
+    "Bambu G-code carries commands specific to its printers (AMS changes, calibrations); if you will use it on another machine, check it first with an editor and change the start and end. Thumbnails come out as PNG.",
+    "You can process up to ten files per task. They are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the .gcode.3mf.",
+    "Choose all plates or one.",
+    "Download the G-code and thumbnails."
+  ],
+  "faq": [
+    {
+      "q": "Why does it say there is no G-code?",
+      "a": "Because it is an unsliced project 3MF. Slice it and export the plate as .gcode.3mf."
+    },
+    {
+      "q": "Can I print it on a Prusa?",
+      "a": "Only by changing the start and end G-code, which are Bambu-specific; better slice the model for your printer."
+    },
+    {
+      "q": "Are colour changes kept?",
+      "a": "AMS commands stay in the G-code as they are."
+    },
+    {
+      "q": "How many plates can it have?",
+      "a": "As many as the project has; each plate comes with its number in the name."
+    },
+    {
+      "q": "Does it work with OrcaSlicer?",
+      "a": "Yes: OrcaSlicer saves the .gcode.3mf with the same structure as Bambu Studio."
+    }
+  ]
+}

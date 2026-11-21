@@ -1,6 +1,7 @@
 """Detección del tipo real por bytes (4.2 y 12.3), sin dependencias externas."""
 from __future__ import annotations
 
+import re
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -22,7 +23,9 @@ TEXT_FAMILY = {"txt", "mmd", "csv", "md", "markdown", "html", "htm", "svg", "xml
                # F7-D (D-251): STEP (ISO 10303-21), IGES y BREP de OpenCascade son texto.
                "step", "stp", "iges", "igs", "brep",
                # F7-E (D-252): modelos de OpenSCAD.
-               "scad"}
+               "scad",
+               # F7-I (D-255): G-code de texto.
+               "gcode", "gco", "g"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr", "kmz", "mxl", "udf"}  # kmz: un ZIP con doc.kml (F6-H1)
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
@@ -118,6 +121,8 @@ def _zip_kind(path: Path) -> str:
                 }.get(mt, "zip")
             if any(n.lower() == "3d/3dmodel.model" for n in names):
                 return "3mf"  # 3MF (F7-A): el modelo en 3D/3dmodel.model
+            if any(re.match(r"^Metadata/plate_\d+\.gcode$", n) for n in names):
+                return "3mf"  # .gcode.3mf de Bambu Studio y OrcaSlicer (F7-I)
             if len(names) == 1 and next(iter(names)).lower().endswith(".amf"):
                 return "amf"  # AMF comprimido (F7-B): un ZIP con un solo .amf
             first = zf.infolist()[0].filename.lower() if zf.infolist() else ""
@@ -258,6 +263,8 @@ def detect(path: Path, declared_ext: str = "") -> Detected | None:
     # DWG (F7-E): «AC10xx» con la versión de AutoCAD en los 6 primeros bytes.
     if head[:4] == b"AC10" and head[4:6].isdigit():
         return Detected("dwg", "cad")
+    if head.startswith(b"GCDE") and len(head) >= 10 and head[4:8] == b"\x01\x00\x00\x00":
+        return Detected("bgcode", "gcode")  # G-code binario de Prusa (F7-I)
     if head.startswith(b"PXR-USDC"):
         return Detected(declared if declared in ("usd", "usdc") else "usdc", "mesh")
     # 3DS: el bloque principal 0x4D4D con su tamaño; sin más firma, solo si se declara .3ds.
