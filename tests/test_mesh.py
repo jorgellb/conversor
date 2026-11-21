@@ -831,3 +831,77 @@ def test_part_names_without_control_characters(make_ctx, tmp_path):
     model = formats.Model([formats.Part("nodo\x02raro\x1f", box.vertices, box.faces)])
     formats.clean_names(model)
     assert model.parts[0].name == "nodoraro"
+
+
+# ——— D-258: correcciones de la revisión de F7-G ———
+
+def test_svg_fill_rule_per_element_and_union(make_ctx, tmp_path):
+    """Dos cuadrados que se solapan (el segundo con el giro contrario) se unen; un elemento evenodd no cambia los demás."""
+    svg = tmp_path / "solape.svg"
+    svg.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="100mm" height="100mm" viewBox="0 0 100 100">'
+                   '<path d="M0 0H20V20H0Z"/><path d="M10 10V30H30V10Z"/>'
+                   '<path fill-rule="evenodd" d="M50 0H70V20H50Z M55 5H65V15H55Z"/></svg>')
+    out = run("svg-a-stl", make_ctx("svg-a-stl", [svg], {"altura_mm": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    assert abs(mesh.volume - (700 + 400 - 100)) < 2  # 20×20 + 20×20 − 10×10 de solape, y el marco con su agujero
+
+
+def test_svg_corners_are_kept(make_ctx, tmp_path):
+    svg = tmp_path / "estrella.svg"
+    svg.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="40mm" height="40mm" viewBox="0 0 40 40">'
+                   '<path d="M20 0L25 15L40 15L28 25L32 40L20 30L8 40L12 25L0 15L15 15Z"/></svg>')
+    out = run("svg-a-stl", make_ctx("svg-a-stl", [svg], {"altura_mm": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    assert np.allclose(mesh.bounds[:, :2], [[0, 0], [40, 40]], atol=1e-3)  # las puntas, exactas
+    assert len(mesh.vertices) <= 40  # 10 vértices arriba y abajo (más los que añada la triangulación)
+
+
+def test_dxf_linker_is_fast_with_many_segments(tmp_path):
+    import random
+    import time
+
+    from tools.mesh.generadores import _link
+
+    n = 6000
+    pts = [(math.cos(2 * math.pi * k / n) * 100, math.sin(2 * math.pi * k / n) * 100) for k in range(n)]
+    segments = [np.array([pts[k], pts[(k + 1) % n]]) for k in range(n)]
+    random.Random(4).shuffle(segments)
+    segments = [s[::-1] if k % 2 else s for k, s in enumerate(segments)]
+    t0 = time.time()
+    loops = _link(segments)
+    assert time.time() - t0 < 5
+    assert len(loops) == 1 and len(loops[0]) == n
+
+
+def test_heightmap_16_bit_keeps_its_levels(make_ctx, tmp_path):
+    from PIL import Image
+
+    ramp = np.tile(np.linspace(0, 65535, 64), (32, 1)).astype(np.uint16)
+    path = tmp_path / "terreno16.png"
+    Image.fromarray(ramp).save(path)  # uint16: PNG de 16 bits
+    assert Image.open(path).mode.startswith("I")
+    out = run("mapa-de-alturas-a-stl", make_ctx("mapa-de-alturas-a-stl", [path], {"ancho_mm": 64, "altura_mm": 10, "base_mm": 2, "resolucion": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    tops = np.unique(np.round(mesh.vertices[mesh.vertices[:, 2] > 2.01][:, 2], 2))
+    assert len(tops) > 30  # una rampa de verdad, no dos alturas
+    assert abs(mesh.volume - (2 + 5) * 64 * mesh.extents[1]) / mesh.volume < 0.05
+
+
+def test_curved_lithophane_reads_correctly_from_outside(make_ctx, tmp_path):
+    """Mitad izquierda oscura (gruesa): vista desde fuera (+Y, mirando a −Y), lo grueso queda a la izquierda, en +X."""
+    img = np.full((40, 80), 255.0)
+    img[:, :40] = 0
+    photo = _png(tmp_path, "mitad.png", img)
+    out = run("litofania", make_ctx("litofania", [photo], {"forma": "curva", "ancho_mm": 80, "resolucion": 1, "angulo": 90}))
+    mesh = _load(Path(out[0]["path"]))
+    radius = np.hypot(mesh.vertices[:, 0], mesh.vertices[:, 1])
+    thick = mesh.vertices[radius > radius.max() - 0.3]
+    assert thick[:, 0].mean() > 5
+    with pytest.raises(ToolError) as err:
+        run("litofania", make_ctx("litofania", [photo], {"grosor_min": 3, "grosor_max": 1}))
+    assert err.value.detail == "litho_thickness"
+
+
+def test_text_with_missing_glyphs_says_so(make_ctx):
+    out = run("texto-a-stl", make_ctx("texto-a-stl", [], {"texto": "Hola 日本"}))
+    assert "日" in out[0]["note"]

@@ -88,7 +88,8 @@ MIME = {
 }
 
 EXT_ALIASES = {"jpeg": "jpg", "tif": "tiff", "htm": "html", "markdown": "md", "oga": "ogg", "aif": "aiff", "ssa": "ass", "yml": "yaml",
-               "tgz": "gz", "tbz2": "bz2", "tbz": "bz2", "txz": "xz", "vcard": "vcf", "ical": "ics", "ifb": "ics", "dio": "drawio", "latex": "tex", "midi": "mid", "kar": "mid", "mermaid": "mmd"}
+               "tgz": "gz", "tbz2": "bz2", "tbz": "bz2", "txz": "xz", "vcard": "vcf", "ical": "ics", "ifb": "ics", "dio": "drawio", "latex": "tex", "midi": "mid", "kar": "mid", "mermaid": "mmd",
+               "gco": "gcode", "g": "gcode"}  # D-258: .gco y .g son G-code
 
 
 @dataclass(frozen=True)

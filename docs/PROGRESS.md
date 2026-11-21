@@ -761,6 +761,12 @@ recorridos acotados (D-256), en `tests/test_mesh.py` y `tests/test_cad.py`.
 visor-3d, visor-gcode, comprimir-glb y render-modelo-3d con three.js, glTF Transform, draco3d y meshoptimizer, y un lector propio de
 G-code y bgcode en TypeScript (D-257), en `packages/client-tools/test/glb.test.ts`, `gcode3d.test.ts` y `tests/e2e/visores-f7.spec.ts`.
 
+## Revisión de F7-G y F7-I
+
+Herramientas de G-code en el proceso hijo con topes de descompresión, metadatos del bgcode como PrusaSlicer, análisis más completo y
+generadores corregidos (relleno del SVG por forma, enlace lineal del DXF, imágenes de 16 bits y litofanías curvas) (D-258), en
+`tests/test_gcode.py` y `tests/test_mesh.py`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

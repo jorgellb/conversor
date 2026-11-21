@@ -24,6 +24,12 @@ THUMB_FORMATS = {0: "png", 1: "jpg", 2: "qoi"}
 GCODE_BLOCK = 65536
 MAX_BLOCK = 64 * 1024 * 1024
 MAX_GCODE = 1024 * 1024 * 1024
+# Topes de lo que se descomprime (D-258): por bloque de metadatos, de todos los metadatos y de las miniaturas.
+MAX_META_BLOCK = 4 * 1024 * 1024
+MAX_META_TOTAL = 8 * 1024 * 1024
+MAX_META_PAIRS = 50_000
+MAX_THUMBS = 16
+MAX_THUMB_BYTES = 16 * 1024 * 1024
 
 
 # ——— Heatshrink ———
@@ -187,6 +193,9 @@ def meatpack_decode(data: bytes) -> bytes:
 def meatpack_encode(text: bytes) -> bytes:
     """MeatPack con comentarios (codificación 2), sin el modo sin espacios: las líneas de órdenes, empaquetadas; los
     comentarios, tal cual con el empaquetado desactivado."""
+    if b"\xff" in text:
+        # 0xFF 0xFF es una señal de MeatPack: un texto que no es UTF-8 válido no puede llevar esos bytes (D-258).
+        text = text.decode("utf-8", "replace").encode("utf-8")
     out = bytearray(SIGNAL + bytes([ENABLE]))
     packing = True
     for raw in text.split(b"\n"):
@@ -249,6 +258,7 @@ def read_bgcode(data: bytes) -> Bgcode:
         raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "bgcode_version")
     doc = Bgcode()
     pos = 10
+    meta_total = 0
     while pos < len(data):
         start = pos
         if pos + 8 > len(data):
@@ -263,6 +273,12 @@ def read_bgcode(data: bytes) -> Bgcode:
             pos += 4
         if size > MAX_BLOCK or stored > MAX_BLOCK or kind > 5 or compression > 3:
             raise ToolError(ErrorCode.CORRUPT_FILE, "bgcode_block")
+        if kind == THUMBNAIL and (size > MAX_THUMB_BYTES or len(doc.thumbnails) >= MAX_THUMBS):
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "bgcode_thumbnails")
+        if kind not in (GCODE, THUMBNAIL):
+            meta_total += size
+            if size > MAX_META_BLOCK or meta_total > MAX_META_TOTAL:
+                raise ToolError(ErrorCode.LIMIT_EXCEEDED, "bgcode_metadata")
         plen = 6 if kind == THUMBNAIL else 2
         params = data[pos:pos + plen]
         payload = data[pos + plen:pos + plen + stored]
@@ -298,6 +314,8 @@ def read_bgcode(data: bytes) -> Bgcode:
             target = {FILE_META: doc.file_meta, PRINTER_META: doc.printer_meta, PRINT_META: doc.print_meta,
                       SLICER_META: doc.slicer_meta}[kind]
             target += _ini(raw)
+            if sum(map(len, (doc.file_meta, doc.printer_meta, doc.print_meta, doc.slicer_meta))) > MAX_META_PAIRS:
+                raise ToolError(ErrorCode.LIMIT_EXCEEDED, "bgcode_metadata")
     return doc
 
 
@@ -326,14 +344,22 @@ def write_bgcode(doc: Bgcode, compress: bool = True, progress=None) -> bytes:
     for fmt, w, h, data in doc.thumbnails:
         code = {v: k for k, v in THUMB_FORMATS.items()}.get(fmt, 0)
         out += _block(THUMBNAIL, struct.pack("<HHH", code, w, h), data, NONE)
-    out += _block(PRINT_META, enc, _ini_bytes(doc.print_meta), DEFLATE if compress else NONE)
+    # Como PrusaSlicer: los metadatos del archivo, de la impresora y de la impresión sin comprimir (la pantalla de la
+    # impresora los lee directamente) y solo los del laminador con Deflate (D-258).
+    out += _block(PRINT_META, enc, _ini_bytes(doc.print_meta), NONE)
     out += _block(SLICER_META, enc, _ini_bytes(doc.slicer_meta), DEFLATE if compress else NONE)
     # Cortes por línea para que ningún bloque empiece a media orden.
     text = bytes(doc.gcode)
     start, total = 0, len(text)
     while start < total:
         cut = text.rfind(b"\n", start, start + GCODE_BLOCK)
-        end = total if start + GCODE_BLOCK >= total else (cut + 1 if cut > start else start + GCODE_BLOCK)
+        if start + GCODE_BLOCK >= total:
+            end = total
+        elif cut >= start:
+            end = cut + 1
+        else:  # una línea de más de 64 KB: entera en su bloque, nunca cortada (D-258)
+            nl = text.find(b"\n", start)
+            end = total if nl < 0 else nl + 1
         chunk = meatpack_encode(text[start:end])
         out += _block(GCODE, struct.pack("<H", 2), chunk, HS_12_4 if compress else NONE)
         start = end
@@ -371,20 +397,26 @@ def split_gcode(text: bytes) -> Bgcode:
         m = THUMB_BEGIN.match(raw)
         if m:
             fmt = (m.group(1) or b"PNG").decode().lower()
-            chunks = []
-            while i < n and not re.match(rb"^; thumbnail(_\w+)? end", lines[i]):
-                chunks.append(lines[i].strip().lstrip(b";").strip())
-                i += 1
-            i += 1
+            end_at = next((k for k in range(i, min(n, i + 400_000)) if re.match(rb"^; thumbnail(_\w+)? end", lines[k])), None)
+            width, height = int(m.group(2)), int(m.group(3))
+            if end_at is None or not (0 < width <= 65535 and 0 < height <= 65535):
+                gcode += raw + b"\n"  # sin fin o con medidas imposibles: no es una miniatura, se deja como estaba (D-258)
+                continue
+            chunks = [lines[k].strip().lstrip(b";").strip() for k in range(i, end_at)]
+            i = end_at + 1
             try:
                 data = base64.b64decode(b"".join(chunks), validate=False)
             except ValueError:
                 continue
-            doc.thumbnails.append((fmt, int(m.group(2)), int(m.group(3)), data))
+            if len(doc.thumbnails) < MAX_THUMBS and len(data) <= MAX_THUMB_BYTES:
+                doc.thumbnails.append((fmt, width, height, data))
             continue
         stripped = raw.strip()
         if stripped.startswith(b"; prusaslicer_config = begin"):
-            in_config = True
+            # Sin «end», no es la configuración: el resto sigue siendo G-code (D-258).
+            in_config = any(lines[k].strip().startswith(b"; prusaslicer_config = end") for k in range(i, n))
+            if not in_config:
+                gcode += raw + b"\n"
             continue
         if stripped.startswith(b"; prusaslicer_config = end"):
             in_config = False
@@ -409,6 +441,13 @@ def split_gcode(text: bytes) -> Bgcode:
             seen_moves = True
         gcode += raw + b"\n"
     doc.gcode = gcode
+    # PrusaSlicer escribe en el G-code de texto el modelo de impresora, la boquilla y el filamento solo en la
+    # configuración del final: la pantalla de la impresora los busca en el bloque de la impresora (D-258).
+    have = {k for k, _ in doc.printer_meta}
+    config = dict(doc.slicer_meta)
+    for key in PRINTER_KEYS:
+        if key not in have and key in config:
+            doc.printer_meta.append((key, config[key]))
     return doc
 
 
@@ -456,6 +495,10 @@ def qoi_to_png(data: bytes) -> bytes:
     channels = data[12]
     if not (0 < w <= 4096 and 0 < h <= 4096):
         raise ToolError(ErrorCode.CORRUPT_FILE, "qoi")
+    # Cada byte da como mucho 62 píxeles (una racha): una cabecera que pide más píxeles de los que pueden salir de los
+    # datos es falsa, y recorrerla costaba segundos (D-258).
+    if w * h > (len(data) - 22) * 62:
+        raise ToolError(ErrorCode.CORRUPT_FILE, "qoi")
     pixels = bytearray(w * h * 4)
     index = [(0, 0, 0, 0)] * 64
     r, g, b, a = 0, 0, 0, 255
@@ -463,7 +506,9 @@ def qoi_to_png(data: bytes) -> bytes:
     while pos < len(pixels):
         if run:
             run -= 1
-        elif p < end:
+        elif p >= end:
+            break
+        else:
             b1 = data[p]
             p += 1
             if b1 == 0xFE:

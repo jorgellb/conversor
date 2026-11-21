@@ -49,6 +49,11 @@ def convert_path(ctx: ToolContext, n: int, path: Path | None, ext: str, target: 
             shutil.copyfile(other, copy)
             srcs.append((str(copy), other_ext, Path(other_name).stem))
         job["srcs"] = srcs
+    return _run_child(ctx, work, job)
+
+
+def _run_child(ctx: ToolContext, work: Path, job: dict) -> list[dict]:
+    out_dir = Path(job["out_dir"])
     (work / "trabajo.json").write_text(json.dumps(job), encoding="utf-8")
     env = {"LD_LIBRARY_PATH": ctx.settings.ENGINES_LIBRARY_PATH} if ctx.settings.ENGINES_LIBRARY_PATH else {}
     env["PYTHONUTF8"] = "1"
@@ -69,6 +74,26 @@ def convert_path(ctx: ToolContext, n: int, path: Path | None, ext: str, target: 
         outputs.append({"path": str(dst), "name": item["name"], "note": item["note"]})
     shutil.rmtree(work, ignore_errors=True)
     return outputs
+
+
+def run_in_child(ctx: ToolContext, call: str) -> list[dict]:
+    """La herramienta entera (`módulo:función` que recibe un contexto) en el proceso hijo, con Landlock, memoria y tiempo
+    acotados (D-258: las de G-code descomprimen bloques del usuario; en el trabajador, una bomba lo mataba y la cola lo
+    reintentaba)."""
+    work = ctx.work / "hijo"
+    out_dir = work / "salida"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    inputs = []
+    for k, inp in enumerate(ctx.inputs):
+        ext = (inp.ext or Path(inp.name).suffix.lstrip(".")).lower()
+        copy = work / f"entrada-{k}.{ext or 'bin'}"
+        shutil.copyfile(inp.path, copy)
+        inputs.append({"path": str(copy), "name": inp.name, "ext": ext, "size": inp.size})
+    options = ctx.options
+    job = {"paths": _code_paths(), "call": call, "options_class": f"{type(options).__module__}:{type(options).__qualname__}",
+           "options": options.model_dump(), "locale": ctx.locale, "tool": ctx.tool, "inputs": inputs, "out_dir": str(out_dir),
+           "result": str(work / "resultado.json")}
+    return _run_child(ctx, work, job)
 
 
 def run(ctx: ToolContext) -> list[dict]:
