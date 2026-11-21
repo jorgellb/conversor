@@ -29,7 +29,7 @@ for target in $TARGETS; do
   # shellcheck disable=SC2086
   docker buildx build --platform linux/amd64 -f "$file" $extra -t "$image:$IMAGE_TAG" -t "$image:sha-$COMMIT" --push .
   case "$target" in
-    api|worker-*) sh scripts/check_images.sh "$image:$IMAGE_TAG" ;;  # sin Ghostscript, MuPDF ni PyMuPDF (11)
+    api|worker-*) bash scripts/check_images.sh "$image:$IMAGE_TAG" ;;  # sin Ghostscript, MuPDF ni PyMuPDF (11)
   esac
 done
 echo "Listo: $(echo "$TARGETS" | wc -w) imágenes en $REGISTRY con la etiqueta $IMAGE_TAG"
