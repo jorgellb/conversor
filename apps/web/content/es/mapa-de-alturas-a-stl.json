@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Mapa de alturas a STL convierte una imagen en escala de grises en un relieve 3D en el que cada píxel es una altura: lo blanco sube y lo negro se queda en la base. Sirve para maquetas de terreno a partir de modelos de elevación, texturas, placas con relieve y moldes.",
+    "Elige el ancho en milímetros, la altura máxima del relieve y el grosor de la base. La resolución fija cuántos píxeles por milímetro se usan; con imágenes grandes, se reduce lo necesario para no pasar del límite de triángulos de tu plan. Puedes invertirlo para que suba lo oscuro.",
+    "El resultado es un sólido cerrado con la base plana, listo para imprimir. Los modelos de elevación del IGN o de otros servicios suelen exportarse como imagen de 16 bits; pásalos antes a escala de grises de 8 bits y ajusta el contraste para aprovechar todo el rango de alturas.",
+    "Admite PNG, JPG, WebP, BMP, GIF y TIFF, hasta cinco imágenes por tarea. Cada una se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube la imagen en escala de grises.",
+    "Elige el ancho, la altura y la base.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diferencia hay con Litofanía?",
+      "a": "La litofanía es fina y se ve a contraluz; el mapa de alturas es un relieve macizo sobre una base."
+    },
+    {
+      "q": "¿Puedo exagerar el relieve?",
+      "a": "Sí: sube la altura máxima; en terrenos se suele exagerar varias veces la escala vertical."
+    },
+    {
+      "q": "¿Por qué sale escalonado?",
+      "a": "Porque la imagen es de 8 bits (256 niveles). Suaviza la imagen o usa una resolución menor."
+    },
+    {
+      "q": "¿Puedo usar una foto normal?",
+      "a": "Sí, pero el relieve seguirá la luminosidad de la foto, no su forma real; para fotos suele quedar mejor una litofanía."
+    }
+  ]
+}

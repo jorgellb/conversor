@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Logo a STL convierte un logo, un icono o un dibujo en blanco y negro en una pieza 3D: vectoriza la imagen y extruye las zonas oscuras hasta la altura que elijas. Es la forma rápida de hacer un llavero, una placa con tu marca, un sello o un imán a partir de un PNG o un JPG.",
+    "La imagen se pasa a blanco y negro con el umbral que elijas (por defecto, la mitad del gris) y se traza con vtracer, que produce contornos limpios y respeta los huecos interiores de letras y formas. Si el logo es claro sobre fondo oscuro, marca invertir para extruir lo claro.",
+    "Fija el ancho final en milímetros y la altura del logo; si quieres, añade una placa de base con margen para que el logo quede en relieve sobre ella. Las motas sueltas de menos de unos pocos píxeles se descartan para que no salgan como piezas sueltas.",
+    "Para el mejor resultado, usa la imagen más grande y nítida que tengas, con buen contraste. Cada logo se procesa en un proceso aislado de nuestro servidor de la Unión Europea, hasta cinco por tarea, y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el logo en PNG, JPG o similar.",
+    "Elige el ancho, la altura y, si quieres, la placa.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "Mi logo tiene colores, ¿sirve?",
+      "a": "Sí: se usa su versión en blanco y negro. Ajusta el umbral si algún color se pierde, o usa Imagen a STL para varios niveles."
+    },
+    {
+      "q": "¿Por qué los bordes salen dentados?",
+      "a": "Porque la imagen es pequeña. Sube una versión más grande del logo o, mejor aún, su SVG con SVG a STL."
+    },
+    {
+      "q": "¿Puedo hacer un sello?",
+      "a": "Sí: activa la placa de base y marca espejo en tu laminador, o voltea la imagen antes de subirla."
+    }
+  ]
+}

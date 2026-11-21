@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SVG a STL convierte un dibujo vectorial en una pieza 3D: logos, letras, siluetas, llaveros, cortadores de galletas, plantillas o señales. Cada forma rellena del SVG se extruye hasta la altura que elijas y sale un sólido cerrado listo para el laminador.",
+    "Se respetan los agujeros de las formas (el interior de una O, un marco o un anillo) según la regla de relleno del SVG, y las formas que se solapan se unen en un solo sólido sin caras internas. Las líneas que solo tienen trazo, sin relleno, no se extruyen: si tu dibujo está hecho con trazos, conviértelos antes en contornos en Inkscape (Trazo a camino).",
+    "El tamaño sale del propio SVG en milímetros, o puedes fijar un ancho final y la altura se escala en proporción. También puedes añadir una placa de base bajo el dibujo, con el margen que quieras, para hacer un letrero, una placa con relieve o un sello.",
+    "Admite hasta cinco SVG por tarea y el resultado sale en STL, 3MF u OBJ. Cada archivo se procesa en un proceso aislado de nuestro servidor de la Unión Europea, sin cargar imágenes ni archivos externos que nombre el SVG, y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el SVG.",
+    "Elige la altura y, si quieres, el ancho final y la placa.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué no sale nada?",
+      "a": "Porque el SVG no tiene formas rellenas: solo trazos. Conviértelos en contornos y vuelve a subirlo."
+    },
+    {
+      "q": "¿Puedo hacer un cortador de galletas?",
+      "a": "Sí, si el SVG tiene el contorno del cortador como forma rellena del grosor de la pared."
+    },
+    {
+      "q": "¿Qué tamaño tendrá?",
+      "a": "El del SVG en milímetros, o el ancho que pongas; la nota del resultado da las medidas exactas."
+    }
+  ]
+}

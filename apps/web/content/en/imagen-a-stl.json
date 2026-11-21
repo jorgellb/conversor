@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Image to STL turns an image into a stepped 3D relief: darker areas rise higher and light ones stay at the base, like an embossed sign, a colour map or a decorative plate. It works with PNG, JPG, WebP, BMP, GIF and TIFF.",
+    "The image is converted to greyscale and split into the number of levels you choose, 2 to 8. Each level is vectorised with vtracer and extruded one more step above a flat base, and everything is merged into a single closed solid. You can invert the relief so the light parts rise.",
+    "For the best result use images with well-defined colour areas, such as illustrations, multi-colour logos or maps; for photos with many gradients, Lithophane or Heightmap give a smoother result. If you print each level in a colour with filament changes per layer, the relief becomes a colour image.",
+    "Choose the width in millimetres, the total height of the levels and the base thickness. Each image is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the image.",
+    "Choose the levels, width and height.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "How many levels should I use?",
+      "a": "3 to 5 usually works well; with more, the steps are finer but the file is heavier."
+    },
+    {
+      "q": "Can I print it in several colours?",
+      "a": "Yes: change filament at each level's height in your slicer."
+    },
+    {
+      "q": "What if I want a continuous relief?",
+      "a": "Use Heightmap to STL, which turns each pixel into a height."
+    },
+    {
+      "q": "Which images work best?",
+      "a": "Illustrations and logos with flat colours; photos with soft gradients give many small steps."
+    }
+  ]
+}

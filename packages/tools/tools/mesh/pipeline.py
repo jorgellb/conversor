@@ -202,6 +202,7 @@ def array_bytes(*arrays: np.ndarray) -> int:
 # ——— Operaciones de F7-F (D-253) ———
 
 WRITABLE = {"stl", "obj", "3mf", "ply", "amf", "glb", "off"}
+GEN_TOOLS = {"svg-a-stl", "dxf-a-stl", "imagen-a-stl", "logo-a-stl", "texto-a-stl", "litofania", "mapa-de-alturas-a-stl"}
 OP_TOOLS = {"reparar-stl", "reducir-poligonos", "escalar-modelo-3d", "cambiar-unidades-stl", "cortar-modelo-3d", "separar-piezas",
             "analizar-stl", "unir-modelos"}
 
@@ -276,3 +277,12 @@ def join_files(srcs: list[tuple[Path, str, str]], options: dict, locale: str, ma
     joined = ops.join(models, options, locale, notes)
     target = options.get("formato_salida", "3mf")
     return _write_results([(joined, "")], target, stem, out_dir, notes, locale)
+
+
+def generate_file(src: Path | None, ext: str, tool: str, options: dict, locale: str, max_triangles: int, stem: str, out_dir: Path) -> list[dict]:
+    """Generadores de F7-G (D-254): de SVG, DXF, imágenes o texto a un sólido."""
+    from tools.mesh import generadores
+
+    model, notes = generadores.generate(tool, src, ext, options, locale, max_triangles, stem)
+    formats.check_finite(model)
+    return _write_results([(model, "")], options.get("formato_salida", "stl"), stem, out_dir, notes, locale)

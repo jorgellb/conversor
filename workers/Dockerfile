@@ -276,7 +276,8 @@ CMD ["python", "/app/pki.py", "serve", "/home/app/pki", "9000"]
 # --- Mallas 3D y G-code (F7, grupo mesh, 5.4): solo bibliotecas de Python con ruedas (trimesh, lib3mf); sin red ---
 FROM base AS worker-mesh
 # assimp (BSD-3-Clause) de Debian para FBX, DAE y 3DS (F7-B, D-248); pyassimp lo carga en un proceso hijo con Landlock.
-RUN apt-get update && apt-get install -y --no-install-recommends libassimp5 && rm -rf /var/lib/apt/lists/*
+# DejaVu (fonts-dejavu-core, licencia libre de Bitstream Vera) para texto-a-stl (F7-G, D-254).
+RUN apt-get update && apt-get install -y --no-install-recommends libassimp5 fonts-dejavu-core fonts-dejavu-extra && rm -rf /var/lib/apt/lists/*
 RUN uv pip install -r pyproject.toml --extra mesh
 COPY --from=code /app /app
 USER app

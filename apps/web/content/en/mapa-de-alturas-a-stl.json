@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Heightmap to STL turns a greyscale image into a 3D relief where each pixel is a height: white rises and black stays at the base. It is useful for terrain models from elevation data, textures, embossed plates and moulds.",
+    "Choose the width in millimetres, the relief's maximum height and the base thickness. The resolution sets how many pixels per millimetre are used; with large images, it is reduced as needed to stay within your plan's triangle limit. You can invert it so dark parts rise.",
+    "The result is a closed solid with a flat base, ready to print. Elevation models from mapping services are often exported as 16-bit images; convert them to 8-bit greyscale first and adjust the contrast to use the full height range.",
+    "It accepts PNG, JPG, WebP, BMP, GIF and TIFF, up to five images per task. Each one is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the greyscale image.",
+    "Choose the width, height and base.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "How is it different from Lithophane?",
+      "a": "A lithophane is thin and is seen against the light; a heightmap is a solid relief on a base."
+    },
+    {
+      "q": "Can I exaggerate the relief?",
+      "a": "Yes: raise the maximum height; terrain models often exaggerate the vertical scale several times."
+    },
+    {
+      "q": "Why does it look stepped?",
+      "a": "Because the image is 8-bit (256 levels). Smooth the image or use a lower resolution."
+    },
+    {
+      "q": "Can I use a normal photo?",
+      "a": "Yes, but the relief will follow the photo's brightness, not its real shape; for photos a lithophane usually looks better."
+    },
+    {
+      "q": "Which resolution should I choose?",
+      "a": "5 pixels per millimetre is plenty for a 0.4 mm nozzle; lower it for very large reliefs."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DXF a STL extruye los contornos cerrados de un plano DXF en una pieza 3D: perfiles de corte láser, placas, juntas, plantillas o piezas planas dibujadas en LibreCAD, QCAD, AutoCAD o FreeCAD. Elige la altura y descarga un sólido cerrado.",
+    "Se leen las polilíneas cerradas, los círculos, las elipses y las splines cerradas, y también las cadenas de líneas y arcos sueltos que se tocan por sus extremos y forman un contorno. Los contornos interiores se convierten en agujeros, así que una placa con taladros sale con sus taladros.",
+    "Las unidades se toman del propio DXF ($INSUNITS): un plano en pulgadas o centímetros sale en milímetros a su tamaño real. Si prefieres, fija un ancho final o añade una placa de base. Los textos, cotas y sombreados del plano no se extruyen.",
+    "Admite hasta cinco DXF por tarea y el resultado sale en STL, 3MF u OBJ. Cada plano se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el DXF.",
+    "Elige la altura de la extrusión.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué falta un contorno?",
+      "a": "Porque no está cerrado: sus extremos no se tocan. Ciérralo en tu programa de CAD o únelo en una polilínea."
+    },
+    {
+      "q": "¿Y si es un DWG?",
+      "a": "Pásalo antes a DXF con DWG a DXF."
+    },
+    {
+      "q": "¿Puedo extruir capas a alturas distintas?",
+      "a": "No: todo sale a la misma altura. Separa las capas en planos distintos y únelos luego."
+    },
+    {
+      "q": "¿Qué grosor le doy a una placa?",
+      "a": "Para piezas funcionales, entre 3 y 6 mm; para plantillas o juntas, 1 a 2 mm suelen bastar."
+    },
+    {
+      "q": "¿Mantiene el tamaño exacto?",
+      "a": "Sí: las medidas del plano pasan tal cual, en milímetros, salvo que fijes un ancho final distinto."
+    }
+  ]
+}

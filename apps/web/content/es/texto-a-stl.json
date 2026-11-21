@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Texto a STL crea letras en 3D a partir de lo que escribas: carteles, placas con nombre, etiquetas para cajas y estanterías, letras para tartas, señales o regalos personalizados. No hace falta subir ningún archivo: escribe el texto, elige la letra y descarga el STL.",
+    "Puedes escribir varias líneas y alinearlas a la izquierda, al centro o a la derecha. Hay seis letras incluidas, de la familia DejaVu (sans, serif, monoespaciada y condensada, en normal o negrita), que tienen acentos, eñes y la mayoría de símbolos europeos. El tamaño es la altura de las mayúsculas en milímetros.",
+    "Elige el grosor de las letras y, si quieres, una placa de base con margen bajo el texto: así sale un letrero de una sola pieza, con las letras en relieve. Las letras que se tocan se unen en un solo sólido cerrado, sin caras internas.",
+    "Hasta 300 caracteres por texto. El resultado sale en STL, 3MF u OBJ y se crea en un proceso aislado de nuestro servidor de la Unión Europea; se borra al caducar."
+  ],
+  "steps": [
+    "Escribe el texto.",
+    "Elige la letra, el tamaño y el grosor.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo usar mi propia fuente?",
+      "a": "Por ahora no: se usan las seis letras DejaVu incluidas, que tienen licencia libre."
+    },
+    {
+      "q": "¿Las letras salen pegadas?",
+      "a": "Solo si se tocan en el diseño de la letra; con placa de base, todo sale en una pieza."
+    },
+    {
+      "q": "¿Qué tamaño elijo para que se lea?",
+      "a": "Para un cartel de puerta, unos 20 mm de mayúsculas; para una etiqueta pequeña, 6 a 8 mm."
+    },
+    {
+      "q": "¿Puedo hacer un llavero?",
+      "a": "Sí: escribe el nombre, activa la placa de base y luego taladra el agujero o añádelo en tu laminador."
+    }
+  ]
+}

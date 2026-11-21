@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Text to STL creates 3D letters from what you type: signs, name plates, labels for boxes and shelves, cake toppers, signage or personalised gifts. There is no file to upload: type the text, choose the font and download the STL.",
+    "You can type several lines and align them left, centre or right. Six fonts are included, from the DejaVu family (sans, serif, monospace and condensed, regular or bold), with accents, ñ and most European symbols. The size is the capital letter height in millimetres.",
+    "Choose the letter thickness and, if you want, a base plate with a margin under the text: that gives a one-piece sign with raised letters. Letters that touch are merged into a single closed solid, with no internal faces.",
+    "Up to 300 characters per text. The result comes out as STL, 3MF or OBJ and is created in an isolated process on our server in the European Union; it is deleted when it expires."
+  ],
+  "steps": [
+    "Type the text.",
+    "Choose the font, size and thickness.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "Can I use my own font?",
+      "a": "Not yet: the six included DejaVu fonts, with a free licence, are used."
+    },
+    {
+      "q": "Do the letters come out stuck together?",
+      "a": "Only if they touch in the font's design; with a base plate, everything comes out in one piece."
+    },
+    {
+      "q": "Which size makes it readable?",
+      "a": "For a door sign, about 20 mm capitals; for a small label, 6 to 8 mm."
+    },
+    {
+      "q": "Can I make a keyring?",
+      "a": "Yes: type the name, enable the base plate and then drill the hole or add it in your slicer."
+    },
+    {
+      "q": "Does it support accents and symbols?",
+      "a": "Yes: DejaVu covers accents, ñ, ç, the euro sign and most European symbols."
+    }
+  ]
+}

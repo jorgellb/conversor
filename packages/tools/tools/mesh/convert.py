@@ -28,7 +28,7 @@ def _code_paths() -> list[str]:
     return [str(Path(core.__file__).resolve().parents[1]), str(Path(tools.__file__).resolve().parents[1])]
 
 
-def convert_path(ctx: ToolContext, n: int, path: Path, ext: str, target: str, name: str, tool: str | None = None,
+def convert_path(ctx: ToolContext, n: int, path: Path | None, ext: str, target: str, name: str, tool: str | None = None,
                  extra: list[tuple[Path, str, str]] | None = None) -> list[dict]:
     """Convierte un archivo en el proceso hijo (D-249) y devuelve sus salidas ya en la carpeta de resultados. Con `extra`
     (unir-modelos), todos esos archivos van al mismo hijo."""
@@ -36,9 +36,10 @@ def convert_path(ctx: ToolContext, n: int, path: Path, ext: str, target: str, na
     work = ctx.work / f"malla-{n}"
     out_dir = work / "salida"
     out_dir.mkdir(parents=True, exist_ok=True)
-    src = work / f"original.{ext}"
-    shutil.copyfile(path, src)
-    job = {"paths": _code_paths(), "src": str(src), "ext": ext, "tool": tool or ctx.tool, "options": o.model_dump(), "locale": ctx.locale,
+    src = work / f"original.{ext}" if path is not None else None
+    if src is not None:
+        shutil.copyfile(path, src)
+    job = {"paths": _code_paths(), "src": str(src) if src else "", "ext": ext, "tool": tool or ctx.tool, "options": o.model_dump(), "locale": ctx.locale,
            "max_triangles": ctx.plan.mesh_triangles, "stem": Path(derived_name(name, "", target)).stem,
            "out_dir": str(out_dir), "result": str(work / "resultado.json")}
     if extra:
@@ -99,3 +100,17 @@ def run_join(ctx: ToolContext) -> list[dict]:
     target = ctx.options.formato_salida
     name = "modelos-unidos" if ctx.locale != "en" else "joined-models"
     return convert_path(ctx, 0, first.path, extra[0][1], target, f"{name}.{target}", extra=extra)
+
+
+def run_generate(ctx: ToolContext) -> list[dict]:
+    """Generadores de F7-G (D-254): un sólido por archivo, o uno solo desde el texto de texto-a-stl."""
+    target = ctx.options.formato_salida
+    if not ctx.inputs:
+        name = "texto" if ctx.locale != "en" else "text"
+        return convert_path(ctx, 0, None, "", target, f"{name}.{target}")
+    outputs = []
+    for n, inp in enumerate(ctx.inputs):
+        ctx.report(n / len(ctx.inputs), None)
+        ext = (inp.ext or Path(inp.name).suffix.lstrip(".")).lower()
+        outputs += convert_path(ctx, n, inp.path, ext, target, inp.name)
+    return with_batch_zip(ctx, outputs, f"modelos-{target}.zip")

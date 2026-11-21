@@ -116,7 +116,9 @@ mesh = ["trimesh==5.2.1", "lib3mf==2.5.0", "numpy==2.5.4", "scipy==1.18.1", "net
         # F7-C (D-250): usd-core (LicenseRef-TOST-1.0, permitido en 11) para USD y USDZ.
         "usd-core==26.11",
         # F7-F (D-253): manifold3d (Apache-2.0) para uniones y cortes tapados y fast-simplification (MIT) para reducir.
-        "manifold3d==3.5.5", "fast-simplification==0.2.0"]
+        "manifold3d==3.5.5", "fast-simplification==0.2.0",
+        # F7-G (D-254): svgelements (MIT) para los SVG, vtracer (MIT) para vectorizar, fontTools (MIT) para el texto y ezdxf (MIT).
+        "svgelements==1.9.6", "vtracer==0.6.15", "fonttools==4.68.0", "ezdxf==1.4.5"]
 # workercad (F7-D, D-251): OpenCascade en cadquery-ocp-novtk (Apache-2.0; OCCT, LGPL-2.1 con excepción, dentro) más lo de
 # `mesh` para escribir las mallas teseladas.
 cad = ["cadquery-ocp-novtk==8.0.1.1.0", "trimesh==5.2.1", "lib3mf==2.5.0", "numpy==2.5.4", "scipy==1.18.1", "networkx==3.7",

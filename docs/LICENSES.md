@@ -91,6 +91,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | trimesh 5.2.1, lib3mf 2.5.0, numpy, scipy y networkx en el extra `mesh` | MIT; BSD-2-Clause; BSD-3-Clause | Mallas STL, OBJ, PLY y 3MF de F7-A (D-244), en `workermesh`; lib3mf por su biblioteca C con búferes de numpy |
 | pyassimp 5.2.5 en el extra `mesh`; libassimp5 (con libdraco8, libminizip1 y libpugixml1v5) de Debian en `workermesh` | ISC; BSD-3-Clause (Apache-2.0, Zlib y MIT las dependencias) | FBX, DAE y 3DS de F7-B en un proceso hijo con Landlock (D-248); AMF y GLB sin bibliotecas nuevas |
 | usd-core 26.11 en el extra `mesh` | LicenseRef-TOST-1.0 (Modified Apache 2.0) | USD y USDZ de F7-C (D-250), permitido en 11; dentro del proceso hijo de las mallas |
+| svgelements 1.9.6, vtracer 0.6.15, fontTools 4.68.0 y ezdxf 1.4.5 en el extra `mesh`; fuentes DejaVu (fonts-dejavu-core y -extra) en `workermesh` | MIT; licencia de Bitstream Vera (DejaVu) | Generadores de F7-G (D-254) |
 | cadquery-ocp-novtk 8.0.1.1.0 (con OpenCascade 8) en el extra `cad` | Apache-2.0; OCCT LGPL-2.1 con excepción | STEP, IGES y BREP de F7-D en `workercad`, dentro del proceso hijo de las mallas (D-251) |
 | OpenSCAD 2021.01 (Debian) y LibreDWG 0.14 (compilado desde GNU, SHA-256 fijado) en `workercad` | GPL-2.0; GPL-3.0-or-later | Solo como programas externos en sandbox (`openscad`, `dwg2dxf`), nunca importados (11); scad-a-stl, scad-a-3mf, dwg-a-dxf y dwg-a-pdf (D-252) |
 | ezdxf 1.4.5 en el extra `cad` | MIT | Comprobar y dibujar el DXF de LibreDWG (sin el extra `draw`, que trae PyMuPDF AGPL) |

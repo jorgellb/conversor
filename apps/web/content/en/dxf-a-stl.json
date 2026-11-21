@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DXF to STL extrudes the closed outlines of a DXF drawing into a 3D part: laser-cut profiles, plates, gaskets, templates or flat parts drawn in LibreCAD, QCAD, AutoCAD or FreeCAD. Choose the height and download a closed solid.",
+    "Closed polylines, circles, ellipses and closed splines are read, and so are chains of loose lines and arcs that touch at their ends and form an outline. Inner outlines become holes, so a plate with drill holes comes out with its holes.",
+    "Units are taken from the DXF itself ($INSUNITS): a drawing in inches or centimetres comes out in millimetres at its real size. If you prefer, set a final width or add a base plate. Texts, dimensions and hatches in the drawing are not extruded.",
+    "It accepts up to five DXF files per task and the result comes out as STL, 3MF or OBJ. Each drawing is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the DXF.",
+    "Choose the extrusion height.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "Why is an outline missing?",
+      "a": "Because it is not closed: its ends do not touch. Close it in your CAD program or join it into a polyline."
+    },
+    {
+      "q": "What if it is a DWG?",
+      "a": "Convert it to DXF first with DWG to DXF."
+    },
+    {
+      "q": "Can I extrude layers at different heights?",
+      "a": "No: everything comes out at the same height. Split the layers into separate drawings and join them later."
+    },
+    {
+      "q": "How thick should a plate be?",
+      "a": "For functional parts, 3 to 6 mm; for templates or gaskets, 1 to 2 mm is usually enough."
+    },
+    {
+      "q": "Does it keep the exact size?",
+      "a": "Yes: the drawing's measurements go through as they are, in millimetres, unless you set a different final width."
+    }
+  ]
+}

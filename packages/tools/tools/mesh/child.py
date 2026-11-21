@@ -14,13 +14,15 @@ def main(job_path: str) -> int:
     from pathlib import Path
 
     from core.errors import ToolError
-    from tools.mesh.pipeline import OP_TOOLS, convert_file, join_files, operate_file
+    from tools.mesh.pipeline import GEN_TOOLS, OP_TOOLS, convert_file, generate_file, join_files, operate_file
 
     result_path = Path(job["result"])
     try:
         args = (job["options"], job["locale"], int(job["max_triangles"]), job["stem"], Path(job["out_dir"]))
         if job.get("srcs"):
             outputs = join_files([(Path(a), b, c) for a, b, c in job["srcs"]], *args)
+        elif job["tool"] in GEN_TOOLS:
+            outputs = generate_file(Path(job["src"]) if job.get("src") else None, job["ext"], job["tool"], *args)
         elif job["tool"] in OP_TOOLS:
             outputs = operate_file(Path(job["src"]), job["ext"], job["tool"], *args)
         else:

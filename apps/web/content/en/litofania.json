@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Lithophane turns a photo into a 3D part that shows the image against the light: dark areas are thicker and let less light through, and light ones are thin and glow. It is a classic 3D printing gift, as a plate, curved to stand up or as a cylinder for a lamp.",
+    "Choose the shape, the width in millimetres (for the cylinder, the perimeter) and the minimum and maximum thicknesses: 0.8 and 3 mm work well with white PLA. The resolution sets how many pixels per millimetre are used; with 5, each pixel is 0.2 mm, more than a 0.4 nozzle can tell apart.",
+    "The result is a closed solid with a flat or smooth back face (on curved ones, the inside), ready to print. Print it upright or with the relief facing up, at 100% infill and in white so light passes through well. If you will view it from the other side, tick mirror.",
+    "Use photos with good contrast and large faces; very small details get lost. Each photo is processed in an isolated process on our server in the European Union, up to five per task, and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the photo.",
+    "Choose the shape, width and thicknesses.",
+    "Download the STL and print it in white."
+  ],
+  "faq": [
+    {
+      "q": "Which material should I use?",
+      "a": "White or natural PLA at 100% infill; dark colours do not let light through."
+    },
+    {
+      "q": "Why does it look reversed?",
+      "a": "Because you are viewing it from the other side. Generate it again with mirror ticked."
+    },
+    {
+      "q": "How long does it take to print?",
+      "a": "It depends on the size: a 100 mm plate usually takes 2 to 4 hours."
+    }
+  ]
+}

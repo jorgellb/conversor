@@ -299,3 +299,119 @@ SPECS += [
        "Measure a 3D model: dimensions, volume, surface, whether it is watertight and a filament estimate by material and infill.",
        ("reparar-stl", "escalar-modelo-3d"), outputs=("txt", "json", "zip")),
 ]
+
+
+# ——— F7-G (7.20, D-254): generadores ———
+
+IMG_IN = ("png", "jpg", "webp", "bmp", "gif", "tiff")
+GEN_FORMAT = {"stl": ("STL", "STL"), "3mf": ("3MF", "3MF"), "obj": ("OBJ", "OBJ")}
+
+
+def _gen_fmt():
+    return opt("stl", "Formato", "Format", advanced=True, labels=GEN_FORMAT)
+
+
+class ExtrudeOptions(BaseModel):
+    """svg-a-stl y dxf-a-stl: altura [5 mm], ancho final [el del dibujo] y placa de base opcional."""
+
+    altura_mm: float = opt(5.0, "Altura de la extrusión (mm)", "Extrusion height (mm)", ge=0.1, le=500)
+    ancho_mm: float = opt(0.0, "Ancho final (mm; 0: el del dibujo)", "Final width (mm; 0: the drawing's)", ge=0, le=5000)
+    base_mm: float = opt(0.0, "Placa de base (mm; 0: sin placa)", "Base plate (mm; 0: no plate)", ge=0, le=100, advanced=True)
+    margen_mm: float = opt(3.0, "Margen de la placa (mm)", "Plate margin (mm)", ge=0, le=100, advanced=True)
+    formato_salida: Literal["stl", "3mf", "obj"] = _gen_fmt()
+
+
+class LogoOptions(BaseModel):
+    """logo-a-stl: umbral [128], invertir, ancho [80 mm], altura [3 mm] y placa opcional."""
+
+    ancho_mm: float = opt(80.0, "Ancho (mm)", "Width (mm)", ge=5, le=1000)
+    altura_mm: float = opt(3.0, "Altura del logo (mm)", "Logo height (mm)", ge=0.2, le=100)
+    umbral: int = opt(128, "Umbral de oscuro (0-255)", "Darkness threshold (0-255)", ge=1, le=254, advanced=True)
+    invertir: bool = opt(False, "Invertir (extruir lo claro)", "Invert (extrude the light parts)")
+    base_mm: float = opt(0.0, "Placa de base (mm; 0: sin placa)", "Base plate (mm; 0: no plate)", ge=0, le=50, advanced=True)
+    margen_mm: float = opt(3.0, "Margen de la placa (mm)", "Plate margin (mm)", ge=0, le=100, advanced=True)
+    formato_salida: Literal["stl", "3mf", "obj"] = _gen_fmt()
+
+
+class ImagenRelieveOptions(BaseModel):
+    """imagen-a-stl: niveles [4], ancho [100 mm], altura [4 mm], base [1 mm] e invertir."""
+
+    niveles: int = opt(4, "Niveles de altura", "Height levels", ge=2, le=8)
+    ancho_mm: float = opt(100.0, "Ancho (mm)", "Width (mm)", ge=10, le=1000)
+    altura_mm: float = opt(4.0, "Altura de los niveles (mm)", "Height of the levels (mm)", ge=0.4, le=100)
+    base_mm: float = opt(1.0, "Base (mm)", "Base (mm)", ge=0.2, le=50)
+    invertir: bool = opt(False, "Invertir (lo claro más alto)", "Invert (light parts higher)", advanced=True)
+    formato_salida: Literal["stl", "3mf", "obj"] = _gen_fmt()
+
+
+class TextoOptions(BaseModel):
+    """texto-a-stl: texto, fuente [sans negrita], tamaño [10 mm], altura [3 mm], alineación y placa opcional."""
+
+    texto: str = opt("Hola", "Texto", "Text", widget="textarea", max_length=300)
+    fuente: Literal["sans", "sans-negrita", "serif", "serif-negrita", "mono", "condensada"] = opt("sans-negrita", "Letra", "Font", labels={
+        "sans": ("Sans", "Sans"), "sans-negrita": ("Sans negrita", "Sans bold"), "serif": ("Serif", "Serif"),
+        "serif-negrita": ("Serif negrita", "Serif bold"), "mono": ("Monoespaciada", "Monospace"), "condensada": ("Condensada negrita", "Condensed bold")})
+    tamano_mm: float = opt(10.0, "Altura de las mayúsculas (mm)", "Capital letter height (mm)", ge=1, le=500)
+    altura_mm: float = opt(3.0, "Grosor de las letras (mm)", "Letter thickness (mm)", ge=0.2, le=100)
+    alineacion: Literal["izquierda", "centro", "derecha"] = opt("izquierda", "Alineación", "Alignment", advanced=True, labels={
+        "izquierda": ("Izquierda", "Left"), "centro": ("Centro", "Centre"), "derecha": ("Derecha", "Right")})
+    base_mm: float = opt(0.0, "Placa de base (mm; 0: sin placa)", "Base plate (mm; 0: no plate)", ge=0, le=50)
+    margen_mm: float = opt(3.0, "Margen de la placa (mm)", "Plate margin (mm)", ge=0, le=100, advanced=True)
+    formato_salida: Literal["stl", "3mf", "obj"] = _gen_fmt()
+
+
+class LitofaniaOptions(BaseModel):
+    """litofania: forma [plana] | curva | cilíndrica, ancho [100 mm], grosores [0,8 y 3 mm], resolución [5 px/mm]."""
+
+    forma: Literal["plana", "curva", "cilindrica"] = opt("plana", "Forma", "Shape", labels={
+        "plana": ("Plana", "Flat"), "curva": ("Curva", "Curved"), "cilindrica": ("Cilíndrica (lámpara)", "Cylindrical (lamp)")})
+    ancho_mm: float = opt(100.0, "Ancho (mm; en la cilíndrica, el perímetro)", "Width (mm; perimeter for the cylinder)", ge=20, le=500)
+    grosor_min: float = opt(0.8, "Grosor mínimo (mm, lo más claro)", "Minimum thickness (mm, lightest)", ge=0.3, le=5)
+    grosor_max: float = opt(3.0, "Grosor máximo (mm, lo más oscuro)", "Maximum thickness (mm, darkest)", ge=0.6, le=10)
+    angulo: float = opt(120.0, "Ángulo de la curva (grados)", "Curve angle (degrees)", ge=10, le=350, advanced=True)
+    resolucion: float = opt(5.0, "Resolución (píxeles por mm)", "Resolution (pixels per mm)", ge=1, le=10, advanced=True)
+    espejo: bool = opt(False, "Espejo (para verla por la otra cara)", "Mirror (to view it from the other side)", advanced=True)
+    formato_salida: Literal["stl", "3mf", "obj"] = _gen_fmt()
+
+
+class MapaAlturasOptions(BaseModel):
+    """mapa-de-alturas-a-stl: ancho [100 mm], altura [10 mm], base [2 mm], resolución [5 px/mm] e invertir."""
+
+    ancho_mm: float = opt(100.0, "Ancho (mm)", "Width (mm)", ge=10, le=1000)
+    altura_mm: float = opt(10.0, "Altura del relieve (mm, lo más claro)", "Relief height (mm, lightest)", ge=0.2, le=200)
+    base_mm: float = opt(2.0, "Base (mm)", "Base (mm)", ge=0.2, le=50)
+    resolucion: float = opt(5.0, "Resolución (píxeles por mm)", "Resolution (pixels per mm)", ge=0.5, le=10, advanced=True)
+    invertir: bool = opt(False, "Invertir (lo oscuro más alto)", "Invert (dark parts higher)", advanced=True)
+    formato_salida: Literal["stl", "3mf", "obj"] = _gen_fmt()
+
+
+def gen(slug_es, slug_en, name_es, name_en, inputs, options, summary_es, summary_en, related) -> ToolSpec:
+    return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category="3d", where="server", inputs=inputs,
+                    outputs=("stl", "3mf", "obj", "zip"), options=options, worker_group="mesh", cost_class="light",
+                    impl="tools.mesh.convert:run_generate", launch=True, phase="F7", time_limit=600, max_files=5 if inputs else None,
+                    summary_es=summary_es, summary_en=summary_en, related=related)
+
+
+SPECS += [
+    gen("svg-a-stl", "svg-to-stl", "SVG a STL", "SVG to STL", ("svg",), ExtrudeOptions,
+        "Extruye un dibujo SVG (logos, letras, siluetas) en una pieza 3D con la altura que quieras.",
+        "Extrude an SVG drawing (logos, letters, silhouettes) into a 3D part at the height you want.", ("logo-a-stl", "dxf-a-stl")),
+    gen("dxf-a-stl", "dxf-to-stl", "DXF a STL", "DXF to STL", ("dxf",), ExtrudeOptions,
+        "Extruye los contornos cerrados de un plano DXF en una pieza 3D, con sus unidades.",
+        "Extrude the closed outlines of a DXF drawing into a 3D part, with its units.", ("svg-a-stl", "dxf-a-pdf")),
+    gen("imagen-a-stl", "image-to-stl", "Imagen a STL", "Image to STL", IMG_IN, ImagenRelieveOptions,
+        "Convierte una imagen en un relieve 3D por niveles de altura según lo oscuro de cada zona.",
+        "Turn an image into a stepped 3D relief whose height follows how dark each area is.", ("mapa-de-alturas-a-stl", "logo-a-stl")),
+    gen("logo-a-stl", "logo-to-stl", "Logo a STL", "Logo to STL", IMG_IN, LogoOptions,
+        "Vectoriza un logo en blanco y negro y lo extruye en una pieza 3D, con placa de base si quieres.",
+        "Vectorise a black-and-white logo and extrude it into a 3D part, with a base plate if you want.", ("svg-a-stl", "imagen-a-stl")),
+    gen("texto-a-stl", "text-to-stl", "Texto a STL", "Text to STL", (), TextoOptions,
+        "Crea letras, carteles y placas con nombre en 3D a partir de un texto, listos para imprimir.",
+        "Create 3D letters, signs and name plates from text, ready to print.", ("logo-a-stl", "svg-a-stl")),
+    gen("litofania", "lithophane", "Litofanía", "Lithophane", IMG_IN, LitofaniaOptions,
+        "Convierte una foto en una litofanía 3D, plana, curva o cilíndrica, que se ve al ponerle luz detrás.",
+        "Turn a photo into a flat, curved or cylindrical 3D lithophane that shows when lit from behind.", ("mapa-de-alturas-a-stl", "imagen-a-stl")),
+    gen("mapa-de-alturas-a-stl", "heightmap-to-stl", "Mapa de alturas a STL", "Heightmap to STL", IMG_IN, MapaAlturasOptions,
+        "Convierte un mapa de alturas en escala de grises en un relieve 3D: terrenos, texturas y maquetas.",
+        "Turn a greyscale heightmap into a 3D relief: terrains, textures and scale models.", ("litofania", "imagen-a-stl")),
+]

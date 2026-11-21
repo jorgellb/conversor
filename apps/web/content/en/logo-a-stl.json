@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Logo to STL turns a black-and-white logo, icon or drawing into a 3D part: it vectorises the image and extrudes the dark areas to the height you choose. It is the quick way to make a keyring, a plate with your brand, a stamp or a magnet from a PNG or a JPG.",
+    "The image is converted to black and white with the threshold you choose (by default, half grey) and traced with vtracer, which produces clean outlines and respects the inner holes of letters and shapes. If the logo is light on a dark background, tick invert to extrude the light part.",
+    "Set the final width in millimetres and the logo height; if you want, add a base plate with a margin so the logo stands out on it. Loose specks of fewer than a few pixels are discarded so they do not come out as loose parts.",
+    "For the best result, use the largest, sharpest image you have, with good contrast. Each logo is processed in an isolated process on our server in the European Union, up to five per task, and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the logo as PNG, JPG or similar.",
+    "Choose the width, height and, optionally, the plate.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "My logo has colours, does it work?",
+      "a": "Yes: its black-and-white version is used. Adjust the threshold if a colour gets lost, or use Image to STL for several levels."
+    },
+    {
+      "q": "Why are the edges jagged?",
+      "a": "Because the image is small. Upload a larger version of the logo or, better, its SVG with SVG to STL."
+    },
+    {
+      "q": "Can I make a stamp?",
+      "a": "Yes: enable the base plate and mirror it in your slicer, or flip the image before uploading it."
+    }
+  ]
+}

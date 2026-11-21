@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Imagen a STL convierte una imagen en un relieve 3D por niveles: las zonas más oscuras suben más y las claras se quedan en la base, como un cartel en relieve, un mapa de colores o una placa decorativa. Funciona con PNG, JPG, WebP, BMP, GIF y TIFF.",
+    "La imagen se pasa a escala de grises y se divide en el número de niveles que elijas, de 2 a 8. Cada nivel se vectoriza con vtracer y se extruye un escalón más sobre una base plana, y todo se une en un solo sólido cerrado. Puedes invertir el relieve para que suba lo claro.",
+    "Para el mejor resultado usa imágenes con zonas de color bien definidas, como ilustraciones, logos de varios colores o mapas; en fotos con muchos degradados, Litofanía o Mapa de alturas dan un resultado más suave. Si imprimes cada nivel en un color con cambios de filamento por capa, el relieve se convierte en una imagen en color.",
+    "Elige el ancho en milímetros, la altura total de los niveles y el grosor de la base. Cada imagen se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube la imagen.",
+    "Elige los niveles, el ancho y la altura.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuántos niveles pongo?",
+      "a": "Entre 3 y 5 suele quedar bien; con más, los escalones son más finos pero el archivo pesa más."
+    },
+    {
+      "q": "¿Puedo imprimirlo en varios colores?",
+      "a": "Sí: cambia de filamento a la altura de cada nivel en tu laminador."
+    },
+    {
+      "q": "¿Y si quiero un relieve continuo?",
+      "a": "Usa Mapa de alturas a STL, que convierte cada píxel en una altura."
+    }
+  ]
+}

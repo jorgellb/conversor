@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SVG to STL turns a vector drawing into a 3D part: logos, letters, silhouettes, keyrings, cookie cutters, templates or signs. Each filled shape in the SVG is extruded to the height you choose and a closed solid comes out, ready for the slicer.",
+    "Holes in shapes (the inside of an O, a frame or a ring) are respected according to the SVG fill rule, and overlapping shapes are merged into one solid with no internal faces. Lines that only have a stroke, without a fill, are not extruded: if your drawing is made of strokes, turn them into outlines first in Inkscape (Stroke to Path).",
+    "The size comes from the SVG itself in millimetres, or you can set a final width and the height scales proportionally. You can also add a base plate under the drawing, with the margin you want, to make a sign, an embossed plate or a stamp.",
+    "It accepts up to five SVG files per task and the result comes out as STL, 3MF or OBJ. Each file is processed in an isolated process on our server in the European Union, without loading images or external files the SVG names, and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the SVG.",
+    "Choose the height and, optionally, the final width and plate.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "Why does nothing come out?",
+      "a": "Because the SVG has no filled shapes: only strokes. Turn them into outlines and upload it again."
+    },
+    {
+      "q": "Can I make a cookie cutter?",
+      "a": "Yes, if the SVG has the cutter outline as a filled shape as thick as the wall."
+    },
+    {
+      "q": "What size will it be?",
+      "a": "The SVG's size in millimetres, or the width you set; the result note gives the exact measurements."
+    }
+  ]
+}

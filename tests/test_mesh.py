@@ -4,6 +4,7 @@ triángulos del plan antes de cargar el archivo y que un OBJ no puede leer archi
 from __future__ import annotations
 
 import io
+import math
 import zipfile
 from pathlib import Path
 
@@ -624,3 +625,91 @@ def test_analyse_with_filament_estimate(make_ctx, tmp_path):
     text = run("analizar-stl", make_ctx("analizar-stl", [_broken(tmp_path)]))
     body = Path(text[0]["path"]).read_text()
     assert "Estanca (cerrada): no" in body and "no se puede medir" in body
+
+
+# ——— F7-G (D-254): generadores ———
+
+def _png(tmp_path: Path, name: str, array: np.ndarray) -> Path:
+    from PIL import Image
+
+    path = tmp_path / name
+    Image.fromarray(array.astype(np.uint8)).save(path)
+    return path
+
+
+def test_svg_extrudes_filled_shapes_with_holes(make_ctx, tmp_path):
+    svg = tmp_path / "anillo.svg"
+    svg.write_text('<svg xmlns="http://www.w3.org/2000/svg" width="100mm" height="50mm" viewBox="0 0 100 50">'
+                   '<path fill-rule="evenodd" d="M0 0H40V40H0Z M10 10H30V30H10Z"/>'
+                   '<rect x="50" y="0" width="20" height="20" fill="none" stroke="black"/>'  # solo trazo: no cuenta
+                   '<circle cx="80" cy="20" r="10"/></svg>')
+    out = run("svg-a-stl", make_ctx("svg-a-stl", [svg], {"altura_mm": 2}))
+    mesh = _load(Path(out[0]["path"]))
+    expected = (40 * 40 - 20 * 20 + math.pi * 100) * 2  # cuadrado con agujero y círculo, a 2 mm
+    assert mesh.is_watertight and abs(mesh.volume - expected) / expected < 0.01
+    assert np.isclose(mesh.extents[2], 2.0)
+    out = run("svg-a-stl", make_ctx("svg-a-stl", [svg], {"altura_mm": 2, "ancho_mm": 180, "base_mm": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    assert mesh.is_watertight and np.isclose(mesh.extents[2], 3.0) and mesh.extents[0] > 180
+
+
+def test_dxf_closed_outlines_and_linked_lines(make_ctx, tmp_path):
+    import ezdxf
+
+    doc = ezdxf.new("R2010")
+    doc.header["$INSUNITS"] = 5  # centímetros
+    msp = doc.modelspace()
+    msp.add_lwpolyline([(0, 0), (4, 0), (4, 4), (0, 4)], close=True)
+    for a, b in (((6, 0), (8, 0)), ((8, 0), (8, 2)), ((8, 2), (6, 2)), ((6, 2), (6, 0))):  # cuadrado de líneas sueltas
+        msp.add_line(a, b)
+    path = tmp_path / "plano.dxf"
+    doc.saveas(path)
+    out = run("dxf-a-stl", make_ctx("dxf-a-stl", [path], {"altura_mm": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    assert abs(mesh.volume - (40 * 40 + 20 * 20) * 1) < 1  # en milímetros
+
+
+def test_logo_and_image_relief(make_ctx, tmp_path):
+    img = np.full((200, 300), 255)
+    img[50:150, 40:140] = 0  # cuadrado negro
+    img[80:120, 70:110] = 255  # con agujero blanco
+    img[60:140, 180:260] = 100  # gris medio
+    logo = _png(tmp_path, "logo.png", img)
+    out = run("logo-a-stl", make_ctx("logo-a-stl", [logo], {"ancho_mm": 150, "altura_mm": 2, "umbral": 150}))
+    mesh = _load(Path(out[0]["path"]))
+    assert mesh.is_watertight and np.isclose(mesh.extents[2], 2.0, atol=1e-3)
+    px = 150 / 300
+    expected = ((100 * 100 - 40 * 40) + 80 * 80) * px * px * 2
+    assert abs(mesh.volume - expected) / expected < 0.05
+    out = run("imagen-a-stl", make_ctx("imagen-a-stl", [logo], {"niveles": 3, "altura_mm": 3, "base_mm": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    assert mesh.is_watertight and np.isclose(mesh.extents[2], 4.0, atol=1e-3) and "niveles" in out[0]["note"]
+
+
+def test_text_to_stl_without_input(make_ctx, tmp_path):
+    out = run("texto-a-stl", make_ctx("texto-a-stl", [], {"texto": "Ana\nB-1", "tamano_mm": 10, "altura_mm": 2, "base_mm": 1.5}))
+    mesh = _load(Path(out[0]["path"]))
+    assert out[0]["name"] == "texto.stl" and mesh.is_watertight and np.isclose(mesh.extents[2], 3.5, atol=1e-3)
+    assert 20 < mesh.extents[0] < 60 and "DejaVuSans-Bold" in out[0]["note"]
+    with pytest.raises(ToolError):
+        run("texto-a-stl", make_ctx("texto-a-stl", [], {"texto": "   "}))
+
+
+@pytest.mark.parametrize("shape", ["plana", "curva", "cilindrica"])
+def test_lithophane_is_watertight(make_ctx, tmp_path, shape):
+    gradient = np.tile(np.linspace(0, 255, 120), (80, 1))
+    photo = _png(tmp_path, "foto.png", gradient)
+    out = run("litofania", make_ctx("litofania", [photo], {"forma": shape, "ancho_mm": 100, "resolucion": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    assert mesh.is_watertight and mesh.volume > 0
+    if shape == "plana":
+        assert np.isclose(mesh.extents[2], 3.0, atol=0.05) and np.isclose(mesh.extents[0], 100, atol=0.5)
+
+
+def test_heightmap_relief(make_ctx, tmp_path):
+    ramp = np.tile(np.linspace(0, 255, 64), (32, 1))
+    path = _png(tmp_path, "terreno.png", ramp)
+    out = run("mapa-de-alturas-a-stl", make_ctx("mapa-de-alturas-a-stl", [path], {"ancho_mm": 64, "altura_mm": 10, "base_mm": 2, "resolucion": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    assert mesh.is_watertight and np.isclose(mesh.extents[2], 12.0, atol=0.01)
+    assert abs(mesh.volume - (2 + 5) * 64 * mesh.extents[1]) / mesh.volume < 0.05  # rampa: altura media 5 sobre la base

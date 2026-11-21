@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Litofanía convierte una foto en una pieza 3D que, a contraluz, muestra la imagen: las zonas oscuras son más gruesas y dejan pasar menos luz, y las claras son finas y brillan. Es un regalo clásico de la impresión 3D, en placa, en curva para ponerla de pie o en cilindro para una lámpara.",
+    "Elige la forma, el ancho en milímetros (en la cilíndrica, el perímetro) y los grosores mínimo y máximo: 0,8 y 3 mm funcionan bien con PLA blanco. La resolución fija cuántos píxeles por milímetro se usan; con 5, cada píxel mide 0,2 mm, más de lo que distingue una boquilla de 0,4.",
+    "El resultado es un sólido cerrado con la cara de atrás plana o lisa (en las curvas, por dentro), listo para imprimir. Imprímela en vertical o con el relieve hacia arriba, al 100 % de relleno y en blanco para que la luz atraviese bien. Si la vas a ver por la otra cara, marca espejo.",
+    "Usa fotos con buen contraste y caras grandes; los detalles muy pequeños se pierden. Cada foto se procesa en un proceso aislado de nuestro servidor de la Unión Europea, hasta cinco por tarea, y se borra al caducar."
+  ],
+  "steps": [
+    "Sube la foto.",
+    "Elige la forma, el ancho y los grosores.",
+    "Descarga el STL e imprímelo en blanco."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué material uso?",
+      "a": "PLA blanco o natural al 100 % de relleno; los colores oscuros no dejan pasar la luz."
+    },
+    {
+      "q": "¿Por qué se ve al revés?",
+      "a": "Porque la miras por la otra cara. Vuelve a generarla con espejo marcado."
+    },
+    {
+      "q": "¿Cuánto tarda en imprimirse?",
+      "a": "Depende del tamaño: una placa de 100 mm suele tardar entre 2 y 4 horas."
+    }
+  ]
+}

@@ -42582,6 +42582,1019 @@
       }
     },
     {
+      "slug_es": "svg-a-stl",
+      "slug_en": "svg-to-stl",
+      "name_es": "SVG a STL",
+      "name_en": "SVG to STL",
+      "summary_es": "Extruye un dibujo SVG (logos, letras, siluetas) en una pieza 3D con la altura que quieras.",
+      "summary_en": "Extrude an SVG drawing (logos, letters, silhouettes) into a 3D part at the height you want.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "svg"
+      ],
+      "outputs": [
+        "stl",
+        "3mf",
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "logo-a-stl",
+        "dxf-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "svg-a-stl y dxf-a-stl: altura [5 mm], ancho final [el del dibujo] y placa de base opcional.",
+        "properties": {
+          "altura_mm": {
+            "default": 5.0,
+            "maximum": 500,
+            "minimum": 0.1,
+            "title": "Altura de la extrusión (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Extrusion height (mm)",
+              "es": "Altura de la extrusión (mm)"
+            }
+          },
+          "ancho_mm": {
+            "default": 0.0,
+            "maximum": 5000,
+            "minimum": 0,
+            "title": "Ancho final (mm; 0: el del dibujo)",
+            "type": "number",
+            "x-title": {
+              "en": "Final width (mm; 0: the drawing's)",
+              "es": "Ancho final (mm; 0: el del dibujo)"
+            }
+          },
+          "base_mm": {
+            "default": 0.0,
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Placa de base (mm; 0: sin placa)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Base plate (mm; 0: no plate)",
+              "es": "Placa de base (mm; 0: sin placa)"
+            }
+          },
+          "margen_mm": {
+            "default": 3.0,
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Margen de la placa (mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Plate margin (mm)",
+              "es": "Margen de la placa (mm)"
+            }
+          },
+          "formato_salida": {
+            "default": "stl",
+            "enum": [
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          }
+        },
+        "title": "ExtrudeOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "dxf-a-stl",
+      "slug_en": "dxf-to-stl",
+      "name_es": "DXF a STL",
+      "name_en": "DXF to STL",
+      "summary_es": "Extruye los contornos cerrados de un plano DXF en una pieza 3D, con sus unidades.",
+      "summary_en": "Extrude the closed outlines of a DXF drawing into a 3D part, with its units.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "dxf"
+      ],
+      "outputs": [
+        "stl",
+        "3mf",
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "svg-a-stl",
+        "dxf-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "svg-a-stl y dxf-a-stl: altura [5 mm], ancho final [el del dibujo] y placa de base opcional.",
+        "properties": {
+          "altura_mm": {
+            "default": 5.0,
+            "maximum": 500,
+            "minimum": 0.1,
+            "title": "Altura de la extrusión (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Extrusion height (mm)",
+              "es": "Altura de la extrusión (mm)"
+            }
+          },
+          "ancho_mm": {
+            "default": 0.0,
+            "maximum": 5000,
+            "minimum": 0,
+            "title": "Ancho final (mm; 0: el del dibujo)",
+            "type": "number",
+            "x-title": {
+              "en": "Final width (mm; 0: the drawing's)",
+              "es": "Ancho final (mm; 0: el del dibujo)"
+            }
+          },
+          "base_mm": {
+            "default": 0.0,
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Placa de base (mm; 0: sin placa)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Base plate (mm; 0: no plate)",
+              "es": "Placa de base (mm; 0: sin placa)"
+            }
+          },
+          "margen_mm": {
+            "default": 3.0,
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Margen de la placa (mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Plate margin (mm)",
+              "es": "Margen de la placa (mm)"
+            }
+          },
+          "formato_salida": {
+            "default": "stl",
+            "enum": [
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          }
+        },
+        "title": "ExtrudeOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "imagen-a-stl",
+      "slug_en": "image-to-stl",
+      "name_es": "Imagen a STL",
+      "name_en": "Image to STL",
+      "summary_es": "Convierte una imagen en un relieve 3D por niveles de altura según lo oscuro de cada zona.",
+      "summary_en": "Turn an image into a stepped 3D relief whose height follows how dark each area is.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "png",
+        "jpg",
+        "webp",
+        "bmp",
+        "gif",
+        "tiff"
+      ],
+      "outputs": [
+        "stl",
+        "3mf",
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "mapa-de-alturas-a-stl",
+        "logo-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "imagen-a-stl: niveles [4], ancho [100 mm], altura [4 mm], base [1 mm] e invertir.",
+        "properties": {
+          "niveles": {
+            "default": 4,
+            "maximum": 8,
+            "minimum": 2,
+            "title": "Niveles de altura",
+            "type": "integer",
+            "x-title": {
+              "en": "Height levels",
+              "es": "Niveles de altura"
+            }
+          },
+          "ancho_mm": {
+            "default": 100.0,
+            "maximum": 1000,
+            "minimum": 10,
+            "title": "Ancho (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Width (mm)",
+              "es": "Ancho (mm)"
+            }
+          },
+          "altura_mm": {
+            "default": 4.0,
+            "maximum": 100,
+            "minimum": 0.4,
+            "title": "Altura de los niveles (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Height of the levels (mm)",
+              "es": "Altura de los niveles (mm)"
+            }
+          },
+          "base_mm": {
+            "default": 1.0,
+            "maximum": 50,
+            "minimum": 0.2,
+            "title": "Base (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Base (mm)",
+              "es": "Base (mm)"
+            }
+          },
+          "invertir": {
+            "default": false,
+            "title": "Invertir (lo claro más alto)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Invert (light parts higher)",
+              "es": "Invertir (lo claro más alto)"
+            }
+          },
+          "formato_salida": {
+            "default": "stl",
+            "enum": [
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          }
+        },
+        "title": "ImagenRelieveOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "logo-a-stl",
+      "slug_en": "logo-to-stl",
+      "name_es": "Logo a STL",
+      "name_en": "Logo to STL",
+      "summary_es": "Vectoriza un logo en blanco y negro y lo extruye en una pieza 3D, con placa de base si quieres.",
+      "summary_en": "Vectorise a black-and-white logo and extrude it into a 3D part, with a base plate if you want.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "png",
+        "jpg",
+        "webp",
+        "bmp",
+        "gif",
+        "tiff"
+      ],
+      "outputs": [
+        "stl",
+        "3mf",
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "svg-a-stl",
+        "imagen-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "logo-a-stl: umbral [128], invertir, ancho [80 mm], altura [3 mm] y placa opcional.",
+        "properties": {
+          "ancho_mm": {
+            "default": 80.0,
+            "maximum": 1000,
+            "minimum": 5,
+            "title": "Ancho (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Width (mm)",
+              "es": "Ancho (mm)"
+            }
+          },
+          "altura_mm": {
+            "default": 3.0,
+            "maximum": 100,
+            "minimum": 0.2,
+            "title": "Altura del logo (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Logo height (mm)",
+              "es": "Altura del logo (mm)"
+            }
+          },
+          "umbral": {
+            "default": 128,
+            "maximum": 254,
+            "minimum": 1,
+            "title": "Umbral de oscuro (0-255)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Darkness threshold (0-255)",
+              "es": "Umbral de oscuro (0-255)"
+            }
+          },
+          "invertir": {
+            "default": false,
+            "title": "Invertir (extruir lo claro)",
+            "type": "boolean",
+            "x-title": {
+              "en": "Invert (extrude the light parts)",
+              "es": "Invertir (extruir lo claro)"
+            }
+          },
+          "base_mm": {
+            "default": 0.0,
+            "maximum": 50,
+            "minimum": 0,
+            "title": "Placa de base (mm; 0: sin placa)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Base plate (mm; 0: no plate)",
+              "es": "Placa de base (mm; 0: sin placa)"
+            }
+          },
+          "margen_mm": {
+            "default": 3.0,
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Margen de la placa (mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Plate margin (mm)",
+              "es": "Margen de la placa (mm)"
+            }
+          },
+          "formato_salida": {
+            "default": "stl",
+            "enum": [
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          }
+        },
+        "title": "LogoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "texto-a-stl",
+      "slug_en": "text-to-stl",
+      "name_es": "Texto a STL",
+      "name_en": "Text to STL",
+      "summary_es": "Crea letras, carteles y placas con nombre en 3D a partir de un texto, listos para imprimir.",
+      "summary_en": "Create 3D letters, signs and name plates from text, ready to print.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [],
+      "outputs": [
+        "stl",
+        "3mf",
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": null,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "logo-a-stl",
+        "svg-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "texto-a-stl: texto, fuente [sans negrita], tamaño [10 mm], altura [3 mm], alineación y placa opcional.",
+        "properties": {
+          "texto": {
+            "default": "Hola",
+            "maxLength": 300,
+            "title": "Texto",
+            "type": "string",
+            "x-title": {
+              "en": "Text",
+              "es": "Texto"
+            },
+            "x-widget": "textarea"
+          },
+          "fuente": {
+            "default": "sans-negrita",
+            "enum": [
+              "sans",
+              "sans-negrita",
+              "serif",
+              "serif-negrita",
+              "mono",
+              "condensada"
+            ],
+            "title": "Letra",
+            "type": "string",
+            "x-labels": {
+              "condensada": {
+                "en": "Condensed bold",
+                "es": "Condensada negrita"
+              },
+              "mono": {
+                "en": "Monospace",
+                "es": "Monoespaciada"
+              },
+              "sans": {
+                "en": "Sans",
+                "es": "Sans"
+              },
+              "sans-negrita": {
+                "en": "Sans bold",
+                "es": "Sans negrita"
+              },
+              "serif": {
+                "en": "Serif",
+                "es": "Serif"
+              },
+              "serif-negrita": {
+                "en": "Serif bold",
+                "es": "Serif negrita"
+              }
+            },
+            "x-title": {
+              "en": "Font",
+              "es": "Letra"
+            }
+          },
+          "tamano_mm": {
+            "default": 10.0,
+            "maximum": 500,
+            "minimum": 1,
+            "title": "Altura de las mayúsculas (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Capital letter height (mm)",
+              "es": "Altura de las mayúsculas (mm)"
+            }
+          },
+          "altura_mm": {
+            "default": 3.0,
+            "maximum": 100,
+            "minimum": 0.2,
+            "title": "Grosor de las letras (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Letter thickness (mm)",
+              "es": "Grosor de las letras (mm)"
+            }
+          },
+          "alineacion": {
+            "default": "izquierda",
+            "enum": [
+              "izquierda",
+              "centro",
+              "derecha"
+            ],
+            "title": "Alineación",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "centro": {
+                "en": "Centre",
+                "es": "Centro"
+              },
+              "derecha": {
+                "en": "Right",
+                "es": "Derecha"
+              },
+              "izquierda": {
+                "en": "Left",
+                "es": "Izquierda"
+              }
+            },
+            "x-title": {
+              "en": "Alignment",
+              "es": "Alineación"
+            }
+          },
+          "base_mm": {
+            "default": 0.0,
+            "maximum": 50,
+            "minimum": 0,
+            "title": "Placa de base (mm; 0: sin placa)",
+            "type": "number",
+            "x-title": {
+              "en": "Base plate (mm; 0: no plate)",
+              "es": "Placa de base (mm; 0: sin placa)"
+            }
+          },
+          "margen_mm": {
+            "default": 3.0,
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Margen de la placa (mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Plate margin (mm)",
+              "es": "Margen de la placa (mm)"
+            }
+          },
+          "formato_salida": {
+            "default": "stl",
+            "enum": [
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          }
+        },
+        "title": "TextoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "litofania",
+      "slug_en": "lithophane",
+      "name_es": "Litofanía",
+      "name_en": "Lithophane",
+      "summary_es": "Convierte una foto en una litofanía 3D, plana, curva o cilíndrica, que se ve al ponerle luz detrás.",
+      "summary_en": "Turn a photo into a flat, curved or cylindrical 3D lithophane that shows when lit from behind.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "png",
+        "jpg",
+        "webp",
+        "bmp",
+        "gif",
+        "tiff"
+      ],
+      "outputs": [
+        "stl",
+        "3mf",
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "mapa-de-alturas-a-stl",
+        "imagen-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "litofania: forma [plana] | curva | cilíndrica, ancho [100 mm], grosores [0,8 y 3 mm], resolución [5 px/mm].",
+        "properties": {
+          "forma": {
+            "default": "plana",
+            "enum": [
+              "plana",
+              "curva",
+              "cilindrica"
+            ],
+            "title": "Forma",
+            "type": "string",
+            "x-labels": {
+              "cilindrica": {
+                "en": "Cylindrical (lamp)",
+                "es": "Cilíndrica (lámpara)"
+              },
+              "curva": {
+                "en": "Curved",
+                "es": "Curva"
+              },
+              "plana": {
+                "en": "Flat",
+                "es": "Plana"
+              }
+            },
+            "x-title": {
+              "en": "Shape",
+              "es": "Forma"
+            }
+          },
+          "ancho_mm": {
+            "default": 100.0,
+            "maximum": 500,
+            "minimum": 20,
+            "title": "Ancho (mm; en la cilíndrica, el perímetro)",
+            "type": "number",
+            "x-title": {
+              "en": "Width (mm; perimeter for the cylinder)",
+              "es": "Ancho (mm; en la cilíndrica, el perímetro)"
+            }
+          },
+          "grosor_min": {
+            "default": 0.8,
+            "maximum": 5,
+            "minimum": 0.3,
+            "title": "Grosor mínimo (mm, lo más claro)",
+            "type": "number",
+            "x-title": {
+              "en": "Minimum thickness (mm, lightest)",
+              "es": "Grosor mínimo (mm, lo más claro)"
+            }
+          },
+          "grosor_max": {
+            "default": 3.0,
+            "maximum": 10,
+            "minimum": 0.6,
+            "title": "Grosor máximo (mm, lo más oscuro)",
+            "type": "number",
+            "x-title": {
+              "en": "Maximum thickness (mm, darkest)",
+              "es": "Grosor máximo (mm, lo más oscuro)"
+            }
+          },
+          "angulo": {
+            "default": 120.0,
+            "maximum": 350,
+            "minimum": 10,
+            "title": "Ángulo de la curva (grados)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Curve angle (degrees)",
+              "es": "Ángulo de la curva (grados)"
+            }
+          },
+          "resolucion": {
+            "default": 5.0,
+            "maximum": 10,
+            "minimum": 1,
+            "title": "Resolución (píxeles por mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Resolution (pixels per mm)",
+              "es": "Resolución (píxeles por mm)"
+            }
+          },
+          "espejo": {
+            "default": false,
+            "title": "Espejo (para verla por la otra cara)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Mirror (to view it from the other side)",
+              "es": "Espejo (para verla por la otra cara)"
+            }
+          },
+          "formato_salida": {
+            "default": "stl",
+            "enum": [
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          }
+        },
+        "title": "LitofaniaOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "mapa-de-alturas-a-stl",
+      "slug_en": "heightmap-to-stl",
+      "name_es": "Mapa de alturas a STL",
+      "name_en": "Heightmap to STL",
+      "summary_es": "Convierte un mapa de alturas en escala de grises en un relieve 3D: terrenos, texturas y maquetas.",
+      "summary_en": "Turn a greyscale heightmap into a 3D relief: terrains, textures and scale models.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "png",
+        "jpg",
+        "webp",
+        "bmp",
+        "gif",
+        "tiff"
+      ],
+      "outputs": [
+        "stl",
+        "3mf",
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "litofania",
+        "imagen-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "mapa-de-alturas-a-stl: ancho [100 mm], altura [10 mm], base [2 mm], resolución [5 px/mm] e invertir.",
+        "properties": {
+          "ancho_mm": {
+            "default": 100.0,
+            "maximum": 1000,
+            "minimum": 10,
+            "title": "Ancho (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Width (mm)",
+              "es": "Ancho (mm)"
+            }
+          },
+          "altura_mm": {
+            "default": 10.0,
+            "maximum": 200,
+            "minimum": 0.2,
+            "title": "Altura del relieve (mm, lo más claro)",
+            "type": "number",
+            "x-title": {
+              "en": "Relief height (mm, lightest)",
+              "es": "Altura del relieve (mm, lo más claro)"
+            }
+          },
+          "base_mm": {
+            "default": 2.0,
+            "maximum": 50,
+            "minimum": 0.2,
+            "title": "Base (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Base (mm)",
+              "es": "Base (mm)"
+            }
+          },
+          "resolucion": {
+            "default": 5.0,
+            "maximum": 10,
+            "minimum": 0.5,
+            "title": "Resolución (píxeles por mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Resolution (pixels per mm)",
+              "es": "Resolución (píxeles por mm)"
+            }
+          },
+          "invertir": {
+            "default": false,
+            "title": "Invertir (lo oscuro más alto)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Invert (dark parts higher)",
+              "es": "Invertir (lo oscuro más alto)"
+            }
+          },
+          "formato_salida": {
+            "default": "stl",
+            "enum": [
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Format",
+              "es": "Formato"
+            }
+          }
+        },
+        "title": "MapaAlturasOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "step-a-stl",
       "slug_en": "step-to-stl",
       "name_es": "STEP a STL",
