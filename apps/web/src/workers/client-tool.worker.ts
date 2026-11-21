@@ -130,9 +130,11 @@ function drawTo(img: Decoded, t: DrawTarget): OffscreenCanvas {
 }
 
 const codec: ImageCodec = {
-  async decode(file: InFile): Promise<Decoded> {
+  async decode(file: InFile, options?: { raw?: boolean }): Promise<Decoded> {
     try {
-      const bitmap = await createImageBitmap(new Blob([new Uint8Array(file.bytes)]), { imageOrientation: "from-image" });
+      const bitmap = await createImageBitmap(new Blob([new Uint8Array(file.bytes)]), options?.raw
+        ? { imageOrientation: "none", colorSpaceConversion: "none", premultiplyAlpha: "none" }
+        : { imageOrientation: "from-image" });
       return { width: bitmap.width, height: bitmap.height, source: bitmap };
     } catch {
       throw new ToolError("CORRUPT_FILE", file.name);

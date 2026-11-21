@@ -435,7 +435,7 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
         return;
       }
     }
-    layers.push({ z: atZ, start: segCount(), end: segCount(), travelStart: travelAt, travelEnd: travelAt });
+    layers.push({ z: atZ, start: segCount(), end: segCount(), travelStart: layers.length ? travelAt : 0, travelEnd: travelAt });
   };
 
   const move = (nx: number, ny: number, nz: number, ne: number, extruding: boolean) => {
@@ -471,7 +471,8 @@ export function parseGcode(input: Uint8Array, o: ParseOptions = {}): GcodeModel 
       if (x < min[0]) min[0] = x; if (y < min[1]) min[1] = y;
       if (x > max[0]) max[0] = x; if (y > max[1]) max[1] = y;
     } else if (nx !== x || ny !== y || nz !== z) {
-      if (travelCount() < MAX_TRAVELS && layers.length) travel.push6(x, y, z, nx, ny, nz);
+      // Los desplazamientos de antes de la primera extrusión (de la posición de inicio a la pieza) van con la primera capa.
+      if (travelCount() < MAX_TRAVELS) travel.push6(x, y, z, nx, ny, nz);
     }
     x = nx; y = ny; z = nz; e = ne;
   };

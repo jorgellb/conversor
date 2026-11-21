@@ -132,3 +132,12 @@ describe("visor-gcode: revisión de F7-H (D-260)", () => {
     expect(meatpackDecode(body).length).toBe(3000); // «0 E0 E…»: tres caracteres por byte, sin cortar
   });
 });
+
+describe("visor-gcode: desplazamientos iniciales (D-262)", () => {
+  it("el desplazamiento a la pieza antes de extruir cuenta en la primera capa", () => {
+    const m = parseGcode(enc("M83\nG28\nG0 X50 Y50 Z0.2\nG1 X60 Y50 E1\n"));
+    expect(m.stats.travels).toBe(1);
+    expect(m.layers[0].travelStart).toBe(0);
+    expect(m.layers[0].travelEnd).toBe(1);
+  });
+});

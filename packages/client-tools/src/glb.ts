@@ -172,7 +172,8 @@ async function textureToWebp(texture: Texture, env: GlbEnv, maxSide: number, qua
   if (!["image/png", "image/jpeg", "image/webp"].includes(mime) || hasAlpha(image, mime)) return false;
   let decoded;
   try {
-    decoded = await env.codec.decode({ name: `textura.${mime.split("/")[1] ?? "png"}`, bytes: image });
+    // Tal cual: el estándar glTF pide ignorar los perfiles ICC y la gamma de las texturas (D-262).
+    decoded = await env.codec.decode({ name: `textura.${mime.split("/")[1] ?? "png"}`, bytes: image }, { raw: true });
   } catch {
     return false; // una textura que el navegador no abre se deja como está
   }

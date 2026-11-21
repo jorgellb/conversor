@@ -40,7 +40,8 @@ export interface DrawTarget {
 
 export interface ImageCodec {
   /** Decodifica aplicando la orientación EXIF. */
-  decode(file: InFile): Promise<Decoded>;
+  /** `raw`: sin aplicar perfiles ICC ni gamma ni la orientación EXIF (texturas de glTF, que el estándar pide leer tal cual). */
+  decode(file: InFile, options?: { raw?: boolean }): Promise<Decoded>;
   encode(img: Decoded, target: DrawTarget & { format: ImageFormat; quality: number }): Promise<Uint8Array>;
   /** Píxeles RGBA al tamaño pedido, para los codificadores en WebAssembly o TypeScript (AVIF, WebP, GIF, BMP, TIFF, ICO). */
   rgba?(img: Decoded, target: DrawTarget): Promise<Rgba>;
