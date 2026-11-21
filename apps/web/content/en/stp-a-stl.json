@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STP to STL converts STP files to STL, the format every slicer reads, on the server with nothing to install. It is useful, for example, to print a part downloaded from a manufacturer's catalogue.",
+    "STP is the same STEP (ISO 10303) extension used by many part suppliers and component catalogues, with the design's exact surfaces. Here it is converted to STL.",
+    "The conversion is done by OpenCascade: it reads each part with its name and colour (also each face's), turns the file's units into millimetres and tessellates its surfaces into triangles. Choose the STL quality: low for light files, medium for most parts and high so the STP's holes and curves come out smooth.",
+    "Each file is converted in an isolated process with bounded memory and time on our server in the European Union, up to five files per task, and deleted when it expires. You can keep the STP parts separate in the STL, merge them or get one per file in a ZIP.",
+    "To print a part downloaded from a manufacturer's catalogue, it is worth checking the STL before using it: open it in your viewer or slicer, check that the parts and their measurements match the STP and, if something comes out sideways or too faceted, convert it again with other options. The result note summarises the parts, the triangles and what was done with the STP."
+  ],
+  "steps": [
+    "Upload one or more STP files.",
+    "Choose the quality and, optionally, the units, scale and parts.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "Which quality should I choose for the STP?",
+      "a": "Medium works for almost everything; high for small parts with holes and curves, and low if the STL made from the STP is too heavy."
+    },
+    {
+      "q": "Are the STP colours kept?",
+      "a": "The colours of the STP parts and faces go into the STL if it is 3MF, OBJ or GLB; STL stores no colours."
+    },
+    {
+      "q": "What happens to the STP measurements?",
+      "a": "OpenCascade turns the STP measurements into millimetres in the STL, which is what slicers and CAD programs expect."
+    }
+  ]
+}

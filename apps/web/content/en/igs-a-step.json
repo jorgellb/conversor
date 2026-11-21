@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "IGS to STEP converts IGS files to STEP, the exchange format any CAD program opens, on the server with nothing to install. It is useful, for example, to open an old IGES in a modern program without losing the exact geometry.",
+    "IGS is the short extension of IGES, the classic CAD exchange format with exact surfaces. Here it is converted to STEP.",
+    "The STEP comes out with the IGES's exact geometry, without tessellating: surfaces, solids and their measurements go through as they are, in millimetres, to keep editing them in any CAD program.",
+    "Each file is converted in an isolated process with bounded memory and time on our server in the European Union, up to five files per task, and deleted when it expires. You can choose the IGS's units and apply a scale before creating the STEP.",
+    "To open an old IGES in a modern program without losing the exact geometry, it is worth checking the STEP before using it: open it in your viewer or slicer, check that the parts and their measurements match the IGS and, if something comes out sideways or too faceted, convert it again with other options. The result note summarises the parts, the triangles and what was done with the IGS."
+  ],
+  "steps": [
+    "Upload one or more IGS files.",
+    "Choose the units or scale if needed.",
+    "Download the STEP."
+  ],
+  "faq": [
+    {
+      "q": "Can I edit the STEP as if it came from CAD?",
+      "a": "A STEP made from an IGES or a BREP keeps exact geometry and can be edited; from an IGS mesh you get a faceted solid."
+    },
+    {
+      "q": "Are the IGS colours kept?",
+      "a": "The colours of the IGS parts and faces go into the STEP if it is 3MF, OBJ or GLB; STL stores no colours."
+    },
+    {
+      "q": "What happens to the IGS measurements?",
+      "a": "OpenCascade turns the IGS measurements into millimetres in the STEP, which is what slicers and CAD programs expect."
+    }
+  ]
+}

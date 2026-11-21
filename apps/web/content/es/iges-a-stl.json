@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "IGES a STL convierte archivos IGES a STL, el formato que leen todos los laminadores, en el servidor y sin instalar nada. Sirve, por ejemplo, para imprimir un modelo IGES de un proveedor o de un archivo antiguo.",
+    "IGES es el formato de intercambio de CAD más antiguo, todavía habitual en moldes, utillaje y archivos de proveedores, con superficies y sólidos exactos. Aquí se convierte a STL.",
+    "La conversión la hace OpenCascade: lee cada pieza con su nombre y su color (también el de cada cara), pasa las unidades del archivo a milímetros y tesela sus superficies en triángulos. Elige la calidad del STL: baja para archivos ligeros, media para la mayoría de piezas y alta para que los agujeros y las curvas del IGES queden suaves.",
+    "Cada archivo se convierte en un proceso aislado con su memoria y su tiempo acotados en nuestro servidor de la Unión Europea, hasta cinco archivos por tarea, y se borra al caducar. Puedes mantener las piezas del IGES por separado en el STL, fusionarlas o sacar una por archivo en un ZIP.",
+    "Para imprimir un modelo IGES de un proveedor o de un archivo antiguo, conviene revisar el STL antes de usarlo: ábrelo en tu visor o en el laminador, comprueba que las piezas y sus medidas son las del IGES y, si algo sale de lado o demasiado facetado, vuelve a convertirlo con otras opciones. La nota del resultado resume las piezas, los triángulos y lo que se ha hecho con el IGES."
+  ],
+  "steps": [
+    "Sube uno o varios archivos IGES.",
+    "Elige la calidad y, si quieres, las unidades, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué calidad elijo para el IGES?",
+      "a": "Media vale para casi todo; alta para piezas pequeñas con agujeros y curvas, y baja si el STL hecho desde el IGES pesa demasiado."
+    },
+    {
+      "q": "¿Se conservan los colores del IGES?",
+      "a": "Los colores de las piezas y caras del IGES pasan al STL si es 3MF, OBJ o GLB; el STL no guarda colores."
+    },
+    {
+      "q": "¿Qué pasa con las medidas del IGES?",
+      "a": "OpenCascade pasa las medidas del IGES a milímetros en el STL, que es lo que esperan los laminadores y los programas de CAD."
+    }
+  ]
+}

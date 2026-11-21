@@ -725,6 +725,11 @@ saltan y STL leído y escrito por bloques (D-249), en `tests/test_mesh.py`.
 VRML y X3D con un lector propio del grafo de escena, USD y USDZ con usd-core, OFF, y convertir-modelo-3d entre las 17 entradas y las
 10 salidas de 7.18 (D-250), en `tests/test_mesh.py`.
 
+## F7-D (CAD con OpenCascade)
+
+STEP, STP, IGES y BREP a STL, 3MF, OBJ y GLB con calidad de teselado, nombres y colores; IGES a STEP exacto; y mallas a STEP facetado,
+en el nuevo `workercad` (D-251), en `tests/test_cad.py`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

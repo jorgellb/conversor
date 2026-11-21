@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL to STEP converts STL files to STEP, the exchange format any CAD program opens, on the server with nothing to install. It is useful, for example, to open a mesh in SolidWorks, Fusion 360 or Onshape to measure, assemble or machine it.",
+    "STL is the triangle mesh exported by slicers, scanners and modelling programs. Here it is converted to STEP.",
+    "Each STL triangle becomes a flat face of a faceted STEP solid: the CAD program opens, measures and assembles it, but does not recover cylinders or curves, so it cannot be edited as a parametric model. At most 50,000 triangles; if your mesh has more, reduce it first with Reduce polygons.",
+    "Each file is converted in an isolated process with bounded memory and time on our server in the European Union, up to five files per task, and deleted when it expires. You can choose the STL's units and apply a scale before creating the STEP.",
+    "To open a mesh in SolidWorks, Fusion 360 or Onshape to measure, assemble or machine it, it is worth checking the STEP before using it: open it in your viewer or slicer, check that the parts and their measurements match the STL and, if something comes out sideways or too faceted, convert it again with other options. The result note summarises the parts, the triangles and what was done with the STL."
+  ],
+  "steps": [
+    "Upload one or more STL files.",
+    "Choose the units or scale if needed.",
+    "Download the STEP."
+  ],
+  "faq": [
+    {
+      "q": "Can I edit the STEP as if it came from CAD?",
+      "a": "A STEP made from an IGES or a BREP keeps exact geometry and can be edited; from an STL mesh you get a faceted solid."
+    },
+    {
+      "q": "Are the STL colours kept?",
+      "a": "The colours of the STL parts and faces go into the STEP if it is 3MF, OBJ or GLB; STL stores no colours."
+    },
+    {
+      "q": "What happens to the STL measurements?",
+      "a": "OpenCascade turns the STL measurements into millimetres in the STEP, which is what slicers and CAD programs expect."
+    }
+  ]
+}

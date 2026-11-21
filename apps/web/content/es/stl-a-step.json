@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STL a STEP convierte archivos STL a STEP, el formato de intercambio que abre cualquier programa de CAD, en el servidor y sin instalar nada. Sirve, por ejemplo, para abrir una malla en SolidWorks, Fusion 360 u Onshape para medirla, ensamblarla o mecanizarla.",
+    "STL es la malla de triángulos que exportan los laminadores, los escáneres y los programas de modelado. Aquí se convierte a STEP.",
+    "Cada triángulo del STL pasa a ser una cara plana de un sólido STEP facetado: el programa de CAD lo abre, lo mide y lo ensambla, pero no recupera cilindros ni curvas, así que no se puede editar como un modelo paramétrico. Como mucho 50 000 triángulos; si tu malla tiene más, redúcela antes con Reducir polígonos.",
+    "Cada archivo se convierte en un proceso aislado con su memoria y su tiempo acotados en nuestro servidor de la Unión Europea, hasta cinco archivos por tarea, y se borra al caducar. Puedes elegir las unidades del STL y aplicar una escala antes de crear el STEP.",
+    "Para abrir una malla en SolidWorks, Fusion 360 u Onshape para medirla, ensamblarla o mecanizarla, conviene revisar el STEP antes de usarlo: ábrelo en tu visor o en el laminador, comprueba que las piezas y sus medidas son las del STL y, si algo sale de lado o demasiado facetado, vuelve a convertirlo con otras opciones. La nota del resultado resume las piezas, los triángulos y lo que se ha hecho con el STL."
+  ],
+  "steps": [
+    "Sube uno o varios archivos STL.",
+    "Elige, si hace falta, las unidades o la escala.",
+    "Descarga el STEP."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo editar el STEP como si viniera del CAD?",
+      "a": "Un STEP hecho desde un IGES o un BREP guarda la geometría exacta y se edita; desde una malla STL sale un sólido facetado."
+    },
+    {
+      "q": "¿Se conservan los colores del STL?",
+      "a": "Los colores de las piezas y caras del STL pasan al STEP si es 3MF, OBJ o GLB; el STL no guarda colores."
+    },
+    {
+      "q": "¿Qué pasa con las medidas del STL?",
+      "a": "OpenCascade pasa las medidas del STL a milímetros en el STEP, que es lo que esperan los laminadores y los programas de CAD."
+    }
+  ]
+}

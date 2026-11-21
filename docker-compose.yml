@@ -465,6 +465,23 @@ services:
     memswap_limit: 4g
     cpus: 1
 
+  # CAD (F7-D, D-251): OpenCascade (cadquery-ocp-novtk), sin red ni Gotenberg.
+  workercad:
+    <<: *worker
+    build: { context: ., dockerfile: workers/Dockerfile, target: worker-cad }
+    image: conversor/worker-cad:dev
+    command: ["celery", "-A", "core.celeryapp", "worker", "-Q", "cad", "-n", "cad@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+    environment:
+      APP_ENV: development
+      SERVICE_ROLE: worker-cad
+      WORKER_NAME: cad
+      VALKEY_URL: redis://valkey:6379/0
+      DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
+      THREADS: "1"
+    mem_limit: 4g
+    memswap_limit: 4g
+    cpus: 1
+
   # verificar-firmas-pdf (7.23 y D-185): pyHanko en la cola sign.verify, sin el volumen del token ni SIGN_PKCS11_PIN, para
   # que un PDF hostil no conviva con la clave del sello. Sale por egressweb (lista de la UE, OCSP y CRL a petición).
   workersignverify:

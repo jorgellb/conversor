@@ -283,6 +283,15 @@ USER app
 ENV SERVICE_ROLE=worker-mesh PYTHONUTF8=1
 CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "mesh", "-n", "mesh@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
 
+# --- CAD (F7-D, grupo cad, 5.4): OpenCascade en ruedas (cadquery-ocp-novtk) y lo de mesh para escribir; sin red ---
+FROM base AS worker-cad
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 && rm -rf /var/lib/apt/lists/*
+RUN uv pip install -r pyproject.toml --extra cad
+COPY --from=code /app /app
+USER app
+ENV SERVICE_ROLE=worker-cad PYTHONUTF8=1
+CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "cad", "-n", "cad@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
+
 # --- Facturas electrónicas (F4-D, grupo utils): KoSIT Validator en modo servicio dentro de workerutils (5.4), con las
 # configuraciones públicas de XRechnung y Peppol BIS y los escenarios propios (D-191); Facturae con sus XSD oficiales
 # (infra/facturae, SHA256SUMS). JRE 17 de Debian; KoSIT y las configuraciones, con SHA-256 fijados ---

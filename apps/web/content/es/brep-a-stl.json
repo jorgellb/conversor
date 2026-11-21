@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "BREP a STL convierte archivos BREP a STL, el formato que leen todos los laminadores, en el servidor y sin instalar nada. Sirve, por ejemplo, para imprimir una pieza creada con FreeCAD o con un script de CadQuery.",
+    "BREP es el formato nativo de OpenCascade, el núcleo geométrico de FreeCAD y CadQuery, que guarda la geometría exacta sin unidades. Aquí se convierte a STL.",
+    "La conversión la hace OpenCascade: lee cada pieza con su nombre y su color (también el de cada cara), pasa las unidades del archivo a milímetros y tesela sus superficies en triángulos. Elige la calidad del STL: baja para archivos ligeros, media para la mayoría de piezas y alta para que los agujeros y las curvas del BREP queden suaves.",
+    "Cada archivo se convierte en un proceso aislado con su memoria y su tiempo acotados en nuestro servidor de la Unión Europea, hasta cinco archivos por tarea, y se borra al caducar. Puedes mantener las piezas del BREP por separado en el STL, fusionarlas o sacar una por archivo en un ZIP.",
+    "Para imprimir una pieza creada con FreeCAD o con un script de CadQuery, conviene revisar el STL antes de usarlo: ábrelo en tu visor o en el laminador, comprueba que las piezas y sus medidas son las del BREP y, si algo sale de lado o demasiado facetado, vuelve a convertirlo con otras opciones. La nota del resultado resume las piezas, los triángulos y lo que se ha hecho con el BREP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos BREP.",
+    "Elige la calidad y, si quieres, las unidades, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué calidad elijo para el BREP?",
+      "a": "Media vale para casi todo; alta para piezas pequeñas con agujeros y curvas, y baja si el STL hecho desde el BREP pesa demasiado."
+    },
+    {
+      "q": "¿Se conservan los colores del BREP?",
+      "a": "Los colores de las piezas y caras del BREP pasan al STL si es 3MF, OBJ o GLB; el STL no guarda colores."
+    },
+    {
+      "q": "¿Qué pasa con las medidas del BREP?",
+      "a": "OpenCascade pasa las medidas del BREP a milímetros en el STL, que es lo que esperan los laminadores y los programas de CAD."
+    }
+  ]
+}

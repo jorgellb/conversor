@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "IGS a STEP convierte archivos IGS a STEP, el formato de intercambio que abre cualquier programa de CAD, en el servidor y sin instalar nada. Sirve, por ejemplo, para abrir en un programa moderno un IGES antiguo sin perder la geometría exacta.",
+    "IGS es la extensión corta de IGES, el formato clásico de intercambio de CAD con superficies exactas. Aquí se convierte a STEP.",
+    "El STEP sale con la geometría exacta del IGES, sin teselar: las superficies, los sólidos y sus medidas pasan tal cual, en milímetros, para seguir editándolos en cualquier programa de CAD.",
+    "Cada archivo se convierte en un proceso aislado con su memoria y su tiempo acotados en nuestro servidor de la Unión Europea, hasta cinco archivos por tarea, y se borra al caducar. Puedes elegir las unidades del IGS y aplicar una escala antes de crear el STEP.",
+    "Para abrir en un programa moderno un IGES antiguo sin perder la geometría exacta, conviene revisar el STEP antes de usarlo: ábrelo en tu visor o en el laminador, comprueba que las piezas y sus medidas son las del IGS y, si algo sale de lado o demasiado facetado, vuelve a convertirlo con otras opciones. La nota del resultado resume las piezas, los triángulos y lo que se ha hecho con el IGS."
+  ],
+  "steps": [
+    "Sube uno o varios archivos IGS.",
+    "Elige, si hace falta, las unidades o la escala.",
+    "Descarga el STEP."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo editar el STEP como si viniera del CAD?",
+      "a": "Un STEP hecho desde un IGES o un BREP guarda la geometría exacta y se edita; desde una malla IGS sale un sólido facetado."
+    },
+    {
+      "q": "¿Se conservan los colores del IGS?",
+      "a": "Los colores de las piezas y caras del IGS pasan al STEP si es 3MF, OBJ o GLB; el STL no guarda colores."
+    },
+    {
+      "q": "¿Qué pasa con las medidas del IGS?",
+      "a": "OpenCascade pasa las medidas del IGS a milímetros en el STEP, que es lo que esperan los laminadores y los programas de CAD."
+    }
+  ]
+}

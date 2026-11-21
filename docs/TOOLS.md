@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 294 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 26). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 304 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 36). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -300,6 +300,16 @@ Catálogo publicado en esta entrega: 294 herramientas (F1 43, F2 60, F3 10, F4 1
 | `stl-a-usdz` / `stl-to-usdz` | servidor | mesh | light | F7 | activa | stl → usdz, zip | redactado, sin revisar |
 | `obj-a-usdz` / `obj-to-usdz` | servidor | mesh | light | F7 | activa | obj → usdz, zip | redactado, sin revisar |
 | `convertir-modelo-3d` / `3d-model-converter` | servidor | mesh | light | F7 | activa | stl, obj, 3mf, ply, off, amf, glb, gltf, fbx, dae, 3ds, wrl, x3d, usd, usda, usdc, usdz → stl, obj, 3mf, ply, off, amf, glb, x3d, wrl, usdz, zip | redactado, sin revisar |
+| `step-a-stl` / `step-to-stl` | servidor | cad | heavy | F7 | activa | step → stl, zip | redactado, sin revisar |
+| `stp-a-stl` / `stp-to-stl` | servidor | cad | heavy | F7 | activa | stp → stl, zip | redactado, sin revisar |
+| `step-a-3mf` / `step-to-3mf` | servidor | cad | heavy | F7 | activa | step → 3mf, zip | redactado, sin revisar |
+| `step-a-obj` / `step-to-obj` | servidor | cad | heavy | F7 | activa | step → obj, zip | redactado, sin revisar |
+| `step-a-glb` / `step-to-glb` | servidor | cad | heavy | F7 | activa | step → glb, zip | redactado, sin revisar |
+| `iges-a-stl` / `iges-to-stl` | servidor | cad | heavy | F7 | activa | iges → stl, zip | redactado, sin revisar |
+| `igs-a-step` / `igs-to-step` | servidor | cad | heavy | F7 | activa | igs → step, zip | redactado, sin revisar |
+| `brep-a-stl` / `brep-to-stl` | servidor | cad | heavy | F7 | activa | brep → stl, zip | redactado, sin revisar |
+| `stl-a-step` / `stl-to-step` | servidor | cad | heavy | F7 | activa | stl → step, zip | redactado, sin revisar |
+| `obj-a-step` / `obj-to-step` | servidor | cad | heavy | F7 | activa | obj → step, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

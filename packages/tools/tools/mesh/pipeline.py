@@ -22,7 +22,10 @@ TARGET = {"stl-a-obj": "obj", "obj-a-stl": "stl", "stl-a-3mf": "3mf", "3mf-a-stl
           "fbx-a-stl": "stl", "fbx-a-obj": "obj", "dae-a-stl": "stl", "3ds-a-stl": "stl",
           # F7-C (D-250); convertir-modelo-3d elige el formato en sus opciones
           "wrl-a-stl": "stl", "stl-a-wrl": "wrl", "x3d-a-stl": "stl", "stl-a-x3d": "x3d", "stl-a-usdz": "usdz", "obj-a-usdz": "usdz",
-          "convertir-modelo-3d": None}
+          "convertir-modelo-3d": None,
+          # F7-D (D-251): CAD con OpenCascade en workercad
+          "step-a-stl": "stl", "stp-a-stl": "stl", "step-a-3mf": "3mf", "step-a-obj": "obj", "step-a-glb": "glb", "iges-a-stl": "stl",
+          "igs-a-step": "step", "brep-a-stl": "stl", "stl-a-step": "step", "obj-a-step": "step"}
 MULTI = {"obj", "3mf", "amf", "glb", "wrl", "x3d", "usdz"}  # formatos con varias piezas en un archivo
 UP = {"glb": "y", "wrl": "y", "x3d": "y", "usdz": "y"}  # eje vertical de cada formato de salida; el resto, Z (impresión 3D)
 
@@ -35,7 +38,10 @@ TEXTS = {
            "already_binary": "El STL ya era binario: se ha vuelto a guardar igual de compacto.",
            "triangles": "{n} triángulos.", "triangle": "1 triángulo.",
            "axes_z": "Se ha pasado del eje Y vertical del original al Z vertical de la impresión 3D.",
-           "axes_y": "Se ha pasado del eje Z vertical al Y vertical de glTF."},
+           "axes_y": "Se ha pasado del eje Z vertical al Y vertical de glTF.",
+           "cad_quality": "Teselado con calidad {q}.", "cad_exact": "La geometría exacta ({n} formas) ha pasado a STEP sin teselar.",
+           "step_faceted": "El STEP es un sólido facetado: cada triángulo es una cara plana y no recupera superficies paramétricas "
+                           "(cilindros, curvas); sirve para medir, ensamblar o mecanizar, no para editar la forma como un modelo CAD."},
     "en": {"colors_lost": "STL does not store colours: the model comes out without them.",
            "textures_lost": "Textures are not converted: the model keeps its geometry and colours, if any.",
            "units": "Units: {src} → {dst}{scale}.", "scale": ", scale × {f:g}",
@@ -44,7 +50,10 @@ TEXTS = {
            "already_binary": "The STL was already binary: it was saved again just as compact.",
            "triangles": "{n} triangles.", "triangle": "1 triangle.",
            "axes_z": "Converted from the original's Y-up axis to the Z-up axis of 3D printing.",
-           "axes_y": "Converted from Z-up to glTF's Y-up axis."},
+           "axes_y": "Converted from Z-up to glTF's Y-up axis.",
+           "cad_quality": "Tessellated with {q} quality.", "cad_exact": "The exact geometry ({n} shapes) went to STEP without tessellating.",
+           "step_faceted": "The STEP is a faceted solid: each triangle is a flat face and parametric surfaces (cylinders, curves) are "
+                           "not recovered; it is good for measuring, assembling or machining, not for editing the shape as a CAD model."},
 }
 
 
@@ -82,6 +91,10 @@ def write(model: formats.Model, target: str, dst: Path, unit: str, ascii: bool) 
         from tools.mesh import usd
 
         usd.write_usdz(model, dst, unit)
+    elif target == "step":
+        from tools.cad import occt
+
+        occt.mesh_to_step(model, dst)
     else:
         raise ToolError(ErrorCode.UNSUPPORTED_FORMAT)
 
@@ -111,8 +124,22 @@ def convert_file(src: Path, ext: str, tool: str, options: dict, locale: str, max
     t = TEXTS.get(locale, TEXTS["es"])
     target = TARGET[tool] or options.get("formato", "stl")
     ascii = options.get("stl", "binario") == "ascii" and tool != "stl-ascii-a-binario"
-    model = formats.load(src, ext, max_triangles, inline=True)
     notes = []
+    from tools.cad.occt import CAD_EXTS
+
+    if ext in CAD_EXTS:
+        from tools.cad import occt
+
+        if target == "step":  # IGES o BREP a STEP: la geometría exacta, sin teselar
+            dst = out_dir / f"{stem}.step"
+            n = occt.cad_to_step(src, ext, dst)
+            return [{"file": str(dst), "name": dst.name, "note": t["cad_exact"].format(n=n)}]
+        quality = options.get("calidad", "media")
+        model = occt.read_cad(src, ext, quality, max_triangles)
+        names = {"baja": ("baja", "low"), "media": ("media", "medium"), "alta": ("alta", "high")}[quality]
+        notes.append(t["cad_quality"].format(q=names[1] if locale == "en" else names[0]))
+    else:
+        model = formats.load(src, ext, max_triangles, inline=True)
     if not options.get("conservar_ejes", False) and extra.reorient(model, UP.get(target, "z")):
         notes.append(t["axes_z" if UP.get(target, "z") == "z" else "axes_y"])
     if tool == "stl-ascii-a-binario" and formats.stl_is_binary(src):
@@ -131,6 +158,8 @@ def convert_file(src: Path, ext: str, tool: str, options: dict, locale: str, max
         notes.append(t["colors_lost"])
     if "textures" in model.lost:
         notes.append(t["textures_lost"])
+    if target == "step":
+        notes.append(t["step_faceted"])
     parts_option = options.get("piezas", "mantener")
     triangles, n_parts = model.triangles, len(model.parts)
     pieces = [model]

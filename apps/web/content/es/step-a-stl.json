@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STEP a STL convierte archivos STEP a STL, el formato que leen todos los laminadores, en el servidor y sin instalar nada. Sirve, por ejemplo, para imprimir una pieza diseñada en CAD sin tener el programa con el que se hizo.",
+    "STEP (ISO 10303) es el formato de intercambio de CAD que exportan SolidWorks, Fusion 360, Onshape, FreeCAD, Inventor, CATIA y casi todos los programas de diseño mecánico: guarda las superficies exactas, no triángulos. Aquí se convierte a STL.",
+    "La conversión la hace OpenCascade: lee cada pieza con su nombre y su color (también el de cada cara), pasa las unidades del archivo a milímetros y tesela sus superficies en triángulos. Elige la calidad del STL: baja para archivos ligeros, media para la mayoría de piezas y alta para que los agujeros y las curvas del STEP queden suaves.",
+    "Cada archivo se convierte en un proceso aislado con su memoria y su tiempo acotados en nuestro servidor de la Unión Europea, hasta cinco archivos por tarea, y se borra al caducar. Puedes mantener las piezas del STEP por separado en el STL, fusionarlas o sacar una por archivo en un ZIP.",
+    "Para imprimir una pieza diseñada en CAD sin tener el programa con el que se hizo, conviene revisar el STL antes de usarlo: ábrelo en tu visor o en el laminador, comprueba que las piezas y sus medidas son las del STEP y, si algo sale de lado o demasiado facetado, vuelve a convertirlo con otras opciones. La nota del resultado resume las piezas, los triángulos y lo que se ha hecho con el STEP."
+  ],
+  "steps": [
+    "Sube uno o varios archivos STEP.",
+    "Elige la calidad y, si quieres, las unidades, la escala y las piezas.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué calidad elijo para el STEP?",
+      "a": "Media vale para casi todo; alta para piezas pequeñas con agujeros y curvas, y baja si el STL hecho desde el STEP pesa demasiado."
+    },
+    {
+      "q": "¿Se conservan los colores del STEP?",
+      "a": "Los colores de las piezas y caras del STEP pasan al STL si es 3MF, OBJ o GLB; el STL no guarda colores."
+    },
+    {
+      "q": "¿Qué pasa con las medidas del STEP?",
+      "a": "OpenCascade pasa las medidas del STEP a milímetros en el STL, que es lo que esperan los laminadores y los programas de CAD."
+    }
+  ]
+}

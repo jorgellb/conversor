@@ -193,6 +193,7 @@ SPEC_MODULES = (
     "tools.sign.specs",
     "tools.utils.specs",
     "tools.mesh.specs",
+    "tools.cad.specs",
 )
 
 

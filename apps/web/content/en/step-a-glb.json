@@ -1,0 +1,30 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "STEP to GLB converts STEP files to GLB, the 3D format of the web and augmented reality, on the server with nothing to install. It is useful, for example, to show a product on a website or in augmented reality.",
+    "STEP (ISO 10303) is the CAD exchange format exported by SolidWorks, Fusion 360, Onshape, FreeCAD, Inventor, CATIA and almost every mechanical design program: it stores exact surfaces, not triangles. Here it is converted to GLB.",
+    "The conversion is done by OpenCascade: it reads each part with its name and colour (also each face's), turns the file's units into millimetres and tessellates its surfaces into triangles. Choose the GLB quality: low for light files, medium for most parts and high so the STEP's holes and curves come out smooth.",
+    "Each file is converted in an isolated process with bounded memory and time on our server in the European Union, up to five files per task, and deleted when it expires. You can keep the STEP parts separate in the GLB, merge them or get one per file in a ZIP.",
+    "To show a product on a website or in augmented reality, it is worth checking the GLB before using it: open it in your viewer or slicer, check that the parts and their measurements match the STEP and, if something comes out sideways or too faceted, convert it again with other options. The result note summarises the parts, the triangles and what was done with the STEP."
+  ],
+  "steps": [
+    "Upload one or more STEP files.",
+    "Choose the quality and, optionally, the units, scale and parts.",
+    "Download the GLB."
+  ],
+  "faq": [
+    {
+      "q": "Which quality should I choose for the STEP?",
+      "a": "Medium works for almost everything; high for small parts with holes and curves, and low if the GLB made from the STEP is too heavy."
+    },
+    {
+      "q": "Are the STEP colours kept?",
+      "a": "The colours of the STEP parts and faces go into the GLB if it is 3MF, OBJ or GLB; STL stores no colours."
+    },
+    {
+      "q": "What happens to the STEP measurements?",
+      "a": "OpenCascade turns the STEP measurements into millimetres in the GLB, which is what slicers and CAD programs expect."
+    }
+  ]
+}

@@ -18,7 +18,9 @@ TEXT_FAMILY = {"txt", "mmd", "csv", "md", "markdown", "html", "htm", "svg", "xml
                # F7-B (D-248): AMF y DAE (XML), glTF (JSON) y FBX ASCII.
                "amf", "dae", "gltf", "fbx",
                # F7-C (D-250): VRML, X3D, OFF y USD de texto.
-               "wrl", "x3d", "off", "usda", "usd"}
+               "wrl", "x3d", "off", "usda", "usd",
+               # F7-D (D-251): STEP (ISO 10303-21), IGES y BREP de OpenCascade son texto.
+               "step", "stp", "iges", "igs", "brep"}
 # Contenedores con varias extensiones posibles: la declarada manda dentro del grupo (F2, lote C).
 ZIP_ALIASES = {"cbz", "cbr", "kmz", "mxl", "udf"}  # kmz: un ZIP con doc.kml (F6-H1)
 # RAW de cámara sobre TIFF (F5, lote C): se reconocen por su marca y solo si se declaran con su extensión.
@@ -45,7 +47,7 @@ MIME = {
     "mp3": "audio/mpeg", "amr": "audio/amr", "aiff": "audio/aiff", "wma": "audio/x-ms-wma",
     "mkv": "video/x-matroska", "webm": "video/webm", "avi": "video/x-msvideo",
     "stl": "model/stl", "obj": "model/obj", "3mf": "model/3mf", "ply": "application/octet-stream", "glb": "model/gltf-binary",
-    "amf": "application/x-amf", "usdz": "model/vnd.usdz+zip", "x3d": "model/x3d+xml", "wrl": "model/vrml",
+    "amf": "application/x-amf", "step": "model/step", "stp": "model/step", "usdz": "model/vnd.usdz+zip", "x3d": "model/x3d+xml", "wrl": "model/vrml",
     "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",

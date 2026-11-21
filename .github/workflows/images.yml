@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [api, worker-pdf, worker-ocr, worker-office, worker-media, worker-convert, worker-av, worker-ai, worker-sign, worker-utils, worker-mesh]
+        target: [api, worker-pdf, worker-ocr, worker-office, worker-media, worker-convert, worker-av, worker-ai, worker-sign, worker-utils, worker-mesh, worker-cad]
     steps:
       - uses: actions/checkout@v5
       - uses: docker/setup-buildx-action@v3

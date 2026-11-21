@@ -41236,6 +41236,1565 @@
         "title": "ConvertirModeloOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "step-a-stl",
+      "slug_en": "step-to-stl",
+      "name_es": "STEP a STL",
+      "name_en": "STEP to STL",
+      "summary_es": "Convierte piezas de CAD STEP a una malla STL para imprimirlas en 3D, con la calidad de teselado que elijas.",
+      "summary_en": "Convert STEP CAD parts to an STL mesh for 3D printing, with the tessellation quality you choose.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "step"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "step-a-3mf",
+        "stl-a-step"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "7.19: calidad del teselado [media] más las opciones de malla de 7.18.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "calidad": {
+            "default": "media",
+            "enum": [
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Calidad del teselado",
+            "type": "string",
+            "x-labels": {
+              "alta": {
+                "en": "High (smoother curves)",
+                "es": "Alta (curvas más suaves)"
+              },
+              "baja": {
+                "en": "Low (fewer triangles)",
+                "es": "Baja (menos triángulos)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-title": {
+              "en": "Tessellation quality",
+              "es": "Calidad del teselado"
+            }
+          }
+        },
+        "title": "CadStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "stp-a-stl",
+      "slug_en": "stp-to-stl",
+      "name_es": "STP a STL",
+      "name_en": "STP to STL",
+      "summary_es": "Convierte piezas de CAD STP a una malla STL para imprimirlas en 3D, con la calidad de teselado que elijas.",
+      "summary_en": "Convert STP CAD parts to an STL mesh for 3D printing, with the tessellation quality you choose.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "stp"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "step-a-stl",
+        "step-a-3mf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "7.19: calidad del teselado [media] más las opciones de malla de 7.18.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "calidad": {
+            "default": "media",
+            "enum": [
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Calidad del teselado",
+            "type": "string",
+            "x-labels": {
+              "alta": {
+                "en": "High (smoother curves)",
+                "es": "Alta (curvas más suaves)"
+              },
+              "baja": {
+                "en": "Low (fewer triangles)",
+                "es": "Baja (menos triángulos)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-title": {
+              "en": "Tessellation quality",
+              "es": "Calidad del teselado"
+            }
+          }
+        },
+        "title": "CadStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "step-a-3mf",
+      "slug_en": "step-to-3mf",
+      "name_es": "STEP a 3MF",
+      "name_en": "STEP to 3MF",
+      "summary_es": "Convierte piezas STEP a 3MF con sus nombres, colores y unidades para el laminador.",
+      "summary_en": "Convert STEP parts to 3MF with their names, colours and units for the slicer.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "step"
+      ],
+      "outputs": [
+        "3mf",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "step-a-stl",
+        "3mf-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "calidad": {
+            "default": "media",
+            "enum": [
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Calidad del teselado",
+            "type": "string",
+            "x-labels": {
+              "alta": {
+                "en": "High (smoother curves)",
+                "es": "Alta (curvas más suaves)"
+              },
+              "baja": {
+                "en": "Low (fewer triangles)",
+                "es": "Baja (menos triángulos)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-title": {
+              "en": "Tessellation quality",
+              "es": "Calidad del teselado"
+            }
+          }
+        },
+        "title": "CadMeshOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "step-a-obj",
+      "slug_en": "step-to-obj",
+      "name_es": "STEP a OBJ",
+      "name_en": "STEP to OBJ",
+      "summary_es": "Convierte piezas de CAD STEP a una malla OBJ para Blender y los visores, con la calidad de teselado que elijas.",
+      "summary_en": "Convert STEP CAD parts to an OBJ mesh for Blender and viewers, with the tessellation quality you choose.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "step"
+      ],
+      "outputs": [
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "step-a-stl",
+        "step-a-glb"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "calidad": {
+            "default": "media",
+            "enum": [
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Calidad del teselado",
+            "type": "string",
+            "x-labels": {
+              "alta": {
+                "en": "High (smoother curves)",
+                "es": "Alta (curvas más suaves)"
+              },
+              "baja": {
+                "en": "Low (fewer triangles)",
+                "es": "Baja (menos triángulos)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-title": {
+              "en": "Tessellation quality",
+              "es": "Calidad del teselado"
+            }
+          }
+        },
+        "title": "CadMeshOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "step-a-glb",
+      "slug_en": "step-to-glb",
+      "name_es": "STEP a GLB",
+      "name_en": "STEP to GLB",
+      "summary_es": "Convierte piezas STEP a GLB para enseñarlas en la web o en realidad aumentada.",
+      "summary_en": "Convert STEP parts to GLB to show them on the web or in augmented reality.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "step"
+      ],
+      "outputs": [
+        "glb",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "step-a-obj",
+        "stl-a-glb"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them",
+                "es": "Mantenerlas"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "conservar_ejes": {
+            "default": false,
+            "title": "Conservar los ejes (no girar de Z vertical a Y vertical)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Keep the axes (do not turn Z-up into Y-up)",
+              "es": "Conservar los ejes (no girar de Z vertical a Y vertical)"
+            }
+          },
+          "calidad": {
+            "default": "media",
+            "enum": [
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Calidad del teselado",
+            "type": "string",
+            "x-labels": {
+              "alta": {
+                "en": "High (smoother curves)",
+                "es": "Alta (curvas más suaves)"
+              },
+              "baja": {
+                "en": "Low (fewer triangles)",
+                "es": "Baja (menos triángulos)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-title": {
+              "en": "Tessellation quality",
+              "es": "Calidad del teselado"
+            }
+          }
+        },
+        "title": "CadGlbOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "iges-a-stl",
+      "slug_en": "iges-to-stl",
+      "name_es": "IGES a STL",
+      "name_en": "IGES to STL",
+      "summary_es": "Convierte piezas de CAD IGES a una malla STL para imprimirlas en 3D, con la calidad de teselado que elijas.",
+      "summary_en": "Convert IGES CAD parts to an STL mesh for 3D printing, with the tessellation quality you choose.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "iges"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "igs-a-step",
+        "step-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "7.19: calidad del teselado [media] más las opciones de malla de 7.18.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "calidad": {
+            "default": "media",
+            "enum": [
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Calidad del teselado",
+            "type": "string",
+            "x-labels": {
+              "alta": {
+                "en": "High (smoother curves)",
+                "es": "Alta (curvas más suaves)"
+              },
+              "baja": {
+                "en": "Low (fewer triangles)",
+                "es": "Baja (menos triángulos)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-title": {
+              "en": "Tessellation quality",
+              "es": "Calidad del teselado"
+            }
+          }
+        },
+        "title": "CadStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "igs-a-step",
+      "slug_en": "igs-to-step",
+      "name_es": "IGS a STEP",
+      "name_en": "IGS to STEP",
+      "summary_es": "Convierte piezas IGES a STEP conservando la geometría exacta, sin teselar.",
+      "summary_en": "Convert IGES parts to STEP keeping the exact geometry, without tessellating.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "igs"
+      ],
+      "outputs": [
+        "step",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "iges-a-stl",
+        "step-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "brep-a-stl",
+      "slug_en": "brep-to-stl",
+      "name_es": "BREP a STL",
+      "name_en": "BREP to STL",
+      "summary_es": "Convierte piezas de CAD BREP de OpenCascade a una malla STL para imprimirlas en 3D, con la calidad de teselado que elijas.",
+      "summary_en": "Convert OpenCascade BREP CAD parts to an STL mesh for 3D printing, with the tessellation quality you choose.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "brep"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "step-a-stl",
+        "stl-a-step"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "7.19: calidad del teselado [media] más las opciones de malla de 7.18.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          },
+          "calidad": {
+            "default": "media",
+            "enum": [
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Calidad del teselado",
+            "type": "string",
+            "x-labels": {
+              "alta": {
+                "en": "High (smoother curves)",
+                "es": "Alta (curvas más suaves)"
+              },
+              "baja": {
+                "en": "Low (fewer triangles)",
+                "es": "Baja (menos triángulos)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-title": {
+              "en": "Tessellation quality",
+              "es": "Calidad del teselado"
+            }
+          }
+        },
+        "title": "CadStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "stl-a-step",
+      "slug_en": "stl-to-step",
+      "name_es": "STL a STEP",
+      "name_en": "STL to STEP",
+      "summary_es": "Convierte una malla STL en un sólido STEP facetado para abrirla en programas de CAD.",
+      "summary_en": "Turn an STL mesh into a faceted STEP solid to open it in CAD programs.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "stl"
+      ],
+      "outputs": [
+        "step",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "step-a-stl",
+        "obj-a-step"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "stl-a-step y obj-a-step (7.19): unidades del original y escala; el STEP sale en milímetros.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          }
+        },
+        "title": "MeshToStepOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "obj-a-step",
+      "slug_en": "obj-to-step",
+      "name_es": "OBJ a STEP",
+      "name_en": "OBJ to STEP",
+      "summary_es": "Convierte una malla OBJ en un sólido STEP facetado para abrirla en programas de CAD.",
+      "summary_en": "Turn an OBJ mesh into a faceted STEP solid to open it in CAD programs.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "obj"
+      ],
+      "outputs": [
+        "step",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "stl-a-step",
+        "step-a-obj"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "stl-a-step y obj-a-step (7.19): unidades del original y escala; el STEP sale en milímetros.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          }
+        },
+        "title": "MeshToStepOptions",
+        "type": "object"
+      }
     }
   ]
 }

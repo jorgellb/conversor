@@ -108,7 +108,7 @@ def memory(name: str, default: str) -> dict:
 
 # Perfil de 16 vCPU y 64 GB (5.4; con workerai y workeraiembed repartidos como en D-128): variables para Coolify que
 # imprime `--profile 16` y que se documentan en docs/OPERATIONS.md. Los nombres son los de los servicios sin
-# «worker». El grupo cad de F7 se añade con su fase.
+# «worker».
 PROFILE_16 = {
     "MEM_POSTGRES": "4g", "MEM_GOTENBERG": "4g", "MEM_GOTENBERGWEB": "2g",
     "CONCURRENCY_AI": "6", "MEM_AI": "1536m", "CPUS_AI": "6",
@@ -125,6 +125,7 @@ PROFILE_16 = {
     "CONCURRENCY_SIGN": "1", "MEM_SIGN": "1g", "CPUS_SIGN": "1",
     "CONCURRENCY_UTILS": "2", "MEM_UTILS": "4g", "CPUS_UTILS": "2",
     "CONCURRENCY_MESH": "2", "MEM_MESH": "6g", "CPUS_MESH": "2",
+    "CONCURRENCY_CAD": "1", "MEM_CAD": "6g", "CPUS_CAD": "1",
 }
 
 
@@ -366,6 +367,8 @@ def build() -> dict:
         # Mallas 3D (F7-A, 5.4 y D-244): 4 GB con 1 trabajo en el perfil de 8 vCPU y 6 GB con 2 en el de 16 (F7 necesita ese
         # servidor, 3); el STL binario se lee a unos 200 bytes por triángulo, así que los 10 millones del plan Pro caben.
         "workermesh": worker("worker-mesh", "worker-mesh", "mesh", "mesh", 1, 1, "4g", 1),
+        # CAD (F7-D, 5.4 y D-251): OpenCascade; 4 GB con 1 trabajo en el perfil de 8 vCPU y 6 GB en el de 16 (F7 necesita ese servidor).
+        "workercad": worker("worker-cad", "worker-cad", "cad", "cad", 1, 1, "4g", 1),
         "workermedia": worker("worker-media", "worker-media", "media", "media", 1, 1, "1536m", 1, {"GOTENBERG_URL": "http://gotenberg:3000"}),
         "workerconvert": worker("worker-convert", "worker-convert", "convert", "convert", 1, 2, "5g", 2, {"HF_HUB_OFFLINE": "1"}),
         # Audio ligero con FFmpeg (1 GB en el perfil de 8 vCPU; 3 GB en el de 16, D-191).
@@ -384,7 +387,7 @@ def build() -> dict:
 
 HEADER = """# Producción en Coolify v4 (13.2): solo `image:` con etiquetas fijas, dominios por variables mágicas y sin `ports:`.
 # Generado por scripts/gen_coolify_compose.py: edita el generador, no este archivo.
-# Los servicios de fases posteriores (workercad y umami) se añaden con su fase.
+# El servicio umami se añade con su fase.
 # Memoria y CPU (5.4): `MEM_<NOMBRE>` cambia `mem_limit` y `memswap_limit` de postgres, gotenberg, gotenbergweb y cada
 # worker, y `CPUS_<NOMBRE>` y `CONCURRENCY_<NOMBRE>`, los de cada worker. Por defecto, el perfil de 8 vCPU; el de
 # 16 vCPU lo imprime `python scripts/gen_coolify_compose.py --profile 16` (docs/OPERATIONS.md).

@@ -150,7 +150,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F7-A | stl-a-obj, obj-a-stl, stl-a-3mf, 3mf-a-stl, obj-a-3mf, 3mf-a-obj, stl-a-ply, ply-a-stl, stl-ascii-a-binario (`workermesh`) | Hecho (D-244) |
 | F7-B | amf-a-stl, stl-a-amf, amf-a-3mf, glb-a-stl, stl-a-glb, gltf-a-stl, fbx-a-stl, fbx-a-obj, dae-a-stl, 3ds-a-stl | Hecho (D-248) |
 | F7-C | wrl-a-stl, stl-a-wrl, x3d-a-stl, stl-a-x3d, stl-a-usdz, obj-a-usdz, convertir-modelo-3d | Hecho (D-250) |
-| F7-D | step-a-stl, stp-a-stl, step-a-3mf, step-a-obj, step-a-glb, iges-a-stl, igs-a-step, brep-a-stl, stl-a-step, obj-a-step (`workercad`) | Pendiente (F5-Z) |
+| F7-D | step-a-stl, stp-a-stl, step-a-3mf, step-a-obj, step-a-glb, iges-a-stl, igs-a-step, brep-a-stl, stl-a-step, obj-a-step (`workercad`) | Hecho (D-251) |
 | F7-E | scad-a-stl, scad-a-3mf, dwg-a-dxf, dwg-a-pdf | Pendiente (F7-D) |
 | F7-F | reparar-stl, reducir-poligonos, escalar-modelo-3d, cambiar-unidades-stl, cortar-modelo-3d, separar-piezas, unir-modelos, analizar-stl | Pendiente (F7-A) |
 | F7-G | svg-a-stl, dxf-a-stl, imagen-a-stl, logo-a-stl, texto-a-stl, litofania, mapa-de-alturas-a-stl | Pendiente (F7-A) |
