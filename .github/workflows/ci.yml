@@ -37,7 +37,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-spa tesseract-ocr-eng tesseract-ocr-osd ffmpeg libreoffice-writer-nogui libreoffice-calc-nogui gdal-bin pst-utils fluidsynth fluid-soundfont-gm musescore3 fonts-dejavu postgresql-client restic \
-            djvulibre-bin libarchive13 calibre libheif-examples libheif-plugin-libde265 libheif-plugin-x265 espeak-ng softhsm2
+            djvulibre-bin libarchive13 calibre libheif-examples libheif-plugin-libde265 libheif-plugin-x265 espeak-ng softhsm2 \
+            libassimp5 openscad fonts-liberation2
       # x265 solo en la CI, para crear la muestra HEIC de la prueba; nunca en las imágenes (D-49).
       - name: Herramientas del lote D (tiffcp, pdftocairo, perfil CMYK) y veraPDF fijado por SHA-256
         run: |
@@ -80,7 +81,7 @@ jobs:
           uv venv .venv
           # El extra av va sin PyAV (D-111): infra/uv-overrides.txt lo quita.
           uv pip install --python .venv -r pyproject.toml --extra pdf --extra ocr --extra dev --extra office --extra media --extra av --extra ai --extra sign --extra utils \
-            --override infra/uv-overrides.txt
+            --extra mesh --extra cad --override infra/uv-overrides.txt
       - name: Registro al día y Compose de Coolify válido
         run: |
           .venv/bin/python scripts/export_registry.py --check
@@ -109,6 +110,11 @@ jobs:
             -D -G -H 127.0.0.1 -P 8081 > "$RUNNER_TEMP/kosit.log" 2>&1 &
           for i in $(seq 1 120); do curl -sf -o /dev/null http://127.0.0.1:8081/server/health && break; sleep 1; done
           curl -sf http://127.0.0.1:8081/server/health > /dev/null || { cat "$RUNNER_TEMP/kosit.log"; exit 1; }
+      - name: Muestras reales de bgcode de PrusaSlicer (16.5, D-259)
+        # Solo los datos de prueba del repositorio de libbgcode, para leerlos; su código (AGPL) no se usa ni se copia.
+        run: |
+          git clone --depth 1 --filter=blob:limit=20m https://github.com/prusa3d/libbgcode "$RUNNER_TEMP/libbgcode"
+          echo "BGCODE_SAMPLES=$RUNNER_TEMP/libbgcode" >> "$GITHUB_ENV"
       - name: Pruebas
         # KOSIT_HOME: los XSD de UBL 2.1 y CII D16B de la configuración de KoSIT (factura-electronica-a-pdf, D-194).
         run: KOSIT_HOME="$RUNNER_TEMP/kosit" .venv/bin/pytest -q

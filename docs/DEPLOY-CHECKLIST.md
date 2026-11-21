@@ -161,3 +161,21 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Lote M de F6: captura-web contra páginas reales con `gotenbergweb` y `egressweb` (y bloqueada contra 169.254.169.254, localhost y una IP privada tras redirección, 16.4); udf-a-pdf con documentos UDF reales de UYAP antes de encenderla (`TOOL_UDF_A_PDF_ENABLED=true` y quitar `default_enabled=False`).
 - [ ] Landlock en el VPS (D-227, D-230): que el perfil de seccomp de Docker deje pasar `landlock_create_ruleset`, `landlock_add_rule` y `landlock_restrict_self` en `workerutils` (latex-a-pdf) y `workermedia` (pst-a-mbox y pst-a-pdf); sin ellas esas herramientas fallan cerradas con ENGINE_FAILED «sandbox». Comprobar con un latex-a-pdf de prueba tras desplegar.
 - [ ] `gotenbergweb` con `--chromium-deny-list` (D-233): comprobar que web-a-pdf y captura-web siguen funcionando con páginas reales y que una página que enmarca `http://127.0.0.1:3000/health` sale con el marco vacío.
+- [ ] Gotenberg principal con `--chromium-deny-list=^file:(?!///tmp/[^/]+/[^/]).*` (D-246): escribir-pdf, html-a-pdf y
+      drawio-a-pdf siguen funcionando con Gotenberg real y un HTML que pide `file:///etc/passwd` sale sin ese contenido.
+
+## Cierre operativo de F7 (3D, D-259)
+
+- [ ] F7 necesita el perfil de 16 vCPU y 64 GB (`gen_coolify_compose.py --profile 16`): `workermesh` y `workercad` con 4 GB
+      cada uno y `MESH_MEMORY_MB=2600` (dos hijos a la vez caben en 6 GB).
+- [ ] Construir `worker-mesh` y `worker-cad` en `images.yml` (LibreDWG 0.14 compilado con su SHA-256, OpenSCAD de Debian) y
+      comprobar en el VPS: scad-a-stl real, un `import("/etc/hostname")` que no lee nada fuera del trabajo, dwg-a-dxf y
+      dwg-a-pdf con DWG reales de AutoCAD 2000 a 2018.
+- [ ] Landlock en `workermesh` y `workercad` (el proceso hijo de las mallas y OpenSCAD/LibreDWG fallan cerrados sin él).
+- [ ] CI: la prueba de bgcode real (16.5) clona los datos de prueba de libbgcode; comprobar que pasa y, si Prusa cambia el
+      repositorio, apuntar `BGCODE_SAMPLES` a otra carpeta de muestras de PrusaSlicer 2.6 o posterior.
+- [ ] Un gcode-a-bgcode real abierto en una Prusa MK4 o CORE One (miniatura, tiempo y filamento en la pantalla) y un
+      .gcode.3mf real de Bambu Studio en extraer-gcode-3mf.
+- [ ] Visores en móviles reales (Safari de iOS y Chrome de Android): visor-3d con un STL de 50 MB y visor-gcode con un
+      G-code de 100 MB sin que la pestaña se cierre por memoria.
+

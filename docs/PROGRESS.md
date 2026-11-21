@@ -767,10 +767,19 @@ Herramientas de G-code en el proceso hijo con topes de descompresión, metadatos
 generadores corregidos (relleno del SVG por forma, enlace lineal del DXF, imágenes de 16 bits y litofanías curvas) (D-258), en
 `tests/test_gcode.py` y `tests/test_mesh.py`.
 
+## Cierre de F7 (F7-Z)
+
+Todas las herramientas de F7 del catálogo registradas con su página completa en los dos idiomas, y las pruebas de formatos 3D de
+16.5 en `tests/test_cierre_fases.py`: STL → 3MF → STL con el mismo número de triángulos y menos del 0,1 % de error de volumen,
+lib3mf en modo estricto sobre los 3MF de conversiones, generadores y operaciones, y bgcode → gcode → bgcode con los archivos
+reales de PrusaSlicer que la CI descarga (D-259). La CI instala ahora los extras `mesh` y `cad`, libassimp y OpenSCAD.
+
 ## Pendiente
 
-- F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo
-  de F5 y F7, en el orden de 17 (ondas de `docs/GOAL.md`).
+- Las fases F1 a F7 están hechas en el código. Lo que queda es operativo o depende del propietario: los puntos sin marcar de
+  `docs/DEPLOY-CHECKLIST.md` (despliegue en el VPS, muestras reales, claves y revisiones legales).
+- La CI de GitHub Actions no arranca trabajos por la facturación de la cuenta: hasta que se resuelva, las pruebas solo se han
+  pasado en local (suite de Python, vitest de la web y de client-tools, y Playwright del proyecto «navegador»).
 - Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
   apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).
 - Cierre técnico de F3 (17): uso real de peticiones registrado, con la clave de OpenRouter del propietario.

@@ -15,6 +15,7 @@ forbidden_packages: [ghostscript, mupdf, pymupdf, fitz, pdf2docx, babeldoc, eboo
 aliases:
   "(MIT OR GPL-3.0-or-later)": MIT  # jszip (dependencia de mammoth): doble licencia, se usa con MIT
   "MIT License": MIT
+  "Apache License, Version 2.0": Apache-2.0  # gpxpy
   "MIT license": MIT
   "The MIT License": MIT
   "Apache Software License": Apache-2.0
@@ -56,6 +57,7 @@ aliases:
   "PSFL": PSF-2.0
 # Paquetes cuya licencia no se detecta bien en sus metadatos, comprobada a mano (paquete: licencia SPDX).
 overrides:
+  fitparse: MIT  # su metadato dice «UNKNOWN»; el LICENSE del proyecto es MIT (F6, gpx/fit)
   psycopg: LGPL-3.0
   psycopg-binary: LGPL-3.0
   img2pdf: LGPL-3.0
