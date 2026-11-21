@@ -43,6 +43,10 @@ def clean_vtt(text: str) -> str:
     return "\n\n".join(cleaned)
 
 
+MAX_EVENT_TEXT = 10_000
+MAX_EVENT_TAGS = 200
+
+
 def parse_text(text: str, ext: str):
     """Subtítulos de un texto, siempre con el formato de su extensión (ASS lee también SSA, su versión anterior): nunca
     se deja a pysubs2 adivinar otro formato por el contenido."""
@@ -58,6 +62,12 @@ def parse_text(text: str, ext: str):
         raise ToolError(ErrorCode.CORRUPT_FILE, "subtítulos no válidos") from exc
     if len(subs.events) > MAX_EVENTS:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"{len(subs.events)} subtítulos")
+    # pysubs2 analiza las etiquetas de cada subtítulo en tiempo cuadrático (`is_drawing`, el escritor de SRT): un archivo
+    # de unos KB con miles de `{\i1}` (o `<i>`) en un subtítulo ocupaba un trabajador horas (D-263). Uno normal tiene
+    # unas pocas etiquetas y menos de 200 caracteres.
+    for ev in subs.events:
+        if len(ev.text) > MAX_EVENT_TEXT or ev.text.count("{") > MAX_EVENT_TAGS:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "subs_cue_tags")
     return subs
 
 

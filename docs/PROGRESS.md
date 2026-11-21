@@ -82,7 +82,7 @@ de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F
   varias voces y el paso de `ai` a `workeravheavy` con las imágenes de verdad (FFmpeg LGPL de BtbN y modelo small), en el
   VPS o en la CI (DEPLOY-CHECKLIST). El Compose de Coolify con los límites de IA en `workeravheavy`, sin Docker, solo en
   la CI. La revisión adversarial de GOAL.md 6.7 la hizo el propio implementador (no había herramienta para lanzar un
-  revisor independiente); queda para la revisión externa de F3-Z.
+  revisor independiente); la revisión externa la hizo después un revisor independiente y está corregida (D-263).
 - **G0-A**: `gen_coolify_compose.py --validate` y `docker compose config` con las variables `${MEM_*}` y `${CPUS_*}`, y la imagen `worker-av` con el FFmpeg 8.1 fijado por fecha y SHA-256 (D-137): solo en la CI, sin Docker. El audio de F5 con ese binario, en la CI de imágenes (DEPLOY-CHECKLIST).
 
 ## Herramientas y página de herramienta

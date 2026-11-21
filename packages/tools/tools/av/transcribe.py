@@ -132,14 +132,25 @@ def load_model(settings: Settings, name: str, threads: int):
 def decode_pcm(ctx: ToolContext, inp: InputFile, demuxer: str, duration: float, dst: Path, start: float = 0.0,
                length: float | None = None) -> np.ndarray:
     """La primera pista de audio en PCM de 16 bits, mono y 16 kHz, en el disco (se lee por tramos con memmap). Con
-    `start` y `length` (segundos), solo ese tramo (traducir-subtitulos y resumir-reunion, F3-E)."""
+    `start` y `length` (segundos), solo ese tramo (traducir-subtitulos y resumir-reunion, F3-E).
+
+    Nunca se decodifica más de lo que permite el plan (D-263): la duración del contenedor la escribe quien lo crea y
+    puede mentir (o faltar, como en las grabaciones WebM del navegador), así que ffmpeg lleva siempre `-t` y un tope de
+    tamaño, y al acabar se mide lo decodificado de verdad."""
+    limit = float(ctx.plan.audio_minutes) * 60
+    wanted = length if length is not None else (duration - start if duration > start else limit)
+    cap = min(wanted, limit) + 1.0  # un segundo de margen: así se nota si había más audio que el permitido
     span = ["-ss", f"{start:.3f}"] if start > 0 else []
-    span_end = ["-t", f"{length:.3f}"] if length is not None else []
-    run_engine([ffmpeg(), *BASE, *span, "-f", demuxer, "-i", str(inp.path), *span_end, "-map", "0:a:0", "-vn", "-sn", "-dn",
+    max_mb = int(cap * RATE * 2 / (1024 * 1024)) + 2
+    run_engine([ffmpeg(), *BASE, *span, "-f", demuxer, "-i", str(inp.path), "-t", f"{cap:.3f}", "-map", "0:a:0", "-vn", "-sn", "-dn",
                 "-ac", "1", "-ar", str(RATE), "-c:a", "pcm_s16le", "-f", "s16le", "-threads", str(max(1, ctx.threads)), "-y",
-                str(dst)], cwd=ctx.work, timeout=int(max(120, (length if length is not None else duration) + 120)), mem_mb=1024)
+                str(dst)], cwd=ctx.work, timeout=int(max(120, cap + 120)), mem_mb=1024, max_file_mb=max_mb)
     if not dst.exists() or dst.stat().st_size < 2:
         raise ToolError(ErrorCode.CORRUPT_FILE, "Sin audio que transcribir")
+    real = dst.stat().st_size / 2 / RATE
+    if real > limit + 0.5:
+        dst.unlink(missing_ok=True)
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"audio_minutes:{int(real // 60)}>{ctx.plan.audio_minutes}")
     return np.memmap(dst, dtype=np.int16, mode="r")
 
 

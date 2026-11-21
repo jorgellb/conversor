@@ -75,10 +75,14 @@ def save(ctx: ToolContext, inp: InputFile, tool: str, params: dict, payload: dic
 def check_requests(ctx: ToolContext, needed: int) -> None:
     """Más peticiones que el máximo por tarea: se pide un tramo más corto (6.3). Si caben, se reservan todas antes de
     empezar; si el plan no tiene tantas hoy, falla sin gastar ninguna."""
-    top = ctx.ai.budget.max_task
-    if needed > top:
-        raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"ai_span:{needed}>{top}")
-    ctx.ai.budget.ensure(needed)
+    budget = ctx.ai.budget
+    top = budget.max_task
+    # Margen para los reintentos (un 429, un JSON que hay que reparar) y, si el trabajo se vuelve a poner en cola, lo que
+    # ya se gastó: si no, la tarea podía quedarse sin peticiones a mitad, con todo lo anterior gastado (D-263).
+    headroom = max(1, top // 10)
+    if budget.used + needed > top - headroom:
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"ai_span:{needed}>{max(1, top - headroom - budget.used)}")
+    budget.ensure(budget.used + needed)
 
 
 def probe_span(ctx: ToolContext, inp: InputFile, start: float, end: float | None) -> tuple[str, float]:
@@ -92,10 +96,18 @@ def probe_span(ctx: ToolContext, inp: InputFile, start: float, end: float | None
     if not any(st.get("codec_type") == "audio" for st in info.get("streams", [])):
         raise ToolError(ErrorCode.UNSUPPORTED_FORMAT, "Sin pista de audio")
     duration = float(info.get("format", {}).get("duration") or 0)
+    if duration <= 0:  # sin duración en la cabecera (WebM grabado con MediaRecorder): la de la pista, si la hay
+        duration = max((float(st.get("duration") or 0) for st in info.get("streams", []) if st.get("codec_type") == "audio"), default=0.0)
+    limit = ctx.plan.audio_minutes * 60
+    if duration <= 0:
+        # Sin ninguna duración: se calcula con el peor caso (el máximo del plan) y decode_pcm mide lo que hay de verdad (D-263).
+        length = (end - start) if end is not None else limit
+        if length > limit:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"audio_minutes:{clock(length)}>{ctx.plan.audio_minutes}")
+        return demuxer, length
     if start >= duration:
         raise ToolError(ErrorCode.INVALID_OPTIONS, "subs_range")
     length = min(end, duration) - start if end is not None else duration - start
-    limit = ctx.plan.audio_minutes * 60
     if length > limit:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, f"audio_minutes:{clock(length)}>{ctx.plan.audio_minutes}")
     return demuxer, length
@@ -117,7 +129,7 @@ def transcribe_stage(ctx: ToolContext, tool: str, params: dict, estimate: Callab
         notes: list[str] = []
         model = tr.pick_model(ctx, o.precision, notes)
         pcm_path = ctx.work / "audio.pcm"
-        pcm = tr.decode_pcm(ctx, inp, demuxer, length, pcm_path, start=start, length=length if end is not None else None)
+        pcm = tr.decode_pcm(ctx, inp, demuxer, start + length, pcm_path, start=start, length=length)
         try:
             language = params.get("idioma") or "auto"
             result = tr.transcribe(ctx, pcm, None if language == "auto" else language, model, (0.0, 0.8), words)

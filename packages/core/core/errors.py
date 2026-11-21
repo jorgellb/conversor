@@ -298,6 +298,7 @@ DETAILS: dict[str, dict[str, str]] = {
     "gcode3mf_member": {"es": "Un G-code del .gcode.3mf pasa de 1 GB: es demasiado grande.", "en": "A G-code inside the .gcode.3mf is over 1 GB: it is too large."},
     "gcode_too_big_bgcode": {"es": "Para pasarlo a bgcode, el G-code puede tener como mucho 400 MB.", "en": "To convert it to bgcode, the G-code can be at most 400 MB."},
     "litho_thickness": {"es": "El grosor mínimo tiene que ser menor que el máximo.", "en": "The minimum thickness must be smaller than the maximum."},
+    "subs_cue_tags": {"es": "Un subtítulo tiene demasiado texto o demasiadas etiquetas de estilo: no parece un archivo de subtítulos normal.", "en": "A subtitle has too much text or too many style tags: it does not look like a normal subtitle file."},
     "usd_external": {"es": "El USD usa capas o referencias de otros archivos que no se han subido: sube un USDZ, que lo lleva todo dentro.", "en": "The USD uses layers or references from other files that were not uploaded: upload a USDZ, which carries everything inside."},
     "engine_output": {"es": "El motor no ha devuelto un archivo válido.", "en": "The engine did not return a valid file."},
     "gen_no_shapes": {"es": "No hay ninguna forma rellena que extruir (los trazos sin relleno y los contornos abiertos no cuentan).", "en": "There is no filled shape to extrude (unfilled strokes and open outlines do not count)."},

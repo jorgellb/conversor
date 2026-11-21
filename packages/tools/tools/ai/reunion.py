@@ -14,6 +14,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 
 from core.ai.catalog import Needs
@@ -64,21 +65,29 @@ def _texts(ctx: ToolContext) -> dict[str, str]:
     return TEXTS.get(ctx.locale, TEXTS["es"])
 
 
+CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
+
+
+def _plain(value) -> str:
+    """Sin caracteres de control: el DOCX no los admite y el acta se guarda en la caché antes de escribirlo (D-263)."""
+    return CONTROL.sub("", str(value))
+
+
 def clean(data) -> dict:
     """El acta con listas de texto sin vacíos ni repetidos y tareas con su descripción; sin resumen, se repara (6.5)."""
     if not isinstance(data, dict):
         raise ValueError("se esperaba un objeto")
-    summary = str(data.get("resumen") or "").strip()
+    summary = _plain(data.get("resumen") or "").strip()
     if not summary:
         raise ValueError("falta «resumen»")
     out: dict = {"resumen": summary}
     for name in ("temas", "decisiones", "preguntas"):
         values = data.get(name) if isinstance(data.get(name), list) else []
-        out[name] = list(dict.fromkeys(" ".join(str(v).split()) for v in values if isinstance(v, (str, int, float)) and str(v).strip()))
+        out[name] = list(dict.fromkeys(" ".join(_plain(v).split()) for v in values if isinstance(v, (str, int, float)) and _plain(v).strip()))
     tasks = []
     for t in data.get("tareas") if isinstance(data.get("tareas"), list) else []:
         if isinstance(t, dict) and str(t.get("tarea") or "").strip():
-            tasks.append({k: " ".join(str(t.get(k) or "").split()) for k in ("tarea", "responsable", "fecha")})
+            tasks.append({k: " ".join(_plain(t.get(k) or "").split()) for k in ("tarea", "responsable", "fecha")})
     out["tareas"] = tasks
     return out
 
@@ -155,25 +164,37 @@ def _task_line(task: dict, t: dict) -> str:
     return task["tarea"] + (f" ({'; '.join(extra)})" if extra else "")
 
 
+MD_SPECIAL = re.compile(r"([\\`*_\[\]<>#|!~])")
+
+
+def md_escape(text: str) -> str:
+    """Texto de la IA o de la transcripción como texto en Markdown: sin HTML, enlaces, imágenes ni títulos inyectados (D-263)."""
+    return MD_SPECIAL.sub(r"\\\1", text)
+
+
 def as_text(title: str, info: str, acta: dict, sections: list[str], paragraphs: list | None, t: dict, note: str, md: bool) -> str:
     def heading(text: str) -> str:
         return f"## {text}" if md else text.upper()
 
-    out = [f"# {title}" if md else title, f"_{info}_" if md else info, heading(t["summary"]), acta["resumen"]]
+    esc = md_escape if md else (lambda v: v)
+    # El resumen en párrafos: un salto de línea suelto no puede abrir un título ni una lista.
+    summary = "\n\n".join(esc(" ".join(p.split())) for p in re.split(r"\n\s*\n", acta["resumen"]) if p.strip())
+    out = [f"# {title}" if md else title, f"_{info}_" if md else info, heading(t["summary"]), summary]
     for name in sections:
         out.append(heading(t[name]))
         items = acta[name]
         if not items:
             out.append(t["none"])
         elif name == "tareas" and md:
-            cell = lambda v: v.replace("|", "\\|") or "—"  # noqa: E731
+            cell = lambda v: md_escape(v) or "—"  # noqa: E731
             out.append("\n".join([f"| {t['task']} | {t['owner']} | {t['date']} |", "| --- | --- | --- |",
                                   *(f"| {cell(x['tarea'])} | {cell(x['responsable'])} | {cell(x['fecha'])} |" for x in items)]))
         else:
-            out.append("\n".join(f"- {_task_line(x, t) if name == 'tareas' else x}" for x in items))
+            out.append("\n".join(f"- {esc(_task_line(x, t) if name == 'tareas' else x)}" for x in items))
     if paragraphs:
         out.append(heading(t["transcript"]))
-        out += [f"[{grabacion.clock(start)}] {text}" for start, text in paragraphs]
+        # «[01:05] texto»: con el espacio tras el corchete no es un enlace, y el texto va escapado.
+        out += [f"[{grabacion.clock(start)}] {esc(_plain(text))}" for start, text in paragraphs]
     out.append(f"_{note}_" if md else note)
     return "\n\n".join(out) + "\n"
 
@@ -222,7 +243,7 @@ def write_docx(dst: Path, title: str, info: str, acta: dict, sections: list[str]
             p = doc.add_paragraph()
             stamp = p.add_run(f"[{grabacion.clock(start)}] ")
             stamp.font.color.rgb = grey
-            p.add_run(text)
+            p.add_run(_plain(text))
     end = doc.add_paragraph().add_run(note)
     end.italic = True
     end.font.size, end.font.color.rgb = Pt(9), RGBColor(0x55, 0x55, 0x55)

@@ -44,17 +44,22 @@ TAG_NAMES = tuple(sorted(("pos", "move", "org", "fade", "fad", "iclip", "clip", 
                           "xshad", "yshad", "be", "kf", "ko", "k", "K", "q", "r", "p", "pbo", "i", "b", "u", "s", "t", "c",
                           "1c", "2c", "3c", "4c", "1a", "2a", "3a", "4a"), key=len, reverse=True))
 BREAK = re.compile(r"\\[Nn]|\n")
-LANG_SUFFIX = re.compile(r"\.[a-z]{2,3}(?:[-_][A-Za-z]{2})?$")
+# Sufijo de idioma del nombre («película.en.srt», «.pt-BR», «.eng»): dos letras, o tres solo si son un código de idioma
+# conocido («Serie.S01E01.web.srt» conserva «web», D-263).
+LANG_SUFFIX = re.compile(r"\.(?:[a-z]{2}(?:[-_][A-Za-z]{2})?|spa|eng|fre|fra|ger|deu|ita|por|cat|glg|eus|jpn|chi|zho|kor|rus|ara|nld|dut|pol|"
+                         r"swe|nor|dan|fin|tur|ell|gre|heb|hin|ukr|ces|cze|ron|rum|hun|vie|tha|ind)$")
 DASHES = ("-", "–", "—")
 TEXTS = {
     "es": {"made": "Traducción hecha con IA ({model}). Puede tener errores: revísala antes de usarla.",
            "tags": "Las etiquetas de estilo de dentro de las líneas (una palabra en cursiva o en negrita) no se conservan.",
+           "untranslated": "{n} subtítulos se han quedado en el idioma original (la IA los juntó con otro o no los tradujo): revísalos.",
            "vtt": "Los ajustes de posición de WebVTT (align, position, line) y los nombres de quien habla (<v>) no se conservan.",
            "kept": "Subtítulos fuera del tramo elegido sin traducir: {n}.",
            "media": "{name}: {lang}{detected}, {duration}. Cuenta como una tarea pesada por la transcripción.",
            "detected": " (detectado, {p:.0%})"},
     "en": {"made": "Translated with AI ({model}). It may contain errors: review it before using it.",
            "tags": "Style tags inside lines (a word in italics or bold) are not kept.",
+           "untranslated": "{n} subtitles were left in the original language (the AI merged them with another or did not translate them): check them.",
            "vtt": "WebVTT position settings (align, position, line) and speaker names (<v>) are not kept.",
            "kept": "Subtitles outside the chosen section left untranslated: {n}.",
            "media": "{name}: {lang}{detected}, {duration}. Counts as a heavy task because of the transcription.",
@@ -204,7 +209,7 @@ def items_of(subs, start_ms: int = 0, end_ms: int | None = None) -> tuple[list[I
     out: list[Item] = []
     outside = 0
     for i, ev in enumerate(subs.events):
-        if ev.is_comment or ev.is_drawing:
+        if ev.is_comment or _is_drawing(ev.text):
             continue
         prefix, inner, suffix = split_markup(ev.text)
         lines = plain_lines(inner)
@@ -261,8 +266,9 @@ def wrap(text: str, width: int) -> list[str]:
 
 
 def safe(text: str) -> str:
-    """Sin llaves ni barras invertidas, que ASS leería como etiquetas o saltos."""
-    return text.replace("{", "(").replace("}", ")").replace("\\", "/")
+    """Sin llaves ni barras invertidas, que ASS leería como etiquetas o saltos, ni «-->», que un lector de SRT tomaría por
+    la línea de tiempos de un subtítulo nuevo (D-263: la IA podía añadir subtítulos con otros tiempos)."""
+    return text.replace("{", "(").replace("}", ")").replace("\\", "/").replace("-->", "→")
 
 
 def render(translation: str, dialogue: bool, width: int) -> list[str]:
@@ -274,10 +280,19 @@ def render(translation: str, dialogue: bool, width: int) -> list[str]:
     return wrap(" ".join(text.split()), width)
 
 
-def apply(subs, items: list[Item], translated: dict[str, str], width: int, bilingual: bool) -> None:
+def apply(subs, items: list[Item], translated: dict[str, str], width: int, bilingual: bool, vtt: bool = False) -> int:
+    """Pone las traducciones; devuelve cuántos subtítulos se quedan sin traducir (la IA los dejó vacíos o iguales)."""
+    import html
+
+    untranslated = 0
     for item in items:
         ev = subs.events[item.index]
-        lines = render(translated.get(item.source) or item.source, item.dialogue, width)
+        translation = (translated.get(item.source) or "").strip()
+        if not translation or (translation == item.source and sum(ch.isalpha() for ch in item.source) > 3):
+            untranslated += 1
+        lines = render(translation or item.source, item.dialogue, width)
+        if vtt:  # en WebVTT, «&», «<» y «>» del texto van como entidades (si no, «a < b» se lee como etiqueta)
+            lines = [html.escape(line, quote=False) for line in lines]
         body = "\\N".join(lines)
         if bilingual:
             original = item.inner.strip() or "\\N".join(wrap(item.source, width))
@@ -286,6 +301,16 @@ def apply(subs, items: list[Item], translated: dict[str, str], width: int, bilin
             ev.text = f"{item.raw_prefix}{original}{item.raw_suffix}\\N{{\\r}}{item.prefix}{body}{item.suffix}"
         else:
             ev.text = f"{item.prefix}{body}{item.suffix}"
+    return untranslated
+
+
+def _is_drawing(text: str) -> bool:
+    """Un dibujo de ASS (`{\\p1}…`) con el análisis lineal de etiquetas (no el cuadrático de pysubs2)."""
+    for a, b in blocks(text):
+        for name, tag in tag_names(text[a:b]):
+            if name == "p" and re.fullmatch(r"\\p[1-9]\d*", tag):
+                return True
+    return False
 
 
 # ——— Peticiones ———
@@ -355,6 +380,11 @@ def _translate(ctx: ToolContext) -> list[dict]:
         start, end = grabacion.span_of(o)
         text = read(inp.path)
         subs = parse_text(text, inp.ext)
+        if inp.ext == "vtt":  # las entidades de WebVTT («&amp;») son su carácter para la IA y en la salida (D-263)
+            import html
+
+            for ev in subs.events:
+                ev.text = html.unescape(ev.text)
         if inp.ext == "vtt" and vtt_extras(text):
             notes.append(t["vtt"])
         items, outside = items_of(subs, int(start * 1000), int(end * 1000) if end is not None else None)
@@ -370,7 +400,9 @@ def _translate(ctx: ToolContext) -> list[dict]:
     options = {"destino": o.destino, "origen": source_lang or "auto", "glosario": (o.glosario or "").strip(), "textos": digest}
     result, hit = comun.with_cache(ctx, TOOL, options, lambda: make(ctx, sources, source_lang))
     translated = dict(zip(sources, result["traducciones"]))
-    apply(subs, items, translated, o.caracteres_por_linea, o.bilingue)
+    missing = apply(subs, items, translated, o.caracteres_por_linea, o.bilingue, vtt=fmt == "vtt")
+    if missing:
+        notes.append(t["untranslated"].format(n=missing))
     name = output_name(inp, o.destino, fmt)
     dst = ctx.output(name)
     dst.write_text(subs.to_string(fmt), encoding="utf-8")
