@@ -16,6 +16,8 @@ export const WASM_FILES: Record<WasmName, string> = {
   webp_dec: "@jsquash/webp/codec/dec/webp_dec.wasm",
   resvg: "@resvg/resvg-wasm/index_bg.wasm",
   zxing_reader: "zxing-wasm/reader/zxing_reader.wasm",
+  draco_encoder: "draco3d/draco_encoder.wasm",
+  draco_decoder: "draco3d/draco_decoder.wasm",
 };
 
 export const nodeWasm: WasmLoader = async (name) => WebAssembly.compile(readFileSync(require.resolve(WASM_FILES[name])));

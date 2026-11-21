@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "The G-code viewer shows in 3D, layer by layer, what your printer is going to do: perimeters, infill, supports, bridges and travel moves. It opens G-code from PrusaSlicer, OrcaSlicer, Bambu Studio, Cura, SuperSlicer or Simplify3D, and also the binary bgcode of Prusa printers, without converting it to text first.",
+    "Move the top layer to watch the part being built or also set the bottom one to look at just a range of heights. With “Top layer only” you check a specific layer, for example the first to check adhesion, or the one with the colour change. Playback runs the nozzle along the layer and continues with the next, like a time-lapse of the print.",
+    "Colours follow the extrusion type written by the slicer, the extruder on multi-tool printers or each segment's speed, from slow blue to fast red. The panel sums up the estimated time, metres of filament, number of layers and the slicer that generated the file.",
+    "The G-code is read in your browser by our own parser and does not leave your device. Files of hundreds of megabytes open in a few seconds; above six million segments the first ones are shown with a warning."
+  ],
+  "steps": [
+    "Press “Open G-code” or drop the file.",
+    "Move the layers, choose the colouring and turn on travel moves if you like.",
+    "Play the print or save a screenshot."
+  ],
+  "faq": [
+    {
+      "q": "Can I open a Prusa bgcode?",
+      "a": "Yes, directly: it is decompressed in your browser and every block is checked."
+    },
+    {
+      "q": "Why are extrusion types missing?",
+      "a": "Because the slicer did not write them in the G-code; turn its comments on or colour by speed."
+    },
+    {
+      "q": "Is the time exact?",
+      "a": "It is the slicer's estimate; the printer may take a little more or less."
+    },
+    {
+      "q": "Does it work for resin printers?",
+      "a": "No: only for filament printer G-code."
+    },
+    {
+      "q": "What are the light blue lines?",
+      "a": "Travel moves without extrusion, shown only when you turn on “Show travel moves”."
+    }
+  ]
+}

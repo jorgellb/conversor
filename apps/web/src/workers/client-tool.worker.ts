@@ -273,7 +273,18 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
       if (await viewerRequest(id, slug, files, options, passwords)) return;
       const file = files[0];
       const password = passwords?.[file.name];
-      if (slug === "__render") {
+      if (slug === "__gcode") {
+        // visor-gcode (D-257): tramos por capa en búferes que se transfieren sin copiarlos.
+        const { parseGcode } = await import("@conversor/client-tools/gcode3d");
+        const model = parseGcode(file.bytes, { progress: (fraction) => self.postMessage({ id, type: "progress", fraction }) });
+        self.postMessage({ id, type: "done", data: model },
+          [model.segments.buffer, model.kinds.buffer, model.tools.buffer, model.speeds.buffer, model.travels.buffer] as ArrayBuffer[]);
+      } else if (slug === "__glb_plain") {
+        // visor-3d y render-modelo-3d: el GLB con Draco se decodifica aquí y three.js lo abre sin DRACOLoader (D-257).
+        const { glbSinDraco } = await import("@conversor/client-tools/glb");
+        const bytes = await glbSinDraco(file, wasm);
+        self.postMessage({ id, type: "done", data: { bytes } }, [bytes.buffer as ArrayBuffer]);
+      } else if (slug === "__render") {
         const pages = await renderForEditor(file, Number(options.scale ?? 1.5), password);
         self.postMessage({ id, type: "done", data: { pages } }, pages.map((pg) => pg.image.buffer as ArrayBuffer));
       } else if (slug === "__xfdf_export") {

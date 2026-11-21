@@ -276,7 +276,7 @@ SPECS += [
        "Close holes, orient normals and remove broken faces and loose parts from a 3D model so it prints well.", ("analizar-stl", "reducir-poligonos")),
     op("reducir-poligonos", "reduce-polygons", "Reducir polígonos", "Reduce polygons", ReducirOptions,
        "Reduce los triángulos de un modelo 3D conservando su forma, para que pese menos y se abra antes.",
-       "Reduce a 3D model's triangles while keeping its shape, so it is lighter and opens faster.", ("reparar-stl", "analizar-stl")),
+       "Reduce a 3D model's triangles while keeping its shape, so it is lighter and opens faster.", ("reparar-stl", "comprimir-glb", "analizar-stl")),
     op("escalar-modelo-3d", "scale-3d-model", "Escalar modelo 3D", "Scale 3D model", EscalarOptions,
        "Cambia el tamaño de un modelo 3D por un factor o hasta una medida exacta en milímetros.",
        "Resize a 3D model by a factor or to an exact size in millimetres.", ("cambiar-unidades-stl", "analizar-stl")),

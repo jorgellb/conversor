@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Comprimir GLB reduce el tamaño de modelos glTF binarios para que una web, una tienda en línea o una aplicación de realidad aumentada los cargue antes. La geometría se comprime con Draco, el formato de Google que leen three.js, Babylon.js, model-viewer y Blender, o con meshopt, que se descomprime aún más rápido en el navegador.",
+    "Antes de comprimir se juntan los accesores, materiales y texturas repetidos, se quita lo que nada usa y se unen los vértices idénticos. La calidad alta usa 14 bits para las posiciones, 10 para las normales y 12 para las coordenadas de textura, sin diferencias visibles; la media y la baja ahorran más a cambio de algo de precisión.",
+    "Las texturas suelen ser lo que más pesa: puedes pasarlas a WebP y limitar su tamaño máximo a 2048, 1024 o 512 píxeles. Cada textura solo se cambia si queda más pequeña, y si el modelo ya estaba tan comprimido como se puede, se devuelve el original sin tocarlo: nunca sale un archivo mayor.",
+    "También sirve al revés: con «Ninguna» se quita la compresión para programas que no leen Draco ni meshopt. Todo ocurre en tu navegador; el modelo no se sube a ningún sitio."
+  ],
+  "steps": [
+    "Elige uno o varios GLB.",
+    "Escoge Draco o meshopt, la calidad y qué hacer con las texturas.",
+    "Descarga el GLB comprimido."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuánto ocupa menos?",
+      "a": "La geometría suele bajar a una décima parte; con texturas en WebP, el total suele quedarse entre el 20 y el 50 %."
+    },
+    {
+      "q": "¿Draco o meshopt?",
+      "a": "Draco comprime algo más y lo lee casi todo; meshopt se abre más rápido en webs con modelos grandes."
+    },
+    {
+      "q": "¿Pierdo calidad?",
+      "a": "Con la calidad alta, no a simple vista; la baja puede notarse en piezas muy pequeñas o detalladas."
+    },
+    {
+      "q": "¿Sirve para un glTF con archivos aparte?",
+      "a": "No: elige un GLB o un glTF con todo incrustado. Puedes convertirlo antes a GLB."
+    },
+    {
+      "q": "¿Y si mi modelo es un STL?",
+      "a": "Pásalo primero a GLB con STL a GLB y después comprímelo aquí."
+    }
+  ]
+}

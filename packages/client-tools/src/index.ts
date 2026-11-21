@@ -67,6 +67,9 @@ export type { ImageCodec, Decoded, DrawTarget, Fit, ImageFormat } from "./imaget
 export type { Rgba } from "./rasters";
 export type { WasmLoader, WasmName } from "./wasmcodecs";
 export { sniffImage } from "./sniff";
+// glTF Transform solo se carga cuando hace falta (D-257): sus dependencias (ndarray) construyen funciones a partir de
+// texto, que la CSP prohíbe; importarlo aquí rompía todas las páginas que usan este índice en el hilo principal.
+export type { Feature, GcodeLayer, GcodeModel } from "./gcode3d";
 export type { PdfRenderer, RenderDoc, Raster, Encoder } from "./render";
 export type { FontLoader, FontKind, FontStyle } from "./pdfutil";
 export type { Rasterizer } from "./stamp";
@@ -100,6 +103,7 @@ export const CLIENT_TOOLS = [
   "jpg-a-png", "webp-a-png", "gif-a-png", "jpg-a-webp", "png-a-webp", "avif-a-jpg", "bmp-a-jpg", "tiff-a-jpg", "jpg-a-avif",
   "png-a-ico", "convertir-imagen", "svg-a-png", "svg-a-jpg", "crear-favicon", "quitar-metadatos-foto", "imagen-a-base64",
   "leer-codigo-qr", "generar-codigo-qr", "crear-collage", "mermaid-a-svg", "mermaid-a-png", "crear-tarjeta",
+  "comprimir-glb",
 ] as const;
 
 export type ClientToolSlug = (typeof CLIENT_TOOLS)[number];
@@ -159,6 +163,8 @@ export async function runClientTool(slug: string, inputs: InFile[], options: Any
     case "mermaid-a-svg":
     case "mermaid-a-png":
       return exportarMermaid(files, options, slug === "mermaid-a-svg" ? "svg" : "png", images);
+    case "comprimir-glb":
+      return (await import("./glb")).comprimirGlb(files, options, { wasm: env.wasm, codec, progress: p, locale: env.locale });
     case "unir-pdf":
       return unir(files, options, env.fonts, p);
     case "dividir-pdf":

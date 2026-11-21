@@ -40,7 +40,7 @@ export async function runInBrowser(slug: string, files: File[], options: Record<
 }
 
 /** Peticiones del editor al worker (`__render`, `__inspect`) que devuelven datos en lugar de archivos. */
-export async function askWorker<T>(kind: "__render" | "__inspect" | "__text" | "__xfdf_export" | "__xfdf_import" | "__open" | "__metadata" | "__bookmarks", file: File, options: Record<string, unknown> = {},
+export async function askWorker<T>(kind: "__render" | "__inspect" | "__text" | "__xfdf_export" | "__xfdf_import" | "__open" | "__metadata" | "__bookmarks" | "__gcode" | "__glb_plain", file: File, options: Record<string, unknown> = {},
                                    passwords?: Record<string, string>, onProgress?: (f: number) => void): Promise<T> {
   const input: InFile = { name: file.name, bytes: new Uint8Array(await file.arrayBuffer()) };
   const w = getWorker();

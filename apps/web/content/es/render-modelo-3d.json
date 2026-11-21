@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Render de modelo 3D crea una imagen PNG limpia de tu modelo STL, 3MF, GLB, OBJ, PLY o AMF, lista para una ficha de producto, un catálogo de piezas imprimibles, una publicación en Printables o Thingiverse, o la miniatura de un archivo. No hace falta abrir Blender ni un laminador.",
+    "Elige el tamaño de la imagen (512, 1024 o 2048 píxeles), la vista (isométrica, de frente, desde arriba o de lado) y el fondo: transparente, para ponerla sobre cualquier color, blanco o del color que quieras. El modelo se encuadra solo para llenar la imagen, con una iluminación de estudio suave que marca bien la forma.",
+    "Puedes conservar los colores y materiales del archivo o pintar todo el modelo de un color, por ejemplo el del filamento con el que lo vas a imprimir. Si eliges varios modelos a la vez, sale una imagen de cada uno con los mismos ajustes y un ZIP con todas, para hacer un catálogo coherente de una sola vez.",
+    "Las imágenes se pintan en tu navegador con WebGL: los modelos no se suben a ningún servidor. Si una pieza sale tumbada, cambia el eje vertical en las opciones adicionales."
+  ],
+  "steps": [
+    "Elige uno o varios modelos 3D.",
+    "Ajusta el tamaño, la vista, el fondo y el color.",
+    "Crea las imágenes y descárgalas."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo poner el fondo transparente?",
+      "a": "Sí, es la opción por defecto: el PNG lleva transparencia alrededor del modelo."
+    },
+    {
+      "q": "¿Por qué mi pieza sale tumbada?",
+      "a": "Su programa usa otro eje vertical: cámbialo a Z o Y en las opciones adicionales."
+    },
+    {
+      "q": "¿Cuántos modelos a la vez?",
+      "a": "Hasta veinte; salen en un ZIP con una imagen por modelo."
+    },
+    {
+      "q": "¿Se ven las texturas?",
+      "a": "Sí, las del GLB y las del OBJ si eliges también su MTL y sus imágenes."
+    },
+    {
+      "q": "¿Y si quiero girarlo a mano?",
+      "a": "Abre el modelo en el visor 3D, colócalo como quieras y guarda una captura."
+    }
+  ]
+}

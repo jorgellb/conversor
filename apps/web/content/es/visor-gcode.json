@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "El visor de G-code muestra en 3D, capa a capa, lo que va a hacer tu impresora: perímetros, relleno, soportes, puentes y desplazamientos. Abre el G-code de PrusaSlicer, OrcaSlicer, Bambu Studio, Cura, SuperSlicer o Simplify3D, y también el bgcode binario de las impresoras de Prusa, sin pasarlo antes a texto.",
+    "Mueve la capa de arriba para ver cómo se construye la pieza o fija también la de abajo para mirar solo un tramo de alturas. Con «Solo la capa de arriba» revisas una capa concreta, por ejemplo la primera, para comprobar la adherencia, o la del cambio de color. La reproducción recorre la capa con la boquilla y sigue a la siguiente, como una impresión a cámara rápida.",
+    "Los colores siguen el tipo de extrusión que escribe el laminador, el extrusor de las impresoras con varias herramientas o la velocidad de cada tramo, del azul lento al rojo rápido. El panel resume el tiempo estimado, los metros de filamento, el número de capas y el laminador que generó el archivo.",
+    "El G-code se lee en tu navegador con un lector propio y no sale de tu dispositivo. Archivos de cientos de megas se abren en pocos segundos; por encima de seis millones de tramos se muestran los primeros y se avisa."
+  ],
+  "steps": [
+    "Pulsa «Abrir G-code» o arrastra el archivo.",
+    "Mueve las capas, elige el color y activa los desplazamientos si quieres.",
+    "Reproduce la impresión o guarda una captura."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo abrir un bgcode de Prusa?",
+      "a": "Sí, directamente: se descomprime en tu navegador y se comprueba cada bloque."
+    },
+    {
+      "q": "¿Por qué no aparecen los tipos de extrusión?",
+      "a": "Porque el laminador no los escribió en el G-code; activa sus comentarios o colorea por velocidad."
+    },
+    {
+      "q": "¿El tiempo es exacto?",
+      "a": "Es el que calcula el laminador; la impresora puede tardar algo más o menos."
+    },
+    {
+      "q": "¿Sirve para impresoras de resina?",
+      "a": "No: solo para G-code de impresoras de filamento."
+    },
+    {
+      "q": "¿Qué son las líneas azules claras?",
+      "a": "Los desplazamientos sin extruir, que solo se ven si activas «Ver los desplazamientos»."
+    }
+  ]
+}

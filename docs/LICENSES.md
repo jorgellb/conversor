@@ -107,6 +107,11 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | linkedom 0.18.15 (npm, desarrollo) | ISC | DOM para las pruebas de la exportación de escribir-pdf; no llega al build |
 | qrcode-generator 1.5.2 (npm) | MIT | códigos QR de crear-tarjeta en el editor y en el worker (F6-N2, D-232) |
 | mermaid 12.2.0 (npm) | MIT | mermaid-a-svg y mermaid-a-png en el navegador (F6-N1, D-231); sus dependencias son MIT, ISC, BSD, Apache-2.0 y DOMPurify (MPL-2.0 o Apache-2.0); elkjs (EPL-2.0) no se empaqueta |
+| three 0.187.0 (npm) | MIT | visor-3d, visor-gcode y render-modelo-3d (F7-H, D-257): escena WebGL, órbita y los cargadores de STL, OBJ/MTL, 3MF, PLY, glTF y AMF; su copia de fflate (MIT) y su decodificador de meshopt (MIT) |
+| @gltf-transform/core, functions y extensions 4.5.1 (npm) | MIT | comprimir-glb y la lectura de GLB con Draco del visor (F7-H, D-257) |
+| draco3d 1.5.9 (npm) | Apache-2.0 | codificador y decodificador Draco en WebAssembly para comprimir-glb y el visor; el .wasm se sirve desde `public/codecs/` (F7-H, D-257) |
+| meshoptimizer 1.3.0 (npm) | MIT | compresión meshopt (EXT_meshopt_compression) de comprimir-glb (F7-H, D-257) |
+| Lector de G-code y bgcode del visor (`packages/client-tools/src/gcode3d.ts`) | propio | escrito a partir de la especificación publicada por Prusa, como el del servidor (D-255); sin código de libbgcode ni de los visores de PrusaSlicer u OrcaSlicer (AGPL) |
 | FluidSynth (Debian) y el banco FluidR3_GM (fluid-soundfont-gm) en `workerav` | LGPL-2.1-or-later; MIT | midi-a-mp3 y midi-a-wav, FluidSynth como programa externo (F6-L, D-228) |
 | MuseScore 3 (musescore3, Debian) en `workeroffice` | GPL-3.0 | musicxml-a-pdf y midi-a-pdf como programa externo sin interfaz (F6-L, D-228) |
 | libarchive-c 5.3 y libarchive13 (Debian) en `workerutils`; pysubs2 1.9.1 en el extra `utils` | CC0-1.0 y BSD-2-Clause; MIT | Comprimidos RAR, 7z y tar y subtítulos SRT, WebVTT y ASS (F6-E, D-217); sin unrar ni p7zip (11) |

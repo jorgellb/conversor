@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "El visor 3D abre modelos STL, OBJ, 3MF, PLY, GLB, glTF y AMF directamente en tu navegador con WebGL, sin instalar nada y sin subir el archivo a ningún servidor. Sirve para revisar una pieza antes de imprimirla, enseñar un diseño a un cliente desde el móvil o comprobar que una conversión ha salido bien.",
+    "Arrastra para girar alrededor del modelo, usa la rueda o dos dedos para acercarte y cambia entre las vistas isométrica, de frente, desde arriba y de lado. La rejilla da escala, la caja muestra las medidas de ancho, fondo y alto en milímetros, y con «Medir entre dos puntos» haces clic en dos sitios de la superficie para saber la distancia exacta entre ellos.",
+    "La sección corta el modelo por un plano en X, Y o Z y deja ver su interior: paredes, huecos o piezas escondidas dentro de un ensamblaje. También puedes verlo en alambre para revisar la malla de triángulos, pintarlo de un color para distinguir mejor la forma y guardar lo que ves como una captura PNG.",
+    "Un OBJ se abre con sus materiales si eliges a la vez el MTL y las texturas; un glTF con archivos aparte, igual con su .bin. Los GLB comprimidos con Draco o meshopt se abren sin problema. El STL no guarda unidades: se suponen milímetros, como en impresión 3D."
+  ],
+  "steps": [
+    "Pulsa «Abrir modelos» o arrastra el archivo.",
+    "Gira, mide o corta en sección con las herramientas del lateral.",
+    "Guarda una captura PNG si la necesitas."
+  ],
+  "faq": [
+    {
+      "q": "¿Se sube mi modelo?",
+      "a": "No. Todo ocurre en tu navegador con WebGL; el archivo no sale de tu dispositivo."
+    },
+    {
+      "q": "¿Por qué mi modelo sale tumbado?",
+      "a": "Cada programa usa un eje vertical: cambia «Eje vertical» a Z o Y en el lateral."
+    },
+    {
+      "q": "¿Cuánto puede pesar el archivo?",
+      "a": "Hasta 512 MB; con modelos de millones de triángulos el móvil puede ir lento."
+    },
+    {
+      "q": "¿Puedo ver un G-code?",
+      "a": "Para el G-code y el bgcode está el visor de G-code, que lo muestra capa a capa."
+    },
+    {
+      "q": "¿Se ven los colores del 3MF?",
+      "a": "Sí, los colores y materiales básicos del 3MF, del AMF, del PLY y del glTF."
+    }
+  ]
+}

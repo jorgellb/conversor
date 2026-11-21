@@ -702,6 +702,52 @@ def image(slug_es, slug_en, name_es, name_en, options, inputs, outputs, summary_
     return client(slug_es, slug_en, name_es, name_en, options, inputs, outputs, summary_es, summary_en, category="image", phase="F5", **kw)
 
 
+# ——— visor-3d, visor-gcode, comprimir-glb y render-modelo-3d (7.20, F7-H, D-257) ———
+
+MESH_VIEW = ("stl", "obj", "mtl", "3mf", "ply", "glb", "gltf", "amf")
+
+
+class ComprimirGlbOptions(BaseModel):
+    """comprimir-glb (D-257): Draco [alta: 14, 10 y 12 bits], meshopt o sin compresión; soldar [sí]; texturas a WebP y
+    tamaño máximo. Nunca devuelve un archivo mayor."""
+
+    metodo: Literal["draco", "meshopt", "ninguno"] = opt("draco", "Compresión", "Compression", labels={
+        "draco": ("Draco (la más compatible)", "Draco (most compatible)"),
+        "meshopt": ("meshopt (más rápida de abrir)", "meshopt (faster to open)"),
+        "ninguno": ("Ninguna (quitar la compresión)", "None (remove compression)")})
+    calidad: Literal["alta", "media", "baja"] = opt("alta", "Calidad de la geometría", "Geometry quality", labels={
+        "alta": ("Alta (sin diferencias visibles)", "High (no visible difference)"),
+        "media": ("Media", "Medium"), "baja": ("Baja (lo más pequeño)", "Low (smallest)")},
+        show_if={"metodo": ("draco", "meshopt")})
+    soldar: bool = opt(True, "Unir vértices repetidos", "Merge repeated vertices", advanced=True)
+    texturas: Literal["conservar", "webp"] = opt("conservar", "Texturas", "Textures", labels={
+        "conservar": ("Dejarlas como están", "Keep them as they are"), "webp": ("Pasarlas a WebP", "Convert them to WebP")})
+    tamano_textura: Literal[0, 512, 1024, 2048, 4096] = opt(0, "Tamaño máximo de las texturas", "Maximum texture size", labels={
+        "0": ("Sin cambiar", "Unchanged"), "512": ("512 px", "512 px"), "1024": ("1024 px", "1024 px"), "2048": ("2048 px", "2048 px"),
+        "4096": ("4096 px", "4096 px")}, advanced=True)
+    calidad_textura: int = opt(85, "Calidad de las texturas WebP", "WebP texture quality", ge=40, le=100, advanced=True,
+                               show_if={"texturas": ("webp",)})
+
+
+class RenderModeloOptions(BaseModel):
+    """render-modelo-3d (D-257): tamaño [1024 px], ángulo [isométrico], fondo [transparente] y color [el del modelo]."""
+
+    tamano: Literal[512, 1024, 2048] = opt(1024, "Tamaño", "Size", labels={"512": ("512 px", "512 px"), "1024": ("1024 px", "1024 px"),
+                                                                       "2048": ("2048 px", "2048 px")})
+    angulo: Literal["isometrico", "frontal", "superior", "lateral"] = opt("isometrico", "Vista", "View", labels={
+        "isometrico": ("Isométrica", "Isometric"), "frontal": ("De frente", "Front"), "superior": ("Desde arriba", "Top"),
+        "lateral": ("De lado", "Side")})
+    fondo: Literal["transparente", "blanco", "color"] = opt("transparente", "Fondo", "Background", labels={
+        "transparente": ("Transparente", "Transparent"), "blanco": ("Blanco", "White"), "color": ("Un color", "A colour")})
+    color_fondo: str = opt("#F3F4F6", "Color del fondo", "Background colour", pattern=COLOR_PATTERN, show_if={"fondo": ("color",)})
+    color_modelo: Literal["original", "propio"] = opt("original", "Color del modelo", "Model colour", labels={
+        "original": ("El del archivo", "The file's own"), "propio": ("Uno a elegir", "One of my choice")})
+    color: str = opt("#E67610", "Color", "Colour", pattern=COLOR_PATTERN, show_if={"color_modelo": ("propio",)})
+    eje_vertical: Literal["auto", "z", "y"] = opt("auto", "Eje vertical", "Up axis", labels={
+        "auto": ("Según el formato", "By format"), "z": ("Z (impresión 3D)", "Z (3D printing)"), "y": ("Y (glTF, juegos)", "Y (glTF, games)")},
+        advanced=True)
+
+
 SPECS: list[ToolSpec] = [
     client("unir-pdf", "merge-pdf", "Unir PDF", "Merge PDF", UnirOptions, PDF, PDF,
            "Junta varios PDF en uno, en el orden que elijas.", "Combine several PDFs into one, in the order you choose.",
@@ -920,6 +966,22 @@ SPECS: list[ToolSpec] = [
            "Escribe o pega código Mermaid y descarga el diagrama en SVG, con vista previa en vivo y sin subir nada.",
            "Write or paste Mermaid code and download the diagram as SVG, with a live preview and nothing uploaded.",
            category="image", phase="F6", related=("mermaid-a-png", "svg-a-png", "drawio-a-pdf")),
+    client("visor-3d", "3d-viewer", "Visor 3D", "3D viewer", NoOptions, MESH_VIEW, ("png",),
+           "Abre STL, OBJ, 3MF, PLY, GLB y AMF en el navegador: gira, mide, corta en sección y guarda una captura.",
+           "Open STL, OBJ, 3MF, PLY, GLB and AMF in your browser: orbit, measure, section and save a screenshot.",
+           category="3d", phase="F7", max_files=20, related=("render-modelo-3d", "convertir-modelo-3d", "analizar-modelo-3d")),
+    client("visor-gcode", "gcode-viewer", "Visor de G-code", "G-code viewer", NoOptions, ("gcode", "bgcode"), ("png",),
+           "Mira capa a capa el G-code o el bgcode de tu impresora 3D, con tipos de extrusión, desplazamientos y reproducción.",
+           "View your 3D printer's G-code or bgcode layer by layer, with extrusion types, travel moves and playback.",
+           category="3d", phase="F7", max_files=1, related=("analizar-gcode", "gcode-a-imagen", "bgcode-a-gcode")),
+    client("comprimir-glb", "compress-glb", "Comprimir GLB", "Compress GLB", ComprimirGlbOptions, ("glb", "gltf"), ("glb", "zip"),
+           "Reduce el tamaño de modelos GLB con Draco o meshopt y texturas WebP, en tu navegador y sin subirlos.",
+           "Shrink GLB models with Draco or meshopt and WebP textures, in your browser and without uploading them.",
+           category="3d", phase="F7", max_files=20, related=("reducir-poligonos", "stl-a-glb", "visor-3d")),
+    client("render-modelo-3d", "render-3d-model", "Render de modelo 3D", "Render 3D model", RenderModeloOptions, MESH_VIEW, ("png", "zip"),
+           "Crea una imagen PNG de tu modelo 3D (STL, 3MF, GLB, OBJ…) desde el ángulo que quieras, con fondo transparente.",
+           "Create a PNG image of your 3D model (STL, 3MF, GLB, OBJ…) from any angle, with a transparent background.",
+           category="3d", phase="F7", max_files=20, related=("visor-3d", "convertir-modelo-3d", "extraer-miniatura-gcode")),
     client("mermaid-a-png", "mermaid-to-png", "Mermaid a PNG", "Mermaid to PNG", MermaidPngOptions, ("mmd",), ("png",),
            "Convierte diagramas Mermaid (flujos, secuencias, Gantt, clases…) en imágenes PNG nítidas en tu navegador.",
            "Turn Mermaid diagrams (flowcharts, sequences, Gantt, classes…) into sharp PNG images in your browser.",

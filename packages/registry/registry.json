@@ -10927,6 +10927,508 @@
       }
     },
     {
+      "slug_es": "visor-3d",
+      "slug_en": "3d-viewer",
+      "name_es": "Visor 3D",
+      "name_en": "3D viewer",
+      "summary_es": "Abre STL, OBJ, 3MF, PLY, GLB y AMF en el navegador: gira, mide, corta en sección y guarda una captura.",
+      "summary_en": "Open STL, OBJ, 3MF, PLY, GLB and AMF in your browser: orbit, measure, section and save a screenshot.",
+      "category": "3d",
+      "where": "client",
+      "worker_group": null,
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "mtl",
+        "3mf",
+        "ply",
+        "glb",
+        "gltf",
+        "amf"
+      ],
+      "outputs": [
+        "png"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "render-modelo-3d",
+        "convertir-modelo-3d",
+        "analizar-modelo-3d"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "visor-gcode",
+      "slug_en": "gcode-viewer",
+      "name_es": "Visor de G-code",
+      "name_en": "G-code viewer",
+      "summary_es": "Mira capa a capa el G-code o el bgcode de tu impresora 3D, con tipos de extrusión, desplazamientos y reproducción.",
+      "summary_en": "View your 3D printer's G-code or bgcode layer by layer, with extrusion types, travel moves and playback.",
+      "category": "3d",
+      "where": "client",
+      "worker_group": null,
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "gcode",
+        "bgcode"
+      ],
+      "outputs": [
+        "png"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 1,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "analizar-gcode",
+        "gcode-a-imagen",
+        "bgcode-a-gcode"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "comprimir-glb",
+      "slug_en": "compress-glb",
+      "name_es": "Comprimir GLB",
+      "name_en": "Compress GLB",
+      "summary_es": "Reduce el tamaño de modelos GLB con Draco o meshopt y texturas WebP, en tu navegador y sin subirlos.",
+      "summary_en": "Shrink GLB models with Draco or meshopt and WebP textures, in your browser and without uploading them.",
+      "category": "3d",
+      "where": "client",
+      "worker_group": null,
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "glb",
+        "gltf"
+      ],
+      "outputs": [
+        "glb",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "reducir-poligonos",
+        "stl-a-glb",
+        "visor-3d"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "comprimir-glb (D-257): Draco [alta: 14, 10 y 12 bits], meshopt o sin compresión; soldar [sí]; texturas a WebP y\ntamaño máximo. Nunca devuelve un archivo mayor.",
+        "properties": {
+          "metodo": {
+            "default": "draco",
+            "enum": [
+              "draco",
+              "meshopt",
+              "ninguno"
+            ],
+            "title": "Compresión",
+            "type": "string",
+            "x-labels": {
+              "draco": {
+                "en": "Draco (most compatible)",
+                "es": "Draco (la más compatible)"
+              },
+              "meshopt": {
+                "en": "meshopt (faster to open)",
+                "es": "meshopt (más rápida de abrir)"
+              },
+              "ninguno": {
+                "en": "None (remove compression)",
+                "es": "Ninguna (quitar la compresión)"
+              }
+            },
+            "x-title": {
+              "en": "Compression",
+              "es": "Compresión"
+            }
+          },
+          "calidad": {
+            "default": "alta",
+            "enum": [
+              "alta",
+              "media",
+              "baja"
+            ],
+            "title": "Calidad de la geometría",
+            "type": "string",
+            "x-labels": {
+              "alta": {
+                "en": "High (no visible difference)",
+                "es": "Alta (sin diferencias visibles)"
+              },
+              "baja": {
+                "en": "Low (smallest)",
+                "es": "Baja (lo más pequeño)"
+              },
+              "media": {
+                "en": "Medium",
+                "es": "Media"
+              }
+            },
+            "x-show-if": {
+              "metodo": [
+                "draco",
+                "meshopt"
+              ]
+            },
+            "x-title": {
+              "en": "Geometry quality",
+              "es": "Calidad de la geometría"
+            }
+          },
+          "soldar": {
+            "default": true,
+            "title": "Unir vértices repetidos",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Merge repeated vertices",
+              "es": "Unir vértices repetidos"
+            }
+          },
+          "texturas": {
+            "default": "conservar",
+            "enum": [
+              "conservar",
+              "webp"
+            ],
+            "title": "Texturas",
+            "type": "string",
+            "x-labels": {
+              "conservar": {
+                "en": "Keep them as they are",
+                "es": "Dejarlas como están"
+              },
+              "webp": {
+                "en": "Convert them to WebP",
+                "es": "Pasarlas a WebP"
+              }
+            },
+            "x-title": {
+              "en": "Textures",
+              "es": "Texturas"
+            }
+          },
+          "tamano_textura": {
+            "default": 0,
+            "enum": [
+              0,
+              512,
+              1024,
+              2048,
+              4096
+            ],
+            "title": "Tamaño máximo de las texturas",
+            "type": "integer",
+            "x-advanced": true,
+            "x-labels": {
+              "0": {
+                "en": "Unchanged",
+                "es": "Sin cambiar"
+              },
+              "1024": {
+                "en": "1024 px",
+                "es": "1024 px"
+              },
+              "2048": {
+                "en": "2048 px",
+                "es": "2048 px"
+              },
+              "4096": {
+                "en": "4096 px",
+                "es": "4096 px"
+              },
+              "512": {
+                "en": "512 px",
+                "es": "512 px"
+              }
+            },
+            "x-title": {
+              "en": "Maximum texture size",
+              "es": "Tamaño máximo de las texturas"
+            }
+          },
+          "calidad_textura": {
+            "default": 85,
+            "maximum": 100,
+            "minimum": 40,
+            "title": "Calidad de las texturas WebP",
+            "type": "integer",
+            "x-advanced": true,
+            "x-show-if": {
+              "texturas": [
+                "webp"
+              ]
+            },
+            "x-title": {
+              "en": "WebP texture quality",
+              "es": "Calidad de las texturas WebP"
+            }
+          }
+        },
+        "title": "ComprimirGlbOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "render-modelo-3d",
+      "slug_en": "render-3d-model",
+      "name_es": "Render de modelo 3D",
+      "name_en": "Render 3D model",
+      "summary_es": "Crea una imagen PNG de tu modelo 3D (STL, 3MF, GLB, OBJ…) desde el ángulo que quieras, con fondo transparente.",
+      "summary_en": "Create a PNG image of your 3D model (STL, 3MF, GLB, OBJ…) from any angle, with a transparent background.",
+      "category": "3d",
+      "where": "client",
+      "worker_group": null,
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "mtl",
+        "3mf",
+        "ply",
+        "glb",
+        "gltf",
+        "amf"
+      ],
+      "outputs": [
+        "png",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 20,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "visor-3d",
+        "convertir-modelo-3d",
+        "extraer-miniatura-gcode"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "render-modelo-3d (D-257): tamaño [1024 px], ángulo [isométrico], fondo [transparente] y color [el del modelo].",
+        "properties": {
+          "tamano": {
+            "default": 1024,
+            "enum": [
+              512,
+              1024,
+              2048
+            ],
+            "title": "Tamaño",
+            "type": "integer",
+            "x-labels": {
+              "1024": {
+                "en": "1024 px",
+                "es": "1024 px"
+              },
+              "2048": {
+                "en": "2048 px",
+                "es": "2048 px"
+              },
+              "512": {
+                "en": "512 px",
+                "es": "512 px"
+              }
+            },
+            "x-title": {
+              "en": "Size",
+              "es": "Tamaño"
+            }
+          },
+          "angulo": {
+            "default": "isometrico",
+            "enum": [
+              "isometrico",
+              "frontal",
+              "superior",
+              "lateral"
+            ],
+            "title": "Vista",
+            "type": "string",
+            "x-labels": {
+              "frontal": {
+                "en": "Front",
+                "es": "De frente"
+              },
+              "isometrico": {
+                "en": "Isometric",
+                "es": "Isométrica"
+              },
+              "lateral": {
+                "en": "Side",
+                "es": "De lado"
+              },
+              "superior": {
+                "en": "Top",
+                "es": "Desde arriba"
+              }
+            },
+            "x-title": {
+              "en": "View",
+              "es": "Vista"
+            }
+          },
+          "fondo": {
+            "default": "transparente",
+            "enum": [
+              "transparente",
+              "blanco",
+              "color"
+            ],
+            "title": "Fondo",
+            "type": "string",
+            "x-labels": {
+              "blanco": {
+                "en": "White",
+                "es": "Blanco"
+              },
+              "color": {
+                "en": "A colour",
+                "es": "Un color"
+              },
+              "transparente": {
+                "en": "Transparent",
+                "es": "Transparente"
+              }
+            },
+            "x-title": {
+              "en": "Background",
+              "es": "Fondo"
+            }
+          },
+          "color_fondo": {
+            "default": "#F3F4F6",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "title": "Color del fondo",
+            "type": "string",
+            "x-show-if": {
+              "fondo": [
+                "color"
+              ]
+            },
+            "x-title": {
+              "en": "Background colour",
+              "es": "Color del fondo"
+            }
+          },
+          "color_modelo": {
+            "default": "original",
+            "enum": [
+              "original",
+              "propio"
+            ],
+            "title": "Color del modelo",
+            "type": "string",
+            "x-labels": {
+              "original": {
+                "en": "The file's own",
+                "es": "El del archivo"
+              },
+              "propio": {
+                "en": "One of my choice",
+                "es": "Uno a elegir"
+              }
+            },
+            "x-title": {
+              "en": "Model colour",
+              "es": "Color del modelo"
+            }
+          },
+          "color": {
+            "default": "#E67610",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "title": "Color",
+            "type": "string",
+            "x-show-if": {
+              "color_modelo": [
+                "propio"
+              ]
+            },
+            "x-title": {
+              "en": "Colour",
+              "es": "Color"
+            }
+          },
+          "eje_vertical": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "z",
+              "y"
+            ],
+            "title": "Eje vertical",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "By format",
+                "es": "Según el formato"
+              },
+              "y": {
+                "en": "Y (glTF, games)",
+                "es": "Y (glTF, juegos)"
+              },
+              "z": {
+                "en": "Z (3D printing)",
+                "es": "Z (impresión 3D)"
+              }
+            },
+            "x-title": {
+              "en": "Up axis",
+              "es": "Eje vertical"
+            }
+          }
+        },
+        "title": "RenderModeloOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "mermaid-a-png",
       "slug_en": "mermaid-to-png",
       "name_es": "Mermaid a PNG",
@@ -41421,6 +41923,7 @@
       "secret_fields": [],
       "related": [
         "reparar-stl",
+        "comprimir-glb",
         "analizar-stl"
       ],
       "canonical_of": null,

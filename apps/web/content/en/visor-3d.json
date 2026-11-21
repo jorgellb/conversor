@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "The 3D viewer opens STL, OBJ, 3MF, PLY, GLB, glTF and AMF models right in your browser with WebGL, with nothing to install and without uploading the file to any server. Use it to check a part before printing it, show a design to a client from your phone or make sure a conversion came out well.",
+    "Drag to orbit around the model, use the wheel or two fingers to zoom and switch between isometric, front, top and side views. The grid gives scale, the box shows width, depth and height in millimetres, and with “Measure between two points” you click two places on the surface to get the exact distance between them.",
+    "The section cuts the model along a plane in X, Y or Z and shows its inside: walls, cavities or parts hidden inside an assembly. You can also view it as a wireframe to check the triangle mesh, paint it one colour to see the shape better and save what you see as a PNG screenshot.",
+    "An OBJ opens with its materials if you choose the MTL and textures at the same time; a glTF with separate files, likewise with its .bin. GLB files compressed with Draco or meshopt open without trouble. STL stores no units: millimetres are assumed, as in 3D printing."
+  ],
+  "steps": [
+    "Press “Open models” or drop the file.",
+    "Orbit, measure or section with the side tools.",
+    "Save a PNG screenshot if you need one."
+  ],
+  "faq": [
+    {
+      "q": "Is my model uploaded?",
+      "a": "No. Everything happens in your browser with WebGL; the file does not leave your device."
+    },
+    {
+      "q": "Why is my model lying down?",
+      "a": "Each program uses its own up axis: change “Up axis” to Z or Y in the side panel."
+    },
+    {
+      "q": "How big can the file be?",
+      "a": "Up to 512 MB; with models of millions of triangles a phone may be slow."
+    },
+    {
+      "q": "Can I view G-code?",
+      "a": "For G-code and bgcode there is the G-code viewer, which shows it layer by layer."
+    },
+    {
+      "q": "Are 3MF colours shown?",
+      "a": "Yes, the basic colours and materials of 3MF, AMF, PLY and glTF."
+    }
+  ]
+}

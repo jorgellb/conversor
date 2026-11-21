@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Compress GLB shrinks binary glTF models so a website, online shop or augmented reality app loads them faster. Geometry is compressed with Draco, Google's format read by three.js, Babylon.js, model-viewer and Blender, or with meshopt, which decompresses even faster in the browser.",
+    "Before compressing, repeated accessors, materials and textures are merged, anything unused is removed and identical vertices are welded. High quality uses 14 bits for positions, 10 for normals and 12 for texture coordinates, with no visible difference; medium and low save more at the cost of some precision.",
+    "Textures are usually the heaviest part: you can convert them to WebP and cap their size at 2048, 1024 or 512 pixels. Each texture is only changed if it gets smaller, and if the model was already as compressed as possible, the original is returned untouched: you never get a bigger file.",
+    "It also works the other way: with “None” compression is removed for programs that do not read Draco or meshopt. Everything happens in your browser; the model is not uploaded anywhere."
+  ],
+  "steps": [
+    "Choose one or more GLB files.",
+    "Pick Draco or meshopt, the quality and what to do with textures.",
+    "Download the compressed GLB."
+  ],
+  "faq": [
+    {
+      "q": "How much smaller is it?",
+      "a": "Geometry usually drops to a tenth; with WebP textures, the total usually ends up between 20 and 50%."
+    },
+    {
+      "q": "Draco or meshopt?",
+      "a": "Draco compresses a bit more and is read almost everywhere; meshopt opens faster on websites with large models."
+    },
+    {
+      "q": "Do I lose quality?",
+      "a": "With high quality, not to the naked eye; low may show on very small or detailed parts."
+    },
+    {
+      "q": "Does it work for a glTF with separate files?",
+      "a": "No: choose a GLB or a glTF with everything embedded. You can convert it to GLB first."
+    },
+    {
+      "q": "What if my model is an STL?",
+      "a": "Turn it into GLB first with STL to GLB and then compress it here."
+    }
+  ]
+}

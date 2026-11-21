@@ -8,7 +8,7 @@ import { normalizeSvgRefs } from "./svgrefs";
 import { ToolError } from "./tool-error";
 
 export type WasmName = "mozjpeg_enc" | "oxipng" | "avif_enc" | "avif_dec" | "webp_enc" | "webp_enc_simd" | "webp_dec" | "resvg"
-  | "zxing_reader";
+  | "zxing_reader" | "draco_encoder" | "draco_decoder";
 export type WasmLoader = (name: WasmName) => Promise<WebAssembly.Module>;
 
 type Bytes = Uint8Array | Uint8ClampedArray;

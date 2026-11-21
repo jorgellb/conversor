@@ -1,0 +1,37 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Render 3D model creates a clean PNG image of your STL, 3MF, GLB, OBJ, PLY or AMF model, ready for a product sheet, a catalogue of printable parts, a post on Printables or Thingiverse, or a file thumbnail. There is no need to open Blender or a slicer.",
+    "Choose the image size (512, 1024 or 2048 pixels), the view (isometric, front, top or side) and the background: transparent, to place it on any colour, white or the colour you want. The model is framed automatically to fill the image, with soft studio lighting that brings out its shape.",
+    "You can keep the file's colours and materials or paint the whole model one colour, for example that of the filament you will print it with. If you choose several models at once, you get one image of each with the same settings and a ZIP with all of them, to build a consistent catalogue in one go.",
+    "Images are rendered in your browser with WebGL: the models are not uploaded to any server. If a part comes out lying down, change the up axis in the additional options."
+  ],
+  "steps": [
+    "Choose one or more 3D models.",
+    "Set the size, view, background and colour.",
+    "Create the images and download them."
+  ],
+  "faq": [
+    {
+      "q": "Can the background be transparent?",
+      "a": "Yes, it is the default: the PNG has transparency around the model."
+    },
+    {
+      "q": "Why is my part lying down?",
+      "a": "Its program uses another up axis: change it to Z or Y in the additional options."
+    },
+    {
+      "q": "How many models at once?",
+      "a": "Up to twenty; they come in a ZIP with one image per model."
+    },
+    {
+      "q": "Are textures shown?",
+      "a": "Yes, those in the GLB and those of the OBJ if you also choose its MTL and images."
+    },
+    {
+      "q": "What if I want to rotate it by hand?",
+      "a": "Open the model in the 3D viewer, place it as you like and save a screenshot."
+    }
+  ]
+}
