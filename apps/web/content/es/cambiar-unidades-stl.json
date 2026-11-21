@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Cambiar unidades de STL corrige el problema más frecuente al abrir un STL: que aparezca 25,4 veces más pequeño porque se exportó en pulgadas, o mil veces más pequeño porque se exportó en metros. El STL no guarda unidades, así que el laminador siempre lo lee en milímetros.",
+    "Indica en qué unidades está el archivo (pulgadas, centímetros, metros o milímetros) y a cuáles quieres pasarlo, y se aplica el factor exacto: 25,4 de pulgadas a milímetros, 10 de centímetros y 1000 de metros. La nota del resultado da las nuevas dimensiones para que compruebes que son las esperadas.",
+    "Muchos modelos de programas estadounidenses, de SketchUp o de arquitectura vienen en pulgadas o en metros. Si lo que quieres es cambiar el tamaño de la pieza y no sus unidades, usa Escalar modelo 3D. Para formatos que sí guardan unidades, como 3MF, usa su conversión, que las lee del archivo.",
+    "Puedes cambiar hasta diez STL a la vez y descargarlos en un ZIP. Cada archivo se procesa en un proceso aislado en nuestro servidor de la Unión Europea y se borra solo al caducar."
+  ],
+  "steps": [
+    "Sube el STL.",
+    "Elige sus unidades y a cuáles pasarlo.",
+    "Descarga el STL corregido."
+  ],
+  "faq": [
+    {
+      "q": "¿Cómo sé en qué unidades está?",
+      "a": "Si en el laminador mide unas 25 veces menos de lo esperado, está en pulgadas; si mide mil veces menos, en metros."
+    },
+    {
+      "q": "¿Pierde precisión?",
+      "a": "No: se multiplica cada coordenada por el factor exacto."
+    },
+    {
+      "q": "¿Y si es un OBJ?",
+      "a": "Usa Escalar modelo 3D con el factor 25,4 (de pulgadas) o 1000 (de metros)."
+    },
+    {
+      "q": "¿Puedo pasar de milímetros a pulgadas?",
+      "a": "Sí: elige milímetros como unidad del archivo y pulgadas como destino, por ejemplo para un programa que trabaja en pulgadas."
+    }
+  ]
+}

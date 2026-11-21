@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Scale 3D model changes a part's size before printing it: by a factor (0.5 for half, 2 for double) or to an exact size in millimetres on the axis you choose, for example so a figure is 120 mm tall or a box 80 mm wide.",
+    "With the final size, the factor is calculated from the model's current size and applied equally on all three axes, so proportions do not change. In the advanced options you can add a different factor per axis to stretch or flatten the part, for example to adjust a fit that comes out tight.",
+    "The result note gives the new dimensions in millimetres. If the model stores no units and comes out tiny or huge, you may not need to scale it but Change STL units, which converts from inches or metres to millimetres with the exact factor.",
+    "Supported formats: It accepts STL, OBJ, 3MF, PLY, AMF, GLB and OFF, up to ten files per task, and the result comes out in the same format unless you choose another. Each file is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the model.",
+    "Choose a factor or the final size and its axis.",
+    "Download the scaled model."
+  ],
+  "faq": [
+    {
+      "q": "Do holes get distorted?",
+      "a": "With the same factor on all three axes, no: everything scales equally. With different factors per axis, circles become ovals."
+    },
+    {
+      "q": "Can I scale several parts at once?",
+      "a": "Yes: upload up to ten and the same factor or size is applied to each."
+    },
+    {
+      "q": "Which units is the size in?",
+      "a": "Millimetres, which is how slicers read it."
+    }
+  ]
+}

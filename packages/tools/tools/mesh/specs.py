@@ -152,3 +152,150 @@ SPECS.append(ToolSpec(
     max_files=10, summary_es="Convierte modelos 3D entre STL, OBJ, 3MF, PLY, OFF, AMF, GLB, glTF, FBX, DAE, 3DS, VRML, X3D y USD.",
     summary_en="Convert 3D models between STL, OBJ, 3MF, PLY, OFF, AMF, GLB, glTF, FBX, DAE, 3DS, VRML, X3D and USD.",
     related=("stl-a-3mf", "stl-a-obj")))
+
+
+# ——— F7-F (7.20, D-253): herramientas de mallas ———
+
+MESH_IN = ("stl", "obj", "3mf", "ply", "amf", "glb", "off")
+FORMAT_OUT = {"mismo": ("El mismo que el original", "Same as the original"), "stl": ("STL", "STL"), "3mf": ("3MF", "3MF"),
+              "obj": ("OBJ", "OBJ")}
+ORIGIN = {"auto": ("Las del archivo (o milímetros)", "The file's (or millimetres)"), **UNIT_LABELS}
+
+
+def _fmt():
+    return opt("mismo", "Formato del resultado", "Output format", advanced=True, labels=FORMAT_OUT)
+
+
+def _origin():
+    return opt("auto", "Unidades del original", "Units of the original", advanced=True, labels=ORIGIN)
+
+
+class RepararOptions(BaseModel):
+    """reparar-stl: quitar piezas sueltas pequeñas [sí], unir piezas solapadas [sí] y formato [el mismo]."""
+
+    quitar_sueltas: bool = opt(True, "Quitar restos sueltos pequeños (menos del 1 % de los triángulos o del 2 % del tamaño)",
+                               "Remove small loose leftovers (under 1% of the triangles or 2% of the size)")
+    unir_solapes: bool = opt(True, "Unir piezas cerradas que se solapan (autointersecciones)", "Merge closed parts that overlap (self-intersections)")
+    unidades_origen: Literal["auto", "mm", "cm", "m", "in"] = _origin()
+    formato_salida: Literal["mismo", "stl", "3mf", "obj"] = _fmt()
+
+
+class ReducirOptions(BaseModel):
+    """reducir-poligonos: reducción [50 %] o triángulos objetivo, con decimación cuádrica."""
+
+    reduccion: int = opt(50, "Reducir (%)", "Reduce by (%)", ge=5, le=95)
+    triangulos: int = opt(0, "O como mucho estos triángulos (0: usar el porcentaje)", "Or at most these triangles (0: use the percentage)",
+                          ge=0, le=10_000_000, advanced=True)
+    unidades_origen: Literal["auto", "mm", "cm", "m", "in"] = _origin()
+    formato_salida: Literal["mismo", "stl", "3mf", "obj"] = _fmt()
+
+
+class EscalarOptions(BaseModel):
+    """escalar-modelo-3d: por un factor [1] (también por eje) o hasta una medida en un eje."""
+
+    modo: Literal["factor", "medida"] = opt("factor", "Escalar por", "Scale by", labels={
+        "factor": ("Un factor", "A factor"), "medida": ("Una medida final", "A final size")})
+    factor: float = opt(1.0, "Factor (1 = igual, 2 = el doble)", "Factor (1 = same, 2 = double)", ge=0.001, le=1000)
+    eje: Literal["mayor", "x", "y", "z"] = opt("mayor", "Eje de la medida", "Axis of the size", labels={
+        "mayor": ("El lado más largo", "The longest side"), "x": ("X (ancho)", "X (width)"), "y": ("Y (fondo)", "Y (depth)"),
+        "z": ("Z (alto)", "Z (height)")})
+    medida_mm: float = opt(100.0, "Medida final (mm)", "Final size (mm)", ge=0.01, le=100000)
+    escala_x: float = opt(1.0, "Factor extra en X", "Extra factor in X", ge=0.001, le=1000, advanced=True)
+    escala_y: float = opt(1.0, "Factor extra en Y", "Extra factor in Y", ge=0.001, le=1000, advanced=True)
+    escala_z: float = opt(1.0, "Factor extra en Z", "Extra factor in Z", ge=0.001, le=1000, advanced=True)
+    unidades_origen: Literal["auto", "mm", "cm", "m", "in"] = _origin()
+    formato_salida: Literal["mismo", "stl", "3mf", "obj"] = _fmt()
+
+
+class UnidadesOptions(BaseModel):
+    """cambiar-unidades-stl: de [pulgadas] a [milímetros]."""
+
+    de: Unit = opt("in", "El STL está en", "The STL is in", labels=UNIT_LABELS)
+    a: Unit = opt("mm", "Pasarlo a", "Convert it to", labels=UNIT_LABELS)
+
+
+class CortarOptions(BaseModel):
+    """cortar-modelo-3d: plano perpendicular a un eje [Z] en una posición [50 %], con la sección tapada si se puede."""
+
+    eje: Literal["x", "y", "z"] = opt("z", "Cortar perpendicular al eje", "Cut perpendicular to the axis", labels={
+        "x": ("X", "X"), "y": ("Y", "Y"), "z": ("Z (horizontal)", "Z (horizontal)")})
+    unidad_posicion: Literal["porcentaje", "mm"] = opt("porcentaje", "Posición en", "Position in", labels={
+        "porcentaje": ("Porcentaje de la altura", "Percentage of the extent"), "mm": ("Milímetros", "Millimetres")})
+    posicion: float = opt(50.0, "Posición del corte", "Cut position", ge=-100000, le=100000)
+    conservar: Literal["ambas", "debajo", "encima"] = opt("ambas", "Conservar", "Keep", labels={
+        "ambas": ("Las dos partes (ZIP)", "Both parts (ZIP)"), "debajo": ("La de debajo", "The lower one"), "encima": ("La de encima", "The upper one")})
+    unidades_origen: Literal["auto", "mm", "cm", "m", "in"] = _origin()
+    formato_salida: Literal["mismo", "stl", "3mf", "obj"] = _fmt()
+
+
+class SepararOptions(BaseModel):
+    """separar-piezas: una pieza por archivo, sin las de menos de [4] triángulos."""
+
+    minimo_triangulos: int = opt(4, "Ignorar piezas de menos de estos triángulos", "Ignore parts under these triangles", ge=1, le=100000)
+    unidades_origen: Literal["auto", "mm", "cm", "m", "in"] = _origin()
+    formato_salida: Literal["mismo", "stl", "3mf", "obj"] = _fmt()
+
+
+class UnirOptions(BaseModel):
+    """unir-modelos: en sus posiciones [sí] o uno al lado de otro, unión booleana opcional y formato [3MF]."""
+
+    modo: Literal["mantener", "distribuir"] = opt("mantener", "Posición", "Position", labels={
+        "mantener": ("Donde están en cada archivo", "Where they are in each file"),
+        "distribuir": ("Uno al lado de otro, apoyados en la cama", "Side by side, resting on the bed")})
+    separacion_mm: float = opt(5.0, "Separación entre modelos (mm)", "Gap between models (mm)", ge=0, le=1000, advanced=True)
+    fusionar: bool = opt(False, "Fusionarlos en un solo sólido (unión booleana)", "Fuse them into one solid (boolean union)", advanced=True)
+    unidades_origen: Literal["auto", "mm", "cm", "m", "in"] = _origin()
+    formato_salida: Literal["3mf", "stl", "obj"] = opt("3mf", "Formato del resultado", "Output format", labels={
+        "3mf": ("3MF (una pieza por modelo)", "3MF (one part per model)"), "stl": ("STL", "STL"), "obj": ("OBJ", "OBJ")})
+
+
+class AnalizarOptions(BaseModel):
+    """analizar-stl: material [PLA], relleno [20 %], paredes [1,2 mm], diámetro [1,75 mm] y formato [texto]."""
+
+    material: Literal["PLA", "PETG", "ABS", "TPU"] = opt("PLA", "Material", "Material", labels={k: (k, k) for k in ("PLA", "PETG", "ABS", "TPU")})
+    relleno: int = opt(20, "Relleno (%)", "Infill (%)", ge=0, le=100)
+    paredes_mm: float = opt(1.2, "Grosor de paredes, techo y suelo (mm)", "Wall, top and bottom thickness (mm)", ge=0.2, le=20, advanced=True)
+    diametro: Literal["1.75", "2.85"] = opt("1.75", "Diámetro del filamento", "Filament diameter", advanced=True,
+                                            labels={"1.75": ("1,75 mm", "1.75 mm"), "2.85": ("2,85 mm", "2.85 mm")})
+    unidades_origen: Literal["auto", "mm", "cm", "m", "in"] = _origin()
+    formato: Literal["txt", "json"] = opt("txt", "Formato del informe", "Report format", advanced=True,
+                                          labels={"txt": ("Texto", "Text"), "json": ("JSON", "JSON")})
+
+
+def op(slug_es, slug_en, name_es, name_en, options, summary_es, summary_en, related, inputs=MESH_IN, outputs=("stl", "obj", "3mf", "ply", "amf", "glb", "off", "zip"),
+       impl="tools.mesh.convert:run_ops", max_files=10) -> ToolSpec:
+    return ToolSpec(slug_es=slug_es, slug_en=slug_en, name_es=name_es, name_en=name_en, category="3d", where="server", inputs=inputs,
+                    outputs=outputs, options=options, worker_group="mesh", cost_class="light", impl=impl,
+                    precheck="tools.mesh.recuento:precheck", launch=True, phase="F7", time_limit=600, max_files=max_files,
+                    summary_es=summary_es, summary_en=summary_en, related=related)
+
+
+SPECS += [
+    op("reparar-stl", "repair-stl", "Reparar STL", "Repair STL", RepararOptions,
+       "Cierra huecos, orienta las normales y quita caras rotas y piezas sueltas de un modelo 3D para que se imprima bien.",
+       "Close holes, orient normals and remove broken faces and loose parts from a 3D model so it prints well.", ("analizar-stl", "reducir-poligonos")),
+    op("reducir-poligonos", "reduce-polygons", "Reducir polígonos", "Reduce polygons", ReducirOptions,
+       "Reduce los triángulos de un modelo 3D conservando su forma, para que pese menos y se abra antes.",
+       "Reduce a 3D model's triangles while keeping its shape, so it is lighter and opens faster.", ("reparar-stl", "analizar-stl")),
+    op("escalar-modelo-3d", "scale-3d-model", "Escalar modelo 3D", "Scale 3D model", EscalarOptions,
+       "Cambia el tamaño de un modelo 3D por un factor o hasta una medida exacta en milímetros.",
+       "Resize a 3D model by a factor or to an exact size in millimetres.", ("cambiar-unidades-stl", "analizar-stl")),
+    op("cambiar-unidades-stl", "change-stl-units", "Cambiar unidades de STL", "Change STL units", UnidadesOptions,
+       "Pasa un STL de pulgadas, centímetros o metros a milímetros (o al revés) para que el laminador lo abra a su tamaño.",
+       "Turn an STL from inches, centimetres or metres into millimetres (or back) so the slicer opens it at its size.",
+       ("escalar-modelo-3d", "stl-a-3mf"), inputs=("stl",), outputs=("stl",)),
+    op("cortar-modelo-3d", "cut-3d-model", "Cortar modelo 3D", "Cut 3D model", CortarOptions,
+       "Corta un modelo 3D por un plano y tapa la sección, para imprimir piezas grandes en partes o quitar una base.",
+       "Cut a 3D model by a plane and cap the section, to print large parts in pieces or remove a base.", ("separar-piezas", "unir-modelos")),
+    op("separar-piezas", "split-parts", "Separar piezas", "Split parts", SepararOptions,
+       "Separa las piezas sueltas de un modelo 3D en archivos distintos, para imprimirlas o colocarlas por separado.",
+       "Split the loose parts of a 3D model into separate files, to print or place them separately.", ("unir-modelos", "cortar-modelo-3d")),
+    op("unir-modelos", "join-models", "Unir modelos 3D", "Join 3D models", UnirOptions,
+       "Une varios modelos 3D en un solo archivo, en sus posiciones o uno al lado de otro, o en un solo sólido.",
+       "Join several 3D models into one file, in their positions or side by side, or into a single solid.", ("separar-piezas", "stl-a-3mf"),
+       outputs=("3mf", "stl", "obj", "zip"), impl="tools.mesh.convert:run_join"),
+    op("analizar-stl", "analyse-stl", "Analizar STL", "Analyse STL", AnalizarOptions,
+       "Mide un modelo 3D: dimensiones, volumen, superficie, si es estanco y una estimación de filamento por material y relleno.",
+       "Measure a 3D model: dimensions, volume, surface, whether it is watertight and a filament estimate by material and infill.",
+       ("reparar-stl", "escalar-modelo-3d"), outputs=("txt", "json", "zip")),
+]

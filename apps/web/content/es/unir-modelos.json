@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Unir modelos 3D junta varios archivos en uno: para preparar una placa de impresión con todas las piezas de un proyecto, combinar un modelo con su base o su soporte, o mandar un solo archivo a un servicio de impresión. Sube de dos a diez modelos en STL, OBJ, 3MF, PLY, AMF, GLB u OFF.",
+    "Por defecto cada modelo queda donde está en su archivo; también puedes colocarlos uno al lado de otro, apoyados en la cama y con una separación que elijas. En 3MF cada modelo es una pieza con su nombre, así que el laminador te deja moverlas y asignarles material por separado.",
+    "Si marcas fusionarlos, se hace una unión booleana y sale un único sólido estanco, sin caras internas donde se solapan, que es lo que necesitas para que se imprima como una sola pieza. Para eso todos los modelos tienen que ser cerrados; si alguno no lo es, repáralo antes con Reparar STL.",
+    "Los triángulos de todos los modelos juntos cuentan para el límite de tu plan. Se procesan en un proceso aislado en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube de dos a diez modelos.",
+    "Elige si colocarlos uno al lado de otro y si fusionarlos.",
+    "Descarga el modelo unido."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué diferencia hay entre unir y fusionar?",
+      "a": "Unir pone los modelos en un archivo como piezas separadas; fusionar los convierte en un solo sólido."
+    },
+    {
+      "q": "¿Se mantienen las unidades?",
+      "a": "Todo se pasa a milímetros antes de unir, así que modelos en unidades distintas encajan."
+    },
+    {
+      "q": "¿Cuántos modelos puedo unir?",
+      "a": "Hasta diez por tarea."
+    },
+    {
+      "q": "¿Puedo cambiar luego la posición de cada pieza?",
+      "a": "Sí, si eliges 3MF: cada modelo es una pieza separada que el laminador te deja mover, girar o escalar."
+    }
+  ]
+}

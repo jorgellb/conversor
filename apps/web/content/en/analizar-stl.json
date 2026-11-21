@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Analyse STL measures a 3D model before printing it: number of triangles and vertices, loose parts, dimensions in millimetres, whether the mesh is watertight, how many boundary edges (holes) and non-manifold edges it has, its volume and its surface. The report comes as text or JSON to use in other programs.",
+    "If the mesh is closed, it also estimates the filament: grams and metres for PLA, PETG, ABS or TPU, with the infill, wall thickness and filament diameter you choose. It is an estimate: it ignores supports, rafts, brims and the slicer's exact settings, but it helps to quote or know whether your spool has enough left.",
+    "The estimate adds the shell (surface times wall thickness) and the infill of the inner volume, and turns it into grams with each material's typical density: 1.24 g/cm³ for PLA, 1.27 for PETG, 1.04 for ABS and 1.21 for TPU. If the model has holes, the report says so and gives no volume; run it through Repair STL.",
+    "Supported models: It accepts STL, OBJ, 3MF, PLY, AMF, GLB and OFF, up to ten files per task, and the result comes out in the same format unless you choose another. Each file is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the model.",
+    "Choose the material, infill and report format.",
+    "Download the report."
+  ],
+  "faq": [
+    {
+      "q": "Does it match my slicer?",
+      "a": "It usually comes close; the slicer is more exact because it knows the supports and the real toolpath."
+    },
+    {
+      "q": "What is a non-manifold edge?",
+      "a": "An edge shared by more than two faces; it often causes slicing problems and Repair STL helps remove them."
+    },
+    {
+      "q": "Which units does it measure in?",
+      "a": "Millimetres, or the file's own units if it stores them (3MF and others)."
+    }
+  ]
+}

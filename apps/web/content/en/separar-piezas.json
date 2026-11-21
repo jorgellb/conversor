@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Split parts divides a 3D model into its loose parts, the ones that do not touch each other, and gives you each one in its own file inside a ZIP. It is useful with print plates that bring several parts in one STL, assembly kits, board games or models with separate accessories.",
+    "Parts are detected by how their triangles connect and sorted from largest to smallest. You can ignore leftovers under a certain number of triangles, which are usually stray specks from the export, so they do not come out as separate files.",
+    "Each part keeps its original position, so if you put them back together with Join 3D models they fit as they were. If the model is a single part, the note says so and you get the same model back. At most 500 parts per model are split.",
+    "What it accepts: It accepts STL, OBJ, 3MF, PLY, AMF, GLB and OFF, up to ten files per task, and the result comes out in the same format unless you choose another. Each file is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the model with several parts.",
+    "Choose the minimum triangles for a part.",
+    "Download the ZIP with one part per file."
+  ],
+  "faq": [
+    {
+      "q": "Does it split parts that touch?",
+      "a": "No: two parts that share faces or vertices count as one. To cut them, use Cut 3D model."
+    },
+    {
+      "q": "What are the files called?",
+      "a": "The original's name and a number, from the largest part to the smallest."
+    },
+    {
+      "q": "And as 3MF?",
+      "a": "Choose 3MF as the output format; each part comes out in its own 3MF file."
+    }
+  ]
+}

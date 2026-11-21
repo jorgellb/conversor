@@ -14,12 +14,17 @@ def main(job_path: str) -> int:
     from pathlib import Path
 
     from core.errors import ToolError
-    from tools.mesh.pipeline import convert_file
+    from tools.mesh.pipeline import OP_TOOLS, convert_file, join_files, operate_file
 
     result_path = Path(job["result"])
     try:
-        outputs = convert_file(Path(job["src"]), job["ext"], job["tool"], job["options"], job["locale"], int(job["max_triangles"]),
-                               job["stem"], Path(job["out_dir"]))
+        args = (job["options"], job["locale"], int(job["max_triangles"]), job["stem"], Path(job["out_dir"]))
+        if job.get("srcs"):
+            outputs = join_files([(Path(a), b, c) for a, b, c in job["srcs"]], *args)
+        elif job["tool"] in OP_TOOLS:
+            outputs = operate_file(Path(job["src"]), job["ext"], job["tool"], *args)
+        else:
+            outputs = convert_file(Path(job["src"]), job["ext"], job["tool"], *args)
     except ToolError as exc:
         result_path.write_text(json.dumps({"error": {"code": str(exc.code), "detail": exc.detail}}), encoding="utf-8")
         return 2

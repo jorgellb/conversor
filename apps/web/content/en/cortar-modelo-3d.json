@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Cut 3D model splits a part by a plane perpendicular to one of its axes: to print in two halves something that does not fit on the bed, to remove a base or support from a downloaded model, or to print only the top of a part and test a fit without using all the filament.",
+    "Choose the axis and the cut position, as a percentage of the part's extent or in millimetres, and whether you want both parts in a ZIP or only the upper or lower one. If the mesh is closed, the section is capped with a flat face, so each part comes out watertight and ready to print resting on the cut.",
+    "If the mesh has holes, the cut is made anyway but the section stays open and the note warns you; run it through Repair STL first so it can be capped. The result's coordinates are the original's, so both parts fit if you join them again.",
+    "Supported files: It accepts STL, OBJ, 3MF, PLY, AMF, GLB and OFF, up to ten files per task, and the result comes out in the same format unless you choose another. Each file is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the model.",
+    "Choose the axis, position and which part to keep.",
+    "Download the parts."
+  ],
+  "faq": [
+    {
+      "q": "Can I cut diagonally?",
+      "a": "No: the plane is always perpendicular to X, Y or Z. Rotate the model in your program first if you need another angle."
+    },
+    {
+      "q": "How do I glue the parts later?",
+      "a": "With glue or by adding pins; the flat section helps them fit."
+    },
+    {
+      "q": "What if the plane does not cut the model?",
+      "a": "If you ask for only one part and it would be empty, you get an error instead of an empty file."
+    }
+  ]
+}

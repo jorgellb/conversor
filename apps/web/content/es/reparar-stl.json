@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Reparar STL arregla los fallos más habituales de una malla 3D que hacen que el laminador avise, que la pieza salga con agujeros o que se rellene mal: huecos en la superficie, caras degeneradas o repetidas, normales invertidas, restos sueltos diminutos y piezas cerradas que se solapan entre sí.",
+    "Primero se fusionan los vértices repetidos y se quitan las caras sin área y las duplicadas. Después se orientan todas las caras hacia fuera de forma coherente, se cierran los huecos sencillos y, si quieres, se unen con una operación booleana las piezas cerradas que se atraviesan, que es lo que provoca las autointersecciones de muchos modelos descargados o exportados de programas de escultura.",
+    "La nota del resultado cuenta cuántos huecos se han cerrado, cuántas caras se han quitado y si la malla ha quedado estanca. Si sigue abierta, es que tiene huecos complejos que necesitan un programa de modelado; Analizar STL te dice cuántas aristas de borde quedan. Los colores no se conservan al modificar la malla.",
+    "Formatos: Admite STL, OBJ, 3MF, PLY, AMF, GLB y OFF, hasta diez archivos por tarea, y el resultado sale en el mismo formato salvo que elijas otro. Cada archivo se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el modelo con fallos.",
+    "Elige si quitar los restos sueltos y unir las piezas solapadas.",
+    "Descarga el modelo reparado."
+  ],
+  "faq": [
+    {
+      "q": "¿Cambia la forma de mi pieza?",
+      "a": "No: solo se tocan las caras rotas y los huecos. Las uniones de piezas solapadas no cambian el volumen exterior."
+    },
+    {
+      "q": "¿Por qué sigue abierta?",
+      "a": "Porque hay huecos grandes o con forma complicada. Ciérralos en Blender o Meshmixer y vuelve a repararla."
+    },
+    {
+      "q": "¿Sirve para escaneos?",
+      "a": "Sí, para cerrar huecos pequeños y quitar restos sueltos; los agujeros grandes de un escaneo necesitan rellenarse a mano."
+    }
+  ]
+}

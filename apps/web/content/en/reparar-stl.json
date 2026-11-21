@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Repair STL fixes the most common faults of a 3D mesh that make the slicer complain, leave holes in the print or make it fill badly: holes in the surface, degenerate or duplicate faces, flipped normals, tiny loose leftovers and closed parts that overlap each other.",
+    "First duplicate vertices are merged and faces with no area and duplicates are removed. Then every face is oriented outwards consistently, simple holes are closed and, if you want, closed parts that cross each other are merged with a boolean operation, which is what causes the self-intersections of many downloaded models or exports from sculpting programs.",
+    "The result note tells you how many holes were closed, how many faces were removed and whether the mesh is now watertight. If it is still open, it has complex holes that need a modelling program; Analyse STL tells you how many boundary edges remain. Colours are not kept when the mesh is modified.",
+    "Formats: It accepts STL, OBJ, 3MF, PLY, AMF, GLB and OFF, up to ten files per task, and the result comes out in the same format unless you choose another. Each file is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the faulty model.",
+    "Choose whether to remove loose leftovers and merge overlapping parts.",
+    "Download the repaired model."
+  ],
+  "faq": [
+    {
+      "q": "Does it change my part's shape?",
+      "a": "No: only broken faces and holes are touched. Merging overlapping parts does not change the outer volume."
+    },
+    {
+      "q": "Why is it still open?",
+      "a": "Because there are large or complicated holes. Close them in Blender or Meshmixer and repair it again."
+    },
+    {
+      "q": "Does it work for scans?",
+      "a": "Yes, to close small holes and remove loose leftovers; a scan's large holes need filling by hand."
+    }
+  ]
+}

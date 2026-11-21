@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Separar piezas divide un modelo 3D en sus piezas sueltas, las que no se tocan entre sí, y te da cada una en su propio archivo dentro de un ZIP. Es útil con placas de impresión que traen varias piezas en un solo STL, kits de montaje, juegos de mesa o modelos con accesorios por separado.",
+    "Las piezas se detectan por la conexión de sus triángulos y se ordenan de la más grande a la más pequeña. Puedes ignorar los restos de menos de cierto número de triángulos, que suelen ser motas sueltas de la exportación, para que no salgan como archivos aparte.",
+    "Cada pieza conserva su posición original, así que si las vuelves a juntar con Unir modelos encajan como estaban. Si el modelo es una sola pieza, la nota lo dice y te devuelve el mismo modelo. Como mucho se separan 500 piezas por modelo.",
+    "Lo que admite: Admite STL, OBJ, 3MF, PLY, AMF, GLB y OFF, hasta diez archivos por tarea, y el resultado sale en el mismo formato salvo que elijas otro. Cada archivo se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el modelo con varias piezas.",
+    "Elige el mínimo de triángulos de una pieza.",
+    "Descarga el ZIP con una pieza por archivo."
+  ],
+  "faq": [
+    {
+      "q": "¿Separa piezas que se tocan?",
+      "a": "No: dos piezas que comparten caras o vértices cuentan como una. Para partirlas, usa Cortar modelo 3D."
+    },
+    {
+      "q": "¿Cómo se llaman los archivos?",
+      "a": "Con el nombre del original y un número, de la pieza mayor a la menor."
+    },
+    {
+      "q": "¿Y en 3MF?",
+      "a": "Elige 3MF como formato del resultado; cada pieza sale en su archivo 3MF."
+    }
+  ]
+}

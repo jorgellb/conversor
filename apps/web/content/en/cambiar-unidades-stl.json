@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Change STL units fixes the most frequent problem when opening an STL: that it appears 25.4 times smaller because it was exported in inches, or a thousand times smaller because it was exported in metres. STL stores no units, so the slicer always reads it in millimetres.",
+    "Say which units the file is in (inches, centimetres, metres or millimetres) and which you want, and the exact factor is applied: 25.4 from inches to millimetres, 10 from centimetres and 1000 from metres. The result note gives the new dimensions so you can check they are the expected ones.",
+    "Many models from American programs, SketchUp or architecture come in inches or metres. If you want to change the part's size rather than its units, use Scale 3D model. For formats that do store units, such as 3MF, use their conversion, which reads them from the file.",
+    "You can change up to ten STL files at once and download them in a ZIP. Each file is processed in an isolated process on our server in the European Union and deleted automatically when it expires."
+  ],
+  "steps": [
+    "Upload the STL.",
+    "Choose its units and the target units.",
+    "Download the corrected STL."
+  ],
+  "faq": [
+    {
+      "q": "How do I know its units?",
+      "a": "If in the slicer it is about 25 times smaller than expected, it is in inches; if a thousand times smaller, in metres."
+    },
+    {
+      "q": "Does it lose precision?",
+      "a": "No: each coordinate is multiplied by the exact factor."
+    },
+    {
+      "q": "What if it is an OBJ?",
+      "a": "Use Scale 3D model with the factor 25.4 (from inches) or 1000 (from metres)."
+    },
+    {
+      "q": "Can I go from millimetres to inches?",
+      "a": "Yes: choose millimetres as the file's unit and inches as the target, for example for a program that works in inches."
+    }
+  ]
+}

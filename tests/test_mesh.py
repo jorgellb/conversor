@@ -519,3 +519,108 @@ def test_detection_of_f7c_files(tmp_path):
     off = tmp_path / "a.off"
     off.write_text("OFF\n3 1 0\n0 0 0\n1 0 0\n0 1 0\n3 0 1 2\n")
     assert matches(detect(off, ".off"), ".off", ("off",))
+
+
+# ——— F7-F (D-253): reparar, reducir, escalar, unidades, cortar, separar, unir y analizar ———
+
+def _broken(tmp_path: Path) -> Path:
+    box = trimesh.creation.box((10, 10, 10))
+    faces = box.faces[1:]  # un hueco (falta un triángulo)
+    faces = np.vstack([faces, faces[:1], [[0, 0, 1]]])  # una cara repetida y una degenerada
+    loose = trimesh.creation.box((0.1, 0.1, 0.1))
+    loose.apply_translation((50, 0, 0))
+    mesh = trimesh.util.concatenate([trimesh.Trimesh(box.vertices, faces, process=False), loose])
+    path = tmp_path / "roto.stl"
+    path.write_bytes(trimesh.Trimesh(mesh.vertices, mesh.faces, process=False).export(file_type="stl"))
+    return path
+
+
+def test_repair_closes_holes_and_cleans(make_ctx, tmp_path):
+    out = run("reparar-stl", make_ctx("reparar-stl", [_broken(tmp_path)]))
+    mesh = _load(Path(out[0]["path"]))
+    assert mesh.is_watertight and abs(mesh.volume - 1000) < 1e-6
+    note = out[0]["note"]
+    assert "1 huecos cerrados" in note and "1 caras degeneradas" in note and "1 repetidas" in note and "piezas sueltas" in note
+    assert "cerrada (estanca)" in note
+
+
+def test_reduce_polygons(make_ctx, tmp_path):
+    src = tmp_path / "bola.stl"
+    src.write_bytes(trimesh.creation.icosphere(5).export(file_type="stl"))
+    out = run("reducir-poligonos", make_ctx("reducir-poligonos", [src], {"reduccion": 80}))
+    mesh = _load(Path(out[0]["path"]))
+    assert 3500 < len(mesh.faces) < 4600 and "80 % menos" in out[0]["note"].replace("79 %", "80 %").replace("81 %", "80 %")
+    out = run("reducir-poligonos", make_ctx("reducir-poligonos", [src], {"triangulos": 1000, "formato_salida": "3mf"}))
+    assert out[0]["name"].endswith(".3mf")
+
+
+def test_scale_and_units(make_ctx, tmp_path):
+    src = _box(tmp_path)
+    out = run("escalar-modelo-3d", make_ctx("escalar-modelo-3d", [src], {"modo": "medida", "eje": "mayor", "medida_mm": 60}))
+    assert np.allclose(sorted(_load(Path(out[0]["path"])).extents), [20, 40, 60])
+    out = run("escalar-modelo-3d", make_ctx("escalar-modelo-3d", [src], {"factor": 2, "escala_z": 0.5}))
+    assert np.allclose(_load(Path(out[0]["path"])).extents, [20, 40, 30])
+    inches = tmp_path / "pulgadas.stl"
+    inches.write_bytes(trimesh.creation.box((1, 2, 3)).export(file_type="stl"))
+    out = run("cambiar-unidades-stl", make_ctx("cambiar-unidades-stl", [inches], {"de": "in", "a": "mm"}))
+    assert np.allclose(_load(Path(out[0]["path"])).extents, [25.4, 50.8, 76.2]) and "pulgadas → milímetros" in out[0]["note"]
+
+
+def test_cut_caps_the_section(make_ctx, tmp_path):
+    src = _box(tmp_path)  # 10 × 20 × 30 centrada en el origen
+    out = run("cortar-modelo-3d", make_ctx("cortar-modelo-3d", [src], {"eje": "z", "posicion": 25}))
+    with zipfile.ZipFile(out[0]["path"]) as zf:
+        names = sorted(zf.namelist())
+        zf.extractall(tmp_path / "corte")
+    assert names == ["caja-debajo.stl", "caja-encima.stl"] and "tapada" in out[0]["note"]
+    low = trimesh.load(tmp_path / "corte" / "caja-debajo.stl", force="mesh")
+    high = trimesh.load(tmp_path / "corte" / "caja-encima.stl", force="mesh")
+    assert low.is_watertight and high.is_watertight
+    assert abs(low.volume - 1500) < 1e-3 and abs(high.volume - 4500) < 1e-3
+    only = run("cortar-modelo-3d", make_ctx("cortar-modelo-3d", [src], {"unidad_posicion": "mm", "posicion": 0, "conservar": "encima"}))
+    assert abs(_load(Path(only[0]["path"])).volume - 3000) < 1e-3
+    with pytest.raises(ToolError):
+        run("cortar-modelo-3d", make_ctx("cortar-modelo-3d", [src], {"unidad_posicion": "mm", "posicion": 100, "conservar": "encima"}))
+
+
+def test_separate_and_join(make_ctx, tmp_path):
+    a = trimesh.creation.box((10, 10, 10))
+    b = trimesh.creation.icosphere(2, 5)
+    b.apply_translation((30, 0, 0))
+    both = tmp_path / "dos.stl"
+    both.write_bytes(trimesh.util.concatenate([a, b]).export(file_type="stl"))
+    out = run("separar-piezas", make_ctx("separar-piezas", [both]))
+    with zipfile.ZipFile(out[0]["path"]) as zf:
+        assert len(zf.namelist()) == 2
+    assert "2 piezas separadas" in out[0]["note"]
+    one = tmp_path / "uno.stl"
+    one.write_bytes(a.export(file_type="stl"))
+    two = tmp_path / "otro.stl"
+    two.write_bytes(trimesh.creation.box((10, 10, 10)).apply_translation((5, 0, 0)).export(file_type="stl"))
+    out = run("unir-modelos", make_ctx("unir-modelos", [one, two], {"fusionar": True, "formato_salida": "stl"}))
+    mesh = _load(Path(out[0]["path"]))
+    assert abs(mesh.volume - 1500) < 1e-3 and "un solo sólido" in out[0]["note"]  # se solapan 5 mm
+    out = run("unir-modelos", make_ctx("unir-modelos", [one, two], {"modo": "distribuir"}))
+    from tools.mesh import formats
+
+    model = formats.load(Path(out[0]["path"]), "3mf", 10**6)
+    assert [p.name for p in model.parts] == ["uno", "otro"]
+    assert model.parts[1].vertices[:, 0].min() >= model.parts[0].vertices[:, 0].max() + 4.99
+    with pytest.raises(ToolError):
+        run("unir-modelos", make_ctx("unir-modelos", [one]))
+
+
+def test_analyse_with_filament_estimate(make_ctx, tmp_path):
+    import json
+
+    src = _box(tmp_path)
+    out = run("analizar-stl", make_ctx("analizar-stl", [src], {"material": "PETG", "relleno": 20, "formato": "json"}))
+    data = json.loads(Path(out[0]["path"]).read_text())
+    assert data["estanca"] and data["volumen_cm3"] == 6.0 and data["dimensiones_mm"] == {"x": 10.0, "y": 20.0, "z": 30.0}
+    est = data["estimacion_filamento"]
+    shell = min(6000, 2200 * 1.2)
+    expected = (shell + 0.2 * (6000 - shell)) / 1000 * 1.27
+    assert est["material"] == "PETG" and abs(est["gramos"] - expected) < 0.1 and "Estimación de PETG" in out[0]["note"]
+    text = run("analizar-stl", make_ctx("analizar-stl", [_broken(tmp_path)]))
+    body = Path(text[0]["path"]).read_text()
+    assert "Estanca (cerrada): no" in body and "no se puede medir" in body

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Cortar modelo 3D parte una pieza por un plano perpendicular a uno de sus ejes: para imprimir en dos mitades algo que no cabe en la cama, para quitar una base o un soporte de un modelo descargado, o para imprimir solo la parte de arriba de una pieza y probar un encaje sin gastar todo el filamento.",
+    "Elige el eje y la posición del corte, en porcentaje de la altura de la pieza o en milímetros, y si quieres las dos partes en un ZIP o solo la de arriba o la de abajo. Si la malla es cerrada, la sección se tapa con una cara plana, así que cada parte sale estanca y lista para imprimir apoyada sobre el corte.",
+    "Si la malla tiene huecos, el corte se hace igual pero la sección queda abierta y la nota lo avisa; pásala antes por Reparar STL para que se pueda tapar. Las coordenadas del resultado son las del original, así que las dos partes encajan si las vuelves a unir.",
+    "Archivos admitidos: Admite STL, OBJ, 3MF, PLY, AMF, GLB y OFF, hasta diez archivos por tarea, y el resultado sale en el mismo formato salvo que elijas otro. Cada archivo se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el modelo.",
+    "Elige el eje, la posición y qué parte conservar.",
+    "Descarga las partes."
+  ],
+  "faq": [
+    {
+      "q": "¿Puedo cortar en diagonal?",
+      "a": "No: el plano siempre es perpendicular a X, Y o Z. Gira antes el modelo en tu programa si necesitas otro ángulo."
+    },
+    {
+      "q": "¿Cómo pego luego las partes?",
+      "a": "Con pegamento o añadiendo pasadores; la sección plana facilita que encajen."
+    },
+    {
+      "q": "¿Qué pasa si el plano no corta el modelo?",
+      "a": "Si pides solo una parte y quedaría vacía, se avisa con un error en lugar de darte un archivo vacío."
+    }
+  ]
+}

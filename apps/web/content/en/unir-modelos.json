@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Join 3D models puts several files into one: to prepare a print plate with all the parts of a project, combine a model with its base or stand, or send a single file to a printing service. Upload two to ten models in STL, OBJ, 3MF, PLY, AMF, GLB or OFF.",
+    "By default each model stays where it is in its file; you can also place them side by side, resting on the bed and with a gap you choose. In 3MF each model is a named part, so the slicer lets you move them and assign materials separately.",
+    "If you tick fuse, a boolean union is made and a single watertight solid comes out, with no internal faces where they overlap, which is what you need for it to print as one part. For that every model must be closed; if one is not, repair it first with Repair STL.",
+    "The triangles of all the models together count towards your plan's limit. They are processed in an isolated process on our server in the European Union and deleted when they expire."
+  ],
+  "steps": [
+    "Upload two to ten models.",
+    "Choose whether to place them side by side and whether to fuse them.",
+    "Download the joined model."
+  ],
+  "faq": [
+    {
+      "q": "What is the difference between join and fuse?",
+      "a": "Join puts the models in one file as separate parts; fuse turns them into a single solid."
+    },
+    {
+      "q": "Are units kept?",
+      "a": "Everything is converted to millimetres before joining, so models in different units fit."
+    },
+    {
+      "q": "How many models can I join?",
+      "a": "Up to ten per task."
+    },
+    {
+      "q": "Can I change each part's position later?",
+      "a": "Yes, if you choose 3MF: each model is a separate part that the slicer lets you move, rotate or scale."
+    }
+  ]
+}

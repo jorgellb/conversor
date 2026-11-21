@@ -735,6 +735,11 @@ en el nuevo `workercad` (D-251), en `tests/test_cad.py`.
 scad-a-stl y scad-a-3mf con OpenSCAD y dwg-a-dxf y dwg-a-pdf con LibreDWG compilado en la imagen, los dos bajo Landlock (D-252), en
 `tests/test_cad.py` con los programas simulados; la CI los prueba reales.
 
+## F7-F (herramientas de mallas)
+
+reparar-stl, reducir-poligonos, escalar-modelo-3d, cambiar-unidades-stl, cortar-modelo-3d, separar-piezas, unir-modelos y analizar-stl
+con trimesh, manifold3d y fast-simplification (D-253), en `tests/test_mesh.py`.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

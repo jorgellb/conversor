@@ -41238,6 +41238,1350 @@
       }
     },
     {
+      "slug_es": "reparar-stl",
+      "slug_en": "repair-stl",
+      "name_es": "Reparar STL",
+      "name_en": "Repair STL",
+      "summary_es": "Cierra huecos, orienta las normales y quita caras rotas y piezas sueltas de un modelo 3D para que se imprima bien.",
+      "summary_en": "Close holes, orient normals and remove broken faces and loose parts from a 3D model so it prints well.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off"
+      ],
+      "outputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "analizar-stl",
+        "reducir-poligonos"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "reparar-stl: quitar piezas sueltas pequeñas [sí], unir piezas solapadas [sí] y formato [el mismo].",
+        "properties": {
+          "quitar_sueltas": {
+            "default": true,
+            "title": "Quitar restos sueltos pequeños (menos del 1 % de los triángulos o del 2 % del tamaño)",
+            "type": "boolean",
+            "x-title": {
+              "en": "Remove small loose leftovers (under 1% of the triangles or 2% of the size)",
+              "es": "Quitar restos sueltos pequeños (menos del 1 % de los triángulos o del 2 % del tamaño)"
+            }
+          },
+          "unir_solapes": {
+            "default": true,
+            "title": "Unir piezas cerradas que se solapan (autointersecciones)",
+            "type": "boolean",
+            "x-title": {
+              "en": "Merge closed parts that overlap (self-intersections)",
+              "es": "Unir piezas cerradas que se solapan (autointersecciones)"
+            }
+          },
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "formato_salida": {
+            "default": "mismo",
+            "enum": [
+              "mismo",
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato del resultado",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "mismo": {
+                "en": "Same as the original",
+                "es": "El mismo que el original"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Output format",
+              "es": "Formato del resultado"
+            }
+          }
+        },
+        "title": "RepararOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "reducir-poligonos",
+      "slug_en": "reduce-polygons",
+      "name_es": "Reducir polígonos",
+      "name_en": "Reduce polygons",
+      "summary_es": "Reduce los triángulos de un modelo 3D conservando su forma, para que pese menos y se abra antes.",
+      "summary_en": "Reduce a 3D model's triangles while keeping its shape, so it is lighter and opens faster.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off"
+      ],
+      "outputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "reparar-stl",
+        "analizar-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "reducir-poligonos: reducción [50 %] o triángulos objetivo, con decimación cuádrica.",
+        "properties": {
+          "reduccion": {
+            "default": 50,
+            "maximum": 95,
+            "minimum": 5,
+            "title": "Reducir (%)",
+            "type": "integer",
+            "x-title": {
+              "en": "Reduce by (%)",
+              "es": "Reducir (%)"
+            }
+          },
+          "triangulos": {
+            "default": 0,
+            "maximum": 10000000,
+            "minimum": 0,
+            "title": "O como mucho estos triángulos (0: usar el porcentaje)",
+            "type": "integer",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Or at most these triangles (0: use the percentage)",
+              "es": "O como mucho estos triángulos (0: usar el porcentaje)"
+            }
+          },
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "formato_salida": {
+            "default": "mismo",
+            "enum": [
+              "mismo",
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato del resultado",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "mismo": {
+                "en": "Same as the original",
+                "es": "El mismo que el original"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Output format",
+              "es": "Formato del resultado"
+            }
+          }
+        },
+        "title": "ReducirOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "escalar-modelo-3d",
+      "slug_en": "scale-3d-model",
+      "name_es": "Escalar modelo 3D",
+      "name_en": "Scale 3D model",
+      "summary_es": "Cambia el tamaño de un modelo 3D por un factor o hasta una medida exacta en milímetros.",
+      "summary_en": "Resize a 3D model by a factor or to an exact size in millimetres.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off"
+      ],
+      "outputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "cambiar-unidades-stl",
+        "analizar-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "escalar-modelo-3d: por un factor [1] (también por eje) o hasta una medida en un eje.",
+        "properties": {
+          "modo": {
+            "default": "factor",
+            "enum": [
+              "factor",
+              "medida"
+            ],
+            "title": "Escalar por",
+            "type": "string",
+            "x-labels": {
+              "factor": {
+                "en": "A factor",
+                "es": "Un factor"
+              },
+              "medida": {
+                "en": "A final size",
+                "es": "Una medida final"
+              }
+            },
+            "x-title": {
+              "en": "Scale by",
+              "es": "Escalar por"
+            }
+          },
+          "factor": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Factor (1 = igual, 2 = el doble)",
+            "type": "number",
+            "x-title": {
+              "en": "Factor (1 = same, 2 = double)",
+              "es": "Factor (1 = igual, 2 = el doble)"
+            }
+          },
+          "eje": {
+            "default": "mayor",
+            "enum": [
+              "mayor",
+              "x",
+              "y",
+              "z"
+            ],
+            "title": "Eje de la medida",
+            "type": "string",
+            "x-labels": {
+              "mayor": {
+                "en": "The longest side",
+                "es": "El lado más largo"
+              },
+              "x": {
+                "en": "X (width)",
+                "es": "X (ancho)"
+              },
+              "y": {
+                "en": "Y (depth)",
+                "es": "Y (fondo)"
+              },
+              "z": {
+                "en": "Z (height)",
+                "es": "Z (alto)"
+              }
+            },
+            "x-title": {
+              "en": "Axis of the size",
+              "es": "Eje de la medida"
+            }
+          },
+          "medida_mm": {
+            "default": 100.0,
+            "maximum": 100000,
+            "minimum": 0.01,
+            "title": "Medida final (mm)",
+            "type": "number",
+            "x-title": {
+              "en": "Final size (mm)",
+              "es": "Medida final (mm)"
+            }
+          },
+          "escala_x": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Factor extra en X",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Extra factor in X",
+              "es": "Factor extra en X"
+            }
+          },
+          "escala_y": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Factor extra en Y",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Extra factor in Y",
+              "es": "Factor extra en Y"
+            }
+          },
+          "escala_z": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Factor extra en Z",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Extra factor in Z",
+              "es": "Factor extra en Z"
+            }
+          },
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "formato_salida": {
+            "default": "mismo",
+            "enum": [
+              "mismo",
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato del resultado",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "mismo": {
+                "en": "Same as the original",
+                "es": "El mismo que el original"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Output format",
+              "es": "Formato del resultado"
+            }
+          }
+        },
+        "title": "EscalarOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "cambiar-unidades-stl",
+      "slug_en": "change-stl-units",
+      "name_es": "Cambiar unidades de STL",
+      "name_en": "Change STL units",
+      "summary_es": "Pasa un STL de pulgadas, centímetros o metros a milímetros (o al revés) para que el laminador lo abra a su tamaño.",
+      "summary_en": "Turn an STL from inches, centimetres or metres into millimetres (or back) so the slicer opens it at its size.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl"
+      ],
+      "outputs": [
+        "stl"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "escalar-modelo-3d",
+        "stl-a-3mf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "cambiar-unidades-stl: de [pulgadas] a [milímetros].",
+        "properties": {
+          "de": {
+            "default": "in",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "El STL está en",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "The STL is in",
+              "es": "El STL está en"
+            }
+          },
+          "a": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Pasarlo a",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Convert it to",
+              "es": "Pasarlo a"
+            }
+          }
+        },
+        "title": "UnidadesOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "cortar-modelo-3d",
+      "slug_en": "cut-3d-model",
+      "name_es": "Cortar modelo 3D",
+      "name_en": "Cut 3D model",
+      "summary_es": "Corta un modelo 3D por un plano y tapa la sección, para imprimir piezas grandes en partes o quitar una base.",
+      "summary_en": "Cut a 3D model by a plane and cap the section, to print large parts in pieces or remove a base.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off"
+      ],
+      "outputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "separar-piezas",
+        "unir-modelos"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "cortar-modelo-3d: plano perpendicular a un eje [Z] en una posición [50 %], con la sección tapada si se puede.",
+        "properties": {
+          "eje": {
+            "default": "z",
+            "enum": [
+              "x",
+              "y",
+              "z"
+            ],
+            "title": "Cortar perpendicular al eje",
+            "type": "string",
+            "x-labels": {
+              "x": {
+                "en": "X",
+                "es": "X"
+              },
+              "y": {
+                "en": "Y",
+                "es": "Y"
+              },
+              "z": {
+                "en": "Z (horizontal)",
+                "es": "Z (horizontal)"
+              }
+            },
+            "x-title": {
+              "en": "Cut perpendicular to the axis",
+              "es": "Cortar perpendicular al eje"
+            }
+          },
+          "unidad_posicion": {
+            "default": "porcentaje",
+            "enum": [
+              "porcentaje",
+              "mm"
+            ],
+            "title": "Posición en",
+            "type": "string",
+            "x-labels": {
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              },
+              "porcentaje": {
+                "en": "Percentage of the extent",
+                "es": "Porcentaje de la altura"
+              }
+            },
+            "x-title": {
+              "en": "Position in",
+              "es": "Posición en"
+            }
+          },
+          "posicion": {
+            "default": 50.0,
+            "maximum": 100000,
+            "minimum": -100000,
+            "title": "Posición del corte",
+            "type": "number",
+            "x-title": {
+              "en": "Cut position",
+              "es": "Posición del corte"
+            }
+          },
+          "conservar": {
+            "default": "ambas",
+            "enum": [
+              "ambas",
+              "debajo",
+              "encima"
+            ],
+            "title": "Conservar",
+            "type": "string",
+            "x-labels": {
+              "ambas": {
+                "en": "Both parts (ZIP)",
+                "es": "Las dos partes (ZIP)"
+              },
+              "debajo": {
+                "en": "The lower one",
+                "es": "La de debajo"
+              },
+              "encima": {
+                "en": "The upper one",
+                "es": "La de encima"
+              }
+            },
+            "x-title": {
+              "en": "Keep",
+              "es": "Conservar"
+            }
+          },
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "formato_salida": {
+            "default": "mismo",
+            "enum": [
+              "mismo",
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato del resultado",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "mismo": {
+                "en": "Same as the original",
+                "es": "El mismo que el original"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Output format",
+              "es": "Formato del resultado"
+            }
+          }
+        },
+        "title": "CortarOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "separar-piezas",
+      "slug_en": "split-parts",
+      "name_es": "Separar piezas",
+      "name_en": "Split parts",
+      "summary_es": "Separa las piezas sueltas de un modelo 3D en archivos distintos, para imprimirlas o colocarlas por separado.",
+      "summary_en": "Split the loose parts of a 3D model into separate files, to print or place them separately.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off"
+      ],
+      "outputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "unir-modelos",
+        "cortar-modelo-3d"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "separar-piezas: una pieza por archivo, sin las de menos de [4] triángulos.",
+        "properties": {
+          "minimo_triangulos": {
+            "default": 4,
+            "maximum": 100000,
+            "minimum": 1,
+            "title": "Ignorar piezas de menos de estos triángulos",
+            "type": "integer",
+            "x-title": {
+              "en": "Ignore parts under these triangles",
+              "es": "Ignorar piezas de menos de estos triángulos"
+            }
+          },
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "formato_salida": {
+            "default": "mismo",
+            "enum": [
+              "mismo",
+              "stl",
+              "3mf",
+              "obj"
+            ],
+            "title": "Formato del resultado",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "3mf": {
+                "en": "3MF",
+                "es": "3MF"
+              },
+              "mismo": {
+                "en": "Same as the original",
+                "es": "El mismo que el original"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Output format",
+              "es": "Formato del resultado"
+            }
+          }
+        },
+        "title": "SepararOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "unir-modelos",
+      "slug_en": "join-models",
+      "name_es": "Unir modelos 3D",
+      "name_en": "Join 3D models",
+      "summary_es": "Une varios modelos 3D en un solo archivo, en sus posiciones o uno al lado de otro, o en un solo sólido.",
+      "summary_en": "Join several 3D models into one file, in their positions or side by side, or into a single solid.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off"
+      ],
+      "outputs": [
+        "3mf",
+        "stl",
+        "obj",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "separar-piezas",
+        "stl-a-3mf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "unir-modelos: en sus posiciones [sí] o uno al lado de otro, unión booleana opcional y formato [3MF].",
+        "properties": {
+          "modo": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "distribuir"
+            ],
+            "title": "Posición",
+            "type": "string",
+            "x-labels": {
+              "distribuir": {
+                "en": "Side by side, resting on the bed",
+                "es": "Uno al lado de otro, apoyados en la cama"
+              },
+              "mantener": {
+                "en": "Where they are in each file",
+                "es": "Donde están en cada archivo"
+              }
+            },
+            "x-title": {
+              "en": "Position",
+              "es": "Posición"
+            }
+          },
+          "separacion_mm": {
+            "default": 5.0,
+            "maximum": 1000,
+            "minimum": 0,
+            "title": "Separación entre modelos (mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Gap between models (mm)",
+              "es": "Separación entre modelos (mm)"
+            }
+          },
+          "fusionar": {
+            "default": false,
+            "title": "Fusionarlos en un solo sólido (unión booleana)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Fuse them into one solid (boolean union)",
+              "es": "Fusionarlos en un solo sólido (unión booleana)"
+            }
+          },
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "formato_salida": {
+            "default": "3mf",
+            "enum": [
+              "3mf",
+              "stl",
+              "obj"
+            ],
+            "title": "Formato del resultado",
+            "type": "string",
+            "x-labels": {
+              "3mf": {
+                "en": "3MF (one part per model)",
+                "es": "3MF (una pieza por modelo)"
+              },
+              "obj": {
+                "en": "OBJ",
+                "es": "OBJ"
+              },
+              "stl": {
+                "en": "STL",
+                "es": "STL"
+              }
+            },
+            "x-title": {
+              "en": "Output format",
+              "es": "Formato del resultado"
+            }
+          }
+        },
+        "title": "UnirOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "analizar-stl",
+      "slug_en": "analyse-stl",
+      "name_es": "Analizar STL",
+      "name_en": "Analyse STL",
+      "summary_es": "Mide un modelo 3D: dimensiones, volumen, superficie, si es estanco y una estimación de filamento por material y relleno.",
+      "summary_en": "Measure a 3D model: dimensions, volume, surface, whether it is watertight and a filament estimate by material and infill.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "mesh",
+      "cost_class": "light",
+      "task_class": "light",
+      "inputs": [
+        "stl",
+        "obj",
+        "3mf",
+        "ply",
+        "amf",
+        "glb",
+        "off"
+      ],
+      "outputs": [
+        "txt",
+        "json",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 10,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "reparar-stl",
+        "escalar-modelo-3d"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "analizar-stl: material [PLA], relleno [20 %], paredes [1,2 mm], diámetro [1,75 mm] y formato [texto].",
+        "properties": {
+          "material": {
+            "default": "PLA",
+            "enum": [
+              "PLA",
+              "PETG",
+              "ABS",
+              "TPU"
+            ],
+            "title": "Material",
+            "type": "string",
+            "x-labels": {
+              "ABS": {
+                "en": "ABS",
+                "es": "ABS"
+              },
+              "PETG": {
+                "en": "PETG",
+                "es": "PETG"
+              },
+              "PLA": {
+                "en": "PLA",
+                "es": "PLA"
+              },
+              "TPU": {
+                "en": "TPU",
+                "es": "TPU"
+              }
+            },
+            "x-title": {
+              "en": "Material",
+              "es": "Material"
+            }
+          },
+          "relleno": {
+            "default": 20,
+            "maximum": 100,
+            "minimum": 0,
+            "title": "Relleno (%)",
+            "type": "integer",
+            "x-title": {
+              "en": "Infill (%)",
+              "es": "Relleno (%)"
+            }
+          },
+          "paredes_mm": {
+            "default": 1.2,
+            "maximum": 20,
+            "minimum": 0.2,
+            "title": "Grosor de paredes, techo y suelo (mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Wall, top and bottom thickness (mm)",
+              "es": "Grosor de paredes, techo y suelo (mm)"
+            }
+          },
+          "diametro": {
+            "default": "1.75",
+            "enum": [
+              "1.75",
+              "2.85"
+            ],
+            "title": "Diámetro del filamento",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "1.75": {
+                "en": "1.75 mm",
+                "es": "1,75 mm"
+              },
+              "2.85": {
+                "en": "2.85 mm",
+                "es": "2,85 mm"
+              }
+            },
+            "x-title": {
+              "en": "Filament diameter",
+              "es": "Diámetro del filamento"
+            }
+          },
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "formato": {
+            "default": "txt",
+            "enum": [
+              "txt",
+              "json"
+            ],
+            "title": "Formato del informe",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "json": {
+                "en": "JSON",
+                "es": "JSON"
+              },
+              "txt": {
+                "en": "Text",
+                "es": "Texto"
+              }
+            },
+            "x-title": {
+              "en": "Report format",
+              "es": "Formato del informe"
+            }
+          }
+        },
+        "title": "AnalizarOptions",
+        "type": "object"
+      }
+    },
+    {
       "slug_es": "step-a-stl",
       "slug_en": "step-to-stl",
       "name_es": "STEP a STL",

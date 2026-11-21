@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Reducir polígonos baja el número de triángulos de un modelo 3D conservando su forma, para que el archivo pese menos, se suba antes, se abra con fluidez en el laminador o en un visor web y quepa en los límites de otras herramientas. Es habitual con escaneos, fotogrametría y esculturas de millones de triángulos.",
+    "Usa decimación cuádrica: va juntando las aristas que menos cambian la superficie, así que las zonas planas pierden muchos triángulos y los detalles se mantienen. Elige cuánto reducir en porcentaje o el número máximo de triángulos que quieres; la nota dice cuántos tenía y cuántos quedan.",
+    "Para imprimir, una reducción del 50 al 80 % no suele notarse en piezas medianas, porque la impresora no llega a esa resolución. Para pasar una malla a STEP, que admite como mucho 50 000 triángulos, reduce antes aquí. Los colores no se conservan al reducir.",
+    "Entradas y salidas: Admite STL, OBJ, 3MF, PLY, AMF, GLB y OFF, hasta diez archivos por tarea, y el resultado sale en el mismo formato salvo que elijas otro. Cada archivo se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el modelo.",
+    "Elige el porcentaje o los triángulos que quieres.",
+    "Descarga el modelo reducido."
+  ],
+  "faq": [
+    {
+      "q": "¿Cuánto puedo reducir sin que se note?",
+      "a": "Depende del detalle: en piezas mecánicas suele valer un 80 %; en figuras con mucho relieve, mejor un 50 %."
+    },
+    {
+      "q": "¿Se estropea la malla cerrada?",
+      "a": "La decimación conserva la topología en casi todos los casos; si quieres asegurarte, pásala luego por Reparar STL."
+    },
+    {
+      "q": "¿Puedo pedir un número exacto de triángulos?",
+      "a": "Sí: pon el máximo en las opciones avanzadas; saldrá ese número o muy cerca."
+    }
+  ]
+}

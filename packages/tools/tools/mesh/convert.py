@@ -28,8 +28,10 @@ def _code_paths() -> list[str]:
     return [str(Path(core.__file__).resolve().parents[1]), str(Path(tools.__file__).resolve().parents[1])]
 
 
-def convert_path(ctx: ToolContext, n: int, path: Path, ext: str, target: str, name: str, tool: str | None = None) -> list[dict]:
-    """Convierte un archivo en el proceso hijo (D-249) y devuelve sus salidas ya en la carpeta de resultados."""
+def convert_path(ctx: ToolContext, n: int, path: Path, ext: str, target: str, name: str, tool: str | None = None,
+                 extra: list[tuple[Path, str, str]] | None = None) -> list[dict]:
+    """Convierte un archivo en el proceso hijo (D-249) y devuelve sus salidas ya en la carpeta de resultados. Con `extra`
+    (unir-modelos), todos esos archivos van al mismo hijo."""
     o = ctx.options
     work = ctx.work / f"malla-{n}"
     out_dir = work / "salida"
@@ -39,6 +41,13 @@ def convert_path(ctx: ToolContext, n: int, path: Path, ext: str, target: str, na
     job = {"paths": _code_paths(), "src": str(src), "ext": ext, "tool": tool or ctx.tool, "options": o.model_dump(), "locale": ctx.locale,
            "max_triangles": ctx.plan.mesh_triangles, "stem": Path(derived_name(name, "", target)).stem,
            "out_dir": str(out_dir), "result": str(work / "resultado.json")}
+    if extra:
+        srcs = []
+        for k, (other, other_ext, other_name) in enumerate(extra):
+            copy = work / f"entrada-{k}.{other_ext}"
+            shutil.copyfile(other, copy)
+            srcs.append((str(copy), other_ext, Path(other_name).stem))
+        job["srcs"] = srcs
     (work / "trabajo.json").write_text(json.dumps(job), encoding="utf-8")
     env = {"LD_LIBRARY_PATH": ctx.settings.ENGINES_LIBRARY_PATH} if ctx.settings.ENGINES_LIBRARY_PATH else {}
     env["PYTHONUTF8"] = "1"
@@ -68,3 +77,25 @@ def run(ctx: ToolContext) -> list[dict]:
         ext = (inp.ext or Path(inp.name).suffix.lstrip(".")).lower()
         outputs += convert_path(ctx, n, inp.path, ext, target, inp.name)
     return with_batch_zip(ctx, outputs, f"modelos-{target}.zip")
+
+
+def run_ops(ctx: ToolContext) -> list[dict]:
+    """reparar-stl, reducir-poligonos, escalar-modelo-3d, cambiar-unidades-stl, cortar-modelo-3d, separar-piezas y
+    analizar-stl (F7-F, D-253): una salida (o un ZIP) por archivo, en el mismo formato salvo que se elija otro."""
+    outputs = []
+    for n, inp in enumerate(ctx.inputs):
+        ctx.report(n / len(ctx.inputs), None)
+        ext = (inp.ext or Path(inp.name).suffix.lstrip(".")).lower()
+        outputs += convert_path(ctx, n, inp.path, ext, ext, inp.name)
+    return with_batch_zip(ctx, outputs, "modelos.zip")
+
+
+def run_join(ctx: ToolContext) -> list[dict]:
+    """unir-modelos (F7-F, D-253): todos los archivos de la tarea en uno."""
+    if len(ctx.inputs) < 2:
+        raise ToolError(ErrorCode.INVALID_OPTIONS, "mesh_join_one")
+    extra = [(inp.path, (inp.ext or Path(inp.name).suffix.lstrip(".")).lower(), inp.name) for inp in ctx.inputs]
+    first = ctx.inputs[0]
+    target = ctx.options.formato_salida
+    name = "modelos-unidos" if ctx.locale != "en" else "joined-models"
+    return convert_path(ctx, 0, first.path, extra[0][1], target, f"{name}.{target}", extra=extra)

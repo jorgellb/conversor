@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Reduce polygons lowers the number of triangles of a 3D model while keeping its shape, so the file is lighter, uploads faster, opens smoothly in the slicer or a web viewer and fits the limits of other tools. It is common with scans, photogrammetry and sculptures of millions of triangles.",
+    "It uses quadric decimation: it merges the edges that change the surface least, so flat areas lose many triangles and details are kept. Choose how much to reduce as a percentage or the maximum number of triangles you want; the note says how many it had and how many are left.",
+    "For printing, a 50 to 80% reduction is usually not noticeable on medium parts, because the printer cannot reach that resolution. To turn a mesh into STEP, which accepts at most 50,000 triangles, reduce it here first. Colours are not kept when reducing.",
+    "Inputs and outputs: It accepts STL, OBJ, 3MF, PLY, AMF, GLB and OFF, up to ten files per task, and the result comes out in the same format unless you choose another. Each file is processed in an isolated process on our server in the European Union and deleted when it expires."
+  ],
+  "steps": [
+    "Upload the model.",
+    "Choose the percentage or the triangles you want.",
+    "Download the reduced model."
+  ],
+  "faq": [
+    {
+      "q": "How much can I reduce without it showing?",
+      "a": "It depends on the detail: 80% usually works for mechanical parts; for figures with a lot of relief, better 50%."
+    },
+    {
+      "q": "Does it break a closed mesh?",
+      "a": "Decimation keeps the topology in almost every case; to be sure, run it through Repair STL afterwards."
+    },
+    {
+      "q": "Can I ask for an exact number of triangles?",
+      "a": "Yes: set the maximum in the advanced options; it will come out at that number or very close."
+    }
+  ]
+}

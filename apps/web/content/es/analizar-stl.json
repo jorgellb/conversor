@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Analizar STL mide un modelo 3D antes de imprimirlo: número de triángulos y vértices, piezas sueltas, dimensiones en milímetros, si la malla es estanca, cuántas aristas de borde (huecos) y aristas no manifold tiene, su volumen y su superficie. El informe sale en texto o en JSON para usarlo en otros programas.",
+    "Si la malla es cerrada, calcula además una estimación del filamento: gramos y metros para PLA, PETG, ABS o TPU, con el relleno, el grosor de paredes y el diámetro de filamento que elijas. Es una estimación: no cuenta soportes, balsa, borde ni los ajustes exactos del laminador, pero sirve para presupuestar o saber si te queda bastante bobina.",
+    "La estimación suma la carcasa (superficie por grosor de paredes) y el relleno del volumen interior, y lo pasa a gramos con la densidad típica de cada material: 1,24 g/cm³ el PLA, 1,27 el PETG, 1,04 el ABS y 1,21 el TPU. Si el modelo tiene huecos, el informe lo dice y no da volumen; pásalo por Reparar STL.",
+    "Modelos admitidos: Admite STL, OBJ, 3MF, PLY, AMF, GLB y OFF, hasta diez archivos por tarea, y el resultado sale en el mismo formato salvo que elijas otro. Cada archivo se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el modelo.",
+    "Elige el material, el relleno y el formato del informe.",
+    "Descarga el informe."
+  ],
+  "faq": [
+    {
+      "q": "¿Coincide con lo que dice mi laminador?",
+      "a": "Suele acercarse; el laminador es más exacto porque conoce los soportes y la trayectoria real."
+    },
+    {
+      "q": "¿Qué es una arista no manifold?",
+      "a": "Una arista compartida por más de dos caras; suele dar problemas al laminar y Reparar STL ayuda a quitarlas."
+    },
+    {
+      "q": "¿En qué unidades mide?",
+      "a": "En milímetros, o en las que diga el archivo si las guarda (3MF y otros)."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "Escalar modelo 3D cambia el tamaño de una pieza antes de imprimirla: por un factor (0,5 para la mitad, 2 para el doble) o hasta una medida exacta en milímetros en el eje que elijas, por ejemplo para que una figura mida 120 mm de alto o una caja 80 mm de ancho.",
+    "Con la medida final, el factor se calcula a partir del tamaño actual del modelo y se aplica igual en los tres ejes, así que las proporciones no cambian. En las opciones avanzadas puedes añadir un factor distinto por eje para estirar o aplanar la pieza, por ejemplo para ajustar un encaje que sale justo.",
+    "La nota del resultado da las nuevas dimensiones en milímetros. Si el modelo no guarda unidades y sale diminuto o enorme, quizá no necesites escalarlo sino Cambiar unidades de STL, que pasa de pulgadas o metros a milímetros con el factor exacto.",
+    "Formatos admitidos: Admite STL, OBJ, 3MF, PLY, AMF, GLB y OFF, hasta diez archivos por tarea, y el resultado sale en el mismo formato salvo que elijas otro. Cada archivo se procesa en un proceso aislado de nuestro servidor de la Unión Europea y se borra al caducar."
+  ],
+  "steps": [
+    "Sube el modelo.",
+    "Elige un factor o la medida final y su eje.",
+    "Descarga el modelo escalado."
+  ],
+  "faq": [
+    {
+      "q": "¿Se deforman los agujeros?",
+      "a": "Con un factor igual en los tres ejes, no: todo se escala igual. Con factores distintos por eje, los círculos pasan a ser óvalos."
+    },
+    {
+      "q": "¿Puedo escalar a la vez varias piezas?",
+      "a": "Sí: sube hasta diez y se aplica el mismo factor o la misma medida a cada una."
+    },
+    {
+      "q": "¿En qué unidades está la medida?",
+      "a": "En milímetros, que es como lo leen los laminadores."
+    }
+  ]
+}

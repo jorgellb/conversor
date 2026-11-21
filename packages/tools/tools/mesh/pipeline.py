@@ -197,3 +197,82 @@ def convert_file(src: Path, ext: str, tool: str, options: dict, locale: str, max
 
 def array_bytes(*arrays: np.ndarray) -> int:
     return sum(a.nbytes for a in arrays if a is not None)
+
+
+# ——— Operaciones de F7-F (D-253) ———
+
+WRITABLE = {"stl", "obj", "3mf", "ply", "amf", "glb", "off"}
+OP_TOOLS = {"reparar-stl", "reducir-poligonos", "escalar-modelo-3d", "cambiar-unidades-stl", "cortar-modelo-3d", "separar-piezas",
+            "analizar-stl", "unir-modelos"}
+
+
+def _out_format(options: dict, ext: str) -> str:
+    chosen = options.get("formato_salida", "mismo")
+    if chosen != "mismo":
+        return chosen
+    return ext if ext in WRITABLE else "stl"
+
+
+def _write_results(results: list, target: str, stem: str, out_dir: Path, notes: list[str], locale: str) -> list[dict]:
+    files: list[tuple[Path, str]] = []
+    for model, suffix in results:
+        name_stem = f"{stem}-{suffix}" if suffix else stem
+        if target == "obj":
+            files += _obj_files(model, out_dir, name_stem)
+        else:
+            path = out_dir / f"{name_stem}.{target}"
+            write(model, target, path, "mm", False)
+            files.append((path, path.name))
+    note = " ".join(notes)
+    if len(files) == 1:
+        return [{"file": str(files[0][0]), "name": files[0][1], "note": note}]
+    zip_name = f"{stem}-piezas.zip" if locale != "en" else f"{stem}-parts.zip"
+    dst = out_dir / zip_name
+    _zip(dst, files)
+    return [{"file": str(dst), "name": zip_name, "note": note}]
+
+
+def _load_mm(src: Path, ext: str, options: dict, max_triangles: int) -> formats.Model:
+    model = formats.load(src, ext, max_triangles, inline=True)
+    src_mm, _name, _assumed = source_unit(model, options.get("unidades_origen", "auto"))
+    formats.scaled(model, src_mm)  # todo en milímetros
+    formats.check_finite(model)
+    return model
+
+
+def operate_file(src: Path, ext: str, tool: str, options: dict, locale: str, max_triangles: int, stem: str, out_dir: Path) -> list[dict]:
+    from tools.mesh import operaciones as ops
+
+    model = _load_mm(src, ext, options, max_triangles)
+    notes: list[str] = []
+    if tool == "analizar-stl":
+        text, info = ops.analyse(model, options, locale)
+        fmt = options.get("formato", "txt")
+        path = out_dir / f"{stem}-{'analisis' if locale != 'en' else 'analysis'}.{fmt}"
+        path.write_text(text, encoding="utf-8")
+        return [{"file": str(path), "name": path.name, "note": info["summary"]}]
+    target = _out_format(options, ext)
+    if tool in ops.OPS:
+        results = [(ops.OPS[tool](model, options, locale, notes), "")]
+    else:
+        results = ops.MULTI_OPS[tool](model, options, locale, notes)
+    for result, _suffix in results:
+        formats.check_finite(result)
+    return _write_results(results, target, stem, out_dir, notes, locale)
+
+
+def join_files(srcs: list[tuple[Path, str, str]], options: dict, locale: str, max_triangles: int, stem: str, out_dir: Path) -> list[dict]:
+    """unir-modelos: varios archivos en uno (con sus piezas o en un solo sólido)."""
+    from tools.mesh import operaciones as ops
+
+    models, total = [], 0
+    for src, ext, name in srcs:
+        model = _load_mm(src, ext, options, max_triangles - total)
+        total += model.triangles
+        if total > max_triangles:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_triangles")
+        models.append((name, model))
+    notes: list[str] = []
+    joined = ops.join(models, options, locale, notes)
+    target = options.get("formato_salida", "3mf")
+    return _write_results([(joined, "")], target, stem, out_dir, notes, locale)
