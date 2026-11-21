@@ -905,3 +905,21 @@ def test_curved_lithophane_reads_correctly_from_outside(make_ctx, tmp_path):
 def test_text_with_missing_glyphs_says_so(make_ctx):
     out = run("texto-a-stl", make_ctx("texto-a-stl", [], {"texto": "Hola 日本"}))
     assert "日" in out[0]["note"]
+
+
+def test_dxf_blocks_are_exploded(make_ctx, tmp_path):
+    """D-261: un bloque insertado dos veces (con escala) cuenta como dos contornos."""
+    import ezdxf
+
+    doc = ezdxf.new("R2010")
+    doc.header["$INSUNITS"] = 4
+    block = doc.blocks.new("PIEZA")
+    block.add_lwpolyline([(0, 0), (10, 0), (10, 10), (0, 10)], close=True)
+    msp = doc.modelspace()
+    msp.add_blockref("PIEZA", (0, 0))
+    msp.add_blockref("PIEZA", (30, 0), dxfattribs={"xscale": 2, "yscale": 2})
+    path = tmp_path / "bloques.dxf"
+    doc.saveas(path)
+    out = run("dxf-a-stl", make_ctx("dxf-a-stl", [path], {"altura_mm": 1}))
+    mesh = _load(Path(out[0]["path"]))
+    assert abs(mesh.volume - (100 + 400)) < 1

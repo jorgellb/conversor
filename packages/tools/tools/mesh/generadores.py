@@ -211,7 +211,7 @@ def dxf_contours(path: Path) -> list[np.ndarray]:
         raise ToolError(ErrorCode.CORRUPT_FILE, "DXF ilegible") from exc
     unit = DXF_UNITS.get(int(doc.header.get("$INSUNITS", 4) or 4), 1.0)
     closed, open_paths = [], []
-    for entity in doc.modelspace():
+    for entity in _flat_entities(doc.modelspace()):
         if entity.dxftype() not in ("LWPOLYLINE", "POLYLINE", "CIRCLE", "ELLIPSE", "SPLINE", "LINE", "ARC"):
             continue
         try:
@@ -232,6 +232,26 @@ def dxf_contours(path: Path) -> list[np.ndarray]:
     if not closed:
         raise ToolError(ErrorCode.INVALID_OPTIONS, "gen_no_shapes")
     return [c * unit for c in closed]
+
+
+def _flat_entities(space, depth: int = 0, budget: list[int] | None = None):
+    """Las entidades del espacio con los bloques (INSERT) ya colocados, con su escala, giro y matrices de filas y columnas
+    (D-261: antes se ignoraban). Como mucho 8 niveles de bloques dentro de bloques y MAX_CONTOURS entidades."""
+    budget = budget if budget is not None else [0]
+    for entity in space:
+        budget[0] += 1
+        if budget[0] > MAX_CONTOURS * 4:
+            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "gen_too_complex")
+        if entity.dxftype() == "INSERT":
+            if depth >= 8:
+                continue
+            try:
+                inner = list(entity.virtual_entities())
+            except Exception:  # noqa: BLE001 - bloque roto o sin definición
+                continue
+            yield from _flat_entities(inner, depth + 1, budget)
+        else:
+            yield entity
 
 
 def _link(paths: list[np.ndarray], tol: float = 1e-4) -> list[np.ndarray]:
