@@ -84,7 +84,7 @@ Se hace por lotes, cada uno con sus pruebas (D-119):
 | C (F3-C). Imagen y datos | imagen-a-texto (Tesseract en `ocr`, sin IA), imagen-a-excel (Docling en `convert` y, si no reconoce la tabla, LLM con esquema en `ai`; IA opcional) y ticket-a-excel (OCR en `ocr` y LLM con esquema en `ai`, 1 petición por ticket, comprobación de la suma) | Hecho (D-159 a D-165) |
 | D (F3-D). Voz | pdf-a-audio (Kokoro-82M en ONNX con fonemas de espeak-ng como proceso externo, en `av.heavy`; caracteres por tarea comprobados en la API antes de encolar; voz española apagada hasta la escucha del propietario) | Hecho (D-166 a D-173) |
 | E (F3-E). IA de audio (de F5) | traducir-subtitulos (SRT, VTT y ASS con pysubs2, un elemento JSON por subtítulo y tiempos intactos; audio y vídeo transcritos antes en `av.heavy`) y resumir-reunion (faster-whisper en `av.heavy` y acta con esquema en `ai`, por bloques si no cabe); peticiones estimadas y reservadas antes de transcribir | Hecho (D-174 a D-179) |
-| F3-Z. Cierre de F3 | 16.3 y uso real de peticiones (clave de OpenRouter del propietario) | En curso: rendimiento, e2e-compose y mantenimiento de beat (D-181); token de descarga canónico y Next.js 16.4.6 (D-183); CI entera en verde por primera vez con dc0e262 (D-190), también e2e-compose y Lighthouse; faltan la revisión externa y el uso real con la clave |
+| F3-Z. Cierre de F3 | 16.3 y uso real de peticiones (clave de OpenRouter del propietario) | En curso: rendimiento, e2e-compose y mantenimiento de beat (D-181); token de descarga canónico y Next.js 16.4.6 (D-183); CI entera en verde por primera vez con dc0e262 (D-190), también e2e-compose y Lighthouse; en el código, hecho; faltan la revisión externa y el uso real con la clave de OpenRouter del propietario (operativo) |
 
 ## Goal de trabajo continuo: lotes transversales (`docs/GOAL.md`, D-134 en adelante)
 
@@ -106,7 +106,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F4-B | firmar-pdf en el navegador, hacer-pdf-rellenable y crear-formulario-pdf | Hecho: hacer-pdf-rellenable y crear-formulario-pdf (F4-B1, D-195 y D-198), «Insertar firma» y el sello desde la página (F4-B2a, D-196) y el certificado propio con firma interrumpida (F4-B2b, D-199); firmar-pdf, encendida |
 | F4-C | compartir-pdf y solicitar-firmas (B-LT, Mailpit) | Hecho: compartir-pdf (F4-C1, D-200) y solicitar-firmas (F4-C2, D-202 y D-203); la e2e con Mailpit, en la CI |
 | F4-D | validar-factura-electronica, factura-electronica-a-pdf, facturae-a-pdf, ubl-a-pdf y cii-a-pdf (`workerutils`, KoSIT) | Hecho: validar-factura-electronica y `workerutils` con KoSIT (F4-D1, D-191) y la representación en PDF/A-3 con el XML incrustado (F4-D2, D-192) |
-| F4-E | crear-factura, crear-factura-electronica y pdf-a-factura-electronica (detrás de `INVOICING_ES_ENABLED`) | En curso: crear-factura (F4-E1, D-204 y D-206) y crear-factura-electronica (F4-E2, D-205) hechas; la firma XAdES-EPES de Facturae en el navegador (F4-E2b, D-207) y pdf-a-factura-electronica (F4-E3, D-208) hechas, con las revisiones de F4-E2 y F4-E3 corregidas (D-209 y D-211) |
+| F4-E | crear-factura, crear-factura-electronica y pdf-a-factura-electronica (detrás de `INVOICING_ES_ENABLED`) | Hecho: crear-factura (F4-E1, D-204 y D-206) y crear-factura-electronica (F4-E2, D-205); la firma XAdES-EPES de Facturae en el navegador (F4-E2b, D-207) y pdf-a-factura-electronica (F4-E3, D-208) hechas, con las revisiones de F4-E2 y F4-E3 corregidas (D-209 y D-211) |
 | F4-F | word-a-pdf-accesible (office → ocr, veraPDF) | Hecho (D-182 y D-184); veraPDF y el PDF/UA de LibreOffice reales, en la CI |
 | F4-Z | Cierre de F4: firma validada con pyHanko y solicitud de extremo a extremo | Hecho aquí: imagen de la firma dentro de la apariencia PAdES y .p12 con 3DES o RC2 (D-210), revisión de F4-E3 corregida (D-211); la e2e de servidor de solicitar-firmas con Mailpit está escrita y se comprueba en la CI cuando vuelva a arrancar |
 
@@ -156,7 +156,7 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 | F7-G | svg-a-stl, dxf-a-stl, imagen-a-stl, logo-a-stl, texto-a-stl, litofania, mapa-de-alturas-a-stl | Hecho (D-254) |
 | F7-H | visor-3d, visor-gcode, comprimir-glb, render-modelo-3d (navegador) | Hecho (D-257) |
 | F7-I | gcode-a-bgcode, bgcode-a-gcode, analizar-gcode, gcode-a-imagen, extraer-miniatura-gcode, extraer-gcode-3mf | Hecho (D-255) |
-| F7-Z | Cierre de F7 y del proyecto: 16.5 de 3D, criterios de 18 y 16.7 | Pendiente (F7-A a F7-I) |
+| F7-Z | Cierre de F7 y del proyecto: 16.5 de 3D, criterios de 18 y 16.7 | Hecho (D-259; revisiones de F7-H en D-260 y Anexo A completo en D-261); lo operativo, en `DEPLOY-CHECKLIST.md` |
 
 ## Siguiente paso
 
