@@ -475,6 +475,7 @@ services:
       APP_ENV: development
       SERVICE_ROLE: worker-cad
       WORKER_NAME: cad
+      GOTENBERG_URL: http://gotenberg:3000
       VALKEY_URL: redis://valkey:6379/0
       DATABASE_URL_WORKER: postgresql+psycopg://conversor_worker:worker-desarrollo@postgres:5432/conversor
       THREADS: "1"

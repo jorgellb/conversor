@@ -283,13 +283,30 @@ USER app
 ENV SERVICE_ROLE=worker-mesh PYTHONUTF8=1
 CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "mesh", "-n", "mesh@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
 
-# --- CAD (F7-D, grupo cad, 5.4): OpenCascade en ruedas (cadquery-ocp-novtk) y lo de mesh para escribir; sin red ---
+# --- LibreDWG (F7-E, D-252): GPL, solo el programa externo dwg2dxf (11). No está en Debian: se compila desde el tarball de
+# GNU con la versión y el SHA-256 fijados ---
+FROM ${PYTHON_IMAGE} AS libredwg-build
+ARG LIBREDWG_VERSION=0.14
+ARG LIBREDWG_SHA256=62ebb73b984f865960f20ed26619ea5f8789d5e3fd088fa40a2598384da81275
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential curl ca-certificates xz-utils \
+ && rm -rf /var/lib/apt/lists/*
+RUN curl -fsSL -o /tmp/libredwg.tar.xz "https://ftp.gnu.org/gnu/libredwg/libredwg-${LIBREDWG_VERSION}.tar.xz" \
+ && echo "${LIBREDWG_SHA256}  /tmp/libredwg.tar.xz" | sha256sum -c - \
+ && mkdir /tmp/libredwg && tar -xJf /tmp/libredwg.tar.xz -C /tmp/libredwg --strip-components=1 \
+ && cd /tmp/libredwg && LDFLAGS="-Wl,-rpath,/opt/libredwg/lib" ./configure --prefix=/opt/libredwg --disable-bindings \
+      --disable-python --disable-docs --enable-release \
+ && make -j"$(nproc)" && make install && /opt/libredwg/bin/dwg2dxf --version
+
+# --- CAD (F7-D y F7-E, grupo cad, 5.4): OpenCascade en ruedas (cadquery-ocp-novtk), lo de mesh para escribir, OpenSCAD de
+# Debian (GPL, externo) y dwg2dxf de LibreDWG; sin red salvo Gotenberg para dwg-a-pdf ---
 FROM base AS worker-cad
-RUN apt-get update && apt-get install -y --no-install-recommends libgl1 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends libgl1 openscad fonts-liberation2 && rm -rf /var/lib/apt/lists/* \
+ && openscad --version
+COPY --from=libredwg-build /opt/libredwg /opt/libredwg
 RUN uv pip install -r pyproject.toml --extra cad
 COPY --from=code /app /app
 USER app
-ENV SERVICE_ROLE=worker-cad PYTHONUTF8=1
+ENV SERVICE_ROLE=worker-cad PYTHONUTF8=1 DWG2DXF_BIN=/opt/libredwg/bin/dwg2dxf OPENSCAD_BIN=/usr/bin/openscad
 CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "cad", "-n", "cad@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]
 
 # --- Facturas electrónicas (F4-D, grupo utils): KoSIT Validator en modo servicio dentro de workerutils (5.4), con las

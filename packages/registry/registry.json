@@ -42795,6 +42795,594 @@
         "title": "MeshToStepOptions",
         "type": "object"
       }
+    },
+    {
+      "slug_es": "scad-a-stl",
+      "slug_en": "scad-to-stl",
+      "name_es": "SCAD a STL",
+      "name_en": "SCAD to STL",
+      "summary_es": "Convierte modelos de OpenSCAD en STL para imprimir, con las variables del personalizador que quieras.",
+      "summary_en": "Turn OpenSCAD models into STL for printing, with the customizer variables you want.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "scad",
+        "zip"
+      ],
+      "outputs": [
+        "stl",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "scad-a-3mf",
+        "stl-a-3mf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "variables": {
+            "default": "",
+            "maxLength": 4000,
+            "title": "Variables (nombre = valor, una por línea)",
+            "type": "string",
+            "x-title": {
+              "en": "Variables (name = value, one per line)",
+              "es": "Variables (nombre = valor, una por línea)"
+            },
+            "x-widget": "textarea"
+          },
+          "resolucion": {
+            "default": "modelo",
+            "enum": [
+              "modelo",
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Resolución de las curvas ($fn)",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "alta": {
+                "en": "High (128)",
+                "es": "Alta (128)"
+              },
+              "baja": {
+                "en": "Low (24)",
+                "es": "Baja (24)"
+              },
+              "media": {
+                "en": "Medium (64)",
+                "es": "Media (64)"
+              },
+              "modelo": {
+                "en": "The model's",
+                "es": "La del modelo"
+              }
+            },
+            "x-title": {
+              "en": "Curve resolution ($fn)",
+              "es": "Resolución de las curvas ($fn)"
+            }
+          },
+          "stl": {
+            "default": "binario",
+            "enum": [
+              "binario",
+              "ascii"
+            ],
+            "title": "Tipo de STL",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "ascii": {
+                "en": "ASCII (text)",
+                "es": "ASCII (texto)"
+              },
+              "binario": {
+                "en": "Binary (smaller)",
+                "es": "Binario (más pequeño)"
+              }
+            },
+            "x-title": {
+              "en": "STL type",
+              "es": "Tipo de STL"
+            }
+          }
+        },
+        "title": "ScadStlOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "scad-a-3mf",
+      "slug_en": "scad-to-3mf",
+      "name_es": "SCAD a 3MF",
+      "name_en": "SCAD to 3MF",
+      "summary_es": "Convierte modelos de OpenSCAD en 3MF con sus milímetros, listos para el laminador.",
+      "summary_en": "Turn OpenSCAD models into 3MF with their millimetres, ready for the slicer.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "scad",
+        "zip"
+      ],
+      "outputs": [
+        "3mf",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "scad-a-stl",
+        "3mf-a-stl"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "scad-a-3mf (7.19, F7-E, D-252): variables del personalizador, resolución de las curvas y las opciones de malla.",
+        "properties": {
+          "unidades_origen": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del original",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "The file's (or millimetres)",
+                "es": "Las del archivo (o milímetros)"
+              },
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the original",
+              "es": "Unidades del original"
+            }
+          },
+          "unidades_destino": {
+            "default": "mm",
+            "enum": [
+              "mm",
+              "cm",
+              "m",
+              "in"
+            ],
+            "title": "Unidades del resultado",
+            "type": "string",
+            "x-labels": {
+              "cm": {
+                "en": "Centimetres",
+                "es": "Centímetros"
+              },
+              "in": {
+                "en": "Inches",
+                "es": "Pulgadas"
+              },
+              "m": {
+                "en": "Metres",
+                "es": "Metros"
+              },
+              "mm": {
+                "en": "Millimetres",
+                "es": "Milímetros"
+              }
+            },
+            "x-title": {
+              "en": "Units of the result",
+              "es": "Unidades del resultado"
+            }
+          },
+          "escala": {
+            "default": 1.0,
+            "maximum": 1000,
+            "minimum": 0.001,
+            "title": "Escala",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Scale",
+              "es": "Escala"
+            }
+          },
+          "piezas": {
+            "default": "mantener",
+            "enum": [
+              "mantener",
+              "fusionar",
+              "separar"
+            ],
+            "title": "Piezas",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "fusionar": {
+                "en": "Merge into one",
+                "es": "Fusionarlas en una"
+              },
+              "mantener": {
+                "en": "Keep them if the format allows it",
+                "es": "Mantenerlas si el formato lo admite"
+              },
+              "separar": {
+                "en": "One file per part (ZIP)",
+                "es": "Un archivo por pieza (ZIP)"
+              }
+            },
+            "x-title": {
+              "en": "Parts",
+              "es": "Piezas"
+            }
+          },
+          "variables": {
+            "default": "",
+            "maxLength": 4000,
+            "title": "Variables (nombre = valor, una por línea)",
+            "type": "string",
+            "x-title": {
+              "en": "Variables (name = value, one per line)",
+              "es": "Variables (nombre = valor, una por línea)"
+            },
+            "x-widget": "textarea"
+          },
+          "resolucion": {
+            "default": "modelo",
+            "enum": [
+              "modelo",
+              "baja",
+              "media",
+              "alta"
+            ],
+            "title": "Resolución de las curvas ($fn)",
+            "type": "string",
+            "x-advanced": true,
+            "x-labels": {
+              "alta": {
+                "en": "High (128)",
+                "es": "Alta (128)"
+              },
+              "baja": {
+                "en": "Low (24)",
+                "es": "Baja (24)"
+              },
+              "media": {
+                "en": "Medium (64)",
+                "es": "Media (64)"
+              },
+              "modelo": {
+                "en": "The model's",
+                "es": "La del modelo"
+              }
+            },
+            "x-title": {
+              "en": "Curve resolution ($fn)",
+              "es": "Resolución de las curvas ($fn)"
+            }
+          }
+        },
+        "title": "ScadOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "dwg-a-dxf",
+      "slug_en": "dwg-to-dxf",
+      "name_es": "DWG a DXF",
+      "name_en": "DWG to DXF",
+      "summary_es": "Convierte planos DWG de AutoCAD en DXF, el formato de intercambio que abre cualquier programa de CAD.",
+      "summary_en": "Convert AutoCAD DWG drawings into DXF, the exchange format any CAD program opens.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "dwg"
+      ],
+      "outputs": [
+        "dxf",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "dwg-a-pdf",
+        "dxf-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "description": "Herramienta sin opciones propias.",
+        "properties": {},
+        "title": "NoOptions",
+        "type": "object"
+      }
+    },
+    {
+      "slug_es": "dwg-a-pdf",
+      "slug_en": "dwg-to-pdf",
+      "name_es": "DWG a PDF",
+      "name_en": "DWG to PDF",
+      "summary_es": "Convierte planos DWG de AutoCAD en PDF para verlos, imprimirlos o enviarlos sin AutoCAD.",
+      "summary_en": "Convert AutoCAD DWG drawings into PDF to view, print or send them without AutoCAD.",
+      "category": "3d",
+      "where": "server",
+      "worker_group": "cad",
+      "cost_class": "heavy",
+      "task_class": "heavy",
+      "inputs": [
+        "dwg"
+      ],
+      "outputs": [
+        "pdf",
+        "zip"
+      ],
+      "phase": "F7",
+      "launch": true,
+      "default_enabled": true,
+      "indexable": true,
+      "max_files": 5,
+      "needs_video": false,
+      "secret_fields": [],
+      "related": [
+        "dwg-a-dxf",
+        "dxf-a-pdf"
+      ],
+      "canonical_of": null,
+      "ai": false,
+      "ai_option": null,
+      "options_schema": {
+        "properties": {
+          "papel": {
+            "default": "A4",
+            "enum": [
+              "A4",
+              "A3",
+              "A2",
+              "A1",
+              "A0"
+            ],
+            "title": "Papel",
+            "type": "string",
+            "x-labels": {
+              "A0": {
+                "en": "A0",
+                "es": "A0"
+              },
+              "A1": {
+                "en": "A1",
+                "es": "A1"
+              },
+              "A2": {
+                "en": "A2",
+                "es": "A2"
+              },
+              "A3": {
+                "en": "A3",
+                "es": "A3"
+              },
+              "A4": {
+                "en": "A4",
+                "es": "A4"
+              }
+            },
+            "x-title": {
+              "en": "Paper",
+              "es": "Papel"
+            }
+          },
+          "orientacion": {
+            "default": "auto",
+            "enum": [
+              "auto",
+              "vertical",
+              "horizontal"
+            ],
+            "title": "Orientación",
+            "type": "string",
+            "x-labels": {
+              "auto": {
+                "en": "Automatic",
+                "es": "Automática"
+              },
+              "horizontal": {
+                "en": "Landscape",
+                "es": "Horizontal"
+              },
+              "vertical": {
+                "en": "Portrait",
+                "es": "Vertical"
+              }
+            },
+            "x-title": {
+              "en": "Orientation",
+              "es": "Orientación"
+            }
+          },
+          "monocromo": {
+            "default": false,
+            "title": "En blanco y negro",
+            "type": "boolean",
+            "x-title": {
+              "en": "Black and white",
+              "es": "En blanco y negro"
+            }
+          },
+          "margenes_mm": {
+            "default": 10,
+            "maximum": 50,
+            "minimum": 0,
+            "title": "Márgenes (mm)",
+            "type": "number",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Margins (mm)",
+              "es": "Márgenes (mm)"
+            }
+          }
+        },
+        "title": "DxfOptions",
+        "type": "object"
+      }
     }
   ]
 }

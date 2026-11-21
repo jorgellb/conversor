@@ -126,6 +126,9 @@ class Settings(BaseSettings):
     ENGINES_LIBRARY_PATH: str = ""
     # Memoria de datos del proceso hijo de cada conversión de mallas (F7, D-249): por debajo del contenedor workermesh.
     MESH_MEMORY_MB: int = 3000
+    # F7-E (D-252): programas GPL externos de workercad.
+    OPENSCAD_BIN: str = "openscad"
+    DWG2DXF_BIN: str = "dwg2dxf"
     # Certificados (PEM) que la verificación acepta como raíz además de la lista de la UE: la cadena del sello de la
     # plataforma, que no es cualificado (10). Vacío: solo la lista de la UE.
     SIGN_VERIFY_EXTRA_ROOTS: str = ""

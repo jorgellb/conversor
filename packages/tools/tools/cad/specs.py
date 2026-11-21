@@ -76,3 +76,48 @@ SPECS = [
     cad("obj", "step", ("stl-a-step", "step-a-obj"), "Convierte una malla OBJ en un sólido STEP facetado para abrirla en programas de CAD.",
         "Turn an OBJ mesh into a faceted STEP solid to open it in CAD programs.", options=MeshToStepOptions),
 ]
+
+
+class ScadOptions(MeshOptions):
+    """scad-a-3mf (7.19, F7-E, D-252): variables del personalizador, resolución de las curvas y las opciones de malla."""
+
+    variables: str = opt("", "Variables (nombre = valor, una por línea)", "Variables (name = value, one per line)", widget="textarea",
+                         max_length=4000, advanced=False)
+    resolucion: Literal["modelo", "baja", "media", "alta"] = opt("modelo", "Resolución de las curvas ($fn)", "Curve resolution ($fn)", advanced=True,
+                                                                  labels={"modelo": ("La del modelo", "The model's"), "baja": ("Baja (24)", "Low (24)"),
+                                                                          "media": ("Media (64)", "Medium (64)"), "alta": ("Alta (128)", "High (128)")})
+
+
+class ScadStlOptions(ScadOptions):
+    stl: Literal["binario", "ascii"] = opt("binario", "Tipo de STL", "STL type", advanced=True, labels={
+        "binario": ("Binario (más pequeño)", "Binary (smaller)"), "ascii": ("ASCII (texto)", "ASCII (text)")})
+
+
+def _dwg_pdf_options():
+    from tools.media.specs import DxfOptions
+
+    return DxfOptions
+
+
+SPECS += [
+    ToolSpec(slug_es="scad-a-stl", slug_en="scad-to-stl", name_es="SCAD a STL", name_en="SCAD to STL", category="3d", where="server",
+             inputs=("scad", "zip"), outputs=("stl", "zip"), options=ScadStlOptions, worker_group="cad", cost_class="heavy",
+             impl="tools.cad.scad:run", launch=True, phase="F7", time_limit=600, max_files=5,
+             summary_es="Convierte modelos de OpenSCAD en STL para imprimir, con las variables del personalizador que quieras.",
+             summary_en="Turn OpenSCAD models into STL for printing, with the customizer variables you want.", related=("scad-a-3mf", "stl-a-3mf")),
+    ToolSpec(slug_es="scad-a-3mf", slug_en="scad-to-3mf", name_es="SCAD a 3MF", name_en="SCAD to 3MF", category="3d", where="server",
+             inputs=("scad", "zip"), outputs=("3mf", "zip"), options=ScadOptions, worker_group="cad", cost_class="heavy",
+             impl="tools.cad.scad:run", launch=True, phase="F7", time_limit=600, max_files=5,
+             summary_es="Convierte modelos de OpenSCAD en 3MF con sus milímetros, listos para el laminador.",
+             summary_en="Turn OpenSCAD models into 3MF with their millimetres, ready for the slicer.", related=("scad-a-stl", "3mf-a-stl")),
+    ToolSpec(slug_es="dwg-a-dxf", slug_en="dwg-to-dxf", name_es="DWG a DXF", name_en="DWG to DXF", category="3d", where="server",
+             inputs=("dwg",), outputs=("dxf", "zip"), options=NoOptions, worker_group="cad", cost_class="heavy",
+             impl="tools.cad.dwg:run_dxf", launch=True, phase="F7", time_limit=600, max_files=5,
+             summary_es="Convierte planos DWG de AutoCAD en DXF, el formato de intercambio que abre cualquier programa de CAD.",
+             summary_en="Convert AutoCAD DWG drawings into DXF, the exchange format any CAD program opens.", related=("dwg-a-pdf", "dxf-a-pdf")),
+    ToolSpec(slug_es="dwg-a-pdf", slug_en="dwg-to-pdf", name_es="DWG a PDF", name_en="DWG to PDF", category="3d", where="server",
+             inputs=("dwg",), outputs=("pdf", "zip"), options=_dwg_pdf_options(), worker_group="cad", cost_class="heavy",
+             impl="tools.cad.dwg:run_pdf", launch=True, phase="F7", time_limit=600, max_files=5,
+             summary_es="Convierte planos DWG de AutoCAD en PDF para verlos, imprimirlos o enviarlos sin AutoCAD.",
+             summary_en="Convert AutoCAD DWG drawings into PDF to view, print or send them without AutoCAD.", related=("dwg-a-dxf", "dxf-a-pdf")),
+]

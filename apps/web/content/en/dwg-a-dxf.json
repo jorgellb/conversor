@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DWG to DXF converts AutoCAD DWG drawings to DXF, the exchange format opened by LibreCAD, QCAD, FreeCAD, Inkscape, laser cutters and almost every CAD and CAM program, without having AutoCAD.",
+    "The conversion is done by LibreDWG, GNU's free DWG library, and it accepts drawings saved with AutoCAD R13, R14, 2000, 2004, 2007, 2010, 2013 and 2018. Its quality is uneven: lines, arcs, circles, polylines, text and layers usually come through well, but some AutoCAD-specific entities, such as complex hatches, associative dimensions or vertical application objects, may be missing or change. The result note reminds you.",
+    "Before you get the DXF it is checked to open and audited with ezdxf, so you will not receive a broken file. LibreDWG runs in an isolated environment that only sees your drawing, with bounded time and memory.",
+    "You can convert up to five drawings per task and download them together in a ZIP. If you want to view or print it, use DWG to PDF. Files are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more DWG files.",
+    "Press convert.",
+    "Download the DXF or the ZIP with all of them."
+  ],
+  "faq": [
+    {
+      "q": "Why is something missing in the DXF?",
+      "a": "Because LibreDWG does not yet translate every AutoCAD entity. If it matters, open it in a program that shows it fully and export it from there."
+    },
+    {
+      "q": "Which DWG versions are supported?",
+      "a": "R13 to 2018. Older DWG files (R12 and earlier) cannot be read."
+    },
+    {
+      "q": "Are layers kept?",
+      "a": "Yes, with their names and colours, like blocks and text."
+    },
+    {
+      "q": "Which DXF version does it write?",
+      "a": "LibreDWG writes a DXF that AutoCAD, LibreCAD, QCAD and FreeCAD read; if your CAM program needs an older version, open it in LibreCAD and save it again."
+    }
+  ]
+}

@@ -730,6 +730,11 @@ VRML y X3D con un lector propio del grafo de escena, USD y USDZ con usd-core, OF
 STEP, STP, IGES y BREP a STL, 3MF, OBJ y GLB con calidad de teselado, nombres y colores; IGES a STEP exacto; y mallas a STEP facetado,
 en el nuevo `workercad` (D-251), en `tests/test_cad.py`.
 
+## F7-E (OpenSCAD y DWG)
+
+scad-a-stl y scad-a-3mf con OpenSCAD y dwg-a-dxf y dwg-a-pdf con LibreDWG compilado en la imagen, los dos bajo Landlock (D-252), en
+`tests/test_cad.py` con los programas simulados; la CI los prueba reales.
+
 ## Pendiente
 
 - F3: cierre (F3-Z, `PLAN.md`). F4 cerrada; F6 en curso (F6-A, F6-B1, F6-B2, F6-E, F6-F, F6-G, F6-H1, F6-H2, F6-I, F6-J, F6-K, F6-L, F6-M, F6-N1, F6-N2, F6-O1 y F6-O2 hechos); siguen el resto de F6, vídeo

@@ -1,6 +1,6 @@
 # Herramientas (7, 7.24 y 17)
 
-Catálogo publicado en esta entrega: 304 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 36). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
+Catálogo publicado en esta entrega: 308 herramientas (F1 43, F2 60, F3 10, F4 15, F5 61, F6 79, F7 40). Fases cerradas: F1, F2, F4 y F5 sin vídeo; en curso: F3. El orden y los lotes que faltan están en `docs/PLAN.md` y `docs/GOAL.md`. Generado por `scripts/gen_docs.py` desde `packages/registry/registry.json`, `config/tools-notes.yaml` y `config/pdf24.yaml`: no lo edites a mano.
 
 «Estado» es el de un despliegue con los valores por defecto: `TOOL_<SLUG>_ENABLED=false` apaga cualquiera y la tabla `feature_flags` también (5.2). «Indexable» exige herramienta activa, pruebas en verde y contenido propio completo y revisado en el idioma (7.22); sin él, la página lleva `noindex`.
 
@@ -310,6 +310,10 @@ Catálogo publicado en esta entrega: 304 herramientas (F1 43, F2 60, F3 10, F4 1
 | `brep-a-stl` / `brep-to-stl` | servidor | cad | heavy | F7 | activa | brep → stl, zip | redactado, sin revisar |
 | `stl-a-step` / `stl-to-step` | servidor | cad | heavy | F7 | activa | stl → step, zip | redactado, sin revisar |
 | `obj-a-step` / `obj-to-step` | servidor | cad | heavy | F7 | activa | obj → step, zip | redactado, sin revisar |
+| `scad-a-stl` / `scad-to-stl` | servidor | cad | heavy | F7 | activa | scad, zip → stl, zip | redactado, sin revisar |
+| `scad-a-3mf` / `scad-to-3mf` | servidor | cad | heavy | F7 | activa | scad, zip → 3mf, zip | redactado, sin revisar |
+| `dwg-a-dxf` / `dwg-to-dxf` | servidor | cad | heavy | F7 | activa | dwg → dxf, zip | redactado, sin revisar |
+| `dwg-a-pdf` / `dwg-to-pdf` | servidor | cad | heavy | F7 | activa | dwg → pdf, zip | redactado, sin revisar |
 
 ## Desactivadas y por qué (01-1, regla 7)
 

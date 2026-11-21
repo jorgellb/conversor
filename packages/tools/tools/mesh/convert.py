@@ -28,36 +28,43 @@ def _code_paths() -> list[str]:
     return [str(Path(core.__file__).resolve().parents[1]), str(Path(tools.__file__).resolve().parents[1])]
 
 
-def run(ctx: ToolContext) -> list[dict]:
+def convert_path(ctx: ToolContext, n: int, path: Path, ext: str, target: str, name: str, tool: str | None = None) -> list[dict]:
+    """Convierte un archivo en el proceso hijo (D-249) y devuelve sus salidas ya en la carpeta de resultados."""
     o = ctx.options
+    work = ctx.work / f"malla-{n}"
+    out_dir = work / "salida"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    src = work / f"original.{ext}"
+    shutil.copyfile(path, src)
+    job = {"paths": _code_paths(), "src": str(src), "ext": ext, "tool": tool or ctx.tool, "options": o.model_dump(), "locale": ctx.locale,
+           "max_triangles": ctx.plan.mesh_triangles, "stem": Path(derived_name(name, "", target)).stem,
+           "out_dir": str(out_dir), "result": str(work / "resultado.json")}
+    (work / "trabajo.json").write_text(json.dumps(job), encoding="utf-8")
+    env = {"LD_LIBRARY_PATH": ctx.settings.ENGINES_LIBRARY_PATH} if ctx.settings.ENGINES_LIBRARY_PATH else {}
+    env["PYTHONUTF8"] = "1"
+    landlock = _child_landlock(work, ctx.settings) + [(Path(p), "rx") for p in job["paths"]]
+    res = run_engine([sys.executable, "-I", str(CHILD), "trabajo.json"], cwd=work, timeout=540, mem_mb=ctx.settings.MESH_MEMORY_MB,
+                     limit_data=True, extra_env=env, ok_codes=(0, 2, 5), max_file_mb=4096, landlock=landlock)
+    result = work / "resultado.json"
+    if res.returncode == 5 or (res.returncode != 0 and not result.exists()):
+        raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_memory")
+    data = json.loads(result.read_text(encoding="utf-8"))
+    if "error" in data:
+        raise ToolError(data["error"]["code"], data["error"].get("detail"))
+    outputs = []
+    for item in data["outputs"]:
+        dst = ctx.output(item["name"])
+        shutil.move(item["file"], dst)
+        outputs.append({"path": str(dst), "name": item["name"], "note": item["note"]})
+    shutil.rmtree(work, ignore_errors=True)
+    return outputs
+
+
+def run(ctx: ToolContext) -> list[dict]:
+    target = TARGET[ctx.tool] or ctx.options.formato
     outputs = []
     for n, inp in enumerate(ctx.inputs):
         ctx.report(n / len(ctx.inputs), None)
         ext = (inp.ext or Path(inp.name).suffix.lstrip(".")).lower()
-        work = ctx.work / f"malla-{n}"
-        out_dir = work / "salida"
-        out_dir.mkdir(parents=True, exist_ok=True)
-        src = work / f"original.{ext}"
-        shutil.copyfile(inp.path, src)
-        target = TARGET[ctx.tool] or o.formato
-        job = {"paths": _code_paths(), "src": str(src), "ext": ext, "tool": ctx.tool, "options": o.model_dump(), "locale": ctx.locale,
-               "max_triangles": ctx.plan.mesh_triangles, "stem": Path(derived_name(inp.name, "", target)).stem,
-               "out_dir": str(out_dir), "result": str(work / "resultado.json")}
-        (work / "trabajo.json").write_text(json.dumps(job), encoding="utf-8")
-        env = {"LD_LIBRARY_PATH": ctx.settings.ENGINES_LIBRARY_PATH} if ctx.settings.ENGINES_LIBRARY_PATH else {}
-        env["PYTHONUTF8"] = "1"
-        landlock = _child_landlock(work, ctx.settings) + [(Path(p), "rx") for p in job["paths"]]
-        res = run_engine([sys.executable, "-I", str(CHILD), "trabajo.json"], cwd=work, timeout=540, mem_mb=ctx.settings.MESH_MEMORY_MB,
-                         limit_data=True, extra_env=env, ok_codes=(0, 2, 5), max_file_mb=4096, landlock=landlock)
-        result = work / "resultado.json"
-        if res.returncode == 5 or (res.returncode != 0 and not result.exists()):
-            raise ToolError(ErrorCode.LIMIT_EXCEEDED, "mesh_memory")
-        data = json.loads(result.read_text(encoding="utf-8"))
-        if "error" in data:
-            raise ToolError(data["error"]["code"], data["error"].get("detail"))
-        for item in data["outputs"]:
-            dst = ctx.output(item["name"])
-            shutil.move(item["file"], dst)
-            outputs.append({"path": str(dst), "name": item["name"], "note": item["note"]})
-        shutil.rmtree(work, ignore_errors=True)
-    return with_batch_zip(ctx, outputs, f"modelos-{TARGET[ctx.tool] or o.formato}.zip")
+        outputs += convert_path(ctx, n, inp.path, ext, target, inp.name)
+    return with_batch_zip(ctx, outputs, f"modelos-{target}.zip")

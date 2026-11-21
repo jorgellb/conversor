@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SCAD to STL generates the mesh of an OpenSCAD model and gives it to you as STL, ready for the slicer, without installing OpenSCAD. Upload the .scad or, if it includes other files with include or use, a ZIP with all of them, and download the binary or text STL.",
+    "Many Printables and Thingiverse designs are parametric: in “Variables” you can change their measurements as in the customizer, one per line (for example width = 40 or label = \"Hello\"). Only numbers, true or false, quoted text and vectors of numbers are accepted: nothing that runs code. You can also raise the curve resolution ($fn) so cylinders and holes come out rounder.",
+    "OpenSCAD runs in an isolated environment: it only sees the files you uploaded, its libraries and the system fonts, so a model cannot read anything else on the server. Rendering complex geometry can take a while: there is a five-minute limit per model and the result goes through the same checks as every other mesh.",
+    "OpenSCAD works without units and slicers read it in millimetres; you can choose other units and a scale for the STL. Files are processed on our server in the European Union, up to five models per task, and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload the .scad or a ZIP with its files.",
+    "Change the variables and resolution if you want.",
+    "Download the STL."
+  ],
+  "faq": [
+    {
+      "q": "Which OpenSCAD version is used?",
+      "a": "OpenSCAD 2021.01, the one in Debian stable. Features from newer development versions may be missing."
+    },
+    {
+      "q": "Can I use libraries such as BOSL2?",
+      "a": "Yes: upload them inside the ZIP next to the model, in the same folder structure your include uses."
+    },
+    {
+      "q": "Why does it say there is no part?",
+      "a": "Because the model generates no 3D geometry: check that it calls some module and that it is not all inside a comment."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SCAD to 3MF generates an OpenSCAD model and saves it as 3MF, the modern 3D printing format, with its millimetres declared so the slicer does not open it at another scale. Upload the .scad or a ZIP with the model and the files it includes.",
+    "You can adjust the design variables as in the OpenSCAD customizer, one per line with name = value, and choose the curve resolution ($fn) so roundings come out smooth. Variables only accept literals (numbers, true or false, quoted text and vectors of numbers), so they cannot run anything.",
+    "OpenSCAD runs isolated, with no access to anything but your files, its libraries and fonts, with a five-minute rendering limit. The resulting mesh is converted to 3MF in another isolated process with bounded memory, like every other 3D conversion.",
+    "The 3MF carries the units you choose and you can apply a scale. It is the best option for PrusaSlicer, Bambu Studio and Cura, which open it directly. Files are processed on our server in the European Union and deleted when they expire."
+  ],
+  "steps": [
+    "Upload the .scad or a ZIP with its files.",
+    "Adjust the variables and resolution if you want.",
+    "Download the 3MF."
+  ],
+  "faq": [
+    {
+      "q": "Why 3MF and not STL?",
+      "a": "Because 3MF stores units: the slicer opens the part at its real size without asking you."
+    },
+    {
+      "q": "Are OpenSCAD colours kept?",
+      "a": "No: OpenSCAD 2021.01 does not export color() colours, only the geometry."
+    },
+    {
+      "q": "What if the model takes too long?",
+      "a": "After five minutes it stops. Lower the curve resolution or simplify the model."
+    },
+    {
+      "q": "Can I upload a model that uses fonts?",
+      "a": "Yes: OpenSCAD's text() uses the system fonts, including Liberation. A custom font has to be referenced by a name the server has; otherwise a similar one is used."
+    }
+  ]
+}

@@ -368,7 +368,7 @@ def build() -> dict:
         # servidor, 3); el STL binario se lee a unos 200 bytes por triángulo, así que los 10 millones del plan Pro caben.
         "workermesh": worker("worker-mesh", "worker-mesh", "mesh", "mesh", 1, 1, "4g", 1),
         # CAD (F7-D, 5.4 y D-251): OpenCascade; 4 GB con 1 trabajo en el perfil de 8 vCPU y 6 GB en el de 16 (F7 necesita ese servidor).
-        "workercad": worker("worker-cad", "worker-cad", "cad", "cad", 1, 1, "4g", 1),
+        "workercad": worker("worker-cad", "worker-cad", "cad", "cad", 1, 1, "4g", 1, {"GOTENBERG_URL": "http://gotenberg:3000"}),
         "workermedia": worker("worker-media", "worker-media", "media", "media", 1, 1, "1536m", 1, {"GOTENBERG_URL": "http://gotenberg:3000"}),
         "workerconvert": worker("worker-convert", "worker-convert", "convert", "convert", 1, 2, "5g", 2, {"HF_HUB_OFFLINE": "1"}),
         # Audio ligero con FFmpeg (1 GB en el perfil de 8 vCPU; 3 GB en el de 16, D-191).

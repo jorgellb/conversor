@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DWG to PDF converts AutoCAD DWG drawings to PDF so you can view them on any device, print them or send them to someone without AutoCAD. Choose the paper (A4 to A0), orientation, margins and whether you want colour or black and white.",
+    "First LibreDWG turns the DWG into DXF, in an isolated environment; then ezdxf draws the model space as vectors and Chromium prints it to PDF fitted to the paper, so lines stay sharp when zooming. It accepts AutoCAD drawings from R13 to 2018.",
+    "LibreDWG's quality is uneven: lines, arcs, circles, polylines, text and layers usually come out well, but some hatches, associative dimensions or AutoCAD-specific objects may be missing. Check the PDF before using it for anything important; the result note reminds you.",
+    "The whole model space is drawn on one page, scaled to the paper; layouts are not printed separately. You can convert up to five drawings per task. Files are processed on our server in the European Union and deleted automatically when they expire."
+  ],
+  "steps": [
+    "Upload one or more DWG files.",
+    "Choose the paper, orientation and colour.",
+    "Download the PDF."
+  ],
+  "faq": [
+    {
+      "q": "Is the PDF to scale?",
+      "a": "It is fitted to the chosen paper, not to a specific scale. To print to scale, use a CAD program."
+    },
+    {
+      "q": "Why does everything look black?",
+      "a": "Because you ticked black and white, or the drawing uses light colours on a dark background. Try colour."
+    },
+    {
+      "q": "What if I only want the DXF?",
+      "a": "Use DWG to DXF, which gives you the editable drawing."
+    },
+    {
+      "q": "Can I print the drawing on several sheets?",
+      "a": "No: it comes out on a single page of the chosen size. For a large drawing, choose A1 or A0 and then use PDF poster if you want to split it into A4 sheets."
+    }
+  ]
+}

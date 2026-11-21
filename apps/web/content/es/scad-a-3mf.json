@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SCAD a 3MF genera un modelo de OpenSCAD y lo guarda en 3MF, el formato moderno de impresión 3D, con sus milímetros declarados para que el laminador no lo abra a otra escala. Sube el .scad o un ZIP con el modelo y los archivos que incluye.",
+    "Puedes ajustar las variables del diseño como en el personalizador de OpenSCAD, una por línea con nombre = valor, y elegir la resolución de las curvas ($fn) para que los redondeos queden suaves. Las variables solo admiten literales (números, true o false, textos entre comillas y vectores de números), así que no pueden ejecutar nada.",
+    "OpenSCAD corre aislado, sin acceso a nada que no sean tus archivos, sus bibliotecas y las fuentes, con un límite de cinco minutos de renderizado. La malla resultante se convierte a 3MF en otro proceso aislado con su memoria acotada, como el resto de conversiones 3D.",
+    "El 3MF lleva las unidades que elijas y puedes aplicar una escala. Es la mejor opción para PrusaSlicer, Bambu Studio y Cura, que lo abren directamente. Los archivos se procesan en nuestro servidor de la Unión Europea y se borran al caducar."
+  ],
+  "steps": [
+    "Sube el .scad o un ZIP con sus archivos.",
+    "Ajusta, si quieres, las variables y la resolución.",
+    "Descarga el 3MF."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué 3MF y no STL?",
+      "a": "Porque el 3MF guarda las unidades: el laminador abre la pieza a su tamaño real sin preguntarte."
+    },
+    {
+      "q": "¿Se conservan los colores de OpenSCAD?",
+      "a": "No: OpenSCAD 2021.01 no exporta los colores de color(), solo la geometría."
+    },
+    {
+      "q": "¿Qué pasa si el modelo tarda mucho?",
+      "a": "Pasados cinco minutos se detiene. Baja la resolución de las curvas o simplifica el modelo."
+    }
+  ]
+}

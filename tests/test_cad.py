@@ -151,3 +151,145 @@ def test_corrupt_cad_is_a_tool_error(make_ctx, tmp_path):
     bad.write_text("ISO-10303-21;\nHEADER;\nENDSEC;\nDATA;\n#1=GARBAGE(;\nENDSEC;\nEND-ISO-10303-21;\n")
     with pytest.raises(ToolError):
         run("step-a-stl", make_ctx("step-a-stl", [bad]))
+
+
+# ——— F7-E (D-252): OpenSCAD y LibreDWG (simulados aquí; reales en la CI, en la imagen de workercad) ———
+
+import shutil as _shutil  # noqa: E402
+import subprocess  # noqa: E402
+import zipfile  # noqa: E402
+
+BOX_ASCII = trimesh.creation.box((10, 20, 30)).export(file_type="stl_ascii")
+
+
+def _fake_engines(monkeypatch, seen: dict, scad_output: str | None = BOX_ASCII):
+    from tools.base import run_engine as real
+    from tools.cad import dwg, scad
+
+    def fake(args, cwd, **kw):
+        name = Path(args[0]).name
+        if name == "openscad":
+            seen["scad"] = (args, kw)
+            if scad_output is not None:
+                (Path(cwd) / "salida.stl").write_text(scad_output)
+            return subprocess.CompletedProcess(args, 0 if scad_output else 1, b"", b"WARNING: Current top level object is empty.")
+        if name == "dwg2dxf":
+            seen["dwg"] = (args, kw)
+            import ezdxf
+
+            doc = ezdxf.new("R2000")
+            doc.modelspace().add_line((0, 0), (100, 50))
+            doc.modelspace().add_circle((50, 25), 10)
+            doc.saveas(Path(cwd) / "plano.dxf")
+            return subprocess.CompletedProcess(args, 0, b"", b"")
+        return real(args, cwd=cwd, **kw)
+
+    monkeypatch.setattr(scad, "run_engine", fake)
+    monkeypatch.setattr(dwg, "run_engine", fake)
+
+
+def test_scad_to_3mf_with_customizer_variables(make_ctx, tmp_path, monkeypatch):
+    seen: dict = {}
+    _fake_engines(monkeypatch, seen)
+    src = tmp_path / "soporte.scad"
+    src.write_text("ancho = 10; cube([ancho, 20, 30]);\n")
+    out = run("scad-a-3mf", make_ctx("scad-a-3mf", [src], {"variables": "ancho = 12\n$fa = 6\netiqueta = \"A-1\"\nagujeros = [3, 4.5]",
+                                                         "resolucion": "alta"}))
+    args, kw = seen["scad"]
+    assert args[-1] == "modelo.scad" and ["-D", "ancho=12"] == args[args.index("-D"):args.index("-D") + 2]
+    assert "-D" in args and "$fn=128" in args and 'etiqueta="A-1"' in args and "agujeros=[3, 4.5]" in args
+    rules = dict(kw["landlock"])
+    assert any(str(p).endswith("scad-0") for p in rules) and all(mode in ("rx", "rw") for mode in rules.values())
+    from tools.mesh import formats
+
+    assert formats.load(Path(out[0]["path"]), "3mf", 100).triangles == 12
+
+
+@pytest.mark.parametrize("bad", ['x = import("/etc/passwd")', "x = 1; y = 2", "a b = 3", 'x = "a" + "b"', "x = cube(1)", "x"])
+def test_scad_variables_are_literals_only(bad):
+    from tools.cad.scad import parse_variables
+
+    with pytest.raises(ToolError) as err:
+        parse_variables(bad)
+    assert err.value.detail == "scad_variable"
+
+
+def test_scad_zip_with_includes_and_escape(make_ctx, tmp_path, monkeypatch):
+    seen: dict = {}
+    _fake_engines(monkeypatch, seen)
+    ok = tmp_path / "caja.zip"
+    with zipfile.ZipFile(ok, "w") as zf:
+        zf.writestr("caja.scad", "include <lib/util.scad>\nmodulo();\n")
+        zf.writestr("lib/util.scad", "module modulo() { cube(5); }\n")
+    out = run("scad-a-stl", make_ctx("scad-a-stl", [ok]))
+    assert seen["scad"][0][-1] == "caja.scad" and out[0]["name"].endswith(".stl")
+    bad = tmp_path / "malo.zip"
+    with zipfile.ZipFile(bad, "w") as zf:
+        zf.writestr("malo.scad", "cube(1);")
+        zf.writestr("../../fuera.scad", "cube(1);")
+    with pytest.raises(ToolError):
+        run("scad-a-stl", make_ctx("scad-a-stl", [bad]))
+
+
+def test_scad_empty_model(make_ctx, tmp_path, monkeypatch):
+    _fake_engines(monkeypatch, {}, scad_output=None)
+    src = tmp_path / "vacio.scad"
+    src.write_text("// nada\n")
+    with pytest.raises(ToolError) as err:
+        run("scad-a-stl", make_ctx("scad-a-stl", [src]))
+    assert err.value.detail == "scad_empty"
+
+
+@pytest.mark.skipif(not _shutil.which("openscad"), reason="sin OpenSCAD (está en la imagen de workercad)")
+def test_scad_real_openscad_cannot_read_outside(make_ctx, tmp_path):
+    src = tmp_path / "ataque.scad"
+    src.write_text('import("/etc/hostname"); cube(1);\n')
+    out = run("scad-a-stl", make_ctx("scad-a-stl", [src]))
+    assert len(trimesh.load(out[0]["path"], force="mesh").faces) == 12
+
+
+def _dwg(tmp_path: Path, magic: bytes = b"AC1015") -> Path:
+    path = tmp_path / "plano.dwg"
+    path.write_bytes(magic + b"\x00" * 200)
+    return path
+
+
+def test_dwg_to_dxf_and_version_check(make_ctx, tmp_path, monkeypatch):
+    import ezdxf
+
+    seen: dict = {}
+    _fake_engines(monkeypatch, seen)
+    out = run("dwg-a-dxf", make_ctx("dwg-a-dxf", [_dwg(tmp_path)]))
+    assert out[0]["name"] == "plano.dxf" and "DWG 2000" in out[0]["note"] and "LibreDWG" in out[0]["note"]
+    assert len(ezdxf.readfile(out[0]["path"]).modelspace()) == 2
+    assert seen["dwg"][0][1:] == ["-y", "-o", "plano.dxf", "plano.dwg"] and "landlock" in seen["dwg"][1]
+    with pytest.raises(ToolError) as err:
+        run("dwg-a-dxf", make_ctx("dwg-a-dxf", [_dwg(tmp_path, b"AC1009")]))
+    assert err.value.detail == "dwg_version"
+
+
+def test_dwg_to_pdf_through_gotenberg(make_ctx, tmp_path, monkeypatch):
+    import respx
+    from httpx import Response
+
+    from test_media_tools import _gotenberg
+
+    _fake_engines(monkeypatch, {})
+    import pikepdf
+
+    one = pikepdf.new()
+    one.add_blank_page()
+    blank = tmp_path / "b.pdf"
+    one.save(blank)
+    with respx.mock:
+        route = respx.post(_gotenberg("/forms/chromium/convert/html")).mock(return_value=Response(200, content=blank.read_bytes()))
+        out = run("dwg-a-pdf", make_ctx("dwg-a-pdf", [_dwg(tmp_path)], {"papel": "A3"}))
+    assert out[0]["name"] == "plano.pdf" and route.called
+    sent = route.calls[0].request.content
+    assert b"<svg" in sent and b"297mm" in sent
+
+
+def test_dwg_detection(tmp_path):
+    from core.filetype import detect
+
+    assert detect(_dwg(tmp_path), ".dwg").ext == "dwg"

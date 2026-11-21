@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DWG a PDF convierte planos de AutoCAD en DWG a PDF para verlos en cualquier dispositivo, imprimirlos o enviarlos a quien no tiene AutoCAD. Elige el papel (de A4 a A0), la orientación, los márgenes y si lo quieres en color o en blanco y negro.",
+    "Primero LibreDWG pasa el DWG a DXF, en un entorno aislado; después ezdxf dibuja el espacio modelo como vector y Chromium lo imprime en PDF ajustado al papel, así que las líneas siguen siendo nítidas al hacer zoom. Admite planos de AutoCAD R13 a 2018.",
+    "La calidad de LibreDWG es irregular: líneas, arcos, círculos, polilíneas, textos y capas suelen salir bien, pero algunos sombreados, cotas asociativas u objetos propios de AutoCAD pueden faltar. Revisa el PDF antes de usarlo para algo importante; la nota del resultado lo recuerda.",
+    "Se dibuja el espacio modelo completo en una página, escalado al papel; las presentaciones (layouts) no se imprimen por separado. Puedes convertir hasta cinco planos por tarea. Los archivos se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios DWG.",
+    "Elige el papel, la orientación y el color.",
+    "Descarga el PDF."
+  ],
+  "faq": [
+    {
+      "q": "¿El PDF está a escala?",
+      "a": "Se ajusta al papel elegido, no a una escala concreta. Para imprimir a escala, usa un programa de CAD."
+    },
+    {
+      "q": "¿Por qué se ve todo negro?",
+      "a": "Porque has marcado blanco y negro, o el plano usa colores claros sobre fondo oscuro. Prueba con color."
+    },
+    {
+      "q": "¿Y si solo quiero el DXF?",
+      "a": "Usa DWG a DXF, que te da el plano editable."
+    },
+    {
+      "q": "¿Puedo imprimir el plano en varias hojas?",
+      "a": "No: sale en una sola página del tamaño elegido. Para un plano grande, elige A1 o A0 y usa luego Póster PDF si quieres partirlo en hojas A4."
+    }
+  ]
+}

@@ -25,7 +25,9 @@ TARGET = {"stl-a-obj": "obj", "obj-a-stl": "stl", "stl-a-3mf": "3mf", "3mf-a-stl
           "convertir-modelo-3d": None,
           # F7-D (D-251): CAD con OpenCascade en workercad
           "step-a-stl": "stl", "stp-a-stl": "stl", "step-a-3mf": "3mf", "step-a-obj": "obj", "step-a-glb": "glb", "iges-a-stl": "stl",
-          "igs-a-step": "step", "brep-a-stl": "stl", "stl-a-step": "step", "obj-a-step": "step"}
+          "igs-a-step": "step", "brep-a-stl": "stl", "stl-a-step": "step", "obj-a-step": "step",
+          # F7-E (D-252): el STL que genera OpenSCAD
+          "scad-a-stl": "stl", "scad-a-3mf": "3mf"}
 MULTI = {"obj", "3mf", "amf", "glb", "wrl", "x3d", "usdz"}  # formatos con varias piezas en un archivo
 UP = {"glb": "y", "wrl": "y", "x3d": "y", "usdz": "y"}  # eje vertical de cada formato de salida; el resto, Z (impresión 3D)
 

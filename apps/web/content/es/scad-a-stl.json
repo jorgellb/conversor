@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "SCAD a STL genera la malla de un modelo de OpenSCAD y te la da en STL, lista para el laminador, sin instalar OpenSCAD. Sube el .scad o, si incluye otros archivos con include o use, un ZIP con todos, y descarga el STL binario o de texto.",
+    "Muchos diseños de Printables y Thingiverse son paramétricos: en «Variables» puedes cambiar sus medidas como en el personalizador, una por línea (por ejemplo ancho = 40 o texto = \"Hola\"). Solo se admiten números, true o false, textos entre comillas y vectores de números: nada que ejecute código. También puedes subir la resolución de las curvas ($fn) para que los cilindros y los agujeros salgan más redondos.",
+    "OpenSCAD se ejecuta en un entorno aislado: solo ve los archivos que has subido, sus bibliotecas y las fuentes del sistema, así que un modelo no puede leer nada más del servidor. El renderizado de geometría compleja puede tardar: hay un límite de cinco minutos por modelo y el resultado pasa por las mismas comprobaciones que el resto de mallas.",
+    "OpenSCAD trabaja sin unidades y los laminadores lo leen en milímetros; puedes elegir otras unidades y una escala para el STL. Los archivos se procesan en nuestro servidor de la Unión Europea, hasta cinco modelos por tarea, y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube el .scad o un ZIP con sus archivos.",
+    "Cambia, si quieres, las variables y la resolución.",
+    "Descarga el STL."
+  ],
+  "faq": [
+    {
+      "q": "¿Qué versión de OpenSCAD se usa?",
+      "a": "OpenSCAD 2021.01, la de Debian estable. Las funciones de las versiones de desarrollo más nuevas pueden no estar."
+    },
+    {
+      "q": "¿Puedo usar bibliotecas como BOSL2?",
+      "a": "Sí: súbelas dentro del ZIP junto al modelo, en la misma estructura de carpetas que usa tu include."
+    },
+    {
+      "q": "¿Por qué dice que no hay ninguna pieza?",
+      "a": "Porque el modelo no genera geometría 3D: revisa que llame a algún módulo o que no esté todo dentro de un comentario."
+    }
+  ]
+}

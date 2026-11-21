@@ -1,0 +1,29 @@
+{
+  "complete": true,
+  "reviewed": false,
+  "intro": [
+    "DWG a DXF convierte planos de AutoCAD en DWG al formato DXF, el de intercambio que abren LibreCAD, QCAD, FreeCAD, Inkscape, las cortadoras láser y casi todos los programas de CAD y CAM, sin tener AutoCAD.",
+    "La conversión la hace LibreDWG, la biblioteca libre de GNU para DWG, y admite planos guardados con AutoCAD R13, R14, 2000, 2004, 2007, 2010, 2013 y 2018. Su calidad es irregular: las líneas, arcos, círculos, polilíneas, textos y capas suelen pasar bien, pero algunas entidades propias de AutoCAD, como sombreados complejos, cotas asociativas u objetos de aplicaciones verticales, pueden faltar o cambiar. La nota del resultado te lo recuerda.",
+    "Antes de entregarte el DXF se comprueba que se abre y se audita con ezdxf, así que no recibirás un archivo roto. LibreDWG se ejecuta en un entorno aislado que solo ve tu plano, con su tiempo y su memoria acotados.",
+    "Puedes convertir hasta cinco planos por tarea y descargarlos juntos en un ZIP. Si lo que quieres es verlo o imprimirlo, usa DWG a PDF. Los archivos se procesan en nuestro servidor de la Unión Europea y se borran solos al caducar."
+  ],
+  "steps": [
+    "Sube uno o varios DWG.",
+    "Pulsa convertir.",
+    "Descarga el DXF o el ZIP con todos."
+  ],
+  "faq": [
+    {
+      "q": "¿Por qué falta algo en el DXF?",
+      "a": "Porque LibreDWG aún no traduce todas las entidades de AutoCAD. Si es importante, ábrelo en un programa que lo vea entero y expórtalo desde allí."
+    },
+    {
+      "q": "¿Qué versiones de DWG admite?",
+      "a": "De R13 a 2018. Los DWG anteriores (R12 y antes) no se pueden leer."
+    },
+    {
+      "q": "¿Se conservan las capas?",
+      "a": "Sí, con sus nombres y colores, igual que los bloques y los textos."
+    }
+  ]
+}
