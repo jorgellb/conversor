@@ -81,6 +81,7 @@ function runsInBrowser(spec: ClientSpec, files: File[], clientMaxMb: number, val
   if (spec.where === "client") return true;
   if (spec.where === "server") return false;
   if (values.color === "cmyk") return false;
+  if (values.autoorientar === true) return false; // girar-pdf: Tesseract en el servidor (A.4, D-261)
   const total = files.reduce((n, f) => n + f.size, 0);
   if (total > clientMaxMb * 1024 * 1024) return false;
   if (spec.inputs.includes("tiff") || spec.inputs.includes("jpg")) return files.every((f) => BROWSER_IMAGE.has(extOf(f.name)) || extOf(f.name) === "pdf");

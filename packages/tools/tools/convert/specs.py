@@ -67,7 +67,14 @@ class PdfAPresentacionOptions(_Languages):
 
 
 class PdfAHojaOptions(_Languages):
-    """pdf-a-excel y pdf-a-ods."""
+    """pdf-a-excel y pdf-a-ods (A.9, D-261): modo [editable: las tablas con Docling], editable con las imágenes en su hoja,
+    o fiel al diseño (una hoja por página con cada texto en su fila y su columna)."""
+
+    modo: Literal["editable", "editable_imagenes", "fiel"] = opt("editable", "Modo", "Mode", labels={
+        "editable": ("Editable: las tablas, reconstruidas", "Editable: the tables, rebuilt"),
+        "editable_imagenes": ("Editable, con las imágenes y gráficos en una hoja aparte", "Editable, with images and charts on a separate sheet"),
+        "fiel": ("Fiel al diseño: cada página en una hoja, con el texto en su sitio (se edita peor)",
+                 "Faithful layout: each page on a sheet, text in place (harder to edit)")})
 
     hojas: Literal["una_por_tabla", "todas_en_una"] = opt(
         "una_por_tabla", "Hojas", "Sheets",

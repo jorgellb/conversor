@@ -61,6 +61,9 @@ class GirarOptions(BaseModel):
                                                                        "180": ("180°", "180°")})
     paginas: str = opt("todas", "Páginas", "Pages")
     por_pagina: dict[str, int] = opt({}, "Giro por página", "Rotation per page", advanced=True)
+    # A.4 Extra (D-261): con Tesseract en el servidor; la web manda allí el trabajo cuando se marca.
+    autoorientar: bool = opt(False, "Autoorientar (enderezar las páginas de lado o del revés; se hace en el servidor)",
+                             "Auto-orient (straighten sideways or upside-down pages; done on the server)", advanced=True)
 
 
 class EliminarOptions(BaseModel):
@@ -755,8 +758,9 @@ SPECS: list[ToolSpec] = [
     client("dividir-pdf", "split-pdf", "Dividir PDF", "Split PDF", DividirOptions, PDF, ("pdf", "zip"),
            "Separa un PDF en varios por páginas, pares e impares, marcadores o tamaño.", "Split a PDF by pages, odd and even, bookmarks or size.",
            related=("unir-pdf", "extraer-paginas-pdf")),
-    client("girar-pdf", "rotate-pdf", "Girar PDF", "Rotate PDF", GirarOptions, PDF, PDF,
-           "Gira todas las páginas o solo algunas.", "Rotate all pages or only some of them.", related=("organizar-pdf",)),
+    client("girar-pdf", "rotate-pdf", "Girar PDF", "Rotate PDF", GirarOptions, PDF, (*PDF, "zip"),
+           "Gira todas las páginas o solo algunas.", "Rotate all pages or only some of them.", related=("organizar-pdf",),
+           where="hybrid", worker_group="ocr", impl="tools.pdf.girar:run", cost_class="light", time_limit=1800),
     client("eliminar-paginas-pdf", "delete-pdf-pages", "Eliminar páginas de un PDF", "Delete PDF pages", EliminarOptions, PDF, PDF,
            "Quita las páginas que no quieres.", "Remove the pages you don't want.", related=("extraer-paginas-pdf",)),
     client("extraer-paginas-pdf", "extract-pdf-pages", "Extraer páginas de un PDF", "Extract PDF pages", ExtraerOptions, PDF, ("pdf", "zip"),

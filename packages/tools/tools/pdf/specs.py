@@ -193,6 +193,10 @@ class PdfASvgOptions(BaseModel):
 
 
 class PdfATxtOptions(BaseModel):
+    # A.9 (D-261): en texto plano no hay gráficos que pasar a imagen; quedan los otros dos modos del Anexo.
+    modo: Literal["editable", "fiel"] = opt("editable", "Modo", "Mode", labels={
+        "editable": ("Editable: el texto en su orden de lectura", "Editable: text in reading order"),
+        "fiel": ("Fiel al diseño: columnas y sangrías con espacios, como en el papel", "Faithful layout: columns and indents with spaces, as on paper")})
     paginas: str = opt("todas", "Páginas", "Pages")
     ocr_si_no_hay_texto: bool = opt(True, "OCR automático si no hay texto (cuenta como tarea de OCR)",
                                     "Automatic OCR if there is no text (counts as an OCR task)")

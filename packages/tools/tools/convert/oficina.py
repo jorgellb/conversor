@@ -28,10 +28,16 @@ LO_FILTER = {"odt": "odt", "rtf": "rtf", "ods": "ods", "odp": "odp", "pptx": "pp
 NOTES = {
     "es": {"faithful": "Modo fiel al diseño: cajas posicionadas, se edita peor que el modo editable.",
            "no_tables": "No se han encontrado tablas: van los párrafos del documento, uno por fila.",
-           "table": "Tabla {n} (p. {page})", "tables": "Tablas", "text": "Texto"},
+           "table": "Tabla {n} (p. {page})", "tables": "Tablas", "text": "Texto", "page": "Página {n}", "images": "Imágenes",
+           "image": "Imagen {n} (p. {page})", "with_images": "{n} imágenes en la hoja «Imágenes».", "no_images": "El PDF no tiene imágenes ni gráficos que añadir.",
+           "faithful_sheet": "Modo fiel al diseño: una hoja por página con cada texto en su fila y su columna; se edita peor que el modo editable.",
+           "faithful_empty": "{n} páginas sin texto (escaneadas): pásalas antes por ocr-pdf."},
     "en": {"faithful": "Faithful layout mode: positioned boxes, harder to edit than editable mode.",
            "no_tables": "No tables were found: the document paragraphs are listed, one per row.",
-           "table": "Table {n} (p. {page})", "tables": "Tables", "text": "Text"},
+           "table": "Table {n} (p. {page})", "tables": "Tables", "text": "Text", "page": "Page {n}", "images": "Images",
+           "image": "Image {n} (p. {page})", "with_images": "{n} images on the “Images” sheet.", "no_images": "The PDF has no images or charts to add.",
+           "faithful_sheet": "Faithful layout mode: one sheet per page with each text in its row and column; harder to edit than editable mode.",
+           "faithful_empty": "{n} pages without text (scanned): run them through ocr-pdf first."},
 }
 
 
@@ -157,16 +163,88 @@ def workbook_from_document(doc, dst: Path, pages: list[int], one_sheet: bool, nu
     return note
 
 
+def workbook_faithful(src: Path, dst: Path, pages: list[int], numbers: bool, locale: str, labels: dict) -> str:
+    """Fiel al diseño (D-261): una hoja por página, cada trozo de texto en la celda de su línea y de su columna."""
+    import pypdfium2 as pdfium
+    from openpyxl import Workbook
+
+    from tools.pdf.disposicion import layout_grid, page_layout
+
+    wb = Workbook()
+    wb.remove(wb.active)
+    used: set[str] = set()
+    doc = pdfium.PdfDocument(str(src))
+    empty = 0
+    try:
+        for k in range(len(doc)):
+            page = doc[k]
+            try:
+                grid = layout_grid(page_layout(page))
+            finally:
+                page.close()
+            original = pages[k] if k < len(pages) else k + 1  # subset_pdf da los números de página desde 1
+            ws = wb.create_sheet(_sheet_title(labels["page"].format(n=original), used))
+            if not grid:
+                empty += 1
+            _write_rows(ws, grid, 1, numbers, locale, header=False)
+            _autosize(ws)
+    finally:
+        doc.close()
+    wb.save(dst)
+    return labels["faithful_sheet"] + (" " + labels["faithful_empty"].format(n=empty) if empty else "")
+
+
+def add_pictures(doc, dst: Path, labels: dict) -> int:
+    """Editable con imágenes (D-261): las imágenes y gráficos que reconoce Docling, en una hoja «Imágenes» una debajo de otra."""
+    from docling_core.types.doc import PictureItem
+    from openpyxl import load_workbook
+    from openpyxl.drawing.image import Image as XlImage
+
+    pictures = []
+    for item, _ in doc.iterate_items():
+        if isinstance(item, PictureItem):
+            image = item.get_image(doc)
+            if image is not None:
+                pictures.append((image, page_of(item)))
+    if not pictures:
+        return 0
+    wb = load_workbook(dst)
+    ws = wb.create_sheet(_sheet_title(labels["images"], {w.title.lower() for w in wb.worksheets}))
+    row = 1
+    for k, (image, page) in enumerate(pictures[:200], start=1):
+        image = image.convert("RGB")
+        image.thumbnail((900, 900))
+        buf = io.BytesIO()
+        image.save(buf, format="PNG")
+        ws.cell(row=row, column=1, value=labels["image"].format(n=k, page=page))
+        xl = XlImage(io.BytesIO(buf.getvalue()))
+        ws.add_image(xl, f"A{row + 1}")
+        row += 2 + int(image.height / 20)  # unas 20 px por fila
+    wb.save(dst)
+    return len(pictures)
+
+
 def run_sheet(ctx: ToolContext) -> list[dict]:
     o = ctx.options
     target = _target(ctx)
+    labels = _labels(ctx)
     outputs = []
     for n, inp in enumerate(ctx.inputs):
         ctx.report(n / len(ctx.inputs), None)
         src, pages = subset_pdf(ctx, inp.path, o.paginas, n)
-        doc = _document(ctx, src, pictures=False)
         xlsx = ctx.work / f"tablas-{n}.xlsx"
-        note = workbook_from_document(doc, xlsx, pages, o.hojas == "todas_en_una", o.numeros, ctx.locale, _labels(ctx))
+        if o.modo == "fiel":
+            note = workbook_faithful(src, xlsx, pages, o.numeros, ctx.locale, labels)
+            produced = xlsx if target == "xlsx" else libreoffice(ctx, xlsx, LO_FILTER[target])
+            out = _deliver(ctx, produced, derived_name(inp.name, "", target))
+            out["note"] = note
+            outputs.append(out)
+            continue
+        doc = _document(ctx, src, pictures=o.modo == "editable_imagenes")
+        note = workbook_from_document(doc, xlsx, pages, o.hojas == "todas_en_una", o.numeros, ctx.locale, labels)
+        if o.modo == "editable_imagenes":
+            count = add_pictures(doc, xlsx, labels)
+            note = " ".join(x for x in (note, labels["with_images"].format(n=count) if count else labels["no_images"]) if x)
         produced = xlsx if target == "xlsx" else libreoffice(ctx, xlsx, LO_FILTER[target])
         out = _deliver(ctx, produced, derived_name(inp.name, "", target))
         out["note"] = note

@@ -8,7 +8,7 @@ Catálogo publicado en esta entrega: 333 herramientas (F1 43, F2 60, F3 10, F4 1
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `unir-pdf` / `merge-pdf` | navegador | — | light | F1 | activa | pdf → pdf | redactado, sin revisar |
 | `dividir-pdf` / `split-pdf` | navegador | — | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
-| `girar-pdf` / `rotate-pdf` | navegador | — | light | F1 | activa | pdf → pdf | redactado, sin revisar |
+| `girar-pdf` / `rotate-pdf` | híbrida | ocr | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `eliminar-paginas-pdf` / `delete-pdf-pages` | navegador | — | light | F1 | activa | pdf → pdf | redactado, sin revisar |
 | `extraer-paginas-pdf` / `extract-pdf-pages` | navegador | — | light | F1 | activa | pdf → pdf, zip | redactado, sin revisar |
 | `organizar-pdf` / `organize-pdf` | navegador | — | light | F1 | activa | pdf → pdf | redactado, sin revisar |

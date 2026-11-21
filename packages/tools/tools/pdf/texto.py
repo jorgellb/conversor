@@ -70,11 +70,18 @@ def run(ctx: ToolContext) -> list[dict]:
             empty: list[int] = []
             for k, idx in enumerate(pages):
                 page = doc[idx]
-                textpage = page.get_textpage()
                 try:
-                    text = textpage.get_text_range().replace("\r\n", "\n").replace("\r", "\n")
+                    if o.modo == "fiel":
+                        from tools.pdf.disposicion import layout_text, page_layout
+
+                        text = layout_text(page_layout(page))
+                    else:
+                        textpage = page.get_textpage()
+                        try:
+                            text = textpage.get_text_range().replace("\r\n", "\n").replace("\r", "\n")
+                        finally:
+                            textpage.close()
                 finally:
-                    textpage.close()
                     page.close()
                 texts[idx] = text
                 if len("".join(text.split())) < MIN_CHARS:

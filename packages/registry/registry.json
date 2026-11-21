@@ -466,15 +466,16 @@
       "summary_es": "Gira todas las páginas o solo algunas.",
       "summary_en": "Rotate all pages or only some of them.",
       "category": "pdf",
-      "where": "client",
-      "worker_group": null,
+      "where": "hybrid",
+      "worker_group": "ocr",
       "cost_class": "light",
       "task_class": "light",
       "inputs": [
         "pdf"
       ],
       "outputs": [
-        "pdf"
+        "pdf",
+        "zip"
       ],
       "phase": "F1",
       "launch": true,
@@ -539,6 +540,16 @@
             "x-title": {
               "en": "Rotation per page",
               "es": "Giro por página"
+            }
+          },
+          "autoorientar": {
+            "default": false,
+            "title": "Autoorientar (enderezar las páginas de lado o del revés; se hace en el servidor)",
+            "type": "boolean",
+            "x-advanced": true,
+            "x-title": {
+              "en": "Auto-orient (straighten sideways or upside-down pages; done on the server)",
+              "es": "Autoorientar (enderezar las páginas de lado o del revés; se hace en el servidor)"
             }
           }
         },
@@ -13776,6 +13787,29 @@
       "ai_option": null,
       "options_schema": {
         "properties": {
+          "modo": {
+            "default": "editable",
+            "enum": [
+              "editable",
+              "fiel"
+            ],
+            "title": "Modo",
+            "type": "string",
+            "x-labels": {
+              "editable": {
+                "en": "Editable: text in reading order",
+                "es": "Editable: el texto en su orden de lectura"
+              },
+              "fiel": {
+                "en": "Faithful layout: columns and indents with spaces, as on paper",
+                "es": "Fiel al diseño: columnas y sangrías con espacios, como en el papel"
+              }
+            },
+            "x-title": {
+              "en": "Mode",
+              "es": "Modo"
+            }
+          },
           "paginas": {
             "default": "todas",
             "title": "Páginas",
@@ -20666,8 +20700,36 @@
       "ai": false,
       "ai_option": null,
       "options_schema": {
-        "description": "pdf-a-excel y pdf-a-ods.",
+        "description": "pdf-a-excel y pdf-a-ods (A.9, D-261): modo [editable: las tablas con Docling], editable con las imágenes en su hoja,\no fiel al diseño (una hoja por página con cada texto en su fila y su columna).",
         "properties": {
+          "modo": {
+            "default": "editable",
+            "enum": [
+              "editable",
+              "editable_imagenes",
+              "fiel"
+            ],
+            "title": "Modo",
+            "type": "string",
+            "x-labels": {
+              "editable": {
+                "en": "Editable: the tables, rebuilt",
+                "es": "Editable: las tablas, reconstruidas"
+              },
+              "editable_imagenes": {
+                "en": "Editable, with images and charts on a separate sheet",
+                "es": "Editable, con las imágenes y gráficos en una hoja aparte"
+              },
+              "fiel": {
+                "en": "Faithful layout: each page on a sheet, text in place (harder to edit)",
+                "es": "Fiel al diseño: cada página en una hoja, con el texto en su sitio (se edita peor)"
+              }
+            },
+            "x-title": {
+              "en": "Mode",
+              "es": "Modo"
+            }
+          },
           "hojas": {
             "default": "una_por_tabla",
             "enum": [
@@ -20781,8 +20843,36 @@
       "ai": false,
       "ai_option": null,
       "options_schema": {
-        "description": "pdf-a-excel y pdf-a-ods.",
+        "description": "pdf-a-excel y pdf-a-ods (A.9, D-261): modo [editable: las tablas con Docling], editable con las imágenes en su hoja,\no fiel al diseño (una hoja por página con cada texto en su fila y su columna).",
         "properties": {
+          "modo": {
+            "default": "editable",
+            "enum": [
+              "editable",
+              "editable_imagenes",
+              "fiel"
+            ],
+            "title": "Modo",
+            "type": "string",
+            "x-labels": {
+              "editable": {
+                "en": "Editable: the tables, rebuilt",
+                "es": "Editable: las tablas, reconstruidas"
+              },
+              "editable_imagenes": {
+                "en": "Editable, with images and charts on a separate sheet",
+                "es": "Editable, con las imágenes y gráficos en una hoja aparte"
+              },
+              "fiel": {
+                "en": "Faithful layout: each page on a sheet, text in place (harder to edit)",
+                "es": "Fiel al diseño: cada página en una hoja, con el texto en su sitio (se edita peor)"
+              }
+            },
+            "x-title": {
+              "en": "Mode",
+              "es": "Modo"
+            }
+          },
           "hojas": {
             "default": "una_por_tabla",
             "enum": [
@@ -21913,10 +22003,13 @@
             "x-show-if": {
               "formato": [
                 "docx",
+                "xlsx",
                 "pptx",
                 "odt",
+                "ods",
                 "odp",
-                "rtf"
+                "rtf",
+                "txt"
               ]
             },
             "x-title": {

@@ -79,7 +79,7 @@ DESDE_PDF_IMAGEN = {
 }
 MODO_OFFICE = E("editable", "editable", "editable_imagenes", "fiel")
 DESDE_PDF_OFFICE = {"modo": MODO_OFFICE, "paginas": D("todas"), "ocr_si_no_hay_texto": D(True)}
-DESDE_PDF_HOJAS = {"hojas": E("una_por_tabla", "una_por_tabla", "todas_en_una"), "paginas": D("todas"),
+DESDE_PDF_HOJAS = {"modo": MODO_OFFICE, "hojas": E("una_por_tabla", "una_por_tabla", "todas_en_una"), "paginas": D("todas"),
                    "ocr_si_no_hay_texto": D(True)}
 DISENO = E("auto", "auto", "fijo", "fluido")
 
@@ -173,7 +173,7 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     "organizar-pdf": {"orden": X, "invertir": X, "intercalar": X},
     "eliminar-paginas-pdf": {"paginas": X},
     "extraer-paginas-pdf": {"paginas": X, "salida": E("un_pdf", "un_pdf", "un_pdf_por_pagina")},
-    "girar-pdf": {"angulo": E(ANY, 90, -90, 180), "paginas": X, "por_pagina": X},
+    "girar-pdf": {"angulo": E(ANY, 90, -90, 180), "paginas": X, "por_pagina": X, "autoorientar": D(False)},
     "varias-paginas-por-hoja": {
         "por_hoja": E(2, 2, 3, 4, 6, 8, 9, 12, 16), "orden": E("horizontal", "horizontal", "vertical"),
         "hoja": E("A4", *PAPERS), "orientacion": D("auto"), "margenes": R(0, 0, 50), "direccion": E("ltr", "ltr", "rtl"),
@@ -299,7 +299,8 @@ MINIMOS: dict[str, dict[str, Opt]] = {
     "pdf-a-html": {"diseno": DISENO, "paginas": D("todas")},
     "pdf-a-epub": {"diseno": DISENO, "paginas": D("todas")},
     "pdf-a-markdown": {"imagenes": E("incluidas", "incluidas", "sin"), "quitar_encabezados": D(True), "paginas": D("todas")},
-    "pdf-a-txt": {"paginas": D("todas"), "ocr_si_no_hay_texto": D(True)},
+    # A.9 (D-261): en TXT, editable y fiel (no hay gráficos que pasar a imagen).
+    "pdf-a-txt": {"modo": E("editable", "editable", "fiel"), "paginas": D("todas"), "ocr_si_no_hay_texto": D(True)},
     "pdf-a-csv": {"paginas": D("todas")},
     "pdf-a-json": {"paginas": D("todas")},
     "pdf-a-svg": {"paginas": D("todas")},
@@ -323,10 +324,4 @@ MINIMOS: dict[str, dict[str, Opt]] = {
 
 # Lo que el Anexo A pide y el esquema todavía no tiene: (herramienta, opción o valor) -> lote que lo resuelve.
 PENDIENTES: dict[tuple[str, str], str] = {
-    # A.4 Extra: autoorientar con la detección de orientación de Tesseract, en servidor (docs/goal/huecos.json).
-    ("girar-pdf", "autoorientar"): "hueco de A.4, sin lote asignado",
-    # A.9: el Modo (Editable | con imágenes | Fiel) también para XLSX, ODS y TXT (D-61 y D-72 no lo ofrecen).
-    ("pdf-a-excel", "modo"): "hueco de A.9, sin lote asignado",
-    ("pdf-a-ods", "modo"): "hueco de A.9, sin lote asignado",
-    ("pdf-a-txt", "modo"): "hueco de A.9, sin lote asignado",
 }

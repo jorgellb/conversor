@@ -780,8 +780,7 @@ reales de PrusaSlicer que la CI descarga (D-259). La CI instala ahora los extras
   `docs/DEPLOY-CHECKLIST.md` (despliegue en el VPS, muestras reales, claves y revisiones legales).
 - La CI de GitHub Actions no arranca trabajos por la facturación de la cuenta: hasta que se resuelva, las pruebas solo se han
   pasado en local (suite de Python, vitest de la web y de client-tools, y Playwright del proyecto «navegador»).
-- Huecos del Anexo A sin lote: autoorientar de girar-pdf (A.4) y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt (A.9),
-  apuntados en `PENDIENTES` de `tests/anexo_a_minimos.py` (D-135).
+- Huecos del Anexo A: cerrados (autoorientar de girar-pdf y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt, D-261).
 - Cierre técnico de F3 (17): uso real de peticiones registrado, con la clave de OpenRouter del propietario.
 
 ## Cierre operativo de F1
