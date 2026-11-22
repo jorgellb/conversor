@@ -12,6 +12,8 @@ workeroffice ─(webrender)─▶ gotenbergweb (web-a-pdf) ─▶ egressweb (Smo
 workerai ─(airelay)─▶ egressai (Smokescreen) ─▶ openrouter.ai (solo ese dominio)
 workeraiembed (cola ai.embed, embeddings locales, sin salida) ─▶ PostgreSQL (pgvector)
 workerutils (cola utils.light, KoSIT en 127.0.0.1:8081 dentro del contenedor, sin salida)
+workermesh (cola mesh: mallas 3D, generadores y G-code en un proceso hijo con Landlock, sin salida)
+workercad (cola cad: OpenCascade, OpenSCAD y LibreDWG con Landlock; dwg-a-pdf pinta con gotenberg, sin salida)
 workersign (cola sign, token SoftHSM2 y PIN) ─(webrender)─▶ egressweb ─▶ TSA, OCSP y CRL del sello
 workersignverify (cola sign.verify, sin token ni PIN) ─(webrender)─▶ egressweb ─▶ lista de confianza de la UE, OCSP y CRL
 PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files, con requests/ de solicitar-firmas) · volumen backups (/srv/backups) · volumen eutl (/srv/eutl) · volumen softhsm (solo workersign)
@@ -58,7 +60,16 @@ PostgreSQL (pgvector) · Valkey · volumen filestore (/srv/files, con requests/ 
   el tramo, estima y reserva las peticiones antes de transcribir, transcribe con faster-whisper y deja los subtítulos o los
   párrafos en `document_texts` del propietario; después `workerai` hace las peticiones (acta por bloques y una final si no
   cabe). `workeravheavy` no tiene la clave de OpenRouter y `workerai` no tiene FFmpeg ni Whisper (D-174 a D-178).
-- **Híbridas**: imágenes a PDF y PDF a imágenes pasan al servidor con TIFF o con más de `CLIENT_MAX_MB`; `lector-pdf` abre los PDF en el navegador y convierte en servidor (motor de convertir-a-pdf) lo que no es PDF.
+- **3D** (F7, D-244 a D-262): las mallas (STL, OBJ, PLY, 3MF, AMF, glTF, VRML, X3D, USD, FBX…), las operaciones
+  (reparar, reducir, escalar, cortar, separar, unir, analizar), los generadores (SVG, DXF, logo, imagen, texto, litofanía y
+  mapa de alturas) y las seis de G-code y bgcode se ejecutan en `workermesh`, siempre en un proceso hijo
+  (`python -I tools/mesh/child.py`) con Landlock (solo ve la carpeta del trabajo y su código), `MESH_MEMORY_MB` de datos y
+  540 s; el padre solo entrega archivos regulares de su carpeta de salida (D-256). assimp va en otro hijo para FBX, DAE y
+  3DS. `workercad` lee STEP, IGES y BREP con OpenCascade (XCAF: nombres, colores y ensamblajes) y ejecuta OpenSCAD y
+  LibreDWG como programas externos con Landlock. En el navegador, visor-3d, visor-gcode y render-modelo-3d usan three.js
+  en la página (los cargadores de 3MF y AMF necesitan DOMParser) y el worker de las herramientas decodifica Draco y lee el
+  G-code y el bgcode con el lector propio; comprimir-glb (glTF Transform, Draco y meshopt) va entero en el worker.
+- **Híbridas**: girar-pdf pasa al servidor (`workerocr`) cuando se pide autoorientar (D-261); imágenes a PDF y PDF a imágenes pasan al servidor con TIFF o con más de `CLIENT_MAX_MB`; `lector-pdf` abre los PDF en el navegador y convierte en servidor (motor de convertir-a-pdf) lo que no es PDF.
 - **Servidor**:
   1. Identidad: JWT de Better Auth (`/api/auth/token`, EdDSA, `iss` y `aud` = `BETTER_AUTH_URL`) o token anónimo de
      24 h con Turnstile (`POST /v1/session/anon`).

@@ -2,7 +2,9 @@
 
 ## 1. Requisitos y preparación del VPS
 
-Ubuntu Server LTS, 8 vCPU dedicadas, 32 GB de RAM y 400 GB de NVMe para F1 a F4 (3.1). Usuario con clave SSH, sin
+Ubuntu Server LTS, 8 vCPU dedicadas, 32 GB de RAM y 400 GB de NVMe para F1 a F4 (3.1); con el vídeo de F5 y el 3D de F7,
+16 vCPU y 64 GB, con las variables de `python scripts/gen_coolify_compose.py --profile 16` (`workermesh` y `workercad`
+con 4 GB cada uno, D-259). Usuario con clave SSH, sin
 acceso por contraseña, `unattended-upgrades`, swap de 8 GB con `vm.swappiness=10`. Si hay disco de bloques, móntalo en
 `/srv/conversor` (ver «Volúmenes»).
 

@@ -54,6 +54,13 @@ las tablas de referencias híbridas que muestran contenidos distintos); solo si 
 y con un aviso destacado en el informe. Cada firma mal formada se informa sin detener las demás, la revocación en línea
 tiene límites de peticiones, tamaño y tiempo por documento (D-186) y el informe HTML escapa todo lo que viene del archivo.
 
+Las mallas 3D y el G-code (D-249, D-256 y D-258) no se analizan en el proceso del worker: un proceso hijo
+(`tools/mesh/child.py`, con `python -I` y las rutas del código en el JSON del trabajo) corre bajo Landlock (lectura de su
+carpeta y del código, escritura solo en ella, sin enlaces simbólicos), con `RLIMIT_DATA` de `MESH_MEMORY_MB` y 540 s.
+Sin memoria sale con el código 5 y el trabajo falla con LIMIT_EXCEEDED en vez de matar al worker (que la cola
+reintentaría). El padre comprueba con `lstat` que cada salida es un archivo regular dentro de la carpeta de salida antes de
+entregarla. OpenSCAD, LibreDWG, Calibre y assimp corren igual, como programas o hijos aparte con Landlock.
+
 ## Entradas
 
 Tipo real por bytes (`core/filetype.py`), nombres saneados, `lstat` antes de registrar salidas, límites de píxeles
@@ -65,7 +72,11 @@ las bombas de compresión y no se extrae nada con `..` ni rutas absolutas. En el
 red, sin fuentes del sistema y sin cargar imágenes externas (D-82), y cada imagen decodificada tiene un límite de 50 MP
 (D-79). zxing-cpp se carga desde el propio origen, nunca desde su CDN, y leer-codigo-qr muestra los enlaces sin abrirlos
 (D-92). En el servidor, LibRaw revela los RAW en un proceso aparte con límites de memoria y tiempo (D-97) y el modelo de
-rembg viene en la imagen, fijado por SHA-256, sin descargas en ejecución (D-96).
+rembg viene en la imagen, fijado por SHA-256, sin descargas en ejecución (D-96). En 3D: recuento de triángulos antes de cargar (API y
+worker), topes de piezas, instancias, visitas de escena (DEF/USE), tamaño de atributos y capas externas de USD rechazadas
+(D-250 y D-256); bgcode con topes de metadatos, miniaturas y G-code descomprimido y CRC de cada bloque (D-258); ZIP de
+OpenSCAD y .gcode.3mf por `check_zip` y copias con tope; las variables del personalizador de OpenSCAD solo como literales.
+En el navegador, los glTF con datos incrustados se pasan a URL blob: sin fetch y nada sale a la red (D-260).
 
 ## Web y descargas
 
