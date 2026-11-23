@@ -5,8 +5,10 @@ Valkey), las migraciones de Better Auth y de la API, la API pública (8000) y la
 todas las colas más el de mantenimiento, los sustitutos mínimos de tusd (8080, `scripts/dev/tus_local.py`) y de Caddy
 (8090, `scripts/dev/files_local.py`) y la web ya compilada (`npm run build`) en http://localhost:3000.
 
-Los datos van a `~/.local/share/conversor-dev` (base de datos, archivos, registros y los PID). Lo que necesite un motor
-que no esté instalado (Gotenberg, Calibre, OpenSCAD…) falla con su error, igual que en un worker sin ese motor. Los
+Los datos van a `~/.local/share/conversor-dev` (base de datos, archivos, registros y los PID). Gotenberg se sustituye por
+`scripts/dev/gotenberg_local.py` (las rutas de Chromium con el Chromium de Playwright; las de LibreOffice, con el `soffice`
+de la máquina si puede abrir el archivo). Lo que necesite un motor que no esté instalado (Calibre, OpenSCAD, LibreDWG, el
+sello con SoftHSM…) falla con su error, igual que en un worker sin ese motor. Los
 correos (enlaces de inicio de sesión, solicitudes de firma) se ven en http://localhost:8025 (`scripts/dev/mail_local.py`,
 en lugar de Mailpit). Para el despliegue de verdad, `docker compose up` (README) y Coolify (docs/DEPLOY.md).
 """
@@ -57,7 +59,7 @@ def _env() -> dict[str, str]:
         "PUBLIC_FILES_URL": f"http://localhost:{PORTS['files']}",
         "FILESTORE_PATH": str(DATA / "files"),
         "BACKUP_PATH": str(DATA / "backups"),
-        "GOTENBERG_URL": "http://127.0.0.1:3999",  # sin Gotenberg: las herramientas que lo usan fallan con su error
+        "GOTENBERG_URL": "http://127.0.0.1:3999",  # scripts/dev/gotenberg_local.py: Chromium de Playwright y el soffice local
         "GOTENBERG_WEB_URL": "http://127.0.0.1:3999",
         "SMTP_URL": "smtp://127.0.0.1:1025",
         "PYTHONPATH": os.pathsep.join(str(ROOT / p) for p in ("packages/core", "packages/tools", "apps/api")),
@@ -150,6 +152,8 @@ def start() -> None:
     _spawn("apiint", [uvicorn, "app.internal.app:app", "--host", "127.0.0.1", "--port", str(PORTS["apiint"])],
            {**env, "SERVICE_ROLE": "apiint"})
     _wait_port(PORTS["apiint"], "apiint")
+    _spawn("gotenberg", [str(VENV / "python"), "scripts/dev/gotenberg_local.py"], {**env, "GOTENBERG_PORT": "3999"})
+    _wait_port(3999, "gotenberg")
     queues = _queues(env)
     celery = str(VENV / "celery")
     _spawn("worker", [celery, "-A", "core.celeryapp", "worker", "-Q", ",".join(queues), "-n", "local@%h", "-c", "2",
