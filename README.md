@@ -23,6 +23,20 @@ docker compose up --build
 Web en http://localhost:3000, API en http://localhost:8000, correo de pruebas (Mailpit) en http://localhost:8025.
 Usa `.env.example` y los dobles de 0.1: pagos falsos, claves de prueba de Turnstile y SMTP de Mailpit.
 
+### Sin Docker (solo para ver y probar en local)
+
+```bash
+python scripts/dev_local.py start   # PostgreSQL, Redis, API, workers, subidas, descargas, correo y web
+python scripts/dev_local.py status
+python scripts/dev_local.py stop
+```
+
+Web en http://localhost:3000 y correos (enlaces de inicio de sesión) en http://localhost:8025. Usa el PostgreSQL (con
+pgvector), Redis, LibreOffice, FFmpeg y Tesseract instalados en la máquina; tusd, Caddy y Mailpit se sustituyen por
+servidores mínimos de `scripts/dev/`. La IA usa el proveedor falso si no hay `OPENROUTER_API_KEY`. Lo que pide Gotenberg,
+el sello (SoftHSM) u otro motor no instalado falla con su error. Para chat-pdf, el modelo de embeddings:
+`sh infra/embeddings/fetch-model.sh ~/.cache/conversor-motores/embeddings`.
+
 ## Pruebas
 
 ```bash
