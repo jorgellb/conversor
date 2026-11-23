@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 
 import { expect, test, type Page } from "@playwright/test";
+import { waitHydrated } from "./hidratado";
 
 // F4, lote E1: crear-factura en el navegador (encendida en la CI con INVOICING_ES_ENABLED y TOOL_CREAR_FACTURA_ENABLED).
 // Totales en vivo con recargo e IRPF, validación del NIF y del IBAN, PDF sin subir nada y el emisor recordado. El cálculo
@@ -15,6 +16,7 @@ function watchUploads(page: Page): string[] {
 test("crear-factura: totales en vivo, validación y PDF sin subir nada", async ({ page }) => {
   const sent = watchUploads(page);
   await page.goto("/es/crear-factura");
+  await waitHydrated(page, "[data-party='issuer'] input");
   await expect(page.getByRole("heading", { level: 1, name: "Crear factura" })).toBeVisible();
   await expect(page.getByRole("note")).toContainText("Veri*factu");
   const issuer = page.locator("[data-party='issuer']");
@@ -98,6 +100,7 @@ test("crear-factura-electronica: llega desde crear-factura y manda la factura EN
     return route.fulfill({ status: 404, headers: cors });
   });
   await page.goto("/es/crear-factura");
+  await waitHydrated(page, "[data-party='issuer'] input");
   const issuer = page.locator("[data-party='issuer']");
   await issuer.getByLabel("Nombre o razón social").fill("Estudio Pérez, S.L.");
   await issuer.getByLabel("NIF, NIE o CIF", { exact: true }).fill("B12345674");
@@ -147,6 +150,7 @@ test("crear-factura-electronica: Facturae firmado con XAdES-EPES en el navegador
     return route.fulfill({ status: 404, headers: cors });
   });
   await page.goto("/es/crear-factura-electronica");
+  await waitHydrated(page, "[data-party='issuer'] input");
   const issuer = page.locator("[data-party='issuer']");
   await issuer.getByLabel("Nombre o razón social").fill("Estudio Pérez, S.L.");
   await issuer.getByLabel("NIF, NIE o CIF", { exact: true }).fill("B12345674");

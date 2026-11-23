@@ -34,6 +34,13 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+/** El generador ya hidratado: su aviso de dato que falta solo lo pone el componente en el navegador. Lo que se escribe o
+ * se elige antes se pierde, y con la batería entera la página tarda más en engancharse. */
+async function openGenerator(page: Page): Promise<void> {
+  await page.goto("/es/generar-codigo-qr");
+  await expect(page.locator("[data-qr-hint]")).toBeVisible({ timeout: 30_000 });
+}
+
 async function generate(page: Page): Promise<Buffer> {
   await expect(page.locator("[data-qr-preview]")).toBeVisible({ timeout: 15_000 });
   await page.getByRole("button", { name: "Generar código QR" }).click();
@@ -46,7 +53,7 @@ async function generate(page: Page): Promise<Buffer> {
 test("generar-codigo-qr: URL en PNG, comprobada y leída de nuevo por leer-codigo-qr, sin subir nada", async ({ page, context }) => {
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   const sent = watchUploads(page);
-  await page.goto("/es/generar-codigo-qr");
+  await openGenerator(page);
   await page.getByLabel("Dirección").fill("ejemplo.test/qr");
   const png = await generate(page);
   await expect(page.locator("[data-qr-check]")).toHaveAttribute("data-qr-check", "ok");
@@ -66,7 +73,7 @@ test("generar-codigo-qr: URL en PNG, comprobada y leída de nuevo por leer-codig
 });
 
 test("generar-codigo-qr: con logotipo se fuerza la corrección H y zxing-cpp lo lee (16.6)", async ({ page }) => {
-  await page.goto("/es/generar-codigo-qr");
+  await openGenerator(page);
   await page.getByLabel("Dirección").fill("https://ejemplo.test/logo");
   const logo = await page.evaluate(() => {
     const c = document.createElement("canvas");
@@ -89,7 +96,7 @@ test("generar-codigo-qr: con logotipo se fuerza la corrección H y zxing-cpp lo 
 });
 
 test("generar-codigo-qr: WiFi en SVG, transferencia SEPA en PDF vectorial y modo Kanji", async ({ page }) => {
-  await page.goto("/es/generar-codigo-qr");
+  await openGenerator(page);
   // Si se elige antes de que la página se hidrate, el cambio se pierde: se repite hasta que salen los campos de WiFi.
   await expect(async () => {
     await page.getByLabel("Tipo de contenido").selectOption("wifi");
@@ -135,7 +142,7 @@ test("generar-codigo-qr: WiFi en SVG, transferencia SEPA en PDF vectorial y modo
 });
 
 test("generar-codigo-qr: estilo con degradado y borde, aviso si no se lee e importar y exportar la configuración", async ({ page }) => {
-  await page.goto("/es/generar-codigo-qr");
+  await openGenerator(page);
   await page.getByLabel("Dirección").fill("https://ejemplo.test/estilo");
   await page.getByText("Estilo y opciones técnicas").click();
   await page.getByLabel("Degradado de los módulos", { exact: true }).selectOption("lineal");
@@ -168,7 +175,7 @@ test("generar-codigo-qr: estilo con degradado y borde, aviso si no se lee e impo
 });
 
 test("leer-codigo-qr: un QR dentro de un PDF, en inglés", async ({ page }) => {
-  await page.goto("/es/generar-codigo-qr");
+  await openGenerator(page);
   await page.getByLabel("Tipo de contenido").selectOption("texto");
   await page.getByLabel("Texto", { exact: true }).fill("Factura 2026-001");
   const png = await generate(page);
