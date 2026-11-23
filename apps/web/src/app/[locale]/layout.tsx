@@ -10,6 +10,7 @@ import "../globals.css";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { ServiceWorker } from "@/components/ServiceWorker";
+import { AnimationsReady } from "@/components/art/AnimationsReady";
 import { pickMessages } from "@/components/ViewMessages";
 import { routing, type Locale } from "@/i18n/routing";
 import { languageMap, SITE_NAME, webUrl } from "@/lib/site";
@@ -54,6 +55,7 @@ export default async function LocaleLayout({ children, params }: { children: Rea
           </main>
           <Footer locale={locale as Locale} />
           <ServiceWorker nonce={nonce} />
+          <AnimationsReady />
         </NextIntlClientProvider>
       </body>
     </html>

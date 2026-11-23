@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import { addEnvironment, addLights } from "./model3d";
+import { addLights } from "./model3d";
 
 export interface ThreeView {
   renderer: THREE.WebGLRenderer;
@@ -70,7 +70,6 @@ export function useThreeView(): { mountRef: React.RefObject<HTMLDivElement | nul
     const observer = new ResizeObserver(resize);
     observer.observe(mount);
     resize();
-    addEnvironment(scene, renderer).then(invalidate, () => undefined); // sin entorno se ve igual, solo más plano
     setView({ renderer, scene, camera, controls, invalidate });
     return () => {
       observer.disconnect();

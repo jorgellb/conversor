@@ -91,6 +91,8 @@ test("crear-collage: dos fotos, intercambio arrastrando y PNG a 150 ppp sin subi
   await page.getByLabel("Huecos para fotos").fill("2");
   // A4 vertical, margen 10 y separación 4: una columna con dos celdas (roja arriba, azul abajo).
   const canvas = page.locator("[data-collage-stage] canvas").first();
+  // Arriba del todo, justo debajo de la cabecera fija (scroll-padding-top): el arrastre no debe empezar encima de ella.
+  await canvas.evaluate((el) => el.scrollIntoView({ block: "start", behavior: "instant" }));
   const box = (await canvas.boundingBox())!;
   const k = box.width / 210;
   const top = { x: box.x + 105 * k, y: box.y + 78 * k };

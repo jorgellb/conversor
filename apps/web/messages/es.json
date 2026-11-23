@@ -39,7 +39,38 @@
     "frequent": "Las que más usas",
     "categories": "Categorías",
     "popular": "Más usadas",
-    "all": "Todas las herramientas"
+    "all": "Todas las herramientas",
+    "heroEyebrow": "Taller de documentos · servidores en la UE",
+    "heroTitleA": "Todas las herramientas para tus",
+    "heroTitleB": "PDF y archivos",
+    "trustPrivacy": "Lo que se hace en el navegador no sale de tu equipo",
+    "trustFree": "Gratis, sin marcas de agua",
+    "trustDelete": "Lo que se sube se borra solo",
+    "statTools": "herramientas",
+    "statCats": "categorías",
+    "statFormats": "formatos",
+    "howTitle": "Tres pasos y listo",
+    "how1Title": "Elige el archivo",
+    "how1Text": "Arrástralo o búscalo en tu equipo. Muchas herramientas trabajan sin subirlo.",
+    "how2Title": "Ajusta lo que quieras",
+    "how2Text": "Calidad, páginas, formato… Con valores por defecto pensados para que no tengas que tocar nada.",
+    "how3Title": "Descárgalo",
+    "how3Text": "El resultado, al momento. Lo que pasa por el servidor se borra solo al caducar.",
+    "toolsCount": "{n, plural, one {# herramienta} other {# herramientas}}",
+    "exploreCategory": "Ver las herramientas de {name}",
+    "cat": {
+      "pdf": "Unir, dividir, comprimir, firmar y convertir PDF.",
+      "office": "Word, Excel, PowerPoint y libros electrónicos, de ida y vuelta.",
+      "image": "Convertir, comprimir, recortar y limpiar fotos e imágenes.",
+      "audio": "Convertir, recortar y transcribir audio.",
+      "video": "Comprimir, recortar y convertir vídeo.",
+      "ai": "Resumir, traducir y preguntar a tus documentos.",
+      "data": "CSV, JSON, mapas, calendarios, contactos y más.",
+      "3d": "STL, 3MF, STEP, G-code y modelos para imprimir.",
+      "sign": "Firmar, sellar y verificar documentos.",
+      "invoice": "Facturas en PDF y facturas electrónicas.",
+      "convert": "Convertir cualquier archivo en otro."
+    }
   },
   "tool": {
     "breadcrumbHome": "Inicio",
@@ -108,7 +139,10 @@
     "cvRole": "Currículum",
     "attachmentRole": "Adjunto",
     "convertToPdfa": "Convertir a PDF/A",
-    "videoPro": "Solo para el plan Pro: el vídeo no está en los planes gratuitos."
+    "videoPro": "Solo para el plan Pro: el vídeo no está en los planes gratuitos.",
+    "badgeClient": "En tu navegador",
+    "badgeServer": "En nuestro servidor de la UE",
+    "badgeHybrid": "En tu navegador o en el servidor"
   },
   "faq": {
     "privacyQ": "¿Dónde se procesan mis archivos?",

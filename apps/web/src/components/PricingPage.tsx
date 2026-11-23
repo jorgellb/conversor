@@ -20,14 +20,14 @@ export async function PricingPage({ locale, plans }: { locale: Locale; plans: Re
   const ids = ["anon", "free", "pro"] as const;
   return (
     <div>
-      <h1 className="text-3xl font-bold">{t("title")}</h1>
-      <p className="muted mt-2">{t("intro")}</p>
+      <h1 className="text-4xl font-extrabold sm:text-5xl">{t("title")}</h1>
+      <p className="muted mt-3 max-w-2xl text-lg">{t("intro")}</p>
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         {ids.map((id) => (
-          <section key={id} className="card flex flex-col gap-3 p-5" aria-labelledby={`plan-${id}`}>
-            <h2 id={`plan-${id}`} className="text-xl font-semibold">{t(id)}</h2>
-            <p className="text-2xl font-bold">{id === "pro" ? t("priceTbd") : "0 €"}</p>
-            <dl className="flex flex-col gap-1 text-sm">
+          <section key={id} className={`card relative flex flex-col gap-3 overflow-hidden p-6 ${id === "pro" ? "plan-pro" : ""}`} aria-labelledby={`plan-${id}`}>
+            <h2 id={`plan-${id}`} className="text-xl font-bold">{t(id)}</h2>
+            <p className="display text-3xl font-extrabold">{id === "pro" ? t("priceTbd") : "0 €"}</p>
+            <dl className="flex flex-col gap-2 border-t pt-3 text-sm" style={{ borderColor: "var(--line)" }}>
               {rows.map(([key, value]) => (
                 <div key={key} className="flex justify-between gap-2">
                   <dt className="muted">{t(key)}</dt>

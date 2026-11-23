@@ -39,7 +39,38 @@
     "frequent": "Most used by you",
     "categories": "Categories",
     "popular": "Most popular",
-    "all": "All tools"
+    "all": "All tools",
+    "heroEyebrow": "Document workshop · servers in the EU",
+    "heroTitleA": "Every tool for your",
+    "heroTitleB": "PDFs and files",
+    "trustPrivacy": "What runs in your browser never leaves your device",
+    "trustFree": "Free, no watermarks",
+    "trustDelete": "Uploads delete themselves",
+    "statTools": "tools",
+    "statCats": "categories",
+    "statFormats": "formats",
+    "howTitle": "Three steps and done",
+    "how1Title": "Pick the file",
+    "how1Text": "Drop it or browse for it. Many tools work without uploading it.",
+    "how2Title": "Adjust what you like",
+    "how2Text": "Quality, pages, format… With defaults chosen so you do not need to touch anything.",
+    "how3Title": "Download it",
+    "how3Text": "The result, right away. What goes through the server is deleted automatically when it expires.",
+    "toolsCount": "{n, plural, one {# tool} other {# tools}}",
+    "exploreCategory": "See the {name} tools",
+    "cat": {
+      "pdf": "Merge, split, compress, sign and convert PDFs.",
+      "office": "Word, Excel, PowerPoint and e-books, both ways.",
+      "image": "Convert, compress, crop and clean up photos and images.",
+      "audio": "Convert, trim and transcribe audio.",
+      "video": "Compress, trim and convert video.",
+      "ai": "Summarise, translate and ask your documents.",
+      "data": "CSV, JSON, maps, calendars, contacts and more.",
+      "3d": "STL, 3MF, STEP, G-code and models to print.",
+      "sign": "Sign, seal and verify documents.",
+      "invoice": "PDF invoices and e-invoices.",
+      "convert": "Turn any file into another."
+    }
   },
   "tool": {
     "breadcrumbHome": "Home",
@@ -108,7 +139,10 @@
     "cvRole": "CV",
     "attachmentRole": "Attachment",
     "convertToPdfa": "Convert to PDF/A",
-    "videoPro": "Pro plan only: video is not included in the free plans."
+    "videoPro": "Pro plan only: video is not included in the free plans.",
+    "badgeClient": "In your browser",
+    "badgeServer": "On our EU server",
+    "badgeHybrid": "In your browser or on the server"
   },
   "faq": {
     "privacyQ": "Where are my files processed?",

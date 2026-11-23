@@ -49,7 +49,7 @@ test("editar-pdf: página en blanco con texto, rectángulo y firma escrita", asy
   await page.goto("/es/editar-pdf");
   const sent = watchUploads(page);
   await page.getByRole("button", { name: "Empezar con una página en blanco" }).click();
-  const sheet = page.locator("svg[viewBox]").first();
+  const sheet = page.locator("svg.touch-none[viewBox]").first(); // el lienzo del editor, no la decoración de la página
   await expect(sheet).toBeVisible();
 
   await page.getByRole("button", { name: "Texto", exact: true }).click();
@@ -213,7 +213,7 @@ test("anotar-pdf: resaltado y nota como anotaciones estándar, lista de comentar
   const sent = watchUploads(page);
   await page.goto("/es/anotar-pdf");
   await page.locator('input[type="file"][accept=".pdf"]').setInputFiles({ name: "notas.pdf", mimeType: "application/pdf", buffer: await samplePdf(1) });
-  const sheet = page.locator("svg[viewBox]").first();
+  const sheet = page.locator("svg.touch-none[viewBox]").first(); // el lienzo del editor, no la decoración de la página
   await expect(sheet).toBeVisible({ timeout: 30_000 });
   await page.getByLabel("Autor").fill("Ana");
 

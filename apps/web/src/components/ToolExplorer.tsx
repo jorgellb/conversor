@@ -38,12 +38,12 @@ export function FavoriteStar({ slug, name }: { slug: string; name: string }) {
 function List({ title, items }: { title: string; items: ToolLink[] }) {
   if (!items.length) return null;
   return (
-    <section className="mt-6">
-      <h2 className="mb-2 font-semibold">{title}</h2>
+    <section className="mt-4">
+      <h2 className="eyebrow mb-2">{title}</h2>
       <ul className="flex flex-wrap gap-2">
         {items.map((tool) => (
           <li key={tool.slug}>
-            <PageLink href={tool.href} className="card inline-block px-3 py-1 text-sm">{tool.name}</PageLink>
+            <PageLink href={tool.href} className="chip no-underline">{tool.name}</PageLink>
           </li>
         ))}
       </ul>
@@ -79,14 +79,21 @@ export function ToolExplorer({ tools }: { tools: ToolLink[] }) {
   return (
     <div>
       <label htmlFor="buscar" className="sr-only">{t("searchLabel")}</label>
-      <input id="buscar" type="search" className="field text-lg" placeholder={t("searchPlaceholder")} value={query}
-        onChange={(e) => setQuery(e.target.value)} autoComplete="off" />
+      <div className="relative">
+        <svg className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"
+          focusable="false" style={{ color: "var(--muted)" }}>
+          <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" strokeWidth="2" />
+          <path d="m16 16 4 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        <input id="buscar" type="search" className="field py-3 pl-11 text-lg" placeholder={t("searchPlaceholder")} value={query}
+          onChange={(e) => setQuery(e.target.value)} autoComplete="off" />
+      </div>
       {query.trim() && (
         <ul className="mt-3 flex flex-col gap-1" aria-live="polite">
           {results.length === 0 && <li className="muted">{t("noResults")}</li>}
           {results.map((tool) => (
             <li key={tool.slug}>
-              <PageLink href={tool.href} className="block rounded px-2 py-1 hover:underline">
+              <PageLink href={tool.href} className="block rounded-lg px-3 py-2 no-underline transition-colors hover:bg-[var(--card-2)]">
                 <span className="font-medium">{tool.name}</span> <span className="muted text-sm">— {tool.summary}</span>
               </PageLink>
             </li>

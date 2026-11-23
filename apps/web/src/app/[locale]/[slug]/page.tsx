@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import Link from "next/link";
 
 import { PageLink } from "@/components/PageLink";
+import { CategoryIcon, categoryColor } from "@/components/art/CategoryIcon";
+import { ToolHeroDecor } from "@/components/art/ToolHeroDecor";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -17,7 +19,7 @@ import type { Locale } from "@/i18n/routing";
 import { contentReady, toolContent } from "@/lib/content";
 import { disabledByEnv } from "@/lib/flags";
 import { HeicHelp, HEVC_TOOLS } from "@/components/HeicHelp";
-import { clientSpec, findTool, nameOf, PLANS, slugOf, summaryOf, TOOLS, toolBySlugEs, type ToolSpec } from "@/lib/registry";
+import { CATEGORIES, clientSpec, findTool, nameOf, PLANS, slugOf, summaryOf, TOOLS, toolBySlugEs, type ToolSpec } from "@/lib/registry";
 import { alternatePaths, PRIVATE_PAGES, SITE_NAME, staticKeyOf, toolPath, webUrl } from "@/lib/site";
 import { converterRoute } from "@/lib/converter-route";
 import { formatName } from "@/lib/conversions";
@@ -188,14 +190,28 @@ export default async function SlugPage({ params, searchParams }: Params) {
       ],
     },
   ];
+  const category = CATEGORIES.find((c) => c.id === tool.category);
   return (
     <div className={`mx-auto px-4 py-8 ${WIDE_TOOLS.includes(tool.slug_es) ? "max-w-7xl" : "max-w-4xl"}`}>
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <nav aria-label="Breadcrumb" className="muted mb-4 text-sm">
-        <Link href={`/${locale}`}>{t("breadcrumbHome")}</Link> › <span aria-current="page">{name}</span>
-      </nav>
-      <h1 className="text-3xl font-bold">{name}</h1>
-      <p className="muted mt-2 text-lg">{summaryOf(tool, locale)}</p>
+      <header className="tool-hero relative mb-1 overflow-hidden rounded-3xl border px-5 py-4 sm:px-6" style={categoryColor(tool.category)}>
+        <ToolHeroDecor />
+        <nav aria-label="Breadcrumb" className="muted relative mb-2 text-xs">
+          <Link href={`/${locale}`}>{t("breadcrumbHome")}</Link> › <span aria-current="page">{name}</span>
+        </nav>
+        <div className="relative flex items-start gap-4">
+          <span className="icon-tile mt-1 hidden h-12 w-12 sm:grid" style={categoryColor(tool.category)}><CategoryIcon id={tool.category} size={26} /></span>
+          <div>
+            <p className="eyebrow">
+              {category ? (locale === "en" ? category.en : category.es) : null}
+              <span aria-hidden="true">·</span>
+              {t(tool.where === "client" ? "badgeClient" : tool.where === "hybrid" ? "badgeHybrid" : "badgeServer")}
+            </p>
+            <h1 className="mt-0.5 text-3xl font-extrabold sm:text-[2.2rem]">{name}</h1>
+            <p className="muted mt-1 max-w-2xl">{summaryOf(tool, locale)}</p>
+          </div>
+        </div>
+      </header>
       <ViewMessages namespaces={VIEW_OF[tool.slug_es] ?? []}>
       <div className="mt-6">
         {tool.slug_es === "montar-pdf" && !disabledByEnv(tool.slug_es) ? (
@@ -261,12 +277,12 @@ export default async function SlugPage({ params, searchParams }: Params) {
       </ViewMessages>
       <article className="mx-auto mt-12 flex max-w-4xl flex-col gap-8">
         <section>
-          <h2 className="mb-2 text-xl font-semibold">{t("whatItDoes")}</h2>
+          <h2 className="mb-3 text-2xl font-bold">{t("whatItDoes")}</h2>
           {(content?.intro ?? [summaryOf(tool, locale)]).map((p, i) => <p key={i} className="mb-2">{p}</p>)}
         </section>
         <section>
-          <h2 className="mb-2 text-xl font-semibold">{t("steps")}</h2>
-          <ol className="list-decimal pl-6">
+          <h2 className="mb-3 text-2xl font-bold">{t("steps")}</h2>
+          <ol className="prose-steps">
             {(content?.steps ?? (tool.inputs.length
               ? [t("step1", { formats }), t("step2"), tool.where === "client" ? t("step3Client") : t("step3Server")]
               : [t("step1NoFiles"), t("step2"), tool.where === "client" ? t("step3ClientNoFiles") : t("step3ServerNoFiles")])).map((s, i) => (
@@ -275,18 +291,18 @@ export default async function SlugPage({ params, searchParams }: Params) {
           </ol>
         </section>
         <section>
-          <h2 className="mb-2 text-xl font-semibold">{t("formats")}</h2>
+          <h2 className="mb-3 text-2xl font-bold">{t("formats")}</h2>
           <p>{t("input")}: {formats || "—"}</p>
           <p>{t("output")}: {tool.outputs.map((e) => e.toUpperCase()).join(", ") || "—"}</p>
         </section>
         {tool.where !== "client" && (
           <section>
-            <h2 className="mb-2 text-xl font-semibold">{t("limits")}</h2>
+            <h2 className="mb-3 text-2xl font-bold">{t("limits")}</h2>
             <LimitsTable tool={tool} locale={locale} t={tl} />
           </section>
         )}
         <section>
-          <h2 className="mb-2 text-xl font-semibold">{t("faq")}</h2>
+          <h2 className="mb-3 text-2xl font-bold">{t("faq")}</h2>
           {faq.map((item) => (
             <details key={item.q} className="card mb-2 p-3">
               <summary className="cursor-pointer font-medium">{item.q}</summary>
@@ -296,10 +312,10 @@ export default async function SlugPage({ params, searchParams }: Params) {
         </section>
         {related.length > 0 && (
           <section>
-            <h2 className="mb-2 text-xl font-semibold">{t("related")}</h2>
+            <h2 className="mb-3 text-2xl font-bold">{t("related")}</h2>
             <ul className="flex flex-wrap gap-2">
               {related.map((r) => (
-                <li key={r.slug_es}><PageLink className="card inline-block px-3 py-1" href={toolPath(locale, r)}>{nameOf(r, locale)}</PageLink></li>
+                <li key={r.slug_es}><PageLink className="chip no-underline" href={toolPath(locale, r)}>{nameOf(r, locale)}</PageLink></li>
               ))}
             </ul>
           </section>

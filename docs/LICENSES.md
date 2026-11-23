@@ -107,6 +107,7 @@ que ninguna imagen trae `gs`, `mutool` ni PyMuPDF, y las imágenes se publican c
 | linkedom 0.18.15 (npm, desarrollo) | ISC | DOM para las pruebas de la exportación de escribir-pdf; no llega al build |
 | qrcode-generator 1.5.2 (npm) | MIT | códigos QR de crear-tarjeta en el editor y en el worker (F6-N2, D-232) |
 | mermaid 12.2.0 (npm) | MIT | mermaid-a-svg y mermaid-a-png en el navegador (F6-N1, D-231); sus dependencias son MIT, ISC, BSD, Apache-2.0 y DOMPurify (MPL-2.0 o Apache-2.0); elkjs (EPL-2.0) no se empaqueta |
+| @fontsource-variable/bricolage-grotesque y @fontsource-variable/figtree 5.3.0 (npm) | OFL-1.1 | tipografías de la web (titulares y texto, D-265), servidas desde el propio dominio |
 | three 0.187.0 (npm) | MIT | visor-3d, visor-gcode y render-modelo-3d (F7-H, D-257): escena WebGL, órbita y los cargadores de STL, OBJ/MTL, 3MF, PLY, glTF y AMF; su copia de fflate (MIT) y su decodificador de meshopt (MIT) |
 | @gltf-transform/core, functions y extensions 4.5.1 (npm) | MIT | comprimir-glb y la lectura de GLB con Draco del visor (F7-H, D-257) |
 | draco3d 1.5.9 (npm) | Apache-2.0 | codificador y decodificador Draco en WebAssembly para comprimir-glb y el visor; el .wasm se sirve desde `public/codecs/` (F7-H, D-257) |

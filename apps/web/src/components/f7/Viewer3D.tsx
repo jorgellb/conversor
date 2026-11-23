@@ -8,7 +8,7 @@ import * as THREE from "three";
 import { recordUse } from "@/lib/prefs";
 import type { ClientSpec } from "@/lib/registry";
 
-import { boundsOf, canvasPng, eachMaterial, formatMm, frameCamera, isModel, loadModel, ModelError, overrideColor, placeOnFloor,
+import { addEnvironment, boundsOf, canvasPng, eachMaterial, formatMm, frameCamera, isModel, loadModel, ModelError, overrideColor, placeOnFloor,
   type LoadedModel, type ViewAngle } from "./model3d";
 import { useThreeView } from "./useThreeView";
 
@@ -70,6 +70,9 @@ export function Viewer3D({ spec }: { spec: ClientSpec }) {
           return loaded;
         });
         view.scene.add(loaded.root);
+        // El entorno (para los materiales metálicos) se calcula con el primer modelo, no al abrir la página: en un
+        // equipo sin GPU tarda y bloqueaba la página vacía.
+        if (!view.scene.environment) await addEnvironment(view.scene, view.renderer).catch(() => undefined);
         setBox(placed);
         frameCamera(view.camera, placed, "isometrico");
         view.controls.target.copy(placed.getCenter(new THREE.Vector3()));

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
 import { getConfig } from "@/lib/runtime";
+import { HeroArt } from "./art/HeroArt";
 
 export function AuthPage({ mode }: { mode: "signIn" | "signUp" }) {
   const t = useTranslations("auth");
@@ -40,7 +41,8 @@ export function AuthPage({ mode }: { mode: "signIn" | "signUp" }) {
   };
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-4">
+    <div className="mx-auto grid max-w-5xl items-center gap-10 lg:grid-cols-[1fr_1.1fr]">
+    <div className="card flex w-full max-w-md flex-col gap-4 justify-self-center p-6 sm:p-8" style={{ boxShadow: "var(--shadow-lg)" }}>
       <h1 className="text-3xl font-bold">{mode === "signIn" ? t("signInTitle") : t("signUpTitle")}</h1>
       <form className="flex flex-col gap-3" onSubmit={(e) => void submit(e)}>
         {mode === "signUp" && (
@@ -69,6 +71,8 @@ export function AuthPage({ mode }: { mode: "signIn" | "signUp" }) {
           {mode === "signIn" ? t("submitSignUp") : t("submitSignIn")}
         </Link>
       </p>
+    </div>
+    <div className="hidden lg:block" aria-hidden="true"><HeroArt className="h-auto w-full" /></div>
     </div>
   );
 }
