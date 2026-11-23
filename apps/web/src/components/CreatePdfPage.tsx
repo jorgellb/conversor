@@ -5,6 +5,8 @@ import type { Locale } from "@/i18n/routing";
 import { disabledByEnv } from "@/lib/flags";
 import { findTool, nameOf, summaryOf } from "@/lib/registry";
 import { toolPath } from "@/lib/site";
+import { PageHero } from "./art/MiniScene";
+import { CategoryIcon, categoryColor } from "./art/CategoryIcon";
 
 // crear-pdf (A.1): índice de las formas de crear un PDF. Solo enlaza herramientas que existen y están activas;
 // las de fases posteriores (solicitud de empleo, escáner, collage, tarjeta, factura, formulario y escribir-pdf)
@@ -25,18 +27,16 @@ export async function CreatePdfPage({ locale }: { locale: Locale }) {
   })).filter((g) => g.tools.length);
   return (
     <article className="flex flex-col gap-6">
-      <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
-        <p className="muted text-lg">{t("intro")}</p>
-      </header>
+      <PageHero kind="create" title={t("title")} intro={t("intro")} />
       {groups.map((g) => (
         <section key={g.key} className="flex flex-col gap-3" aria-labelledby={`crear-${g.key}`}>
-          <h2 id={`crear-${g.key}`} className="text-xl font-semibold">{t(g.key)}</h2>
+          <h2 id={`crear-${g.key}`} className="section-title">{t(g.key)}</h2>
           <ul className="grid gap-3 sm:grid-cols-2">
             {g.tools.map((tool) => tool && (
-              <li key={tool.slug_es}>
-                <PageLink href={toolPath(locale, tool)} className="card flex h-full flex-col gap-1 p-4 hover:underline">
-                  <span className="font-semibold">{nameOf(tool, locale)}</span>
+              <li key={tool.slug_es} className="tool-card h-full p-4" style={categoryColor(tool.category)}>
+                <span className="icon-tile" style={categoryColor(tool.category)}><CategoryIcon id={tool.category} /></span>
+                <PageLink href={toolPath(locale, tool)} className="flex flex-1 flex-col gap-1 no-underline after:absolute after:inset-0 after:content-['']">
+                  <span className="display font-bold">{nameOf(tool, locale)}</span>
                   <span className="muted text-sm">{g.key === "group_blank" ? t("blankHint") : summaryOf(tool, locale)}</span>
                 </PageLink>
               </li>

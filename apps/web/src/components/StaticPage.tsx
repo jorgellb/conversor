@@ -14,6 +14,7 @@ import { ToolRunner } from "./ToolRunner";
 import { CreatePdfPage } from "./CreatePdfPage";
 import { LEGAL } from "./legal";
 import { PricingPage } from "./PricingPage";
+import { PageHero } from "./art/MiniScene";
 import { ViewMessages } from "./ViewMessages";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAILS?.split(",")[0]?.trim() || "admin@ejemplo.test";
@@ -75,15 +76,17 @@ export async function StaticPage({ pageKey, locale, search = {} }: {
       const t = await getTranslations({ locale, namespace: "footer" });
       void t;
       return wrap(
-        <article className="flex flex-col gap-4">
-          <h1 className="text-3xl font-bold">{page.title}</h1>
-          {page.body(SITE_NAME, ADMIN_EMAIL).map((block, i) =>
-            block.startsWith("## ") ? (
-              <h2 key={i} className="mt-4 text-xl font-semibold">{block.slice(3)}</h2>
-            ) : (
-              <p key={i}>{block}</p>
-            ),
-          )}
+        <article className="flex flex-col gap-6">
+          <PageHero kind={pageKey === "ayuda" || pageKey === "contacto" ? "help" : "legal"} title={page.title} />
+          <div className="card legal-prose p-6 sm:p-10">
+            {page.body(SITE_NAME, ADMIN_EMAIL).map((block, i) =>
+              block.startsWith("## ") ? (
+                <h2 key={i}>{block.slice(3)}</h2>
+              ) : (
+                <p key={i}>{block}</p>
+              ),
+            )}
+          </div>
         </article>,
       );
     }

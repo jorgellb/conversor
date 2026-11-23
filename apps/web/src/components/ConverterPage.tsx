@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { routeKind } from "@/lib/conversions";
 import { handOff } from "@/lib/handoff";
+import { PageHero } from "./art/MiniScene";
 
 /** conversor-pdf (7.22): detecta el tipo por los bytes (como convertir-archivo) y ofrece solo las conversiones posibles. */
 export function ConverterPage({ tools }: { tools: { name: string; href: string; inputs: string[]; outputs: string[] }[] }) {
@@ -26,12 +27,12 @@ export function ConverterPage({ tools }: { tools: { name: string; href: string; 
   const options = file ? tools.filter((tool) => tool.inputs.includes(ext) && (ext === "pdf" || tool.outputs.includes("pdf"))) : [];
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">{t("title")}</h1>
-      <p className="muted">{t("intro")}</p>
-      <label className="btn self-start cursor-pointer">
-        {t("choose")}
-        <input type="file" className="sr-only" onChange={(e) => void choose(e.target.files?.[0] ?? null)} />
-      </label>
+      <PageHero kind="convert" title={t("title")} intro={t("intro")}>
+        <label className="btn mt-5 cursor-pointer px-6 py-3 text-base">
+          {t("choose")}
+          <input type="file" className="sr-only" onChange={(e) => void choose(e.target.files?.[0] ?? null)} />
+        </label>
+      </PageHero>
       {file && (
         <section aria-live="polite">
           <p className="font-medium">{file.name}</p>

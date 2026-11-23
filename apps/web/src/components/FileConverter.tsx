@@ -9,6 +9,7 @@ import { useState } from "react";
 
 import { GROUPS, formatName, groupOf, routeKind, type Group } from "@/lib/conversions";
 import { handOff } from "@/lib/handoff";
+import { PageHero } from "./art/MiniScene";
 
 type Option = { to: string; where: "client" | "server" | "hybrid" };
 
@@ -53,10 +54,9 @@ export function FileConverter({ routes, basePath }: { routes: Record<string, Opt
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">{t("title")}</h1>
-      <p className="muted">{t("intro")}</p>
+      <PageHero kind="convert" title={t("title")} intro={t("intro")} />
       <label
-        className={`card flex cursor-pointer flex-col items-center gap-2 border-2 border-dashed p-8 text-center ${dragging ? "border-blue-600" : ""}`}
+        className={`card flex cursor-pointer flex-col items-center gap-2 border-2 border-dashed p-8 text-center ${dragging ? "border-[var(--accent)] bg-[var(--accent-soft)]" : ""}`}
         onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
         onDragLeave={() => setDragging(false)}
         onDrop={(e) => { e.preventDefault(); setDragging(false); void choose(Array.from(e.dataTransfer.files)); }}
