@@ -7,7 +7,6 @@ import { PageLink } from "@/components/PageLink";
 import { CategoryIcon, categoryColor } from "@/components/art/CategoryIcon";
 import { ToolHeroDecor } from "@/components/art/ToolHeroDecor";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 
 import { BoardEditor, BookmarksEditor, ChatPdfView, CardView, CollageView, CompareView, MermaidView, WriterView, CopyView, FormDesigner, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
   InvoiceDesigner, SearchView, SignatureRequestView, Viewer3D, GcodeViewer, RenderModelView } from "@/components/LazyViews";
@@ -259,16 +258,15 @@ export default async function SlugPage({ params, searchParams }: Params) {
         ) : EDITORS[tool.slug_es] && !disabledByEnv(tool.slug_es) ? (
           <PdfEditor mode={EDITORS[tool.slug_es]} spec={clientSpec(tool, locale)} nextTools={nextTools} />
         ) : (
-          // Suspense: React hidrata esta isla aparte del resto de la página, en varias tareas cortas (D-190).
-          <Suspense>
-            <ToolRunner
-              spec={{ ...clientSpec(tool, locale), maxFiles: tool.max_files ?? 100 }}
-              retentionHours={Number(PLANS.anon.retention_hours)}
-              nextTools={nextTools}
-              enabled={!disabledByEnv(tool.slug_es)}
-              pdfaHref={tool.slug_es === "validar-pdfa" ? toolPath(locale, toolBySlugEs("pdf-a-pdfa")!) : undefined}
-            />
-          </Suspense>
+          // Sin <Suspense> (D-269): React 19.2 saca del HTML inicial los límites que no caben en sus 12,8 kB y los muestra
+          // hasta 300 ms después del primer pintado, y el artículo de debajo bajaba de golpe (CLS de 0,4 a 0,55).
+          <ToolRunner
+            spec={{ ...clientSpec(tool, locale), maxFiles: tool.max_files ?? 100 }}
+            retentionHours={Number(PLANS.anon.retention_hours)}
+            nextTools={nextTools}
+            enabled={!disabledByEnv(tool.slug_es)}
+            pdfaHref={tool.slug_es === "validar-pdfa" ? toolPath(locale, toolBySlugEs("pdf-a-pdfa")!) : undefined}
+          />
         )}
         {HEVC_TOOLS.includes(tool.slug_es) && disabledByEnv(tool.slug_es) && (
           <HeicHelp locale={locale} jpgHref={toolPath(locale, toolBySlugEs("jpg-a-pdf")!)} />
@@ -321,9 +319,7 @@ export default async function SlugPage({ params, searchParams }: Params) {
           </section>
         )}
       </article>
-      <Suspense>
-        <Feedback tool={tool.slug_es} />
-      </Suspense>
+      <Feedback tool={tool.slug_es} />
     </div>
   );
 }

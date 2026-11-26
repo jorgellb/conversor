@@ -182,7 +182,7 @@ STDERR_KEEP = 2 * 1024 * 1024  # del registro de error se guardan el principio y
 
 
 def _limits(mem_mb: int | None, data_only: bool = False, landlock: list[tuple[Path, str]] | None = None,
-            cpu_s: int | None = None, max_file_mb: int | None = None):
+            cpu_s: int | None = None, max_file_mb: int | None = None, stack_mb: int | None = None):
     # Todo lo que no es una llamada al sistema se prepara en el padre (después del fork solo se llama, D-230).
     restrict = None
     if landlock is not None:
@@ -200,6 +200,9 @@ def _limits(mem_mb: int | None, data_only: bool = False, landlock: list[tuple[Pa
         if mem_mb:
             limit = mem_mb * 1024 * 1024
             resource.setrlimit(resource.RLIMIT_DATA if data_only else resource.RLIMIT_AS, (limit, limit))
+        if stack_mb:
+            stack = stack_mb * 1024 * 1024
+            resource.setrlimit(resource.RLIMIT_STACK, (stack, stack))
         if cpu_s:
             resource.setrlimit(resource.RLIMIT_CPU, (cpu_s, cpu_s))
         if max_file_mb:
@@ -280,6 +283,7 @@ def run_engine(
     landlock: list[tuple[Path, str]] | None = None,
     max_file_mb: int | None = None,
     max_stdout: int = MAX_STDOUT,
+    stack_mb: int | None = None,
 ) -> subprocess.CompletedProcess:
     """Ejecuta un motor externo con entorno vacío (12.1): solo PATH, HOME y TMPDIR del trabajo.
 
@@ -290,14 +294,16 @@ def run_engine(
     Los mensajes de error del motor no se devuelven literalmente al usuario. `limit_data` limita la memoria de datos
     (RLIMIT_DATA) en lugar de la virtual: es para motores con Chromium, como Calibre, que reservan mucho espacio de
     direcciones sin usarlo y con RLIMIT_AS no arrancan (D-52). `ok_codes`: códigos de salida que no son un fallo (veraPDF
-    devuelve 1 cuando el archivo no cumple).
+    devuelve 1 cuando el archivo no cumple). `stack_mb` fija RLIMIT_STACK, que glibc usa también como pila de cada hilo:
+    las pilas cuentan en RLIMIT_DATA (Linux 4.7+), y un motor con muchos hilos, como SVT-AV1, agota el límite de datos
+    con las 8 MB por hilo de serie (D-269).
     """
     env = {"PATH": SAFE_PATH, "HOME": str(cwd), "TMPDIR": str(cwd), "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8"}
     if extra_env:
         env.update(extra_env)
     cpu_s = int(timeout) * max(1, os.cpu_count() or 1) + 30
     try:
-        preexec = _limits(mem_mb, limit_data, landlock, cpu_s, max_file_mb)
+        preexec = _limits(mem_mb, limit_data, landlock, cpu_s, max_file_mb, stack_mb)
     except Exception as exc:
         raise ToolError(ErrorCode.ENGINE_FAILED, "sandbox") from exc
     try:

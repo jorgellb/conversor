@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import base64
 import bz2
-import gzip
 import lzma
 import tarfile
 import codecs
@@ -16,6 +15,7 @@ import json
 import struct
 import sys
 import zipfile
+import zlib
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[2] / "tests" / "fixtures" / "filetype-cases.json"
@@ -44,6 +44,13 @@ def make_zip(files: dict[str, bytes], stored_first: str | None = None) -> bytes:
 def odf(mimetype: str) -> bytes:
     return make_zip({"mimetype": mimetype.encode(), "content.xml": b"<office:document-content/>", "META-INF/manifest.xml": b"<m/>"},
                     stored_first="mimetype")
+
+
+def gzip_bytes(data: bytes) -> bytes:
+    """gzip con cabecera fija: gzip.compress pone bytes XFL y OS distintos en Python 3.12 y 3.13 (D-269)."""
+    raw = zlib.compressobj(9, zlib.DEFLATED, -15)
+    body = raw.compress(data) + raw.flush()
+    return b"\x1f\x8b\x08\x00" + bytes(4) + b"\x02\xff" + body + struct.pack("<II", zlib.crc32(data), len(data) & 0xFFFFFFFF)
 
 
 def tar_bytes() -> bytes:
@@ -143,7 +150,7 @@ def cases() -> list[dict]:
         ("woff", "woff", b"wOFF\x00\x01\x00\x00" + bytes(40), "woff"),
         ("woff2", "woff2", b"wOF2\x00\x01\x00\x00" + bytes(40), "woff2"),
         ("7z", "7z", b"7z\xbc\xaf\x27\x1c\x00\x04" + bytes(40), "7z"),
-        ("tar-gz", "tgz", gzip.compress(b"hola", mtime=0), "gz"),
+        ("tar-gz", "tgz", gzip_bytes(b"hola"), "gz"),
         ("bz2", "bz2", bz2.compress(b"hola"), "bz2"),
         ("xz", "xz", lzma.compress(b"hola"), "xz"),
         ("tar", "tar", tar_bytes(), "tar"),

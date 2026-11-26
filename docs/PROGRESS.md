@@ -778,8 +778,8 @@ reales de PrusaSlicer que la CI descarga (D-259). La CI instala ahora los extras
 
 - Las fases F1 a F7 están hechas en el código. Lo que queda es operativo o depende del propietario: los puntos sin marcar de
   `docs/DEPLOY-CHECKLIST.md` (despliegue en el VPS, muestras reales, claves y revisiones legales).
-- La CI de GitHub Actions no arranca trabajos por la facturación de la cuenta: hasta que se resuelva, las pruebas solo se han
-  pasado en local (suite de Python, vitest de la web y de client-tools, y Playwright del proyecto «navegador»).
+- La CI de GitHub Actions vuelve a arrancar desde que el repositorio es público (2026-11-26). Las 14 imágenes de producción (las de
+  Python, la web y Smokescreen) se suben a GHCR desde el workflow `images`; los fallos que salieron en la primera pasada completa se arreglan en D-269.
 - Huecos del Anexo A: cerrados (autoorientar de girar-pdf y el Modo de pdf-a-excel, pdf-a-ods y pdf-a-txt, D-261).
 - Cierre técnico de F3 (17): uso real de peticiones registrado, con la clave de OpenRouter del propietario.
 

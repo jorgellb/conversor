@@ -88,7 +88,7 @@ def run_images(ctx: ToolContext) -> list[dict]:
 
 def run_video(ctx: ToolContext) -> list[dict]:
     from tools.av.audio import BASE, ffmpeg
-    from tools.av.video import av1
+    from tools.av.video import FFMPEG_STACK_MB, av1
 
     o = ctx.options
     if not ctx.plan.video:
@@ -150,7 +150,7 @@ def run_video(ctx: ToolContext) -> list[dict]:
         args = [ffmpeg(), *BASE, "-f", "concat", "-safe", "0", "-i", "lista.txt", "-vf", ",".join(vf), "-an", *codec,
                 "-t", str(total), "-threads", str(max(1, ctx.threads)), "-y", out.name]
         # Memoria de datos y no virtual: SVT-AV1 reserva mucho espacio de direcciones y con RLIMIT_AS se cae (como Calibre, D-52).
-        run_engine(args, cwd=folder, timeout=int(max(300, total * 4 + 120)), mem_mb=1400, limit_data=True, max_file_mb=4096)
+        run_engine(args, cwd=folder, timeout=int(max(300, total * 4 + 120)), mem_mb=1400, limit_data=True, stack_mb=FFMPEG_STACK_MB, max_file_mb=4096)
         if not out.exists() or not out.stat().st_size:
             raise ToolError(ErrorCode.ENGINE_FAILED, "FFmpeg no generó el vídeo")
         name = derived_name(inp.name, "", ext)

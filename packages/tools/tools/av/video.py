@@ -142,6 +142,11 @@ def threads(ctx: ToolContext) -> list[str]:
     return ["-threads", str(max(1, ctx.threads))]
 
 
+# Pila de FFmpeg y de cada uno de sus hilos: con las 8 MB de serie, SVT-AV1 1.7 (Ubuntu 24.04) no cabe en 1400 MB de
+# datos al crear sus hilos (D-269). 2 MB es la pila de hilo habitual y sobra para FFmpeg.
+FFMPEG_STACK_MB = 2
+
+
 def memory_mb(video: dict) -> int:
     """Memoria de datos de FFmpeg: SVT-AV1 y libvpx necesitan unos 2 GB a 4K (D-245); el contenedor av.heavy tiene 3."""
     pixels = int(video.get("width") or 0) * int(video.get("height") or 0)
@@ -207,7 +212,7 @@ def run(ctx: ToolContext) -> list[dict]:
                 *(["-movflags", "+faststart"] if target == "mp4" else []), *threads(ctx), "-y", tmp.name]
         # Memoria de datos y no virtual (SVT-AV1 y libvpx reservan mucho espacio de direcciones, D-237).
         run_engine(args, cwd=ctx.work, timeout=int(max(300, duration * (2 if note == "copy" else 8) + 120)), mem_mb=memory_mb(video),
-                   limit_data=True, max_file_mb=4096)
+                   limit_data=True, stack_mb=FFMPEG_STACK_MB, max_file_mb=4096)
         if not tmp.exists() or not tmp.stat().st_size:
             raise ToolError(ErrorCode.ENGINE_FAILED, "FFmpeg no generó el vídeo")
         name = derived_name(inp.name, "", target)
@@ -239,7 +244,7 @@ def run_gif(ctx: ToolContext) -> list[dict]:
         tmp = ctx.work / f"video-{n}.gif"
         args = [ffmpeg(), *BASE, *threads(ctx), "-ss", f"{start:.3f}", "-t", f"{length:.3f}", "-f", demuxer, "-i", str(inp.path),
                 "-filter_complex", graph, "-loop", "0" if o.bucle else "-1", "-map_metadata", "-1", "-y", tmp.name]
-        run_engine(args, cwd=ctx.work, timeout=600, mem_mb=memory_mb(video), limit_data=True,
+        run_engine(args, cwd=ctx.work, timeout=600, mem_mb=memory_mb(video), limit_data=True, stack_mb=FFMPEG_STACK_MB,
                    max_file_mb=MAX_GIF_BYTES // (1024 * 1024))
         if not tmp.exists() or not tmp.stat().st_size:
             raise ToolError(ErrorCode.ENGINE_FAILED, "FFmpeg no generó el GIF")
@@ -265,7 +270,7 @@ def run_gif_mp4(ctx: ToolContext) -> list[dict]:
         tmp = ctx.work / f"gif-{n}.mp4"
         args = [ffmpeg(), *BASE, *threads(ctx), "-f", "gif", "-i", str(inp.path), *cap(ctx), "-vf", f"{EVEN},{'' if enc else AV1_PAD + ','}format=yuv420p",
                 "-an", "-map_metadata", "-1", *codec, "-movflags", "+faststart", "-y", tmp.name]
-        run_engine(args, cwd=ctx.work, timeout=int(max(300, duration * 8 + 120)), mem_mb=memory_mb(video), limit_data=True,
+        run_engine(args, cwd=ctx.work, timeout=int(max(300, duration * 8 + 120)), mem_mb=memory_mb(video), limit_data=True, stack_mb=FFMPEG_STACK_MB,
                    max_file_mb=2048)
         if not tmp.exists() or not tmp.stat().st_size:
             raise ToolError(ErrorCode.ENGINE_FAILED, "FFmpeg no generó el vídeo")

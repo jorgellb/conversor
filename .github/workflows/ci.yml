@@ -76,6 +76,8 @@ jobs:
           cache: npm
       - name: Node para la regresión visual de 16.1 (los PDF de folleto, varias por hoja, numerar y marca de agua salen del código del navegador)
         run: npm ci --no-audit --no-fund
+      - name: Chromium de Playwright para la prueba del visor de draw.io sin red (D-230, D-269)
+        run: npx playwright install --with-deps chromium
       - name: Dependencias
         run: |
           uv venv .venv

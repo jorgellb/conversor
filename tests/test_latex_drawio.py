@@ -167,6 +167,7 @@ def test_drawio_renders_offline_in_chromium(tmp_path):
         "await p.waitForTimeout(200); console.log(JSON.stringify({ r, ext, errs })); await b.close(); })();")
     env = {**os.environ, "NODE_PATH": str(ROOT / "node_modules")}
     result = subprocess.run(["node", str(script), str(tmp_path)], capture_output=True, text=True, timeout=120, env=env)
+    assert result.returncode == 0 and result.stdout.strip(), result.stderr[-2000:]
     data = json.loads(result.stdout.strip().splitlines()[-1])
     width, height, text = data["r"]
     assert "Inicio ñ" in text and "Fin" in text and data["ext"] == []

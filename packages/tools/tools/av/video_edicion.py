@@ -21,7 +21,7 @@ from core.errors import ErrorCode, ToolError
 from core.flags import thematic_enabled
 from tools.av.audio import BASE, ffmpeg
 from tools.av.specs import parse_time
-from tools.av.video import AV1_PAD, EVEN, av1 as av1_args, cap, checked, ensure_time, h264_encoder, memory_mb, threads
+from tools.av.video import AV1_PAD, EVEN, FFMPEG_STACK_MB, av1 as av1_args, cap, checked, ensure_time, h264_encoder, memory_mb, threads
 from tools.base import InputFile, ToolContext, derived_name, run_engine
 from tools.pdf.common import with_batch_zip
 
@@ -95,7 +95,7 @@ def _run(ctx: ToolContext, args: list[str], duration: float, recode: bool, video
     # Memoria de datos y no virtual (SVT-AV1 y libvpx reservan mucho espacio de direcciones, D-237), más por encima de
     # 1080p (D-245).
     run_engine(args, cwd=ctx.work, timeout=int(max(300, duration * (8 if recode else 2) + 120)), mem_mb=memory_mb(video),
-               limit_data=True, max_file_mb=4096)
+               limit_data=True, stack_mb=FFMPEG_STACK_MB, max_file_mb=4096)
 
 
 def _finish(ctx: ToolContext, tmp: Path, inp: InputFile, suffix: str, ext: str) -> tuple[Path, str]:

@@ -333,3 +333,37 @@ def test_worker_role_has_only_its_tables(services, monkeypatch):
                 conn.execute(text(statement))
         conn.rollback()
     engine.dispose()
+
+
+def test_run_engine_stack_limit_lets_many_threads_fit_in_data_limit(tmp_path):
+    """D-269: las pilas de los hilos cuentan en RLIMIT_DATA y glibc les da RLIMIT_STACK (8 MB de serie). Con 60 hilos y
+    300 MB de datos no caben con 8 MB por hilo; con `stack_mb=2`, sí (es lo que pasaba con SVT-AV1 1.7 en Ubuntu 24.04)."""
+    import sys
+
+    from core.errors import ToolError
+    from tools.base import run_engine
+
+    code = ("import threading\nev = threading.Event()\nts = [threading.Thread(target=ev.wait) for _ in range(60)]\n"
+            "try:\n    [t.start() for t in ts]\nfinally:\n    ev.set()\nprint('ok')")
+    out = run_engine([sys.executable, "-I", "-c", code], tmp_path, timeout=30, mem_mb=300, limit_data=True, stack_mb=2)
+    assert out.stdout.strip() == b"ok"
+    assert run_engine(["sh", "-c", "ulimit -s"], tmp_path, timeout=10, stack_mb=2).stdout.strip() == b"2048"
+    with pytest.raises(ToolError) as err:
+        run_engine([sys.executable, "-I", "-c", code], tmp_path, timeout=30, mem_mb=300, limit_data=True, stack_mb=8)
+    assert err.value.code == "ENGINE_FAILED"
+
+
+def test_ffmpeg_calls_with_data_limit_set_small_stack():
+    """Toda llamada a FFmpeg con límite de datos fija la pila (D-269)."""
+    import ast
+
+    root = Path(__file__).resolve().parents[1] / "packages/tools/tools"
+    checked = 0
+    for f in [root / "av/video.py", root / "av/video_edicion.py", root / "office/diapositivas.py"]:
+        for node in ast.walk(ast.parse(f.read_text())):
+            if isinstance(node, ast.Call) and getattr(node.func, "id", None) == "run_engine":
+                kw = {k.arg for k in node.keywords}
+                if "limit_data" in kw:
+                    checked += 1
+                    assert "stack_mb" in kw, f"{f.name}:{node.lineno} sin stack_mb"
+    assert checked >= 5
