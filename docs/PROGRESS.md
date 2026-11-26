@@ -774,6 +774,11 @@ Todas las herramientas de F7 del catálogo registradas con su página completa e
 lib3mf en modo estricto sobre los 3MF de conversiones, generadores y operaciones, y bgcode → gcode → bgcode con los archivos
 reales de PrusaSlicer que la CI descarga (D-259). La CI instala ahora los extras `mesh` y `cad`, libassimp y OpenSCAD.
 
+## Navegación por apartados (D-271)
+
+Menú con las 10 categorías y un apartado por categoría (`/es/herramientas-pdf`, `/en/pdf-tools`…), con buscador propio; la
+portada ya no lista todas las herramientas. Pruebas en `apps/web/test/categories.test.ts` y `tests/e2e/categorias-navegador.spec.ts`.
+
 ## Pendiente
 
 - Las fases F1 a F7 están hechas en el código. Lo que queda es operativo o depende del propietario: los puntos sin marcar de

@@ -3,6 +3,7 @@
     "collect": {
       "url": [
         "http://127.0.0.1:3100/es",
+        "http://127.0.0.1:3100/es/herramientas-pdf",
         "http://127.0.0.1:3100/es/comprimir-pdf",
         "http://127.0.0.1:3100/es/pdf-a-word",
         "http://127.0.0.1:3100/es/resumir-pdf",

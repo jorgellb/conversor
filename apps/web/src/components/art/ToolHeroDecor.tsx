@@ -23,12 +23,12 @@ export function ToolHeroDecor() {
       </defs>
       <rect width="800" height="260" fill="url(#halo)" />
       <rect width="800" height="260" fill="url(#puntos)" mask="url(#mascara)" />
-      <g fill="none" stroke="var(--c)" strokeOpacity=".35" strokeWidth="1.5">
+      <g className="hero-decor-marks" fill="none" stroke="var(--c)" strokeOpacity=".35" strokeWidth="1.5">
         <circle cx="700" cy="70" r="90" strokeDasharray="3 10" />
         <circle cx="700" cy="70" r="140" strokeDasharray="40 14 6 14" strokeOpacity=".22" />
         <path d="M520 240c40-60 120-90 200-80" strokeDasharray="4 8" strokeOpacity=".3" />
       </g>
-      <circle cx="700" cy="70" r="7" fill="var(--c)" />
+      <circle className="hero-decor-marks" cx="700" cy="70" r="7" fill="var(--c)" />
     </svg>
   );
 }

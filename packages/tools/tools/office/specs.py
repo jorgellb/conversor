@@ -304,12 +304,13 @@ SPECS: list[ToolSpec] = [
            "Save a web page as PDF from its address. If the address is a document, it is converted.",
            options=WebAPdfOptions, impl="tools.office.web_a_pdf:run", secret_fields=(), outputs=("pdf",),
            time_limit=300, related=("html-a-pdf", "convertir-a-pdf")),
-    # 7.13 (F6-C, D-237): Calibre, como epub-a-pdf; un libro con DRM se rechaza antes de convertirlo.
+    # 7.13 (F6-C, D-237): Calibre, como epub-a-pdf; un libro con DRM se rechaza antes de convertirlo. Categoría Office,
+    # con el resto de libros electrónicos (D-271: «convert» no tiene apartado y no salían en el menú ni en la portada).
     *[office(f"{a}-a-{b}", f"{a}-to-{b}", f"{la} a {lb}", f"{la} to {lb}", (a,),
              f"Convierte libros {la} a {lb} para leerlos en {'Kindle' if b in ('mobi', 'azw3') else 'cualquier lector de EPUB'}.",
              f"Convert {la} books to {lb} to read them on {'Kindle' if b in ('mobi', 'azw3') else 'any EPUB reader'}.",
              options=LibroFormatoOptions, impl="tools.office.libros_formato:run", secret_fields=(), outputs=(b, "zip"), phase="F6",
-             category="convert", queue_kind="heavy", related=(f"{a}-a-pdf", f"{b}-a-pdf") if b != "epub" else (f"{a}-a-pdf", "epub-a-pdf"))
+             queue_kind="heavy", related=(f"{a}-a-pdf", f"{b}-a-pdf") if b != "epub" else (f"{a}-a-pdf", "epub-a-pdf"))
       for a, b, la, lb in (("epub", "mobi", "EPUB", "MOBI"), ("epub", "azw3", "EPUB", "AZW3"), ("mobi", "epub", "MOBI", "EPUB"),
                            ("azw3", "epub", "AZW3", "EPUB"))],
     # 7.13 (F6-C, D-237): LibreOffice de Gotenberg a PDF y cada diapositiva con pypdfium2.

@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { BoardEditor, BookmarksEditor, ChatPdfView, CardView, CollageView, CompareView, MermaidView, WriterView, CopyView, FormDesigner, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
   InvoiceDesigner, SearchView, SignatureRequestView, Viewer3D, GcodeViewer, RenderModelView } from "@/components/LazyViews";
 import { Feedback } from "@/components/Feedback";
+import { CategoryPage } from "@/components/CategoryPage";
 import { StaticPage } from "@/components/StaticPage";
 import { ViewMessages, type ViewNamespace } from "@/components/ViewMessages";
 import { ToolRunner, type NextTool } from "@/components/ToolRunner";
@@ -19,7 +20,7 @@ import { contentReady, toolContent } from "@/lib/content";
 import { disabledByEnv } from "@/lib/flags";
 import { HeicHelp, HEVC_TOOLS } from "@/components/HeicHelp";
 import { CATEGORIES, clientSpec, findTool, nameOf, PLANS, slugOf, summaryOf, TOOLS, toolBySlugEs, type ToolSpec } from "@/lib/registry";
-import { alternatePaths, PRIVATE_PAGES, SITE_NAME, staticKeyOf, toolPath, webUrl } from "@/lib/site";
+import { alternatePaths, CATEGORY_PAGES, categoryOfSlug, categoryPath, PRIVATE_PAGES, SITE_NAME, staticKeyOf, toolPath, webUrl } from "@/lib/site";
 import { converterRoute } from "@/lib/converter-route";
 import { formatName } from "@/lib/conversions";
 
@@ -78,6 +79,18 @@ export async function generateMetadata({ params, searchParams }: Params): Promis
       description,
       alternates: alternates(locale, canonicalSlug(tool, locale)),
       robots: isIndexable(tool, locale) ? undefined : { index: false, follow: true },
+      openGraph: { title: `${title} | ${SITE_NAME}`, description, type: "website", locale: locale === "es" ? "es_ES" : "en_GB" },
+    };
+  }
+  const categoryId = categoryOfSlug(slug, locale);
+  if (categoryId) {
+    const tc = await getTranslations({ locale, namespace: "categoryPage" });
+    const title = tc(`titles.${categoryId}`);
+    const description = tc(`descriptions.${categoryId}`);
+    return {
+      title,
+      description,
+      alternates: alternates(locale, slug),
       openGraph: { title: `${title} | ${SITE_NAME}`, description, type: "website", locale: locale === "es" ? "es_ES" : "en_GB" },
     };
   }
@@ -148,6 +161,8 @@ export default async function SlugPage({ params, searchParams }: Params) {
   setRequestLocale(locale);
   const tool = findTool(slug, locale);
   if (!tool) {
+    const categoryId = categoryOfSlug(slug, locale);
+    if (categoryId) return <CategoryPage id={categoryId} locale={locale} />;
     const key = staticKeyOf(slug, locale);
     if (!key) notFound();
     return <StaticPage pageKey={key} locale={locale} search={await searchParams} />;
@@ -164,6 +179,10 @@ export default async function SlugPage({ params, searchParams }: Params) {
     .filter((x) => tool.outputs.some((o) => x.inputs.includes(o)))
     .map((x) => ({ slug: x.slug_es, name: nameOf(x, locale), href: toolPath(locale, x), inputs: x.inputs }));
   const url = `${webUrl()}${toolPath(locale, tool)}`;
+  const category = CATEGORIES.find((c) => c.id === tool.category);
+  const categoryName = category ? (locale === "en" ? category.en : category.es) : null;
+  // Migas Inicio › categoría › herramienta (D-271): la categoría lleva a su apartado.
+  const categoryHref = category && CATEGORY_PAGES[category.id] ? categoryPath(locale, category.id) : null;
   const faq = content?.faq ?? [
     { q: tf("privacyQ"), a: tool.where === "client" ? tf("privacyClient") : tf("privacyServer") },
     { q: tf("freeQ"), a: tf("freeA") },
@@ -185,24 +204,26 @@ export default async function SlugPage({ params, searchParams }: Params) {
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: t("breadcrumbHome"), item: `${webUrl()}/${locale}` },
-        { "@type": "ListItem", position: 2, name, item: url },
+        ...(categoryHref ? [{ "@type": "ListItem", position: 2, name: categoryName, item: `${webUrl()}${categoryHref}` }] : []),
+        { "@type": "ListItem", position: categoryHref ? 3 : 2, name, item: url },
       ],
     },
   ];
-  const category = CATEGORIES.find((c) => c.id === tool.category);
   return (
     <div className={`mx-auto px-4 py-8 ${WIDE_TOOLS.includes(tool.slug_es) ? "max-w-7xl" : "max-w-4xl"}`}>
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <header className="tool-hero relative mb-1 overflow-hidden rounded-3xl border px-5 py-4 sm:px-6" style={categoryColor(tool.category)}>
         <ToolHeroDecor />
         <nav aria-label="Breadcrumb" className="muted relative mb-2 text-xs">
-          <Link href={`/${locale}`}>{t("breadcrumbHome")}</Link> › <span aria-current="page">{name}</span>
+          <Link href={`/${locale}`}>{t("breadcrumbHome")}</Link> ›{" "}
+          {categoryHref && <><Link href={categoryHref}>{categoryName}</Link> ›{" "}</>}
+          <span aria-current="page">{name}</span>
         </nav>
         <div className="relative flex items-start gap-4">
           <span className="icon-tile mt-1 hidden h-12 w-12 sm:grid" style={categoryColor(tool.category)}><CategoryIcon id={tool.category} size={26} /></span>
           <div>
             <p className="eyebrow">
-              {category ? (locale === "en" ? category.en : category.es) : null}
+              {categoryName}
               <span aria-hidden="true">·</span>
               {t(tool.where === "client" ? "badgeClient" : tool.where === "hybrid" ? "badgeHybrid" : "badgeServer")}
             </p>

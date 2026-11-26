@@ -4,7 +4,7 @@ import { routing, type Locale } from "@/i18n/routing";
 import { contentReady } from "@/lib/content";
 import { disabledByEnv } from "@/lib/flags";
 import { TOOLS } from "@/lib/registry";
-import { pagePath, toolPath, webUrl, type StaticKey } from "@/lib/site";
+import { CATEGORY_PAGES, categoryPath, pagePath, toolPath, webUrl, type StaticKey } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +27,8 @@ export default async function sitemap({ id }: { id: Promise<string> }): Promise<
   });
   const items: MetadataRoute.Sitemap = [entry(`/${locale}`, `/${other}`)];
   for (const key of [...PUBLIC_PAGES, ...INDEX_PAGES]) items.push(entry(pagePath(locale, key), pagePath(other, key)));
+  // Apartados de categoría (D-271).
+  for (const id of Object.keys(CATEGORY_PAGES)) items.push(entry(categoryPath(locale, id), categoryPath(other, id)));
   for (const tool of TOOLS) {
     if (tool.canonical_of || !tool.indexable || !tool.launch || disabledByEnv(tool.slug_es) || !contentReady(locale, tool.slug_es)) continue;
     items.push(entry(toolPath(locale, tool), toolPath(other, tool)));

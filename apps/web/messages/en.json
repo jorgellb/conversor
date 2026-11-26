@@ -13,7 +13,8 @@
     "admin": "Admin",
     "language": "Español",
     "languageLabel": "Switch to Spanish",
-    "home": "Home"
+    "home": "Home",
+    "categories": "Categories"
   },
   "footer": {
     "privacy": "Privacy",
@@ -26,7 +27,8 @@
     "createPdf": "Create a PDF",
     "converter": "PDF converter",
     "links": "Site links",
-    "fileConverter": "File converter"
+    "fileConverter": "File converter",
+    "byCategory": "Tools by category"
   },
   "home": {
     "heroTitle": "Every tool for your PDFs and files",
@@ -61,7 +63,7 @@
     "cat": {
       "pdf": "Merge, split, compress, sign and convert PDFs.",
       "office": "Word, Excel, PowerPoint and e-books, both ways.",
-      "image": "Convert, compress, crop and clean up photos and images.",
+      "image": "Convert, compress, resize and clean up photos and images.",
       "audio": "Convert, trim and transcribe audio.",
       "video": "Compress, trim and convert video.",
       "ai": "Summarise, translate and ask your documents.",
@@ -70,7 +72,8 @@
       "sign": "Sign, seal and verify documents.",
       "invoice": "PDF invoices and e-invoices.",
       "convert": "Turn any file into another."
-    }
+    },
+    "seeCategory": "See tools"
   },
   "tool": {
     "breadcrumbHome": "Home",
@@ -1994,5 +1997,49 @@
     "download": "Download {name}",
     "moreOptions": "More options",
     "points": "{n} points (point cloud, no faces)"
+  },
+  "categoryPage": {
+    "breadcrumbHome": "Home",
+    "toolsCount": "{n, plural, one {# tool} other {# tools}}",
+    "searchLabel": "Search {name}",
+    "searchPlaceholder": "Search {n} tools…",
+    "noResults": "No tool in this category matches. Try another word or search all tools from the home page.",
+    "others": "Other categories",
+    "titles": {
+      "pdf": "PDF tools",
+      "office": "Office tools",
+      "image": "Image tools",
+      "audio": "Audio tools",
+      "video": "Video tools",
+      "ai": "AI tools",
+      "data": "Data tools",
+      "3d": "3D tools",
+      "sign": "Electronic signature",
+      "invoice": "Invoices"
+    },
+    "descriptions": {
+      "pdf": "Merge, split, compress, edit, sign and convert PDFs online for free, often without the file ever leaving your browser.",
+      "office": "Convert Word, Excel, PowerPoint, OpenDocument and e-books to PDF and between each other, keeping the formatting.",
+      "image": "Convert, compress, resize and clean up photos and images (JPG, PNG, WebP, HEIC, AVIF, SVG and RAW) and remove their background.",
+      "audio": "Convert, trim, join and transcribe audio: MP3, WAV, OGG, FLAC, M4A and MIDI, with nothing to install.",
+      "video": "Compress, trim, rotate and convert video to MP4, WebM or GIF straight from the web.",
+      "ai": "Summarise, translate and ask your documents, create study cards and questions and extract text from images and receipts with AI.",
+      "data": "Convert CSV, JSON, XML, YAML and Excel, GPX, KML and Shapefile maps, calendars, contacts, mailboxes, fonts and archives.",
+      "3d": "Convert and repair 3D models (STL, 3MF, OBJ, STEP, GLB) and prepare G-code for your printer.",
+      "sign": "Sign PDFs with a certificate or by hand, request signatures from other people and verify electronic signatures.",
+      "invoice": "Create PDF invoices and Facturae, UBL and Factur-X e-invoices, and validate them before sending."
+    },
+    "intros": {
+      "pdf": "Everything you can do to a PDF in one place: organise pages, reduce its size, protect it, convert it to Word, Excel or images and back. Tools marked “in your browser” work without uploading the file.",
+      "office": "Turn office documents into PDF and PDFs into editable documents, or convert between Microsoft Office, OpenDocument and e-book formats without losing tables, images or styles.",
+      "image": "Tools to change the format, size or weight of your images, remove backgrounds, convert phone photos (HEIC) and get images ready for the web or for print.",
+      "audio": "Convert between the most common audio formats, trim and join tracks, adjust the volume and turn recordings and meetings into text.",
+      "video": "Shrink a video to send it, trim it, rotate it, remove the sound or convert it to another format or to a GIF.",
+      "ai": "Tools that use artificial intelligence to read for you: summaries of documents and meetings, translations that keep the formatting, questions to a PDF, study cards and recognition of handwritten text or receipts.",
+      "data": "Convert data between spreadsheet and exchange formats, and open or transform routes, maps, calendars, address books, mailboxes, fonts and archives.",
+      "3d": "Convert between 3D modelling and printing formats, repair and simplify meshes, generate models from text or images and check G-code before printing.",
+      "sign": "Sign documents with your digital certificate or your handwritten signature, send documents for other people to sign and check whether a signature is valid.",
+      "invoice": "Design PDF invoices, generate e-invoices in the formats that public bodies and companies require, and validate them before sending."
+    }
   }
 }

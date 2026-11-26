@@ -13,7 +13,8 @@
     "admin": "Administración",
     "language": "English",
     "languageLabel": "Cambiar a inglés",
-    "home": "Inicio"
+    "home": "Inicio",
+    "categories": "Categorías"
   },
   "footer": {
     "privacy": "Privacidad",
@@ -26,7 +27,8 @@
     "createPdf": "Crear PDF",
     "converter": "Conversor PDF",
     "links": "Enlaces del sitio",
-    "fileConverter": "Convertir archivo"
+    "fileConverter": "Convertir archivo",
+    "byCategory": "Herramientas por categoría"
   },
   "home": {
     "heroTitle": "Todas las herramientas para tus PDF y archivos",
@@ -61,7 +63,7 @@
     "cat": {
       "pdf": "Unir, dividir, comprimir, firmar y convertir PDF.",
       "office": "Word, Excel, PowerPoint y libros electrónicos, de ida y vuelta.",
-      "image": "Convertir, comprimir, recortar y limpiar fotos e imágenes.",
+      "image": "Convertir, comprimir, redimensionar y limpiar fotos e imágenes.",
       "audio": "Convertir, recortar y transcribir audio.",
       "video": "Comprimir, recortar y convertir vídeo.",
       "ai": "Resumir, traducir y preguntar a tus documentos.",
@@ -70,7 +72,8 @@
       "sign": "Firmar, sellar y verificar documentos.",
       "invoice": "Facturas en PDF y facturas electrónicas.",
       "convert": "Convertir cualquier archivo en otro."
-    }
+    },
+    "seeCategory": "Ver herramientas"
   },
   "tool": {
     "breadcrumbHome": "Inicio",
@@ -1994,5 +1997,49 @@
     "download": "Descargar {name}",
     "moreOptions": "Más opciones",
     "points": "{n} puntos (nube de puntos, sin caras)"
+  },
+  "categoryPage": {
+    "breadcrumbHome": "Inicio",
+    "toolsCount": "{n, plural, one {# herramienta} other {# herramientas}}",
+    "searchLabel": "Buscar en {name}",
+    "searchPlaceholder": "Buscar entre {n} herramientas…",
+    "noResults": "Ninguna herramienta de esta categoría coincide. Prueba con otra palabra o busca en todas desde la portada.",
+    "others": "Otras categorías",
+    "titles": {
+      "pdf": "Herramientas PDF",
+      "office": "Herramientas de Office",
+      "image": "Herramientas de imagen",
+      "audio": "Herramientas de audio",
+      "video": "Herramientas de vídeo",
+      "ai": "Herramientas con IA",
+      "data": "Herramientas de datos",
+      "3d": "Herramientas 3D",
+      "sign": "Firma electrónica",
+      "invoice": "Facturas"
+    },
+    "descriptions": {
+      "pdf": "Une, divide, comprime, edita, firma y convierte PDF gratis y en línea, muchas veces sin que el archivo salga de tu navegador.",
+      "office": "Convierte Word, Excel, PowerPoint, OpenDocument y libros electrónicos a PDF y entre sí, conservando el formato.",
+      "image": "Convierte, comprime, redimensiona y limpia fotos e imágenes (JPG, PNG, WebP, HEIC, AVIF, SVG y RAW) y quítales el fondo.",
+      "audio": "Convierte, recorta, une y transcribe audio: MP3, WAV, OGG, FLAC, M4A y MIDI, sin instalar nada.",
+      "video": "Comprime, recorta, gira y convierte vídeo a MP4, WebM o GIF directamente desde la web.",
+      "ai": "Resume, traduce y pregunta a tus documentos, crea fichas y preguntas de estudio y extrae texto de imágenes y tickets con IA.",
+      "data": "Convierte CSV, JSON, XML, YAML y Excel, mapas GPX, KML y Shapefile, calendarios, contactos, correos, fuentes y comprimidos.",
+      "3d": "Convierte y repara modelos 3D (STL, 3MF, OBJ, STEP, GLB) y prepara G-code para tu impresora.",
+      "sign": "Firma PDF con certificado o a mano, pide firmas a otras personas y verifica firmas electrónicas.",
+      "invoice": "Crea facturas en PDF y facturas electrónicas Facturae, UBL y Factur-X, y valídalas antes de enviarlas."
+    },
+    "intros": {
+      "pdf": "Todo lo que se le puede hacer a un PDF, en un solo sitio: organizar páginas, reducir su tamaño, protegerlo, convertirlo a Word, Excel o imagen y al revés. Las herramientas marcadas «en tu navegador» trabajan sin subir el archivo.",
+      "office": "Pasa documentos de oficina a PDF y de PDF a documentos editables, o convierte entre formatos de Microsoft Office, OpenDocument y libros electrónicos sin perder tablas, imágenes ni estilos.",
+      "image": "Herramientas para cambiar el formato, el tamaño o el peso de tus imágenes, quitar el fondo, convertir fotos del móvil (HEIC) y preparar imágenes para la web o para imprimir.",
+      "audio": "Convierte entre los formatos de audio más comunes, recorta y une pistas, ajusta el volumen y pasa a texto grabaciones y reuniones.",
+      "video": "Reduce el tamaño de un vídeo para enviarlo, recórtalo, gíralo, quítale el sonido o conviértelo a otro formato o a GIF.",
+      "ai": "Herramientas que usan inteligencia artificial para leer por ti: resúmenes de documentos y reuniones, traducciones que conservan el formato, preguntas a un PDF, fichas de estudio y reconocimiento de texto escrito a mano o de tickets.",
+      "data": "Convierte datos entre formatos de hoja de cálculo y de intercambio, y abre o transforma rutas, mapas, calendarios, agendas de contactos, buzones de correo, fuentes tipográficas y archivos comprimidos.",
+      "3d": "Convierte entre formatos de modelado e impresión 3D, repara y simplifica mallas, genera modelos a partir de texto o imágenes y revisa G-code antes de imprimir.",
+      "sign": "Firma documentos con tu certificado digital o con tu firma manuscrita, envía documentos para que los firmen otras personas y comprueba si una firma es válida.",
+      "invoice": "Diseña facturas en PDF, genera facturas electrónicas en los formatos que piden las administraciones y las empresas, y valídalas antes de enviarlas."
+    }
   }
 }

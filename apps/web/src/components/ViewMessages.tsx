@@ -8,6 +8,8 @@ import type { ReactNode } from "react";
 export const VIEW_NAMESPACES = [
   "collage", "editor", "formDesigner", "qr", "scanner", "copy", "signPdf", "viewer", "adminAi", "bookmarks", "chatPdf", "compare",
   "printjob", "admin", "account", "signRequest", "signerPage", "invoice", "mermaid", "tarjeta", "escribir", "visor3d",
+  // Las páginas de categoría (D-271) los leen en el servidor y pasan al navegador solo las etiquetas del buscador.
+  "categoryPage",
 ] as const;
 
 export type ViewNamespace = (typeof VIEW_NAMESPACES)[number];

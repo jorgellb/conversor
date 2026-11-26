@@ -12,6 +12,8 @@ export interface ToolLink {
   name: string;
   summary: string;
   category: string;
+  /** Dónde se ejecuta (D-271: las tarjetas de los apartados marcan las que trabajan en el navegador). */
+  where?: string;
 }
 
 function norm(s: string): string {

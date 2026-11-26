@@ -2,7 +2,8 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
 import type { Locale } from "@/i18n/routing";
-import { pagePath, SITE_NAME } from "@/lib/site";
+import { CATEGORIES } from "@/lib/registry";
+import { CATEGORY_PAGES, categoryPath, pagePath, SITE_NAME } from "@/lib/site";
 
 import { LogoMark } from "./art/LogoMark";
 
@@ -25,7 +26,7 @@ export async function Footer({ locale }: { locale: Locale }) {
         <path className="footer-wave" d="M0 40V22c120-14 240-20 360-12s240 22 360 18 240-22 360-24 240 10 360 18v18Z" />
       </svg>
       <div className="footer-body">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-[1fr_2fr]">
+        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-[1fr_1fr_2fr]">
           <div>
             <Link href={`/${locale}`} className="flex items-center gap-2.5 no-underline">
               <LogoMark animated={false} />
@@ -35,7 +36,15 @@ export async function Footer({ locale }: { locale: Locale }) {
               © {new Date().getFullYear()} {SITE_NAME}. {t("rights")}
             </p>
           </div>
-          <nav className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-3" aria-label={t("links")}>
+          {/* Apartados de categoría (D-271). */}
+          <nav className="grid grid-cols-2 content-start gap-x-6 gap-y-2 text-sm" aria-label={t("byCategory")}>
+            {CATEGORIES.filter((cat) => CATEGORY_PAGES[cat.id]).map((cat) => (
+              <Link key={cat.id} href={categoryPath(locale, cat.id)} className="footer-link">
+                {locale === "en" ? cat.en : cat.es}
+              </Link>
+            ))}
+          </nav>
+          <nav className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm sm:grid-cols-2 content-start" aria-label={t("links")}>
             {links.map(([key, label]) => (
               <Link key={key} href={pagePath(locale, key)} className="footer-link">
                 {label}

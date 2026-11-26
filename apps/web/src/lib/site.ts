@@ -25,6 +25,29 @@ export const STATIC_PAGES = {
 
 export type StaticKey = keyof typeof STATIC_PAGES;
 
+/** Apartado de cada categoría (D-271): sus herramientas tienen su propia página en lugar de ir todas en la portada. */
+export const CATEGORY_PAGES: Record<string, Record<Locale, string>> = {
+  pdf: { es: "herramientas-pdf", en: "pdf-tools" },
+  office: { es: "herramientas-office", en: "office-tools" },
+  image: { es: "herramientas-imagen", en: "image-tools" },
+  audio: { es: "herramientas-audio", en: "audio-tools" },
+  video: { es: "herramientas-video", en: "video-tools" },
+  ai: { es: "herramientas-ia", en: "ai-tools" },
+  data: { es: "herramientas-datos", en: "data-tools" },
+  "3d": { es: "herramientas-3d", en: "3d-tools" },
+  sign: { es: "herramientas-firma", en: "signature-tools" },
+  invoice: { es: "herramientas-facturas", en: "invoice-tools" },
+};
+
+export function categoryPath(locale: Locale, id: string): string {
+  return `/${locale}/${CATEGORY_PAGES[id][locale]}`;
+}
+
+/** Id de la categoría cuyo apartado tiene ese slug en ese idioma. */
+export function categoryOfSlug(slug: string, locale: Locale): string | undefined {
+  return Object.keys(CATEGORY_PAGES).find((id) => CATEGORY_PAGES[id][locale] === slug);
+}
+
 /** Páginas privadas o de servicio: nunca indexables. */
 export const PRIVATE_PAGES: StaticKey[] = ["cuenta", "admin", "entrar", "registro", "firmarDocumento"];
 
@@ -51,6 +74,8 @@ export function alternatePaths(locale: Locale, slug?: string): Record<Locale, st
   if (tool) return { es: toolPath("es", tool), en: toolPath("en", tool) };
   const key = staticKeyOf(slug, locale);
   if (key) return { es: pagePath("es", key), en: pagePath("en", key) };
+  const category = categoryOfSlug(slug, locale);
+  if (category) return { es: categoryPath("es", category), en: categoryPath("en", category) };
   return { es: "/es", en: "/en" };
 }
 
@@ -64,6 +89,10 @@ export function languageMap(): Record<string, string> {
   for (const key of Object.keys(STATIC_PAGES) as StaticKey[]) {
     map[pagePath("es", key)] = pagePath("en", key);
     map[pagePath("en", key)] = pagePath("es", key);
+  }
+  for (const id of Object.keys(CATEGORY_PAGES)) {
+    map[categoryPath("es", id)] = categoryPath("en", id);
+    map[categoryPath("en", id)] = categoryPath("es", id);
   }
   return map;
 }

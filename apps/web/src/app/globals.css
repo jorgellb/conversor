@@ -531,6 +531,69 @@ a {
   background: var(--card-2);
 }
 
+/* En móvil, el punto y los arcos de la cabecera de herramienta y de categoría caían encima del título (D-271). */
+@media (max-width: 639px) {
+  .hero-decor-marks {
+    display: none;
+  }
+}
+
+/* Barra de categorías (D-271): cada categoría lleva a su apartado, con su color al pasar por encima y en la actual. */
+.cat-nav {
+  border-top: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* En móvil se desliza dentro de sí misma; el degradado avisa de que hay más a la derecha. */
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+
+.cat-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-nav ul {
+  padding-block: 0.35rem;
+}
+
+.cat-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--fg);
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.cat-nav-link svg {
+  color: var(--c);
+}
+
+.cat-nav-link:hover,
+.cat-nav-link:focus-visible {
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+}
+
+.cat-nav-link[aria-current="page"] {
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+  color: color-mix(in srgb, var(--c) 70%, var(--fg));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--c) 35%, transparent);
+}
+
+@media (min-width: 1024px) {
+  .cat-nav {
+    mask-image: none;
+  }
+
+  .cat-nav ul {
+    justify-content: space-between;
+  }
+}
+
 .site-footer {
   --footer-bg: #1a1c22;
   color: #eef0f3;

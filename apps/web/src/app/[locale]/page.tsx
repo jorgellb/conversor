@@ -7,7 +7,7 @@ import { FavoriteStar, ToolExplorer, type ToolLink } from "@/components/ToolExpl
 import type { Locale } from "@/i18n/routing";
 import { disabledByEnv } from "@/lib/flags";
 import { CATEGORIES, nameOf, summaryOf, TOOLS } from "@/lib/registry";
-import { toolPath, webUrl } from "@/lib/site";
+import { CATEGORY_PAGES, categoryPath, toolPath, webUrl } from "@/lib/site";
 
 const POPULAR = ["comprimir-pdf", "unir-pdf", "word-a-pdf", "pdf-a-word", "jpg-a-pdf", "pdf-a-jpg", "ocr-pdf", "dividir-pdf"];
 
@@ -51,7 +51,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   }));
   const popular = POPULAR.map((s) => links.find((l) => l.slug === s)).filter((x): x is ToolLink => Boolean(x));
   const formats = new Set(active.flatMap((tool) => [...tool.inputs, ...tool.outputs])).size;
-  const categories = CATEGORIES.map((cat) => ({ ...cat, items: links.filter((l) => l.category === cat.id) })).filter((c) => c.items.length);
+  const categories = CATEGORIES.map((cat) => ({ ...cat, items: links.filter((l) => l.category === cat.id) }))
+    .filter((c) => c.items.length && CATEGORY_PAGES[c.id]);
   const catName = (cat: { es: string; en: string }) => (locale === "en" ? cat.en : cat.es);
   return (
     <div>
@@ -132,45 +133,28 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </ol>
         </section>
 
-        {/* ——— Categorías ——— */}
-        <section id="herramientas" className="mt-16 scroll-mt-20">
+        {/* ——— Categorías: cada una en su apartado (D-271), ya no todas sus herramientas aquí ——— */}
+        <section id="herramientas" className="mt-16 scroll-mt-28">
           <h2 className="section-title">{t("categories")}</h2>
           <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {categories.map((cat) => (
               <li key={cat.id}>
-                <a href={`#cat-${cat.id}`} className="cat-card tool-card h-full flex-col p-4 no-underline" style={categoryColor(cat.id)}
+                <PageLink href={categoryPath(locale, cat.id)} className="cat-card tool-card h-full flex-col p-4 no-underline" style={categoryColor(cat.id)}
                   aria-label={t("exploreCategory", { name: catName(cat) })}>
                   <span className="icon-tile" style={categoryColor(cat.id)}><CategoryIcon id={cat.id} size={26} /></span>
                   <span className="display mt-2 block text-lg font-bold">{catName(cat)}</span>
                   <span className="muted block text-xs">{t("toolsCount", { n: cat.items.length })}</span>
                   <span className="muted mt-1 hidden text-sm sm:block">{t(`cat.${cat.id}`)}</span>
-                </a>
+                  <span className="mt-auto inline-flex items-center gap-1 pt-3 text-sm font-semibold" style={{ color: "color-mix(in srgb, var(--c) 75%, var(--fg))" }}>
+                    {t("seeCategory")}
+                    <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </PageLink>
               </li>
             ))}
           </ul>
-
-          {categories.map((cat) => (
-            <div key={cat.id} id={`cat-${cat.id}`} className="mt-12 scroll-mt-20" style={categoryColor(cat.id)}>
-              <div className="flex items-center gap-3">
-                <span className="icon-tile" style={categoryColor(cat.id)}><CategoryIcon id={cat.id} /></span>
-                <div>
-                  <h3 className="text-2xl font-bold">{catName(cat)}</h3>
-                  <p className="muted text-sm">{t(`cat.${cat.id}`)}</p>
-                </div>
-              </div>
-              <ul className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {cat.items.map((tool) => (
-                  <li key={tool.slug} className="tool-card items-center px-3 py-2.5" style={categoryColor(cat.id)}>
-                    <PageLink href={tool.href} className="flex-1 font-medium after:absolute after:inset-0 after:content-['']">{tool.name}</PageLink>
-                    <svg className="arrow" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                      <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    <span className="relative z-10"><FavoriteStar slug={tool.slug} name={tool.name} /></span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
         </section>
       </div>
     </div>

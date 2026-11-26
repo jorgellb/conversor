@@ -37,7 +37,9 @@ describe("Lighthouse CI (1.3)", () => {
     }
     const english = paths.filter((p) => active.some((t) => p === `/en/${t.slug_en}`));
     expect(english).toHaveLength(1);
-    expect(paths).toHaveLength(1 + phases.length + english.length);
+    // Y el apartado de categoría más grande (D-271), que es la página con más tarjetas.
+    expect(paths).toContain("/es/herramientas-pdf");
+    expect(paths).toHaveLength(2 + phases.length + english.length);
     // Contra el `next start` que arranca el job web para Playwright (D-141).
     for (const u of urls) expect(new URL(u).origin).toBe("http://127.0.0.1:3100");
   });
