@@ -3,7 +3,7 @@
 Todo pasa por un modelo propio (puntos, líneas con sus tramos y polígonos, con nombre, descripción, altura, hora y
 atributos). GPX se lee con gpxpy (Apache-2.0) después de comprobarlo con defusedxml (sin entidades ni DTD, 16.4) y se
 escribe con gpxpy; KML y GeoJSON se leen y escriben aquí. Las pistas con hora van a KML como `gx:Track`, que guarda la
-hora de cada punto, para que GPX ↔ KML no pierda tiempos (16.5). Shapefile usa `ogr2ogr` de GDAL como programa externo
+hora de cada punto, para que GPX ↔ KML no pierda tiempos (16.5). Shapefile usa la GDAL de pyogrio en un proceso aparte (`ogr_shp.py`)
 (nunca `osgeo` en el proceso, 11), que además lo pasa a WGS84 con su .prj.
 """
 from __future__ import annotations
@@ -612,18 +612,20 @@ def _copy_member(zf: zipfile.ZipFile, info: zipfile.ZipInfo, dst: Path) -> None:
 
 
 def read_shapefile(ctx: ToolContext, shp: Path, budget: Budget) -> list[Feature]:
-    exe = ctx.settings.OGR2OGR_BIN
-    if not Path(exe).is_file():
-        raise ToolError(ErrorCode.ENGINE_FAILED, "ogr2ogr no está instalado")
+    # GDAL de pyogrio en un proceso aparte (ogr_shp.py, con python -I): nunca dentro del worker (D-220). La de Debian
+    # (gdal-bin) traía libx265 por libheif1, prohibida en 11 (D-267). Sin .prj, se toman como WGS84 (con nota).
+    import importlib.util
+    import sys
+
+    if importlib.util.find_spec("pyogrio") is None:
+        raise ToolError(ErrorCode.ENGINE_FAILED, "pyogrio no está instalado")
     dst = shp.with_suffix(".geojson")
-    # Solo el driver de Shapefile (-if), sin VRT ni GML y sin HTTP. Sin .prj, se toman como WGS84 (con nota).
-    srs = [] if shp.with_suffix(".prj").exists() else ["-s_srs", "EPSG:4326"]
-    if srs:
+    flags = [] if shp.with_suffix(".prj").exists() else ["--sin-prj"]
+    if flags:
         budget.no_prj = True
-    run_engine([exe, "-if", "ESRI Shapefile", "-f", "GeoJSON", *srs, "-t_srs", "EPSG:4326", "-lco", "RFC7946=YES",
-                "-lco", "COORDINATE_PRECISION=7", str(dst.name), str(shp.name)], cwd=shp.parent, timeout=300, mem_mb=1024,
-               extra_env={"GDAL_HTTP_TIMEOUT": "1", "CPL_VSIL_CURL_ALLOWED_EXTENSIONS": "none", "GDAL_DISABLE_READDIR_ON_OPEN": "YES",
-                          "GDAL_SKIP": "VRT GML WFS OAPIF"})
+    script = Path(__file__).with_name("ogr_shp.py")
+    run_engine([sys.executable, "-I", str(script), str(shp.name), str(dst.name), *flags], cwd=shp.parent, timeout=300,
+               mem_mb=1024, extra_env={"GDAL_HTTP_TIMEOUT": "1", "CPL_VSIL_CURL_ALLOWED_EXTENSIONS": "none"})
     if dst.exists() and dst.stat().st_size > 4 * MAX_BYTES:
         raise ToolError(ErrorCode.LIMIT_EXCEEDED, "data_output_too_big")
     if not dst.exists():

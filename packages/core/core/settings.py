@@ -109,8 +109,6 @@ class Settings(BaseSettings):
     KOSIT_HOME: Path = Path("/opt/kosit")
     # pandoc estático de infra/pandoc/fetch.sh en workerutils (F6-A, D-212): GPL, solo como proceso externo (11).
     PANDOC_BIN: Path = Path("/usr/local/bin/pandoc")
-    # ogr2ogr de GDAL (gdal-bin) en workerutils para los Shapefile (F6-H1, D-220): siempre como programa externo.
-    OGR2OGR_BIN: Path = Path("/usr/bin/ogr2ogr")
     # readpst de libpst (pst-utils) en workermedia para pst-a-mbox y pst-a-pdf (F6-J, D-225): GPL, solo como programa externo.
     READPST_BIN: Path = Path("/usr/bin/readpst")
     # latex-a-pdf (F6-K, D-227): Tectonic con su caché de paquetes ya llena (infra/tectonic/fetch.sh), en workerutils.

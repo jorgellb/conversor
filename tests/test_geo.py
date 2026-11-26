@@ -1,6 +1,8 @@
 """F6-H1 (7.13, D-220): GPX, KML, KMZ, GeoJSON, Shapefile y CSV. 16.5: GPX ↔ KML conserva puntos, alturas y horas."""
 from __future__ import annotations
 
+import importlib.util
+
 import json
 import shutil
 import zipfile
@@ -9,7 +11,6 @@ from pathlib import Path
 import pytest
 
 from core.errors import ToolError
-from core.settings import get_settings
 from test_tools import make_ctx, run  # noqa: F401  (fixture)
 
 pytest.importorskip("gpxpy")
@@ -149,13 +150,18 @@ def test_shapefile_zip_needs_its_parts(make_ctx, tmp_path):
     assert err.value.detail == "shp_incomplete"
 
 
-@pytest.mark.skipif(not Path(get_settings().OGR2OGR_BIN).is_file(), reason="sin ogr2ogr (gdal-bin, en la CI)")
-def test_shapefile_with_ogr2ogr(make_ctx, tmp_path):
-    import subprocess
+@pytest.mark.skipif(importlib.util.find_spec("pyogrio") is None, reason="sin pyogrio (extra utils)")
+def test_shapefile_with_pyogrio(make_ctx, tmp_path):
+    import struct
 
-    src = _write(tmp_path, "pts.geojson", json.dumps({"type": "FeatureCollection", "features": [
-        {"type": "Feature", "properties": {"nombre": "A"}, "geometry": {"type": "Point", "coordinates": [-3.7, 40.4]}}]}))
-    subprocess.run([str(get_settings().OGR2OGR_BIN), "-f", "ESRI Shapefile", "-t_srs", "EPSG:25830", str(tmp_path / "pts.shp"), str(src)], check=True)
+    import numpy as np
+    from pyogrio import raw
+
+    # (-3,7, 40,4) en ETRS89 / UTM 30N (EPSG:25830), calculado con gdaltransform: la herramienta tiene que devolverlo a
+    # WGS 84 y conservar la columna «nombre» tal cual (D-267).
+    wkb = struct.pack("<BIdd", 1, 1, 440598.078851381, 4472390.03101414)
+    raw.write(str(tmp_path / "pts.shp"), np.array([wkb], dtype=object), [np.array(["A"], dtype=object)], fields=["nombre"],
+              driver="ESRI Shapefile", crs="EPSG:25830", geometry_type="Point", encoding="UTF-8")
     packed = tmp_path / "puntos.zip"
     with zipfile.ZipFile(packed, "w") as zf:
         for ext in ("shp", "shx", "dbf", "prj"):

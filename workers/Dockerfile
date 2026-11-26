@@ -136,12 +136,24 @@ RUN case "${REMBG_MODEL}" in u2net|isnet-general-use) ;; *) echo "Modelo de remb
       -o "/opt/rembg/models/${REMBG_MODEL}/${REMBG_MODEL}.onnx" \
  && echo "${REMBG_MODEL_SHA256}  /opt/rembg/models/${REMBG_MODEL}/${REMBG_MODEL}.onnx" | sha256sum -c -
 
+# --- readpst de pst-utils (F6-J, D-225 y D-267): solo el binario, sin las dependencias de pst2dii ---
+FROM ${PYTHON_IMAGE} AS readpst
+RUN apt-get update && cd /tmp && apt-get download pst-utils \
+ && dpkg-deb -x pst-utils_*.deb /tmp/pst && install -D -m 755 /tmp/pst/usr/bin/readpst /out/readpst \
+ && rm -rf /var/lib/apt/lists/*
+
 FROM base AS worker-media
 ARG REMBG_MODEL=u2net
 # DjVuLibre (`ddjvu`, GPL, solo como proceso externo), libarchive para CBZ y CBR, y heif-dec de la etapa anterior.
 RUN apt-get update \
- && apt-get install -y --no-install-recommends djvulibre-bin libarchive13 libde265-0 libpng16-16 pst-utils \
+ && apt-get install -y --no-install-recommends djvulibre-bin libarchive13 libde265-0 libpng16-16 \
+      libpst4 libgsf-1-114 libglib2.0-0 libstdc++6 \
  && rm -rf /var/lib/apt/lists/*
+# readpst sin el resto de pst-utils: el paquete depende de libgd3 (por pst2dii), que trae libheif1 y con ella libx265
+# (GPL, prohibida en 11; D-267). readpst no la usa: solo el binario, del mismo paquete de Debian.
+COPY --from=readpst /out/readpst /usr/bin/readpst
+RUN readpst -V | head -1 && ! ldd /usr/bin/readpst | grep -q "not found" \
+ && ! ls /usr/lib/x86_64-linux-gnu | grep -qiE "libx26[45]|libgd\.so"
 COPY --from=libheif-build /opt/libheif/lib/ /usr/local/lib/
 COPY --from=libheif-build /opt/libheif/bin/heif-dec /usr/local/bin/heif-dec
 RUN ldconfig && heif-dec --version && ! ldd /usr/local/bin/heif-dec | grep -qi x265
@@ -315,7 +327,7 @@ CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "cad", "-n", "cad@%h", "-
 # (infra/facturae, SHA256SUMS). JRE 17 de Debian; KoSIT y las configuraciones, con SHA-256 fijados ---
 FROM base AS worker-utils
 RUN apt-get update \
- && apt-get install -y --no-install-recommends openjdk-17-jre-headless curl libarchive13 gdal-bin \
+ && apt-get install -y --no-install-recommends openjdk-17-jre-headless curl libarchive13 \
  && rm -rf /var/lib/apt/lists/* && java -version
 RUN uv pip install -r pyproject.toml --extra utils
 # pandoc 3.13 estático (F6-A, D-212), versión y SHA-256 fijados en el script; GPL, solo como proceso externo (11).

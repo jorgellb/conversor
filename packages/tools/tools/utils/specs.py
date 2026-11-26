@@ -559,7 +559,7 @@ SPECS: list[ToolSpec] = [
           "Saca el documento original de una firma XAdES .xsig de AutoFirma, o el XML sin su firma si iba dentro.",
           "Get the original document out of an AutoFirma XAdES .xsig signature, or the XML without its signature if it was inside.",
           ("verificar-firma", "csig-a-pdf"), category="sign", impl="tools.utils.firmados:run"),
-    # 7.13 (F6-H1, D-220): modelo propio, gpxpy para GPX y ogr2ogr externo para Shapefile (nunca osgeo en el proceso).
+    # 7.13 (F6-H1, D-220): modelo propio, gpxpy para GPX y la GDAL de pyogrio en un proceso aparte para Shapefile (nunca GDAL en el proceso; D-267).
     datos("gpx-a-kml", "gpx-to-kml", "GPX a KML", "GPX to KML", ("gpx",), ("kml",),
           "Convierte rutas y puntos GPX de tu GPS, Strava o Wikiloc en KML para Google Earth y Google My Maps, con sus horas.",
           "Turn GPX routes and waypoints from your GPS, Strava or Wikiloc into KML for Google Earth and My Maps, with their times.",
