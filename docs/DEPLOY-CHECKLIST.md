@@ -9,12 +9,16 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Construir `worker-av` en la CI de imágenes con ese FFmpeg 8.1 (`sha256sum -c` y la comprobación de
       `--enable-gpl` pasan) y repetir el audio de F5 (`tests/test_audio_f5.py`) con ese binario; guardar una copia del
       archivo de BtbN (por ejemplo, como recurso de una publicación propia) por si BtbN lo retira.
+      2026-11-26 (D-269): `images.yml` construye `worker-av` (FFmpeg n8.1.3, sin `--enable-gpl`) y
+      `tests/test_audio_f5.py` pasa entero (11 de 11) dentro de la imagen con ese binario. **Queda (propietario):** la
+      copia del archivo de BtbN; publicarla redistribuye FFmpeg (LGPL) y obliga a ofrecer su código fuente.
 - [ ] Perfil de memoria y CPU: en un VPS de 16 vCPU y 64 GB, pegar en Coolify las variables de
       `python scripts/gen_coolify_compose.py --profile 16` (`docs/OPERATIONS.md`, D-138); `--validate` (`docker compose
       config`) pasa en la CI con las variables `${MEM_*}` y `${CPUS_*}`.
 - [ ] **Propietario:** decidir si se añaden equivalentes de «Print PDF as poster» y «OFD to PDF» de PDF24, que no están
       en la especificación (tabla de paridad de `docs/TOOLS.md`, D-139).
-- [ ] Revisar la ficha de licencia de los modelos que descarga `docling-tools` en `worker-convert`.
+- [x] Revisar la ficha de licencia de los modelos que descarga `docling-tools` en `worker-convert`. Hecho el 2026-11-26
+      (D-269): Apache-2.0, MIT y CDLA-Permissive-2.0, todas permisivas; detalle en `docs/LICENSES.md`.
 - [ ] Smokescreen ya no viene de `ghcr.io/stripe/smokescreen` (esa imagen no existe): `images.yml` compila `infra/smokescreen/Dockerfile` desde la etiqueta v0.1.0 y publica `ghcr.io/<propietario>/conversor-smokescreen` (D-155). Comprobar en el primer despliegue que `egressweb` y `egressai` arrancan con esa imagen y que web-a-pdf sale a internet y no llega a una IP privada (D-30).
 - [ ] Contenido propio de cada página revisado por muestreo y marcado con `reviewed: true` en `apps/web/content/` (7.22).
 - [ ] Textos de las páginas índice revisados (título, descripción e introducción de conversor-pdf, crear-pdf y
@@ -54,8 +58,10 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       origen de JavaScript, clave de API limitada a Google Picker API y Drive API activada (`GOOGLE_PICKER_CLIENT_ID`,
       `GOOGLE_PICKER_API_KEY`); app de Dropbox con el dominio en «Chooser/Saver domains» (`DROPBOX_APP_KEY`). El WAF no
       debe bloquear a los servidores de Dropbox cuando descargan de `files.` (D-36).
-- [ ] Confirmar que existe la versión de libheif fijada en `workers/Dockerfile` (`LIBHEIF_VERSION`, 1.19.8), que la
+- [x] Confirmar que existe la versión de libheif fijada en `workers/Dockerfile` (`LIBHEIF_VERSION`, 1.19.8), que la
       etapa `libheif-build` compila y que `ldd /usr/local/bin/heif-dec` en `worker-media` no muestra x265 (D-49).
+      Hecho el 2026-11-26 (D-269): `images.yml` la construye, `heif-dec --version` da 1.19.8 y `ldd` no muestra x265 ni
+      bibliotecas sin encontrar.
 - [ ] `HEVC_DECODE_ENABLED` sigue apagado hasta la revisión legal anotada en `docs/LEGAL.md` (también apaga heic-a-jpg y
       heic-a-png).
 - [ ] **Propietario:** confirmar el modelo de quitar-fondo. Por defecto u2net (pesos del repositorio U-2-Net, con LICENSE
@@ -63,9 +69,10 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       conjunto de datos tiene condiciones propias, D-96); para cambiarlo, construir `worker-media` con
       `--build-arg REMBG_MODEL=isnet-general-use --build-arg REMBG_MODEL_SHA256=60920e99c45464f2ba57bee2ad08c919a52bbf852739e96947fbb4358c0d964a`
       y poner `REMBG_MODEL=isnet-general-use` en `workermedia`. Nunca bria-rmbg.
-- [ ] La imagen `worker-ocr` instala veraPDF 1.30.3 con `infra/verapdf/auto-install.xml` (nombres de los paquetes de
+- [x] La imagen `worker-ocr` instala veraPDF 1.30.3 con `infra/verapdf/auto-install.xml` (nombres de los paquetes de
       IzPack incluidos) y `verapdf --version` responde; el paso de la CI que lo instala pasa y
       `test_real_verapdf_accepts_the_pdfa_we_produce` no se omite (D-63).
+      Hecho el 2026-11-26 (D-269): `images.yml` la construye, `verapdf --version` da 1.30.3 y en la CI (`pytest -rs`) la prueba no se omite y pasa.
 
 - [ ] Sello de la plataforma (10, D-188): el propietario elige el certificado del sello y la TSA (0.1), inicializa el
       token en el volumen `softhsm` de `workersign` (`softhsm2-util --init-token --free --label conversor-sello`),
@@ -123,9 +130,10 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       servidor) y resultados y concurrencias anotados en `OPERATIONS.md` (D-146, D-148 y D-149). Volver a dejar
       `RATE_LIMIT_PER_MINUTE`, `ANON_TOKENS_PER_IP_DAY`, `light_tasks_day` del plan `anon` (20) y las claves de
       Turnstile de producción al terminar (la cuota, con el valor anotado antes de subirla si se cambió desde la base).
-- [ ] Primera ejecución de G0-B en la CI: Lighthouse en el job `web`, regresión visual de la plantilla con el Chromium de
+- [x] Primera ejecución de G0-B en la CI: Lighthouse en el job `web`, regresión visual de la plantilla con el Chromium de
       Playwright y de los PDF en el job `python`; si una captura falla solo por el suavizado del texto, regenerar las
       referencias en la CI con `--update-snapshots` y revisarlas antes de confirmarlas (D-144).
+      Hecho el 2026-11-26 (D-269): Lighthouse pasa en el job `web` y la regresión visual no se omite y pasa en `python` (sin regenerar referencias).
 - [ ] escaner-pdf en un Android con Chrome y en un iPhone con Safari: permiso de cámara, borde detectado en vivo,
       varias páginas, filtro Documento con sombras reales, PDF descargado, instalación como aplicación y uso sin conexión
       tras la primera visita; con OCR al terminar, el PDF con texto.
@@ -150,9 +158,12 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Lote C de F5 con la pila completa: raw-a-jpg de un CR2, un NEF y un ARW reales (LibRaw), psd-a-png de un PSD de
       Photoshop con capas y efectos, png-a-svg de un logotipo y quitar-fondo de una foto de producto y de un retrato con
       «Refinar los bordes»; `workermedia` (1,5 GB) sin reinicios por memoria y sin intentos de descarga del modelo.
-- [ ] G1-A con la pila completa: la imagen `worker-pdf` construye con el perfil FOGRA39 de `infra/icc` (D-154) y
+- [x] G1-A con la pila completa: la imagen `worker-pdf` construye con el perfil FOGRA39 de `infra/icc` (D-154) y
   pdf-a-jpg en CMYK lo incrusta; `egressweb` y `egressai` arrancan con `conversor-smokescreen` (D-155); en la web en
   inglés, las notas de reparar-pdf, comprimir-pdf y proteger-pdf salen en inglés (D-151).
+  Hecho el 2026-11-26 (D-269): `images.yml` construye `worker-pdf` (el SHA-256 de FOGRA39 coincide y `CMYK_ICC_PROFILE`
+  apunta a él); dentro de la imagen pasan `test_jpg_cmyk_embeds_the_profile` y `tests/test_notas_idioma.py` (11 de 11), y
+  `egressweb` y `egressai` arrancan sanos en el Compose local con la imagen de `infra/smokescreen/Dockerfile` (D-267).
 - [ ] Lote C de F2 con la pila completa: un EPUB a PDF (índice al principio), un CBR en RAR, un DjVu, un EML con
       adjuntos, un MSG de Outlook real, un DXF de un programa de CAD y un .pages; `workermedia` y `workerofficeheavy`
       sin reinicios por memoria (`docker stats`).
@@ -168,12 +179,13 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 
 - [ ] F7 necesita el perfil de 16 vCPU y 64 GB (`gen_coolify_compose.py --profile 16`): `workermesh` y `workercad` con 4 GB
       cada uno y `MESH_MEMORY_MB=2600` (dos hijos a la vez caben en 6 GB).
-- [ ] Construir `worker-mesh` y `worker-cad` en `images.yml` (LibreDWG 0.14 compilado con su SHA-256, OpenSCAD de Debian) y
-      comprobar en el VPS: scad-a-stl real, un `import("/etc/hostname")` que no lee nada fuera del trabajo, dwg-a-dxf y
+- [ ] Construir `worker-mesh` y `worker-cad` en `images.yml` (LibreDWG 0.14 compilado con su SHA-256, OpenSCAD de Debian;
+      hecho el 2026-11-26, D-269) y comprobar en el VPS: scad-a-stl real, un `import("/etc/hostname")` que no lee nada fuera del trabajo, dwg-a-dxf y
       dwg-a-pdf con DWG reales de AutoCAD 2000 a 2018.
 - [ ] Landlock en `workermesh` y `workercad` (el proceso hijo de las mallas y OpenSCAD/LibreDWG fallan cerrados sin él).
-- [ ] CI: la prueba de bgcode real (16.5) clona los datos de prueba de libbgcode; comprobar que pasa y, si Prusa cambia el
+- [x] CI: la prueba de bgcode real (16.5) clona los datos de prueba de libbgcode; comprobar que pasa y, si Prusa cambia el
       repositorio, apuntar `BGCODE_SAMPLES` a otra carpeta de muestras de PrusaSlicer 2.6 o posterior.
+      Hecho el 2026-11-26 (D-269): el clon de libbgcode funciona y la prueba no se omite y pasa.
 - [ ] Un gcode-a-bgcode real abierto en una Prusa MK4 o CORE One (miniatura, tiempo y filamento en la pantalla) y un
       .gcode.3mf real de Bambu Studio en extraer-gcode-3mf.
 - [ ] Visores en móviles reales (Safari de iOS y Chrome de Android): visor-3d con un STL de 50 MB y visor-gcode con un

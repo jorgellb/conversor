@@ -43,8 +43,27 @@ def _metadata(scene) -> dict:
     return out
 
 
-def main(src: str, dst: str, max_triangles: int) -> int:
+def load_pyassimp():
+    """pyassimp 5.2.5 importa `distutils.sysconfig`, que Python 3.12 ya no trae (D-269): en las imágenes, con Python 3.12 y
+    sin setuptools, `import pyassimp` fallaba y FBX, DAE y 3DS no funcionaban. Solo usa `get_python_lib` con Anaconda; si
+    falta `distutils`, se pone un módulo mínimo con esa función antes de importarlo."""
+    import importlib.util
+    import sysconfig
+    import types
+
+    if importlib.util.find_spec("distutils") is None:
+        dist, cfg = types.ModuleType("distutils"), types.ModuleType("distutils.sysconfig")
+        cfg.get_python_lib = lambda *_a, **_k: sysconfig.get_paths()["purelib"]
+        dist.sysconfig = cfg
+        sys.modules.setdefault("distutils", dist)
+        sys.modules.setdefault("distutils.sysconfig", cfg)
     import pyassimp
+
+    return pyassimp
+
+
+def main(src: str, dst: str, max_triangles: int) -> int:
+    pyassimp = load_pyassimp()
     from pyassimp import postprocess as pp
 
     flags = (pp.aiProcess_Triangulate | pp.aiProcess_JoinIdenticalVertices | pp.aiProcess_SortByPType

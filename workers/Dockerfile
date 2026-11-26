@@ -285,13 +285,36 @@ WORKDIR /home/app
 EXPOSE 9000
 CMD ["python", "/app/pki.py", "serve", "/home/app/pki", "9000"]
 
+# --- assimp 5.4.3 (BSD-3-Clause) para FBX, DAE y 3DS (D-248, D-269): el libassimp5 de bookworm (5.2.5) no lee los FBX
+# binarios que escribe el propio assimp; se compila desde el tarball de la etiqueta con su SHA-256, solo con esos tres
+# importadores y sin exportadores (menos superficie para archivos de usuario; la API de exportar sigue, pyassimp la busca) ---
+FROM ${PYTHON_IMAGE} AS assimp-build
+ARG ASSIMP_VERSION=5.4.3
+ARG ASSIMP_SHA256=66dfbaee288f2bc43172440a55d0235dfc7bf885dda6435c038e8000e79582cb
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake curl ca-certificates zlib1g-dev \
+ && rm -rf /var/lib/apt/lists/* \
+ && curl -fsSL "https://github.com/assimp/assimp/archive/refs/tags/v${ASSIMP_VERSION}.tar.gz" -o /tmp/assimp.tar.gz \
+ && echo "${ASSIMP_SHA256}  /tmp/assimp.tar.gz" | sha256sum -c - \
+ && tar -xzf /tmp/assimp.tar.gz -C /tmp \
+ && cmake -S /tmp/assimp-${ASSIMP_VERSION} -B /tmp/build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/assimp \
+      -DASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT=OFF -DASSIMP_BUILD_FBX_IMPORTER=ON -DASSIMP_BUILD_COLLADA_IMPORTER=ON \
+      -DASSIMP_BUILD_3DS_IMPORTER=ON -DASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT=OFF -DASSIMP_BUILD_TESTS=OFF -DASSIMP_BUILD_ASSIMP_TOOLS=OFF \
+      -DASSIMP_BUILD_SAMPLES=OFF -DASSIMP_BUILD_ZLIB=OFF -DASSIMP_WARNINGS_AS_ERRORS=OFF -DASSIMP_INSTALL_PDB=OFF \
+ && cmake --build /tmp/build -j"$(nproc)" && cmake --install /tmp/build \
+ && ! ldd /opt/assimp/lib/libassimp.so | grep -q "not found"
+
 # --- Mallas 3D y G-code (F7, grupo mesh, 5.4): solo bibliotecas de Python con ruedas (trimesh, lib3mf); sin red ---
 FROM base AS worker-mesh
-# assimp (BSD-3-Clause) de Debian para FBX, DAE y 3DS (F7-B, D-248); pyassimp lo carga en un proceso hijo con Landlock.
+# assimp 5.4.3 compilado arriba para FBX, DAE y 3DS (F7-B, D-248, D-269); pyassimp lo carga en un proceso hijo con Landlock
+# y lo busca en /usr/local/lib.
 # DejaVu (fonts-dejavu-core, licencia libre de Bitstream Vera) para texto-a-stl (F7-G, D-254).
-RUN apt-get update && apt-get install -y --no-install-recommends libassimp5 fonts-dejavu-core fonts-dejavu-extra && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends fonts-dejavu-core fonts-dejavu-extra && rm -rf /var/lib/apt/lists/*
+COPY --from=assimp-build /opt/assimp/lib/ /usr/local/lib/
+RUN ldconfig && ! ldd /usr/local/lib/libassimp.so | grep -q "not found"
 RUN uv pip install -r pyproject.toml --extra mesh
 COPY --from=code /app /app
+# pyassimp encuentra libassimp y carga sin distutils (Python 3.12, D-269): si no, FBX, DAE y 3DS fallarían en ejecución.
+RUN python -I -c "import sys; sys.path.insert(0, '/app/packages/tools'); from tools.mesh.assimp_child import load_pyassimp; load_pyassimp()"
 USER app
 ENV SERVICE_ROLE=worker-mesh PYTHONUTF8=1
 CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "mesh", "-n", "mesh@%h", "-c", "1", "--prefetch-multiplier", "1", "-O", "fair", "--without-gossip", "--without-mingle"]

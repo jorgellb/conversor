@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import io
 import math
+import os
 import zipfile
 from pathlib import Path
 
@@ -198,6 +199,9 @@ def test_lib3mf_does_not_change_the_process_locale(tmp_path):
 
 # ——— F7-B (D-248): AMF, GLB, glTF, FBX, DAE y 3DS ———
 
+_TOOLS_PATH = str(Path(__file__).resolve().parents[1] / "packages" / "tools")
+
+
 def _assimp_export(tmp_path: Path, mesh: trimesh.Trimesh, fmt: str, ext: str) -> Path:
     """Muestra creada con el propio assimp en un subproceso (necesita libassimp; si no está, la prueba se salta)."""
     import os
@@ -209,12 +213,34 @@ def _assimp_export(tmp_path: Path, mesh: trimesh.Trimesh, fmt: str, ext: str) ->
     src = tmp_path / "base.obj"
     mesh.export(src)
     out = tmp_path / f"modelo.{ext}"
-    env = {**os.environ, "LD_LIBRARY_PATH": get_settings().ENGINES_LIBRARY_PATH or os.environ.get("LD_LIBRARY_PATH", "")}
-    code = ("import sys, pyassimp\nwith pyassimp.load(sys.argv[1]) as s:\n    pyassimp.export(s, sys.argv[2], file_type=sys.argv[3])\n")
+    env = {**os.environ, "LD_LIBRARY_PATH": get_settings().ENGINES_LIBRARY_PATH or os.environ.get("LD_LIBRARY_PATH", ""),
+           "PYTHONPATH": _TOOLS_PATH}
+    code = ("import sys\nfrom tools.mesh.assimp_child import load_pyassimp\npyassimp = load_pyassimp()\n"
+            "with pyassimp.load(sys.argv[1]) as s:\n    pyassimp.export(s, sys.argv[2], file_type=sys.argv[3])\n")
     res = subprocess.run([sys.executable, "-c", code, str(src), str(out), fmt], env=env, capture_output=True)
     if res.returncode or not out.exists():
-        pytest.skip("assimp no disponible: " + res.stderr.decode()[-200:])
+        # En la CI (que instala libassimp5) no se salta: así se escondió que pyassimp no cargaba en Python 3.12 (D-269).
+        (pytest.fail if os.environ.get("CI") else pytest.skip)("assimp no disponible: " + res.stderr.decode()[-200:])
     return out
+
+
+def test_pyassimp_loads_without_distutils():
+    """D-269: pyassimp 5.2.5 importa `distutils.sysconfig`, que Python 3.12 ya no trae (las imágenes no llevan setuptools).
+    Sin el buscador de setuptools que lo simula, `load_pyassimp` tiene que cargarlo igual."""
+    import subprocess
+    import sys
+
+    code = ("import sys, importlib.util\n"
+            "sys.meta_path = [f for f in sys.meta_path if type(f).__module__ != '_distutils_hack']\n"
+            "sys.modules.pop('distutils', None)\n"
+            "assert importlib.util.find_spec('distutils') is None\n"
+            "from tools.mesh.assimp_child import load_pyassimp\n"
+            "print(load_pyassimp().__name__)\n")
+    res = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=60,
+                         env={**os.environ, "PYTHONPATH": _TOOLS_PATH})
+    if "AssimpError" in res.stderr and not os.environ.get("CI"):
+        pytest.skip("sin libassimp")
+    assert res.returncode == 0 and res.stdout.strip() == "pyassimp", res.stderr[-1500:]
 
 
 def test_amf_roundtrip_with_units_colors_and_instances(make_ctx, tmp_path):
