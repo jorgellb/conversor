@@ -18,7 +18,7 @@ router = APIRouter(prefix="/v1", tags=["herramientas"])
 
 
 @router.get("/tools")
-def list_tools(session: Session = Depends(db), registry: Registry = Depends(registry_dep), settings: Settings = Depends(settings_dep)):
+def list_tools(session: Session = Depends(db, scope="function"), registry: Registry = Depends(registry_dep), settings: Settings = Depends(settings_dep)):
     flags = db_flags(session)
     plans = {pid: p.model_dump() for pid, p in load_plans_file(settings.PLANS_FILE).items()}
     tools = []
@@ -36,7 +36,7 @@ class FeedbackIn(BaseModel):
 
 
 @router.post("/feedback", status_code=201)
-def feedback(body: FeedbackIn, authorization: str | None = Header(default=None), session: Session = Depends(db),
+def feedback(body: FeedbackIn, authorization: str | None = Header(default=None), session: Session = Depends(db, scope="function"),
              registry: Registry = Depends(registry_dep), settings: Settings = Depends(settings_dep)):
     registry.require(body.tool)
     owner = auth.resolve_owner(authorization, session, settings) if authorization else None

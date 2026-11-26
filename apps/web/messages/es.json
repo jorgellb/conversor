@@ -1285,6 +1285,7 @@
   },
   "signerPage": {
     "title": "Firmar un documento",
+    "description": "Firma el documento que te han pedido firmar: revisa el PDF, confirma tu correo con un código y firma.",
     "loading": "Cargando…",
     "noToken": "Este enlace está incompleto: ábrelo desde el correo que has recibido.",
     "from": "{owner} te pide que firmes este documento, {name}.",

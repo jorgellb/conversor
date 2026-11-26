@@ -23,7 +23,8 @@ Las imágenes son privadas (GHCR). En el VPS: `docker login ghcr.io` con un toke
 Las publica `.github/workflows/images.yml` con etiquetas de versión (`v0.1.0` → `0.1.0`) y `sha-<commit>`. Sin GitHub
 Actions (por ejemplo, si la cuenta no tiene minutos), se construyen y suben las mismas 14 imágenes desde cualquier máquina
 con Docker y buildx: `docker login ghcr.io` con un token `write:packages` y
-`GHCR_OWNER=<propietario> IMAGE_TAG=0.1.0 sh scripts/build_push_images.sh` (unos 60 GB de disco y una o dos horas).
+`GHCR_OWNER=<propietario> IMAGE_TAG=0.1.0 sh scripts/build_push_images.sh` (unos 60 GB de disco y una o dos horas). Con
+`PUSH=0` las construye y las carga en el Docker local sin subirlas (para probarlo antes de tener el token).
 
 ## 4. Alta del recurso
 

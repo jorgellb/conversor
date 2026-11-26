@@ -159,8 +159,12 @@ def test_only_workersign_has_the_seal_pin_and_token():
 
 
 def test_egress_proxies_apply_the_default_acl_without_client_tls():
-    """Smokescreen sin --allow-missing-role responde 407 a todo cliente sin certificado TLS (e2e-compose, D-190)."""
+    """Smokescreen sin allow_missing_role responde 407 a todo cliente sin certificado TLS (e2e-compose, D-190). La v0.1.0
+    solo lo admite en el archivo de configuración: la opción --allow-missing-role no existe y el proxy no arrancaba (D-267)."""
+    assert yaml.safe_load((ROOT / "infra/smokescreen/config.yaml").read_text(encoding="utf-8")) == {"allow_missing_role": True}
     dev = yaml.safe_load((ROOT / "docker-compose.yml").read_text(encoding="utf-8"))["services"]
     for services in (dev, _doc()["services"]):
         for name in ("egressweb", "egressai"):
-            assert "--allow-missing-role" in services[name]["command"], name
+            command = services[name]["command"]
+            assert "--config-file=/etc/smokescreen/config.yaml" in command and "--allow-missing-role" not in command, name
+            assert "./infra/smokescreen/config.yaml:/etc/smokescreen/config.yaml:ro" in services[name]["volumes"], name

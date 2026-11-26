@@ -89,7 +89,7 @@ def _share_copy(src: Path, dst_dir: Path, filename: str) -> Path:
 
 @router.post("/jobs/{job_id}/outputs/{position}/mail")
 def mail_output(job_id: str, position: int, body: MailIn, request: Request, owner: Owner = Depends(current_user),
-                session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+                session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
     try:
         job = session.get(Job, uuid.UUID(job_id))
     except ValueError as exc:
@@ -157,7 +157,7 @@ def _share_view(share: Share, settings: Settings, token: str | None = None) -> d
 
 
 @router.post("/shares")
-def create_share(body: ShareIn, request: Request, owner: Owner = Depends(current_user), session: Session = Depends(db),
+def create_share(body: ShareIn, request: Request, owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"),
                  settings: Settings = Depends(settings_dep)):
     """Enlace para descargar un resultado durante 1 hora, 1, 3 o 7 días (Pro hasta SHARE_MAX_DAYS; gratis, 24 h).
     Solo con cuenta: el enlace dura más que la retención de un anónimo. El token solo se ve una vez (se guarda su hash)."""
@@ -187,7 +187,7 @@ def create_share(body: ShareIn, request: Request, owner: Owner = Depends(current
 
 
 @router.get("/shares")
-def list_shares(owner: Owner = Depends(current_user), session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+def list_shares(owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
     """Los enlaces del usuario que no han caducado (los caducados los borra el mantenimiento), sin el token."""
     if owner.type != "user":
         raise AppError(ErrorCode.UNAUTHORIZED, status=401, detail="share_account")
@@ -199,7 +199,7 @@ def list_shares(owner: Owner = Depends(current_user), session: Session = Depends
 
 
 @router.delete("/shares/{share_id}")
-def revoke_share(share_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db),
+def revoke_share(share_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"),
                  settings: Settings = Depends(settings_dep)):
     """Revoca el enlace al momento (files/authorize lo comprueba en la base de datos) y borra su copia."""
     share = session.get(Share, share_id)

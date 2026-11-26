@@ -583,7 +583,7 @@ services:
     - --listen-ip=0.0.0.0
     - --listen-port=4750
     - --egress-acl-file=/etc/smokescreen/acl.yaml
-    - --allow-missing-role
+    - --config-file=/etc/smokescreen/config.yaml
     - --deny-range=10.0.0.0/8
     - --deny-range=172.16.0.0/12
     - --deny-range=192.168.0.0/16
@@ -593,6 +593,7 @@ services:
     - --deny-range=fe80::/10
     volumes:
     - ./infra/smokescreen/acl-web.yaml:/etc/smokescreen/acl.yaml:ro
+    - ./infra/smokescreen/config.yaml:/etc/smokescreen/config.yaml:ro
     networks:
     - webrender
     - edge
@@ -613,7 +614,7 @@ services:
     - --listen-ip=0.0.0.0
     - --listen-port=4750
     - --egress-acl-file=/etc/smokescreen/acl.yaml
-    - --allow-missing-role
+    - --config-file=/etc/smokescreen/config.yaml
     - --deny-range=10.0.0.0/8
     - --deny-range=172.16.0.0/12
     - --deny-range=192.168.0.0/16
@@ -623,6 +624,7 @@ services:
     - --deny-range=fe80::/10
     volumes:
     - ./infra/smokescreen/acl-ai.yaml:/etc/smokescreen/acl.yaml:ro
+    - ./infra/smokescreen/config.yaml:/etc/smokescreen/config.yaml:ro
     networks:
     - airelay
     - edge

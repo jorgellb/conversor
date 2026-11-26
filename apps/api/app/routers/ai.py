@@ -30,7 +30,7 @@ CHAT_IDLE_SECONDS = 180  # sin ningún evento del worker en este tiempo, el mens
 
 
 @router.get("/ai/budget")
-def ai_budget(owner: Owner = Depends(current_owner), session: Session = Depends(db), r=Depends(valkey_dep),
+def ai_budget(owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function"), r=Depends(valkey_dep),
               settings: Settings = Depends(settings_dep), registry: Registry = Depends(registry_dep)):
     plan = load_plan(session, owner.plan_id, settings)
     return summary(session, r, settings, owner.type, owner.id, plan, registry.specs)
@@ -47,7 +47,7 @@ def _model_view(m: LlmModel, now: datetime) -> dict:
 
 
 @router.get("/admin/ai")
-def admin_ai(_: Owner = Depends(current_admin), session: Session = Depends(db), r=Depends(valkey_dep),
+def admin_ai(_: Owner = Depends(current_admin), session: Session = Depends(db, scope="function"), r=Depends(valkey_dep),
              settings: Settings = Depends(settings_dep)):
     """6.2 y 6.3: modelos descubiertos, presupuesto del día, lo último de `/key` y peticiones por estado (24 h)."""
     now = utcnow()
@@ -73,7 +73,7 @@ class ModelIn(BaseModel):
 
 
 @router.put("/admin/ai/models/{model_id:path}")
-def admin_model(model_id: str, body: ModelIn, admin: Owner = Depends(current_admin), session: Session = Depends(db)):
+def admin_model(model_id: str, body: ModelIn, admin: Owner = Depends(current_admin), session: Session = Depends(db, scope="function")):
     """Desactivar o volver a activar un modelo y fijar su preferencia (menor, antes)."""
     from core.errors import AppError, ErrorCode
 
@@ -133,7 +133,7 @@ def _doc_info(session: Session, owner: Owner, job_id: str) -> dict:
 
 
 @router.get("/ai/chat/{job_id}")
-def chat_document(job_id: str, owner: Owner = Depends(current_owner), session: Session = Depends(db)):
+def chat_document(job_id: str, owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function")):
     """Documento preparado para el chat: páginas, si va entero o con búsqueda, y fragmentos."""
     job = _chat_job(session, owner, job_id)
     info = _doc_info(session, owner, job_id)
@@ -142,7 +142,7 @@ def chat_document(job_id: str, owner: Owner = Depends(current_owner), session: S
 
 
 @router.post("/ai/chat")
-async def chat(body: ChatIn, request: Request, owner: Owner = Depends(current_owner), session: Session = Depends(db),
+async def chat(body: ChatIn, request: Request, owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function"),
                r=Depends(valkey_dep), settings: Settings = Depends(settings_dep), registry: Registry = Depends(registry_dep)):
     """Una pregunta = una petición (6.3). Reserva antes de encolar; el worker devuelve lo que no use."""
     from core.ai import CONSENT_VERSION, catalog, quota

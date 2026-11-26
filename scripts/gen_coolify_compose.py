@@ -304,9 +304,11 @@ def build() -> dict:
         ),
         "egressweb": svc(
             SMOKESCREEN,
-            command=["--listen-ip=0.0.0.0", "--listen-port=4750", "--egress-acl-file=/etc/smokescreen/acl.yaml", "--allow-missing-role",
+            command=["--listen-ip=0.0.0.0", "--listen-port=4750", "--egress-acl-file=/etc/smokescreen/acl.yaml",
+                     "--config-file=/etc/smokescreen/config.yaml",
                      *[f"--deny-range={r}" for r in DENY_RANGES]],
-            volumes=["./infra/smokescreen/acl-web.yaml:/etc/smokescreen/acl.yaml:ro"],
+            volumes=["./infra/smokescreen/acl-web.yaml:/etc/smokescreen/acl.yaml:ro",
+                     "./infra/smokescreen/config.yaml:/etc/smokescreen/config.yaml:ro"],
             networks=["webrender", "edge"], read_only=True, cap_drop=["ALL"], security_opt=["no-new-privileges:true"],
             mem_limit="256m", memswap_limit="256m", cpus=1, exclude_from_hc=True,
         ),
@@ -314,9 +316,11 @@ def build() -> dict:
         # herramientas de IA se ven «no disponibles temporalmente» y el resto del servicio funciona igual.
         "egressai": svc(
             SMOKESCREEN,
-            command=["--listen-ip=0.0.0.0", "--listen-port=4750", "--egress-acl-file=/etc/smokescreen/acl.yaml", "--allow-missing-role",
+            command=["--listen-ip=0.0.0.0", "--listen-port=4750", "--egress-acl-file=/etc/smokescreen/acl.yaml",
+                     "--config-file=/etc/smokescreen/config.yaml",
                      *[f"--deny-range={r}" for r in DENY_RANGES]],
-            volumes=["./infra/smokescreen/acl-ai.yaml:/etc/smokescreen/acl.yaml:ro"],
+            volumes=["./infra/smokescreen/acl-ai.yaml:/etc/smokescreen/acl.yaml:ro",
+                     "./infra/smokescreen/config.yaml:/etc/smokescreen/config.yaml:ro"],
             networks=["airelay", "edge"], read_only=True, cap_drop=["ALL"], security_opt=["no-new-privileges:true"],
             mem_limit="256m", memswap_limit="256m", cpus=1, exclude_from_hc=True,
         ),
@@ -426,6 +430,7 @@ def validate() -> int:
         (Path(tmp) / "infra" / "caddy" / "Caddyfile").write_text("", encoding="utf-8")
         (Path(tmp) / "infra" / "smokescreen").mkdir(parents=True)
         (Path(tmp) / "infra" / "smokescreen" / "acl-web.yaml").write_text("", encoding="utf-8")
+        (Path(tmp) / "infra" / "smokescreen" / "config.yaml").write_text("", encoding="utf-8")
         res = subprocess.run(["docker", "compose", "-f", str(path), "config", "--quiet"], env={**os.environ, **DUMMY_ENV},
                              capture_output=True, text=True)
     if res.returncode != 0:

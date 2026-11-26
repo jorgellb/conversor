@@ -6,7 +6,8 @@
 #   echo "$TOKEN" | docker login ghcr.io -u <usuario> --password-stdin   # token con write:packages
 #   GHCR_OWNER=<usuario u organización> IMAGE_TAG=0.1.0 sh scripts/build_push_images.sh [destino ...]
 #
-# Sin destinos, construye todos. Después, en Coolify: GHCR_OWNER y IMAGE_TAG iguales a los de aquí (docs/DEPLOY.md, 3 y 5).
+# Sin destinos, construye todos. Con PUSH=0 no sube nada: carga cada imagen en el Docker local (para probar el script y
+# check_images.sh antes de tener acceso a GHCR). Después, en Coolify: GHCR_OWNER y IMAGE_TAG iguales a los de aquí (docs/DEPLOY.md, 3 y 5).
 set -eu
 
 : "${GHCR_OWNER:?Pon GHCR_OWNER (propietario del registro)}"
@@ -17,6 +18,7 @@ WORKERS="api worker-pdf worker-ocr worker-office worker-media worker-convert wor
 TARGETS="${*:-$WORKERS web smokescreen}"
 REGISTRY="ghcr.io/$(echo "$GHCR_OWNER" | tr '[:upper:]' '[:lower:]')"
 COMMIT="$(git rev-parse HEAD)"
+if [ "${PUSH:-1}" = "0" ]; then OUTPUT=--load; else OUTPUT=--push; fi
 
 for target in $TARGETS; do
   image="$REGISTRY/conversor-$target"
@@ -27,9 +29,10 @@ for target in $TARGETS; do
   esac
   echo "==> $image:$IMAGE_TAG"
   # shellcheck disable=SC2086
-  docker buildx build --platform linux/amd64 -f "$file" $extra -t "$image:$IMAGE_TAG" -t "$image:sha-$COMMIT" --push .
+  docker buildx build --platform linux/amd64 -f "$file" $extra -t "$image:$IMAGE_TAG" -t "$image:sha-$COMMIT" "$OUTPUT" .
   case "$target" in
     api|worker-*) bash scripts/check_images.sh "$image:$IMAGE_TAG" ;;  # sin Ghostscript, MuPDF ni PyMuPDF (11)
   esac
 done
-echo "Listo: $(echo "$TARGETS" | wc -w) imágenes en $REGISTRY con la etiqueta $IMAGE_TAG"
+if [ "$OUTPUT" = "--load" ]; then where="el Docker local (sin subir)"; else where="$REGISTRY"; fi
+echo "Listo: $(echo "$TARGETS" | wc -w) imágenes en $where con la etiqueta $IMAGE_TAG"

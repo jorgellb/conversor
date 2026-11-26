@@ -20,6 +20,10 @@ def settings_dep() -> Settings:
 
 
 def db() -> Iterator[Session]:
+    """Sesión de la petición: se usa siempre con ``Depends(db, scope="function")``. Con el alcance por defecto de FastAPI
+    («request»), el ``commit`` se hacía después de enviar la respuesta: el cliente recibía su token anónimo o el id de su
+    trabajo antes de que existieran en la base de datos (la subida inmediata daba 401) y, si el ``commit`` fallaba, ya había
+    respondido 200 por algo que no se guardó (D-267)."""
     session = get_sessionmaker()()
     try:
         yield session
@@ -54,7 +58,7 @@ def client_ip(request: Request, settings: Settings) -> str:
 
 def current_owner(
     authorization: str | None = Header(default=None),
-    session: Session = Depends(db),
+    session: Session = Depends(db, scope="function"),
     settings: Settings = Depends(settings_dep),
 ) -> Owner:
     return auth.resolve_owner(authorization, session, settings, key_resolver=KEY_RESOLVER["fn"])

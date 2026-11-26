@@ -156,7 +156,7 @@ def _recipient_key(email: str) -> str:
 
 
 @router.post("/signature-requests", status_code=201)
-def create_request(body: RequestIn, request: Request, owner: Owner = Depends(current_user), session: Session = Depends(db),
+def create_request(body: RequestIn, request: Request, owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"),
                    settings: Settings = Depends(settings_dep), registry: Registry = Depends(registry_dep), r=Depends(valkey_dep)):
     """Crea la solicitud con el PDF que ha preparado la fase `preparar` del mismo usuario y manda las invitaciones (a
     todos en paralelo; al primero si es en orden)."""
@@ -258,7 +258,7 @@ def _refresh(session: Session, settings: Settings, registry: Registry, req: Sign
 
 
 @router.get("/signature-requests")
-def list_requests(owner: Owner = Depends(current_user), session: Session = Depends(db), settings: Settings = Depends(settings_dep),
+def list_requests(owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep),
                   registry: Registry = Depends(registry_dep)):
     _require_account(owner)
     ids = list(session.scalars(select(SignatureRequest.id).where(SignatureRequest.owner_id == owner.id)
@@ -280,7 +280,7 @@ def list_requests(owner: Owner = Depends(current_user), session: Session = Depen
 
 
 @router.get("/signature-requests/{request_id}")
-def get_request(request_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db),
+def get_request(request_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"),
                 settings: Settings = Depends(settings_dep), registry: Registry = Depends(registry_dep)):
     req = _mine(session, owner, request_id)
     effects = signreq.Effects()
@@ -292,7 +292,7 @@ def get_request(request_id: uuid.UUID, owner: Owner = Depends(current_user), ses
 
 
 @router.delete("/signature-requests/{request_id}")
-def cancel_request(request_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db),
+def cancel_request(request_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"),
                    settings: Settings = Depends(settings_dep)):
     """Activa: se cancela, se avisa a quien ya la conocía y se borra el documento. Cerrada: se borra del todo (también
     su auditoría y sus archivos)."""
@@ -320,7 +320,7 @@ def cancel_request(request_id: uuid.UUID, owner: Owner = Depends(current_user), 
 
 
 @router.post("/signature-requests/{request_id}/remind")
-def remind(request_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db),
+def remind(request_id: uuid.UUID, owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"),
            settings: Settings = Depends(settings_dep), r=Depends(valkey_dep)):
     """Recordatorio a quien tiene que firmar ahora: como mucho uno por firmante y día y tres en total, y dentro del tope
     de correos por destinatario. Lleva un enlace nuevo: solo se guarda el hash del token y el anterior deja de valer."""
@@ -391,7 +391,7 @@ def _signer_view(session: Session, settings: Settings, req: SignatureRequest, si
 
 
 @router.get("/sign/{token}")
-def signer_get(token: str, request: Request, session: Session = Depends(db), settings: Settings = Depends(settings_dep),
+def signer_get(token: str, request: Request, session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep),
                registry: Registry = Depends(registry_dep)):
     signer, req = _by_token(session, token)
     effects = signreq.Effects()
@@ -417,7 +417,7 @@ def _can_sign(req: SignatureRequest, signer: Signer) -> None:
 
 
 @router.post("/sign/{token}/code")
-def signer_code(token: str, body: CodeIn, request: Request, session: Session = Depends(db), r=Depends(valkey_dep),
+def signer_code(token: str, body: CodeIn, request: Request, session: Session = Depends(db, scope="function"), r=Depends(valkey_dep),
                 settings: Settings = Depends(settings_dep)):
     """Código de 6 cifras al correo del firmante: 15 minutos, 5 intentos y como mucho 5 códigos por hora."""
     signer, req = _by_token(session, token)
@@ -491,7 +491,7 @@ def _png(data_url: str) -> bytes:
 
 
 @router.post("/sign/{token}")
-def signer_sign(token: str, body: SignIn, request: Request, session: Session = Depends(db), settings: Settings = Depends(settings_dep),
+def signer_sign(token: str, body: SignIn, request: Request, session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep),
                 registry: Registry = Depends(registry_dep)):
     """Con el código, la imagen y el consentimiento, el firmante queda en cola y se sella en cuanto no haya otro."""
     signer, req = _by_token(session, token)
@@ -522,7 +522,7 @@ class DeclineIn(BaseModel):
 
 
 @router.post("/sign/{token}/decline")
-def signer_decline(token: str, body: DeclineIn, request: Request, session: Session = Depends(db),
+def signer_decline(token: str, body: DeclineIn, request: Request, session: Session = Depends(db, scope="function"),
                    settings: Settings = Depends(settings_dep)):
     signer, req = _by_token(session, token)
     _can_sign(req, signer)

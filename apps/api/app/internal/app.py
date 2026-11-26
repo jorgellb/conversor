@@ -216,7 +216,7 @@ def create_internal_app() -> FastAPI:
     app = FastAPI(title="API interna", docs_url=None, redoc_url=None)
 
     @app.post("/tusd-hooks")
-    async def tusd_hooks(request: Request, session: Session = Depends(db), r=Depends(valkey_dep),
+    async def tusd_hooks(request: Request, session: Session = Depends(db, scope="function"), r=Depends(valkey_dep),
                          settings: Settings = Depends(settings_dep), registry: Registry = Depends(registry_dep)):
         body = await request.json()
         kind = body.get("Type")
@@ -230,13 +230,13 @@ def create_internal_app() -> FastAPI:
         return JSONResponse({})
 
     @app.get("/files/authorize")
-    def files_authorize(request: Request, session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+    def files_authorize(request: Request, session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
         uri = request.headers.get("x-forwarded-uri", "")
         method = request.headers.get("x-forwarded-method", "GET").upper()
         return Response(status_code=200 if authorize_uri(uri, method, session, settings) else 403)
 
     @app.get("/ops/metrics")
-    def metrics(session: Session = Depends(db), r=Depends(valkey_dep), settings: Settings = Depends(settings_dep),
+    def metrics(session: Session = Depends(db, scope="function"), r=Depends(valkey_dep), settings: Settings = Depends(settings_dep),
                 registry: Registry = Depends(registry_dep)):
         return overview_data(session, r, settings, registry)
 

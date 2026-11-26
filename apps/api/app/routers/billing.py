@@ -34,7 +34,7 @@ def portal(owner: Owner = Depends(current_user), settings: Settings = Depends(se
 
 
 @router.post("/webhook")
-async def webhook(request: Request, session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+async def webhook(request: Request, session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
     payload = await request.body()
     signature = request.headers.get("stripe-signature", "")
     provider = get_provider(settings)
@@ -46,7 +46,7 @@ async def webhook(request: Request, session: Session = Depends(db), settings: Se
 
 
 @router.get("/fake/complete")
-def fake_complete(session: str, locale: str = "es", s: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+def fake_complete(session: str, locale: str = "es", s: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
     provider = get_provider(settings)
     if not isinstance(provider, FakePaymentProvider):
         raise AppError(ErrorCode.NOT_FOUND, status=404)

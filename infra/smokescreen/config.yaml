@@ -1,0 +1,3 @@
+# Smokescreen v0.1.0 (D-155, D-190): sin certificado de cliente no hay rol; con esto se aplica la regla por defecto de
+# la ACL en vez de rechazar la petición. El resto de opciones van en la orden de docker-compose.
+allow_missing_role: true

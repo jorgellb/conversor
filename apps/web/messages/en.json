@@ -1285,6 +1285,7 @@
   },
   "signerPage": {
     "title": "Sign a document",
+    "description": "Sign the document you were asked to sign: review the PDF, confirm your email with a code and sign.",
     "loading": "Loading…",
     "noToken": "This link is incomplete: open it from the email you received.",
     "from": "{owner} asks you to sign this document, {name}.",

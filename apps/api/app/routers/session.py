@@ -28,7 +28,7 @@ class AnonIn(BaseModel):
 
 
 @router.post("/anon")
-def anon_session(body: AnonIn, request: Request, session: Session = Depends(db), settings: Settings = Depends(settings_dep), r=Depends(valkey_dep)):
+def anon_session(body: AnonIn, request: Request, session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep), r=Depends(valkey_dep)):
     ip = client_ip(request, settings)
     ip_h = hash_ip(settings.ANON_TOKEN_SECRET, ip)
     key = f"anon:issued:{ip_h}:{today().isoformat()}"

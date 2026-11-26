@@ -52,7 +52,7 @@ def overview_data(session: Session, r, settings: Settings, registry: Registry) -
 
 
 @router.get("/overview")
-def overview(_: Owner = Depends(current_admin), session: Session = Depends(db), r=Depends(valkey_dep),
+def overview(_: Owner = Depends(current_admin), session: Session = Depends(db, scope="function"), r=Depends(valkey_dep),
              settings: Settings = Depends(settings_dep), registry: Registry = Depends(registry_dep)):
     return overview_data(session, r, settings, registry)
 
@@ -62,7 +62,7 @@ class FlagIn(BaseModel):
 
 
 @router.put("/flags/{slug}")
-def set_flag(slug: str, body: FlagIn, admin: Owner = Depends(current_admin), session: Session = Depends(db),
+def set_flag(slug: str, body: FlagIn, admin: Owner = Depends(current_admin), session: Session = Depends(db, scope="function"),
              registry: Registry = Depends(registry_dep)):
     spec = registry.require(slug)
     flag = session.get(FeatureFlag, spec.slug_es) or FeatureFlag(slug=spec.slug_es, plans=[])
@@ -73,7 +73,7 @@ def set_flag(slug: str, body: FlagIn, admin: Owner = Depends(current_admin), ses
 
 
 @router.post("/purge")
-def purge(admin: Owner = Depends(current_admin), session: Session = Depends(db)):
+def purge(admin: Owner = Depends(current_admin), session: Session = Depends(db, scope="function")):
     from core.maintenance import cleanup_expired
 
     session.add(AuditLog(actor=admin.email or admin.id, action="purge", target=None))

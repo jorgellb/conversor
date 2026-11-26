@@ -17,14 +17,14 @@ router = APIRouter(prefix="/v1/me", tags=["cuenta"])
 
 
 @router.get("")
-def me(owner: Owner = Depends(current_owner), session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+def me(owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
     plan = load_plan(session, owner.plan_id, settings)
     return {"type": owner.type, "id": owner.id, "email": owner.email, "plan": owner.plan_id,
             "is_admin": owner.is_admin, "limits": plan.model_dump()}
 
 
 @router.get("/usage")
-def my_usage(owner: Owner = Depends(current_owner), session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+def my_usage(owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
     plan = load_plan(session, owner.plan_id, settings)
     used = usage(session, owner.type, owner.id)
     return {"light": {"used": used.get("light", 0), "limit": plan.light_tasks_day},
@@ -38,13 +38,13 @@ class PrefsIn(BaseModel):
 
 
 @router.get("/prefs")
-def get_prefs(owner: Owner = Depends(current_user), session: Session = Depends(db)):
+def get_prefs(owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function")):
     prefs = session.get(UserToolPrefs, owner.id)
     return {"favorites": prefs.favorites if prefs else [], "recent": prefs.recent if prefs else []}
 
 
 @router.put("/prefs")
-def put_prefs(body: PrefsIn, owner: Owner = Depends(current_user), session: Session = Depends(db)):
+def put_prefs(body: PrefsIn, owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function")):
     prefs = session.get(UserToolPrefs, owner.id) or UserToolPrefs(user_id=owner.id)
     prefs.favorites, prefs.recent = body.favorites, body.recent
     session.add(prefs)
@@ -52,7 +52,7 @@ def put_prefs(body: PrefsIn, owner: Owner = Depends(current_user), session: Sess
 
 
 @router.get("/export")
-def export(owner: Owner = Depends(current_user), session: Session = Depends(db)):
+def export(owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function")):
     """Exportación de los datos que guarda la API (RGPD). Los de la cuenta los exporta la web."""
     profile = session.get(Profile, owner.id)
     sub = session.get(Subscription, owner.id)
@@ -83,7 +83,7 @@ def _request_export(session: Session, req) -> dict:
 
 
 @router.delete("")
-def delete_me(owner: Owner = Depends(current_user), session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+def delete_me(owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
     store = Store(settings.FILESTORE_PATH)
     # solicitar-firmas (D-202): sus solicitudes, con firmantes, auditoría y archivos; los trabajos de cada una también.
     for req in session.scalars(select(SignatureRequest).where(SignatureRequest.owner_id == owner.id)).all():

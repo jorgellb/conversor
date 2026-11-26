@@ -55,7 +55,7 @@ def _get_job(session: Session, job_id: str, owner: Owner) -> Job:
 
 
 @router.get("/uploads/{upload_id}")
-def upload_state(upload_id: str, owner: Owner = Depends(current_owner), session: Session = Depends(db)):
+def upload_state(upload_id: str, owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function")):
     up = session.get(Upload, upload_id)
     if up is None or up.owner_type != owner.type or up.owner_id != owner.id:
         raise AppError(ErrorCode.NOT_FOUND, status=404)
@@ -63,7 +63,7 @@ def upload_state(upload_id: str, owner: Owner = Depends(current_owner), session:
 
 
 @router.post("/jobs", status_code=201)
-def post_job(body: JobIn, request: Request, owner: Owner = Depends(current_owner), session: Session = Depends(db),
+def post_job(body: JobIn, request: Request, owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function"),
              registry: Registry = Depends(registry_dep), settings: Settings = Depends(settings_dep), r=Depends(valkey_dep)):
     job, sealed, reused = create_job(session, r, settings, registry, owner, body.tool, body.upload_ids, body.options,
                                      locale_of(request), body.ai_consent)
@@ -86,14 +86,14 @@ def post_job(body: JobIn, request: Request, owner: Owner = Depends(current_owner
 
 
 @router.get("/jobs/{job_id}")
-def get_job(job_id: str, request: Request, owner: Owner = Depends(current_owner), session: Session = Depends(db),
+def get_job(job_id: str, request: Request, owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function"),
             settings: Settings = Depends(settings_dep)):
     return public_view(_get_job(session, job_id, owner), settings, locale_of(request))
 
 
 @router.get("/jobs/{job_id}/events")
 async def job_events(job_id: str, request: Request, owner: Owner = Depends(current_owner), settings: Settings = Depends(settings_dep),
-                     session: Session = Depends(db)):
+                     session: Session = Depends(db, scope="function")):
     _get_job(session, job_id, owner)
     locale = locale_of(request)
 
@@ -130,7 +130,7 @@ async def job_events(job_id: str, request: Request, owner: Owner = Depends(curre
 
 
 @router.delete("/jobs/{job_id}")
-def delete_job(job_id: str, owner: Owner = Depends(current_owner), session: Session = Depends(db),
+def delete_job(job_id: str, owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function"),
                settings: Settings = Depends(settings_dep), r=Depends(valkey_dep)):
     job = _get_job(session, job_id, owner)
     Store(settings.FILESTORE_PATH).remove_job(str(job.id))
@@ -140,7 +140,7 @@ def delete_job(job_id: str, owner: Owner = Depends(current_owner), session: Sess
 
 
 @router.get("/me/jobs")
-def my_jobs(request: Request, owner: Owner = Depends(current_owner), session: Session = Depends(db), settings: Settings = Depends(settings_dep)):
+def my_jobs(request: Request, owner: Owner = Depends(current_owner), session: Session = Depends(db, scope="function"), settings: Settings = Depends(settings_dep)):
     jobs = session.scalars(select(Job).where(Job.owner_type == owner.type, Job.owner_id == owner.id)
                            .order_by(Job.created_at.desc()).limit(50)).all()
     return {"jobs": [public_view(j, settings, locale_of(request)) for j in jobs]}

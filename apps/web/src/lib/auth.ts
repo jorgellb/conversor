@@ -36,7 +36,13 @@ function build() {
     },
     socialProviders: google,
     user: { deleteUser: { enabled: true } },
-    rateLimit: { enabled: true, window: 60, max: 30 },
+    // 30 por minuto e IP en cada ruta; las de entrar, registrarse y los correos tienen además las reglas más estrictas de
+    // Better Auth (3 cada 10 s o cada minuto). La sesión y el JWT se piden en cada página: con 30 por minuto, quien navega
+    // deprisa, o varias personas tras la misma IP (oficina, CGNAT del móvil), parecía no haber entrado (D-267).
+    rateLimit: {
+      enabled: true, window: 60, max: 30,
+      customRules: { "/get-session": { window: 60, max: 600 }, "/token": { window: 60, max: 300 } },
+    },
     advanced: { ipAddress: { ipAddressHeaders: ["cf-connecting-ip", "x-forwarded-for"] } },
     plugins: [
       jwt({
