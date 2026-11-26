@@ -18,7 +18,8 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 
 echo "==> Docker, Compose v2 y Buildx"
-apt-get install -y --no-install-recommends docker.io docker-compose docker-buildx uidmap ca-certificates
+# docker-cli va aparte en Debian 13 (solo «recomendado» por docker.io): sin él no hay orden `docker`.
+apt-get install -y --no-install-recommends docker.io docker-cli docker-compose docker-buildx uidmap ca-certificates apparmor xz-utils git
 
 echo "==> Motores de las herramientas (los mismos que instala la CI)"
 apt-get install -y --no-install-recommends \
