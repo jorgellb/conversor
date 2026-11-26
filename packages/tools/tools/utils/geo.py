@@ -64,6 +64,9 @@ class Feature:
     name: str = ""
     desc: str = ""
     props: dict = field(default_factory=dict)
+    # Nombre original de los campos de nombre y descripción («nombre», «Title»…): el GeoJSON de salida los conserva en
+    # vez de renombrarlos a name y description (las columnas de un Shapefile no cambian al convertirlo, D-267).
+    keys: tuple[str, str] = ("name", "description")
 
 
 class Budget:
@@ -460,10 +463,18 @@ def read_geojson(raw: bytes, budget: Budget) -> list[Feature]:
             raise ToolError(ErrorCode.CORRUPT_FILE, "GeoJSON no válido") from exc
 
     for item in items:
+        start = len(features)
+        props = item.get("properties") if isinstance(item, dict) and isinstance(item.get("properties"), dict) else {}
         if isinstance(item, dict) and item.get("type") == "Feature":
-            geometry(item.get("geometry"), item.get("properties") if isinstance(item.get("properties"), dict) else {})
+            geometry(item.get("geometry"), props)
         else:
             geometry(item, {})
+        lower = {str(k).lower(): k for k in props}
+        name_key = next((lower[k] for k in ("name", "nombre", "title", "titulo", "título") if k in lower and props[lower[k]]), "name")
+        desc_key = next((lower[k] for k in ("description", "descripcion", "descripción", "desc") if k in lower and props[lower[k]]),
+                        "description")
+        for f in features[start:]:
+            f.keys = (str(name_key), str(desc_key))
     return features
 
 
@@ -473,7 +484,7 @@ def write_geojson(features: list[Feature]) -> bytes:
         def c(p: Pt) -> list:
             return [round(p.lon, 7), round(p.lat, 7)] + ([round(p.ele, 2)] if p.ele is not None else [])
 
-        props = {**({"name": f.name} if f.name else {}), **({"description": f.desc} if f.desc else {}),
+        props = {**({f.keys[0]: f.name} if f.name else {}), **({f.keys[1]: f.desc} if f.desc else {}),
                  **{k: v for k, v in f.props.items() if k != "gpx"}}
         if f.kind == "point":
             p = f.parts[0][0]

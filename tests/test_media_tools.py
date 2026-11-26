@@ -558,9 +558,9 @@ def test_calibre_runs_with_clean_environment(make_ctx, tmp_path, monkeypatch):
     seen: dict = {}
     real = base.run_engine
 
-    def spy(args, cwd, timeout, mem_mb=None, extra_env=None, limit_data=False):
-        seen.update(args=args, cwd=cwd, env=extra_env, mem_mb=mem_mb, limit_data=limit_data)
-        return real(args, cwd, timeout, mem_mb, extra_env, limit_data)
+    def spy(args, cwd, timeout, mem_mb=None, extra_env=None, limit_data=False, **kw):
+        seen.update(args=args, cwd=cwd, env=extra_env, mem_mb=mem_mb, limit_data=limit_data, landlock=kw.get("landlock"))
+        return real(args, cwd, timeout, mem_mb, extra_env, limit_data, **kw)
 
     monkeypatch.setenv("JOB_SECRETS_KEY", "no-debe-llegar")
     monkeypatch.setattr("tools.office.libros.run_engine", spy)
@@ -568,3 +568,4 @@ def test_calibre_runs_with_clean_environment(make_ctx, tmp_path, monkeypatch):
     assert seen["args"][0] == "ebook-convert" and "--paper-size" in seen["args"]
     assert all(str(v).startswith(str(seen["cwd"])) for k, v in seen["env"].items() if k.startswith("CALIBRE_"))
     assert "JOB_SECRETS_KEY" not in seen["env"] and seen["mem_mb"] and seen["limit_data"]
+    assert seen["landlock"] is not None  # Calibre solo ve su carpeta de trabajo (D-256)
