@@ -289,7 +289,7 @@ CMD ["celery", "-A", "core.celeryapp", "worker", "-Q", "mesh", "-n", "mesh@%h", 
 FROM ${PYTHON_IMAGE} AS libredwg-build
 ARG LIBREDWG_VERSION=0.14
 ARG LIBREDWG_SHA256=62ebb73b984f865960f20ed26619ea5f8789d5e3fd088fa40a2598384da81275
-RUN apt-get update && apt-get install -y --no-install-recommends build-essential curl ca-certificates xz-utils \
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential pkg-config curl ca-certificates xz-utils \
  && rm -rf /var/lib/apt/lists/*
 RUN curl -fsSL -o /tmp/libredwg.tar.xz "https://ftp.gnu.org/gnu/libredwg/libredwg-${LIBREDWG_VERSION}.tar.xz" \
  && echo "${LIBREDWG_SHA256}  /tmp/libredwg.tar.xz" | sha256sum -c - \
