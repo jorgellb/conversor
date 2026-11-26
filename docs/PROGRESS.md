@@ -779,6 +779,14 @@ reales de PrusaSlicer que la CI descarga (D-259). La CI instala ahora los extras
 Menú con las 10 categorías y un apartado por categoría (`/es/herramientas-pdf`, `/en/pdf-tools`…), con buscador propio; la
 portada ya no lista todas las herramientas. Pruebas en `apps/web/test/categories.test.ts` y `tests/e2e/categorias-navegador.spec.ts`.
 
+## Submenú por categoría y rediseño (D-272)
+
+Cada categoría tiene secciones (`apps/web/src/lib/menu.ts`). En escritorio, un panel desplegable por categoría con sus secciones y
+herramientas más buscadas; en móvil, botón «Menú» con una hoja y acordeones. El contenido del submenú se sirve en `/api/menu/<idioma>`
+para no cargar cada página. Apartados con ilustración animada, barra fija con buscador e índice de secciones y tarjetas con el
+formato de entrada y salida; portada con mosaico de categorías y franja de formatos. Pruebas en `apps/web/test/menu.test.ts` y
+`tests/e2e/categorias-navegador.spec.ts` (ratón, teclado, hoja de móvil e índice de secciones); capturas de la plantilla regeneradas.
+
 ## Pendiente
 
 - Las fases F1 a F7 están hechas en el código. Lo que queda es operativo o depende del propietario: los puntos sin marcar de

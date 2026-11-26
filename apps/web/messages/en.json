@@ -14,7 +14,14 @@
     "language": "Español",
     "languageLabel": "Switch to Spanish",
     "home": "Home",
-    "categories": "Categories"
+    "categories": "Categories",
+    "menu": "Menu",
+    "menuClose": "Close the menu",
+    "menuSeeAll": "See them all",
+    "menuMore": "{n} more",
+    "menuInBrowser": "Works in your browser, without uploading the file",
+    "menuSubmenu": "Tools in",
+    "menuLoading": "Loading the menu…"
   },
   "footer": {
     "privacy": "Privacy",
@@ -73,7 +80,8 @@
       "invoice": "PDF invoices and e-invoices.",
       "convert": "Turn any file into another."
     },
-    "seeCategory": "See tools"
+    "seeCategory": "See tools",
+    "categoriesIntro": "Each category has its own page, organised in sections. Open one or jump straight to the section you need."
   },
   "tool": {
     "breadcrumbHome": "Home",
@@ -2040,6 +2048,10 @@
       "3d": "Convert between 3D modelling and printing formats, repair and simplify meshes, generate models from text or images and check G-code before printing.",
       "sign": "Sign documents with your digital certificate or your handwritten signature, send documents for other people to sign and check whether a signature is valid.",
       "invoice": "Design PDF invoices, generate e-invoices in the formats that public bodies and companies require, and validate them before sending."
-    }
+    },
+    "statTools": "tools",
+    "statSections": "sections",
+    "statLocal": "in your browser",
+    "sectionsLabel": "Category sections"
   }
 }

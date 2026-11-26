@@ -14,7 +14,14 @@
     "language": "English",
     "languageLabel": "Cambiar a inglés",
     "home": "Inicio",
-    "categories": "Categorías"
+    "categories": "Categorías",
+    "menu": "Menú",
+    "menuClose": "Cerrar el menú",
+    "menuSeeAll": "Ver todas",
+    "menuMore": "{n} más",
+    "menuInBrowser": "Funciona en tu navegador, sin subir el archivo",
+    "menuSubmenu": "Herramientas de",
+    "menuLoading": "Cargando el menú…"
   },
   "footer": {
     "privacy": "Privacidad",
@@ -73,7 +80,8 @@
       "invoice": "Facturas en PDF y facturas electrónicas.",
       "convert": "Convertir cualquier archivo en otro."
     },
-    "seeCategory": "Ver herramientas"
+    "seeCategory": "Ver herramientas",
+    "categoriesIntro": "Cada categoría tiene su apartado, ordenado por secciones. Entra en una o salta directamente a la sección que buscas."
   },
   "tool": {
     "breadcrumbHome": "Inicio",
@@ -2040,6 +2048,10 @@
       "3d": "Convierte entre formatos de modelado e impresión 3D, repara y simplifica mallas, genera modelos a partir de texto o imágenes y revisa G-code antes de imprimir.",
       "sign": "Firma documentos con tu certificado digital o con tu firma manuscrita, envía documentos para que los firmen otras personas y comprueba si una firma es válida.",
       "invoice": "Diseña facturas en PDF, genera facturas electrónicas en los formatos que piden las administraciones y las empresas, y valídalas antes de enviarlas."
-    }
+    },
+    "statTools": "herramientas",
+    "statSections": "secciones",
+    "statLocal": "en tu navegador",
+    "sectionsLabel": "Secciones de la categoría"
   }
 }

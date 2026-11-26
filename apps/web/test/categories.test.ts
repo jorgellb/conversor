@@ -63,6 +63,6 @@ describe("apartados de categoría", () => {
     expect(home).toContain("categoryPath(locale, cat.id)");
     expect(home).not.toContain("cat.items.map(");
     const header = readFileSync(path.join(import.meta.dirname, "../src/components/Header.tsx"), "utf-8");
-    expect(header).toContain("<CategoryNav");
+    expect(header).toContain("<MegaMenu");
   });
 });

@@ -7,7 +7,11 @@ import { FavoriteStar, ToolExplorer, type ToolLink } from "@/components/ToolExpl
 import type { Locale } from "@/i18n/routing";
 import { disabledByEnv } from "@/lib/flags";
 import { CATEGORIES, nameOf, summaryOf, TOOLS } from "@/lib/registry";
+import { categoryGroups, formatsOf } from "@/lib/menu";
 import { CATEGORY_PAGES, categoryPath, toolPath, webUrl } from "@/lib/site";
+
+/** Tamaño de cada categoría en el mosaico de la portada (D-272): 4 columnas × 4 filas en escritorio. */
+const BENTO: Record<string, string> = { pdf: "bento-xl", "3d": "bento-wide", office: "bento-wide", data: "bento-wide" };
 
 const POPULAR = ["comprimir-pdf", "unir-pdf", "word-a-pdf", "pdf-a-word", "jpg-a-pdf", "pdf-a-jpg", "ocr-pdf", "dividir-pdf"];
 
@@ -50,7 +54,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     category: tool.category,
   }));
   const popular = POPULAR.map((s) => links.find((l) => l.slug === s)).filter((x): x is ToolLink => Boolean(x));
+  // Los 48 formatos que más herramientas usan, para la franja (todos harían la portada bastante más pesada).
+  const usage = new Map<string, number>();
+  for (const f of active.flatMap((tool) => [...tool.inputs, ...tool.outputs])) if (f !== "zip") usage.set(f, (usage.get(f) ?? 0) + 1);
+  const formatList = [...usage].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 48).map(([f]) => f);
   const formats = new Set(active.flatMap((tool) => [...tool.inputs, ...tool.outputs])).size;
+  const pairs = Object.fromEntries(active.map((tool) => [tool.slug_es, formatsOf(tool.inputs, tool.outputs)]));
   const categories = CATEGORIES.map((cat) => ({ ...cat, items: links.filter((l) => l.category === cat.id) }))
     .filter((c) => c.items.length && CATEGORY_PAGES[c.id]);
   const catName = (cat: { es: string; en: string }) => (locale === "en" ? cat.en : cat.es);
@@ -98,6 +107,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             ))}
           </dl>
         </div>
+        {/* Franja de formatos (D-272): dos filas que se deslizan en sentidos contrarios; quietas con «reducir movimiento». */}
+        <div className="fmt-marquee mt-8" aria-hidden="true">
+          {[formatList.filter((_, i) => i % 2 === 0), formatList.filter((_, i) => i % 2 === 1)].map((row, r) => (
+            <div key={r} className={`fmt-track ${r ? "fmt-track-rev" : ""}`}>
+              {[...row, ...row].map((f, i) => <span key={`${f}-${i}`} className="fmt fmt-lg">{f.toUpperCase()}</span>)}
+            </div>
+          ))}
+        </div>
       </section>
 
       <div className="mx-auto max-w-6xl px-4">
@@ -111,6 +128,15 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <PageLink href={tool.href} className="flex-1 after:absolute after:inset-0 after:content-['']">
                   <span className="display block text-[1.05rem] font-bold">{tool.name}</span>
                   <span className="muted mt-1 block text-sm">{tool.summary}</span>
+                  {pairs[tool.slug]?.to && (
+                    <span className="fmt-pair mt-2.5" aria-hidden="true">
+                      <span className="fmt">{pairs[tool.slug].from}</span>
+                      <svg width="12" height="12" viewBox="0 0 24 24" focusable="false">
+                        <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      <span className="fmt fmt-to">{pairs[tool.slug].to}</span>
+                    </span>
+                  )}
                 </PageLink>
                 <span className="relative z-10"><FavoriteStar slug={tool.slug} name={tool.name} /></span>
               </li>
@@ -133,27 +159,56 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </ol>
         </section>
 
-        {/* ——— Categorías: cada una en su apartado (D-271), ya no todas sus herramientas aquí ——— */}
+        {/* ——— Categorías (D-271), en mosaico con sus secciones (D-272) ——— */}
         <section id="herramientas" className="mt-16 scroll-mt-28">
           <h2 className="section-title">{t("categories")}</h2>
-          <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {categories.map((cat) => (
-              <li key={cat.id}>
-                <PageLink href={categoryPath(locale, cat.id)} className="cat-card tool-card h-full flex-col p-4 no-underline" style={categoryColor(cat.id)}
-                  aria-label={t("exploreCategory", { name: catName(cat) })}>
-                  <span className="icon-tile" style={categoryColor(cat.id)}><CategoryIcon id={cat.id} size={26} /></span>
-                  <span className="display mt-2 block text-lg font-bold">{catName(cat)}</span>
-                  <span className="muted block text-xs">{t("toolsCount", { n: cat.items.length })}</span>
-                  <span className="muted mt-1 hidden text-sm sm:block">{t(`cat.${cat.id}`)}</span>
-                  <span className="mt-auto inline-flex items-center gap-1 pt-3 text-sm font-semibold" style={{ color: "color-mix(in srgb, var(--c) 75%, var(--fg))" }}>
+          <p className="muted mt-2 max-w-2xl">{t("categoriesIntro")}</p>
+          <ul className="bento mt-6">
+            {categories.map((cat) => {
+              const groups = categoryGroups(cat.id, locale);
+              const size = BENTO[cat.id] ?? "";
+              const shownGroups = size ? groups : groups.slice(0, 3);
+              const href = categoryPath(locale, cat.id);
+              return (
+                <li key={cat.id} className={`bento-card ${size}`} style={categoryColor(cat.id)}>
+                  <span className="bento-glow" aria-hidden="true" />
+                  <span className="bento-bg" aria-hidden="true"><CategoryIcon id={cat.id} size={size === "bento-xl" ? 260 : 160} /></span>
+                  <div className="relative flex items-start justify-between gap-3">
+                    <span className="icon-tile h-12 w-12" style={categoryColor(cat.id)}><CategoryIcon id={cat.id} size={26} /></span>
+                    <span className="bento-n">{t("toolsCount", { n: cat.items.length })}</span>
+                  </div>
+                  <h3 className="relative mt-4">
+                    <PageLink href={href} className="bento-link display text-xl font-extrabold no-underline after:absolute after:inset-0 after:content-['']"
+                      aria-label={t("exploreCategory", { name: catName(cat) })}>
+                      {catName(cat)}
+                    </PageLink>
+                  </h3>
+                  <p className="muted relative mt-1 text-sm">{t(`cat.${cat.id}`)}</p>
+                  <ul className="relative z-10 mt-4 flex flex-wrap gap-1.5">
+                    {shownGroups.map((g) => (
+                      <li key={g.id}>
+                        <PageLink href={`${href}#${g.id}`} className="bento-chip">{g.label}</PageLink>
+                      </li>
+                    ))}
+                  </ul>
+                  {size === "bento-xl" && (
+                    <ul className="relative z-10 mt-5 grid gap-x-6 gap-y-0.5 sm:grid-cols-2">
+                      {groups.flatMap((g) => g.tools.slice(0, 2)).slice(0, 10).map((tool) => (
+                        <li key={tool.slug}>
+                          <PageLink href={tool.href} className="mm-tool">{tool.name}</PageLink>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <span className="bento-go relative mt-auto pt-4" aria-hidden="true">
                     {t("seeCategory")}
-                    <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" focusable="false">
                       <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
-                </PageLink>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </section>
       </div>
