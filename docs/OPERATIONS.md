@@ -87,6 +87,12 @@ de plazo por trabajo), para que una espera larga pero dentro del umbral no desca
 5. Anotar aquí el resumen que imprime k6 (páginas, espera por grupo, tiempos, `QUEUE_FULL`), el máximo de CPU y RAM de
    cada worker y el disco de `recursos-k6.csv`, y ajustar las concurrencias de 5.4 si sobra o falta CPU.
 
+Pasada de humo en local (26-11-2026, D-267), solo para comprobar el script contra el Compose completo y no para dimensionar
+(portátil de 8 núcleos y 7,6 GB): escenario reducido en una copia (5 comprimir-pdf y 2 ogg-a-mp3 a la vez, pico de 20
+trabajos en 1 minuto, páginas durante 2 minutos) con los límites de `limites_durante_la_prueba` y restaurados después.
+28 trabajos creados, 0 fallidos, reutilizados o descartados, sin `RATE_LIMITED` ni `QUOTA_EXCEEDED`; páginas p99 706 ms;
+espera en cola máxima 2,7 s (pdf) y 2,9 s (av). La prueba de verdad, con `escenarios.json` tal cual, sigue pendiente en el VPS.
+
 ## Perfiles de 8 y 16 vCPU (5.4, D-138)
 
 `docker-compose.coolify.yml` trae el perfil de 8 vCPU y 32 GB (suma de `mem_limit` de 36,75 GB, dentro del 15 % sobre la
