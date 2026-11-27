@@ -24,7 +24,12 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Textos de las páginas índice revisados (título, descripción e introducción de conversor-pdf, crear-pdf y
       convertir-archivo, en `apps/web/messages/`): se indexan y están en el sitemap sin pasar por `reviewed` (D-117 y D-118).
 - [ ] Datos del titular en los textos legales (`apps/web/src/components/legal.ts`) revisados por un profesional.
-- [ ] Precios de Pro en Stripe (modo test) y `STRIPE_PRICE_PRO_MONTHLY` y `STRIPE_PRICE_PRO_YEARLY`.
+- [ ] PayPal (D-273): aplicación REST en *Sandbox* y después en *Live*, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET` y el
+      webhook con sus cuatro eventos (`DEPLOY.md`, sección 11) en `PAYPAL_WEBHOOK_ID`.
+- [ ] Datos del emisor de las facturas (autónomo) en `INVOICE_ISSUER_NAME`, `INVOICE_ISSUER_TAX_ID`,
+      `INVOICE_ISSUER_ADDRESS` e `INVOICE_ISSUER_EMAIL`, y una factura de prueba revisada por el asesor.
+- [ ] VERI*FACTU antes de julio de 2027 (autónomos): envío de los registros de alta y anulación a la AEAT con el
+      certificado del emisor y `VERIFACTU_QR_URL` con el cotejo de producción. La huella encadenada ya se guarda (D-273).
 - [ ] IA (F3): cuenta de OpenRouter según `OPERATIONS.md` (decidir la compra única de 10 créditos, 0.1; privacidad sin
       entrenar ni publicar), `OPENROUTER_API_KEY` solo en `workerai`, y comprobar en el panel (IA) que hay modelos tras el
       descubrimiento y que la reconciliación muestra `free_model_daily_requests`. Cierre técnico de F3: una tarea real de
@@ -117,7 +122,8 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Los logs de `beat` muestran `beat: Starting...` y `cleanup_expired ... succeeded` cada 5 minutos, sin
       `permission denied` (D-181).
 - [ ] Un anónimo puede comprimir un PDF y la tercera tarea pesada del día devuelve `QUOTA_EXCEEDED`.
-- [ ] Pago de prueba con Stripe (modo test) y webhook recibido una sola vez.
+- [ ] Pago de prueba con PayPal *Sandbox* (cuenta y tarjeta): pase activo 24 h, factura en la cuenta y en el correo, el
+      aviso de PayPal llega una sola vez, y una devolución desde el panel retira el pase y emite la rectificativa.
 - [ ] «Enviar por correo» con una cuenta gratuita (solo a sí misma) y otra Pro (3 destinatarios): llega el enlace, descarga
       durante 24 horas y después responde 403; el correo pasa SPF, DKIM y DMARC.
 - [ ] Con Google Drive y Dropbox activados: abrir un PDF desde cada uno y guardar un resultado en cada uno.

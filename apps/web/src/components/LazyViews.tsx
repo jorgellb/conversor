@@ -37,4 +37,4 @@ export const AdminPage = dynamic(() => import("./AdminPage").then((m) => m.Admin
 export const AuthPage = dynamic(() => import("./AuthPage").then((m) => m.AuthPage));
 export const ConverterPage = dynamic(() => import("./ConverterPage").then((m) => m.ConverterPage));
 export const FileConverter = dynamic(() => import("./FileConverter").then((m) => m.FileConverter));
-export const CheckoutButton = dynamic(() => import("./CheckoutButton").then((m) => m.CheckoutButton));
+export const PassCheckout = dynamic(() => import("./billing/PassCheckout").then((m) => m.PassCheckout));

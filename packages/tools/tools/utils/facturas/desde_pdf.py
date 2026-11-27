@@ -20,6 +20,7 @@ from datetime import date
 from pathlib import Path
 
 from core.errors import ErrorCode, ToolError
+from core.taxid import nif_ok
 from tools.base import ToolContext, derived_name
 from tools.utils.facturas import crear, generar, lectura
 
@@ -52,7 +53,6 @@ def _texts(ctx: ToolContext) -> dict:
 
 # --- extraer -----------------------------------------------------------------------------------------------------------
 
-DNI = "TRWAGMYFPDXBNJZSQVHLCKE"
 NIF_RE = re.compile(r"(?<![A-Z0-9])(?:ES[\s.-]?)?([0-9]{2}[.\s]?[0-9]{3}[.\s]?[0-9]{3}[\s-]?[A-Z]|[XYZ][\s-]?[0-9]{7}[\s-]?[A-Z]|"
                     r"[ABCDEFGHJNPQRSUVW][\s-]?[0-9]{7}[\s-]?[0-9A-J])(?![A-Z0-9])")
 DATE_RE = re.compile(r"\b(\d{1,2})[/.-](\d{1,2})[/.-](\d{4}|\d{2})\b")
@@ -87,21 +87,6 @@ def _iso(d: str, m: str, y: str) -> str:
         return date(year, int(m), int(d)).isoformat()
     except ValueError:
         return ""
-
-
-def nif_ok(value: str) -> bool:
-    """Letra o dígito de control de un NIF, NIE o CIF (las mismas reglas que invoice-calc.ts)."""
-    v = value
-    if re.fullmatch(r"\d{8}[A-Z]", v):
-        return DNI[int(v[:8]) % 23] == v[8]
-    if re.fullmatch(r"[XYZ]\d{7}[A-Z]", v):
-        return DNI[int(str("XYZ".index(v[0])) + v[1:8]) % 23] == v[8]
-    if re.fullmatch(r"[ABCDEFGHJNPQRSUVW]\d{7}[0-9A-J]", v):
-        digits = [int(c) for c in v[1:8]]
-        total = sum(d if i % 2 else (d * 2 // 10 + d * 2 % 10) for i, d in enumerate(digits))
-        control = (10 - total % 10) % 10
-        return v[8] in (str(control), "JABCDEFGHI"[control])
-    return False
 
 
 def iban_ok(value: str) -> bool:

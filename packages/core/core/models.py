@@ -11,6 +11,7 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Identity,
     Index,
     Integer,
     String,
@@ -40,24 +41,112 @@ class Plan(Base):
 class Profile(Base):
     __tablename__ = "profiles"
     user_id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    # Plan base de la cuenta (free; «pro» solo si lo da un administrador). El pase de 24 h no lo cambia: va en
+    # `pass_until`, que los workers también leen (D-273).
     plan_id: Mapped[str] = mapped_column(ForeignKey("plans.id"), default="free")
+    pass_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     locale: Mapped[str] = mapped_column(String(8), default="es")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
-class Subscription(Base):
-    __tablename__ = "subscriptions"
+class BillingProfile(Base):
+    """Datos fiscales del comprador (D-273). Con NIF y dirección la factura es completa (F1); sin ellos, simplificada (F2)."""
+
+    __tablename__ = "billing_profiles"
     user_id: Mapped[str] = mapped_column(String(64), primary_key=True)
-    provider: Mapped[str] = mapped_column(String(16), default="stripe")
-    stripe_customer_id: Mapped[str | None] = mapped_column(String(64))
-    stripe_subscription_id: Mapped[str | None] = mapped_column(String(64))
-    status: Mapped[str] = mapped_column(String(32), default="inactive")
-    current_period_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    name: Mapped[str] = mapped_column(String(200), default="")
+    tax_id: Mapped[str] = mapped_column(String(32), default="")
+    address: Mapped[str] = mapped_column(String(300), default="")
+    postal_code: Mapped[str] = mapped_column(String(16), default="")
+    city: Mapped[str] = mapped_column(String(120), default="")
+    country: Mapped[str] = mapped_column(String(2), default="ES")
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 
-class StripeEvent(Base):
-    __tablename__ = "stripe_events"
+class Order(Base):
+    """Pedido de un pase (D-273). `status`: created → paid; paid → refunded. Lo cobra PayPal (Orders v2)."""
+
+    __tablename__ = "orders"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    user_id: Mapped[str] = mapped_column(String(64), index=True)
+    email: Mapped[str] = mapped_column(String(320), default="")
+    product: Mapped[str] = mapped_column(String(32), default="pass24h")
+    hours: Mapped[int] = mapped_column(Integer, default=24)
+    currency: Mapped[str] = mapped_column(String(3), default="EUR")
+    total_cents: Mapped[int] = mapped_column(Integer)
+    base_cents: Mapped[int] = mapped_column(Integer)
+    vat_cents: Mapped[int] = mapped_column(Integer)
+    vat_rate_bp: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(16), default="created", index=True)
+    provider: Mapped[str] = mapped_column(String(16), default="paypal")
+    provider_order_id: Mapped[str | None] = mapped_column(String(64), unique=True)
+    provider_capture_id: Mapped[str | None] = mapped_column(String(64), unique=True)
+    payer_email: Mapped[str | None] = mapped_column(String(320))
+    locale: Mapped[str] = mapped_column(String(2), default="es")
+    waiver_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    paid_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    refunded_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class Pass(Base):
+    """Cada pase comprado (D-273): de `starts_at` a `expires_at`. Uno nuevo empieza donde acaba el que sigue activo."""
+
+    __tablename__ = "passes"
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(String(64), index=True)
+    order_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("orders.id"), unique=True)
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class InvoiceCounter(Base):
+    """Último número de cada serie y año: se bloquea la fila para que la numeración sea correlativa y sin huecos."""
+
+    __tablename__ = "invoice_counters"
+    series: Mapped[str] = mapped_column(String(16), primary_key=True)
+    last: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class Invoice(Base):
+    """Factura emitida (D-273). Nunca se borra ni se modifica: una devolución emite una rectificativa (serie R).
+
+    `record_hash` encadena cada registro con el anterior como pide el Reglamento de sistemas de facturación
+    (RD 1007/2023, Verifactu): SHA-256 de los campos del registro de alta con la huella previa."""
+
+    __tablename__ = "invoices"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=_uuid)
+    # Orden de emisión: la huella de cada factura se encadena con la de la anterior por este número, no por la fecha
+    # (al segundo) ni por el número de factura (series distintas).
+    seq: Mapped[int] = mapped_column(BigInteger, Identity(), unique=True)
+    number: Mapped[str] = mapped_column(String(40), unique=True)
+    series: Mapped[str] = mapped_column(String(16))
+    kind: Mapped[str] = mapped_column(String(4))  # F1 completa, F2 simplificada, R1/R5 rectificativas
+    order_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("orders.id"), index=True)
+    rectifies_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("invoices.id"))
+    user_id: Mapped[str] = mapped_column(String(64), index=True)
+    issued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    issuer: Mapped[dict] = mapped_column(JSONB)
+    buyer: Mapped[dict] = mapped_column(JSONB)
+    lines: Mapped[list] = mapped_column(JSONB)
+    base_cents: Mapped[int] = mapped_column(Integer)
+    vat_rate_bp: Mapped[int] = mapped_column(Integer)
+    vat_cents: Mapped[int] = mapped_column(Integer)
+    total_cents: Mapped[int] = mapped_column(Integer)
+    currency: Mapped[str] = mapped_column(String(3), default="EUR")
+    prev_hash: Mapped[str] = mapped_column(String(64), default="")
+    record_hash: Mapped[str] = mapped_column(String(64))
+    record_at: Mapped[str] = mapped_column(String(32))  # FechaHoraHusoGenRegistro tal como entra en la huella
+    locale: Mapped[str] = mapped_column(String(2), default="es")
+
+
+class PaymentEvent(Base):
+    """Avisos de PayPal ya procesados (idempotencia del webhook)."""
+
+    __tablename__ = "payment_events"
     id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    provider: Mapped[str] = mapped_column(String(16), default="paypal")
     type: Mapped[str] = mapped_column(String(80))
     received_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     processed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))

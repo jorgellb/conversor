@@ -40,7 +40,7 @@ plans:
     share_days: 0
     priority: 5
   pro:
-    name: Pro
+    name: Pase 24 h
     light_tasks_day: 1000
     heavy_tasks_day: 200
     files_per_task: 100

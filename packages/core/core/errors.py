@@ -37,10 +37,16 @@ class ErrorCode(StrEnum):
     NO_TABLES = "NO_TABLES"
     NO_SPEECH = "NO_SPEECH"
     PRINT_RESTRICTED = "PRINT_RESTRICTED"
+    PASS_REQUIRED = "PASS_REQUIRED"
+    PAYMENT_FAILED = "PAYMENT_FAILED"
     INTERNAL = "INTERNAL"
 
 
 MESSAGES: dict[str, dict[str, str]] = {
+    "PASS_REQUIRED": {"es": "Esta herramienta usa mucho servidor: necesita el pase de 24 horas (1 €). Las herramientas ligeras siguen siendo gratis.",
+                      "en": "This tool uses a lot of server power: it needs the 24-hour pass (€1). Light tools stay free."},
+    "PAYMENT_FAILED": {"es": "No se ha podido completar el pago con PayPal. No se te ha cobrado nada: vuelve a intentarlo.",
+                       "en": "The PayPal payment could not be completed. You have not been charged: please try again."},
     "PRINT_RESTRICTED": {"es": "Este PDF no permite imprimir. Si tienes la contraseña de propietario, quita la restricción con «Desbloquear PDF».",
                          "en": "This PDF does not allow printing. If you have the owner password, remove the restriction with “Unlock PDF”."},
     "NO_SPEECH": {"es": "No se ha encontrado voz en el audio: comprueba que el archivo tiene sonido y que no es solo música o silencio.",

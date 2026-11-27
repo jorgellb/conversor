@@ -7,6 +7,7 @@ import { api, ApiError } from "@/lib/api-client";
 import { userToken } from "@/lib/identity";
 
 import { AdminAi } from "./AdminAi";
+import { AdminBilling } from "./billing/AdminBilling";
 
 interface Overview {
   disk: { total_gb: number; used_gb: number; free_gb: number; reserved_gb: number; usage_percent: number; guard_active: boolean };
@@ -53,6 +54,7 @@ export function AdminPage({ tools }: { tools: { slug: string; name: string }[] }
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-3xl font-bold">{t("title")}</h1>
+      <AdminBilling />
       <section className="card p-4">
         <h2 className="font-semibold">{t("disk")}</h2>
         <p>{t("used")}: {data.disk.usage_percent} % · {t("free")}: {data.disk.free_gb} GB · {t("reserved")}: {data.disk.reserved_gb} GB</p>

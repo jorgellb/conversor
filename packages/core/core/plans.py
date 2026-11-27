@@ -44,3 +44,16 @@ class PlanLimits(BaseModel):
 def load_plans_file(path: Path) -> dict[str, PlanLimits]:
     data = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
     return {pid: PlanLimits(**{**values, "id": pid}) for pid, values in data["plans"].items()}
+
+
+def effective_plan_id(profile) -> str:
+    """Plan con el que trabaja una cuenta ahora (D-273): «pro» mientras dure un pase de 24 h pagado (o si un administrador
+    se lo dio como plan base); si no, su plan base. Lo usan la API, los hooks de subida y los workers."""
+    from datetime import datetime, timezone
+
+    if profile is None:
+        return "free"
+    until = getattr(profile, "pass_until", None)
+    if until is not None and until > datetime.now(timezone.utc):
+        return "pro"
+    return profile.plan_id

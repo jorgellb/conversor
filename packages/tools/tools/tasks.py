@@ -170,8 +170,9 @@ def _ai_client(settings, r, spec, owner, plan, job_id: str, state):
 def _plan_of(session, job: Job) -> str:
     from core.models import Profile
 
-    profile = session.get(Profile, job.owner_id)
-    return profile.plan_id if profile else "free"
+    from core.plans import effective_plan_id
+
+    return effective_plan_id(session.get(Profile, job.owner_id))
 
 
 @celery_app.task(name="tools.tasks.run_job", acks_late=True)

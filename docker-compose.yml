@@ -145,6 +145,9 @@ services:
       TTS_VOICE_ES: "${TTS_VOICE_ES:-}"
       TTS_VOICE_EN: "${TTS_VOICE_EN:-af_heart}"
       SEAL_ENABLED: "${SEAL_ENABLED:-true}"
+      # Las pruebas de servidor registran varias cuentas, compran el pase y sondean trabajos seguidos desde la misma IP:
+      # con las 60 por minuto de producción, chat-pdf llegaba al límite. Solo en esta pila de desarrollo y CI.
+      RATE_LIMIT_PER_MINUTE: "${RATE_LIMIT_PER_MINUTE:-300}"
     ports: ["127.0.0.1:8000:8000"]
     networks: [internal, edge]
     depends_on:

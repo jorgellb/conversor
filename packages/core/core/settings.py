@@ -62,11 +62,27 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_MINUTE: int = 60
     ANON_TOKENS_PER_IP_DAY: int = 10
 
+    # Pagos (D-273): solo PayPal (cuenta PayPal o tarjeta a través de PayPal). `fake` completa el pago sin red (dev y CI).
     PAYMENT_PROVIDER: str = "fake"
-    STRIPE_SECRET_KEY: str = ""
-    STRIPE_WEBHOOK_SECRET: str = ""
-    STRIPE_PRICE_PRO_MONTHLY: str = ""
-    STRIPE_PRICE_PRO_YEARLY: str = ""
+    PAYPAL_ENV: str = "sandbox"  # sandbox | live
+    PAYPAL_CLIENT_ID: str = ""
+    PAYPAL_CLIENT_SECRET: str = ""
+    PAYPAL_WEBHOOK_ID: str = ""
+    # Pase de 24 h: precio con IVA incluido, en céntimos, e IVA en puntos básicos (2100 = 21 %).
+    PASS_PRICE_CENTS: int = 100
+    # Las herramientas pesadas y de IA piden el pase (D-273). Solo las pruebas antiguas lo apagan.
+    PASS_REQUIRED: bool = True
+    PASS_HOURS: int = 24
+    VAT_RATE_BP: int = 2100
+    # Emisor de las facturas (autónomo, D-273). Sin NIF la API no cobra en producción.
+    INVOICE_ISSUER_NAME: str = ""
+    INVOICE_ISSUER_TAX_ID: str = ""
+    INVOICE_ISSUER_ADDRESS: str = ""
+    INVOICE_ISSUER_EMAIL: str = ""
+    INVOICE_SERIES_PREFIX: str = ""
+    # Cotejo del QR tributario (Verifactu): el de pruebas de la AEAT hasta que el emisor esté dado de alta.
+    # Vacío: la factura no lleva QR (hasta que el emisor tenga que cumplir Verifactu, julio de 2027 para autónomos).
+    VERIFACTU_QR_URL: str = ""
 
     IMAGE_MAX_PIXELS: int = 100_000_000
     RENDER_MAX_PIXELS: int = 50_000_000

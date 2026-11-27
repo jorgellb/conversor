@@ -109,6 +109,11 @@ def create_job(
     options, secrets = validate_options(spec, raw_options)
     plan = load_plan(session, owner.plan_id, settings)
 
+    # Lo ligero es gratis; lo pesado, la IA y el vídeo piden el pase de 24 h (D-273), antes de mirar archivos o cuotas.
+    if settings.PASS_REQUIRED and not owner.is_pro and (spec.needs_video or spec.cost_for(options) != "light"):
+        raise AppError(ErrorCode.PASS_REQUIRED, status=402, detail="pass_required",
+                       extra={"cost_class": spec.cost_for(options), "price_cents": settings.PASS_PRICE_CENTS,
+                              "hours": settings.PASS_HOURS, "account": owner.type == "user"})
     if spec.needs_video and not plan.video:
         raise AppError(ErrorCode.LIMIT_EXCEEDED, status=403, detail="video_plan")
     if spec.inputs and not upload_ids:

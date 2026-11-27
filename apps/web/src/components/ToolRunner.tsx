@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ApiError } from "@/lib/api-client";
+import { billingConfig, needsPass, passState } from "@/lib/billing";
 import { ClientToolError, runInBrowser } from "@/lib/client-runner";
 import { handOff, takeHandOff } from "@/lib/handoff";
 import { identityToken } from "@/lib/identity";
@@ -31,6 +32,8 @@ const CropPicker = dynamic(() => import("./extras/CropPicker").then((m) => m.Cro
 const MailShare = dynamic(() => import("./extras/MailShare").then((m) => m.MailShare), { loading: () => null });
 const LinkShare = dynamic(() => import("./extras/LinkShare").then((m) => m.LinkShare), { loading: () => null });
 const MetadataPanel = dynamic(() => import("./extras/MetadataPanel").then((m) => m.MetadataPanel), { loading: () => null });
+// Oferta del pase (D-273): solo cuando una herramienta avanzada lo pide.
+const PassOffer = dynamic(() => import("./billing/PassOffer").then((m) => m.PassOffer), { loading: () => null });
 const PrintExtras = dynamic(() => import("./extras/PrintExtras").then((m) => m.PrintExtras), { loading: () => null });
 
 interface ResultFile {
@@ -187,6 +190,14 @@ export function ToolRunner({ spec, retentionHours, nextTools, enabled, pdfaHref,
         }));
         setState({ kind: "done", files: out, notes: result.notes, display: result.display, inputSize });
       } else {
+        // Lo que usa mucho servidor pide el pase (D-273): se comprueba antes de subir nada.
+        if (needsPass(spec, cleanOptions)) {
+          const cfg = await billingConfig().catch(() => null);
+          if (cfg?.required && !(await passState().catch(() => null))?.active) {
+            setState({ kind: "error", code: "PASS_REQUIRED" });
+            return;
+          }
+        }
         setState({ kind: "running", phase: { kind: "upload", percent: 0 } });
         const token = await identityToken(async () => {
           if (!turnstileBox.current) throw new ApiError("TURNSTILE_FAILED", "", 403);
@@ -259,7 +270,9 @@ export function ToolRunner({ spec, retentionHours, nextTools, enabled, pdfaHref,
           </label>
           <p className="muted text-sm">{t("paste")}</p>
           <CloudOpen accept={spec.inputs} multiple={spec.maxFiles !== 1} onFiles={addFiles} />
-          {spec.needsVideo && <p className="text-sm" role="note">{t("videoPro")}</p>}
+          {spec.where !== "client" && needsPass(spec, {}) && (
+            <p className="pass-note" role="note"><span className="pass-chip">{t("passChip")}</span>{t("passNote")}</p>
+          )}
           <p className="text-sm font-medium" style={{ color: "var(--color-brand-700)" }}>
             {spec.where === "client" ? t("clientNotice") : t("serverNotice", { hours: retentionHours })}
           </p>
@@ -354,7 +367,8 @@ export function ToolRunner({ spec, retentionHours, nextTools, enabled, pdfaHref,
         </form>
       )}
 
-      {state.kind === "error" && (
+      {state.kind === "error" && state.code === "PASS_REQUIRED" && <PassOffer />}
+      {state.kind === "error" && state.code !== "PASS_REQUIRED" && (
         <p role="alert" className="card border-red-500 p-4 text-red-700 dark:text-red-300">
           {state.message || (te.has(state.code) ? te(state.code) : te("INTERNAL"))}
         </p>

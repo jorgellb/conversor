@@ -8,7 +8,7 @@ import { categoryGroups } from "./menu";
 import { CATEGORIES } from "./registry";
 import { CATEGORY_PAGES, categoryPath } from "./site";
 
-export type MegaMenuTool = { href: string; name: string; client: boolean };
+export type MegaMenuTool = { href: string; name: string; client: boolean; paid: boolean };
 export type MegaMenuGroup = { id: string; label: string; href: string; total: number; more: string; tools: MegaMenuTool[] };
 export type MegaMenuPanel = { id: string; blurb: string; count: string; groups: MegaMenuGroup[] };
 
@@ -34,7 +34,7 @@ export async function menuPanels(locale: Locale): Promise<MegaMenuPanel[]> {
         href: `${href}#${g.id}`,
         total: g.tools.length,
         more: t("menuMore", { n: g.tools.length - limit }),
-        tools: g.tools.slice(0, limit).map((tool) => ({ href: tool.href, name: tool.name, client: tool.where === "client" })),
+        tools: g.tools.slice(0, limit).map((tool) => ({ href: tool.href, name: tool.name, client: tool.where === "client", paid: tool.paid })),
       })),
     };
   });

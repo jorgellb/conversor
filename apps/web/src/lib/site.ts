@@ -7,6 +7,8 @@ export const SITE_NAME = process.env.APP_NAME || "Producto Demo";
 
 export const STATIC_PAGES = {
   precios: { es: "precios", en: "pricing" },
+  // Pago del pase de 24 h con PayPal (D-273).
+  pase: { es: "pase", en: "pass" },
   privacidad: { es: "privacidad", en: "privacy" },
   terminos: { es: "terminos", en: "terms" },
   avisoLegal: { es: "aviso-legal", en: "legal-notice" },
@@ -49,7 +51,7 @@ export function categoryOfSlug(slug: string, locale: Locale): string | undefined
 }
 
 /** Páginas privadas o de servicio: nunca indexables. */
-export const PRIVATE_PAGES: StaticKey[] = ["cuenta", "admin", "entrar", "registro", "firmarDocumento"];
+export const PRIVATE_PAGES: StaticKey[] = ["cuenta", "admin", "entrar", "registro", "firmarDocumento", "pase"];
 
 export function staticKeyOf(slug: string, locale: Locale): StaticKey | undefined {
   return (Object.keys(STATIC_PAGES) as StaticKey[]).find((k) => STATIC_PAGES[k][locale] === slug);

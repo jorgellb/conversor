@@ -95,7 +95,7 @@
       "priority": 5
     },
     "pro": {
-      "name": "Pro",
+      "name": "Pase 24 h",
       "id": "pro",
       "light_tasks_day": 1000,
       "heavy_tasks_day": 200,

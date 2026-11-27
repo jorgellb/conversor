@@ -1,8 +1,6 @@
 """Operación y seguridad de F1 (16.2, 16.4 y 16.7)."""
 from __future__ import annotations
 
-import hashlib
-import hmac
 import json
 import os
 import shutil
@@ -147,33 +145,6 @@ def test_enqueued_task_args_never_contain_secrets(api, user_token, tus_upload, f
     assert resp.status_code == 201, resp.text
     assert sent and "secreto123" not in json.dumps(sent)
     assert sent[0]["args"][2].startswith("v1.")
-
-
-def _stripe_header(payload: bytes, secret: str) -> str:
-    ts = int(time.time())
-    sig = hmac.new(secret.encode(), f"{ts}.".encode() + payload, hashlib.sha256).hexdigest()
-    return f"t={ts},v1={sig}"
-
-
-def test_stripe_webhook_signature_and_idempotency(api, user_token, monkeypatch):
-    from core.settings import get_settings
-
-    settings = get_settings()
-    monkeypatch.setattr(settings, "PAYMENT_PROVIDER", "stripe")
-    monkeypatch.setattr(settings, "STRIPE_SECRET_KEY", "sk_test_prueba")
-    monkeypatch.setattr(settings, "STRIPE_WEBHOOK_SECRET", "whsec_prueba")
-    user_id = f"stripe-{uuid.uuid4().hex[:8]}"
-    event = {"id": f"evt_{uuid.uuid4().hex}", "object": "event", "type": "checkout.session.completed",
-             "data": {"object": {"id": "cs_test_1", "object": "checkout.session", "client_reference_id": user_id,
-                                 "customer": "cus_prueba", "subscription": "sub_prueba"}}}
-    payload = json.dumps(event).encode()
-    bad = api.post("/v1/billing/webhook", content=payload, headers={"stripe-signature": "t=1,v1=00"})
-    assert bad.status_code == 400
-    ok = api.post("/v1/billing/webhook", content=payload, headers={"stripe-signature": _stripe_header(payload, "whsec_prueba")})
-    assert ok.status_code == 200 and ok.json()["received"] == "checkout.session.completed"
-    again = api.post("/v1/billing/webhook", content=payload, headers={"stripe-signature": _stripe_header(payload, "whsec_prueba")})
-    assert again.json()["received"] == "duplicado"
-    assert api.get("/v1/me", headers=auth(user_token(user_id=user_id))).json()["plan"] == "pro"
 
 
 def test_anon_tokens_limited_per_ip(api, monkeypatch):

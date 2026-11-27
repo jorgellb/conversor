@@ -36,4 +36,6 @@ Códigos estables que devuelven la API (`error.code`) y las herramientas de nave
 | `NO_TABLES` | No se han encontrado tablas en el PDF. Prueba con PDF a Excel, que también saca el texto, o pasa antes ocr-pdf si es un escaneo. | No tables were found in the PDF. Try PDF to Excel, which also extracts the text, or run OCR PDF first if it is a scan. |
 | `NO_SPEECH` | No se ha encontrado voz en el audio: comprueba que el archivo tiene sonido y que no es solo música o silencio. | No speech was found in the audio: check that the file has sound and is not just music or silence. |
 | `PRINT_RESTRICTED` | Este PDF no permite imprimir. Si tienes la contraseña de propietario, quita la restricción con «Desbloquear PDF». | This PDF does not allow printing. If you have the owner password, remove the restriction with “Unlock PDF”. |
+| `PASS_REQUIRED` | Esta herramienta usa mucho servidor: necesita el pase de 24 horas (1 €). Las herramientas ligeras siguen siendo gratis. | This tool uses a lot of server power: it needs the 24-hour pass (€1). Light tools stay free. |
+| `PAYMENT_FAILED` | No se ha podido completar el pago con PayPal. No se te ha cobrado nada: vuelve a intentarlo. | The PayPal payment could not be completed. You have not been charged: please try again. |
 | `INTERNAL` | Ha ocurrido un error inesperado. | An unexpected error occurred. |

@@ -11,7 +11,7 @@ Las anota el propietario con fecha y responsable. Mientras falten, los flags cor
 | MP3, Opus, Vorbis y FLAC | Riesgo bajo (patentes de MP3 caducadas) | ogg-a-mp3, opus-a-mp3, m4a-a-mp3 y mp4-a-mp3 activas |
 | Factura electrónica (generadores): crear-factura (F4-E1) avisa de que no es un sistema de facturación verificable (Veri*factu, RD 1007/2023 y RDL 15/2025) y solo genera el PDF; el asesor confirma ese texto y si basta para publicarla, y revisa los generadores de factura electrónica (RD 238/2026) antes de encenderlos | Pendiente | `INVOICING_ES_ENABLED=false` y `TOOL_<SLUG>_ENABLED` sin definir |
 | IA (OpenRouter, consentimiento, transferencias): un especialista en protección de datos revisa el aviso de 6.6, la política de privacidad (OpenRouter y sus proveedores como destinatarios, transferencia fuera de la UE) y la EIPD de abajo | Pendiente | Herramientas de IA en beta con el aviso y el consentimiento; no anunciarlas hasta la revisión |
-| Pagos: alta en OSS si se vende a consumidores de otros países de la UE, Stripe Tax, precios, desistimiento y reembolsos | Pendiente | Stripe en modo test |
+| Pagos (D-273): alta en OSS si se vende a consumidores de otros países de la UE, IVA del pase, renuncia al desistimiento por ejecución inmediata (art. 103.m TRLGDCU), reembolsos, facturas del autónomo y VERI*FACTU (julio de 2027) | Pendiente | PayPal en *Sandbox*; la API no cobra sin los datos del emisor |
 | Modelos de Docling | Revisar la ficha de licencia de cada modelo descargado en la imagen `worker-convert` | No publicar `pdf-a-word` editable sin la revisión |
 
 ## Evaluación de impacto (EIPD) del uso de IA con modelos de terceros (6.6 y 12.5)

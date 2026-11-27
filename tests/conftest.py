@@ -92,6 +92,8 @@ def services(tmp_path_factory):
         "PUBLIC_API_URL": "https://api.ejemplo.test", "RATE_LIMIT_PER_MINUTE": "100000", "ANON_TOKENS_PER_IP_DAY": "100000",
         "DISK_MIN_FREE_GB": "0.01", "DISK_MAX_USAGE_PERCENT": "99.9", "GOTENBERG_URL": "http://gotenberg.test",
         "TURNSTILE_SECRET_KEY": "1x0000000000000000000000000000000AA", "PAYMENT_PROVIDER": "fake", "THREADS": "2",
+        # Las pruebas de herramientas pesadas son anteriores al pase (D-273); las de pagos lo encienden.
+        "PASS_REQUIRED": "false",
     }
     os.environ.update(env)
     from core.db import reset_caches

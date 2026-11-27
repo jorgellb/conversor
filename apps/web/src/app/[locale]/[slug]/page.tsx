@@ -5,7 +5,6 @@ import Link from "next/link";
 
 import { PageLink } from "@/components/PageLink";
 import { CategoryIcon, categoryColor } from "@/components/art/CategoryIcon";
-import { ToolHeroDecor } from "@/components/art/ToolHeroDecor";
 import { notFound } from "next/navigation";
 
 import { BoardEditor, BookmarksEditor, ChatPdfView, CardView, CollageView, CompareView, MermaidView, WriterView, CopyView, FormDesigner, PdfEditor, PdfViewer, QrGeneratorView, ScannerView,
@@ -183,9 +182,11 @@ export default async function SlugPage({ params, searchParams }: Params) {
   const categoryName = category ? (locale === "en" ? category.en : category.es) : null;
   // Migas Inicio › categoría › herramienta (D-271): la categoría lleva a su apartado.
   const categoryHref = category && CATEGORY_PAGES[category.id] ? categoryPath(locale, category.id) : null;
+  // Pase de 24 h (D-273): las herramientas que usan mucho servidor cuestan 1 €; el resto, nada.
+  const paid = tool.where !== "client" && (tool.cost_class !== "light" || Boolean(tool.needs_video));
   const faq = content?.faq ?? [
     { q: tf("privacyQ"), a: tool.where === "client" ? tf("privacyClient") : tf("privacyServer") },
-    { q: tf("freeQ"), a: tf("freeA") },
+    { q: tf("freeQ"), a: paid ? tf("freeAPaid") : tf("freeA") },
     ...(tool.inputs.includes("pdf") ? [{ q: tf("passwordQ"), a: tf("passwordA") }] : []),
   ];
   const jsonLd = [
@@ -197,7 +198,7 @@ export default async function SlugPage({ params, searchParams }: Params) {
       url,
       applicationCategory: "UtilitiesApplication",
       operatingSystem: "Web",
-      offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+      offers: { "@type": "Offer", price: paid ? "1.00" : "0", priceCurrency: "EUR" },
     },
     {
       "@context": "https://schema.org",
@@ -213,7 +214,6 @@ export default async function SlugPage({ params, searchParams }: Params) {
     <div className={`mx-auto px-4 py-8 ${WIDE_TOOLS.includes(tool.slug_es) ? "max-w-7xl" : "max-w-4xl"}`}>
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <header className="tool-hero relative mb-1 overflow-hidden rounded-3xl border px-5 py-4 sm:px-6" style={categoryColor(tool.category)}>
-        <ToolHeroDecor />
         <nav aria-label="Breadcrumb" className="muted relative mb-2 text-xs">
           <Link href={`/${locale}`}>{t("breadcrumbHome")}</Link> ›{" "}
           {categoryHref && <><Link href={categoryHref}>{categoryName}</Link> ›{" "}</>}

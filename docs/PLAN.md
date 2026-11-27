@@ -13,7 +13,7 @@ El plan completo está en `docs/spec/` (v2). Orden de ejecución acordado (17): 
 | tusd con ganchos bloqueantes, Caddy con `forward_auth`, trabajos, idempotencia, secretos cifrados | Hecho |
 | Limpieza, guardas de disco y de colas, latido y `WORKER_LOST`, rol limitado de PostgreSQL | Hecho |
 | Copias (`pg_dump` y restic) y restauración | Hecho (restic remoto pendiente de un repositorio real) |
-| Planes, `FakePaymentProvider` y Stripe en modo test (checkout, portal y webhook idempotente) | Hecho (faltan claves y precios del propietario) |
+| Planes, `FakePaymentProvider` y pase de 24 h con PayPal (pedidos, captura, webhook idempotente, facturas y devoluciones, D-273) | Hecho (faltan las claves de PayPal y los datos del emisor) |
 | Herramientas de navegador de 17.1 | Hechas, incluidas `editar-pdf` y `rellenar-pdf` |
 | Herramientas de servidor de 17.1 | Hechas |
 | Web: portada, plantilla de herramienta, precios, cuenta, administración básica, legales, SEO y PWA | Hecho |
@@ -162,6 +162,6 @@ Las ondas, dependencias y la definición de terminado están en `docs/GOAL.md`; 
 
 1. Construir las imágenes en GitHub Actions y hacer el arranque de humo del Compose (`e2e-compose` en la CI),
    incluidas `gotenbergweb` y `egressweb`.
-2. Cierre operativo de F1 con las entradas del propietario (0.1): VPS, Cloudflare, Stripe, SMTP y repositorio de restic.
+2. Cierre operativo de F1 con las entradas del propietario (0.1): VPS, Cloudflare, PayPal, SMTP y repositorio de restic.
 3. Revisión del contenido propio redactado y contenido del resto de páginas para quitar el `noindex`.
 4. Onda 1 de `docs/GOAL.md`: G0-B, F3-C, F3-D y F3-E hechos; después F3-Z; luego F4, F6, vídeo de F5 y F7 (orden de 17).

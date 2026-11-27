@@ -1,6 +1,8 @@
 """Flujo completo de servidor: sesión anónima, subida por tus, trabajo, descarga y cuotas."""
 from __future__ import annotations
 
+import uuid
+
 import os
 
 import pikepdf
@@ -163,14 +165,13 @@ def test_admin_requires_role(api, user_token, monkeypatch):
     api.put("/v1/admin/flags/comprimir-pdf", json={"enabled": True}, headers=auth(admin))
 
 
-def test_fake_checkout_upgrades_to_pro(api, user_token):
-    uid = "usuario-pago"
+def test_fake_pass_upgrades_to_pro(api, user_token):
+    """Pase de 24 h con el pago de prueba (D-273; el detalle, en test_pagos.py)."""
+    uid = f"usuario-pago-{uuid.uuid4().hex[:6]}"
     token = user_token(user_id=uid)
     assert api.get("/v1/me", headers=auth(token)).json()["plan"] == "free"
-    url = api.post("/v1/billing/checkout", json={"interval": "monthly"}, headers=auth(token)).json()["url"]
-    path = url.split("api.ejemplo.test", 1)[1]
-    resp = api.get(path, follow_redirects=False)
-    assert resp.status_code == 303
+    order = api.post("/v1/billing/orders", json={"waiver": True}, headers=auth(token)).json()
+    assert api.post(f"/v1/billing/orders/{order['order_id']}/capture", headers=auth(token)).json()["status"] == "paid"
     assert api.get("/v1/me", headers=auth(token)).json()["plan"] == "pro"
 
 

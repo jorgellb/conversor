@@ -29,6 +29,26 @@ async function verificationLink(page: Page, email: string): Promise<string> {
   return /https?:\/\/\S+/.exec(message.Text)![0];
 }
 
+/** Cuenta nueva con el correo confirmado (Mailpit). */
+async function signUp(page: Page, prefix: string): Promise<string> {
+  const email = `${prefix}-${Date.now()}@ejemplo.test`;
+  await page.goto("/es/registro");
+  await page.getByLabel("Correo electrónico").fill(email);
+  await page.getByLabel("Contraseña").fill("contrasena-de-prueba");
+  await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
+  await expect(page.getByText("Te hemos enviado un correo")).toBeVisible();
+  await page.goto(await verificationLink(page, email));
+  return email;
+}
+
+/** Pase de 24 h con el pago de prueba de la pila de desarrollo (PAYMENT_PROVIDER=fake, D-273). */
+async function buyPass(page: Page) {
+  await page.goto("/es/pase");
+  await page.locator("[data-pass-waiver]").check();
+  await page.locator("[data-pass-fake]").click();
+  await expect(page.locator("[data-pass-paid]")).toContainText("Tu pase está activo hasta", { timeout: 30_000 });
+}
+
 async function runServerTool(page: Page, slug: string, files: string[]) {
   await page.goto(`/es/${slug}`);
   await page.locator('input[type="file"]').setInputFiles(files.map((f) => path.join(FIXTURES, f)));
@@ -67,7 +87,13 @@ test("factura-electronica-a-pdf: PDF/A-3b de Gotenberg con el XML incrustado y v
   await expect(page.getByText(/PDF\/A-3 con el XML original incrustado sin cambios \(ubl-peppol\.xml\)\. Cumple: PDF\/A-3b\./)).toBeVisible();
 });
 
-test("pdf-a-word", async ({ page }) => {
+test("pdf-a-word: sin pase ofrece el pase; con el pase, convierte (D-273)", async ({ page }) => {
+  await page.goto("/es/pdf-a-word");
+  await page.locator('input[type="file"]').setInputFiles(path.join(FIXTURES, "texto.pdf"));
+  await page.getByRole("button", { name: "Empezar" }).click();
+  await expect(page.locator("[data-pass-offer]")).toBeVisible();
+  await signUp(page, "e2e-word");
+  await buyPass(page);
   const body = await runServerTool(page, "pdf-a-word", ["texto.pdf"]);
   expect(body.subarray(0, 2).toString()).toBe("PK");
 });
@@ -82,31 +108,24 @@ test("descarga con token manipulado: 403", async ({ page }) => {
   expect((await page.request.get(href)).status()).toBe(403);
 });
 
-test("pago con FakePaymentProvider", async ({ page }) => {
-  const email = `e2e-${Date.now()}@ejemplo.test`;
-  await page.goto("/es/registro");
-  await page.getByLabel("Correo electrónico").fill(email);
-  await page.getByLabel("Contraseña").fill("contrasena-de-prueba");
-  await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
-  await expect(page.getByText("Te hemos enviado un correo")).toBeVisible();
-  // Mailpit: abre el enlace de confirmación.
-  await page.goto(await verificationLink(page, email));
-  await page.goto("/es/precios");
-  await page.getByRole("button", { name: "Mensual", exact: true }).click();
-  await page.waitForURL(/\/es\/cuenta\?pago=ok/);
-  await expect(page.getByText("Pago completado")).toBeVisible();
-  await expect(page.locator("strong", { hasText: "pro" })).toBeVisible();
+test("pase de 24 h: pago de prueba, factura en PDF y pedido en la cuenta (D-273)", async ({ page }) => {
+  await signUp(page, "e2e-pase");
+  await buyPass(page);
+  await page.getByRole("link", { name: "Ver la factura" }).click();
+  await page.waitForURL(/\/es\/cuenta/);
+  await expect(page.locator('[data-pass-state="active"]')).toBeVisible();
+  await expect(page.getByRole("cell", { name: /^S\d{4}-\d{6}$/ })).toBeVisible();
+  await expect(page.getByText("Pagado")).toBeVisible();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Descargar PDF" }).click();
+  const file = await (await download).path();
+  expect(readFileSync(file!).subarray(0, 5).toString()).toBe("%PDF-");
 });
 
 // 16.1: chat-pdf con LLM falso en la pila completa (workerai sin clave y en desarrollo usa el proveedor falso).
-test("chat-pdf con el LLM falso", async ({ page }) => {
-  const email = `e2e-chat-${Date.now()}@ejemplo.test`;
-  await page.goto("/es/registro");
-  await page.getByLabel("Correo electrónico").fill(email);
-  await page.getByLabel("Contraseña").fill("contrasena-de-prueba");
-  await page.getByRole("button", { name: "Crear cuenta", exact: true }).click();
-  await expect(page.getByText("Te hemos enviado un correo")).toBeVisible();
-  await page.goto(await verificationLink(page, email));
+test("chat-pdf con el LLM falso (con el pase, D-273)", async ({ page }) => {
+  await signUp(page, "e2e-chat");
+  await buyPass(page);
   await page.goto("/es/chat-pdf");
   await page.locator("[data-chat-file]").setInputFiles(path.join(FIXTURES, "texto.pdf"));
   await page.locator("[data-ai-consent]").check();

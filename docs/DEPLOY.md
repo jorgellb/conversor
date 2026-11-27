@@ -37,13 +37,16 @@ Proyecto `{{PRODUCTO}}`, entorno `production`, recurso Docker Compose desde el r
 Coolify genera `SERVICE_USER_POSTGRES`, `SERVICE_PASSWORD_POSTGRES`, `SERVICE_PASSWORD_VALKEY`,
 `SERVICE_PASSWORD_64_AUTH`, `SERVICE_PASSWORD_64_FILES`, `SERVICE_PASSWORD_64_ANON`, `SERVICE_PASSWORD_64_JOBSECRETS` y
 `SERVICE_PASSWORD_WORKERDB`. Debes darle: `GHCR_OWNER`, `IMAGE_TAG`, `APP_NAME`, `ADMIN_EMAILS`, `SMTP_URL`, `MAIL_FROM`,
-`TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` y, para pagos, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
-`STRIPE_PRICE_PRO_MONTHLY` y `STRIPE_PRICE_PRO_YEARLY`. El resto tiene valor por defecto (sección 14).
+`TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` y, para pagos (D-273), `PAYPAL_ENV` (`sandbox` o `live`),
+`PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_WEBHOOK_ID` y los datos del emisor de las facturas
+(`INVOICE_ISSUER_NAME`, `INVOICE_ISSUER_TAX_ID`, `INVOICE_ISSUER_ADDRESS`, `INVOICE_ISSUER_EMAIL`). Sin NIF del emisor
+la API no cobra. El precio (`PASS_PRICE_CENTS=100`, IVA incluido) y la duración (`PASS_HOURS=24`) tienen valor por
+defecto, como el resto (sección 14).
 
 ## 6. Cloudflare
 
 DNS con proxy para el dominio y `api`, `upload` y `files`; SSL Full (strict) con certificado de origen; WAF sin bloquear
-los webhooks de Stripe (`/v1/billing/webhook`) ni a los servidores de Dropbox cuando se active; widget de Turnstile; caché
+los avisos de PayPal (`/v1/billing/webhook`) ni a los servidores de Dropbox cuando se active; widget de Turnstile; caché
 de HTML de herramientas sin cookie de sesión con purga en cada despliegue.
 
 ## 7. Primer despliegue y administrador
@@ -68,7 +71,13 @@ La guarda rechaza subidas al 85 % de uso o con menos de `DISK_MIN_FREE_GB` libre
 
 ## 11. Pagos en producción
 
-Alta en OSS si procede, Stripe Tax, claves en vivo, precios definitivos y textos de términos y reembolsos revisados.
+1. En developer.paypal.com, una aplicación REST (primero en *Sandbox*, luego en *Live*) con su cliente y su secreto.
+2. Un webhook a `https://api.<dominio>/v1/billing/webhook` con los eventos `PAYMENT.CAPTURE.COMPLETED`,
+   `PAYMENT.CAPTURE.DENIED`, `PAYMENT.CAPTURE.REFUNDED` y `PAYMENT.CAPTURE.REVERSED`; su id va en `PAYPAL_WEBHOOK_ID`.
+3. Datos del emisor (autónomo) en `INVOICE_ISSUER_*`. Las devoluciones se hacen desde el panel (Pagos), que devuelve el
+   dinero en PayPal y emite la rectificativa; el libro de facturas expedidas se descarga en CSV desde el mismo panel.
+4. Alta en OSS si se vende a consumidores de otros países de la UE y textos de términos y reembolsos revisados
+   (`LEGAL.md`). VERI*FACTU: obligatorio para autónomos desde julio de 2027 (`DEPLOY-CHECKLIST.md`).
 
 ## Volúmenes
 

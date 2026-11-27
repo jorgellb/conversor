@@ -121,7 +121,8 @@ export const MENU_GROUPS: Record<string, MenuGroupSpec[]> = {
   ],
 };
 
-export type MenuTool = { slug: string; href: string; name: string; summary: string; where: string; from: string; to: string };
+/** `paid`: usa mucho servidor y va con el pase de 24 h (D-273). */
+export type MenuTool = { slug: string; href: string; name: string; summary: string; where: string; paid: boolean; from: string; to: string };
 
 /** Formato de entrada y de salida que se enseña en la tarjeta («PDF → DOCX»); el ZIP de varios resultados no cuenta. */
 export function formatsOf(inputs: string[], outputs: string[]): { from: string; to: string } {
@@ -148,6 +149,7 @@ export function categoryGroups(category: string, locale: Locale): MenuGroup[] {
           name: nameOf(tool!, locale),
           summary: summaryOf(tool!, locale),
           where: tool!.where,
+          paid: tool!.where !== "client" && (tool!.cost_class !== "light" || Boolean(tool!.needs_video)),
           ...formatsOf(tool!.inputs, tool!.outputs),
         })),
     }))

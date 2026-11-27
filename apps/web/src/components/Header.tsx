@@ -35,7 +35,7 @@ export async function Header({ locale, languageMap }: { locale: Locale; language
       <nav className="mx-auto flex max-w-6xl items-center gap-x-3 px-4 py-2.5 sm:gap-x-4" aria-label={t("home")}>
         <Link href={`/${locale}`} className="brand-link flex min-w-0 items-center gap-2.5 whitespace-nowrap no-underline">
           <LogoMark />
-          <span className="display truncate text-lg font-extrabold tracking-tight" style={{ color: "var(--fg)" }}>{SITE_NAME}</span>
+          <span className="display truncate text-lg font-bold" style={{ color: "var(--fg)" }}>{SITE_NAME}</span>
         </Link>
         <div className="nav-links ml-auto flex shrink-0 items-center justify-end gap-x-1 text-sm font-medium">
           <Link href={pagePath(locale, "precios")} className="hidden sm:inline">{t("pricing")}</Link>
@@ -49,6 +49,7 @@ export async function Header({ locale, languageMap }: { locale: Locale; language
         close: t("menuClose"),
         seeAll: t("menuSeeAll"),
         inBrowser: t("menuInBrowser"),
+        paid: t("menuPaid"),
         submenu: t("menuSubmenu"),
         title: t("categories"),
         loading: t("menuLoading"),

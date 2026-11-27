@@ -5,6 +5,7 @@ Uso: python scripts/fixtures/generate.py <directorio>
 from __future__ import annotations
 
 import io
+import os
 import random
 import shutil
 import subprocess
@@ -101,8 +102,12 @@ def docx_with_libreoffice(path: Path, work: Path) -> Path | None:
         return None
     txt = work / "carta.txt"
     txt.write_text("Carta de prueba\n\nEste documento se generó con LibreOffice para las pruebas.\n", encoding="utf-8")
+    # PATH del sistema, como run_engine en los workers: con el bin de un entorno virtual delante, el Python que
+    # LibreOffice lleva dentro toma ese entorno y soffice muere con std::bad_alloc.
+    env = {**os.environ, "PATH": "/usr/local/bin:/usr/bin:/bin"}
+    env.pop("VIRTUAL_ENV", None)
     subprocess.run([soffice, f"-env:UserInstallation=file://{work}/lo", "--headless", "--convert-to", "docx", "--outdir", str(work), str(txt)],
-                   check=True, capture_output=True, timeout=180)
+                   check=True, capture_output=True, timeout=180, env=env)
     produced = work / "carta.docx"
     if not produced.exists():  # LibreOffice sin Writer (solo libreoffice-core o -calc): sin muestra DOCX, como sin soffice
         return None

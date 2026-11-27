@@ -7,11 +7,9 @@ import { disabledByEnv } from "@/lib/flags";
 import { CATEGORIES, nameOf, summaryOf, TOOLS } from "@/lib/registry";
 import { CATEGORY_PAGES, categoryPath, toolPath, webUrl } from "@/lib/site";
 
-import { categoryGroups, topFormats } from "@/lib/menu";
+import { categoryGroups } from "@/lib/menu";
 
-import { CategoryHeroArt } from "./art/CategoryHeroArt";
 import { CategoryIcon, categoryColor } from "./art/CategoryIcon";
-import { ToolHeroDecor } from "./art/ToolHeroDecor";
 import { CategoryTools } from "./CategoryTools";
 import type { ToolLink } from "./ToolExplorer";
 
@@ -63,9 +61,8 @@ export async function CategoryPage({ id, locale }: { id: string; locale: Locale 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <script type="application/ld+json" nonce={nonce} dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <header className="cat-hero tool-hero relative overflow-hidden rounded-[2rem] border px-5 py-7 sm:px-9 sm:py-10" style={categoryColor(id)}>
-        <ToolHeroDecor />
-        <div className="relative grid items-center gap-6 lg:grid-cols-[1.35fr_1fr]">
+      <header className="cat-hero relative pb-8 pt-2 sm:pb-10" style={categoryColor(id)}>
+        <div className="relative">
           <div>
             <nav aria-label="Breadcrumb" className="muted mb-4 text-xs">
               <Link href={`/${locale}`}>{t("breadcrumbHome")}</Link> › <span aria-current="page">{title}</span>
@@ -74,16 +71,13 @@ export async function CategoryPage({ id, locale }: { id: string; locale: Locale 
               <span className="icon-tile h-7 w-7 rounded-lg" style={categoryColor(id)}><CategoryIcon id={id} size={16} /></span>
               {t("toolsCount", { n: tools.length })}
             </p>
-            <h1 className="mt-3 text-4xl font-extrabold sm:text-[3.4rem]">{title}</h1>
+            <h1 className="mt-3 text-4xl font-bold sm:text-5xl">{title}</h1>
             <p className="muted mt-4 max-w-2xl text-lg">{t(`intros.${id}`)}</p>
             <dl className="cat-stats mt-6">
               <div><dt>{t("statTools")}</dt><dd>{tools.length}</dd></div>
               <div><dt>{t("statSections")}</dt><dd>{sections.length}</dd></div>
               {local > 0 && <div><dt>{t("statLocal")}</dt><dd>{local}</dd></div>}
             </dl>
-          </div>
-          <div className="mx-auto hidden w-full max-w-[400px] sm:block" style={{ color: "var(--fg)" }}>
-            <CategoryHeroArt id={id} formats={topFormats(id)} />
           </div>
         </div>
       </header>
@@ -94,6 +88,7 @@ export async function CategoryPage({ id, locale }: { id: string; locale: Locale 
           placeholder: t("searchPlaceholder", { n: tools.length }),
           noResults: t("noResults"),
           inBrowser: tt("badgeClient"),
+          paid: tt("passChip"),
           sections: t("sectionsLabel"),
         }} />
       </div>

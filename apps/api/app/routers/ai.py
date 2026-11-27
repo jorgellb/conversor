@@ -153,6 +153,10 @@ async def chat(body: ChatIn, request: Request, owner: Owner = Depends(current_ow
 
     def reserve() -> tuple[str, str]:
         plan = load_plan(session, owner.plan_id, settings)
+        if settings.PASS_REQUIRED and not owner.is_pro:
+            raise AppError(ErrorCode.PASS_REQUIRED, status=402, detail="pass_required",
+                           extra={"cost_class": "ai", "price_cents": settings.PASS_PRICE_CENTS, "hours": settings.PASS_HOURS,
+                                  "account": owner.type == "user"})
         if plan.ai_requests_day <= 0:
             raise AppError(ErrorCode.UNAUTHORIZED if owner.type == "anon" else ErrorCode.QUOTA_EXCEEDED,
                            status=401 if owner.type == "anon" else 429, detail="ai_account", extra={"cost_class": "ai"})

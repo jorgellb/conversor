@@ -9,7 +9,7 @@ import { disabledByEnv } from "@/lib/flags";
 import { PLANS, TOOLS, clientSpec, nameOf, toolBySlugEs } from "@/lib/registry";
 import { SITE_NAME, pagePath, toolPath, type StaticKey } from "@/lib/site";
 
-import { AccountPage, AdminPage, AuthPage, ConverterPage, FileConverter, SignerPage } from "./LazyViews";
+import { AccountPage, AdminPage, AuthPage, ConverterPage, FileConverter, PassCheckout, SignerPage } from "./LazyViews";
 import { ToolRunner } from "./ToolRunner";
 import { CreatePdfPage } from "./CreatePdfPage";
 import { LEGAL } from "./legal";
@@ -28,11 +28,13 @@ export async function StaticPage({ pageKey, locale, search = {} }: {
   const wrap = (children: React.ReactNode) => <div className="mx-auto max-w-4xl px-4 py-8">{children}</div>;
   switch (pageKey) {
     case "precios":
-      return wrap(<PricingPage locale={locale} plans={PLANS} />);
+      return <div className="mx-auto max-w-6xl px-4 py-8 sm:py-12"><PricingPage locale={locale} plans={PLANS} /></div>;
+    case "pase":
+      return <div className="mx-auto max-w-5xl px-4 py-8 sm:py-12"><ViewMessages namespaces={["pass"]}><PassCheckout /></ViewMessages></div>;
     case "cuenta":
-      return wrap(<ViewMessages namespaces={["account"]}><AccountPage /></ViewMessages>);
+      return <div className="mx-auto max-w-6xl px-4 py-8"><ViewMessages namespaces={["account"]}><AccountPage /></ViewMessages></div>;
     case "admin":
-      return wrap(<ViewMessages namespaces={["admin", "adminAi"]}><AdminPage tools={TOOLS.map((t) => ({ slug: t.slug_es, name: nameOf(t, locale) }))} /></ViewMessages>);
+      return wrap(<ViewMessages namespaces={["admin", "adminAi", "adminBilling"]}><AdminPage tools={TOOLS.map((t) => ({ slug: t.slug_es, name: nameOf(t, locale) }))} /></ViewMessages>);
     case "entrar":
       return wrap(<AuthPage mode="signIn" />);
     case "firmarDocumento":

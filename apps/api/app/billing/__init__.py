@@ -1,53 +1,201 @@
-"""Pagos detrás de la interfaz PaymentProvider (decisión 6: Stripe en modo test)."""
+"""Cobro del pase de 24 h con PayPal (D-273): cuenta PayPal o tarjeta a través de PayPal, nada más.
+
+El navegador muestra los botones de PayPal (JS SDK) y la API crea y captura el pedido con la API REST Orders v2: el importe
+y lo que se vende los decide siempre el servidor. Un aviso de PayPal (webhook) completa el pedido si el navegador se cerró
+antes de capturar, y avisa de devoluciones y retrocesiones.
+"""
 from __future__ import annotations
 
 import json
 import uuid
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from datetime import datetime, timezone
+from dataclasses import dataclass, field
 
-from sqlalchemy.orm import Session
+import httpx
 
-from core.models import Profile, StripeEvent, Subscription
+from core.errors import AppError, ErrorCode
 from core.settings import Settings
 
 
 @dataclass
-class CheckoutResult:
-    url: str
-    session_id: str
+class Price:
+    total_cents: int
+    base_cents: int
+    vat_cents: int
+    vat_rate_bp: int
+    currency: str = "EUR"
+    hours: int = 24
+
+
+def price(settings: Settings) -> Price:
+    """Precio con IVA incluido: la base es el total entre (1 + tipo), redondeada al céntimo; el IVA, la diferencia."""
+    total = settings.PASS_PRICE_CENTS
+    base = round(total * 10000 / (10000 + settings.VAT_RATE_BP))
+    return Price(total_cents=total, base_cents=base, vat_cents=total - base, vat_rate_bp=settings.VAT_RATE_BP,
+                 hours=settings.PASS_HOURS)
+
+
+def money(cents: int) -> str:
+    sign = "-" if cents < 0 else ""
+    cents = abs(cents)
+    return f"{sign}{cents // 100}.{cents % 100:02d}"
+
+
+@dataclass
+class Capture:
+    """Lo que dice PayPal de un pedido tras capturarlo (o al consultarlo)."""
+
+    status: str  # COMPLETED, PENDING, DECLINED, FAILED…
+    capture_id: str | None
+    amount_cents: int
+    currency: str
+    custom_id: str | None = None
+    payer_email: str | None = None
+    raw: dict = field(default_factory=dict)
 
 
 class PaymentProvider(ABC):
     name = "abstract"
 
     @abstractmethod
-    def checkout(self, user_id: str, email: str | None, interval: str, locale: str) -> CheckoutResult: ...
+    def create_order(self, order_id: str, p: Price, description: str, locale: str) -> str: ...
 
     @abstractmethod
-    def portal(self, user_id: str, locale: str) -> str: ...
+    def capture(self, provider_order_id: str, order_id: str) -> Capture: ...
 
     @abstractmethod
-    def handle_webhook(self, session: Session, payload: bytes, signature: str) -> str: ...
+    def refund(self, capture_id: str, order_id: str, p: Price) -> str: ...
+
+    @abstractmethod
+    def verify_webhook(self, headers: dict[str, str], body: bytes) -> bool: ...
 
 
-def set_plan(session: Session, user_id: str, plan_id: str, status: str, customer: str | None = None,
-             subscription: str | None = None, period_end: datetime | None = None, provider: str = "stripe") -> None:
-    profile = session.get(Profile, user_id) or Profile(user_id=user_id, plan_id="free", locale="es")
-    profile.plan_id = plan_id
-    session.add(profile)
-    sub = session.get(Subscription, user_id) or Subscription(user_id=user_id)
-    sub.provider = provider
-    sub.status = status
-    sub.stripe_customer_id = customer or sub.stripe_customer_id
-    sub.stripe_subscription_id = subscription or sub.stripe_subscription_id
-    sub.current_period_end = period_end
-    session.add(sub)
+def _cents(value: str | None) -> int:
+    whole, _, frac = (value or "0").partition(".")
+    return int(whole) * 100 + int((frac + "00")[:2])
+
+
+class PayPalProvider(PaymentProvider):
+    name = "paypal"
+
+    def __init__(self, settings: Settings, transport: httpx.BaseTransport | None = None):
+        self.settings = settings
+        self.base = "https://api-m.paypal.com" if settings.PAYPAL_ENV == "live" else "https://api-m.sandbox.paypal.com"
+        self.http = httpx.Client(base_url=self.base, timeout=20, transport=transport)
+
+    # La ficha de acceso dura unas 9 horas; se guarda en Valkey para no pedirla en cada cobro.
+    def _token(self) -> str:
+        from core.valkey import get_valkey
+
+        r = get_valkey()
+        cached = r.get("paypal:token")
+        if cached:
+            return cached.decode() if isinstance(cached, bytes) else cached
+        resp = self.http.post("/v1/oauth2/token", data={"grant_type": "client_credentials"},
+                              auth=(self.settings.PAYPAL_CLIENT_ID, self.settings.PAYPAL_CLIENT_SECRET))
+        if resp.status_code != 200:
+            raise AppError(ErrorCode.PAYMENT_FAILED, status=502, detail="paypal_auth")
+        data = resp.json()
+        r.set("paypal:token", data["access_token"], ex=max(60, int(data.get("expires_in", 3600)) - 120))
+        return data["access_token"]
+
+    def _call(self, method: str, path: str, request_id: str | None = None, body: dict | None = None) -> httpx.Response:
+        headers = {"Authorization": f"Bearer {self._token()}", "Content-Type": "application/json",
+                   "Prefer": "return=representation"}
+        if request_id:
+            headers["PayPal-Request-Id"] = request_id
+        resp = self.http.request(method, path, headers=headers, content=json.dumps(body) if body is not None else None)
+        if resp.status_code == 401:
+            from core.valkey import get_valkey
+
+            get_valkey().delete("paypal:token")
+        return resp
+
+    def create_order(self, order_id, p, description, locale):
+        unit = {"currency_code": p.currency, "value": money(p.base_cents)}
+        tax = {"currency_code": p.currency, "value": money(p.vat_cents)}
+        body = {
+            "intent": "CAPTURE",
+            "purchase_units": [{
+                "reference_id": order_id,
+                "custom_id": order_id,
+                "invoice_id": order_id,
+                "description": description,
+                "soft_descriptor": self.settings.APP_NAME[:22],
+                "amount": {"currency_code": p.currency, "value": money(p.total_cents),
+                           "breakdown": {"item_total": unit, "tax_total": tax}},
+                "items": [{"name": description, "quantity": "1", "category": "DIGITAL_GOODS",
+                           "unit_amount": unit, "tax": tax}],
+            }],
+            "application_context": {
+                "brand_name": self.settings.APP_NAME[:127],
+                "locale": "es-ES" if locale == "es" else "en-GB",
+                "shipping_preference": "NO_SHIPPING",
+                "user_action": "PAY_NOW",
+            },
+        }
+        resp = self._call("POST", "/v2/checkout/orders", request_id=f"crear-{order_id}", body=body)
+        if resp.status_code not in (200, 201):
+            raise AppError(ErrorCode.PAYMENT_FAILED, status=502, detail="paypal_create")
+        return resp.json()["id"]
+
+    @staticmethod
+    def _parse(data: dict) -> Capture:
+        unit = (data.get("purchase_units") or [{}])[0]
+        caps = ((unit.get("payments") or {}).get("captures")) or []
+        cap = caps[0] if caps else {}
+        amount = cap.get("amount") or unit.get("amount") or {}
+        return Capture(status=cap.get("status") or data.get("status", ""), capture_id=cap.get("id"),
+                       amount_cents=_cents(amount.get("value")), currency=amount.get("currency_code", ""),
+                       custom_id=cap.get("custom_id") or unit.get("custom_id"),
+                       payer_email=(data.get("payer") or {}).get("email_address"), raw=data)
+
+    def capture(self, provider_order_id, order_id):
+        resp = self._call("POST", f"/v2/checkout/orders/{provider_order_id}/capture", request_id=f"capturar-{order_id}", body={})
+        if resp.status_code in (200, 201):
+            return self._parse(resp.json())
+        issue = ""
+        try:
+            issue = (resp.json().get("details") or [{}])[0].get("issue", "")
+        except ValueError:
+            pass
+        if issue == "ORDER_ALREADY_CAPTURED":
+            got = self._call("GET", f"/v2/checkout/orders/{provider_order_id}")
+            if got.status_code == 200:
+                return self._parse(got.json())
+        if issue in ("INSTRUMENT_DECLINED", "PAYER_ACTION_REQUIRED"):
+            # El comprador puede elegir otra tarjeta o cuenta en la misma ventana de PayPal.
+            raise AppError(ErrorCode.PAYMENT_FAILED, status=402, detail=issue.lower())
+        raise AppError(ErrorCode.PAYMENT_FAILED, status=502, detail="paypal_capture")
+
+    def refund(self, capture_id, order_id, p):
+        resp = self._call("POST", f"/v2/payments/captures/{capture_id}/refund", request_id=f"devolver-{order_id}", body={})
+        if resp.status_code not in (200, 201):
+            raise AppError(ErrorCode.PAYMENT_FAILED, status=502, detail="paypal_refund")
+        return resp.json().get("id", "")
+
+    def verify_webhook(self, headers, body):
+        if not self.settings.PAYPAL_WEBHOOK_ID:
+            return False
+        h = {k.lower(): v for k, v in headers.items()}
+        try:
+            event = json.loads(body)
+        except ValueError:
+            return False
+        payload = {
+            "auth_algo": h.get("paypal-auth-algo", ""), "cert_url": h.get("paypal-cert-url", ""),
+            "transmission_id": h.get("paypal-transmission-id", ""), "transmission_sig": h.get("paypal-transmission-sig", ""),
+            "transmission_time": h.get("paypal-transmission-time", ""), "webhook_id": self.settings.PAYPAL_WEBHOOK_ID,
+            "webhook_event": event,
+        }
+        if not all(payload[k] for k in ("auth_algo", "cert_url", "transmission_id", "transmission_sig", "transmission_time")):
+            return False
+        resp = self._call("POST", "/v1/notifications/verify-webhook-signature", body=payload)
+        return resp.status_code == 200 and resp.json().get("verification_status") == "SUCCESS"
 
 
 class FakePaymentProvider(PaymentProvider):
-    """Doble de desarrollo y CI (0.1): el pago se completa con una URL local, sin red."""
+    """Doble de desarrollo y CI: pedidos y capturas en memoria de Valkey, sin red. Nunca en producción."""
 
     name = "fake"
 
@@ -59,100 +207,40 @@ class FakePaymentProvider(PaymentProvider):
 
         return get_valkey()
 
-    def checkout(self, user_id, email, interval, locale):
-        sid = "fake_" + uuid.uuid4().hex
-        self._r().set(f"fakepay:{sid}", user_id, ex=3600)
-        url = f"{self.settings.PUBLIC_API_URL.rstrip('/')}/v1/billing/fake/complete?session={sid}&locale={locale}"
-        return CheckoutResult(url=url, session_id=sid)
+    def create_order(self, order_id, p, description, locale):
+        pid = f"FAKE-{uuid.uuid4().hex[:16].upper()}"
+        self._r().set(f"fakepay:{pid}", json.dumps({"order": order_id, "cents": p.total_cents, "currency": p.currency}), ex=86400)
+        return pid
 
-    def complete(self, session: Session, sid: str) -> str | None:
-        user_id = self._r().getdel(f"fakepay:{sid}")
-        if user_id:
-            set_plan(session, user_id, "pro", "active", customer="fake_customer", subscription=sid, provider="fake")
-        return user_id
+    def capture(self, provider_order_id, order_id):
+        raw = self._r().get(f"fakepay:{provider_order_id}")
+        if not raw:
+            raise AppError(ErrorCode.PAYMENT_FAILED, status=404, detail="paypal_capture")
+        data = json.loads(raw)
+        cap = data.get("capture") or f"FAKECAP-{uuid.uuid4().hex[:12].upper()}"
+        data["capture"] = cap
+        self._r().set(f"fakepay:{provider_order_id}", json.dumps(data), ex=86400)
+        return Capture(status="COMPLETED", capture_id=cap, amount_cents=data["cents"], currency=data["currency"],
+                       custom_id=data["order"], payer_email="comprador@ejemplo.test")
 
-    def portal(self, user_id, locale):
-        return f"{self.settings.PUBLIC_WEB_URL.rstrip('/')}/{locale}/cuenta"
+    def refund(self, capture_id, order_id, p):
+        return f"FAKEREF-{uuid.uuid4().hex[:12].upper()}"
 
-    def handle_webhook(self, session, payload, signature):
-        return "ignorado"
-
-
-class StripePaymentProvider(PaymentProvider):
-    name = "stripe"
-
-    def __init__(self, settings: Settings):
-        import stripe
-
-        self.settings = settings
-        self.stripe = stripe
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-
-    def checkout(self, user_id, email, interval, locale):
-        price = self.settings.STRIPE_PRICE_PRO_YEARLY if interval == "yearly" else self.settings.STRIPE_PRICE_PRO_MONTHLY
-        base = self.settings.PUBLIC_WEB_URL.rstrip("/")
-        sub = None
-        params = dict(
-            mode="subscription",
-            line_items=[{"price": price, "quantity": 1}],
-            client_reference_id=user_id,
-            success_url=f"{base}/{locale}/cuenta?pago=ok",
-            cancel_url=f"{base}/{locale}/precios?pago=cancelado",
-            automatic_tax={"enabled": True},
-            allow_promotion_codes=True,
-            locale="es" if locale == "es" else "en",
-            metadata={"user_id": user_id},
-        )
-        if email:
-            params["customer_email"] = email
-        sub = self.stripe.checkout.Session.create(**params)
-        return CheckoutResult(url=sub.url, session_id=sub.id)
-
-    def portal(self, user_id, locale):
-        from core.db import session_scope
-
-        with session_scope() as s:
-            sub = s.get(Subscription, user_id)
-            customer = sub.stripe_customer_id if sub else None
-        if not customer:
-            return f"{self.settings.PUBLIC_WEB_URL.rstrip('/')}/{locale}/precios"
-        portal = self.stripe.billing_portal.Session.create(customer=customer, return_url=f"{self.settings.PUBLIC_WEB_URL.rstrip('/')}/{locale}/cuenta")
-        return portal.url
-
-    def handle_webhook(self, session, payload, signature):
-        # Verifica la firma con la librería y trabaja sobre el JSON plano (los StripeObject no son dict).
-        self.stripe.Webhook.construct_event(payload, signature, self.settings.STRIPE_WEBHOOK_SECRET)
-        event = json.loads(payload)
-        if session.get(StripeEvent, event["id"]) is not None:
-            return "duplicado"
-        record = StripeEvent(id=event["id"], type=event["type"])
-        session.add(record)
-        obj = event["data"]["object"]
-        if event["type"] == "checkout.session.completed":
-            user_id = obj.get("client_reference_id") or (obj.get("metadata") or {}).get("user_id")
-            if user_id:
-                set_plan(session, user_id, "pro", "active", customer=obj.get("customer"), subscription=obj.get("subscription"))
-        elif event["type"] in ("customer.subscription.updated", "customer.subscription.deleted"):
-            sub = session.query(Subscription).filter(Subscription.stripe_subscription_id == obj.get("id")).one_or_none()
-            if sub is not None:
-                status = obj.get("status", "canceled")
-                active = status in ("active", "trialing", "past_due") and event["type"] != "customer.subscription.deleted"
-                # Desde la API 2025-03-31 el fin de periodo está en cada elemento de la suscripción.
-                items = (obj.get("items") or {}).get("data") or [{}]
-                end = obj.get("current_period_end") or items[0].get("current_period_end")
-                set_plan(session, sub.user_id, "pro" if active else "free", status,
-                         period_end=datetime.fromtimestamp(end, timezone.utc) if end else None)
-        record.processed_at = datetime.now(timezone.utc)
-        return event["type"]
+    def verify_webhook(self, headers, body):
+        return {k.lower(): v for k, v in headers.items()}.get("x-fake-webhook") == "ok"
 
 
 _FAKE: dict[str, FakePaymentProvider] = {}
+TRANSPORT: dict[str, httpx.BaseTransport | None] = {"paypal": None}  # las pruebas sustituyen la red de PayPal
 
 
 def get_provider(settings: Settings) -> PaymentProvider:
-    if settings.PAYMENT_PROVIDER == "stripe" and settings.STRIPE_SECRET_KEY:
-        return StripePaymentProvider(settings)
-    if not settings.is_dev and settings.PAYMENT_PROVIDER != "fake":
-        raise RuntimeError("Falta configurar Stripe")
+    if settings.PAYMENT_PROVIDER == "paypal":
+        if not (settings.PAYPAL_CLIENT_ID and settings.PAYPAL_CLIENT_SECRET):
+            raise AppError(ErrorCode.PAYMENT_FAILED, status=503, detail="paypal_not_configured")
+        return PayPalProvider(settings, transport=TRANSPORT["paypal"])
+    # El doble que cobra sin cobrar solo existe en desarrollo y pruebas: en producción, PayPal o nada.
+    if settings.PAYMENT_PROVIDER != "fake" or settings.APP_ENV not in ("development", "test"):
+        raise AppError(ErrorCode.PAYMENT_FAILED, status=503, detail="paypal_not_configured")
     _FAKE.setdefault("fake", FakePaymentProvider(settings))
     return _FAKE["fake"]

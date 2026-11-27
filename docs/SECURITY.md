@@ -8,7 +8,7 @@ toca; un worker en esa situación no arranca (código 78).
 | Contenedor | Secretos permitidos |
 | --- | --- |
 | `web` | `AUTH_SECRET`, `AUTH_DATABASE_URL`, `SMTP_URL`, `GOOGLE_CLIENT_SECRET` |
-| `api` | `FILE_TOKEN_SECRET`, `ANON_TOKEN_SECRET`, `JOB_SECRETS_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SMTP_URL`, `TURNSTILE_SECRET_KEY`, `DATABASE_URL` |
+| `api` | `FILE_TOKEN_SECRET`, `ANON_TOKEN_SECRET`, `JOB_SECRETS_KEY`, `PAYPAL_CLIENT_SECRET`, `SMTP_URL`, `TURNSTILE_SECRET_KEY`, `DATABASE_URL` |
 | `apiint` | `FILE_TOKEN_SECRET`, `ANON_TOKEN_SECRET`, `DATABASE_URL`, `SMTP_URL`, `BACKUP_RESTIC_PASSWORD` |
 | `beat` | `DATABASE_URL`, `SMTP_URL` |
 | `migrate` | `DATABASE_URL` (y `WORKER_DB_PASSWORD` para crear el rol de los workers) |

@@ -63,4 +63,6 @@ def resolve_owner(authorization: str | None, session: Session, settings: Setting
     is_admin = claims.get("role") == "admin" or (email is not None and email in settings.admin_emails)
     # Better Auth exige verificar el correo antes de entrar (requireEmailVerification); el JWT lo confirma.
     verified = bool(claims.get("email_verified", email is not None))
-    return Owner(type="user", id=user_id, plan_id=profile.plan_id, is_admin=is_admin, email=email, email_verified=verified)
+    from core.plans import effective_plan_id
+
+    return Owner(type="user", id=user_id, plan_id=effective_plan_id(profile), is_admin=is_admin, email=email, email_verified=verified)

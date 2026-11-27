@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { authClient } from "@/lib/auth-client";
+import { safeReturn } from "@/lib/billing";
 import { getConfig } from "@/lib/runtime";
-import { HeroArt } from "./art/HeroArt";
 
 export function AuthPage({ mode }: { mode: "signIn" | "signUp" }) {
   const t = useTranslations("auth");
@@ -18,10 +18,14 @@ export function AuthPage({ mode }: { mode: "signIn" | "signUp" }) {
   const [name, setName] = useState("");
   const [status, setStatus] = useState<"idle" | "busy" | "error" | "check" | "magic">("idle");
   const [google, setGoogle] = useState(false);
-  const account = `/${locale}/${locale === "en" ? "account" : "cuenta"}`;
+  // Tras entrar o confirmar el correo vuelve a donde estaba (p. ej. la página del pase, D-273); si no, a la cuenta.
+  const [account, setAccount] = useState(`/${locale}/${locale === "en" ? "account" : "cuenta"}`);
   useEffect(() => {
     void getConfig().then((c) => setGoogle(c.googleLogin));
-  }, []);
+    const back = safeReturn(new URLSearchParams(window.location.search).get("volver")?.split("?")[0], locale);
+    const raw = new URLSearchParams(window.location.search).get("volver");
+    if (back && raw) setAccount(raw.startsWith(back) ? raw : back);
+  }, [locale]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,8 +45,8 @@ export function AuthPage({ mode }: { mode: "signIn" | "signUp" }) {
   };
 
   return (
-    <div className="mx-auto grid max-w-5xl items-center gap-10 lg:grid-cols-[1fr_1.1fr]">
-    <div className="card flex w-full max-w-md flex-col gap-4 justify-self-center p-6 sm:p-8" style={{ boxShadow: "var(--shadow-lg)" }}>
+    <div className="mx-auto grid max-w-5xl items-center gap-10 py-6">
+    <div className="card flex w-full max-w-md flex-col gap-4 justify-self-center p-6 sm:p-8">
       <h1 className="text-3xl font-bold">{mode === "signIn" ? t("signInTitle") : t("signUpTitle")}</h1>
       <form className="flex flex-col gap-3" onSubmit={(e) => void submit(e)}>
         {mode === "signUp" && (
@@ -72,7 +76,7 @@ export function AuthPage({ mode }: { mode: "signIn" | "signUp" }) {
         </Link>
       </p>
     </div>
-    <div className="hidden lg:block" aria-hidden="true"><HeroArt className="h-auto w-full" /></div>
+
     </div>
   );
 }

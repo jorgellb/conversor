@@ -10,6 +10,8 @@ export const VIEW_NAMESPACES = [
   "printjob", "admin", "account", "signRequest", "signerPage", "invoice", "mermaid", "tarjeta", "escribir", "visor3d",
   // Las páginas de categoría (D-271) los leen en el servidor y pasan al navegador solo las etiquetas del buscador.
   "categoryPage",
+  // Pago del pase y ventas (D-273).
+  "pass", "adminBilling",
 ] as const;
 
 export type ViewNamespace = (typeof VIEW_NAMESPACES)[number];

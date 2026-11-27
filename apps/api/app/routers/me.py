@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.deps import current_owner, current_user, db, settings_dep
 from core.jobs import Owner, load_plan
-from core.models import Job, Profile, SignatureRequest, Subscription, ToolFeedback, UsageDaily, UserToolPrefs
+from core.models import (BillingProfile, Invoice, Job, Order, Pass, Profile, SignatureRequest, ToolFeedback, UsageDaily,
+                         UserToolPrefs)
 from core.quotas import usage
 from core.settings import Settings
 from core.storage import Store
@@ -55,11 +56,15 @@ def put_prefs(body: PrefsIn, owner: Owner = Depends(current_user), session: Sess
 def export(owner: Owner = Depends(current_user), session: Session = Depends(db, scope="function")):
     """Exportación de los datos que guarda la API (RGPD). Los de la cuenta los exporta la web."""
     profile = session.get(Profile, owner.id)
-    sub = session.get(Subscription, owner.id)
     jobs = session.scalars(select(Job).where(Job.owner_type == "user", Job.owner_id == owner.id)).all()
     return {
         "profile": {"plan": profile.plan_id if profile else None, "locale": profile.locale if profile else None},
-        "subscription": {"status": sub.status, "current_period_end": sub.current_period_end.isoformat() if sub and sub.current_period_end else None} if sub else None,
+        "pass_until": profile.pass_until.isoformat() if profile and profile.pass_until else None,
+        "orders": [{"id": str(o.id), "status": o.status, "total_cents": o.total_cents, "currency": o.currency,
+                    "created_at": o.created_at.isoformat() if o.created_at else None}
+                   for o in session.scalars(select(Order).where(Order.user_id == owner.id)).all()],
+        "invoices": [{"number": i.number, "kind": i.kind, "issued_at": i.issued_at.isoformat(), "total_cents": i.total_cents,
+                      "buyer": i.buyer} for i in session.scalars(select(Invoice).where(Invoice.user_id == owner.id)).all()],
         "jobs": [{"id": str(j.id), "tool": j.tool, "status": j.status, "created_at": j.created_at.isoformat() if j.created_at else None} for j in jobs],
         "usage": [{"date": u.date.isoformat(), "class": u.cost_class, "tasks": u.tasks}
                   for u in session.scalars(select(UsageDaily).where(UsageDaily.owner_type == "user", UsageDaily.owner_id == owner.id)).all()],
@@ -109,7 +114,10 @@ def delete_me(owner: Owner = Depends(current_user), session: Session = Depends(d
     for model in (DocumentText, AiCache):
         session.execute(delete(model).where(model.owner_type == "user", model.owner_id == owner.id))
     session.execute(sql("DELETE FROM document_chunks WHERE owner_type = 'user' AND owner_id = :o"), {"o": owner.id})
-    for model in (UserToolPrefs, Subscription, Profile):
+    # Pagos (D-273): los pedidos y las facturas se conservan (obligación de conservar las facturas, art. 66 LGT y 19
+    # del Reglamento de facturación); se borran los datos fiscales guardados y los pases.
+    session.execute(delete(Pass).where(Pass.user_id == owner.id))
+    for model in (UserToolPrefs, BillingProfile, Profile):
         obj = session.get(model, owner.id)
         if obj is not None:
             session.delete(obj)

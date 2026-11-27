@@ -6,7 +6,7 @@ import { CategoryIcon, categoryColor } from "./art/CategoryIcon";
 import { PageLink } from "./PageLink";
 import { FavoriteStar } from "./ToolExplorer";
 
-export type CategoryCard = { slug: string; href: string; name: string; summary: string; where: string; from: string; to: string };
+export type CategoryCard = { slug: string; href: string; name: string; summary: string; where: string; paid: boolean; from: string; to: string };
 export type CategorySection = { id: string; label: string; tools: CategoryCard[] };
 
 function norm(s: string): string {
@@ -21,7 +21,7 @@ function norm(s: string): string {
 export function CategoryTools({ category, sections, labels }: {
   category: string;
   sections: CategorySection[];
-  labels: { search: string; placeholder: string; noResults: string; inBrowser: string; sections: string };
+  labels: { search: string; placeholder: string; noResults: string; inBrowser: string; paid: string; sections: string };
 }) {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(sections[0]?.id);
@@ -116,6 +116,7 @@ export function CategoryTools({ category, sections, labels }: {
                       </span>
                     )}
                     {tool.where === "client" && <span className="local-chip"><span className="mm-local" aria-hidden="true" />{labels.inBrowser}</span>}
+                    {tool.paid && <span className="pass-chip">{labels.paid}</span>}
                   </span>
                 </PageLink>
                 <span className="relative z-10"><FavoriteStar slug={tool.slug} name={tool.name} /></span>

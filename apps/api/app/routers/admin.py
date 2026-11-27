@@ -5,7 +5,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sqlalchemy import func, select
+from sqlalchemy import String, func, select
 from sqlalchemy.orm import Session
 
 from app.deps import current_admin, db, registry_dep, settings_dep, valkey_dep
@@ -78,3 +78,120 @@ def purge(admin: Owner = Depends(current_admin), session: Session = Depends(db, 
 
     session.add(AuditLog(actor=admin.email or admin.id, action="purge", target=None))
     return cleanup_expired()
+
+
+# Pagos (D-273): ventas, pedidos, devoluciones y libro registro de facturas expedidas.
+@router.get("/billing/summary")
+def billing_summary(_: Owner = Depends(current_admin), session: Session = Depends(db, scope="function")):
+    from datetime import datetime, timedelta, timezone
+
+    from core.models import Invoice, Order, Profile
+
+    now = datetime.now(timezone.utc)
+
+    def sales(since: datetime) -> dict:
+        paid = session.execute(select(func.count(), func.coalesce(func.sum(Order.total_cents), 0))
+                               .where(Order.paid_at >= since, Order.status.in_(("paid", "refunded")))).one()
+        refunded = session.execute(select(func.count(), func.coalesce(func.sum(Order.total_cents), 0))
+                                   .where(Order.refunded_at >= since, Order.status == "refunded")).one()
+        return {"orders": paid[0], "gross_cents": int(paid[1]), "refunds": refunded[0], "refunded_cents": int(refunded[1]),
+                "net_cents": int(paid[1]) - int(refunded[1])}
+
+    day0 = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    return {
+        "today": sales(day0), "last_7_days": sales(now - timedelta(days=7)), "last_30_days": sales(now - timedelta(days=30)),
+        "active_passes": session.scalar(select(func.count()).select_from(Profile).where(Profile.pass_until > now)),
+        "invoices": session.scalar(select(func.count()).select_from(Invoice)),
+        "pending_orders": session.scalar(select(func.count()).select_from(Order).where(Order.status == "created",
+                                                                                     Order.created_at > now - timedelta(days=1))),
+    }
+
+
+@router.get("/billing/orders")
+def billing_orders(status: str | None = None, q: str | None = None, limit: int = 100,
+                   _: Owner = Depends(current_admin), session: Session = Depends(db, scope="function")):
+    from app.billing.service import order_json
+    from core.models import Invoice, Order
+
+    query = select(Order).order_by(Order.created_at.desc()).limit(max(1, min(limit, 500)))
+    if status:
+        query = query.where(Order.status == status)
+    if q:
+        like = f"%{q.strip().lower()}%"
+        query = query.where(func.lower(Order.email).like(like) | func.lower(func.coalesce(Order.payer_email, "")).like(like)
+                            | (func.cast(Order.id, String) == q.strip()) | (Order.provider_order_id == q.strip()))
+    rows = session.scalars(query).all()
+    numbers = {}
+    if rows:
+        for inv in session.scalars(select(Invoice).where(Invoice.order_id.in_([o.id for o in rows]))).all():
+            numbers.setdefault(str(inv.order_id), []).append({"id": str(inv.id), "number": inv.number, "kind": inv.kind})
+    return {"orders": [{**order_json(o), "email": o.email, "payer_email": o.payer_email, "user_id": o.user_id,
+                        "provider_order_id": o.provider_order_id, "provider_capture_id": o.provider_capture_id,
+                        "invoices": numbers.get(str(o.id), [])} for o in rows]}
+
+
+@router.post("/billing/orders/{order_id}/refund")
+def billing_refund(order_id: str, admin: Owner = Depends(current_admin), session: Session = Depends(db, scope="function"),
+                   settings: Settings = Depends(settings_dep)):
+    import uuid
+
+    from app.billing import get_provider
+    from app.billing import service
+    from core.errors import AppError, ErrorCode
+    from core.models import Order
+
+    try:
+        oid = uuid.UUID(order_id)
+    except ValueError as exc:
+        raise AppError(ErrorCode.NOT_FOUND, status=404) from exc
+    order = session.execute(select(Order).where(Order.id == oid).with_for_update()).scalar_one_or_none()
+    if order is None:
+        raise AppError(ErrorCode.NOT_FOUND, status=404)
+    if order.status != "paid":
+        raise AppError(ErrorCode.INVALID_OPTIONS, status=409, detail="not_paid")
+    rect = service.refund(session, settings, get_provider(settings), order)
+    session.add(AuditLog(actor=admin.email or admin.id, action="refund", target=str(order.id)))
+    return {"status": order.status, "rectifying_invoice": rect.number if rect else None}
+
+
+@router.get("/billing/invoices.csv")
+def billing_invoices_csv(start: str | None = None, end: str | None = None, _: Owner = Depends(current_admin),
+                         session: Session = Depends(db, scope="function")):
+    """Libro registro de facturas expedidas (para el modelo 303 y la gestoría): una fila por factura."""
+    import csv
+    import io
+    from datetime import date, datetime, time, timezone
+    from zoneinfo import ZoneInfo
+
+    from fastapi.responses import Response
+
+    from app.billing import money
+    from core.errors import AppError, ErrorCode
+    from core.models import Invoice
+
+    tz = ZoneInfo("Europe/Madrid")
+    query = select(Invoice).order_by(Invoice.seq)
+    try:
+        if start:
+            query = query.where(Invoice.issued_at >= datetime.combine(date.fromisoformat(start), time.min, tz))
+        if end:
+            query = query.where(Invoice.issued_at <= datetime.combine(date.fromisoformat(end), time.max, tz))
+    except ValueError as exc:
+        raise AppError(ErrorCode.INVALID_OPTIONS, status=422, detail="date") from exc
+    out = io.StringIO()
+    w = csv.writer(out, delimiter=";")
+    w.writerow(["Número", "Tipo", "Fecha", "Rectifica", "Cliente", "NIF cliente", "País", "Base", "Tipo IVA", "Cuota IVA",
+                "Total", "Huella"])
+    by_id = {}
+    rows = session.scalars(query).all()
+    for i in rows:
+        by_id[i.id] = i.number
+    for i in rows:
+        rect = by_id.get(i.rectifies_id) or (session.get(Invoice, i.rectifies_id).number if i.rectifies_id else "")
+        w.writerow([i.number, i.kind, f"{i.issued_at.astimezone(tz):%d/%m/%Y}", rect, i.buyer.get("name", ""),
+                    i.buyer.get("tax_id", ""), i.buyer.get("country", ""), money(i.base_cents).replace(".", ","),
+                    f"{i.vat_rate_bp / 100:g}".replace(".", ","), money(i.vat_cents).replace(".", ","),
+                    money(i.total_cents).replace(".", ","), i.record_hash])
+    data = "﻿" + out.getvalue()
+    return Response(data, media_type="text/csv; charset=utf-8",
+                    headers={"Content-Disposition": 'attachment; filename="facturas-expedidas.csv"', "Cache-Control": "no-store"})

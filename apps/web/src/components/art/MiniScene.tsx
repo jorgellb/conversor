@@ -117,14 +117,13 @@ export function PageHero({ kind, title, intro, eyebrow, children }: {
   kind: SceneKind; title: ReactNode; intro?: ReactNode; eyebrow?: ReactNode; children?: ReactNode;
 }) {
   return (
-    <header className="tool-hero relative mb-2 grid items-center gap-4 overflow-hidden rounded-3xl border p-6 sm:grid-cols-[1fr_220px] sm:p-8">
+    <header className="tool-hero relative mb-2 pb-6">
       <div className="relative">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h1 className="mt-1 text-3xl font-extrabold sm:text-[2.6rem]">{title}</h1>
+        <h1 className="mt-1 text-3xl font-bold sm:text-[2.5rem]">{title}</h1>
         {intro && <p className="muted mt-2 max-w-xl text-lg">{intro}</p>}
         {children}
       </div>
-      <MiniScene kind={kind} className="mx-auto hidden h-auto w-[220px] sm:block" />
     </header>
   );
 }

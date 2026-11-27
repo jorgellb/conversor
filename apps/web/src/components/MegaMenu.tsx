@@ -12,7 +12,7 @@ import { PageLink } from "./PageLink";
 
 export type MegaMenuItem = { id: string; href: string; label: string; count: string };
 export type MegaMenuLabels = {
-  nav: string; close: string; seeAll: string; inBrowser: string; submenu: string; title: string; loading: string;
+  nav: string; close: string; seeAll: string; inBrowser: string; paid: string; submenu: string; title: string; loading: string;
 };
 
 /*
@@ -255,6 +255,7 @@ function Panel({ item, panel, labels }: { item: MegaMenuItem; panel?: MegaMenuPa
                   <PageLink href={tool.href} className="mm-tool">
                     <span>{tool.name}</span>
                     {tool.client && <span className="mm-local" title={labels.inBrowser}><span className="sr-only">{labels.inBrowser}</span></span>}
+                    {tool.paid && <span className="mm-paid" title={labels.paid}>1 €<span className="sr-only">: {labels.paid}</span></span>}
                   </PageLink>
                 </li>
               ))}

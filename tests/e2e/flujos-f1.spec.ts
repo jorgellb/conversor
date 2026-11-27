@@ -169,41 +169,85 @@ function jwt(): string {
   return `${part({ alg: "EdDSA" })}.${part({ sub: "u-e2e", exp: Math.floor(Date.now() / 1000) + 900 })}.firma`;
 }
 
-test("pago con FakePaymentProvider: Mensual → /v1/billing/checkout → completar → cuenta Pro", async ({ page }) => {
+test("pase de 24 h con el pago de prueba: pedido → captura → pase activo y factura en la cuenta (D-273)", async ({ page }) => {
   await page.route("**/api/auth/get-session**", (route) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({
     user: { id: "u-e2e", email: "ana@ejemplo.test", name: "Ana", emailVerified: true },
     session: { id: "s1", userId: "u-e2e", expiresAt: new Date(Date.now() + 86_400_000).toISOString() } }) }));
   await page.route("**/api/auth/token**", (route) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ token: jwt() }) }));
-  let checkout: unknown = null;
-  let plan = "free";
+  let order: unknown = null;
+  let paid = false;
+  const until = new Date(Date.now() + 86_400_000).toISOString();
   await page.route(`${API}/**`, (route: Route) => {
     const req = route.request();
     const url = new URL(req.url());
     if (req.method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
     const json = (data: unknown) => route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify(data) });
-    if (req.method() === "POST" && url.pathname === "/v1/billing/checkout") {
+    if (url.pathname === "/v1/billing/config") {
+      return json({ provider: "fake", client_id: "", env: "sandbox", currency: "EUR", price_cents: 100, base_cents: 83, vat_cents: 17,
+        vat_rate_bp: 2100, hours: 24, required: true });
+    }
+    if (url.pathname === "/v1/billing/pass") return json({ active: paid, expires_at: paid ? until : null, unlimited: false });
+    if (req.method() === "POST" && url.pathname === "/v1/billing/orders") {
       expect(req.headers()["authorization"]).toMatch(/^Bearer .+\..+\..+$/);
-      checkout = req.postDataJSON();
-      // FakePaymentProvider.checkout: una URL de la propia API que completa el pago sin red (apps/api/app/billing).
-      return json({ url: `${API}/v1/billing/fake/complete?session=fake_e2e&locale=es` });
+      order = req.postDataJSON();
+      return json({ order_id: "0b5c0a3e-0000-4000-8000-000000000001", provider_order_id: "FAKE-1" });
     }
-    if (url.pathname === "/v1/billing/fake/complete") {
-      expect(url.searchParams.get("session")).toBe("fake_e2e");
-      plan = "pro";
-      return route.fulfill({ status: 303, headers: { Location: `${WEB}/es/cuenta?pago=ok` } });
+    if (req.method() === "POST" && url.pathname === "/v1/billing/orders/0b5c0a3e-0000-4000-8000-000000000001/capture") {
+      paid = true;
+      return json({ status: "paid", pass_until: until });
     }
-    if (url.pathname === "/v1/me") return json({ user_id: "u-e2e", plan, email: "ana@ejemplo.test" });
-    if (url.pathname === "/v1/me/usage") return json({ light: { used: 0, limit: 200 }, heavy: { used: 0, limit: 50 } });
+    if (url.pathname === "/v1/billing/orders") {
+      return json({ orders: paid ? [{ id: "o1", status: "paid", hours: 24, total_cents: 100, created_at: until, paid_at: until, refunded_at: null }] : [] });
+    }
+    if (url.pathname === "/v1/billing/invoices") {
+      return json({ invoices: paid ? [{ id: "i1", number: "S2026-000001", kind: "F2", issued_at: until, total_cents: 100, rectifies_id: null }] : [] });
+    }
+    if (url.pathname === "/v1/billing/profile") return json({ name: "", tax_id: "", address: "", postal_code: "", city: "", country: "ES", complete: false });
+    if (url.pathname === "/v1/me") return json({ user_id: "u-e2e", plan: paid ? "pro" : "free", email: "ana@ejemplo.test" });
+    if (url.pathname === "/v1/me/usage") return json({ light: { used: 0, limit: 50 }, heavy: { used: 0, limit: 200 } });
     if (url.pathname === "/v1/me/jobs") return json({ jobs: [] });
     return route.fulfill({ status: 404, headers: cors });
   });
 
   await page.goto("/es/precios");
-  await expect(page.getByText("Pagos en modo de prueba: no se cobra nada.")).toBeVisible();
-  await page.getByRole("button", { name: "Mensual" }).click();
-  await page.waitForURL(/\/es\/cuenta\?pago=ok/);
-  expect(checkout).toEqual({ interval: "monthly", locale: "es" });
-  await expect(page.getByText("Pago completado")).toBeVisible();
-  await expect(page.locator("strong", { hasText: "pro" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Gestionar suscripción" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("1 €");
+  await page.getByRole("link", { name: "Conseguir el pase" }).click();
+  await page.waitForURL(/\/es\/pase/);
+  const pay = page.getByRole("button", { name: /Pagar 1 €/ });
+  await pay.click();
+  await expect(page.locator(".checkout-error")).toHaveText("Marca la casilla para continuar.");
+  expect(order).toBeNull();
+  await page.locator("[data-pass-waiver]").check();
+  await pay.click();
+  await expect(page.locator("[data-pass-paid]")).toContainText("Tu pase está activo hasta");
+  expect(order).toEqual({ locale: "es", waiver: true });
+  await page.getByRole("link", { name: "Ver la factura" }).click();
+  await page.waitForURL(/\/es\/cuenta/);
+  await expect(page.locator('[data-pass-state="active"]')).toBeVisible();
+  await expect(page.getByRole("cell", { name: "S2026-000001" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Descargar PDF" })).toBeVisible();
+});
+
+test("herramienta avanzada sin pase: ofrece el pase antes de subir nada (D-273)", async ({ page }) => {
+  let uploads = 0;
+  await page.route(`${UP}/**`, (route) => { uploads += 1; return route.fulfill({ status: 500, headers: cors }); });
+  await page.route(`${API}/**`, (route: Route) => {
+    const req = route.request();
+    const url = new URL(req.url());
+    if (req.method() === "OPTIONS") return route.fulfill({ status: 204, headers: cors });
+    if (url.pathname === "/v1/billing/config") {
+      return route.fulfill({ status: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({
+        provider: "fake", client_id: "", env: "sandbox", currency: "EUR", price_cents: 100, base_cents: 83, vat_cents: 17, vat_rate_bp: 2100,
+        hours: 24, required: true }) });
+    }
+    return route.fulfill({ status: 404, headers: cors });
+  });
+  await page.goto("/es/pdf-a-word");
+  await expect(page.getByRole("note").filter({ hasText: "Herramienta avanzada" })).toBeVisible();
+  await page.locator('input[type="file"]').setInputFiles({ name: "carta.pdf", mimeType: "application/pdf", buffer: await pdf(1) });
+  await page.getByRole("button", { name: "Empezar" }).click();
+  const offer = page.locator("[data-pass-offer]");
+  await expect(offer).toBeVisible();
+  await expect(offer.getByRole("link", { name: "Crear cuenta y conseguir el pase" })).toHaveAttribute("href", /\/es\/registro\?volver=/);
+  expect(uploads).toBe(0);
 });

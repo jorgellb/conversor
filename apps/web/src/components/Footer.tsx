@@ -22,15 +22,12 @@ export async function Footer({ locale }: { locale: Locale }) {
   ] as const;
   return (
     <footer className="site-footer mt-24">
-      <svg className="block h-10 w-full" viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-        <path className="footer-wave" d="M0 40V22c120-14 240-20 360-12s240 22 360 18 240-22 360-24 240 10 360 18v18Z" />
-      </svg>
       <div className="footer-body">
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-[1fr_1fr_2fr]">
           <div>
             <Link href={`/${locale}`} className="flex items-center gap-2.5 no-underline">
               <LogoMark animated={false} />
-              <span className="display text-lg font-extrabold">{SITE_NAME}</span>
+              <span className="display text-lg font-bold">{SITE_NAME}</span>
             </Link>
             <p className="footer-muted mt-3 max-w-xs text-sm">
               © {new Date().getFullYear()} {SITE_NAME}. {t("rights")}

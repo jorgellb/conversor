@@ -787,6 +787,18 @@ para no cargar cada página. Apartados con ilustración animada, barra fija con 
 formato de entrada y salida; portada con mosaico de categorías y franja de formatos. Pruebas en `apps/web/test/menu.test.ts` y
 `tests/e2e/categorias-navegador.spec.ts` (ratón, teclado, hoja de móvil e índice de secciones); capturas de la plantilla regeneradas.
 
+## Cobro con PayPal (D-273)
+
+Herramientas ligeras gratis; las pesadas, las de IA y las de vídeo piden un pase de 24 horas por 1 € (IVA incluido),
+pagado solo con PayPal desde una cuenta. Pedidos, captura, aviso de PayPal idempotente, facturas correlativas con huella
+encadenada, devoluciones con rectificativa y libro de facturas en el panel. Pruebas en `tests/test_pagos.py`,
+`apps/web/test/billing.test.ts` y los flujos de `tests/e2e/flujos-f1.spec.ts` y `servidor.spec.ts`.
+
+## Diseño sobrio (D-274)
+
+Fondo neutro, tinta y un solo acento; Inter Tight e Inter; sin ilustraciones decorativas ni efectos. Capturas de la
+plantilla regeneradas.
+
 ## Pendiente
 
 - Las fases F1 a F7 están hechas en el código. Lo que queda es operativo o depende del propietario: los puntos sin marcar de

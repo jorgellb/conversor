@@ -4,6 +4,10 @@ import registry from "@conversor/registry/registry.json";
 import { CLOUD_CSP, cloudConfig } from "./cloud-config";
 
 const TURNSTILE = "https://challenges.cloudflare.com";
+// Botones de PayPal (D-273), solo en la página del pase: los dominios que pide la guía de CSP de PayPal.
+const PAYPAL_SLUGS = new Set<string>(["pase", "pass"]);
+const PAYPAL = { script: ["https://*.paypal.com", "https://*.paypalobjects.com"], connect: ["https://*.paypal.com", "https://*.paypalobjects.com"],
+  frame: ["https://*.paypal.com"], img: ["https://*.paypal.com", "https://*.paypalobjects.com"] };
 
 // Páginas con Turnstile: herramientas que pueden subir archivos (servidor o híbridas), los dos conversores (pueden acabar
 // en una herramienta de servidor), escaner-pdf (su OCR opcional al terminar sube el PDF a ocr-pdf) y la página del
@@ -50,12 +54,19 @@ export function buildCsp(nonce: string, pathname: string): string {
       frame.push(...CLOUD_CSP[key].frame);
     }
   }
+  const img = ["'self'", "data:", "blob:"];
+  if (PAYPAL_SLUGS.has(slug)) {
+    script.push(...PAYPAL.script);
+    connect.push(...PAYPAL.connect);
+    frame.push(...PAYPAL.frame);
+    img.push(...PAYPAL.img);
+  }
   if (dev) script.push("'unsafe-eval'");
   const directives = [
     "default-src 'self'",
     `script-src ${script.join(" ")}`,
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob:",
+    `img-src ${img.join(" ")}`,
     "font-src 'self'",
     `connect-src ${connect.filter(Boolean).join(" ")}`,
     "worker-src 'self' blob:",

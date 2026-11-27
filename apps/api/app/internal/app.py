@@ -139,8 +139,9 @@ def pre_finish(event: dict, session: Session, settings: Settings, registry: Regi
 def _plan_id(session: Session, user_id: str) -> str:
     from core.models import Profile
 
-    p = session.get(Profile, user_id)
-    return p.plan_id if p else "free"
+    from core.plans import effective_plan_id
+
+    return effective_plan_id(session.get(Profile, user_id))
 
 
 def post_terminate(event: dict, session: Session, r, settings: Settings) -> dict:
