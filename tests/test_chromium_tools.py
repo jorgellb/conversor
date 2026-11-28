@@ -173,7 +173,7 @@ def test_web_page_goes_to_gotenbergweb_with_options(make_ctx, pdf_bytes):
     assert parts["url"] == b"https://www.ejemplo.com/informe/anual"
     assert parts["landscape"] == b"true" and parts["waitDelay"] == b"2500ms" and parts["emulatedMediaType"] == b"screen"
     assert parts["singlePage"] == b"true"
-    assert json.loads(parts["emulatedMediaFeatures"]) == [{"name": "prefers-color-scheme", "value": "dark"}]
+    assert json.loads(parts["emulatedMediaFeatures"]) == {"prefers-color-scheme": "dark"}
     assert out[0]["name"] == "ejemplo.com-informe-anual.pdf"
     # La página no pasa por el Gotenberg sin red.
     assert not any(c.request.url.host == "gotenberg" for c in respx.calls)

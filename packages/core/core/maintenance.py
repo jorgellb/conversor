@@ -64,6 +64,8 @@ def cleanup_expired() -> dict:
                 pass
             s.delete(share)
             counts["shares"] += 1
+    # Solo recuentos: la traza de Celery con «succeeded» está en WARNING para que no salgan argumentos (12.4).
+    log.info("cleanup_expired: %s", counts)
     return counts
 
 

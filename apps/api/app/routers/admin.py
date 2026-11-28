@@ -19,6 +19,12 @@ from core.settings import Settings
 router = APIRouter(prefix="/v1/admin", tags=["administración"])
 
 
+def _cell(value: object) -> str:
+    """Datos del cliente en el CSV: una celda que empieza por = + - @ o un tabulador se abre como fórmula en Excel."""
+    text = str(value or "")
+    return "'" + text if text[:1] in ("=", "+", "-", "@", "\t", "\r") else text
+
+
 def overview_data(session: Session, r, settings: Settings, registry: Registry) -> dict:
     from datetime import timedelta
 
@@ -188,8 +194,8 @@ def billing_invoices_csv(start: str | None = None, end: str | None = None, _: Ow
         by_id[i.id] = i.number
     for i in rows:
         rect = by_id.get(i.rectifies_id) or (session.get(Invoice, i.rectifies_id).number if i.rectifies_id else "")
-        w.writerow([i.number, i.kind, f"{i.issued_at.astimezone(tz):%d/%m/%Y}", rect, i.buyer.get("name", ""),
-                    i.buyer.get("tax_id", ""), i.buyer.get("country", ""), money(i.base_cents).replace(".", ","),
+        w.writerow([i.number, i.kind, f"{i.issued_at.astimezone(tz):%d/%m/%Y}", rect, _cell(i.buyer.get("name", "")),
+                    _cell(i.buyer.get("tax_id", "")), _cell(i.buyer.get("country", "")), money(i.base_cents).replace(".", ","),
                     f"{i.vat_rate_bp / 100:g}".replace(".", ","), money(i.vat_cents).replace(".", ","),
                     money(i.total_cents).replace(".", ","), i.record_hash])
     data = "﻿" + out.getvalue()

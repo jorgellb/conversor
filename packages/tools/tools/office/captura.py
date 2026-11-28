@@ -28,7 +28,7 @@ def run(ctx: ToolContext) -> list[dict]:
     ctx.report(0.1, None)
     fields = {"width": str(o.ancho), "height": str(o.alto), "clip": str(not o.pagina_completa).lower(),
               "format": "png" if o.formato == "png" else "jpeg", "waitDelay": f"{round(o.espera_s * 1000)}ms",
-              "emulatedMediaFeatures": json.dumps([{"name": "prefers-color-scheme", "value": "dark" if o.esquema == "oscuro" else "light"}])}
+              "emulatedMediaFeatures": json.dumps({"prefers-color-scheme": "dark" if o.esquema == "oscuro" else "light"})}
     if o.formato == "jpg":
         fields["quality"] = str(o.calidad)
     files: list = []

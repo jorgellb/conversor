@@ -167,10 +167,12 @@ def internal(services, jwt_keys):
 def user_token(jwt_keys):
     import jwt
 
-    def make(user_id: str | None = None, role: str | None = None, email: str | None = None) -> str:
+    def make(user_id: str | None = None, role: str | None = None, email: str | None = None, email_verified: bool | None = True) -> str:
         now = datetime.now(timezone.utc)
         claims = {"sub": user_id or f"usuario-{uuid.uuid4().hex[:12]}", "iss": "https://ejemplo.test", "aud": "https://ejemplo.test",
                   "iat": now, "exp": now + timedelta(minutes=15), "email": email or "persona@ejemplo.test"}
+        if email_verified is not None:
+            claims["email_verified"] = email_verified
         if role:
             claims["role"] = role
         return jwt.encode(claims, jwt_keys[0], algorithm="EdDSA")

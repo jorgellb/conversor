@@ -560,6 +560,7 @@ services:
     - --chromium-restart-after=10
     - --chromium-proxy-server=http://egressweb:4750
     - --chromium-deny-list=^(file:|https?://(localhost|127\.|0\.0\.0\.0|\[::1\]|\[::ffff:127\.)).*
+    - '--chromium-allow-list=^(https?|data|blob):'
     - --libreoffice-disable-routes=true
     - --api-download-from-deny-public-ips=true
     - --api-download-from-deny-private-ips=true

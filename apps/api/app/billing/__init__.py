@@ -30,9 +30,18 @@ class Price:
 def price(settings: Settings) -> Price:
     """Precio con IVA incluido: la base es el total entre (1 + tipo), redondeada al céntimo; el IVA, la diferencia."""
     total = settings.PASS_PRICE_CENTS
-    base = round(total * 10000 / (10000 + settings.VAT_RATE_BP))
+    div = 10000 + settings.VAT_RATE_BP
+    base = (total * 10000 * 2 + div) // (2 * div)  # redondeo al céntimo más cercano, en enteros
     return Price(total_cents=total, base_cents=base, vat_cents=total - base, vat_rate_bp=settings.VAT_RATE_BP,
                  hours=settings.PASS_HOURS)
+
+
+def _issue(resp) -> str:
+    """El primer `details[].issue` de un error de PayPal."""
+    try:
+        return str((resp.json().get("details") or [{}])[0].get("issue", ""))
+    except (ValueError, AttributeError, IndexError):
+        return ""
 
 
 def money(cents: int) -> str:
@@ -145,7 +154,9 @@ class PayPalProvider(PaymentProvider):
         caps = ((unit.get("payments") or {}).get("captures")) or []
         cap = caps[0] if caps else {}
         amount = cap.get("amount") or unit.get("amount") or {}
-        return Capture(status=cap.get("status") or data.get("status", ""), capture_id=cap.get("id"),
+        # Sin captura no hay cobro: un pedido COMPLETED sin captura no da el pase.
+        status = cap.get("status", "") if cap else ("PENDING" if data.get("status") == "COMPLETED" else data.get("status", ""))
+        return Capture(status=status, capture_id=cap.get("id"),
                        amount_cents=_cents(amount.get("value")), currency=amount.get("currency_code", ""),
                        custom_id=cap.get("custom_id") or unit.get("custom_id"),
                        payer_email=(data.get("payer") or {}).get("email_address"), raw=data)
@@ -154,11 +165,7 @@ class PayPalProvider(PaymentProvider):
         resp = self._call("POST", f"/v2/checkout/orders/{provider_order_id}/capture", request_id=f"capturar-{order_id}", body={})
         if resp.status_code in (200, 201):
             return self._parse(resp.json())
-        issue = ""
-        try:
-            issue = (resp.json().get("details") or [{}])[0].get("issue", "")
-        except ValueError:
-            pass
+        issue = _issue(resp)
         if issue == "ORDER_ALREADY_CAPTURED":
             got = self._call("GET", f"/v2/checkout/orders/{provider_order_id}")
             if got.status_code == 200:
@@ -170,6 +177,9 @@ class PayPalProvider(PaymentProvider):
 
     def refund(self, capture_id, order_id, p):
         resp = self._call("POST", f"/v2/payments/captures/{capture_id}/refund", request_id=f"devolver-{order_id}", body={})
+        if resp.status_code not in (200, 201) and _issue(resp) == "CAPTURE_FULLY_REFUNDED":
+            # Un reintento tras un fallo de la base de datos: PayPal ya devolvió el dinero.
+            return ""
         if resp.status_code not in (200, 201):
             raise AppError(ErrorCode.PAYMENT_FAILED, status=502, detail="paypal_refund")
         return resp.json().get("id", "")

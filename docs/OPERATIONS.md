@@ -148,7 +148,27 @@ las concurrencias medidas.
 ## Logs
 
 JSON en la salida estándar, rotados por Docker (10 MB × 5). Nunca contienen contraseñas ni tokens: las contraseñas de
-PDF viajan cifradas y los tokens de descarga solo aparecen en la URL que recibe el navegador.
+PDF viajan cifradas y los tokens de descarga solo aparecen en la URL que recibe el navegador. Los workers y `beat`
+escriben el mismo JSON que la API (D-275); la traza de Celery («Task … succeeded») queda en WARNING para que no salgan
+argumentos, y `cleanup_expired` deja una línea con sus recuentos cada 5 minutos.
+
+## Prueba de humo de la pila (D-275)
+
+`python scripts/dev/humo_pila.py <carpeta>` (con `API` y `UPLOAD` apuntando al dominio en el VPS) convierte por la API,
+como un navegador anónimo, 12 archivos y páginas reales con Gotenberg, workermedia, gotenbergweb y egressweb, y
+comprueba que 169.254.169.254 y 127.0.0.1 se rechazan. Deja los resultados en la carpeta y sale con 1 si algo falla.
+Gasta 12 de las 20 tareas ligeras del día de la IP.
+
+## Pase y devoluciones (D-273, D-275)
+
+- Las devoluciones se hacen desde `/admin` (pedido → Devolver): PayPal devuelve el euro, el pase se retira (los pases
+  posteriores se adelantan) y se emite la rectificativa. Un reintento tras un fallo intermedio es seguro: si PayPal
+  responde `CAPTURE_FULLY_REFUNDED`, cuenta como hecha.
+- Una devolución **parcial** hecha desde el panel de PayPal no retira el pase ni emite rectificativa: deja en el log de
+  la API «Devolución parcial en PayPal del pedido …» y hay que regularizarla a mano con la asesoría. No hagas
+  devoluciones parciales.
+- Un contracargo (`PAYMENT.CAPTURE.REVERSED`) retira el pase y emite la rectificativa como una devolución completa.
+- Un aviso de devolución que llega antes de que se haya guardado su cobro responde 503 y PayPal lo repite.
 
 ## Cuenta de OpenRouter (6.1 y 13.3)
 

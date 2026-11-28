@@ -119,7 +119,7 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
       (en el log de Smokescreen) y el informe dice «Comprobada en línea».
 - [ ] `upload.` y `files.` responden a través del proxy de Coolify (los dos servicios solo están en `internal` más la red que
       añade Coolify; D-181) y una subida de prueba llega a tusd.
-- [ ] Los logs de `beat` muestran `beat: Starting...` y `cleanup_expired ... succeeded` cada 5 minutos, sin
+- [ ] Los logs de `beat` (en JSON) muestran `beat: Starting...` y `cleanup_expired: {...}` cada 5 minutos, sin
       `permission denied` (D-181).
 - [ ] Un anónimo puede comprimir un PDF y la tercera tarea pesada del día devuelve `QUOTA_EXCEEDED`.
 - [ ] Pago de prueba con PayPal *Sandbox* (cuenta y tarjeta): pase activo 24 h, factura en la cuenta y en el correo, el
@@ -177,7 +177,7 @@ Marca cada punto en el VPS. Lo que no se pueda hacer queda como pendiente en `PR
 - [ ] Lote K de F6: Landlock disponible dentro de `workerutils` en el Docker del VPS (perfil seccomp por defecto de Docker 23 o posterior); si no, latex-a-pdf falla con `ENGINE_FAILED sandbox` y hay que actualizar Docker. Comprobar latex-a-pdf y drawio-a-pdf y drawio-a-png con Gotenberg real.
 - [ ] Lote M de F6: captura-web contra páginas reales con `gotenbergweb` y `egressweb` (y bloqueada contra 169.254.169.254, localhost y una IP privada tras redirección, 16.4); udf-a-pdf con documentos UDF reales de UYAP antes de encenderla (`TOOL_UDF_A_PDF_ENABLED=true` y quitar `default_enabled=False`).
 - [ ] Landlock en el VPS (D-227, D-230): que el perfil de seccomp de Docker deje pasar `landlock_create_ruleset`, `landlock_add_rule` y `landlock_restrict_self` en `workerutils` (latex-a-pdf) y `workermedia` (pst-a-mbox y pst-a-pdf); sin ellas esas herramientas fallan cerradas con ENGINE_FAILED «sandbox». Comprobar con un latex-a-pdf de prueba tras desplegar.
-- [ ] `gotenbergweb` con `--chromium-deny-list` (D-233): comprobar que web-a-pdf y captura-web siguen funcionando con páginas reales y que una página que enmarca `http://127.0.0.1:3000/health` sale con el marco vacío.
+- [ ] `gotenbergweb` con `--chromium-deny-list` (D-233) y `--chromium-allow-list` (D-275; en local ya salen example.com y Wikipedia): comprobar en el VPS que web-a-pdf y captura-web siguen funcionando con páginas reales y que una página que enmarca `http://127.0.0.1:3000/health` sale con el marco vacío.
 - [ ] Gotenberg principal con `--chromium-deny-list=^file:(?!///tmp/[^/]+/[^/]).*` (D-246): escribir-pdf, html-a-pdf y
       drawio-a-pdf siguen funcionando con Gotenberg real y un HTML que pide `file:///etc/passwd` sale sin ese contenido.
 

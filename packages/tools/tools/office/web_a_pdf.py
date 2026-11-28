@@ -182,7 +182,8 @@ def chromium_fields(o) -> dict[str, str]:
     fields = gotenberg.page_fields(o.papel, o.orientacion, o.margenes_mm, o.imprimir_fondos, o.una_pagina, o.medio)
     fields["waitDelay"] = f"{round(o.espera_s * 1000)}ms"  # «1e-05s» no lo entiende Gotenberg (D-233)
     scheme = "dark" if o.esquema == "oscuro" else "light"
-    fields["emulatedMediaFeatures"] = json.dumps([{"name": "prefers-color-scheme", "value": scheme}])
+    # Gotenberg 8.39 lo lee como objeto (map[string]string); una lista da 400 (D-275).
+    fields["emulatedMediaFeatures"] = json.dumps({"prefers-color-scheme": scheme})
     return fields
 
 

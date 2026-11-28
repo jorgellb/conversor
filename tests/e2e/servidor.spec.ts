@@ -98,6 +98,25 @@ test("pdf-a-word: sin pase ofrece el pase; con el pase, convierte (D-273)", asyn
   expect(body.subarray(0, 2).toString()).toBe("PK");
 });
 
+// D-275: Chromium de gotenbergweb sale por egressweb; con el Gotenberg real, una URL pública da su PDF (las pruebas de
+// Python simulan Gotenberg y no vieron ni el formato de emulatedMediaFeatures ni el DNS que falta en webrender).
+test("web-a-pdf con una página pública por gotenbergweb y egressweb", async ({ request }) => {
+  const api = process.env.API_URL ?? "http://localhost:8000";
+  const session = await request.post(`${api}/v1/session/anon`, { data: { turnstile_token: "XXXX.DUMMY.TOKEN.XXXX" } });
+  expect(session.status()).toBe(200);
+  const headers = { Authorization: `Bearer ${(await session.json()).token}` };
+  const created = await request.post(`${api}/v1/jobs`, { headers, data: { tool: "web-a-pdf", options: { url: "https://example.com/" } } });
+  expect(created.status(), await created.text()).toBe(201);
+  let job = await created.json();
+  await expect.poll(async () => {
+    job = await (await request.get(`${api}/v1/jobs/${job.id}`, { headers })).json();
+    return job.status;
+  }, { timeout: 120_000, intervals: [1_000] }).toMatch(/^(succeeded|failed)$/);
+  expect(job.status, JSON.stringify(job.error)).toBe("succeeded");
+  const pdf = await request.get(job.outputs[0].url);
+  expect((await pdf.body()).subarray(0, 5).toString()).toBe("%PDF-");
+});
+
 test("descarga con token manipulado: 403", async ({ page }) => {
   await page.goto("/es/comprimir-pdf");
   await page.locator('input[type="file"]').setInputFiles(path.join(FIXTURES, "texto.pdf"));

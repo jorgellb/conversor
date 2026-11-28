@@ -61,8 +61,9 @@ def resolve_owner(authorization: str | None, session: Session, settings: Setting
         session.flush()
     email = claims.get("email")
     is_admin = claims.get("role") == "admin" or (email is not None and email in settings.admin_emails)
-    # Better Auth exige verificar el correo antes de entrar (requireEmailVerification); el JWT lo confirma.
-    verified = bool(claims.get("email_verified", email is not None))
+    # Better Auth exige verificar el correo antes de entrar (requireEmailVerification) y el JWT lo lleva siempre
+    # (`definePayload` de apps/web/src/lib/auth.ts); sin la reclamación no se da por verificado (D-275).
+    verified = claims.get("email_verified") is True
     from core.plans import effective_plan_id
 
     return Owner(type="user", id=user_id, plan_id=effective_plan_id(profile), is_admin=is_admin, email=email, email_verified=verified)

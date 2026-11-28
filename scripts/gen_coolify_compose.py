@@ -299,6 +299,9 @@ def build() -> dict:
                      "--chromium-proxy-server=http://egressweb:4750",
                      # D-233: Chromium no pasa por el proxy para el bucle local; 127.0.0.1 y file: se niegan.
                      r"--chromium-deny-list=^(file:|https?://(localhost|127\.|0\.0\.0\.0|\[::1\]|\[::ffff:127\.)).*",
+                     # D-275: sin una coincidencia en la lista de permitidas, Gotenberg 8.39 resuelve el host él mismo y en
+                     # la red interna no hay DNS externo (toda URL pública daba 403). Las IP privadas las niega egressweb.
+                     "--chromium-allow-list=^(https?|data|blob):",
                      "--libreoffice-disable-routes=true",
                      "--api-download-from-deny-public-ips=true", "--api-download-from-deny-private-ips=true",
                      "--webhook-deny-public-ips=true", "--webhook-deny-private-ips=true"],

@@ -305,3 +305,95 @@ def test_paypal_amount_mismatch_gives_nothing(api, paypal, user_token):
                                                  "amount": {"currency_code": "EUR", "value": "0.01"}})
     assert api.post("/v1/billing/webhook", content=event, headers=SIGNED).status_code == 409
     assert api.get("/v1/billing/pass", headers=headers).json()["active"] is False
+
+
+def test_price_rounds_in_integers(pase, monkeypatch):
+    from app.billing import price
+
+    for total, bp, base in ((100, 2100, 83), (1000, 2100, 826), (121, 2100, 100), (500, 1000, 455), (100, 0, 100)):
+        monkeypatch.setattr(pase, "PASS_PRICE_CENTS", total)
+        monkeypatch.setattr(pase, "VAT_RATE_BP", bp)
+        p = price(pase)
+        assert (p.base_cents, p.vat_cents) == (base, total - base)
+
+
+def test_paypal_completed_order_without_capture_is_not_paid():
+    from app.billing import PayPalProvider
+
+    got = PayPalProvider._parse({"id": "PP1", "status": "COMPLETED", "purchase_units": [{"amount": {"currency_code": "EUR", "value": "1.00"}}]})
+    assert got.status == "PENDING" and got.capture_id is None
+
+
+def test_csv_cells_cannot_be_formulas():
+    from app.routers.admin import _cell
+
+    assert _cell('=HYPERLINK("http://x")') == "'=HYPERLINK(\"http://x\")"
+    assert [_cell(v) for v in ("+34", "-1", "@SUM(A1)", "\tx", "Ana", "", None)] == ["'+34", "'-1", "'@SUM(A1)", "'\tx", "Ana", "", ""]
+
+
+def _paid_by_webhook(api, headers, capture_id: str) -> dict:
+    order = api.post("/v1/billing/orders", json={"waiver": True}, headers=headers).json()
+    event = _event("PAYMENT.CAPTURE.COMPLETED", {"id": capture_id, "status": "COMPLETED", "custom_id": order["order_id"],
+                                                 "amount": {"currency_code": "EUR", "value": "1.00"}})
+    assert api.post("/v1/billing/webhook", content=event, headers=SIGNED).status_code == 200
+    return order
+
+
+def _refund_event(kind: str, capture_id: str, value: str = "1.00") -> bytes:
+    return _event(kind, {"id": f"REF-{uuid.uuid4().hex[:8]}", "status": "COMPLETED",
+                         "amount": {"currency_code": "EUR", "value": value},
+                         "links": [{"rel": "up", "href": f"https://api.paypal.com/v2/payments/captures/{capture_id}", "method": "GET"}]})
+
+
+def test_paypal_partial_refund_keeps_pass_and_reversal_revokes_it(api, paypal, user_token):
+    _, headers = _user(user_token)
+    cap = f"CAP-{uuid.uuid4().hex[:8]}"
+    _paid_by_webhook(api, headers, cap)
+    partial = api.post("/v1/billing/webhook", content=_refund_event("PAYMENT.CAPTURE.REFUNDED", cap, "0.50"), headers=SIGNED)
+    assert partial.status_code == 200
+    assert api.get("/v1/billing/pass", headers=headers).json()["active"] is True
+    assert [i["kind"] for i in api.get("/v1/billing/invoices", headers=headers).json()["invoices"]] == ["F2"]
+    # Contracargo: PayPal manda una devolución cuyo enlace «up» es la captura.
+    reversed_ = api.post("/v1/billing/webhook", content=_refund_event("PAYMENT.CAPTURE.REVERSED", cap), headers=SIGNED)
+    assert reversed_.status_code == 200
+    assert api.get("/v1/billing/pass", headers=headers).json()["active"] is False
+    assert sorted(i["kind"] for i in api.get("/v1/billing/invoices", headers=headers).json()["invoices"]) == ["F2", "R5"]
+
+
+def test_paypal_refund_before_capture_is_saved_is_retried(api, paypal, user_token):
+    _, headers = _user(user_token)
+    # Un pedido en curso (creado en PayPal y sin capturar) y una devolución de una captura que aún no tiene pedido.
+    api.post("/v1/billing/orders", json={"waiver": True}, headers=headers)
+    cap = f"CAP-{uuid.uuid4().hex[:8]}"
+    early = _refund_event("PAYMENT.CAPTURE.REFUNDED", cap)
+    assert api.post("/v1/billing/webhook", content=early, headers=SIGNED).status_code == 503
+    _paid_by_webhook(api, headers, cap)
+    # La repetición de PayPal (mismo id de evento) no está apuntada como procesada y retira el pase.
+    again = api.post("/v1/billing/webhook", content=early, headers=SIGNED)
+    assert again.status_code == 200 and again.json()["received"] == "PAYMENT.CAPTURE.REFUNDED"
+    assert api.get("/v1/billing/pass", headers=headers).json()["active"] is False
+
+
+def test_paypal_refund_retry_after_full_refund_is_success(api, paypal, user_token, monkeypatch):
+    _, headers = _user(user_token)
+    order = _buy(api, headers)
+    original = paypal.__call__
+
+    def already(request):
+        if request.url.path.endswith("/refund"):
+            return httpx.Response(422, json={"name": "UNPROCESSABLE_ENTITY", "details": [{"issue": "CAPTURE_FULLY_REFUNDED"}]})
+        return original(request)
+
+    from app import billing
+
+    monkeypatch.setitem(billing.TRANSPORT, "paypal", httpx.MockTransport(already))
+    admin = auth(user_token(role="admin"))
+    done = api.post(f"/v1/admin/billing/orders/{order['order_id']}/refund", headers=admin)
+    assert done.status_code == 200 and done.json()["status"] == "refunded"
+
+
+def test_order_needs_verified_email_claim(api, pase, user_token):
+    for verified in (None, False):
+        headers = auth(user_token(email_verified=verified))
+        got = api.post("/v1/billing/orders", json={"locale": "es", "waiver": True}, headers=headers)
+        assert got.status_code == 403, (verified, got.text)

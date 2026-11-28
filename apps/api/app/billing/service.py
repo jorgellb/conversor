@@ -160,6 +160,23 @@ def _capture_id_of(resource: dict) -> str | None:
     return None
 
 
+def _is_partial(resource: dict, order: Order) -> bool:
+    from . import _cents
+
+    value = (resource.get("amount") or {}).get("value")
+    return value is not None and abs(_cents(value)) < order.total_cents
+
+
+def _unmatched(session: Session, kind: str) -> None:
+    """Una devolución que no encuentra su pedido. Si hay un cobro en curso (la captura aún no ha guardado su id), se
+    responde 503 para que PayPal la repita y no quede apuntada como procesada; si no, se registra y se ignora."""
+    recent = utcnow() - timedelta(hours=24)
+    if session.scalar(select(Order.id).where(Order.status == "created", Order.provider_order_id.is_not(None),
+                                             Order.created_at >= recent).limit(1)) is not None:
+        raise AppError(ErrorCode.INTERNAL, status=503, detail="order_not_ready")
+    log.warning("Aviso %s de PayPal sin pedido", kind)
+
+
 def handle_event(session: Session, settings: Settings, provider: PaymentProvider, event: dict) -> str:
     """Aviso de PayPal ya verificado. Idempotente por el id del evento."""
     event_id, kind = str(event.get("id", "")), str(event.get("event_type", ""))
@@ -189,10 +206,16 @@ def handle_event(session: Session, settings: Settings, provider: PaymentProvider
                                                       amount_cents=_cents(amount.get("value")),
                                                       currency=amount.get("currency_code", ""), custom_id=custom))
     elif kind in ("PAYMENT.CAPTURE.REFUNDED", "PAYMENT.CAPTURE.REVERSED"):
-        # REFUNDED trae la devolución (su enlace «up» es la captura); REVERSED, la propia captura.
-        capture_id = _capture_id_of(res) if kind == "PAYMENT.CAPTURE.REFUNDED" else res.get("id")
+        # Los dos traen una devolución cuyo enlace «up» es la captura; por si alguna vez trae la captura, su id.
+        capture_id = _capture_id_of(res) or res.get("id")
         order = _lock(session, provider_capture_id=capture_id) if capture_id else None
-        if order is not None:
+        if order is None:
+            _unmatched(session, kind)
+        elif kind == "PAYMENT.CAPTURE.REFUNDED" and _is_partial(res, order):
+            # Una devolución parcial desde el panel de PayPal no retira el pase ni emite una rectificativa por el total:
+            # el titular la tiene que regularizar a mano (OPERATIONS.md). Las devoluciones se hacen desde /admin.
+            log.error("Devolución parcial en PayPal del pedido %s: revisar a mano", order.id)
+        else:
             refund(session, settings, None, order)
     elif kind == "PAYMENT.CAPTURE.DENIED":
         order = _lock(session, provider_capture_id=res.get("id")) if res.get("id") else None

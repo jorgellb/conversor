@@ -168,3 +168,20 @@ def test_egress_proxies_apply_the_default_acl_without_client_tls():
             command = services[name]["command"]
             assert "--config-file=/etc/smokescreen/config.yaml" in command and "--allow-missing-role" not in command, name
             assert "./infra/smokescreen/config.yaml:/etc/smokescreen/config.yaml:ro" in services[name]["volumes"], name
+
+
+def test_gotenbergweb_filters_urls_without_resolving_them():
+    """D-275: Gotenberg 8.39 resuelve el host de las URL que no coinciden con --chromium-allow-list y en `webrender` no
+    hay DNS externo; la lista de permitidas deja el filtrado de IP a egressweb y la de denegadas sigue cortando el bucle
+    local y file:."""
+    for path in ("docker-compose.yml", "docker-compose.coolify.yml"):
+        cmd = yaml.safe_load((ROOT / path).read_text())["services"]["gotenbergweb"]["command"]
+        allow = next(a.split("=", 1)[1] for a in cmd if a.startswith("--chromium-allow-list="))
+        deny = next(a.split("=", 1)[1] for a in cmd if a.startswith("--chromium-deny-list="))
+        assert "--chromium-proxy-server=http://egressweb:4750" in cmd, path
+        for url in ("https://example.com/", "http://ejemplo.test/a", "data:image/png;base64,AA", "blob:https://x/1"):
+            assert re.match(allow, url) and not re.match(deny, url), (path, url)
+        for url in ("file:///etc/passwd", "http://127.0.0.1:3000/health", "http://localhost/", "http://[::1]/",
+                    "http://[::ffff:127.0.0.1]/", "http://0.0.0.0:3000/"):
+            assert re.match(deny, url), (path, url)
+        assert not re.match(allow, "file:///etc/passwd"), path

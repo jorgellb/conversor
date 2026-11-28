@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -105,8 +106,11 @@ def pdfua_with_libreoffice(docx: Path, dst: Path, work: Path) -> Path | None:
                                                  "UseTaggedPDF": {"type": "boolean", "value": "true"}})
     outdir = work / f"ua-{docx.stem}"
     outdir.mkdir(parents=True, exist_ok=True)
+    # PATH del sistema, como en generate.py: con el bin de un entorno virtual delante soffice muere con std::bad_alloc.
+    env = {**os.environ, "PATH": "/usr/local/bin:/usr/bin:/bin"}
+    env.pop("VIRTUAL_ENV", None)
     subprocess.run([soffice, f"-env:UserInstallation=file://{work}/lo-ua", "--headless", "--convert-to", flt, "--outdir",
-                    str(outdir), str(docx)], check=False, capture_output=True, timeout=180)
+                    str(outdir), str(docx)], check=False, capture_output=True, timeout=180, env=env)
     produced = outdir / f"{docx.stem}.pdf"
     if not produced.exists():  # LibreOffice sin Writer
         return None

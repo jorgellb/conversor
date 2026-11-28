@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from celery import Celery
 from celery.schedules import crontab
+from celery.signals import setup_logging as celery_setup_logging
 
 from core.registry import load_registry
 from core.settings import get_settings
@@ -60,3 +61,13 @@ def make_celery() -> Celery:
 
 
 celery_app = make_celery()
+
+
+@celery_setup_logging.connect
+def _json_logs(**_kwargs) -> None:
+    """Los workers y beat escriben los mismos logs en JSON que la API (12.4). Con un receptor en esta señal Celery no
+    configura el logging; sin él, y con `worker_hijack_root_logger=False`, el logger raíz se quedaba sin manejador y se
+    perdían todos los INFO (arranque de beat, limpiezas, lista de confianza de la UE) y los errores salían sin JSON."""
+    from core.logs import setup_logging
+
+    setup_logging(get_settings().LOG_LEVEL)

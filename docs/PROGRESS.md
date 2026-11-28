@@ -28,22 +28,24 @@ de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F
 
 ## No verificado en esta entrega
 
+Desde el 2026-11-26 hay Docker en la máquina de trabajo y lo que antes solo corría en la CI se ha comprobado en local
+(D-275): las imágenes, el arranque con healthchecks, Playwright `servidor` (10 de 10), veraPDF 1.30.3 real, KoSIT real
+(92 pruebas de facturas electrónicas), el modelo u2net, las muestras de bgcode, el aislamiento de red (ningún worker ni
+Gotenberg sale a Internet; `workeroffice` sale por egressweb, que niega 10.0.0.1, 169.254.169.254 y 127.0.0.1;
+`gotenbergweb` solo lo alcanza `workeroffice`), `/readyz` con `secrets: ok`, la descarga con token alterado (403) y las
+cabeceras de `files.`, Landlock (ABI 6) en workerutils, workermedia, workermesh y workercad, KoSIT arrancado en
+workerutils y los logs JSON de beat con `cleanup_expired`. Lo que sigue necesita el VPS, claves o muestras reales.
+
 - **IA contra OpenRouter real**: no hay clave en el entorno de trabajo. Las pruebas usan el proveedor falso y transportes
   simulados con las respuestas documentadas (429 con `Retry-After`, 404 por la política de datos, 503, JSON). El cierre
-  técnico de F3 (uso real de peticiones registrado) necesita la clave del propietario. `egressai`, la imagen `worker-ai`
-  (con el modelo de embeddings) y `workeraiembed`, sin Docker, como el resto de imágenes; la prueba de chat-pdf con la pila
-  completa (`servidor.spec.ts`) queda para la CI.
+  técnico de F3 (uso real de peticiones registrado) necesita la clave del propietario. La imagen `worker-ai` (con el modelo
+  de embeddings), `workeraiembed` y la prueba de chat-pdf con la pila completa (`servidor.spec.ts`, LLM falso) ya
+  corren en local (D-275).
 
-- **Imágenes Docker y arranque de humo del Compose**: el entorno de trabajo no tiene demonio de Docker. Las imágenes y
-  la prueba `e2e-compose` se ejecutan en GitHub Actions; es el primer paso pendiente.
-- **Conversiones reales con Gotenberg** de html-a-pdf, markdown-a-pdf, txt-a-pdf, web-a-pdf y, del lote C, svg-a-pdf,
-  eml-a-pdf, msg-a-pdf, dxf-a-pdf, pages/keynote/numbers/visio/publisher-a-pdf y el índice de solicitud-de-empleo-pdf: las
-  pruebas simulan Gotenberg y comprueban lo que se le envía; el HTML de Markdown, TXT y de un correo se ha impreso con el
-  Chromium local para revisar el resultado. Si LibreOffice importa bien un .pages, .key, .numbers, .vsd o .pub real
-  solo se sabrá con la pila completa.
-- **veraPDF**: el instalador no se ha podido ejecutar en el entorno de trabajo (código externo). pdf-a-pdfa y
-  validar-pdfa se han probado con OCRmyPDF y Tesseract reales y un informe de veraPDF de ejemplo; la CI instala veraPDF
-  1.30.3 y ejecuta la prueba real (D-63).
+- **Conversiones reales con Gotenberg**: comprobadas en local con la pila completa (D-275) html-a-pdf, markdown-a-pdf,
+  txt-a-pdf, svg-a-pdf, escribir-pdf, epub-a-pdf, eml-a-pdf, dxf-a-pdf, cbz-a-pdf, djvu-a-pdf, web-a-pdf y captura-web
+  (estas dos con páginas públicas reales por egressweb). Si LibreOffice importa bien un .pages, .key, .numbers, .vsd o
+  .pub real solo se sabrá con muestras reales.
 - **Imagen `worker-media`**: la compilación de libheif solo para decodificar (D-49) no se ha podido probar sin Docker; en
   el entorno de trabajo, heic-a-pdf se ha probado con el libheif del sistema. Los flags de `gotenbergweb` (`--chromium-proxy-server`, `--libreoffice-disable-routes`) se comprueban
   en el arranque de humo.
@@ -56,8 +58,6 @@ de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F
   (`tests/test_desde_pdf_docling.py`). Las 10 pruebas de Playwright que simulan la API (`chat-f3.spec.ts`,
   `ia-f3.spec.ts`, `flujos-f1.spec.ts` y la de copiar-de-pdf de `f2.spec.ts`) fijan el origen `http://127.0.0.1:3100`
   en sus cabeceras CORS y no se pudieron ejecutar aquí en otro puerto: solo corren en la CI.
-- **Playwright del proyecto `servidor`**, la parte de servidor de `lector-pdf` y el formulario «Enviar por correo» en la
-  web: pendientes de la ejecución con la pila completa (la API del envío sí tiene pruebas con PostgreSQL real).
 - **Google Drive y Dropbox** contra los servicios reales: hacen falta las claves del propietario (D-36).
 - **Lighthouse** (1.3): medido aquí con Chrome 157 y en la CI en cada cambio (D-145); con el dominio real, Cloudflare y
   Umami, en el VPS (DEPLOY-CHECKLIST). **Prueba de carga k6** (16.1): el escenario está comprobado (D-146), pero solo se
@@ -65,7 +65,6 @@ de 16.1 y prueba de carga revisada) hecho (D-144 a D-149); G1-A (huecos de F1, F
 - **G0-B en la CI**: las referencias de la regresión visual de la plantilla se generaron aquí con el Chromium de
   Playwright 1.64.1 (el mismo que instala la CI); la primera ejecución en GitHub las confirma. Lighthouse y la regresión
   de los PDF en los jobs `web` y `python`, y las muestras de `servidor.spec.ts` en `e2e-compose`, solo en la CI.
-- **veraPDF** para la salida PDF/A de ocr-pdf (16.6).
 - **F3, lote C**: imagen-a-excel de extremo a extremo por la API se ha probado con la etapa de Docling sustituida por su
   resultado (con tabla y sin ella); Docling real sobre las imágenes, con `make_ctx`, en `tests/test_imagen_excel_docling.py`
   (aquí y en el job `docling` de la CI, que no tiene PostgreSQL). Las respuestas del modelo vienen del proveedor falso y de
@@ -798,6 +797,15 @@ encadenada, devoluciones con rectificativa y libro de facturas en el panel. Prue
 
 Fondo neutro, tinta y un solo acento; Inter Tight e Inter; sin ilustraciones decorativas ni efectos. Capturas de la
 plantilla regeneradas.
+
+## Comprobaciones con la pila local (D-275)
+
+Pytest completo: 3127 en verde y 68 omitidas sin KoSIT, veraPDF, u2net ni bgcode en el entorno; con ellos corren y pasan
+todas menos dos: la del 7z cifrado (el libarchive local no los escribe) y un caso parametrizado sin valores. Prueba de humo por la API (sesión anónima, tus,
+trabajo y descarga) de 14 casos con Gotenberg, workermedia, gotenbergweb y egressweb reales. Salieron y se arreglaron
+tres fallos que las pruebas con Gotenberg simulado no veían (web-a-pdf y captura-web nunca funcionaban con el Gotenberg
+real; workers y beat sin logs INFO) y los de la revisión independiente del cobro. Nueva prueba de web-a-pdf en
+`tests/e2e/servidor.spec.ts`.
 
 ## Pendiente
 
